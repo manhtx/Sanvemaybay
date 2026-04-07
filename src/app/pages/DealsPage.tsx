@@ -17,6 +17,8 @@ import {
 import { DealCard } from "../components/DealCard";
 import { mockDeals, regionFlag, Deal } from "../data/mockDeals";
 import { Link } from "react-router";
+import { getDeals } from "../data/api";
+import { useEffect } from "react";
 
 type RegionType = "all" | Deal["region"];
 type SortType = "discount" | "price_asc" | "price_desc" | "score" | "date_near" | "date_far";
@@ -54,8 +56,13 @@ const suggestedNewDests = [
 ];
 
 export function DealsPage() {
+  const [deals, setDeals] = useState<Deal[]>([]);
   const [region, setRegion] = useState<RegionType>("all");
   const [sort, setSort] = useState<SortType>("discount");
+
+  useEffect(() => {
+    getDeals().then(setDeals);
+  }, []);
   const [flashOnly, setFlashOnly] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
   const [watchedDests, setWatchedDests] = useState<string[]>([]);
@@ -67,17 +74,17 @@ export function DealsPage() {
   // Derive available months from actual deal dates — sorted chronologically
   const availableMonths = useMemo(() => {
     const monthSet = new Set(
-      mockDeals.map((d) => {
+      deals.map((d: Deal) => {
         const date = new Date(d.departDate);
         return `${date.getMonth() + 1}/${date.getFullYear()}`;
       })
     );
-    return Array.from(monthSet).sort((a, b) => {
+    return (Array.from(monthSet) as string[]).sort((a, b) => {
       const [ma, ya] = a.split("/").map(Number);
       const [mb, yb] = b.split("/").map(Number);
       return ya !== yb ? ya - yb : ma - mb;
     });
-  }, []);
+  }, [deals]);
 
   const filteredSuggestions = suggestedNewDests
     .filter(
@@ -97,12 +104,12 @@ export function DealsPage() {
   };
 
   const removeWatchDest = (dest: string) => {
-    setWatchedDests(watchedDests.filter((d) => d !== dest));
+    setWatchedDests(watchedDests.filter((d: string) => d !== dest));
     if (selectedWatchDest === dest) setSelectedWatchDest(null);
   };
 
-  const filtered = mockDeals
-    .filter((d) => {
+  const filtered = deals
+    .filter((d: Deal) => {
       if (region !== "all" && d.region !== region) return false;
       if (flashOnly && !d.isFlashDeal) return false;
       if (selectedMonth !== "all") {
@@ -115,7 +122,7 @@ export function DealsPage() {
       }
       return true;
     })
-    .sort((a, b) => {
+    .sort((a: Deal, b: Deal) => {
       switch (sort) {
         case "discount": return b.discount - a.discount;
         case "price_asc": return a.price - b.price;
@@ -133,11 +140,11 @@ export function DealsPage() {
       allRegions.reduce((acc, r) => {
         acc[r.value] =
           r.value === "all"
-            ? mockDeals.length
-            : mockDeals.filter((d) => d.region === r.value).length;
+            ? deals.length
+            : deals.filter((d: Deal) => d.region === r.value).length;
         return acc;
       }, {} as Record<string, number>),
-    [] // mockDeals is a static import — safe to use [] deps
+    [deals]
   );
 
   return (
@@ -162,11 +169,11 @@ export function DealsPage() {
               <p className="text-slate-500">
                 AI phát hiện{" "}
                 <span className="text-sky-400" style={{ fontWeight: 700 }}>
-                  {mockDeals.length} deal
+                  {deals.length} deal
                 </span>{" "}
                 trên{" "}
                 <span className="text-sky-400" style={{ fontWeight: 700 }}>
-                  {new Set(mockDeals.map((d) => d.country)).size} quốc gia
+                  {new Set(deals.map((d: Deal) => d.country)).size} quốc gia
                 </span>{" "}
                 — giảm 44–60% bất kể ngày bay xa hay gần
               </p>
@@ -191,7 +198,7 @@ export function DealsPage() {
             </span>
 
             {/* Base active destinations */}
-            {[...new Set(mockDeals.map((d) => d.to))].slice(0, 6).map((dest) => (
+            {(Array.from(new Set(deals.map((d: Deal) => d.to))) as string[]).slice(0, 6).map((dest: string) => (
               <button
                 key={dest}
                 onClick={() => setSelectedWatchDest(selectedWatchDest === dest ? null : dest)}
@@ -207,7 +214,7 @@ export function DealsPage() {
             ))}
 
             {/* Custom watched destinations */}
-            {watchedDests.map((dest) => (
+            {watchedDests.map((dest: string) => (
               <div
                 key={dest}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border bg-violet-500/15 border-violet-500/30 text-violet-300"
@@ -365,7 +372,7 @@ export function DealsPage() {
                 style={{ fontWeight: 500 }}
               >
                 <option value="all">📅 Tất cả tháng</option>
-                {availableMonths.map((month) => (
+                {availableMonths.map((month: string) => (
                   <option key={month} value={month}>Tháng {month}</option>
                 ))}
               </select>
@@ -391,9 +398,9 @@ export function DealsPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {[
             { icon: TrendingDown, label: "Deals đang có", value: `${filtered.length}`, color: "text-sky-400" },
-            { icon: Zap, label: "Flash deals", value: `${filtered.filter((d) => d.isFlashDeal).length}`, color: "text-orange-400" },
-            { icon: Clock, label: "Hết hạn sớm nhất", value: filtered.length > 0 ? [...filtered].sort((a, b) => a.expiresIn.localeCompare(b.expiresIn))[0]?.expiresIn.split(" ").slice(0, 2).join(" ") : "—", color: "text-red-400" },
-            { icon: Globe, label: "Quốc gia / Vùng", value: `${new Set(filtered.map((d) => d.country)).size}`, color: "text-violet-400" },
+            { icon: Zap, label: "Flash deals", value: `${filtered.filter((d: Deal) => d.isFlashDeal).length}`, color: "text-orange-400" },
+            { icon: Clock, label: "Hết hạn sớm nhất", value: filtered.length > 0 ? [...filtered].sort((a: Deal, b: Deal) => a.expiresIn.localeCompare(b.expiresIn))[0]?.expiresIn.split(" ").slice(0, 2).join(" ") : "—", color: "text-red-400" },
+            { icon: Globe, label: "Quốc gia / Vùng", value: `${new Set(filtered.map((d: Deal) => d.country)).size}`, color: "text-violet-400" },
           ].map(({ icon: Icon, label, value, color }) => (
             <div key={label} className="bg-slate-900/60 border border-white/8 rounded-xl p-4 flex items-center gap-3">
               <Icon className={`w-5 h-5 ${color} shrink-0`} />
@@ -445,7 +452,7 @@ export function DealsPage() {
         {/* ── DEALS GRID ── */}
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map((deal) => (
+            {filtered.map((deal: Deal) => (
               <DealCard key={deal.id} deal={deal} />
             ))}
           </div>

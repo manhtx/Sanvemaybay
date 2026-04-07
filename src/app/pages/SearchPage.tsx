@@ -1,22 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
-  Plane,
   Search,
   Brain,
-  Route,
   Sparkles,
   ArrowRight,
-  ChevronDown,
-  Clock,
-  DollarSign,
+  TrendingUp,
   MapPin,
   CheckCircle,
-  AlertTriangle,
   Zap,
-  Bell,
+  Filter,
+  SlidersHorizontal,
+  ChevronRight,
+  Palmtree,
+  UtensilsCrossed,
+  Music,
+  Mountain,
+  ShoppingBag,
+  Info,
+  RefreshCw,
 } from "lucide-react";
 import { Link } from "react-router";
-import { formatVND } from "../data/mockDeals";
+import { formatVND, Deal } from "../data/mockDeals";
+import { getDeals, searchDeals } from "../data/api";
+import { motion, AnimatePresence } from "motion/react";
+import { DealCard } from "../components/DealCard";
+
+const vibes = [
+  { label: "Bãi biển", icon: Palmtree, color: "bg-cyan-500" },
+  { label: "Ẩm thực", icon: UtensilsCrossed, color: "bg-orange-500" },
+  { label: "Mua sắm", icon: ShoppingBag, color: "bg-pink-500" },
+  { label: "Khám phá", icon: Mountain, color: "bg-emerald-500" },
+  { label: "Lễ hội", icon: Music, color: "bg-purple-500" },
+];
 
 const departureCities = [
   { code: "HAN", name: "Hà Nội" },
@@ -24,438 +39,304 @@ const departureCities = [
   { code: "DAD", name: "Đà Nẵng" },
 ];
 
-const durations = ["3–5 ngày", "5–7 ngày", "7–10 ngày", "10–14 ngày", "14+ ngày"];
-const months = [
-  "Tháng 6/2026", "Tháng 7/2026", "Tháng 8/2026", "Tháng 9/2026",
-  "Tháng 10/2026", "Tháng 11/2026", "Tháng 12/2026",
-  "Tháng 1/2027", "Tháng 2/2027", "Tháng 3/2027",
-  "Tháng 4/2027", "Tháng 5/2027", "Tháng 6/2027",
-];
-const budgets = [
-  { label: "Dưới 2 triệu", min: 0, max: 2000000 },
-  { label: "2–5 triệu", min: 2000000, max: 5000000 },
-  { label: "5–10 triệu", min: 5000000, max: 10000000 },
-  { label: "10–20 triệu", min: 10000000, max: 20000000 },
-  { label: "Trên 20 triệu", min: 20000000, max: 99999999 },
-];
-
-interface SmartRoute {
-  id: string;
-  legs: { from: string; to: string; airline: string; price: number; duration: string }[];
-  totalPrice: number;
-  directPrice: number;
-  saving: number;
-  savingPercent: number;
-  aiNote: string;
-  risk: "low" | "medium";
-  riskNote: string;
-  aiScore: number;
-}
-
-const mockSmartRoutes: SmartRoute[] = [
-  {
-    id: "r1",
-    legs: [
-      { from: "HAN", to: "PVG", airline: "China Eastern", price: 2100000, duration: "3h 30m" },
-      { from: "PVG", to: "FCO", airline: "Alitalia", price: 4200000, duration: "11h 20m" },
-    ],
-    totalPrice: 6300000,
-    directPrice: 14500000,
-    saving: 8200000,
-    savingPercent: 57,
-    aiNote: "Bay qua Thượng Hải tiết kiệm 57% so với bay thẳng HAN→FCO. China Eastern đang có flash sale trên leg đầu.",
-    risk: "medium",
-    riskNote: "Quá cảnh PVG cần 4h — vừa đủ thời gian. Tuy nhiên đây là self-transfer: nếu trễ chuyến 1, bạn tự chịu chi phí đổi vé chuyến 2.",
-    aiScore: 88,
-  },
-  {
-    id: "r2",
-    legs: [
-      { from: "HAN", to: "BKK", airline: "VietJet Air", price: 1250000, duration: "1h 55m" },
-      { from: "BKK", to: "NRT", airline: "Thai Airways", price: 3800000, duration: "6h 30m" },
-    ],
-    totalPrice: 5050000,
-    directPrice: 8500000,
-    saving: 3450000,
-    savingPercent: 41,
-    aiNote: "Bangkok là hub giá rẻ vào Nhật. Thai Airways có giá tốt trên BKK→NRT do cạnh tranh với Zipair. Tổng hành trình 2 vé rẻ hơn 1 vé thẳng 41%.",
-    risk: "low",
-    riskNote: "Quá cảnh BKK 3h tại Suvarnabhumi — rộng rãi và dễ di chuyển. Đây là connected ticket qua Thai Airways — nếu trễ chuyến 1, Thai Airways có trách nhiệm.",
-    aiScore: 85,
-  },
-  {
-    id: "r3",
-    legs: [
-      { from: "SGN", to: "DOH", airline: "Qatar Airways", price: 3200000, duration: "7h 30m" },
-      { from: "DOH", to: "LHR", airline: "Qatar Airways", price: 4800000, duration: "7h 15m" },
-    ],
-    totalPrice: 8000000,
-    directPrice: 18000000,
-    saving: 10000000,
-    savingPercent: 56,
-    aiNote: "Qatar Airways đang khuyến mãi mạnh trên route SGN–DOH–LHR. Doha là hub trung tâm của Qatar — kết nối hoàn hảo, hành lý không cần lấy ra.",
-    risk: "low",
-    riskNote: "Vé connected ticket chính thức. Quá cảnh Doha 2h — đủ thoải mái tại terminal sang trọng. Hành lý check-through không cần làm lại.",
-    aiScore: 93,
-  },
-];
-
-function RouteLeg({ leg, isLast }: { leg: SmartRoute["legs"][0]; isLast: boolean }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex items-center gap-2 flex-1">
-        <div className="text-center">
-          <div className="text-white text-sm" style={{ fontWeight: 800 }}>{leg.from}</div>
-        </div>
-        <div className="flex-1 flex items-center gap-1">
-          <div className="h-px flex-1 bg-slate-700" />
-          <div className="flex flex-col items-center">
-            <Plane className="w-4 h-4 text-sky-400" />
-            <span className="text-slate-600 text-xs">{leg.duration}</span>
-          </div>
-          <div className="h-px flex-1 bg-slate-700" />
-        </div>
-        <div className="text-center">
-          <div className="text-white text-sm" style={{ fontWeight: 800 }}>{leg.to}</div>
-        </div>
-      </div>
-      {!isLast && (
-        <div className="px-2 py-1 bg-amber-500/20 border border-amber-500/30 text-amber-400 text-xs rounded-full whitespace-nowrap" style={{ fontWeight: 600 }}>
-          Quá cảnh
-        </div>
-      )}
-    </div>
-  );
-}
-
-function SmartRouteCard({ route }: { route: SmartRoute }) {
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <div className="bg-slate-900 border border-white/8 rounded-2xl overflow-hidden hover:border-sky-500/30 transition-colors">
-      <div className="p-5">
-        {/* Route path */}
-        <div className="mb-4 space-y-3">
-          {route.legs.map((leg, idx) => (
-            <RouteLeg key={idx} leg={leg} isLast={idx === route.legs.length - 1} />
-          ))}
-        </div>
-
-        {/* Price comparison */}
-        <div className="flex items-center justify-between bg-slate-800/50 rounded-xl p-4 mb-4">
-          <div>
-            <div className="text-slate-500 text-xs mb-0.5">Bay thẳng thông thường</div>
-            <div className="text-slate-400 line-through text-sm">{formatVND(route.directPrice)}</div>
-          </div>
-          <div className="text-slate-600 text-xl">→</div>
-          <div className="text-right">
-            <div className="text-slate-500 text-xs mb-0.5">Multi-leg AI route</div>
-            <div className="text-emerald-400" style={{ fontWeight: 800, fontSize: "1.35rem" }}>{formatVND(route.totalPrice)}</div>
-            <div className="text-emerald-500 text-xs" style={{ fontWeight: 700 }}>
-              Tiết kiệm {formatVND(route.saving)} (-{route.savingPercent}%)
-            </div>
-          </div>
-        </div>
-
-        {/* AI note */}
-        <div className="bg-sky-500/5 border border-sky-500/10 rounded-xl p-4 mb-4">
-          <div className="flex items-start gap-2">
-            <div className="w-5 h-5 bg-sky-500 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-              <span className="text-white" style={{ fontSize: "9px", fontWeight: 800 }}>AI</span>
-            </div>
-            <p className="text-slate-400 text-sm leading-relaxed">{route.aiNote}</p>
-          </div>
-        </div>
-
-        {/* Risk */}
-        <div className={`flex items-start gap-3 p-3 rounded-xl mb-4 ${
-          route.risk === "low"
-            ? "bg-emerald-500/10 border border-emerald-500/20"
-            : "bg-amber-500/10 border border-amber-500/20"
-        }`}>
-          {route.risk === "low" ? (
-            <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-          ) : (
-            <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
-          )}
-          <div>
-            <span className={`text-xs ${route.risk === "low" ? "text-emerald-400" : "text-amber-400"}`} style={{ fontWeight: 700 }}>
-              Rủi ro {route.risk === "low" ? "Thấp" : "Trung Bình"}:
-            </span>
-            <p className={`text-xs mt-0.5 leading-relaxed ${route.risk === "low" ? "text-emerald-300/80" : "text-amber-300/80"}`}>
-              {route.riskNote}
-            </p>
-          </div>
-        </div>
-
-        {/* Legs detail toggle */}
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-1 text-slate-500 hover:text-slate-300 text-xs transition-colors w-full"
-          style={{ fontWeight: 600 }}
-        >
-          Chi tiết từng chặng
-          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
-        </button>
-
-        {expanded && (
-          <div className="mt-4 space-y-3 border-t border-white/8 pt-4">
-            {route.legs.map((leg, idx) => (
-              <div key={idx} className="flex items-center justify-between bg-slate-800/30 rounded-xl p-3">
-                <div className="flex items-center gap-2">
-                  <Plane className="w-4 h-4 text-sky-400" />
-                  <div>
-                    <div className="text-white text-sm" style={{ fontWeight: 600 }}>
-                      {leg.from} → {leg.to}
-                    </div>
-                    <div className="text-slate-500 text-xs">{leg.airline} · {leg.duration}</div>
-                  </div>
-                </div>
-                <div className="text-emerald-400 text-sm" style={{ fontWeight: 700 }}>
-                  {formatVND(leg.price)}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* AI score + CTA */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/8">
-          <div>
-            <div className="text-slate-500 text-xs mb-1">AI Route Score</div>
-            <div className="flex items-center gap-2">
-              <div className="w-20 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full" style={{ width: `${route.aiScore}%` }} />
-              </div>
-              <span className="text-emerald-400 text-xs" style={{ fontWeight: 700 }}>{route.aiScore}/100</span>
-            </div>
-          </div>
-          <a
-            href="#"
-            className="flex items-center gap-2 px-4 py-2 bg-sky-500 hover:bg-sky-400 text-white rounded-xl text-sm transition-colors"
-            style={{ fontWeight: 600 }}
-          >
-            Đặt Vé
-            <ArrowRight className="w-4 h-4" />
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function SearchPage() {
+  const [budget, setBudget] = useState(15000000);
+  const [selectedVibes, setSelectedVibes] = useState<string[]>([]);
   const [fromCity, setFromCity] = useState("HAN");
-  const [duration, setDuration] = useState("5–7 ngày");
-  const [budget, setBudget] = useState(1);
-  const [month, setMonth] = useState("Tháng 6/2026");
-  const [searched, setSearched] = useState(false);
-  const [searching, setSearching] = useState(false);
+  const [results, setResults] = useState<Deal[]>([]);
+  const [isScanning, setIsScanning] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const handleSearch = () => {
-    setSearching(true);
-    setTimeout(() => {
-      setSearching(false);
-      setSearched(true);
-    }, 1800);
+  // Stats for the radar
+  const stats = useMemo(() => {
+    return {
+      totalFound: results.length,
+      bestPrice: results.length > 0 ? Math.min(...results.map(r => r.price)) : 0,
+      avgSaving: results.length > 0 ? Math.round(results.reduce((acc, r) => acc + r.discount, 0) / results.length) : 0
+    };
+  }, [results]);
+
+  const runSearch = async (isManual = false) => {
+    if (isManual) setIsScanning(true);
+    
+    const found = await searchDeals({
+      budget,
+      vibes: selectedVibes,
+      from: fromCity
+    });
+    
+    // Simulate thinking/scanning delay
+    if (isManual) {
+      await new Promise(r => setTimeout(r, 1500));
+    }
+    
+    setResults(found);
+    setIsScanning(false);
+    setIsInitialLoad(false);
+  };
+
+  useEffect(() => {
+    runSearch();
+  }, [budget, fromCity, selectedVibes]);
+
+  const toggleVibe = (vibe: string) => {
+    setSelectedVibes(prev => 
+      prev.includes(vibe) ? prev.filter(v => v !== vibe) : [...prev, vibe]
+    );
   };
 
   return (
-    <div className="pt-24 pb-16">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-5">
-            <Route className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-emerald-400 text-xs" style={{ fontWeight: 600 }}>Smart Route Builder</span>
-          </div>
-          <h1 className="text-white mb-3" style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
-            Tìm Vé Thông Minh
-          </h1>
-          <p className="text-slate-500 max-w-xl mx-auto">
-            Nhập budget và thời gian — AI tự động tìm multi-leg routes rẻ hơn bay thẳng đến 57%
-          </p>
-        </div>
+    <div className="pt-24 pb-20 min-h-screen bg-slate-950 overflow-hidden relative">
+      {/* Background Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[500px] bg-sky-500/10 blur-[120px] rounded-full pointer-events-none" />
 
-        {/* Search form */}
-        <div className="bg-slate-900 border border-white/8 rounded-2xl p-6 mb-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {/* Departure city */}
-            <div>
-              <label className="text-slate-500 text-xs mb-2 block" style={{ fontWeight: 600 }}>
-                <MapPin className="w-3.5 h-3.5 inline mr-1" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          {/* LEFT COLUMN: CONTROLS */}
+          <div className="lg:col-span-5 space-y-8">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 border border-sky-500/20 rounded-full mb-6">
+                <Brain className="w-3.5 h-3.5 text-sky-400" />
+                <span className="text-sky-400 text-[10px] font-bold uppercase tracking-wider">AI Search Radar v2.0</span>
+              </div>
+              <h1 className="text-white text-4xl font-extrabold tracking-tight mb-4 leading-tight">
+                Quét Deal <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500">Thông Minh</span>
+              </h1>
+              <p className="text-slate-400 text-lg max-w-md">
+                Đừng tìm vé theo ngày. Hãy quét theo <span className="text-white font-medium">ngân sách</span> và <span className="text-white font-medium">phong cách</span> nghỉ dưỡng của bạn.
+              </p>
+            </motion.div>
+
+            {/* From City */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+              <label className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest mb-4">
+                <MapPin className="w-4 h-4 text-sky-500" />
                 Điểm khởi hành
               </label>
-              <select
-                value={fromCity}
-                onChange={(e) => setFromCity(e.target.value)}
-                className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500/40 cursor-pointer"
-              >
-                {departureCities.map((c) => (
-                  <option key={c.code} value={c.code}>{c.name} ({c.code})</option>
+              <div className="grid grid-cols-3 gap-3">
+                {departureCities.map(city => (
+                  <button
+                    key={city.code}
+                    onClick={() => setFromCity(city.code)}
+                    className={`py-3 px-2 rounded-2xl text-xs font-bold transition-all border ${
+                      fromCity === city.code 
+                        ? "bg-sky-500 border-sky-400 text-white shadow-lg shadow-sky-500/25" 
+                        : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10"
+                    }`}
+                  >
+                    {city.name}
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
 
-            {/* Duration */}
-            <div>
-              <label className="text-slate-500 text-xs mb-2 block" style={{ fontWeight: 600 }}>
-                <Clock className="w-3.5 h-3.5 inline mr-1" />
-                Thời gian đi
-              </label>
-              <select
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500/40 cursor-pointer"
-              >
-                {durations.map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Budget */}
-            <div>
-              <label className="text-slate-500 text-xs mb-2 block" style={{ fontWeight: 600 }}>
-                <DollarSign className="w-3.5 h-3.5 inline mr-1" />
-                Budget tối đa (khứ hồi)
-              </label>
-              <select
+            {/* Budget Slider */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+              <div className="flex justify-between items-center mb-6">
+                <label className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                  <SlidersHorizontal className="w-4 h-4 text-emerald-500" />
+                  Ngân sách tối đa
+                </label>
+                <span className="text-emerald-400 text-lg font-black">{formatVND(budget)}</span>
+              </div>
+              <input
+                type="range"
+                min={2000000}
+                max={50000000}
+                step={1000000}
                 value={budget}
                 onChange={(e) => setBudget(Number(e.target.value))}
-                className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500/40 cursor-pointer"
-              >
-                {budgets.map((b, idx) => (
-                  <option key={b.label} value={idx}>{b.label}</option>
-                ))}
-              </select>
+                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+              />
+              <div className="flex justify-between mt-3 text-[10px] font-bold text-slate-600 uppercase">
+                <span>2M</span>
+                <span>25M</span>
+                <span>50M</span>
+              </div>
             </div>
 
-            {/* Month */}
-            <div>
-              <label className="text-slate-500 text-xs mb-2 block" style={{ fontWeight: 600 }}>
-                <Plane className="w-3.5 h-3.5 inline mr-1" />
-                Thời điểm bay
+            {/* Vibes */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+              <label className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest mb-4">
+                <Sparkles className="w-4 h-4 text-yellow-500" />
+                Phong cách chuyến đi
               </label>
-              <select
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-                className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500/40 cursor-pointer"
-              >
-                {months.map((m) => (
-                  <option key={m} value={m}>{m}</option>
+              <div className="flex flex-wrap gap-2">
+                {vibes.map(vibe => {
+                  const Icon = vibe.icon;
+                  const isActive = selectedVibes.includes(vibe.label);
+                  return (
+                    <button
+                      key={vibe.label}
+                      onClick={() => toggleVibe(vibe.label)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold transition-all border ${
+                        isActive 
+                          ? `${vibe.color} border-white/20 text-white shadow-lg` 
+                          : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10"
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      {vibe.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* CTA Refresh */}
+            <button
+              onClick={() => runSearch(true)}
+              className="w-full h-16 bg-gradient-to-r from-sky-500 to-blue-600 rounded-3xl flex items-center justify-center gap-3 text-white font-black text-lg hover:shadow-2xl hover:shadow-sky-500/40 transition-all border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed group"
+              disabled={isScanning}
+            >
+              {isScanning ? (
+                <RefreshCw className="w-6 h-6 animate-spin" />
+              ) : (
+                <>
+                  <Search className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  QUÉT DEAL NGAY
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* RIGHT COLUMN: RADAR & RESULTS */}
+          <div className="lg:col-span-7 space-y-8">
+            
+            {/* Visual Radar */}
+            <div className="relative aspect-square sm:aspect-video lg:aspect-auto lg:h-[400px] bg-slate-900 border border-white/5 rounded-[40px] overflow-hidden flex items-center justify-center">
+              {/* Radar Background Lines */}
+              <div className="absolute inset-0 opacity-20">
+                {[10, 30, 50, 70, 90].map(size => (
+                  <div 
+                    key={size}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-sky-500"
+                    style={{ width: `${size}%`, height: `${size}%` }}
+                  />
                 ))}
-              </select>
-            </div>
-          </div>
+                <div className="absolute top-1/2 left-0 w-full h-px bg-sky-500" />
+                <div className="absolute left-1/2 top-0 w-px h-full bg-sky-500" />
+              </div>
 
-          <button
-            onClick={handleSearch}
-            disabled={searching}
-            className={`w-full flex items-center justify-center gap-3 py-4 rounded-xl text-white transition-all ${
-              searching
-                ? "bg-slate-700 cursor-not-allowed"
-                : "bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 hover:shadow-lg hover:shadow-sky-500/30"
-            }`}
-            style={{ fontWeight: 700, fontSize: "1rem" }}
-          >
-            {searching ? (
-              <>
-                <Brain className="w-5 h-5 animate-pulse" />
-                AI đang phân tích {mockSmartRoutes.length * 180}+ hành trình...
-              </>
-            ) : (
-              <>
-                <Search className="w-5 h-5" />
-                Tìm Route Tối Ưu với AI
-                <Sparkles className="w-5 h-5" />
-              </>
-            )}
-          </button>
-        </div>
+              {/* Pulsing Scanner */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[150%] h-[150%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none origin-center"
+                style={{
+                  background: "conic-gradient(from 0deg, transparent 0deg, rgba(14, 165, 233, 0.2) 30deg, transparent 60deg)"
+                }}
+              />
 
-        {/* Loading state */}
-        {searching && (
-          <div className="text-center py-12">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              {["Quét 38+ nguồn giá...", "Tính toán multi-leg...", "Phân tích rủi ro..."].map((step, idx) => (
-                <div key={step} className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: `${idx * 0.2}s` }} />
-                  <span className="text-slate-500 text-sm">{step}</span>
-                  {idx < 2 && <ArrowRight className="w-4 h-4 text-slate-700" />}
+              {/* Deal Dots */}
+              <AnimatePresence>
+                {results.slice(0, 15).map((deal, idx) => {
+                  // Random-ish but deterministic positions
+                  const hue = (idx * 137.5) % 360;
+                  const dist = 20 + (idx * 7) % 65;
+                  const angle = (idx * 45 + (idx % 3) * 15) % 360;
+                  
+                  return (
+                    <motion.div
+                      key={deal.id}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="absolute w-3 h-3 rounded-full cursor-pointer hover:scale-150 transition-transform"
+                      style={{
+                        backgroundColor: `hsl(${hue}, 70%, 60%)`,
+                        boxShadow: `0 0 15px hsl(${hue}, 70%, 60%)`,
+                        top: `calc(50% + ${Math.sin(angle * Math.PI / 180) * dist/2}%)`,
+                        left: `calc(50% + ${Math.cos(angle * Math.PI / 180) * dist/2}%)`
+                      }}
+                    >
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-white/20 text-white text-[10px] px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        {deal.to} - {formatVND(deal.price)}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+
+              {/* Status Overlay */}
+              <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                    <span className="text-emerald-400 text-[10px] font-black uppercase tracking-widest">Radar Active</span>
+                  </div>
+                  <div className="text-white text-2xl font-black">{stats.totalFound} Deal Khớp</div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+                <div className="text-right">
+                  <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1">Giá thấp nhất</div>
+                  <div className="text-sky-400 text-2xl font-black">{formatVND(stats.bestPrice)}</div>
+                </div>
+              </div>
 
-        {/* Results */}
-        {searched && !searching && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-white" style={{ fontWeight: 700, fontSize: "1.25rem" }}>
-                  AI tìm được {mockSmartRoutes.length} hành trình tối ưu
+              {/* Center Icon */}
+              <div className="w-16 h-16 bg-slate-900 border border-white/10 rounded-3xl flex items-center justify-center relative z-20 shadow-2xl">
+                <Zap className="w-8 h-8 text-sky-400 fill-sky-400/20" />
+              </div>
+            </div>
+
+            {/* Results Grid */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-white text-xl font-bold flex items-center gap-3">
+                  <TrendingUp className="w-5 h-5 text-emerald-400" />
+                  Hành trình tối ưu nhất
                 </h2>
-                <p className="text-slate-500 text-sm mt-1">
-                  Từ {departureCities.find(c => c.code === fromCity)?.name} · {duration} · {month}
-                </p>
+                <div className="flex items-center gap-2 text-slate-500 text-sm">
+                  <Info className="w-4 h-4" />
+                  Sắp xếp theo độ phù hợp AI
+                </div>
               </div>
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-                <Zap className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400 text-xs" style={{ fontWeight: 700 }}>
-                  Tiết kiệm tối đa đến 57%
-                </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {results.length > 0 ? (
+                  results.map((deal, idx) => (
+                    <motion.div
+                      key={deal.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                    >
+                      <DealCard deal={deal} />
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="col-span-full py-20 text-center bg-white/5 border border-dashed border-white/10 rounded-[32px]">
+                    <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                      <Search className="w-8 h-8 text-slate-600" />
+                    </div>
+                    <h3 className="text-white font-bold mb-2">Không tìm thấy deal khớp</h3>
+                    <p className="text-slate-500 max-w-xs mx-auto text-sm">
+                      Hãy thử tăng ngân sách hoặc bỏ bớt vibe để AI có thêm không gian tìm kiếm.
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
-
-            {/* Advanced mode warning */}
-            <div className="flex items-start gap-3 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl mb-6">
-              <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
-              <div>
-                <p className="text-amber-300 text-sm" style={{ fontWeight: 600 }}>Lưu ý về Self-Transfer Routes</p>
-                <p className="text-slate-500 text-sm mt-1 leading-relaxed">
-                  Một số route dưới đây là self-transfer (2 vé riêng biệt). Nếu chuyến 1 bị trễ, bạn tự chịu chi phí đổi chuyến 2.
-                  FlyCheap AI luôn ghi rõ rủi ro này trước mỗi route.
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              {mockSmartRoutes.map((route) => (
-                <SmartRouteCard key={route.id} route={route} />
-              ))}
-            </div>
-
-            {/* CTA for alerts */}
-            <div className="mt-8 bg-slate-900/60 border border-white/8 rounded-2xl p-6 text-center">
-              <p className="text-slate-400 mb-4">
-                Muốn được thông báo tự động khi có route tốt hơn?
-              </p>
-              <Link
-                to="/alerts"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl transition-colors"
-                style={{ fontWeight: 600 }}
-              >
-                <Bell className="w-4 h-4" />
-                Đặt Alert cho Route Này
-              </Link>
+              
+              {results.length > 0 && (
+                <div className="p-8 bg-gradient-to-br from-indigo-500/10 to-blue-500/10 border border-indigo-500/20 rounded-[32px] text-center">
+                  <p className="text-slate-400 text-sm mb-4">Bạn muốn nhận thông báo khi có thêm deal mới cho phong cách này?</p>
+                  <Link 
+                    to="/alerts" 
+                    className="inline-flex items-center gap-2 px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-slate-100 transition-colors"
+                  >
+                    Cài Báo Giá Ngay
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
-        )}
-
-        {/* Empty state */}
-        {!searched && !searching && (
-          <div className="text-center py-12">
-            <div className="w-20 h-20 bg-slate-900 border border-white/8 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Route className="w-10 h-10 text-slate-700" />
-            </div>
-            <h3 className="text-slate-500 mb-2" style={{ fontWeight: 600 }}>Smart Route Builder</h3>
-            <p className="text-slate-600 text-sm max-w-md mx-auto">
-              Nhập thông tin chuyến đi của bạn — AI sẽ tìm các combination vé rẻ hơn bay thẳng, bao gồm multi-leg và self-transfer routes.
-            </p>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

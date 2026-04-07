@@ -3,10 +3,11 @@ import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Plane, Zap, Bell, TrendingDown, Brain, Route, DollarSign, BarChart3,
-  ShieldCheck, CheckCircle, X, ChevronRight, ArrowRight, Sparkles, Globe, Clock, Users,
+  ShieldCheck, CheckCircle, X, ChevronRight, ArrowRight, Sparkles, Globe, Clock, Users, Crown,
 } from "lucide-react";
 import { DealCard } from "../components/DealCard";
-import { mockDeals, formatVND } from "../data/mockDeals";
+import { mockDeals, formatVND, Deal } from "../data/mockDeals";
+import { getDeals } from "../data/api";
 
 // ─────────────────────────────────────────────────
 // ANIMATED COUNTER HOOK
@@ -217,18 +218,6 @@ function FloatingPlane({ top, duration, delay, size = 24, opacity = 0.5, animKey
           background: "linear-gradient(to left, rgba(56,189,248,0.7), rgba(56,189,248,0.1), transparent)",
           borderRadius: 2,
         }} />
-        {/* Small dot accent */}
-        <div style={{
-          position: "absolute",
-          right: size + trailWidth * 0.6,
-          top: "50%",
-          transform: "translateY(-50%)",
-          width: 3,
-          height: 3,
-          borderRadius: "50%",
-          background: "rgba(56,189,248,0.5)",
-          boxShadow: "0 0 4px rgba(56,189,248,0.8)",
-        }} />
         <Plane
           style={{ width: size, height: size, color: "#7dd3fc", filter: "drop-shadow(0 0 6px rgba(56,189,248,0.8))" }}
         />
@@ -313,7 +302,12 @@ function StatCard({ label, value, suffix, isPrice }: { label: string; value: num
 // HOMEPAGE
 // ─────────────────────────────────────────────────
 export function HomePage() {
+  const [deals, setDeals] = useState<Deal[]>([]);
   const [tickerIndex, setTickerIndex] = useState(0);
+
+  useEffect(() => {
+    getDeals().then(setDeals);
+  }, []);
 
   useEffect(() => {
     const t = setInterval(() => setTickerIndex((i) => (i + 1) % liveDeals.length), 2800);
@@ -323,7 +317,7 @@ export function HomePage() {
   const currentTicker = liveDeals[tickerIndex];
 
   return (
-    <div className="pt-16">
+    <div className="pt-16 pb-0">
       {/* ── CSS KEYFRAMES ── */}
       <style>{`
         @keyframes planeFly {
@@ -356,28 +350,13 @@ export function HomePage() {
           0%   { background-position: -400% center; }
           100% { background-position: 400% center; }
         }
-        @keyframes fadeSlideUp {
-          0%   { opacity: 0; transform: translateY(24px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes scanLine {
-          0%   { transform: scaleX(0) translateX(-50%); opacity: 0.8; }
-          100% { transform: scaleX(1) translateX(0); opacity: 0; }
-        }
-        @keyframes tickerIn  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes tickerOut { from { opacity:1; transform:translateY(0); }   to { opacity:0; transform:translateY(-12px); } }
-        @keyframes glowPulse {
-          0%,100% { box-shadow: 0 0 20px rgba(14,165,233,0.15), 0 0 60px rgba(14,165,233,0.05); }
-          50%      { box-shadow: 0 0 40px rgba(14,165,233,0.3),  0 0 100px rgba(14,165,233,0.1); }
-        }
         @keyframes borderGlow {
           0%,100% { opacity:0.4; }
           50%      { opacity:1; }
         }
-        @keyframes radarSweep {
-          0%   { transform: rotate(0deg);   opacity:0.6; }
-          80%  { opacity:0.6; }
-          100% { transform: rotate(360deg); opacity:0.6; }
+        @keyframes glowPulse {
+          0%,100% { box-shadow: 0 0 20px rgba(14,165,233,0.15), 0 0 60px rgba(14,165,233,0.05); }
+          50%      { box-shadow: 0 0 40px rgba(14,165,233,0.3),  0 0 100px rgba(14,165,233,0.1); }
         }
       `}</style>
 
@@ -385,256 +364,64 @@ export function HomePage() {
           HERO SECTION
       ═══════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-
-        {/* Layer 1 — Deep space background */}
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 120% 80% at 50% 50%, #03091f 0%, #020617 60%, #010310 100%)" }} />
-
-        {/* Layer 2 — Twinkling stars */}
         <StarCanvas />
-
-        {/* Layer 3 — Flight map SVG */}
         <FlightMapOverlay />
-
-        {/* Layer 4 — Animated aurora orbs */}
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            top: "12%", left: "8%",
-            width: 600, height: 600,
-            background: "radial-gradient(circle, rgba(14,165,233,0.18) 0%, transparent 70%)",
-            filter: "blur(60px)",
-            animation: "orbDrift 18s ease-in-out infinite",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            bottom: "10%", right: "6%",
-            width: 700, height: 700,
-            background: "radial-gradient(circle, rgba(139,92,246,0.14) 0%, transparent 70%)",
-            filter: "blur(80px)",
-            animation: "orbDrift2 22s ease-in-out infinite",
-          }}
-        />
-        <div
-          className="absolute pointer-events-none rounded-full"
-          style={{
-            top: "40%", left: "50%", transform: "translate(-50%, -50%)",
-            width: 900, height: 400,
-            background: "radial-gradient(ellipse, rgba(6,182,212,0.07) 0%, transparent 70%)",
-            filter: "blur(50px)",
-          }}
-        />
-
+        <div className="absolute pointer-events-none rounded-full" style={{ top: "12%", left: "8%", width: 600, height: 600, background: "radial-gradient(circle, rgba(14,165,233,0.18) 0%, transparent 70%)", filter: "blur(60px)", animation: "orbDrift 18s ease-in-out infinite" }} />
+        <div className="absolute pointer-events-none rounded-full" style={{ bottom: "10%", right: "6%", width: 700, height: 700, background: "radial-gradient(circle, rgba(139,92,246,0.14) 0%, transparent 70%)", filter: "blur(80px)", animation: "orbDrift2 22s ease-in-out infinite" }} />
+        
         {/* Layer 5 — Perspective grid */}
         <div className="absolute bottom-0 left-0 right-0 h-[45%] overflow-hidden pointer-events-none">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(14,165,233,0.07) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(14,165,233,0.07) 1px, transparent 1px)
-              `,
-              backgroundSize: "80px 80px",
-              transform: "perspective(500px) rotateX(65deg) translateY(20%)",
-              transformOrigin: "center top",
-              maskImage: "linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)",
-            }}
-          />
-          {/* Horizon glow */}
-          <div
-            className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(14,165,233,0.4), transparent)" }}
-          />
+          <div className="absolute inset-0" style={{ backgroundImage: `linear-gradient(rgba(14,165,233,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.07) 1px, transparent 1px)`, backgroundSize: "80px 80px", transform: "perspective(500px) rotateX(65deg) translateY(20%)", transformOrigin: "center top", maskImage: "linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)" }} />
+          <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(14,165,233,0.4), transparent)" }} />
         </div>
 
         {/* Layer 6 — Flying planes */}
         <FloatingPlane top="16%" duration={32} delay={0}  size={30} opacity={0.65} animKey="p1" />
         <FloatingPlane top="30%" duration={48} delay={12} size={18} opacity={0.38} animKey="p2" />
         <FloatingPlane top="54%" duration={24} delay={6}  size={38} opacity={0.7}  animKey="p3" />
-        <FloatingPlane top="72%" duration={38} delay={20} size={14} opacity={0.28} animKey="p4" />
-        <FloatingPlane top="42%" duration={55} delay={35} size={12} opacity={0.22} animKey="p5" />
 
-        {/* ── HERO CONTENT ── */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
-
-          {/* Animated live ticker */}
-          <div
-            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full mb-10"
-            style={{
-              background: "rgba(2,6,23,0.85)",
-              border: "1px solid rgba(14,165,233,0.25)",
-              backdropFilter: "blur(16px)",
-              animation: "borderGlow 3s ease-in-out infinite",
-            }}
-          >
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" style={{ boxShadow: "0 0 8px #4ade80" }} />
-              <span className="text-emerald-400 text-xs" style={{ fontWeight: 700, letterSpacing: "0.05em" }}>LIVE</span>
-            </div>
+          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full mb-10" style={{ background: "rgba(2,6,23,0.85)", border: "1px solid rgba(14,165,233,0.25)", backdropFilter: "blur(16px)", animation: "borderGlow 3s ease-in-out infinite" }}>
+            <div className="flex items-center gap-1.5"><div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" style={{ boxShadow: "0 0 8px #4ade80" }} /><span className="text-emerald-400 text-xs" style={{ fontWeight: 700, letterSpacing: "0.05em" }}>LIVE</span></div>
             <div className="w-px h-4" style={{ background: "rgba(255,255,255,0.12)" }} />
             <div className="flex items-center gap-2 text-sm overflow-hidden" style={{ height: 20 }}>
               <Plane className="w-3.5 h-3.5 text-sky-400 shrink-0" />
               <AnimatePresence mode="wait">
-                <motion.span
-                  key={tickerIndex}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.35 }}
-                  className="text-slate-300 whitespace-nowrap"
-                  style={{ fontWeight: 600 }}
-                >
-                  {currentTicker.from} → {currentTicker.to}
-                  <span className="text-emerald-400 ml-1.5" style={{ fontWeight: 700 }}>
-                    -{currentTicker.discount}%
-                  </span>
-                  <span className="text-slate-500 ml-1.5">từ {currentTicker.price}</span>
+                <motion.span key={tickerIndex} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }} className="text-slate-300 whitespace-nowrap font-semibold">
+                  {currentTicker.from} → {currentTicker.to} <span className="text-emerald-400 ml-1.5 font-bold">-{currentTicker.discount}%</span> <span className="text-slate-500 ml-1.5">từ {currentTicker.price}</span>
                 </motion.span>
               </AnimatePresence>
             </div>
           </div>
 
-          {/* Main headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-white mb-6"
-            style={{
-              fontSize: "clamp(2.8rem, 7.5vw, 5rem)",
-              fontWeight: 900,
-              letterSpacing: "-0.045em",
-              lineHeight: 1.05,
-            }}
-          >
-            Không cần biết{" "}
-            <span
-              style={{
-                background: "linear-gradient(135deg, #38bdf8 0%, #818cf8 60%, #e879f9 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                animation: "shimmer 6s linear infinite",
-              }}
-            >
-              đi đâu.
-            </span>
-            <br />
-            Chỉ cần biết khi nào{" "}
-            <span
-              style={{
-                background: "linear-gradient(135deg, #34d399 0%, #06b6d4 60%, #38bdf8 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                animation: "shimmer 5s 1s linear infinite",
-              }}
-            >
-              rẻ.
-            </span>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-white mb-6 text-[clamp(2.8rem,7.5vw,5rem)] font-black tracking-tight leading-[1.05]">
+            Không cần biết <span style={{ background: "linear-gradient(135deg, #38bdf8 0%, #818cf8 60%, #e879f9 100%)", backgroundSize: "200% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "shimmer 6s linear infinite" }}>đi đâu.</span><br />
+            Chỉ cần biết khi nào <span style={{ background: "linear-gradient(135deg, #34d399 0%, #06b6d4 60%, #38bdf8 100%)", backgroundSize: "200% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "shimmer 5s 1s linear infinite" }}>rẻ.</span>
           </motion.h1>
 
-          {/* Subheadline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-            className="text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed"
-            style={{ fontSize: "1.15rem" }}
-          >
-            FlyCheap AI là radar giá vé máy bay toàn cầu — phát hiện cơ hội bay rẻ bất thường,{" "}
-            <span className="text-slate-300">giải thích vì sao rẻ</span>, và cho bạn biết{" "}
-            <span className="text-slate-300">có nên mua ngay không</span>.
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed text-lg">
+            FlyCheap AI là radar giá vé máy bay toàn cầu — phát hiện cơ hội bay rẻ bất thường, <span className="text-slate-300">giải thích vì sao rẻ</span>, và cho bạn biết <span className="text-slate-300">có nên mua ngay không</span>.
           </motion.p>
 
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.38, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
-          >
-            <Link
-              to="/deals"
-              className="relative flex items-center gap-3 px-9 py-4 text-white rounded-2xl transition-all overflow-hidden group"
-              style={{
-                background: "linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)",
-                fontWeight: 700,
-                fontSize: "1rem",
-                boxShadow: "0 0 30px rgba(14,165,233,0.35), 0 4px 20px rgba(0,0,0,0.4)",
-                animation: "glowPulse 3s ease-in-out infinite",
-              }}
-            >
-              <span
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ background: "linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%)" }}
-              />
-              <Zap className="w-5 h-5 relative z-10" />
-              <span className="relative z-10">Xem Deal Ngay</span>
-              <ArrowRight className="w-4 h-4 relative z-10" />
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.38 }} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
+            <Link to="/deals" className="relative flex items-center gap-3 px-9 py-4 text-white rounded-2xl font-bold text-lg shadow-xl shadow-sky-500/35 hover:scale-105 transition-all" style={{ background: "linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)", animation: "glowPulse 3s ease-in-out infinite" }}>
+              <Zap className="w-5 h-5" />
+              Xem Deal Ngay
+              <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link
-              to="/alerts"
-              className="flex items-center gap-3 px-9 py-4 text-white rounded-2xl transition-all hover:-translate-y-0.5 hover:bg-white/10"
-              style={{
-                fontWeight: 600,
-                fontSize: "1rem",
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                backdropFilter: "blur(12px)",
-              }}
-            >
+            <Link to="/alerts" className="flex items-center gap-3 px-9 py-4 text-white rounded-2xl font-semibold bg-white/5 border border-white/10 backdrop-blur-xl hover:bg-white/10 transition-all">
               <Bell className="w-5 h-5 text-sky-400" />
               Đặt Alert Miễn Phí
             </Link>
           </motion.div>
-
-          {/* Trust badges */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.55 }}
-            className="flex flex-wrap items-center justify-center gap-6"
-          >
-            {[
-              { icon: ShieldCheck, label: "100% Miễn phí" },
-              { icon: Globe, label: `${new Set(mockDeals.map(d => d.country)).size} quốc gia` },
-              { icon: Zap, label: "Cập nhật mỗi giờ" },
-              { icon: Users, label: "12,840 người dùng" },
-              { icon: TrendingDown, label: `${mockDeals.length} deals active` },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-2 text-slate-500 text-sm">
-                <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.04)" }}>
-                  <Icon className="w-3.5 h-3.5 text-slate-600" />
-                </div>
-                <span>{label}</span>
-              </div>
-            ))}
-          </motion.div>
         </div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <div
-            className="w-5 h-8 rounded-full flex justify-center pt-1.5"
-            style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-          >
-            <div className="w-1 h-2 rounded-full animate-bounce" style={{ background: "rgba(255,255,255,0.4)" }} />
-          </div>
-        </motion.div>
       </section>
 
       {/* ═══════════════════════════════════════════
           STATS BAR
       ═══════════════════════════════════════════ */}
-      <section className="py-14 border-y" style={{ background: "rgba(15,23,42,0.6)", borderColor: "rgba(255,255,255,0.05)" }}>
+      <section className="py-14 border-y bg-slate-900/60 border-white/5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
@@ -645,103 +432,27 @@ export function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          TAGLINE / VISION
-      ═══════════════════════════════════════════ */}
-      <section className="py-20 max-w-4xl mx-auto px-4 sm:px-6 text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full mb-6">
-          <Sparkles className="w-3.5 h-3.5 text-violet-400" />
-          <span className="text-violet-400 text-xs" style={{ fontWeight: 600 }}>Đảo chiều logic tìm kiếm</span>
-        </div>
-        <h2 className="text-white mb-6" style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
-          Các nền tảng khác hỏi{" "}
-          <span className="text-slate-500 line-through">"Bạn muốn đi đâu?"</span>
-          <br />
-          FlyCheap AI trả lời{" "}
-          <span style={{ background: "linear-gradient(135deg, #38bdf8, #34d399)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            "Bây giờ nên đi đâu vì đang rẻ"
-          </span>
-        </h2>
-        <p className="text-slate-500 leading-relaxed" style={{ fontSize: "1.05rem" }}>
-          Không cần biết điểm đến trước. Chỉ cần biết bạn có bao nhiêu ngày và budget bao nhiêu — AI sẽ tìm cơ hội tốt nhất cho bạn.
-        </p>
-      </section>
-
-      {/* ═══════════════════════════════════════════
-          HOW IT WORKS
-      ═══════════════════════════════════════════ */}
-      <section className="py-16 bg-slate-900/30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-white mb-3" style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.25rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
-              Hoạt động như thế nào?
-            </h2>
-            <p className="text-slate-500">3 bước đơn giản — AI làm hết, bạn chỉ cần đặt vé</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {steps.map((step, idx) => {
-              const colors = colorMap[step.color];
-              const Icon = step.icon;
-              return (
-                <div key={step.number} className="relative">
-                  {idx < steps.length - 1 && (
-                    <div className="hidden md:block absolute top-10 left-[calc(50%+3rem)] w-[calc(100%-6rem)] h-px bg-gradient-to-r from-white/10 to-transparent" />
-                  )}
-                  <div className={`${colors.bg} ${colors.border} border rounded-2xl p-6`}>
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className={`w-12 h-12 ${colors.iconBg} rounded-xl flex items-center justify-center`}>
-                        <Icon className={`w-6 h-6 ${colors.text}`} />
-                      </div>
-                      <span className="text-slate-700" style={{ fontSize: "2.5rem", fontWeight: 900 }}>{step.number}</span>
-                    </div>
-                    <h3 className="text-white mb-2" style={{ fontWeight: 700 }}>{step.title}</h3>
-                    <p className="text-slate-400 text-sm leading-relaxed">{step.description}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════
           HOT DEALS PREVIEW
       ═══════════════════════════════════════════ */}
-      <section className="py-16">
+      <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center justify-between mb-12">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse" />
-                <span className="text-red-400 text-xs" style={{ fontWeight: 700 }}>ĐANG CÓ DEAL</span>
+                <span className="text-red-400 text-xs font-bold">ĐANG CÓ DEAL</span>
               </div>
-              <h2 className="text-white" style={{ fontSize: "clamp(1.5rem, 3.5vw, 2rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
-                Deal Nóng Hôm Nay
-              </h2>
-              <p className="text-slate-500 text-sm mt-1">
-                AI phát hiện {mockDeals.length} deal bất thường — giảm 44–60% bất kể ngày bay
-              </p>
+              <h2 className="text-white text-3xl font-extrabold tracking-tight">Deal Nóng Hôm Nay</h2>
+              <p className="text-slate-500 mt-1">AI phát hiện {deals.length || 0} deal bất thường — giảm 44–60%</p>
             </div>
-            <Link
-              to="/deals"
-              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition-colors"
-              style={{ fontWeight: 600 }}
-            >
+            <Link to="/deals" className="hidden sm:flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-semibold transition-colors">
               Xem tất cả <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {mockDeals.slice(0, 4).map((deal) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {deals.slice(0, 4).map((deal) => (
               <DealCard key={deal.id} deal={deal} />
             ))}
-          </div>
-          <div className="text-center mt-8 sm:hidden">
-            <Link
-              to="/deals"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors"
-              style={{ fontWeight: 600 }}
-            >
-              Xem tất cả {mockDeals.length} deal <ChevronRight className="w-4 h-4" />
-            </Link>
           </div>
         </div>
       </section>
@@ -749,131 +460,60 @@ export function HomePage() {
       {/* ═══════════════════════════════════════════
           AI INSIGHT DEMO
       ═══════════════════════════════════════════ */}
-      <section className="py-16 bg-slate-900/30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
+      <section className="py-24 bg-slate-900/30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="flex-1">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-sky-500/10 border border-sky-500/20 rounded-full mb-6">
                 <Brain className="w-3.5 h-3.5 text-sky-400" />
-                <span className="text-sky-400 text-xs" style={{ fontWeight: 600 }}>Price Intelligence AI</span>
+                <span className="text-sky-400 text-xs font-bold uppercase tracking-wider">Price Intelligence AI</span>
               </div>
-              <h2 className="text-white mb-4" style={{ fontSize: "clamp(1.5rem, 3.5vw, 2rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
-                Không chỉ cho bạn giá.<br />
-                <span className="text-sky-400">Cho bạn hiểu vì sao.</span>
+              <h2 className="text-white mb-6 text-4xl font-black tracking-tight leading-tight">
+                Không chỉ cho bạn giá.<br /><span className="text-sky-400">Cho bạn hiểu vì sao.</span>
               </h2>
-              <p className="text-slate-400 leading-relaxed mb-6">
+              <p className="text-slate-400 text-lg leading-relaxed mb-8">
                 Mỗi deal đều đi kèm phân tích AI: lý do giá giảm, mức độ rủi ro, và khuyến nghị rõ ràng — mua ngay, chờ, hay bỏ qua.
               </p>
-              <ul className="space-y-3">
-                {[
-                  "Lý do giảm giá (low season, mở route mới, flash sale...)",
-                  "Mức độ rủi ro: Thấp / Trung Bình / Cao",
-                  "Chi phí thực tế sau khi tính ẩn phí",
-                  "Khuyến nghị: Mua Ngay / Chờ / Bỏ Qua",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-400 text-sm">{item}</span>
+              <ul className="space-y-4 mb-10">
+                {["Lý do giảm giá", "Mức độ rủi ro", "Chi phí thực tế sau khi tính ẩn phí", "Khuyến nghị thông minh"].map((item) => (
+                  <li key={item} className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
+                    <span className="text-slate-300 font-medium">{item}</span>
                   </li>
                 ))}
               </ul>
-              <Link
-                to={`/deals/${mockDeals[1].id}`}
-                className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white rounded-xl transition-all hover:shadow-lg hover:shadow-sky-500/25"
-                style={{ fontWeight: 600 }}
-              >
-                <Sparkles className="w-4 h-4" />
-                Xem Phân Tích AI Demo
-                <ArrowRight className="w-4 h-4" />
+              <Link to={`/deals/${mockDeals[0]?.id}`} className="inline-flex items-center gap-3 px-8 py-4 bg-sky-500 hover:bg-sky-400 text-white rounded-2xl font-bold transition-all shadow-xl shadow-sky-500/20">
+                <Sparkles className="w-5 h-5" />
+                Xem Phân Tích Demo
               </Link>
             </div>
-            {/* Mock AI panel */}
             <div className="flex-1 w-full lg:max-w-md">
-              <div className="bg-slate-900 border border-sky-500/20 rounded-2xl overflow-hidden shadow-2xl shadow-sky-500/5">
-                <div className="bg-gradient-to-r from-sky-500/10 to-violet-500/10 border-b border-white/5 p-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-violet-600 rounded-xl flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-white" />
+              <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+                <div className="bg-white/5 border-b border-white/5 p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-sky-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg"><Sparkles className="w-6 h-6 text-white" /></div>
+                    <div className="flex-1">
+                      <div className="text-white font-bold">Phân Tích AI</div>
+                      <div className="text-slate-500 text-xs">HAN → NRT · Vietnam Airlines</div>
                     </div>
-                    <div>
-                      <div className="text-white text-sm" style={{ fontWeight: 700 }}>Phân Tích AI</div>
-                      <div className="text-slate-400 text-xs">HAN → NRT · Vietnam Airlines</div>
-                    </div>
-                    <div className="ml-auto px-3 py-1 bg-emerald-500 rounded-full text-white text-xs" style={{ fontWeight: 700 }}>MUA NGAY</div>
+                    <div className="px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-black rounded-lg">MUA NGAY</div>
                   </div>
                 </div>
-                <div className="p-5 space-y-4">
-                  <div className="bg-slate-800/50 rounded-xl p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <TrendingDown className="w-4 h-4 text-sky-400" />
-                      <span className="text-sky-400 text-xs" style={{ fontWeight: 600 }}>Lý do giá giảm</span>
-                    </div>
-                    <p className="text-slate-300 text-sm leading-relaxed">
-                      Vietnam Airlines xả ghế trống cho chuyến bay tháng 11 — sau mùa lá đỏ tháng 10, lượng khách Nhật giảm 35%. Đây là đợt giảm giá kỷ lục trong 18 tháng.
-                    </p>
+                <div className="p-6 space-y-5">
+                  <div className="bg-slate-800/40 rounded-2xl p-5 border border-white/5">
+                    <div className="flex items-center gap-2 mb-3 text-sky-400 font-bold text-xs uppercase tracking-widest"><TrendingDown className="w-4 h-4" /> Lý do giá giảm</div>
+                    <p className="text-slate-400 text-sm leading-relaxed">Vietnam Airlines xả ghế trống cho tháng 11. Đây là đợt giảm giá kỷ lục trong 18 tháng qua cho route này.</p>
                   </div>
-                  <div className="flex gap-2 flex-wrap">
-                    {["Sau Mùa Lá Đỏ", "Xả Ghế Trống", "Kỷ Lục 18 Tháng"].map((tag) => (
-                      <span key={tag} className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-300 text-xs rounded-full" style={{ fontWeight: 600 }}>{tag}</span>
-                    ))}
+                  <div className="flex gap-2">
+                    {["Xả Ghế Trống", "Kỷ Lục 18 Tháng"].map(t => <span key={t} className="px-3 py-1 bg-sky-400/10 text-sky-400 text-[10px] font-bold rounded-lg border border-sky-400/20">{t}</span>)}
                   </div>
-                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-slate-300 text-sm" style={{ fontWeight: 600 }}>AI Deal Score</span>
-                      <span className="text-emerald-400" style={{ fontWeight: 800, fontSize: "1.1rem" }}>96<span className="text-slate-500 text-sm">/100</span></span>
-                    </div>
-                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full w-[96%] bg-gradient-to-r from-sky-500 to-emerald-400 rounded-full" />
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-                    <Clock className="w-4 h-4 text-red-400" />
-                    <span className="text-red-300 text-sm" style={{ fontWeight: 600 }}>Deal hết hạn trong 3 ngày · Còn 7 ghế</span>
+                  <div className="p-5 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl">
+                    <div className="flex items-center justify-between mb-2"><span className="text-slate-400 text-sm font-semibold">AI Deal Score</span><span className="text-emerald-400 font-black text-xl">96/100</span></div>
+                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden"><div className="h-full w-[96%] bg-gradient-to-r from-sky-400 to-emerald-400" /></div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════
-          FEATURES GRID
-      ═══════════════════════════════════════════ */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-500/10 border border-violet-500/20 rounded-full mb-6">
-              <Zap className="w-3.5 h-3.5 text-violet-400" />
-              <span className="text-violet-400 text-xs" style={{ fontWeight: 600 }}>7 tính năng core</span>
-            </div>
-            <h2 className="text-white mb-3" style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.25rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
-              Hệ sinh thái AI hoàn chỉnh
-            </h2>
-            <p className="text-slate-500 max-w-xl mx-auto">Mỗi tính năng được thiết kế để giải quyết một vấn đề cụ thể trong hành trình săn vé rẻ</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {features.map((feature) => {
-              const colors = colorMap[feature.color];
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={feature.title}
-                  className={`${colors.bg} ${colors.border} border rounded-2xl p-5 hover:scale-[1.02] transition-transform cursor-default`}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`w-10 h-10 ${colors.iconBg} rounded-xl flex items-center justify-center`}>
-                      <Icon className={`w-5 h-5 ${colors.text}`} />
-                    </div>
-                    <span className={`px-2 py-0.5 text-xs rounded-full ${colors.bg} ${colors.text} border ${colors.border}`} style={{ fontWeight: 700 }}>
-                      {feature.tag}
-                    </span>
-                  </div>
-                  <h3 className="text-white mb-2" style={{ fontWeight: 700, fontSize: "0.95rem" }}>{feature.title}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">{feature.description}</p>
-                </div>
-              );
-            })}
           </div>
         </div>
       </section>
@@ -881,62 +521,45 @@ export function HomePage() {
       {/* ═══════════════════════════════════════════
           COMPARISON TABLE
       ═══════════════════════════════════════════ */}
-      <section className="py-16 bg-slate-900/30">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-white mb-3" style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.25rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
-              So sánh với các nền tảng khác
-            </h2>
-            <p className="text-slate-500">FlyCheap AI khác gì Skyscanner và Google Flights?</p>
+      <section className="py-24">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-white text-3xl font-black mb-4 tracking-tight">So sánh sức mạnh</h2>
+            <p className="text-slate-500">Vì sao người săn deal chuyên nghiệp chọn FlyCheap AI?</p>
           </div>
-          <div className="bg-slate-900 border border-white/8 rounded-2xl overflow-hidden">
-            <div className="grid grid-cols-4 gap-0 border-b border-white/8">
-              <div className="p-4 col-span-1" />
-              <div className="p-4 text-center border-l border-white/8">
-                <div className="w-8 h-8 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-2">
-                  <Plane className="w-4 h-4 text-white" strokeWidth={2.5} />
-                </div>
-                <div className="text-white text-sm" style={{ fontWeight: 700 }}>FlyCheap AI</div>
-              </div>
-              <div className="p-4 text-center border-l border-white/8">
-                <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-                  <Globe className="w-4 h-4 text-orange-400" />
-                </div>
-                <div className="text-slate-400 text-sm" style={{ fontWeight: 600 }}>Skyscanner</div>
-              </div>
-              <div className="p-4 text-center border-l border-white/8">
-                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-                  <Globe className="w-4 h-4 text-blue-400" />
-                </div>
-                <div className="text-slate-400 text-sm" style={{ fontWeight: 600 }}>Google Flights</div>
-              </div>
+          <div className="bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="grid grid-cols-4 border-b border-white/10 bg-white/5">
+              <div className="p-6" /><div className="p-6 text-center text-white font-bold text-sm">FlyCheap</div><div className="p-6 text-center text-slate-500 font-bold text-sm">Skyscanner</div><div className="p-6 text-center text-slate-500 font-bold text-sm">Google</div>
             </div>
             {comparisonData.map((row, idx) => (
-              <div key={row.feature} className={`grid grid-cols-4 gap-0 border-b border-white/5 last:border-0 ${idx % 2 === 0 ? "" : "bg-slate-800/20"}`}>
-                <div className="p-4 text-slate-400 text-sm flex items-center">{row.feature}</div>
-                <div className="p-4 flex items-center justify-center border-l border-white/8">
-                  {row.flycheap === true ? <CheckCircle className="w-5 h-5 text-emerald-400" /> : <X className="w-5 h-5 text-red-500/60" />}
-                </div>
-                <div className="p-4 flex items-center justify-center border-l border-white/8">
-                  {row.skyscanner === true ? <CheckCircle className="w-5 h-5 text-emerald-400" /> :
-                    row.skyscanner === "partial" ? <div className="w-5 h-5 rounded-full border-2 border-amber-400/60 flex items-center justify-center"><div className="w-2 h-2 bg-amber-400/60 rounded-full" /></div> :
-                      <X className="w-5 h-5 text-red-500/60" />}
-                </div>
-                <div className="p-4 flex items-center justify-center border-l border-white/8">
-                  {row.google === true ? <CheckCircle className="w-5 h-5 text-emerald-400" /> :
-                    row.google === "partial" ? <div className="w-5 h-5 rounded-full border-2 border-amber-400/60 flex items-center justify-center"><div className="w-2 h-2 bg-amber-400/60 rounded-full" /></div> :
-                      <X className="w-5 h-5 text-red-500/60" />}
-                </div>
+              <div key={row.feature} className={`grid grid-cols-4 border-b border-white/5 last:border-0 ${idx % 2 === 0 ? "bg-white/[0.02]" : ""}`}>
+                <div className="p-5 text-slate-400 text-sm font-medium">{row.feature}</div>
+                <div className="p-5 flex justify-center border-l border-white/5">{row.flycheap === true ? <CheckCircle className="w-5 h-5 text-emerald-400" /> : <X className="w-5 h-5 text-red-500/40" />}</div>
+                <div className="p-5 flex justify-center border-l border-white/5">{row.skyscanner === true ? <CheckCircle className="w-5 h-5 text-emerald-400" /> : row.skyscanner === "partial" ? <div className="w-5 h-5 rounded-full border-2 border-amber-500/50 flex items-center justify-center"><div className="w-2 h-2 bg-amber-500/50 rounded-full" /></div> : <X className="w-5 h-5 text-red-500/40" />}</div>
+                <div className="p-5 flex justify-center border-l border-white/5">{row.google === true ? <CheckCircle className="w-5 h-5 text-emerald-400" /> : row.google === "partial" ? <div className="w-5 h-5 rounded-full border-2 border-amber-500/50 flex items-center justify-center"><div className="w-2 h-2 bg-amber-500/50 rounded-full" /></div> : <X className="w-5 h-5 text-red-500/40" />}</div>
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-6 mt-4 justify-center text-xs text-slate-600">
-            <div className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Hỗ trợ đầy đủ</div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3.5 h-3.5 rounded-full border border-amber-400/60 flex items-center justify-center"><div className="w-1.5 h-1.5 bg-amber-400/60 rounded-full" /></div>
-              Hỗ trợ cơ bản
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          ELITE CLUB
+      ═══════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.08),transparent_70%)]" />
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 relative">
+          <div className="bg-gradient-to-br from-slate-900 to-black border border-white/10 rounded-[3rem] p-12 md:p-20 text-center shadow-2xl relative overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-80 h-80 bg-violet-600/20 blur-[120px]" />
+            <div className="relative">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-tr from-violet-600 to-indigo-500 rounded-[2rem] shadow-xl mb-10"><Crown className="w-10 h-10 text-white" /></div>
+              <h2 className="text-white text-5xl font-black mb-6 tracking-tighter">FlyCheap <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400">Elite</span></h2>
+              <p className="text-slate-400 text-xl max-w-2xl mx-auto mb-14 leading-relaxed">Gia nhập cộng đồng 1% những người săn được lỗi giá vé (Error Fares) nhanh nhất thế giới.</p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <button className="px-12 py-5 bg-white text-black rounded-2xl font-black text-lg hover:bg-violet-400 transition-all hover:scale-105 shadow-xl shadow-white/5">Gia Nhập Elite Club</button>
+                <div className="text-slate-500 font-medium italic">Chỉ còn 12 slot sớm trong hôm nay</div>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5"><X className="w-3.5 h-3.5 text-red-500/60" /> Không hỗ trợ</div>
           </div>
         </div>
       </section>
@@ -944,38 +567,35 @@ export function HomePage() {
       {/* ═══════════════════════════════════════════
           ALERT CTA
       ═══════════════════════════════════════════ */}
-      <section className="py-20">
+      <section className="py-24 border-t border-white/5">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <div className="relative bg-gradient-to-br from-sky-500/10 to-violet-500/10 border border-sky-500/20 rounded-3xl p-10 overflow-hidden">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative">
-              <div className="w-14 h-14 bg-gradient-to-br from-sky-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-sky-500/30">
-                <Bell className="w-7 h-7 text-white" />
-              </div>
-              <h2 className="text-white mb-4" style={{ fontSize: "clamp(1.5rem, 3.5vw, 2rem)", fontWeight: 800, letterSpacing: "-0.02em" }}>
-                Không bỏ lỡ deal nào nữa
-              </h2>
-              <p className="text-slate-400 mb-8 max-w-lg mx-auto">
-                Đặt alert một lần — AI tự động theo dõi và báo cho bạn ngay khi có deal phù hợp. Qua Telegram hoặc Email. Hoàn toàn miễn phí.
-              </p>
-              <Link
-                to="/alerts"
-                className="inline-flex items-center gap-3 px-8 py-4 text-white rounded-2xl transition-all hover:shadow-lg hover:shadow-sky-500/30 hover:-translate-y-0.5"
-                style={{
-                  background: "linear-gradient(135deg, #0ea5e9 0%, #7c3aed 100%)",
-                  fontWeight: 700,
-                  fontSize: "1rem",
-                }}
-              >
-                <Zap className="w-5 h-5" />
-                Đặt Alert Miễn Phí Ngay
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <p className="text-slate-600 text-sm mt-4">Không cần tạo tài khoản · Hủy bất kỳ lúc nào</p>
-            </div>
-          </div>
+          <div className="w-16 h-16 bg-gradient-to-br from-sky-500 to-violet-600 rounded-3xl flex items-center justify-center mx-auto mb-10 shadow-lg shadow-sky-500/20"><Bell className="w-8 h-8 text-white" /></div>
+          <h2 className="text-white text-4xl font-black mb-6 tracking-tight">Không bỏ lỡ deal nào nữa</h2>
+          <p className="text-slate-400 text-lg mb-12 max-w-lg mx-auto">Đặt alert một lần — AI tự động theo dõi và báo cho bạn ngay khi có deal phù hợp qua Telegram/Email.</p>
+          <Link to="/alerts" className="inline-flex items-center gap-3 px-10 py-5 bg-sky-500 hover:bg-sky-400 text-white rounded-2xl font-black text-xl transition-all shadow-2xl shadow-sky-500/30">
+            Đặt Alert Miễn Phí <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
       </section>
+
+      {/* ═══════════════════════════════════════════
+          NEWSLETTER / FOOTER
+      ═══════════════════════════════════════════ */}
+      <footer className="py-20 bg-black/40 border-t border-white/5">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <h3 className="text-white text-2xl font-bold mb-8">Keep your budget high and flights low</h3>
+          <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-12">
+            <input type="email" placeholder="Email của bạn..." className="flex-1 px-6 py-4 bg-slate-900 border border-white/10 rounded-2xl text-white outline-none focus:border-sky-500/50 shadow-inner" />
+            <button className="px-8 py-4 bg-white text-black rounded-2xl font-black hover:bg-sky-400 transition-colors">Đăng ký</button>
+          </div>
+          <div className="flex items-center justify-center gap-8 text-slate-600 text-xs font-bold uppercase tracking-widest">
+            <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link to="/about" className="hover:text-white transition-colors">About</Link>
+            <span>© 2026 FlyCheap AI</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

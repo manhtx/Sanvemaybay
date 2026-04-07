@@ -3,6 +3,7 @@ import { Root } from "./pages/Root";
 import { HomePage } from "./pages/HomePage";
 import { DealsPage } from "./pages/DealsPage";
 import { DealDetailPage } from "./pages/DealDetailPage";
+import { ExplorePage } from "./pages/ExplorePage";
 import { SearchPage } from "./pages/SearchPage";
 import { AlertsPage } from "./pages/AlertsPage";
 
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
       { index: true, Component: HomePage },
       { path: "deals", Component: DealsPage },
       { path: "deals/:id", Component: DealDetailPage },
+      { path: "explore", Component: ExplorePage },
       { path: "search", Component: SearchPage },
       { path: "alerts", Component: AlertsPage },
     ],

@@ -119,14 +119,14 @@ export function DealCard({ deal, compact = false }: DealCardProps) {
             <span className="text-sky-300 text-xs" style={{ fontWeight: 700 }}>{formatDepartDate(deal.departDate)}</span>
           </div>
 
-          {/* AI reason snippet */}
+          {/* AI reasoning snippet */}
           <div className="bg-sky-500/5 border border-sky-500/10 rounded-lg p-3 mb-3">
             <div className="flex items-start gap-2">
               <div className="w-4 h-4 bg-sky-500 rounded-full flex items-center justify-center mt-0.5 shrink-0">
                 <span className="text-white" style={{ fontSize: "9px", fontWeight: 800 }}>AI</span>
               </div>
-              <p className="text-slate-400 text-xs leading-relaxed line-clamp-2">
-                {deal.aiInsight.reason}
+              <p className="text-slate-400 text-xs leading-relaxed line-clamp-3">
+                {(deal as any).ai_reasoning || deal.aiInsight.reason}
               </p>
             </div>
           </div>
@@ -144,18 +144,33 @@ export function DealCard({ deal, compact = false }: DealCardProps) {
           </div>
         </div>
 
-        {/* Saving score bar */}
-        <div className="px-4 pb-4">
+        {/* Intelligence Stats Bar */}
+        <div className="px-4 pb-4 space-y-2">
+          {/* Saving Score */}
           <div className="flex items-center gap-2">
-            <span className="text-slate-600 text-xs whitespace-nowrap">AI Score</span>
+            <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Saving Score</span>
             <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full"
-                style={{ width: `${deal.aiInsight.savingScore}%` }}
+                style={{ width: `${(deal as any).deal_score || deal.aiInsight.savingScore}%` }}
               />
             </div>
-            <span className="text-emerald-400 text-xs" style={{ fontWeight: 700 }}>
-              {deal.aiInsight.savingScore}/100
+            <span className="text-emerald-400 text-xs font-bold">
+              {(deal as any).deal_score || deal.aiInsight.savingScore}/100
+            </span>
+          </div>
+          
+          {/* Confidence Score */}
+          <div className="flex items-center gap-2">
+            <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Confidence</span>
+            <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-sky-400 rounded-full opacity-60"
+                style={{ width: `${((deal as any).confidence || 0.85) * 100}%` }}
+              />
+            </div>
+            <span className="text-sky-300 text-[10px] font-bold">
+              {Math.round(((deal as any).confidence || 0.85) * 100)}%
             </span>
           </div>
         </div>
