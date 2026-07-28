@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireInternalSecret } from "../_shared/internal-auth.ts";
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -77,7 +78,10 @@ async function sendTelegram(alert: any, deal: any): Promise<string> {
   return String(payload.result.message_id);
 }
 
-Deno.serve(async () => {
+Deno.serve(async (request) => {
+  const unauthorized = requireInternalSecret(request);
+  if (unauthorized) return unauthorized;
+
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",

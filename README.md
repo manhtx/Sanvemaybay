@@ -69,7 +69,8 @@ npx supabase secrets set \
   ALERT_FROM_EMAIL='FlyCheap Alerts <alerts@example.com>' \
   TELEGRAM_BOT_TOKEN=... \
   PUBLIC_SITE_URL='https://your-domain.example' \
-  UNSUBSCRIBE_SECRET='a-long-random-secret'
+  UNSUBSCRIBE_SECRET='a-long-random-secret' \
+  INTERNAL_FUNCTION_SECRET='a-separate-long-random-secret'
 ```
 
 `SUPABASE_URL` và `SUPABASE_SERVICE_ROLE_KEY` được Supabase cung cấp cho Edge
@@ -88,7 +89,12 @@ Supabase Dashboard:
 3. `alert-processor` sau analyzer.
 
 Trong giai đoạn đầu, nên chạy lệch nhau 10 phút để mỗi bước hoàn thành trước
-khi bước kế tiếp bắt đầu.
+khi bước kế tiếp bắt đầu. Ba request nội bộ phải gửi header
+`x-internal-secret` trùng với `INTERNAL_FUNCTION_SECRET`. Không dùng secret này
+trong frontend hoặc biến môi trường có tiền tố `VITE_`.
+
+Chỉ bật Cron sau khi đã cấu hình `SERPAPI_KEY`; nếu chưa có key thật, scanner
+sẽ chủ động trả lỗi thay vì tạo dữ liệu giả.
 
 ## Quy tắc dữ liệu
 

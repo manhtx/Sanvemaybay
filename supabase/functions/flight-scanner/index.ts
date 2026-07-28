@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireInternalSecret } from "../_shared/internal-auth.ts";
 
 const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
@@ -17,7 +18,10 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
-Deno.serve(async () => {
+Deno.serve(async (request) => {
+  const unauthorized = requireInternalSecret(request);
+  if (unauthorized) return unauthorized;
+
   if (!SERPAPI_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
     return json({ error: "Scanner secrets are not configured." }, 500);
   }

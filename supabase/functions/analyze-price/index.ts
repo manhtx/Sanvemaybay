@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireInternalSecret } from "../_shared/internal-auth.ts";
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -15,7 +16,10 @@ function median(values: number[]): number {
     : sorted[middle];
 }
 
-Deno.serve(async () => {
+Deno.serve(async (request) => {
+  const unauthorized = requireInternalSecret(request);
+  if (unauthorized) return unauthorized;
+
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
