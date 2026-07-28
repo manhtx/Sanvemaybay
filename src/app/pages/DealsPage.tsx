@@ -2,29 +2,27 @@ import { useState, useMemo } from "react";
 import {
   TrendingDown,
   Globe,
-  MapPin,
   SlidersHorizontal,
   Zap,
   Clock,
   ArrowUpDown,
-  Plus,
   X,
-  Search,
   Bell,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
 import { DealCard } from "../components/DealCard";
-import { mockDeals, regionFlag, Deal } from "../data/mockDeals";
+import { Deal } from "../data/deals";
 import { Link } from "react-router";
 import { getDeals } from "../data/api";
 import { useEffect } from "react";
+import { isSupabaseConfigured } from "../lib/supabase";
 
 type RegionType = "all" | Deal["region"];
 type SortType = "discount" | "price_asc" | "price_desc" | "score" | "date_near" | "date_far";
 
 const sortOptions: { value: SortType; label: string }[] = [
-  { value: "score", label: "AI Score cao nhất" },
+  { value: "score", label: "Điểm dữ liệu cao nhất" },
   { value: "discount", label: "Giảm giá nhiều nhất" },
   { value: "price_asc", label: "Giá thấp đến cao" },
   { value: "price_desc", label: "Giá cao đến thấp" },
@@ -43,18 +41,6 @@ const allRegions: { value: RegionType; label: string; flag: string }[] = [
   { value: "domestic", label: "Nội Địa VN", flag: "🇻🇳" },
 ];
 
-// All unique destinations from deals + ability to add new ones
-const baseDestinations = [...new Set(mockDeals.map((d) => d.to))];
-
-const suggestedNewDests = [
-  "Barcelona", "Rome", "Prague", "Vienna", "Lisbon", "Athens",
-  "Toronto", "Vancouver", "São Paulo", "Buenos Aires",
-  "Taipei", "Osaka", "Ho Chi Minh City", "Kuala Lumpur",
-  "Cairo", "Nairobi", "Johannesburg",
-  "Auckland", "Melbourne", "Brisbane",
-  "Doha", "Riyadh", "Abu Dhabi", "Muscat",
-];
-
 export function DealsPage() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [region, setRegion] = useState<RegionType>("all");
@@ -65,11 +51,12 @@ export function DealsPage() {
   }, []);
   const [flashOnly, setFlashOnly] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
-  const [watchedDests, setWatchedDests] = useState<string[]>([]);
-  const [showAddDest, setShowAddDest] = useState(false);
-  const [destSearch, setDestSearch] = useState("");
   const [selectedWatchDest, setSelectedWatchDest] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const baseDestinations = useMemo(
+    () => [...new Set(deals.map((deal) => deal.to))],
+    [deals],
+  );
 
   // Derive available months from actual deal dates — sorted chronologically
   const availableMonths = useMemo(() => {
@@ -85,28 +72,6 @@ export function DealsPage() {
       return ya !== yb ? ya - yb : ma - mb;
     });
   }, [deals]);
-
-  const filteredSuggestions = suggestedNewDests
-    .filter(
-      (d) =>
-        d.toLowerCase().includes(destSearch.toLowerCase()) &&
-        !watchedDests.includes(d) &&
-        !baseDestinations.includes(d)
-    )
-    .slice(0, 8);
-
-  const addWatchDest = (dest: string) => {
-    if (!watchedDests.includes(dest)) {
-      setWatchedDests([...watchedDests, dest]);
-    }
-    setShowAddDest(false);
-    setDestSearch("");
-  };
-
-  const removeWatchDest = (dest: string) => {
-    setWatchedDests(watchedDests.filter((d: string) => d !== dest));
-    if (selectedWatchDest === dest) setSelectedWatchDest(null);
-  };
 
   const filtered = deals
     .filter((d: Deal) => {
@@ -153,9 +118,9 @@ export function DealsPage() {
         {/* Page header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse" />
-            <span className="text-red-400 text-xs" style={{ fontWeight: 700 }}>
-              LIVE — CẬP NHẬT MỖI GIỜ
+            <div className="w-1.5 h-1.5 bg-sky-400 rounded-full" />
+            <span className="text-sky-400 text-xs" style={{ fontWeight: 700 }}>
+              DỮ LIỆU QUAN SÁT
             </span>
           </div>
           <div className="flex items-start justify-between flex-wrap gap-4">
@@ -164,10 +129,10 @@ export function DealsPage() {
                 className="text-white mb-2"
                 style={{ fontSize: "clamp(1.75rem, 4vw, 2.25rem)", fontWeight: 800, letterSpacing: "-0.03em" }}
               >
-                Deal Vé Máy Bay Giá Rẻ Toàn Cầu
+            Deal Vé Máy Bay Được Xác Minh
               </h1>
               <p className="text-slate-500">
-                AI phát hiện{" "}
+                Hệ thống phát hiện{" "}
                 <span className="text-sky-400" style={{ fontWeight: 700 }}>
                   {deals.length} deal
                 </span>{" "}
@@ -175,7 +140,7 @@ export function DealsPage() {
                 <span className="text-sky-400" style={{ fontWeight: 700 }}>
                   {new Set(deals.map((d: Deal) => d.country)).size} quốc gia
                 </span>{" "}
-                — giảm 44–60% bất kể ngày bay xa hay gần
+                — chỉ hiển thị các mức giá đạt ngưỡng so với dữ liệu lịch sử
               </p>
             </div>
             <button
@@ -190,15 +155,24 @@ export function DealsPage() {
           </div>
         </div>
 
-        {/* ── WATCHED DESTINATIONS ── */}
+        {!isSupabaseConfigured && (
+          <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-200 text-sm">
+            Chưa kết nối Supabase nên ứng dụng không thể tải deal thật. Hãy cấu hình
+            <code className="mx-1 text-amber-100">VITE_SUPABASE_URL</code>
+            và
+            <code className="mx-1 text-amber-100">VITE_SUPABASE_ANON_KEY</code>
+            trong file <code className="text-amber-100">.env</code>.
+          </div>
+        )}
+
+        {/* ── DESTINATION FILTER ── */}
         <div className="mb-6">
           <div className="flex items-center gap-3 flex-wrap">
             <span className="text-slate-500 text-sm shrink-0" style={{ fontWeight: 600 }}>
-              Theo dõi điểm đến:
+              Lọc điểm đến đang có dữ liệu:
             </span>
 
-            {/* Base active destinations */}
-            {(Array.from(new Set(deals.map((d: Deal) => d.to))) as string[]).slice(0, 6).map((dest: string) => (
+            {baseDestinations.map((dest: string) => (
               <button
                 key={dest}
                 onClick={() => setSelectedWatchDest(selectedWatchDest === dest ? null : dest)}
@@ -213,104 +187,7 @@ export function DealsPage() {
               </button>
             ))}
 
-            {/* Custom watched destinations */}
-            {watchedDests.map((dest: string) => (
-              <div
-                key={dest}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border bg-violet-500/15 border-violet-500/30 text-violet-300"
-              >
-                <button
-                  onClick={() => setSelectedWatchDest(selectedWatchDest === dest ? null : dest)}
-                  style={{ fontWeight: 600 }}
-                >
-                  {dest} <span className="text-violet-500 text-xs">(theo dõi)</span>
-                </button>
-                <button
-                  onClick={() => removeWatchDest(dest)}
-                  className="ml-1 text-violet-500 hover:text-violet-300 transition-colors"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-
-            {/* Add destination button */}
-            <button
-              onClick={() => setShowAddDest(!showAddDest)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border border-dashed border-sky-500/40 text-sky-400 hover:bg-sky-500/10 transition-all"
-              style={{ fontWeight: 600 }}
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Thêm điểm đến
-            </button>
           </div>
-
-          {/* Add destination panel */}
-          {showAddDest && (
-            <div className="mt-4 p-4 bg-slate-900 border border-sky-500/20 rounded-2xl">
-              <div className="flex items-center gap-2 mb-4">
-                <Globe className="w-4 h-4 text-sky-400" />
-                <span className="text-white text-sm" style={{ fontWeight: 700 }}>
-                  Thêm điểm đến muốn theo dõi
-                </span>
-                <button
-                  onClick={() => setShowAddDest(false)}
-                  className="ml-auto text-slate-500 hover:text-white"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Search input */}
-              <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                <input
-                  type="text"
-                  value={destSearch}
-                  onChange={(e) => setDestSearch(e.target.value)}
-                  placeholder="Tìm điểm đến (vd: Barcelona, Toronto...)"
-                  className="w-full bg-slate-800 border border-white/10 text-white rounded-xl pl-10 pr-4 py-2.5 text-sm placeholder-slate-600 focus:outline-none focus:border-sky-500/40"
-                  autoFocus
-                />
-              </div>
-
-              {/* Custom add */}
-              {destSearch && !suggestedNewDests.some((d) => d.toLowerCase() === destSearch.toLowerCase()) && (
-                <button
-                  onClick={() => addWatchDest(destSearch)}
-                  className="flex items-center gap-2 w-full px-4 py-2.5 bg-sky-500/15 border border-sky-500/30 text-sky-300 rounded-xl text-sm mb-3 hover:bg-sky-500/25 transition-colors text-left"
-                  style={{ fontWeight: 600 }}
-                >
-                  <Plus className="w-4 h-4" />
-                  Thêm "{destSearch}" vào danh sách theo dõi
-                </button>
-              )}
-
-              {/* Suggestions */}
-              <div>
-                <div className="text-slate-600 text-xs mb-2" style={{ fontWeight: 600 }}>
-                  GỢI Ý ĐIỂM ĐẾN TOÀN CẦU
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {(destSearch ? filteredSuggestions : suggestedNewDests.slice(0, 16)).map((dest) => (
-                    <button
-                      key={dest}
-                      onClick={() => addWatchDest(dest)}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 text-slate-400 hover:text-white rounded-full text-xs transition-all"
-                      style={{ fontWeight: 600 }}
-                    >
-                      <Plus className="w-3 h-3" />
-                      {dest}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <p className="text-slate-600 text-xs mt-4">
-                💡 Khi có deal đến điểm đến bạn theo dõi, FlyCheap AI sẽ hiển thị ưu tiên. Đặt Alert để nhận thông báo tự động.
-              </p>
-            </div>
-          )}
         </div>
 
         {/* ── FILTER & SORT BAR ── */}
@@ -467,7 +344,7 @@ export function DealsPage() {
             </p>
             {selectedWatchDest && (
               <Link
-                to="/alerts"
+                to={`/alerts?destination=${encodeURIComponent(selectedWatchDest)}`}
                 className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl text-sm transition-colors"
                 style={{ fontWeight: 600 }}
               >
@@ -490,7 +367,7 @@ export function DealsPage() {
                 Không giới hạn thời điểm bay
               </p>
               <p className="text-slate-500 text-sm">
-                FlyCheap AI hiển thị mọi deal rẻ bất thường — dù chuyến bay cách đây 6 tháng hay 1.5 năm. Đặt vé sớm khi giá tốt luôn là chiến lược thông minh.
+                Chỉ các chuyến bay tương lai còn trong thời hạn xác minh mới được hiển thị. Giá có thể thay đổi khi bạn chuyển sang trang đặt vé.
               </p>
             </div>
           </div>
@@ -505,7 +382,7 @@ export function DealsPage() {
                 Muốn nhận thông báo khi có deal mới đến điểm đến bạn muốn?
               </div>
               <p className="text-slate-500 text-sm">
-                Đặt alert để AI tự động thông báo qua Telegram hoặc Email — cho bất kỳ điểm đến nào trên thế giới.
+                Đặt alert để hệ thống thông báo qua Telegram hoặc Email cho các tuyến đang được theo dõi.
               </p>
             </div>
             <Link

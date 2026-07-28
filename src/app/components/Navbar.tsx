@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
 import { Plane, Bell, Search, Menu, X, Zap, TrendingDown } from "lucide-react";
-import { mockDeals } from "../data/mockDeals";
 
 export function Navbar() {
   const location = useLocation();
@@ -52,7 +51,7 @@ export function Navbar() {
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
               <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
               <span className="text-emerald-400 text-xs" style={{ fontWeight: 600 }}>
-                {mockDeals.length} deal đang có
+                Phase 1 — Beta
               </span>
             </div>
             <Link

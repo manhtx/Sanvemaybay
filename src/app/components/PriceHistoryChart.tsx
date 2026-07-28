@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { PricePoint } from "../data/mockDeals";
+import { PricePoint } from "../data/deals";
 
 interface PriceHistoryChartProps {
   data: PricePoint[];

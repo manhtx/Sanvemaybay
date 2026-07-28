@@ -1,5 +1,5 @@
 import { Sparkles, ShieldCheck, ShieldAlert, TrendingDown, Clock, CheckCircle2 } from "lucide-react";
-import { Deal, getRiskColor, getRiskBg, getRecommendationColor, getRecommendationLabel } from "../data/mockDeals";
+import { Deal, getRiskColor, getRiskBg, getRecommendationColor, getRecommendationLabel } from "../data/deals";
 
 interface AIInsightPanelProps {
   deal: Deal;

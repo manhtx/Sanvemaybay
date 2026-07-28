@@ -1,4 +1,3 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 Deno.serve(async (req: Request) => {
@@ -19,29 +18,15 @@ Deno.serve(async (req: Request) => {
 
     if (error) throw error;
 
-    // 2. Prepare Context for AI
-    const context = {
-      route: `${deal.from} to ${deal.to}`,
-      priceValue: deal.price,
-      stats: deal.market_stats,
-      month: new Date(deal.depart_date).getMonth() + 1,
-    };
+    const route = `${deal.from} → ${deal.to}`;
+    const samples = Number(deal.market_stats?.samples_30d ?? 0);
+    const confidence = Math.round(Number(deal.confidence ?? 0) * 100);
+    const aiReasoning =
+      `Giá chặng ${route} thấp hơn ${deal.discount}% so với mức tham chiếu từ ` +
+      `${samples} lần quét trong 30 ngày. Độ tin cậy hiện tại là ${confidence}%. ` +
+      "Hệ thống chưa có dữ liệu để kết luận nguyên nhân thuộc về khuyến mãi hay mùa vụ.";
 
-    // 3. Prompt Construction (for Module 2.3)
-    const prompt = `
-      Analyze this flight deal:
-      Route: ${context.route}
-      Current Price: ${context.priceValue}
-      7D Average: ${context.stats?.avg_7d}
-      
-      Why is this price lower? (Consider low travel demand, promotional campaigns, or seasonality).
-      Vietnamese explanation, professional and enthusiastic tone.
-    `;
-
-    // 4. Call AI (Placeholder logic - in prod we use OpenAI/Gemini SDK)
-    const aiReasoning = `Giá vé chặng ${context.route} đang giảm mạnh ${deal.discount}% so với trung bình 7 ngày qua. Đây là cơ hội vàng do hãng hàng không ${deal.airline} đang có chiến dịch khuyến mãi cho mùa thấp điểm tháng ${context.month}.`;
-
-    // 5. Update DB
+    // This function only explains measured facts. It does not invent a cause.
     await supabase
       .from("deals")
       .update({ ai_reasoning: aiReasoning })
@@ -51,6 +36,9 @@ Deno.serve(async (req: Request) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    return new Response(
+      JSON.stringify({ error: err instanceof Error ? err.message : "Unknown AI explainer error" }),
+      { status: 500 },
+    );
   }
 });

@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS public.flights (
 
 -- Add analysis columns to deals table (Module 2 & 5)
 ALTER TABLE public.deals 
-  ADD COLUMN IF NOT EXISTS confidence FLOAT DEFAULT 0.85,
-  ADD COLUMN IF NOT EXISTS deal_score INT DEFAULT 80,
+  ADD COLUMN IF NOT EXISTS confidence FLOAT,
+  ADD COLUMN IF NOT EXISTS deal_score INT,
   ADD COLUMN IF NOT EXISTS ai_reasoning TEXT,
   ADD COLUMN IF NOT EXISTS market_stats JSONB DEFAULT '{}'::jsonb;
 
@@ -34,4 +34,3 @@ GROUP BY origin_code, destination_code;
 
 -- RLS for new table
 ALTER TABLE public.flights ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public read access to flights" ON public.flights FOR SELECT USING (true);

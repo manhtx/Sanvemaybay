@@ -2,7 +2,7 @@ BEGIN;
 
 -- Create user_preferences table
 CREATE TABLE IF NOT EXISTS public.user_preferences (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     budget_max NUMERIC DEFAULT 10000000, -- Default max budget 10m VND
     preferred_regions TEXT[] DEFAULT ARRAY['Domestic', 'International'],

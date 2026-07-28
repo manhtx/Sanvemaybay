@@ -1,37 +1,19 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Search,
-  Brain,
-  Sparkles,
-  ArrowRight,
   TrendingUp,
   MapPin,
-  CheckCircle,
   Zap,
-  Filter,
   SlidersHorizontal,
   ChevronRight,
-  Palmtree,
-  UtensilsCrossed,
-  Music,
-  Mountain,
-  ShoppingBag,
   Info,
   RefreshCw,
 } from "lucide-react";
 import { Link } from "react-router";
-import { formatVND, Deal } from "../data/mockDeals";
-import { getDeals, searchDeals } from "../data/api";
+import { formatVND, Deal } from "../data/deals";
+import { searchDeals } from "../data/api";
 import { motion, AnimatePresence } from "motion/react";
 import { DealCard } from "../components/DealCard";
-
-const vibes = [
-  { label: "Bãi biển", icon: Palmtree, color: "bg-cyan-500" },
-  { label: "Ẩm thực", icon: UtensilsCrossed, color: "bg-orange-500" },
-  { label: "Mua sắm", icon: ShoppingBag, color: "bg-pink-500" },
-  { label: "Khám phá", icon: Mountain, color: "bg-emerald-500" },
-  { label: "Lễ hội", icon: Music, color: "bg-purple-500" },
-];
 
 const departureCities = [
   { code: "HAN", name: "Hà Nội" },
@@ -41,11 +23,9 @@ const departureCities = [
 
 export function SearchPage() {
   const [budget, setBudget] = useState(15000000);
-  const [selectedVibes, setSelectedVibes] = useState<string[]>([]);
   const [fromCity, setFromCity] = useState("HAN");
   const [results, setResults] = useState<Deal[]>([]);
   const [isScanning, setIsScanning] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Stats for the radar
   const stats = useMemo(() => {
@@ -56,34 +36,21 @@ export function SearchPage() {
     };
   }, [results]);
 
-  const runSearch = async (isManual = false) => {
+  const runSearch = useCallback(async (isManual = false) => {
     if (isManual) setIsScanning(true);
     
     const found = await searchDeals({
       budget,
-      vibes: selectedVibes,
       from: fromCity
     });
     
-    // Simulate thinking/scanning delay
-    if (isManual) {
-      await new Promise(r => setTimeout(r, 1500));
-    }
-    
     setResults(found);
     setIsScanning(false);
-    setIsInitialLoad(false);
-  };
+  }, [budget, fromCity]);
 
   useEffect(() => {
     runSearch();
-  }, [budget, fromCity, selectedVibes]);
-
-  const toggleVibe = (vibe: string) => {
-    setSelectedVibes(prev => 
-      prev.includes(vibe) ? prev.filter(v => v !== vibe) : [...prev, vibe]
-    );
-  };
+  }, [runSearch]);
 
   return (
     <div className="pt-24 pb-20 min-h-screen bg-slate-950 overflow-hidden relative">
@@ -100,14 +67,14 @@ export function SearchPage() {
               animate={{ opacity: 1, x: 0 }}
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 border border-sky-500/20 rounded-full mb-6">
-                <Brain className="w-3.5 h-3.5 text-sky-400" />
-                <span className="text-sky-400 text-[10px] font-bold uppercase tracking-wider">AI Search Radar v2.0</span>
+                <Search className="w-3.5 h-3.5 text-sky-400" />
+                <span className="text-sky-400 text-[10px] font-bold uppercase tracking-wider">Tìm trong dữ liệu quan sát</span>
               </div>
               <h1 className="text-white text-4xl font-extrabold tracking-tight mb-4 leading-tight">
                 Quét Deal <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500">Thông Minh</span>
               </h1>
               <p className="text-slate-400 text-lg max-w-md">
-                Đừng tìm vé theo ngày. Hãy quét theo <span className="text-white font-medium">ngân sách</span> và <span className="text-white font-medium">phong cách</span> nghỉ dưỡng của bạn.
+                Lọc các mức giá đã được hệ thống ghi nhận theo <span className="text-white font-medium">điểm khởi hành</span> và <span className="text-white font-medium">ngân sách</span>.
               </p>
             </motion.div>
 
@@ -159,34 +126,6 @@ export function SearchPage() {
               </div>
             </div>
 
-            {/* Vibes */}
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
-              <label className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest mb-4">
-                <Sparkles className="w-4 h-4 text-yellow-500" />
-                Phong cách chuyến đi
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {vibes.map(vibe => {
-                  const Icon = vibe.icon;
-                  const isActive = selectedVibes.includes(vibe.label);
-                  return (
-                    <button
-                      key={vibe.label}
-                      onClick={() => toggleVibe(vibe.label)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold transition-all border ${
-                        isActive 
-                          ? `${vibe.color} border-white/20 text-white shadow-lg` 
-                          : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10"
-                      }`}
-                    >
-                      <Icon className="w-3.5 h-3.5" />
-                      {vibe.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            
             {/* CTA Refresh */}
             <button
               onClick={() => runSearch(true)}
@@ -268,7 +207,7 @@ export function SearchPage() {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                    <span className="text-emerald-400 text-[10px] font-black uppercase tracking-widest">Radar Active</span>
+                    <span className="text-emerald-400 text-[10px] font-black uppercase tracking-widest">Bộ lọc đang hoạt động</span>
                   </div>
                   <div className="text-white text-2xl font-black">{stats.totalFound} Deal Khớp</div>
                 </div>
@@ -289,11 +228,11 @@ export function SearchPage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-white text-xl font-bold flex items-center gap-3">
                   <TrendingUp className="w-5 h-5 text-emerald-400" />
-                  Hành trình tối ưu nhất
+                  Kết quả phù hợp
                 </h2>
                 <div className="flex items-center gap-2 text-slate-500 text-sm">
                   <Info className="w-4 h-4" />
-                  Sắp xếp theo độ phù hợp AI
+                  Kết quả khớp bộ lọc
                 </div>
               </div>
 
@@ -316,7 +255,7 @@ export function SearchPage() {
                     </div>
                     <h3 className="text-white font-bold mb-2">Không tìm thấy deal khớp</h3>
                     <p className="text-slate-500 max-w-xs mx-auto text-sm">
-                      Hãy thử tăng ngân sách hoặc bỏ bớt vibe để AI có thêm không gian tìm kiếm.
+                      Hãy thử tăng ngân sách hoặc bỏ bớt tiêu chí để mở rộng kết quả.
                     </p>
                   </div>
                 )}
@@ -324,7 +263,7 @@ export function SearchPage() {
               
               {results.length > 0 && (
                 <div className="p-8 bg-gradient-to-br from-indigo-500/10 to-blue-500/10 border border-indigo-500/20 rounded-[32px] text-center">
-                  <p className="text-slate-400 text-sm mb-4">Bạn muốn nhận thông báo khi có thêm deal mới cho phong cách này?</p>
+                  <p className="text-slate-400 text-sm mb-4">Bạn muốn nhận thông báo khi có thêm mức giá phù hợp?</p>
                   <Link 
                     to="/alerts" 
                     className="inline-flex items-center gap-2 px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-slate-100 transition-colors"

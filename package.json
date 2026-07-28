@@ -1,11 +1,20 @@
 {
-  "name": "@figma/my-make-file",
+  "name": "flycheap-app",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "deploy": "node scripts/deploy.mjs",
+    "supabase:link": "npx supabase link",
+    "supabase:push": "npx supabase db push",
+    "supabase:functions": "npx supabase functions deploy flight-scanner && npx supabase functions deploy analyze-price && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -57,7 +66,7 @@
     "react-popper": "2.3.0",
     "react-resizable-panels": "2.1.7",
     "react-responsive-masonry": "2.7.1",
-    "react-router": "7.13.0",
+    "react-router": "^7.18.1",
     "react-slick": "0.31.0",
     "recharts": "2.15.2",
     "sonner": "2.0.3",
@@ -66,10 +75,19 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.32.0",
     "@tailwindcss/vite": "4.1.12",
+    "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "4.7.0",
+    "eslint": "^9.32.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.3.0",
     "tailwindcss": "4.1.12",
-    "vite": "6.3.5"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.39.0",
+    "vite": "^6.4.3",
+    "vitest": "^3.2.6"
   },
   "peerDependencies": {
     "react": "18.3.1",

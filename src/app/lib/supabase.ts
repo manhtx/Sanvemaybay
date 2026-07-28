@@ -5,8 +5,16 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL || "https://placeholder.supabase.co";
 const supabaseAnonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || "placeholder-key";
 
-if (!(import.meta as any).env.VITE_SUPABASE_URL || !(import.meta as any).env.VITE_SUPABASE_ANON_KEY) {
-  console.warn("Supabase credentials missing. App will use mock data.");
+export const isSupabaseConfigured =
+  Boolean((import.meta as any).env.VITE_SUPABASE_URL) &&
+  Boolean((import.meta as any).env.VITE_SUPABASE_ANON_KEY) &&
+  !supabaseUrl.includes("placeholder") &&
+  !supabaseUrl.includes("your-project") &&
+  !supabaseAnonKey.includes("placeholder") &&
+  !supabaseAnonKey.includes("your-anon");
+
+if (!isSupabaseConfigured) {
+  console.warn("Supabase credentials missing. Live deal data is unavailable.");
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

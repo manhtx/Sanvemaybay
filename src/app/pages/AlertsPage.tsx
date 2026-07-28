@@ -1,30 +1,9 @@
-import { useState } from "react";
-import { Bell, Send, Mail, Zap, CheckCircle, X, Plus, Globe, TrendingDown, Clock, Shield, DollarSign } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Bell, Send, Mail, Zap, CheckCircle, Globe, TrendingDown, Clock, Shield } from "lucide-react";
 import { toast, Toaster } from "sonner";
-import { Link } from "react-router";
-import { formatVND } from "../data/mockDeals";
-import { createAlert } from "../data/api";
-
-const destinations = [
-  { code: "ICN", name: "Hàn Quốc", flag: "🇰🇷" },
-  { code: "NRT", name: "Nhật Bản", flag: "🇯🇵" },
-  { code: "CDG", name: "Paris", flag: "🇫🇷" },
-  { code: "LHR", name: "London", flag: "🇬🇧" },
-  { code: "SIN", name: "Singapore", flag: "🇸🇬" },
-  { code: "BKK", name: "Bangkok", flag: "🇹🇭" },
-  { code: "JFK", name: "New York", flag: "🇺🇸" },
-  { code: "SYD", name: "Sydney", flag: "🇦🇺" },
-  { code: "DXB", name: "Dubai", flag: "🇦🇪" },
-  { code: "DPS", name: "Bali", flag: "🇮🇩" },
-  { code: "IST", name: "Istanbul", flag: "🇹🇷" },
-  { code: "AMS", name: "Amsterdam", flag: "🇳🇱" },
-  { code: "ZRH", name: "Zurich", flag: "🇨🇭" },
-  { code: "MLE", name: "Maldives", flag: "🏝️" },
-  { code: "CPT", name: "Cape Town", flag: "🇿🇦" },
-  { code: "MEX", name: "Mexico City", flag: "🇲🇽" },
-  { code: "DLI", name: "Đà Lạt", flag: "🏔️" },
-  { code: "ANY", name: "Bất kỳ đâu", flag: "🌍" },
-];
+import { useSearchParams } from "react-router";
+import { formatVND } from "../data/deals";
+import { createAlert, getTrackedRoutes, TrackedRoute } from "../data/api";
 
 const discountLevels = [
   { value: 20, label: "Từ -20%" },
@@ -35,52 +14,82 @@ const discountLevels = [
 
 const channels = [
   { value: "telegram", label: "Telegram", icon: Send, description: "Thông báo tức thì, ít bỏ sót nhất" },
-  { value: "email", label: "Email", icon: Mail, description: "Nhận digest mỗi buổi sáng" },
-];
-
-const existingAlerts = [
-  {
-    id: "a1",
-    destination: "Hàn Quốc 🇰🇷",
-    channel: "Telegram",
-    discount: 30,
-    from: "HAN",
-    active: true,
-    triggered: 2,
-  },
-  {
-    id: "a2",
-    destination: "Bất kỳ đâu 🌍",
-    channel: "Email",
-    discount: 40,
-    from: "SGN",
-    active: true,
-    triggered: 5,
-  },
+  { value: "email", label: "Email", icon: Mail, description: "Nhận cảnh báo theo tần suất đã chọn" },
 ];
 
 export function AlertsPage() {
+  const [searchParams] = useSearchParams();
+  const initialDestination = searchParams.get("destination");
+  const initialOrigin = searchParams.get("origin");
+  const [routes, setRoutes] = useState<TrackedRoute[]>([]);
   const [selectedDests, setSelectedDests] = useState<string[]>([]);
   const [channel, setChannel] = useState("email");
-  const [contact, setContact] = useState(""); // email or telegram username
+  const [contact, setContact] = useState(""); // email or Telegram Chat ID
   const [email, setEmail] = useState(""); // always collect email for confirmation
   const [discount, setDiscount] = useState(30);
-  const [fromCity, setFromCity] = useState("HAN");
+  const [fromCity, setFromCity] = useState(initialOrigin ?? "");
   const [budgetMax, setBudgetMax] = useState(10000000);
   const [preferredRegions, setPreferredRegions] = useState<string[]>(["Domestic", "International"]);
   const [frequency, setFrequency] = useState("instant");
-  const [submitted, setSubmitted] = useState(false);
+
+  const departureCities = useMemo(
+    () =>
+      Array.from(
+        new Map(routes.map((route) => [route.originCode, {
+          code: route.originCode,
+          name: route.originName,
+        }])).values(),
+      ),
+    [routes],
+  );
+  const destinations = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          routes
+            .filter((route) => !fromCity || route.originCode === fromCity)
+            .map((route) => [route.destinationCode, {
+              code: route.destinationCode,
+              name: route.destinationName,
+            }]),
+        ).values(),
+      ),
+    [fromCity, routes],
+  );
+
+  useEffect(() => {
+    getTrackedRoutes().then((trackedRoutes) => {
+      setRoutes(trackedRoutes);
+      const origin =
+        (initialOrigin && trackedRoutes.some((route) => route.originCode === initialOrigin)
+          ? initialOrigin
+          : trackedRoutes[0]?.originCode) ?? "";
+      setFromCity(origin);
+      const matchingDestination = trackedRoutes.find(
+        (route) =>
+          route.originCode === origin &&
+          (route.destinationCode === initialDestination ||
+            route.destinationName === initialDestination),
+      );
+      if (matchingDestination) setSelectedDests([matchingDestination.destinationCode]);
+    });
+  }, [initialDestination, initialOrigin]);
+
+  useEffect(() => {
+    setSelectedDests((selected) =>
+      selected.filter((code) => destinations.some((destination) => destination.code === code)),
+    );
+  }, [destinations]);
 
   const toggleDest = (code: string) => {
-    if (code === "ANY") {
-      setSelectedDests(["ANY"]);
-      return;
-    }
-    const newDests = selectedDests.includes("ANY") ? [] : selectedDests;
-    if (newDests.includes(code)) {
-      setSelectedDests(newDests.filter((d: string) => d !== code));
+    if (selectedDests.includes(code)) {
+      setSelectedDests(selectedDests.filter((d: string) => d !== code));
     } else {
-      setSelectedDests([...newDests, code]);
+      if (selectedDests.length >= 5) {
+        toast.error("Mỗi lần chỉ có thể đăng ký tối đa 5 điểm đến.");
+        return;
+      }
+      setSelectedDests([...selectedDests, code]);
     }
   };
 
@@ -96,7 +105,7 @@ export function AlertsPage() {
       return;
     }
     if (channel === 'telegram' && !contact) {
-      toast.error("Vui lòng nhập username Telegram");
+      toast.error("Vui lòng nhập Telegram Chat ID");
       return;
     }
     if (selectedDests.length === 0) {
@@ -112,7 +121,12 @@ export function AlertsPage() {
         const destLabel = destinations.find(d => d.code === dest)?.name || dest;
         await createAlert({
           destination: destLabel,
+          destination_code: dest,
+          origin_code: fromCity,
           budget: budgetMax,
+          discount_threshold: discount,
+          preferred_regions: preferredRegions,
+          frequency: frequency as "instant" | "daily",
           notify_telegram: channel === 'telegram',
           notify_email: true, // always notify via email as backup
           email: emailToUse,
@@ -122,7 +136,6 @@ export function AlertsPage() {
         successCount++;
       }
       
-      setSubmitted(true);
       toast.success("🎉 Đã đăng ký báo giá thành công!", {
         description: `${successCount} cảnh báo đã được thiết lập. Kiểm tra ${emailToUse} để xác nhận.`,
         duration: 6000,
@@ -137,12 +150,6 @@ export function AlertsPage() {
     }
   };
 
-  const departureCities = [
-    { code: "HAN", name: "Hà Nội" },
-    { code: "SGN", name: "TP. HCM" },
-    { code: "DAD", name: "Đà Nẵng" },
-  ];
-
   return (
     <div className="pt-24 pb-16">
       <Toaster position="top-center" theme="dark" />
@@ -156,7 +163,7 @@ export function AlertsPage() {
             Cài Báo Giá Thông Minh
           </h1>
           <p className="text-slate-500 max-w-lg mx-auto">
-            Nhận thông báo ngay khi AI phát hiện deal phù hợp — qua Telegram hoặc Email. Miễn phí mãi mãi.
+            Nhận thông báo khi hệ thống phát hiện deal đạt điều kiện — qua Telegram hoặc Email trong giai đoạn Beta.
           </p>
         </div>
 
@@ -210,17 +217,17 @@ export function AlertsPage() {
                   />
                 </div>
                 
-                {/* Telegram username — only shown when Telegram channel selected */}
+                {/* Telegram Chat ID — only shown when Telegram channel selected */}
                 {channel === "telegram" && (
                   <div className="mt-3">
                     <label className="text-slate-500 text-xs mb-2 block" style={{ fontWeight: 600 }}>
-                      ✈️ Username Telegram <span className="text-slate-600">(bắt đầu bằng @)</span>
+                      ✈️ Telegram Chat ID
                     </label>
                     <input
                       type="text"
                       value={contact}
                       onChange={(e) => setContact(e.target.value)}
-                      placeholder="@username"
+                      placeholder="Ví dụ: 123456789"
                       className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm placeholder-slate-600 focus:outline-none focus:border-sky-500/40"
                     />
                   </div>
@@ -272,13 +279,17 @@ export function AlertsPage() {
                             : "bg-slate-800/50 border-white/10 text-slate-400 hover:border-white/20"
                         }`}
                       >
-                        <span className="text-lg">{dest.flag}</span>
                         <span className="text-sm" style={{ fontWeight: 600 }}>{dest.name}</span>
                         {selected && <CheckCircle className="w-4 h-4 text-sky-400 ml-auto" />}
                       </button>
                     );
                   })}
                 </div>
+                {destinations.length === 0 && (
+                  <p className="text-amber-400 text-sm mt-4">
+                    Chưa có tuyến bay đang được theo dõi từ điểm khởi hành này.
+                  </p>
+                )}
               </div>
 
               {/* Step 4: Discount threshold */}
@@ -315,7 +326,7 @@ export function AlertsPage() {
                     <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center text-white text-xs" style={{ fontWeight: 800 }}>5</div>
                     <h2 className="text-white" style={{ fontWeight: 700 }}>Tùy chỉnh cá nhân</h2>
                   </div>
-                  <span className="text-[10px] bg-sky-500/10 text-sky-400 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">AI Enhanced</span>
+                  <span className="text-[10px] bg-sky-500/10 text-sky-400 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Bộ lọc dữ liệu</span>
                 </div>
 
                 {/* Budget Max */}
@@ -376,7 +387,7 @@ export function AlertsPage() {
                               : "bg-slate-800/50 border-white/5 text-slate-500"
                           }`}
                         >
-                          {f === "instant" ? "Tức thì" : "Mỗi sáng"}
+                          {f === "instant" ? "Tức thì" : "Mỗi ngày"}
                         </button>
                       ))}
                     </div>
@@ -427,13 +438,13 @@ export function AlertsPage() {
                   <br />
                   ✈️ {fromCity} → {selectedDests.length > 0
                     ? destinations.find(d => d.code === selectedDests[0])?.name || "điểm đến"
-                    : "Hàn Quốc"} -{discount}%
+                    : "điểm đến đã chọn"}
                   <br />
-                  💰 Chỉ từ 2.9M₫ (giá gốc 5.2M₫)
+                  💰 Giá không vượt quá {formatVND(budgetMax)}
                   <br />
-                  ⏰ Còn 1 ngày 14 giờ · 4 ghế
+                  📉 Giảm ít nhất {discount}% so với mức tham chiếu
                   <br />
-                  🤖 <em>AI: Low season + mở route mới</em>
+                  📊 <em>Kèm số mẫu và độ tin cậy của dữ liệu</em>
                 </p>
               </div>
             </div>
@@ -443,10 +454,10 @@ export function AlertsPage() {
               <h3 className="text-white text-sm mb-4" style={{ fontWeight: 700 }}>Tại sao dùng Alert?</h3>
               <ul className="space-y-3">
                 {[
-                  { icon: Clock, text: "Nhận ngay khi deal xuất hiện — không bỏ lỡ flash sale 24h" },
+                  { icon: Clock, text: "Nhận thông báo sau khi hệ thống xác nhận deal đạt điều kiện" },
                   { icon: TrendingDown, text: "Chỉ nhận deal thực sự rẻ — lọc theo ngưỡng bạn đặt" },
-                  { icon: Globe, text: "Kèm phân tích AI: vì sao rẻ, có nên mua không" },
-                  { icon: Shield, text: "Không spam. Hủy bất kỳ lúc nào." },
+                  { icon: Globe, text: "Kèm số liệu lịch sử và mức độ tin cậy" },
+                  { icon: Shield, text: "Chống gửi trùng cùng một deal" },
                 ].map(({ icon: Icon, text }) => (
                   <li key={text} className="flex items-start gap-3">
                     <div className="w-7 h-7 bg-sky-500/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
@@ -458,35 +469,6 @@ export function AlertsPage() {
               </ul>
             </div>
 
-            {/* Existing alerts */}
-            <div className="bg-slate-900 border border-white/8 rounded-2xl p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-white text-sm" style={{ fontWeight: 700 }}>Alert đang hoạt động</h3>
-                <button className="flex items-center gap-1 text-sky-400 text-xs hover:text-sky-300" style={{ fontWeight: 600 }}>
-                  <Plus className="w-3.5 h-3.5" />
-                  Thêm
-                </button>
-              </div>
-              <div className="space-y-3">
-                {existingAlerts.map((alert) => (
-                  <div key={alert.id} className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-xl">
-                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-white text-sm" style={{ fontWeight: 600 }}>{alert.from} → {alert.destination}</span>
-                        <span className="text-emerald-400 text-xs" style={{ fontWeight: 700 }}>-{alert.discount}%+</span>
-                      </div>
-                      <div className="text-slate-500 text-xs">
-                        {alert.channel} · Đã trigger {alert.triggered} lần
-                      </div>
-                    </div>
-                    <button className="text-slate-600 hover:text-red-400 transition-colors">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
 
@@ -495,15 +477,15 @@ export function AlertsPage() {
           {[
             {
               q: "Mất phí không?",
-              a: "Hoàn toàn miễn phí trong Phase 1. FlyCheap AI kiếm tiền qua affiliate khi bạn đặt vé."
+              a: "Hiện tại hệ thống không thu phí khi tạo cảnh báo."
             },
             {
               q: "Nhận bao nhiêu thông báo?",
-              a: "Tối đa 2–3 thông báo/ngày/điểm đến. Chúng tôi chỉ gửi khi có deal thực sự tốt."
+              a: "Hệ thống chống gửi trùng cùng một deal và chỉ gửi khi đạt ngân sách, ngưỡng giảm bạn đặt."
             },
             {
               q: "Dữ liệu của tôi có an toàn?",
-              a: "Chúng tôi chỉ lưu email/username để gửi thông báo. Không chia sẻ với bên thứ ba."
+              a: "Email hoặc Telegram Chat ID được lưu để gửi cảnh báo qua nhà cung cấp tương ứng."
             },
           ].map(({ q, a }) => (
             <div key={q} className="bg-slate-900/60 border border-white/8 rounded-2xl p-5">

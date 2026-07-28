@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Link } from "react-router";
-import { Plane, Github, Twitter, Send, Heart } from "lucide-react";
+import { Plane, Heart } from "lucide-react";
 
 function Footer() {
   return (
@@ -19,19 +19,8 @@ function Footer() {
               </span>
             </div>
             <p className="text-slate-500 text-sm leading-relaxed">
-              Radar giá vé máy bay toàn cầu — phát hiện cơ hội bay rẻ bất thường bằng AI.
+              Theo dõi các tuyến bay được hỗ trợ và phát hiện mức giá thấp dựa trên dữ liệu lịch sử.
             </p>
-            <div className="flex items-center gap-3 mt-4">
-              <a href="#" className="w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors">
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors">
-                <Send className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors">
-                <Github className="w-4 h-4" />
-              </a>
-            </div>
           </div>
 
           {/* Product */}
@@ -54,14 +43,13 @@ function Footer() {
 
           {/* Features */}
           <div>
-            <h4 className="text-white text-sm mb-3" style={{ fontWeight: 600 }}>Tính năng AI</h4>
+            <h4 className="text-white text-sm mb-3" style={{ fontWeight: 600 }}>Khả năng hiện tại</h4>
             <ul className="space-y-2">
               {[
-                "Deal Discovery Engine",
-                "Price Intelligence AI",
-                "Smart Route Builder",
-                "Hidden Cost Analyzer",
-                "Flexible Decision Engine",
+                "Theo dõi lịch sử giá",
+                "Chấm điểm deal",
+                "Cảnh báo Email/Telegram",
+                "Liên kết đặt vé",
               ].map((item) => (
                 <li key={item}>
                   <span className="text-slate-500 text-sm">{item}</span>

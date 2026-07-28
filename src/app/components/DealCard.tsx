@@ -1,18 +1,27 @@
 import { Link } from "react-router";
 import { Plane, Clock, AlertTriangle, Zap, TrendingDown, Users, Calendar } from "lucide-react";
-import { Deal, formatVND, getRecommendationColor, getRecommendationLabel, regionFlag } from "../data/mockDeals";
+import { Deal, formatVND, getRecommendationColor, getRecommendationLabel, regionFlag } from "../data/deals";
 
 interface DealCardProps {
   deal: Deal;
-  compact?: boolean;
 }
 
 function formatDepartDate(dateStr: string) {
   const date = new Date(dateStr);
-  return date.toLocaleDateString("vi-VN", { month: "short", year: "numeric" });
+  return date.toLocaleDateString("vi-VN");
 }
 
-export function DealCard({ deal, compact = false }: DealCardProps) {
+function formatObservedAt(dateStr?: string) {
+  if (!dateStr) return null;
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleString("vi-VN", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+}
+
+export function DealCard({ deal }: DealCardProps) {
   const priceDiff = deal.realTotal - deal.advertisedTotal;
   const hasHiddenCosts = priceDiff > 0;
 
@@ -21,11 +30,15 @@ export function DealCard({ deal, compact = false }: DealCardProps) {
       <div className="relative bg-slate-900 border border-white/8 rounded-2xl overflow-hidden hover:border-sky-500/40 hover:shadow-lg hover:shadow-sky-500/10 transition-all duration-300">
         {/* Image */}
         <div className="relative h-44 overflow-hidden">
-          <img
-            src={deal.image}
-            alt={deal.to}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+          {deal.image ? (
+            <img
+              src={deal.image}
+              alt={deal.to}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-sky-950 via-slate-900 to-indigo-950" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
 
           {/* Badges */}
@@ -78,7 +91,9 @@ export function DealCard({ deal, compact = false }: DealCardProps) {
               <div className="w-6 h-6 bg-slate-800 rounded-md flex items-center justify-center text-xs" style={{ fontWeight: 700, color: "#94a3b8" }}>
                 {deal.airlineCode}
               </div>
-              <span className="text-slate-400 text-sm">{deal.airline}</span>
+              <span className="text-slate-400 text-sm">
+                {deal.airline}{deal.flightNumber ? ` · ${deal.flightNumber}` : ""}
+              </span>
             </div>
             <div className="flex items-center gap-3 text-slate-500 text-xs">
               <span className="flex items-center gap-1">
@@ -115,19 +130,34 @@ export function DealCard({ deal, compact = false }: DealCardProps) {
           {/* Departure date */}
           <div className="flex items-center gap-1.5 mb-3 px-3 py-1.5 bg-slate-800/50 rounded-lg">
             <Calendar className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-            <span className="text-slate-400 text-xs">Bay tháng </span>
+            <span className="text-slate-400 text-xs">Khởi hành </span>
             <span className="text-sky-300 text-xs" style={{ fontWeight: 700 }}>{formatDepartDate(deal.departDate)}</span>
+            {deal.returnDate && (
+              <span className="text-slate-500 text-xs">
+                · về {formatDepartDate(deal.returnDate)}
+              </span>
+            )}
           </div>
 
           {/* AI reasoning snippet */}
           <div className="bg-sky-500/5 border border-sky-500/10 rounded-lg p-3 mb-3">
             <div className="flex items-start gap-2">
               <div className="w-4 h-4 bg-sky-500 rounded-full flex items-center justify-center mt-0.5 shrink-0">
-                <span className="text-white" style={{ fontSize: "9px", fontWeight: 800 }}>AI</span>
+                <span className="text-white" style={{ fontSize: "8px", fontWeight: 800 }}>DATA</span>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed line-clamp-3">
-                {(deal as any).ai_reasoning || deal.aiInsight.reason}
+                {deal.aiReasoning || deal.aiInsight.reason}
               </p>
+            </div>
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {deal.aiInsight.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 text-[10px]"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -135,13 +165,18 @@ export function DealCard({ deal, compact = false }: DealCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1 text-amber-400 text-xs">
               <Clock className="w-3 h-3" />
-              <span style={{ fontWeight: 600 }}>Deal hết hạn: {deal.expiresIn}</span>
+              <span style={{ fontWeight: 600 }}>{deal.expiresIn}</span>
             </div>
             <div className="flex items-center gap-1 text-slate-500 text-xs">
               <Users className="w-3 h-3" />
-              <span>Còn {deal.seatsLeft} ghế</span>
+              <span>{deal.seatsLeft > 0 ? `Còn ${deal.seatsLeft} ghế` : "Chưa có dữ liệu ghế"}</span>
             </div>
           </div>
+          {formatObservedAt(deal.observedAt) && (
+            <p className="text-slate-600 text-[10px] mt-2">
+              Giá ghi nhận: {formatObservedAt(deal.observedAt)}
+            </p>
+          )}
         </div>
 
         {/* Intelligence Stats Bar */}
@@ -152,27 +187,28 @@ export function DealCard({ deal, compact = false }: DealCardProps) {
             <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full"
-                style={{ width: `${(deal as any).deal_score || deal.aiInsight.savingScore}%` }}
+                style={{ width: `${deal.dealScore ?? deal.aiInsight.savingScore}%` }}
               />
             </div>
             <span className="text-emerald-400 text-xs font-bold">
-              {(deal as any).deal_score || deal.aiInsight.savingScore}/100
+              {deal.dealScore ?? deal.aiInsight.savingScore}/100
             </span>
           </div>
           
-          {/* Confidence Score */}
-          <div className="flex items-center gap-2">
-            <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Confidence</span>
-            <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-sky-400 rounded-full opacity-60"
-                style={{ width: `${((deal as any).confidence || 0.85) * 100}%` }}
-              />
+          {deal.confidence != null && (
+            <div className="flex items-center gap-2">
+              <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Confidence</span>
+              <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-sky-400 rounded-full opacity-60"
+                  style={{ width: `${deal.confidence * 100}%` }}
+                />
+              </div>
+              <span className="text-sky-300 text-[10px] font-bold">
+                {Math.round(deal.confidence * 100)}%
+              </span>
             </div>
-            <span className="text-sky-300 text-[10px] font-bold">
-              {Math.round(((deal as any).confidence || 0.85) * 100)}%
-            </span>
-          </div>
+          )}
         </div>
       </div>
     </Link>

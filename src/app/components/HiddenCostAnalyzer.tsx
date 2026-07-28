@@ -1,5 +1,5 @@
 import { AlertTriangle, CheckCircle, Info } from "lucide-react";
-import { Deal, formatVND } from "../data/mockDeals";
+import { Deal, formatVND } from "../data/deals";
 
 interface HiddenCostAnalyzerProps {
   deal: Deal;
