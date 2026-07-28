@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { DealCard } from "../components/DealCard";
 import { formatVND, Deal } from "../data/deals";
-import { getDeals } from "../data/api";
+import { getDeals, getTrackedRoutes } from "../data/api";
 
 // ─────────────────────────────────────────────────
 // ANIMATED COUNTER HOOK
@@ -250,10 +250,14 @@ function StatCard({ label, value, suffix, isPrice }: { label: string; value: num
 // ─────────────────────────────────────────────────
 export function HomePage() {
   const [deals, setDeals] = useState<Deal[]>([]);
+  const [trackedRouteCount, setTrackedRouteCount] = useState(0);
   const [tickerIndex, setTickerIndex] = useState(0);
 
   useEffect(() => {
-    getDeals().then(setDeals);
+    Promise.all([getDeals(), getTrackedRoutes()]).then(([loadedDeals, trackedRoutes]) => {
+      setDeals(loadedDeals);
+      setTrackedRouteCount(trackedRoutes.length);
+    });
   }, []);
 
   useEffect(() => {
@@ -273,7 +277,7 @@ export function HomePage() {
   const stats = [
     { label: "Deal đang hoạt động", value: deals.length, suffix: "" },
     { label: "Tiết kiệm trung bình/vé", value: averageSaving, suffix: "₫", isPrice: true },
-    { label: "Tuyến bay đang theo dõi", value: new Set(deals.map((deal) => `${deal.fromCode}-${deal.toCode}`)).size, suffix: "" },
+    { label: "Tuyến bay đang theo dõi", value: trackedRouteCount, suffix: "" },
     { label: "Deal có độ tin cậy cao", value: deals.filter((deal) => (deal.confidence ?? 0) >= 0.8).length, suffix: "" },
   ];
 
