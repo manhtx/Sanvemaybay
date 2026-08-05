@@ -63,6 +63,7 @@ Deno.serve(async (request) => {
   let cachedWindowsSkipped = 0;
   let noProviderResultWindows = 0;
   const failures: Array<{ route: string; reason: string }> = [];
+  const providerWindowFailures: Array<{ route: string; departure_offset_days: number; reason: string }> = [];
   const { data: routes, error: routeError } = await supabase
     .from("tracked_routes")
     .select("*")
@@ -184,9 +185,14 @@ Deno.serve(async (request) => {
             routeObservations.set(String(row.itinerary_key), row);
           }
         } catch (error) {
-          windowFailures.push({
+          const failure = {
             departure_offset_days: offset,
             reason: error instanceof Error ? error.message : "Unknown provider error",
+          };
+          windowFailures.push(failure);
+          providerWindowFailures.push({
+            route: `${route.origin_code}-${route.destination_code}`,
+            ...failure,
           });
         }
       }
@@ -256,7 +262,7 @@ Deno.serve(async (request) => {
   }
 
   if (observationsSaved === 0 && (cachedWindowsSkipped > 0 || noProviderResultWindows > 0)) {
-    return json({ success: true, observations_saved: 0, cached_windows: cachedWindowsSkipped, no_provider_result_windows: noProviderResultWindows, failures });
+    return json({ success: true, observations_saved: 0, cached_windows: cachedWindowsSkipped, no_provider_result_windows: noProviderResultWindows, failures, provider_window_failures: providerWindowFailures.slice(0, 20) });
   }
   if (observationsSaved === 0) {
     return json({ error: "No valid observations returned.", failures }, 502);
@@ -268,6 +274,7 @@ Deno.serve(async (request) => {
     cached_windows: cachedWindowsSkipped,
     no_provider_result_windows: noProviderResultWindows,
     failures,
+    provider_window_failures: providerWindowFailures.slice(0, 20),
     observed_at: observedAt,
   });
 });

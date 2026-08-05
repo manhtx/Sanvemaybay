@@ -99,6 +99,7 @@ for (let cycle = 1; cycle <= maxCycles; cycle += 1) {
     cachedWindows: scan.cached_windows ?? 0,
     noProviderResultWindows: scan.no_provider_result_windows ?? 0,
     scanFailures: scan.failures ?? [],
+    providerWindowFailures: scan.provider_window_failures ?? [],
     publishedThisCycle: analysis.deals_published ?? 0,
     feedSource: feed?.source ?? "unavailable",
     hotDeals,
