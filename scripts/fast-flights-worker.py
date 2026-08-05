@@ -37,6 +37,8 @@ START_OFFSET = int(os.environ.get("FAST_FLIGHTS_START_OFFSET", "14"))
 TRIP_LENGTH_DEFAULT = int(os.environ.get("FAST_FLIGHTS_TRIP_LENGTH_DAYS", "4"))
 DRY_RUN = os.environ.get("FAST_FLIGHTS_DRY_RUN", "false").lower() == "true"
 SUPABASE_SECRET_KEY = env("SUPABASE_SECRET_KEY", required=not DRY_RUN)
+AFFILIATE_NETWORK = os.environ.get("AFFILIATE_NETWORK", "").strip()
+AFFILIATE_DEEPLINK_TEMPLATE = os.environ.get("AFFILIATE_DEEPLINK_TEMPLATE", "").strip()
 
 
 def request_json(url: str, headers: dict[str, str], body: bytes | None = None) -> Any:
@@ -81,6 +83,21 @@ def google_source_url(origin: str, destination: str, outbound: str, returned: st
     return f"https://www.google.com/travel/flights?{params}"
 
 
+def affiliate_deep_link(origin: str, destination: str, outbound: str, returned: str) -> str | None:
+    if not AFFILIATE_NETWORK or not AFFILIATE_DEEPLINK_TEMPLATE:
+        return None
+    try:
+        candidate = AFFILIATE_DEEPLINK_TEMPLATE.format(
+            origin=origin, destination=destination, outbound=outbound, returned=returned,
+        )
+        parsed = urllib.parse.urlparse(candidate)
+        if parsed.scheme != "https" or not parsed.netloc:
+            return None
+        return candidate
+    except (KeyError, ValueError):
+        return None
+
+
 def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, observed_at: str) -> dict[str, Any] | None:
     segments = value(result, "flights", []) or []
     if not segments:
@@ -113,6 +130,8 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
         depart_time,
         str(price),
     ])
+    source_url = google_source_url(origin_code, destination_code, outbound, returned)
+    affiliate_url = affiliate_deep_link(origin_code, destination_code, outbound, returned)
     return {
         "origin": route["origin_name"],
         "origin_code": origin_code,
@@ -129,9 +148,11 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
         "flight_number": None,
         "stops": stops,
         "duration": f"{duration // 60}h {duration % 60}m",
-        "booking_url": google_source_url(origin_code, destination_code, outbound, returned),
+        "booking_url": source_url,
         "source": "fast_flights_google",
-        "link_kind": "live_source",
+        "link_kind": "live_affiliate" if affiliate_url else "live_source",
+        "affiliate_network": AFFILIATE_NETWORK if affiliate_url else None,
+        "affiliate_url": affiliate_url,
         "itinerary_key": itinerary_key,
         "timestamp": observed_at,
         "departure_time": depart_time,
@@ -223,6 +244,8 @@ def direct_ingest(routes: list[dict[str, Any]], observations: list[dict[str, Any
                 "duration": row["duration"], "source": row["source"],
                 "booking_url": row["booking_url"], "itinerary_key": row["itinerary_key"],
                 "timestamp": row["timestamp"], "route_id": route["id"], "scan_run_id": scan_id,
+                **({"link_kind": row["link_kind"], "affiliate_network": row["affiliate_network"],
+                   "affiliate_url": row["affiliate_url"]} if row.get("affiliate_url") else {}),
             } for row in rows]
             flight_headers = {**service_headers, "Prefer": "resolution=merge-duplicates,return=representation"}
             request_json(

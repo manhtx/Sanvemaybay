@@ -34,6 +34,8 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          AFFILIATE_NETWORK: ${{ secrets.AFFILIATE_NETWORK }}
+          AFFILIATE_DEEPLINK_TEMPLATE: ${{ secrets.AFFILIATE_DEEPLINK_TEMPLATE }}
           FAST_FLIGHTS_ROUTE_LIMIT: ${{ inputs.route_limit || '40' }}
           FAST_FLIGHTS_WINDOW_LIMIT: ${{ inputs.window_limit || '4' }}
           FAST_FLIGHTS_START_OFFSET: "14"
