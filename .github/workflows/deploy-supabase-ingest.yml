@@ -16,11 +16,19 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
           INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
+          TRAVELPAYOUTS_TOKEN: ${{ secrets.TRAVELPAYOUTS_TOKEN }}
+          TRAVELPAYOUTS_DEEPLINK_TEMPLATE: ${{ secrets.AFFILIATE_DEEPLINK_TEMPLATE }}
         run: |
           test -n "$SUPABASE_ACCESS_TOKEN"
           test -n "$SUPABASE_PROJECT_REF"
           test -n "$INTERNAL_FUNCTION_SECRET"
           supabase secrets set INTERNAL_FUNCTION_SECRET="$INTERNAL_FUNCTION_SECRET" --project-ref "$SUPABASE_PROJECT_REF"
+          if test -n "$TRAVELPAYOUTS_TOKEN"; then
+            supabase secrets set TRAVELPAYOUTS_TOKEN="$TRAVELPAYOUTS_TOKEN" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
+          if test -n "$TRAVELPAYOUTS_DEEPLINK_TEMPLATE"; then
+            supabase secrets set TRAVELPAYOUTS_DEEPLINK_TEMPLATE="$TRAVELPAYOUTS_DEEPLINK_TEMPLATE" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
       - name: Apply database migrations
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -31,6 +39,6 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
-          for function in flight-ingest analyze-price ai-explainer alert-processor setup-alert manage-alert feed-snapshot deal-redirect; do
+          for function in flight-ingest analyze-price ai-explainer alert-processor setup-alert manage-alert feed-snapshot deal-redirect flight-search; do
             supabase functions deploy "$function" --project-ref "$SUPABASE_PROJECT_REF"
           done

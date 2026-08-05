@@ -19,7 +19,7 @@
     "deploy": "node scripts/deploy.mjs",
     "supabase:link": "npx supabase link",
     "supabase:push": "npx supabase db push",
-    "supabase:functions": "npx supabase functions deploy flight-ingest && npx supabase functions deploy analyze-price && npx supabase functions deploy ai-explainer && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert && npx supabase functions deploy feed-snapshot && npx supabase functions deploy deal-redirect"
+    "supabase:functions": "npx supabase functions deploy flight-ingest && npx supabase functions deploy analyze-price && npx supabase functions deploy ai-explainer && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert && npx supabase functions deploy feed-snapshot && npx supabase functions deploy deal-redirect && npx supabase functions deploy flight-search"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
