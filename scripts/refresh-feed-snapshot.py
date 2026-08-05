@@ -64,10 +64,33 @@ deals = request_json(
 if not isinstance(deals, list):
     raise RuntimeError("Supabase deals response was not a list")
 
-payload = json.dumps({"snapshot_key": "active-deals", "payload": deals, "generated_at": now}).encode("utf-8")
+minimum_deals = max(1, int(os.environ.get("MIN_FEED_DEALS", "10")))
+minimum_routes = max(1, int(os.environ.get("MIN_FEED_ROUTES", "3")))
+future_deals = []
+for deal in deals:
+    if not isinstance(deal, dict):
+        continue
+    valid_until = deal.get("valid_until")
+    booking_url = deal.get("booking_url")
+    if not isinstance(valid_until, str) or not isinstance(booking_url, str):
+        continue
+    if datetime.fromisoformat(valid_until.replace("Z", "+00:00")) <= datetime.now(timezone.utc):
+        continue
+    if not booking_url.startswith("https://"):
+        continue
+    future_deals.append(deal)
+
+route_count = len({(deal.get("from_code"), deal.get("to_code")) for deal in future_deals})
+if len(future_deals) < minimum_deals or route_count < minimum_routes:
+    raise RuntimeError(
+        f"Feed quality gate failed: {len(future_deals)} valid deals across {route_count} routes; "
+        f"required at least {minimum_deals} deals and {minimum_routes} routes"
+    )
+
+payload = json.dumps({"snapshot_key": "active-deals", "payload": future_deals, "generated_at": now}).encode("utf-8")
 request_json(
     f"{base_url}/rest/v1/feed_snapshots?on_conflict=snapshot_key",
     method="POST",
     body=payload,
 )
-print(json.dumps({"snapshot": "active-deals", "deals": len(deals), "generated_at": now}))
+print(json.dumps({"snapshot": "active-deals", "deals": len(future_deals), "routes": route_count, "generated_at": now}))
