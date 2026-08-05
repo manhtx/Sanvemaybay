@@ -256,7 +256,7 @@ Không gọi AI cho mọi chuyến bay; chỉ gọi cho deal đủ điều kiệ
 
 ## 30. MVP Automation Scope
 
-MVP gồm Route Scheduler, Flight Data Collection, Normalization, Validation, Price History Storage, Deal Detection, Basic Hidden Cost Calculation, AI Deal Explanation, Deal Publication, Homepage Feed, Telegram Notification và Error Logging. `analyze-price` ghi các flight observation hợp lệ vào `price_history` trước khi trả kết quả, sau đó gọi `ai-explainer` sau khi publish từng deal qua internal secret; nếu lời giải thích lỗi, deal vẫn được publish và execution trả `ai_failures` để retry/monitor. Notification delivery dùng backoff 1/5/15 phút, tối đa 3 attempts; sau đó giữ trạng thái failed để operator/DLQ xử lý.
+MVP gồm Route Scheduler, Flight Data Collection, Normalization, Validation, Price History Storage, Deal Detection, Basic Hidden Cost Calculation, Deal Publication, Homepage Feed, Telegram Notification và Error Logging. `analyze-price` ghi các flight observation hợp lệ vào `price_history` trước khi trả kết quả. Deal explanation ban đầu là deterministic, data-backed text generated from the same validated market facts; an optional AI enrichment worker may run separately when its internal authentication and provider configuration are healthy, but it must never be on the critical publish path. Notification delivery dùng backoff 1/5/15 phút, tối đa 3 attempts; sau đó giữ trạng thái failed để operator/DLQ xử lý.
 
 Chưa cần Full Virtual Interlining, Hidden City Automation, Advanced Personalization, Realtime Price Prediction, nhiều notification channels, Complex External Context Engine hoặc Automated Booking.
 
