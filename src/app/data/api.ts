@@ -119,6 +119,11 @@ export function mapDealRow(row: Record<string, any>): Deal {
     dealScore: row.deal_score == null ? undefined : Number(row.deal_score),
     aiReasoning: row.ai_reasoning ?? undefined,
     bookingUrl: sanitizeBookingUrl(row.booking_url),
+    affiliateUrl: sanitizeBookingUrl(row.affiliate_url),
+    affiliateNetwork: typeof row.affiliate_network === "string" ? row.affiliate_network : undefined,
+    linkKind: ["live_affiliate", "live_source", "indicative", "historical", "stale"].includes(row.link_kind)
+      ? row.link_kind
+      : undefined,
     refundPolicy: typeof row.refund_policy === "string" && row.refund_policy.trim() ? row.refund_policy : undefined,
     observedAt: row.observed_at ?? undefined,
     validUntil: row.valid_until ?? undefined,

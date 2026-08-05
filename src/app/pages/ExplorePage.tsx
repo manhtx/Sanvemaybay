@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { getDeals } from "../data/api";
 import { Deal, formatVND } from "../data/deals";
 import { motion } from "motion/react";
+import { buildDestinationInsights } from "../domain/destinationInsights";
 
 export function ExplorePage() {
   const [deals, setDeals] = useState<Deal[]>([]);
@@ -23,6 +24,7 @@ export function ExplorePage() {
       .toLocaleLowerCase("vi")
       .includes(query.trim().toLocaleLowerCase("vi")),
   );
+  const destinationInsights = buildDestinationInsights(filteredDeals);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 pb-20">
@@ -63,6 +65,33 @@ export function ExplorePage() {
       </section>
 
       <main className="max-w-7xl mx-auto px-4">
+        {!loading && destinationInsights.length > 0 && (
+          <section className="mb-10" aria-label="Destination insights">
+            <div className="flex items-end justify-between mb-4">
+              <div>
+                <h2 className="text-2xl font-black text-white">Cơ hội theo điểm đến</h2>
+                <p className="text-slate-500 text-sm">Tổng hợp từ các deal đã được hệ thống ghi nhận.</p>
+              </div>
+              <span className="text-slate-500 text-xs">{destinationInsights.length} điểm đến</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {destinationInsights.slice(0, 4).map((insight) => (
+                <Link key={insight.destinationCode} to={`/deals/${insight.topDealId}`} className="rounded-2xl border border-white/10 bg-slate-900/70 p-4 hover:border-sky-500/40 transition-colors">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-white font-bold">{insight.destination}</span>
+                    {insight.hasWeekendDeal && <span className="text-[10px] text-emerald-400">Cuối tuần</span>}
+                  </div>
+                  <div className="text-slate-500 text-xs mb-1">Giá thực tế thấp nhất</div>
+                  <div className="text-emerald-400 text-xl font-black">{formatVND(insight.cheapestPrice)}</div>
+                  <div className="flex justify-between mt-3 text-xs text-slate-500">
+                    <span>{insight.dealCount} deal</span>
+                    <span>Giảm TB {Math.round(insight.averageDiscount)}%</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
         {/* ── DISCOVERY GRID ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {loading ? (

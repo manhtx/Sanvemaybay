@@ -31,6 +31,7 @@ function Footer() {
                 { label: "Deal Nóng", href: "/deals" },
                 { label: "Tìm Vé Thông Minh", href: "/search" },
                 { label: "Cài Báo Giá", href: "/alerts" },
+                { label: "Deal đã lưu", href: "/saved" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link to={item.href} className="text-slate-500 hover:text-slate-300 text-sm transition-colors">

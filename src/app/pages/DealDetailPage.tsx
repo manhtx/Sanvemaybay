@@ -3,17 +3,25 @@ import { useParams, Link } from "react-router";
 import { 
   Plane, Calendar, AlertTriangle,
   ChevronLeft, Share2, Bell, Zap, TrendingDown, 
-  CheckCircle2, Globe, ArrowRight, ExternalLink
+  CheckCircle2, Globe, ArrowRight, ExternalLink, Bookmark
 } from "lucide-react";
-import { getDealById } from "../data/api";
+import { getDealById, getPriceHistory } from "../data/api";
 import { Deal, formatVND, getRecommendationColor, getRecommendationLabel } from "../data/deals";
 import { motion } from "motion/react";
 import { getBestBookingUrl, getAllBookingOptions } from "../lib/bookingUrls";
+import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "../lib/bookmarks";
+import { shareOrCopy } from "../lib/sharing";
+import { PriceHistoryChart } from "../components/PriceHistoryChart";
+import { HiddenCostAnalyzer } from "../components/HiddenCostAnalyzer";
+import { assessRoute } from "../domain/routeOptimization";
+import { trackProductEvent } from "../lib/analytics";
 
 export function DealDetailPage() {
   const { id } = useParams();
   const [deal, setDeal] = useState<Deal | null>(null);
   const [loading, setLoading] = useState(true);
+  const [bookmarked, setBookmarked] = useState(false);
+  const [priceHistory, setPriceHistory] = useState<Awaited<ReturnType<typeof getPriceHistory>>>([]);
 
   useEffect(() => {
     async function loadDeal() {
@@ -21,6 +29,9 @@ export function DealDetailPage() {
       const data = await getDealById(id);
       if (data) {
         setDeal(data);
+        void trackProductEvent({ eventType: "detail_view", entityId: data.id, metadata: { route: `${data.fromCode}-${data.toCode}`, source: "deal_detail" } });
+        setBookmarked(isBookmarkedDeal(data.id));
+        setPriceHistory(await getPriceHistory(data.fromCode, data.toCode));
       }
       setLoading(false);
     }
@@ -44,17 +55,38 @@ export function DealDetailPage() {
 
   const aiReasoning = deal.aiReasoning || deal.aiInsight.reason;
   const confidence = deal.confidence == null ? null : Math.round(deal.confidence * 100);
+  const durationMinutes = (() => {
+    const match = deal.duration.match(/(?:(\d+)h)?\s*(?:(\d+)m)?/i);
+    return match && (Number(match[1] ?? 0) * 60 + Number(match[2] ?? 0)) > 0
+      ? Number(match[1] ?? 0) * 60 + Number(match[2] ?? 0)
+      : 1;
+  })();
+  const routeAssessment = assessRoute({
+    type: "DIRECT",
+    legs: [{
+      origin: deal.fromCode,
+      destination: deal.toCode,
+      price: deal.price,
+      extraCost: Math.max(0, deal.realTotal - deal.price),
+      durationMinutes,
+      departureAt: `${deal.departDate}T00:00:00Z`,
+      arrivalAt: `${deal.departDate}T00:00:00Z`,
+      baggageIncluded: deal.hiddenCosts.every((cost) => !/hành lý|baggage/i.test(cost.label) || cost.amount === 0),
+    }],
+    dataFresh: deal.validUntil ? new Date(deal.validUntil).getTime() > Date.now() : undefined,
+  });
   const shareDeal = async () => {
     const shareData = {
       title: `${deal.fromCode} → ${deal.toCode}`,
       text: `${deal.from} → ${deal.to}: ${formatVND(deal.price)}`,
       url: window.location.href,
     };
-    if (navigator.share) {
-      await navigator.share(shareData);
-      return;
+    try {
+      await shareOrCopy(shareData, navigator);
+      await trackProductEvent({ eventType: "share", entityId: deal.id, metadata: { route: `${deal.fromCode}-${deal.toCode}` } });
+    } catch (error) {
+      console.error("Share failed.", error);
     }
-    await navigator.clipboard.writeText(window.location.href);
   };
 
   return (
@@ -74,6 +106,21 @@ export function DealDetailPage() {
               className="p-2 hover:bg-white/5 rounded-full text-slate-400 transition-colors"
             >
               <Share2 className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              aria-label={bookmarked ? "Bỏ lưu deal" : "Lưu deal"}
+              aria-pressed={bookmarked}
+              onClick={() => {
+                if (!deal) return;
+                const next = toggleBookmarkedDeal(deal.id);
+                setBookmarked(next);
+                void saveRemoteBookmark(deal.id, next);
+                void trackProductEvent({ eventType: "bookmark", entityId: deal.id, metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}` } });
+              }}
+              className="p-2 hover:bg-white/5 rounded-full text-slate-400 transition-colors"
+            >
+              <Bookmark className={`w-5 h-5 ${bookmarked ? "fill-sky-400 text-sky-400" : ""}`} />
             </button>
             <Link
               to={`/alerts?destination=${encodeURIComponent(deal.toCode)}&origin=${encodeURIComponent(deal.fromCode)}`}
@@ -177,6 +224,35 @@ export function DealDetailPage() {
             </section>
 
             {/* Data-backed explanation */}
+            {priceHistory.length > 0 ? (
+              <PriceHistoryChart data={priceHistory} currentPrice={deal.price} normalPrice={deal.normalPrice} />
+            ) : (
+              <section className="bg-slate-900/50 border border-white/5 rounded-3xl p-6">
+                <h3 className="text-white font-bold">Lịch sử giá</h3>
+                <p className="text-slate-500 text-sm mt-2">Chưa có đủ quan sát lịch sử cho tuyến {deal.fromCode} → {deal.toCode}. Hệ thống không suy đoán biểu đồ khi thiếu dữ liệu.</p>
+              </section>
+            )}
+
+            <section className="bg-slate-900/50 border border-white/5 rounded-3xl p-6">
+              <div className="flex items-center justify-between gap-4 mb-3">
+                <div>
+                  <h3 className="text-white font-bold">Đánh giá phương án hiện tại</h3>
+                  <p className="text-slate-500 text-xs mt-1">Tính trên itinerary được nhà cung cấp trả về; chưa suy đoán phương án thay thế.</p>
+                </div>
+                <span className={`text-xs font-black uppercase ${routeAssessment.riskLevel === "low" ? "text-emerald-400" : routeAssessment.riskLevel === "medium" ? "text-amber-400" : "text-red-400"}`}>
+                  Risk {routeAssessment.riskLevel}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-4 text-sm text-slate-300">
+                <span>Tổng cost: <strong className="text-emerald-400">{formatVND(routeAssessment.totalCost)}</strong></span>
+                <span>Thời lượng: <strong className="text-white">{routeAssessment.totalDurationMinutes} phút</strong></span>
+              </div>
+              {routeAssessment.riskReasons.length > 0 && <p className="text-amber-300 text-xs mt-3">{routeAssessment.riskReasons.join(" ")}</p>}
+            </section>
+
+            <HiddenCostAnalyzer deal={deal} />
+
+            {/* Data-backed explanation */}
             <section className="bg-sky-500/5 border border-sky-500/10 rounded-3xl p-8 relative overflow-hidden">
                <div className="absolute -top-10 -right-10 w-40 h-40 bg-sky-500/10 blur-3xl rounded-full" />
                <div className="relative z-10">
@@ -218,7 +294,7 @@ export function DealDetailPage() {
                 
                 <button 
                   onClick={() => {
-                    const bookingUrl = deal.bookingUrl ||
+                    const bookingUrl = deal.affiliateUrl || deal.bookingUrl ||
                       getBestBookingUrl({
                         fromCode: deal.fromCode,
                         toCode: deal.toCode,
@@ -230,6 +306,7 @@ export function DealDetailPage() {
                         price: deal.price,
                       });
                     window.open(bookingUrl, '_blank', 'noopener,noreferrer');
+                    void trackProductEvent({ eventType: "booking_click", entityId: deal.id, metadata: { provider: deal.affiliateNetwork ?? deal.linkKind ?? "booking_link", route: `${deal.fromCode}-${deal.toCode}` } });
                   }}
                   className={`w-full py-4 rounded-2xl text-center font-black tracking-tight flex flex-col gap-1 ${getRecommendationColor(deal.aiInsight.recommendation)} cursor-pointer hover:opacity-90 active:scale-[0.98] transition-all shadow-lg`}
                 >
@@ -306,7 +383,7 @@ export function DealDetailPage() {
                   <div className="space-y-2 mb-4">
                     <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider mb-3">Chọn nơi đặt vé:</p>
                     {bookingOptions.map((opt) => (
-                      <button
+                  <button
                         key={opt.label}
                         onClick={() => window.open(opt.url, '_blank', 'noopener,noreferrer')}
                         className="w-full flex items-center justify-between px-4 py-3 bg-slate-800/60 hover:bg-slate-700/60 border border-white/8 hover:border-sky-500/30 rounded-xl transition-all group"

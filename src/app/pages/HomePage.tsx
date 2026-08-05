@@ -8,6 +8,9 @@ import {
 import { DealCard } from "../components/DealCard";
 import { formatVND, Deal } from "../data/deals";
 import { getDeals, getTrackedRoutes } from "../data/api";
+import { rankPersonalizedFeed } from "../domain/travelFeed";
+import { getUserPreferences } from "../lib/preferences";
+import { buildTravelFeedSections } from "../domain/travelFeedSections";
 
 // ─────────────────────────────────────────────────
 // ANIMATED COUNTER HOOK
@@ -255,10 +258,11 @@ export function HomePage() {
 
   useEffect(() => {
     Promise.all([getDeals(), getTrackedRoutes()]).then(([loadedDeals, trackedRoutes]) => {
-      setDeals(loadedDeals);
+      setDeals(rankPersonalizedFeed(loadedDeals, getUserPreferences()));
       setTrackedRouteCount(trackedRoutes.length);
     });
   }, []);
+  const feedSections = buildTravelFeedSections(deals, getUserPreferences());
 
   useEffect(() => {
     if (deals.length < 2) return;
@@ -427,7 +431,7 @@ export function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {deals.slice(0, 4).map((deal) => (
+            {feedSections.hot.map((deal) => (
               <DealCard key={deal.id} deal={deal} />
             ))}
           </div>
@@ -443,6 +447,26 @@ export function HomePage() {
           )}
         </div>
       </section>
+
+      {deals.length > 0 && (
+        <section className="py-16 border-t border-white/5" aria-label="Các section feed dữ liệu">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+            {[
+              ["Mới phát hiện", feedSections.newlyDetected],
+              ["Giảm giá lớn nhất", feedSections.biggestDrops],
+              ["Đề xuất theo preference", feedSections.recommendations],
+              ["Điểm đến đang nổi bật", feedSections.trendingDestinations],
+            ].map(([title, items]) => (
+              <div key={title as string}>
+                <h2 className="text-white text-2xl font-extrabold mb-5">{title as string}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  {(items as Deal[]).map((deal) => <DealCard key={`${title}-${deal.id}`} deal={deal} />)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ═══════════════════════════════════════════
           ALERT CTA

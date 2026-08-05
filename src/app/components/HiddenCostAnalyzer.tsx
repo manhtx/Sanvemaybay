@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { AlertTriangle, CheckCircle, Info } from "lucide-react";
 import { Deal, formatVND } from "../data/deals";
 
@@ -6,9 +7,21 @@ interface HiddenCostAnalyzerProps {
 }
 
 export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
-  const extra = deal.realTotal - deal.advertisedTotal;
-  const extraPercent = Math.round((extra / deal.advertisedTotal) * 100);
+  const [userCosts, setUserCosts] = useState({ baggage: 0, seat: 0, payment: 0 });
+  const knownExtra = Math.max(0, deal.realTotal - deal.advertisedTotal);
+  const userExtra = userCosts.baggage + userCosts.seat + userCosts.payment;
+  const estimatedTotal = deal.advertisedTotal + knownExtra + userExtra;
+  const extra = Math.max(0, estimatedTotal - deal.advertisedTotal);
+  const extraPercent = deal.advertisedTotal > 0
+    ? Math.round((extra / deal.advertisedTotal) * 100)
+    : 0;
   const isCostly = extraPercent > 30;
+
+  const userFields = useMemo(() => [
+    ["baggage", "Hành lý thêm"],
+    ["seat", "Chọn chỗ"],
+    ["payment", "Phí thanh toán"],
+  ] as const, []);
 
   return (
     <div className="bg-slate-900 border border-white/8 rounded-2xl p-5">
@@ -59,6 +72,24 @@ export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
             </span>
           </div>
         ))}
+        <div className="mt-3 pt-3 border-t border-white/5 space-y-2">
+          <p className="text-slate-500 text-xs">Tuỳ chọn cá nhân (chưa gồm trong giá):</p>
+          {userFields.map(([key, label]) => (
+            <label key={key} className="flex items-center justify-between gap-3 text-xs text-slate-400">
+              <span>{label}</span>
+              <input
+                aria-label={label}
+                type="number"
+                min={0}
+                step={50000}
+                value={userCosts[key] || ""}
+                onChange={(event) => setUserCosts((current) => ({ ...current, [key]: Math.max(0, Number(event.target.value) || 0) }))}
+                placeholder="0"
+                className="w-32 bg-slate-800 border border-white/10 text-white rounded-lg px-2 py-1.5 text-right"
+              />
+            </label>
+          ))}
+        </div>
       </div>
 
       {/* Divider */}
@@ -67,7 +98,7 @@ export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
           <span className="text-slate-300" style={{ fontWeight: 600 }}>Tổng thực tế phải trả</span>
           <div className="text-right">
             <div className="text-white" style={{ fontSize: "1.25rem", fontWeight: 800 }}>
-              {formatVND(deal.realTotal)}
+              {formatVND(estimatedTotal)}
             </div>
             <div className="text-slate-500 text-xs">so với giá quảng cáo {formatVND(deal.advertisedTotal)}</div>
           </div>

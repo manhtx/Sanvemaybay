@@ -1,5 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireInternalSecret } from "../_shared/internal-auth.ts";
+import { matchesAlert, selectDailyDeal } from "../_shared/alert-matching.ts";
+import { nextNotificationRetry } from "../_shared/retry-policy.ts";
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -105,34 +107,20 @@ Deno.serve(async (request) => {
     let failed = 0;
 
     for (const alert of alerts ?? []) {
-      const matchingDeals = (deals ?? []).filter((deal) => {
-        const destinationMatches =
-          alert.destination_code
-            ? alert.destination_code === deal.to_code
-            : alert.destination === deal.to;
-        const originMatches = !alert.origin_code || alert.origin_code === deal.from_code;
-        const budgetMatches = !alert.budget || Number(deal.price) <= Number(alert.budget);
-        const discountMatches = Number(deal.discount) >= Number(alert.discount_threshold ?? 0);
-        const regionMatches =
-          !alert.preferred_regions?.length ||
-          (deal.trip_type === "domestic"
-            ? alert.preferred_regions.includes("Domestic")
-            : alert.preferred_regions.includes("International"));
-        return destinationMatches && originMatches && budgetMatches && discountMatches && regionMatches;
-      });
+      let matchingDeals = (deals ?? []).filter((deal) => matchesAlert(alert, deal));
 
       if (alert.frequency === "daily") {
         const today = new Date();
         today.setUTCHours(0, 0, 0, 0);
-        const { count } = await supabase
+        const { count, error: deliveryCountError } = await supabase
           .from("notification_deliveries")
           .select("id", { count: "exact", head: true })
           .eq("alert_id", alert.id)
           .eq("status", "sent")
           .gte("created_at", today.toISOString());
+        if (deliveryCountError) throw deliveryCountError;
         if ((count ?? 0) > 0) continue;
-        matchingDeals.sort((a, b) => Number(b.deal_score ?? 0) - Number(a.deal_score ?? 0));
-        matchingDeals.splice(1);
+        matchingDeals = selectDailyDeal(matchingDeals);
       }
 
       for (const deal of matchingDeals) {
@@ -145,12 +133,14 @@ Deno.serve(async (request) => {
         for (const channel of channels) {
           const { data: existing } = await supabase
             .from("notification_deliveries")
-            .select("id,status")
+            .select("id,status,attempt_count,next_retry_at")
             .eq("alert_id", alert.id)
             .eq("deal_id", deal.id)
             .eq("channel", channel.name)
             .maybeSingle();
           if (existing?.status === "sent") continue;
+          if (existing?.status === "failed" && Number(existing.attempt_count ?? 0) >= 3) continue;
+          if (existing?.status === "failed" && existing.next_retry_at && new Date(existing.next_retry_at) > new Date()) continue;
 
           try {
             const providerId = await channel.send();
@@ -161,16 +151,21 @@ Deno.serve(async (request) => {
               status: "sent",
               provider_message_id: providerId,
               error_message: null,
+              attempt_count: Number(existing?.attempt_count ?? 0),
+              next_retry_at: null,
               created_at: new Date().toISOString(),
             }, { onConflict: "alert_id,deal_id,channel" });
             sent++;
           } catch (error) {
+            const retry = nextNotificationRetry(Number(existing?.attempt_count ?? 0));
             await supabase.from("notification_deliveries").upsert({
               alert_id: alert.id,
               deal_id: deal.id,
               channel: channel.name,
               status: "failed",
               error_message: error instanceof Error ? error.message : "Unknown delivery error",
+              attempt_count: retry.attemptCount,
+              next_retry_at: retry.nextRetryAt ?? null,
               created_at: new Date().toISOString(),
             }, { onConflict: "alert_id,deal_id,channel" });
             failed++;

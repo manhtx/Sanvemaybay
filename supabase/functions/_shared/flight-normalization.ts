@@ -34,6 +34,8 @@ export function buildGoogleFlightsSourceUrl(input: {
 
 export function normalizeProviderOptions(options: ProviderFlightOption[], context: FlightRouteContext): Record<string, unknown>[] {
   const unique = new Map<string, Record<string, unknown>>();
+  const providerSource = context.provider_source ?? "serpapi_google_flights";
+  const linkKind = providerSource.includes("archive") ? "historical" : "live_source";
   for (const option of options) {
     const firstLeg = option.flights?.[0];
     const price = option.price;
@@ -60,7 +62,8 @@ export function normalizeProviderOptions(options: ProviderFlightOption[], contex
       flight_number: firstLeg.flight_number.trim(),
       stops,
       duration: `${Math.floor(totalDuration / 60)}h ${totalDuration % 60}m`,
-      source: context.provider_source ?? "serpapi_google_flights",
+      source: providerSource,
+      link_kind: linkKind,
       booking_url: buildGoogleFlightsSourceUrl({
         originCode: context.origin_code,
         destinationCode: context.destination_code,

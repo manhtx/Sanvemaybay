@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { DealCard } from "../components/DealCard";
 import { Deal } from "../data/deals";
+import { formatVND } from "../data/deals";
+import { compareDeals } from "../domain/dealComparison";
 import { Link } from "react-router";
 import { getDeals } from "../data/api";
 import { useEffect } from "react";
@@ -53,6 +55,7 @@ export function DealsPage() {
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
   const [selectedWatchDest, setSelectedWatchDest] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [comparisonIds, setComparisonIds] = useState<string[]>([]);
   const baseDestinations = useMemo(
     () => [...new Set(deals.map((deal) => deal.to))],
     [deals],
@@ -111,6 +114,11 @@ export function DealsPage() {
       }, {} as Record<string, number>),
     [deals]
   );
+  const comparisonDeals = useMemo(
+    () => filtered.filter((deal) => comparisonIds.includes(deal.id)),
+    [comparisonIds, filtered],
+  );
+  const comparisonRows = useMemo(() => compareDeals(comparisonDeals), [comparisonDeals]);
 
   return (
     <div className="pt-24 pb-16">
@@ -289,6 +297,38 @@ export function DealsPage() {
           ))}
         </div>
 
+        {comparisonRows.length > 0 && (
+          <section className="mb-8 rounded-2xl border border-sky-500/20 bg-sky-500/5 p-5" aria-label="So sánh deal">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 className="text-white font-bold">So sánh phương án</h2>
+                <p className="text-slate-500 text-xs">So sánh theo tổng chi phí, không chỉ giá vé.</p>
+              </div>
+              <button type="button" onClick={() => setComparisonIds([])} className="text-slate-400 hover:text-white text-xs">Xóa lựa chọn</button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="text-slate-500 text-xs uppercase">
+                  <tr><th className="py-2 pr-4">Route</th><th className="py-2 pr-4">Giá vé</th><th className="py-2 pr-4">Tổng cost</th><th className="py-2 pr-4">Thời lượng</th><th className="py-2 pr-4">Dừng</th><th className="py-2 pr-4">Hoàn/đổi</th><th className="py-2">Risk</th></tr>
+                </thead>
+                <tbody>
+                  {comparisonRows.map((row) => (
+                    <tr key={row.id} className="border-t border-white/5 text-slate-300">
+                      <td className="py-3 pr-4 font-semibold text-white">{row.route}</td>
+                      <td className="py-3 pr-4">{formatVND(row.ticketPrice)}</td>
+                      <td className="py-3 pr-4 text-emerald-400 font-bold">{formatVND(row.totalCost)}</td>
+                      <td className="py-3 pr-4">{row.durationMinutes == null ? "Chưa có dữ liệu" : `${Math.floor(row.durationMinutes / 60)}h ${row.durationMinutes % 60}m`}</td>
+                      <td className="py-3 pr-4">{row.stops}</td>
+                      <td className="py-3 pr-4">{row.refundPolicy ?? "Chưa có dữ liệu"}</td>
+                      <td className="py-3">{row.risk}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
         {/* ── ACTIVE FILTER INDICATOR ── */}
         {(region !== "all" || flashOnly || selectedWatchDest || selectedMonth !== "all") && (
           <div className="flex items-center gap-3 mb-5 flex-wrap">
@@ -330,7 +370,24 @@ export function DealsPage() {
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filtered.map((deal: Deal) => (
-              <DealCard key={deal.id} deal={deal} />
+              <div key={deal.id} className="relative">
+                <DealCard deal={deal} />
+                <button
+                  type="button"
+                  aria-label={comparisonIds.includes(deal.id) ? `Bỏ ${deal.toCode} khỏi so sánh` : `So sánh ${deal.toCode}`}
+                  aria-pressed={comparisonIds.includes(deal.id)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setComparisonIds((current) => current.includes(deal.id)
+                      ? current.filter((id) => id !== deal.id)
+                      : current.length < 3 ? [...current, deal.id] : current);
+                  }}
+                  className={`absolute top-3 left-3 z-20 rounded-full px-2.5 py-1 text-[10px] font-bold border ${comparisonIds.includes(deal.id) ? "bg-sky-500 border-sky-400 text-white" : "bg-slate-950/80 border-white/20 text-slate-300"}`}
+                >
+                  {comparisonIds.includes(deal.id) ? "Đã chọn" : "So sánh"}
+                </button>
+              </div>
             ))}
           </div>
         ) : (

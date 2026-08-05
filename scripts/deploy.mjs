@@ -18,5 +18,8 @@ if (!branch) {
 }
 
 run("npm", ["run", "check"]);
+run("npm", ["run", "check:functions"]);
+run("npm", ["run", "test:functions"]);
+run("npm", ["run", "test:e2e"]);
 run("git", ["push", "--set-upstream", "origin", branch]);
 run("npm", ["exec", "--yes", "vercel@latest", "--", "--prod"]);

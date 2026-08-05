@@ -4,6 +4,8 @@ import { toast, Toaster } from "sonner";
 import { useSearchParams } from "react-router";
 import { formatVND } from "../data/deals";
 import { createAlert, getTrackedRoutes, TrackedRoute } from "../data/api";
+import { getUserPreferences, loadRemoteUserPreferences, saveRemoteUserPreferences, saveUserPreferences } from "../lib/preferences";
+import { trackProductEvent } from "../lib/analytics";
 
 const discountLevels = [
   { value: 20, label: "Từ -20%" },
@@ -27,10 +29,21 @@ export function AlertsPage() {
   const [contact, setContact] = useState(""); // email or Telegram Chat ID
   const [email, setEmail] = useState(""); // always collect email for confirmation
   const [discount, setDiscount] = useState(30);
-  const [fromCity, setFromCity] = useState(initialOrigin ?? "");
-  const [budgetMax, setBudgetMax] = useState(10000000);
+  const [fromCity, setFromCity] = useState(initialOrigin ?? getUserPreferences().homeAirport);
+  const [budgetMax, setBudgetMax] = useState(getUserPreferences().budget);
   const [preferredRegions, setPreferredRegions] = useState<string[]>(["Domestic", "International"]);
   const [frequency, setFrequency] = useState("instant");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
+  useEffect(() => {
+    loadRemoteUserPreferences().then((remote) => {
+      if (!remote) return;
+      setFromCity(remote.homeAirport);
+      setBudgetMax(remote.budget);
+      saveUserPreferences(remote);
+    });
+  }, []);
 
   const departureCities = useMemo(
     () =>
@@ -63,7 +76,8 @@ export function AlertsPage() {
       const origin =
         (initialOrigin && trackedRoutes.some((route) => route.originCode === initialOrigin)
           ? initialOrigin
-          : trackedRoutes[0]?.originCode) ?? "";
+          : trackedRoutes.find((route) => route.originCode === getUserPreferences().homeAirport)?.originCode
+            ?? trackedRoutes[0]?.originCode) ?? "";
       setFromCity(origin);
       const matchingDestination = trackedRoutes.find(
         (route) =>
@@ -126,6 +140,8 @@ export function AlertsPage() {
           budget: budgetMax,
           discount_threshold: discount,
           preferred_regions: preferredRegions,
+          date_from: dateFrom || undefined,
+          date_to: dateTo || undefined,
           frequency: frequency as "instant" | "daily",
           notify_telegram: channel === 'telegram',
           notify_email: true, // always notify via email as backup
@@ -134,6 +150,7 @@ export function AlertsPage() {
           channel: channel
         });
         successCount++;
+        void trackProductEvent({ eventType: "alert_created", entityId: dest, metadata: { route: `${fromCity}-${dest}`, channel } });
       }
       
       toast.success("🎉 Đã đăng ký báo giá thành công!", {
@@ -245,7 +262,11 @@ export function AlertsPage() {
                     <button
                       key={city.code}
                       type="button"
-                      onClick={() => setFromCity(city.code)}
+                      onClick={() => {
+                        setFromCity(city.code);
+                        saveUserPreferences({ homeAirport: city.code });
+                        void saveRemoteUserPreferences({ ...getUserPreferences(), homeAirport: city.code });
+                      }}
                       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm ${
                         fromCity === city.code
                           ? "bg-sky-500/15 border-sky-500/40 text-sky-400"
@@ -341,7 +362,12 @@ export function AlertsPage() {
                     max="50000000" 
                     step="500000"
                     value={budgetMax}
-                    onChange={(e) => setBudgetMax(Number(e.target.value))}
+                    onChange={(e) => {
+                      const nextBudget = Number(e.target.value);
+                      setBudgetMax(nextBudget);
+                      saveUserPreferences({ budget: nextBudget });
+                      void saveRemoteUserPreferences({ ...getUserPreferences(), budget: nextBudget });
+                    }}
                     className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
                   />
                   <div className="flex justify-between text-[10px] text-slate-600 font-bold">
@@ -351,6 +377,13 @@ export function AlertsPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-white/5">
+                  <div className="sm:col-span-2 space-y-3">
+                    <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest block">Khoảng ngày khởi hành (tuỳ chọn)</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input aria-label="Ngày đi từ" type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm" />
+                      <input aria-label="Ngày đi đến" type="date" value={dateTo} min={dateFrom || undefined} onChange={(e) => setDateTo(e.target.value)} className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm" />
+                    </div>
+                  </div>
                   {/* Regions */}
                   <div className="space-y-3">
                     <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest block">Khu vực ưa thích</label>

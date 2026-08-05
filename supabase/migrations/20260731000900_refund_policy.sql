@@ -1,0 +1,6 @@
+BEGIN;
+
+ALTER TABLE public.deals
+  ADD COLUMN IF NOT EXISTS refund_policy TEXT;
+
+COMMIT;

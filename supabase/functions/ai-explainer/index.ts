@@ -1,7 +1,18 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireInternalSecret } from "../_shared/internal-auth.ts";
 
 Deno.serve(async (req: Request) => {
-  const { dealId } = await req.json();
+  const unauthorized = requireInternalSecret(req);
+  if (unauthorized) return unauthorized;
+
+  const body = await req.json().catch(() => null);
+  const dealId = typeof body?.dealId === "string" ? body.dealId : "";
+  if (!dealId) {
+    return new Response(JSON.stringify({ error: "dealId is required" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
   
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
@@ -27,10 +38,11 @@ Deno.serve(async (req: Request) => {
       "Hệ thống chưa có dữ liệu để kết luận nguyên nhân thuộc về khuyến mãi hay mùa vụ.";
 
     // This function only explains measured facts. It does not invent a cause.
-    await supabase
+    const { error: updateError } = await supabase
       .from("deals")
       .update({ ai_reasoning: aiReasoning })
       .eq("id", dealId);
+    if (updateError) throw updateError;
 
     return new Response(JSON.stringify({ success: true, reasoning: aiReasoning }), {
       headers: { "Content-Type": "application/json" },

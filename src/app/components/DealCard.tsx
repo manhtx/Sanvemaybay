@@ -1,6 +1,9 @@
 import { Link } from "react-router";
-import { Plane, Clock, AlertTriangle, Zap, TrendingDown, Users, Calendar } from "lucide-react";
+import { Plane, Clock, AlertTriangle, Zap, TrendingDown, Users, Calendar, Bookmark } from "lucide-react";
 import { Deal, formatVND, getRecommendationColor, getRecommendationLabel, regionFlag } from "../data/deals";
+import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "../lib/bookmarks";
+import { useState } from "react";
+import { trackProductEvent } from "../lib/analytics";
 
 interface DealCardProps {
   deal: Deal;
@@ -22,11 +25,13 @@ function formatObservedAt(dateStr?: string) {
 }
 
 export function DealCard({ deal }: DealCardProps) {
+  const [bookmarked, setBookmarked] = useState(() => isBookmarkedDeal(deal.id));
   const priceDiff = deal.realTotal - deal.advertisedTotal;
   const hasHiddenCosts = priceDiff > 0;
 
   return (
-    <Link to={`/deals/${deal.id}`} className="group block">
+    <div className="relative group">
+      <Link to={`/deals/${deal.id}`} className="block">
       <div className="relative bg-slate-900 border border-white/8 rounded-2xl overflow-hidden hover:border-sky-500/40 hover:shadow-lg hover:shadow-sky-500/10 transition-all duration-300">
         {/* Image */}
         <div className="relative h-44 overflow-hidden">
@@ -211,6 +216,23 @@ export function DealCard({ deal }: DealCardProps) {
           )}
         </div>
       </div>
-    </Link>
+      </Link>
+      <button
+        type="button"
+        aria-label={bookmarked ? "Bỏ lưu deal" : "Lưu deal"}
+        aria-pressed={bookmarked}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const next = toggleBookmarkedDeal(deal.id);
+          setBookmarked(next);
+          void saveRemoteBookmark(deal.id, next);
+          void trackProductEvent({ eventType: "bookmark", entityId: deal.id, metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}`, source: "deal_card" } });
+        }}
+        className="absolute top-3 right-16 z-10 p-2 rounded-full bg-slate-950/70 text-white hover:bg-sky-500 transition-colors"
+      >
+        <Bookmark className={`w-4 h-4 ${bookmarked ? "fill-sky-400 text-sky-400" : "text-slate-300"}`} />
+      </button>
+    </div>
   );
 }

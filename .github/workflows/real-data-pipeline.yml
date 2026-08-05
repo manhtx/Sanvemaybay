@@ -27,10 +27,10 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
-          TARGET_DEALS: "1000"
-          PIPELINE_MAX_CYCLES: "1"
-          PIPELINE_ALLOW_BELOW_TARGET: "true"
+          TARGET_DEALS: "10"
+          PIPELINE_MAX_CYCLES: "6"
+          PIPELINE_ALLOW_BELOW_TARGET: "false"
           PIPELINE_FORCE_REFRESH: ${{ inputs.force_refresh || false }}
           SCAN_ROUTE_BATCH_COUNT: ${{ inputs.force_refresh && 88 || 12 }}
-          PIPELINE_CYCLE_DELAY_MS: "1000"
+          PIPELINE_CYCLE_DELAY_MS: "15000"
         run: npm run pipeline:live

@@ -40,6 +40,10 @@ export interface Deal {
   dealScore?: number;
   aiReasoning?: string;
   bookingUrl?: string;
+  affiliateUrl?: string;
+  affiliateNetwork?: string;
+  linkKind?: "live_affiliate" | "live_source" | "indicative" | "historical" | "stale";
+  refundPolicy?: string;
   observedAt?: string;
   validUntil?: string;
 }
@@ -47,6 +51,27 @@ export interface Deal {
 export interface PricePoint {
   date: string;
   price: number;
+}
+
+const validRisks = new Set<Deal["aiInsight"]["risk"]>(["low", "medium", "high"]);
+const validRecommendations = new Set<Deal["aiInsight"]["recommendation"]>(["buy_now", "wait", "book_alternative"]);
+
+export function normalizeAIInsight(input: unknown): Deal["aiInsight"] {
+  const value = input && typeof input === "object" ? input as Partial<Deal["aiInsight"]> : {};
+  const risk = validRisks.has(value.risk as Deal["aiInsight"]["risk"]) ? value.risk as Deal["aiInsight"]["risk"] : "medium";
+  const recommendation = validRecommendations.has(value.recommendation as Deal["aiInsight"]["recommendation"])
+    ? value.recommendation as Deal["aiInsight"]["recommendation"]
+    : "wait";
+  const score = Number(value.savingScore);
+  return {
+    reason: typeof value.reason === "string" && value.reason.trim() ? value.reason : "Chưa có giải thích dữ liệu.",
+    tags: Array.isArray(value.tags) ? value.tags.filter((tag): tag is string => typeof tag === "string") : [],
+    risk,
+    riskDetails: typeof value.riskDetails === "string" ? value.riskDetails : "Cần kiểm tra thêm dữ liệu trước khi đặt.",
+    recommendation,
+    recommendationNote: typeof value.recommendationNote === "string" ? value.recommendationNote : "Kiểm tra giá trực tiếp trước khi quyết định.",
+    savingScore: Number.isFinite(score) ? Math.max(0, Math.min(100, score)) : 0,
+  };
 }
 
 export const regionFlag: Record<Deal["region"], string> = {

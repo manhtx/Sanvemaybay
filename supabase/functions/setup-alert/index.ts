@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { validateAlertInput } from "../_shared/alert-validation.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,10 +12,6 @@ function json(body: unknown, status = 200): Response {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
-}
-
-function isEmail(value: unknown): value is string {
-  return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 function escapeHtml(value: string): string {
@@ -70,18 +67,12 @@ Deno.serve(async (req: Request) => {
       discount_threshold,
       preferred_regions,
       frequency,
+      date_from,
+      date_to,
     } = body;
 
-    if (!isEmail(email)) return json({ error: "Email không hợp lệ." }, 400);
-    if (typeof destination !== "string" || !destination.trim()) {
-      return json({ error: "Điểm đến không hợp lệ." }, 400);
-    }
-    if (!/^[A-Z]{3}$/.test(origin_code ?? "") || !/^[A-Z]{3}$/.test(destination_code ?? "")) {
-      return json({ error: "Mã sân bay không hợp lệ." }, 400);
-    }
-    if (channel === "telegram" && !/^-?\d+$/.test(telegram_id ?? "")) {
-      return json({ error: "Telegram Chat ID không hợp lệ." }, 400);
-    }
+    const validationError = validateAlertInput(body);
+    if (validationError) return json({ error: validationError }, 400);
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -132,6 +123,8 @@ Deno.serve(async (req: Request) => {
           : 20,
         preferred_regions: Array.isArray(preferred_regions) ? preferred_regions : [],
         frequency: frequency === "daily" ? "daily" : "instant",
+        date_from: date_from || null,
+        date_to: date_to || null,
         notify_email: true,
         notify_telegram: channel === "telegram",
         telegram_id: channel === "telegram" ? telegram_id : null,

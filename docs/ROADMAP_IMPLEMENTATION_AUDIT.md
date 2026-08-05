@@ -1,7 +1,7 @@
 # Roadmap Implementation Audit
 
 **Audit date:** 2026-08-04
-**Status:** Workspace implementation complete; migrations/functions deployed; provider data gate open
+**Status:** Workspace implementation complete; affiliate-link contract added; remote live-data and affiliate gates remain unverified
 **Scope:** Current workspace evidence only
 
 ## Verified current state
@@ -107,3 +107,12 @@ These are blockers for verification or production operation, not reasons to clai
 This document must be updated as implementation and verification progress. It must not be used to mark the roadmap complete while any code-feasible item remains unimplemented or any listed external dependency lacks evidence of resolution.
 
 Current audit conclusion: no code-feasible roadmap item remains unimplemented in this workspace. Remaining incomplete DoD rows are external-runtime gates with the endpoint/schema evidence recorded above and in the blocker table; they are not being represented as production-complete.
+
+## 2026-08-05 continuation evidence
+
+- `npm run test:integration` reached the configured remote Supabase project and returned `trackedRoutes: 88` and `publishedDeals: 202`; this count includes stale rows and is not a live-deal acceptance result.
+- A read-only query restricted to future departure dates and `valid_until > now()` returned zero active deals. `feed-snapshot` returned HTTP 200 with an empty live payload.
+- The top remote rows were observed from `serpapi_google_flights_archive`, had `valid_until` on 2026-08-04, and used Google Flights source URLs. They are historical/stale evidence, not affiliate-bookable offers.
+- Added `docs/LIVE_PROVIDER_AFFILIATE_CONTRACT.md` and migration `20260805000300_live_provider_affiliate_contract.sql`. The migration is not yet present in the remote schema: querying `deals.link_kind` returned PostgREST error `42703 column deals.link_kind does not exist`.
+- `npx supabase migration list` could not authenticate because the current Supabase account received HTTP 403 for the required database-access endpoint. No remote migration or function deployment was attempted after that failure.
+- Workspace verification after the contract change passed typecheck, lint, build, 58 Vitest tests, 17 shared Deno tests and all function checks.

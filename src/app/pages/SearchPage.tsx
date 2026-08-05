@@ -11,21 +11,46 @@ import {
 } from "lucide-react";
 import { Link } from "react-router";
 import { formatVND, Deal } from "../data/deals";
-import { searchDeals } from "../data/api";
+import { getTrackedRoutes, searchDeals } from "../data/api";
+import { uniqueOrigins } from "../data/origins";
 import { motion, AnimatePresence } from "motion/react";
 import { DealCard } from "../components/DealCard";
+import { getUserPreferences, loadRemoteUserPreferences, saveRemoteUserPreferences, saveUserPreferences } from "../lib/preferences";
 
-const departureCities = [
+const defaultDepartureCities = [
   { code: "HAN", name: "Hà Nội" },
   { code: "SGN", name: "TP. Hồ Chí Minh" },
   { code: "DAD", name: "Đà Nẵng" },
 ];
 
 export function SearchPage() {
-  const [budget, setBudget] = useState(15000000);
-  const [fromCity, setFromCity] = useState("HAN");
+  const [departureCities, setDepartureCities] = useState(defaultDepartureCities);
+  const [budget, setBudget] = useState(() => getUserPreferences().budget);
+  const [fromCity, setFromCity] = useState(() => getUserPreferences().homeAirport);
+  const [destination, setDestination] = useState("");
+  const [maxStops, setMaxStops] = useState(() => getUserPreferences().maxStops);
+  const [departureFrom, setDepartureFrom] = useState(() => getUserPreferences().departureFrom ?? "");
+  const [departureTo, setDepartureTo] = useState(() => getUserPreferences().departureTo ?? "");
+  const [maxFlightTimeMinutes, setMaxFlightTimeMinutes] = useState(() => getUserPreferences().maxFlightTimeMinutes);
   const [results, setResults] = useState<Deal[]>([]);
   const [isScanning, setIsScanning] = useState(false);
+
+  useEffect(() => {
+    getTrackedRoutes().then((routes) => {
+      const origins = uniqueOrigins(routes);
+      if (origins.length) setDepartureCities(origins);
+    });
+    loadRemoteUserPreferences().then((remote) => {
+      if (!remote) return;
+      setBudget(remote.budget);
+      setFromCity(remote.homeAirport);
+      setMaxStops(remote.maxStops);
+      setDepartureFrom(remote.departureFrom ?? "");
+      setDepartureTo(remote.departureTo ?? "");
+      setMaxFlightTimeMinutes(remote.maxFlightTimeMinutes);
+      saveUserPreferences(remote);
+    });
+  }, []);
 
   // Stats for the radar
   const stats = useMemo(() => {
@@ -41,12 +66,17 @@ export function SearchPage() {
     
     const found = await searchDeals({
       budget,
-      from: fromCity
+      from: fromCity,
+      destination,
+      maxStops,
+      departureFrom: departureFrom || undefined,
+      departureTo: departureTo || undefined,
+      maxFlightTimeMinutes,
     });
     
     setResults(found);
     setIsScanning(false);
-  }, [budget, fromCity]);
+  }, [budget, fromCity, destination, maxStops, departureFrom, departureTo, maxFlightTimeMinutes]);
 
   useEffect(() => {
     runSearch();
@@ -88,7 +118,11 @@ export function SearchPage() {
                 {departureCities.map(city => (
                   <button
                     key={city.code}
-                    onClick={() => setFromCity(city.code)}
+                    onClick={() => {
+                      setFromCity(city.code);
+                  saveUserPreferences({ homeAirport: city.code });
+                  void saveRemoteUserPreferences({ ...getUserPreferences(), homeAirport: city.code });
+                    }}
                     className={`py-3 px-2 rounded-2xl text-xs font-bold transition-all border ${
                       fromCity === city.code 
                         ? "bg-sky-500 border-sky-400 text-white shadow-lg shadow-sky-500/25" 
@@ -99,6 +133,28 @@ export function SearchPage() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+              <label htmlFor="search-destination" className="text-slate-500 text-xs font-bold uppercase tracking-widest block mb-3">
+                Điểm đến (tuỳ chọn)
+              </label>
+              <input id="search-destination" value={destination} onChange={(event) => setDestination(event.target.value)}
+                placeholder="Ví dụ: BKK, Bangkok, Thái Lan" className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500/40" />
+              <p className="text-slate-500 text-xs mt-2">Tìm theo mã sân bay, tên thành phố hoặc quốc gia.</p>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+              <label className="text-slate-500 text-xs font-bold uppercase tracking-widest block mb-3">Khoảng ngày khởi hành</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input aria-label="Ngày khởi hành từ" type="date" value={departureFrom} max={departureTo || undefined}
+                  onChange={(e) => { const value = e.target.value; setDepartureFrom(value); saveUserPreferences({ departureFrom: value || undefined }); void saveRemoteUserPreferences({ ...getUserPreferences(), departureFrom: value || undefined }); }}
+                  className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm" />
+                <input aria-label="Ngày khởi hành đến" type="date" value={departureTo} min={departureFrom || undefined}
+                  onChange={(e) => { const value = e.target.value; setDepartureTo(value); saveUserPreferences({ departureTo: value || undefined }); void saveRemoteUserPreferences({ ...getUserPreferences(), departureTo: value || undefined }); }}
+                  className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm" />
+              </div>
+              <p className="text-slate-500 text-xs mt-2">Bao gồm cả ngày bắt đầu và ngày kết thúc.</p>
             </div>
 
             {/* Budget Slider */}
@@ -116,7 +172,12 @@ export function SearchPage() {
                 max={50000000}
                 step={1000000}
                 value={budget}
-                onChange={(e) => setBudget(Number(e.target.value))}
+                onChange={(e) => {
+                  const nextBudget = Number(e.target.value);
+                  setBudget(nextBudget);
+                  saveUserPreferences({ budget: nextBudget });
+                  void saveRemoteUserPreferences({ ...getUserPreferences(), budget: nextBudget });
+                }}
                 className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
               <div className="flex justify-between mt-3 text-[10px] font-bold text-slate-600 uppercase">
@@ -124,6 +185,48 @@ export function SearchPage() {
                 <span>25M</span>
                 <span>50M</span>
               </div>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+              <label htmlFor="search-max-stops" className="text-slate-500 text-xs font-bold uppercase tracking-widest block mb-3">
+                Số điểm dừng tối đa
+              </label>
+              <select
+                id="search-max-stops"
+                value={maxStops}
+                onChange={(e) => {
+                  const nextStops = Number(e.target.value);
+                  setMaxStops(nextStops);
+                  saveUserPreferences({ maxStops: nextStops });
+                  void saveRemoteUserPreferences({ ...getUserPreferences(), maxStops: nextStops });
+                }}
+                className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500/40"
+              >
+                <option value={0}>Bay thẳng</option>
+                <option value={1}>Tối đa 1 điểm dừng</option>
+                <option value={2}>Tối đa 2 điểm dừng</option>
+                <option value={3}>Tối đa 3 điểm dừng</option>
+              </select>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+              <label htmlFor="search-max-flight-time" className="text-slate-500 text-xs font-bold uppercase tracking-widest block mb-3">
+                Thời lượng bay tối đa
+              </label>
+              <select id="search-max-flight-time" value={maxFlightTimeMinutes ?? ""}
+                onChange={(event) => {
+                  const value = event.target.value ? Number(event.target.value) : undefined;
+                  setMaxFlightTimeMinutes(value);
+                  saveUserPreferences({ maxFlightTimeMinutes: value });
+                  void saveRemoteUserPreferences({ ...getUserPreferences(), maxFlightTimeMinutes: value });
+                }}
+                className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500/40"
+              >
+                <option value="">Không giới hạn</option>
+                <option value="180">Tối đa 3 giờ</option>
+                <option value="360">Tối đa 6 giờ</option>
+                <option value="720">Tối đa 12 giờ</option>
+              </select>
             </div>
 
             {/* CTA Refresh */}
