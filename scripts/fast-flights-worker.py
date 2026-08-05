@@ -146,18 +146,31 @@ def search_route(route: dict[str, Any]) -> list[dict[str, Any]]:
         offset = START_OFFSET + index * 30
         outbound = iso_date(offset)
         returned = iso_date(offset + trip_length)
-        query = create_query(
-            flights=[
-                FlightQuery(date=outbound, from_airport=route["origin_code"], to_airport=route["destination_code"]),
-                FlightQuery(date=returned, from_airport=route["destination_code"], to_airport=route["origin_code"]),
-            ],
-            seat="economy",
-            trip="round-trip",
-            passengers=Passengers(adults=1),
-            currency="VND",
-            language="vi",
-        )
-        results = get_flights(query)
+        try:
+            query = create_query(
+                flights=[
+                    FlightQuery(date=outbound, from_airport=route["origin_code"], to_airport=route["destination_code"]),
+                    FlightQuery(date=returned, from_airport=route["destination_code"], to_airport=route["origin_code"]),
+                ],
+                seat="economy",
+                trip="round-trip",
+                passengers=Passengers(adults=1),
+                currency="VND",
+                language="vi",
+            )
+            results = get_flights(query)
+        except (IndexError, KeyError, TypeError, ValueError) as error:
+            # Google occasionally returns an incomplete result page for one
+            # date window. Keep the route alive and let later windows run.
+            print(json.dumps({
+                "window_failure": {
+                    "route": f"{route['origin_code']}-{route['destination_code']}",
+                    "outbound": outbound,
+                    "returned": returned,
+                    "reason": str(error),
+                }
+            }), file=sys.stderr)
+            continue
         observed_at = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()
         for result in results:
             try:
