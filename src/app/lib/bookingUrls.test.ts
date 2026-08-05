@@ -3,6 +3,7 @@ import {
   buildGoogleFlightsUrl,
   buildSkyscannerUrl,
   getBestBookingUrl,
+  getEffectiveDealBookingUrl,
 } from "./bookingUrls";
 
 const params = {
@@ -13,6 +14,21 @@ const params = {
 };
 
 describe("booking URL builders", () => {
+  it("uses affiliate links only for server-labelled live affiliate deals", () => {
+    expect(getEffectiveDealBookingUrl({
+      affiliateUrl: "https://partner.example/deal",
+      affiliateNetwork: "approved-network",
+      linkKind: "live_affiliate",
+      bookingUrl: "https://www.google.com/travel/flights?q=source",
+    }, "fallback")).toBe("https://partner.example/deal");
+    expect(getEffectiveDealBookingUrl({
+      affiliateUrl: "https://partner.example/deal",
+      affiliateNetwork: "approved-network",
+      linkKind: "live_source",
+      bookingUrl: "https://www.google.com/travel/flights?q=source",
+    }, "fallback")).toContain("google.com");
+  });
+
   it("builds a Google Flights query with route and dates", () => {
     const url = decodeURIComponent(buildGoogleFlightsUrl(params));
     expect(url).toContain("Flights to BKK from HAN on 2026-09-01 through 2026-09-05");

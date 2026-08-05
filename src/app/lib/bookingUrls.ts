@@ -71,6 +71,19 @@ export function getBestBookingUrl(p: BookingParams): string {
   return buildGoogleFlightsUrl(p);
 }
 
+/** Use an affiliate URL only when the server marked it as live and approved. */
+export function getEffectiveDealBookingUrl(deal: {
+  affiliateUrl?: string;
+  affiliateNetwork?: string;
+  linkKind?: string;
+  bookingUrl?: string;
+}, fallback: string): string {
+  if (deal.linkKind === "live_affiliate" && deal.affiliateNetwork && deal.affiliateUrl) {
+    return deal.affiliateUrl;
+  }
+  return deal.bookingUrl || fallback;
+}
+
 /**
  * Get ALL booking options for the UI panel
  * 

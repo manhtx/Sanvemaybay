@@ -8,7 +8,7 @@ import {
 import { getDealById, getPriceHistory } from "../data/api";
 import { Deal, formatVND, getRecommendationColor, getRecommendationLabel } from "../data/deals";
 import { motion } from "motion/react";
-import { getBestBookingUrl, getAllBookingOptions } from "../lib/bookingUrls";
+import { getBestBookingUrl, getAllBookingOptions, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "../lib/bookmarks";
 import { shareOrCopy } from "../lib/sharing";
 import { PriceHistoryChart } from "../components/PriceHistoryChart";
@@ -294,8 +294,7 @@ export function DealDetailPage() {
                 
                 <button 
                   onClick={() => {
-                    const bookingUrl = deal.affiliateUrl || deal.bookingUrl ||
-                      getBestBookingUrl({
+                    const fallbackUrl = getBestBookingUrl({
                         fromCode: deal.fromCode,
                         toCode: deal.toCode,
                         departDate: deal.departDate,
@@ -305,6 +304,7 @@ export function DealDetailPage() {
                         tripType: deal.tripType,
                         price: deal.price,
                       });
+                    const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
                     window.open(bookingUrl, '_blank', 'noopener,noreferrer');
                     void trackProductEvent({ eventType: "booking_click", entityId: deal.id, metadata: { provider: deal.affiliateNetwork ?? deal.linkKind ?? "booking_link", route: `${deal.fromCode}-${deal.toCode}` } });
                   }}
@@ -404,8 +404,7 @@ export function DealDetailPage() {
 
               <button 
                 onClick={() => {
-                  const bookingUrl = deal.bookingUrl ||
-                    getBestBookingUrl({
+                  const fallbackUrl = getBestBookingUrl({
                       fromCode: deal.fromCode,
                       toCode: deal.toCode,
                       departDate: deal.departDate,
@@ -415,6 +414,7 @@ export function DealDetailPage() {
                       tripType: deal.tripType,
                       price: deal.price,
                     });
+                  const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
                   window.open(bookingUrl, '_blank', 'noopener,noreferrer');
                 }}
                 className="w-full bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 py-5 rounded-2xl font-black text-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 group active:scale-[0.98]">
