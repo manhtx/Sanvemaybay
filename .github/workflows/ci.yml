@@ -11,6 +11,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       # Public client configuration is required so E2E mocks exercise the
       # same Supabase URL paths as the production client. Server credentials
