@@ -110,6 +110,14 @@ Current audit conclusion: no code-feasible roadmap item remains unimplemented in
 
 ## 2026-08-05 continuation evidence
 
+## 2026-08-05 provider replacement
+
+- SerpApi and the old `flight-scanner`, archive-import and live-pipeline paths were removed from the active repository path.
+- Added `scripts/fast-flights-worker.py`, based on the public `AWeirdDev/fast-flights` project. It queries round-trip windows, normalizes current source observations and posts them to the internal `flight-ingest` function.
+- Added `.github/workflows/fast-flights-pipeline.yml`, which installs `fast-flights`, discovers enabled routes, ingests observations and invokes `analyze-price`.
+- Added `supabase/functions/flight-ingest/index.ts` with internal-secret authentication, strict positive-price/HTTPS/source validation, enabled-route matching and service-role persistence.
+- Local real-source smoke on four enabled routes and one window returned 99 observations with current prices, airlines, dates and durations. This is source evidence, not yet remote persistence evidence because the new function is not deployed.
+
 - `npm run test:integration` reached the configured remote Supabase project and returned `trackedRoutes: 88` and `publishedDeals: 202`; this count includes stale rows and is not a live-deal acceptance result.
 - A read-only query restricted to future departure dates and `valid_until > now()` returned zero active deals. `feed-snapshot` returned HTTP 200 with an empty live payload.
 - The top remote rows were observed from `serpapi_google_flights_archive`, had `valid_until` on 2026-08-04, and used Google Flights source URLs. They are historical/stale evidence, not affiliate-bookable offers.

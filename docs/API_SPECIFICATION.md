@@ -11,7 +11,7 @@ The web client reads normalized deals, tracked routes and permitted price histor
 
 | Function | Contract | Authentication |
 |---|---|---|
-| `flight-scanner` | collect, normalize and persist provider options | internal secret |
+| `flight-ingest` | accept validated fast-flights worker observations and persist them | internal secret |
 | `analyze-price` | validate observations, score/analyze and persist history | internal secret |
 | `ai-explainer` | explain supplied evidence | internal secret |
 | `setup-alert` | validate and create an alert | public user flow / validated payload |

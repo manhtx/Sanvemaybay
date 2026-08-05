@@ -34,7 +34,7 @@ export function buildGoogleFlightsSourceUrl(input: {
 
 export function normalizeProviderOptions(options: ProviderFlightOption[], context: FlightRouteContext): Record<string, unknown>[] {
   const unique = new Map<string, Record<string, unknown>>();
-  const providerSource = context.provider_source ?? "serpapi_google_flights";
+  const providerSource = context.provider_source ?? "fast_flights_google";
   const linkKind = providerSource.includes("archive") ? "historical" : "live_source";
   for (const option of options) {
     const firstLeg = option.flights?.[0];

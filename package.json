@@ -15,12 +15,11 @@
     "check:functions": "for f in supabase/functions/*/index.ts; do npx --yes deno check --quiet \"$f\" || exit 1; done",
     "test:functions": "npx --yes deno test --allow-env supabase/functions/_shared",
     "test:integration": "node scripts/supabase-smoke.mjs",
-    "pipeline:live": "node scripts/live-pipeline.mjs",
     "check": "npm run typecheck && npm run lint && npm test && npm run build",
     "deploy": "node scripts/deploy.mjs",
     "supabase:link": "npx supabase link",
     "supabase:push": "npx supabase db push",
-    "supabase:functions": "npx supabase functions deploy flight-scanner && npx supabase functions deploy analyze-price && npx supabase functions deploy ai-explainer && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert && npx supabase functions deploy feed-snapshot"
+    "supabase:functions": "npx supabase functions deploy flight-ingest && npx supabase functions deploy analyze-price && npx supabase functions deploy ai-explainer && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert && npx supabase functions deploy feed-snapshot"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
