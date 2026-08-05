@@ -54,14 +54,6 @@ jobs:
       - name: Refresh public feed snapshot
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: |
-          curl --silent --show-error --retry 2 --retry-delay 5 \
-            -X POST "$VITE_SUPABASE_URL/functions/v1/feed-snapshot" \
-            -H "Content-Type: application/json" \
-            -H "apikey: $VITE_SUPABASE_ANON_KEY" \
-            -H "Authorization: Bearer $VITE_SUPABASE_ANON_KEY" \
-            -H "x-internal-secret: $INTERNAL_FUNCTION_SECRET" \
-            --data '{"force_refresh":true}' \
-            || echo "Feed refresh unavailable; the next TTL refresh will recover it."
+          python scripts/refresh-feed-snapshot.py
