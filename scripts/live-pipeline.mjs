@@ -93,7 +93,18 @@ for (let cycle = 1; cycle <= maxCycles; cycle += 1) {
     console.error(`Feed snapshot did not complete: ${error instanceof Error ? error.message : String(error)}`);
   }
   const hotDeals = await countHotDeals();
-  console.log(JSON.stringify({ cycle, observationsSaved: scan.observations_saved ?? 0, publishedThisCycle: analysis.deals_published ?? 0, feedSource: feed?.source ?? "unavailable", hotDeals, targetDeals, thresholds: { hotScore, hotDiscount, hotConfidence } }));
+  console.log(JSON.stringify({
+    cycle,
+    observationsSaved: scan.observations_saved ?? 0,
+    cachedWindows: scan.cached_windows ?? 0,
+    noProviderResultWindows: scan.no_provider_result_windows ?? 0,
+    scanFailures: scan.failures ?? [],
+    publishedThisCycle: analysis.deals_published ?? 0,
+    feedSource: feed?.source ?? "unavailable",
+    hotDeals,
+    targetDeals,
+    thresholds: { hotScore, hotDiscount, hotConfidence },
+  }));
   if (hotDeals >= targetDeals) {
     console.log(`Live pipeline succeeded with ${hotDeals} real hot deals.`);
     process.exit(0);
