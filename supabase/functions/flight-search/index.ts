@@ -75,6 +75,11 @@ Deno.serve(async (request) => {
       source: "travelpayouts_week_matrix",
       link_kind: affiliateUrl ? "live_affiliate" : "indicative",
       affiliate_url: affiliateUrl,
+      booking_url: `https://www.google.com/travel/flights?${new URLSearchParams({
+        q: `Flights to ${destination} from ${origin} on ${departDate} through ${returnDate}`,
+        hl: "vi",
+        curr: "VND",
+      }).toString()}`,
       observed_at: new Date().toISOString(),
     }];
   });

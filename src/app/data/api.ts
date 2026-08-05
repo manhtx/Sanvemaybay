@@ -264,7 +264,82 @@ export async function searchDeals(params: {
   maxFlightTimeMinutes?: number;
 }): Promise<Deal[]> {
   const all = await getDeals();
-  return filterDeals(all, params);
+  const live = await searchLiveDeals(params);
+  return filterDeals([...live, ...all], params);
+}
+
+async function searchLiveDeals(params: {
+  from?: string;
+  destination?: string;
+  departureFrom?: string;
+  departureTo?: string;
+}): Promise<Deal[]> {
+  const destination = params.destination?.trim().toUpperCase() ?? "";
+  const from = params.from?.trim().toUpperCase() ?? "";
+  if (!isSupabaseConfigured || !/^[A-Z]{3}$/.test(from) || !/^[A-Z]{3}$/.test(destination) ||
+    !params.departureFrom || !params.departureTo) return [];
+  const { data, error } = await supabase.functions.invoke("flight-search", {
+    body: {
+      origin: from,
+      destination,
+      outbound_date: params.departureFrom,
+      return_date: params.departureTo,
+    },
+  });
+  if (error || !Array.isArray(data?.results)) return [];
+  return data.results.flatMap((row: Record<string, unknown>, index: number) => {
+    const price = Number(row.price);
+    const departDate = typeof row.depart_date === "string" ? row.depart_date : "";
+    const returnDate = typeof row.return_date === "string" ? row.return_date : undefined;
+    if (!Number.isFinite(price) || price <= 0 || !departDate) return [];
+    const linkKind = row.link_kind === "live_affiliate" ? "live_affiliate" : "indicative";
+    const bookingUrl = sanitizeBookingUrl(row.booking_url);
+    const affiliateUrl = sanitizeBookingUrl(row.affiliate_url);
+    return [{
+      id: `live-search-${from}-${destination}-${departDate}-${index}`,
+      from: from,
+      fromCode: from,
+      to: destination,
+      toCode: destination,
+      country: "",
+      region: "asia",
+      price,
+      normalPrice: price,
+      discount: 0,
+      currency: "VND",
+      airline: typeof row.airline_code === "string" ? row.airline_code : "Provider live",
+      airlineCode: typeof row.airline_code === "string" ? row.airline_code : "",
+      departDate,
+      returnDate,
+      duration: "Chưa có dữ liệu",
+      stops: Number(row.stops ?? 0),
+      stopCity: null,
+      seatsLeft: 0,
+      expiresIn: "Kiểm tra lại trước khi đặt",
+      image: "",
+      flightNumber: "",
+      aiInsight: {
+        reason: linkKind === "live_affiliate" ? "Kết quả provider live có deeplink affiliate." : "Giá tham khảo từ provider live; cần kiểm tra lại trước khi đặt.",
+        tags: [linkKind === "live_affiliate" ? "Affiliate" : "Indicative", "Tìm theo input"],
+        risk: "medium",
+        riskDetails: "Giá và chỗ trống có thể thay đổi khi mở trang nhà cung cấp.",
+        recommendation: "wait",
+        recommendationNote: "Kiểm tra giá trực tiếp trước khi quyết định.",
+        savingScore: 0,
+      },
+      hiddenCosts: [],
+      advertisedTotal: price,
+      realTotal: price,
+      isTrending: false,
+      isFlashDeal: false,
+      tripType: "international",
+      bookingUrl,
+      affiliateUrl,
+      affiliateNetwork: linkKind === "live_affiliate" ? "travelpayouts" : undefined,
+      linkKind,
+      observedAt: typeof row.observed_at === "string" ? row.observed_at : undefined,
+    } satisfies Deal];
+  });
 }
 
 export function filterDeals(deals: Deal[], params: {

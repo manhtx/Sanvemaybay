@@ -98,7 +98,7 @@ export function SearchPage() {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 border border-sky-500/20 rounded-full mb-6">
                 <Search className="w-3.5 h-3.5 text-sky-400" />
-                <span className="text-sky-400 text-[10px] font-bold uppercase tracking-wider">Tìm trong dữ liệu quan sát</span>
+                <span className="text-sky-400 text-[10px] font-bold uppercase tracking-wider">Tìm dữ liệu quan sát + provider live</span>
               </div>
               <h1 className="text-white text-4xl font-extrabold tracking-tight mb-4 leading-tight">
                 Quét Deal <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500">Thông Minh</span>
