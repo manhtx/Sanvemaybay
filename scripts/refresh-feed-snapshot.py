@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import urllib.parse
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -43,7 +44,9 @@ def request_json(url: str, method: str = "GET", body: bytes | None = None) -> ob
 today = datetime.now(timezone.utc).date().isoformat()
 now = datetime.now(timezone.utc).isoformat()
 deals = request_json(
-    f"{base_url}/rest/v1/deals?select=*&depart_date=gte.{today}&valid_until=gt.{now}&order=deal_score.desc"
+    f"{base_url}/rest/v1/deals?select=*&depart_date=gte.{today}"
+    f"&valid_until=gt.{urllib.parse.quote(now, safe='')}"
+    "&order=deal_score.desc"
 )
 if not isinstance(deals, list):
     raise RuntimeError("Supabase deals response was not a list")
