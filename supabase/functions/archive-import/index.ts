@@ -36,7 +36,7 @@ Deno.serve(async (request) => {
 
   for (const url of archives) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, { signal: AbortSignal.timeout(15_000) });
       if (!response.ok) throw new Error(`Archive returned HTTP ${response.status}`);
       const payload = await response.json();
       const params = payload.search_parameters ?? {};
