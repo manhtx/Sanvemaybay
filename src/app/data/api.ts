@@ -1,5 +1,7 @@
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
-import { Deal } from "./deals";
+import { Deal, normalizeAIInsight, PricePoint } from "./deals";
+import { rankTravelFeed } from "../domain/travelFeed";
+import { readFeedCache, writeFeedCache } from "../lib/feedCache";
 
 export interface TrackedRoute {
   id: string;
@@ -40,7 +42,15 @@ export function sanitizeBookingUrl(value: unknown): string | undefined {
  * to the browser.
  */
 export async function getDeals(): Promise<Deal[]> {
-  if (!isSupabaseConfigured) return [];
+  const storage = typeof window === "undefined" ? undefined : window.localStorage;
+  if (!isSupabaseConfigured) return readFeedCache(storage)?.deals ?? [];
+
+  const { data: snapshot, error: snapshotError } = await supabase.functions.invoke("feed-snapshot", { body: {} });
+  if (!snapshotError && Array.isArray(snapshot?.deals) && snapshot.deals.length > 0) {
+    const rankedSnapshot = rankTravelFeed(snapshot.deals.map(mapDealRow));
+    writeFeedCache(storage, rankedSnapshot);
+    return rankedSnapshot;
+  }
 
   const { data, error } = await supabase
     .from("deals")
@@ -51,10 +61,27 @@ export async function getDeals(): Promise<Deal[]> {
 
   if (error || !data?.length) {
     if (error) console.error("Deal service unavailable.", error);
-    return [];
+    return readFeedCache(storage)?.deals ?? [];
   }
 
-  return data.map(mapDealRow);
+  const ranked = rankTravelFeed(data.map(mapDealRow));
+  writeFeedCache(storage, ranked);
+  return ranked;
+}
+
+export async function getHistoricalDeals(): Promise<Deal[]> {
+  if (!isSupabaseConfigured) return [];
+  const { data, error } = await supabase
+    .from("deal_snapshots")
+    .select("id,payload,observed_at,valid_until")
+    .order("observed_at", { ascending: false })
+    .limit(500);
+  if (error || !data) return [];
+  return data.flatMap((snapshot) => {
+    const payload = snapshot.payload && typeof snapshot.payload === "object" ? snapshot.payload as Record<string, unknown> : null;
+    if (!payload) return [];
+    return [mapDealRow({ ...payload, id: snapshot.id, observed_at: snapshot.observed_at, valid_until: snapshot.valid_until })];
+  });
 }
 
 export function mapDealRow(row: Record<string, any>): Deal {
@@ -81,7 +108,7 @@ export function mapDealRow(row: Record<string, any>): Deal {
     expiresIn: row.expires_in,
     image: row.image,
     flightNumber: row.flight_number ?? "",
-    aiInsight: row.ai_insight,
+    aiInsight: normalizeAIInsight(row.ai_insight),
     hiddenCosts: row.hidden_costs,
     advertisedTotal: Number(row.advertised_total),
     realTotal: Number(row.real_total),
@@ -92,6 +119,7 @@ export function mapDealRow(row: Record<string, any>): Deal {
     dealScore: row.deal_score == null ? undefined : Number(row.deal_score),
     aiReasoning: row.ai_reasoning ?? undefined,
     bookingUrl: sanitizeBookingUrl(row.booking_url),
+    refundPolicy: typeof row.refund_policy === "string" && row.refund_policy.trim() ? row.refund_policy : undefined,
     observedAt: row.observed_at ?? undefined,
     validUntil: row.valid_until ?? undefined,
   };
@@ -119,6 +147,28 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
     console.error(`Error fetching deal ${id}:`, err);
     return undefined;
   }
+}
+
+export async function getPriceHistory(fromCode: string, toCode: string): Promise<PricePoint[]> {
+  if (!isSupabaseConfigured) return [];
+  const { data, error } = await supabase
+    .from("price_history")
+    .select("date, price")
+    .eq("from_code", fromCode)
+    .eq("to_code", toCode)
+    .order("date", { ascending: true })
+    .limit(180);
+  if (error) {
+    console.error("Price history service unavailable.", error);
+    return [];
+  }
+  return mapPriceHistoryRows(data ?? []);
+}
+
+export function mapPriceHistoryRows(rows: Array<{ date?: unknown; price?: unknown }>): PricePoint[] {
+  return rows
+    .map((row) => ({ date: String(row.date), price: Number(row.price) }))
+    .filter((point) => point.date && Number.isFinite(point.price) && point.price > 0);
 }
 
 export async function getTrackedRoutes(): Promise<TrackedRoute[]> {
@@ -155,6 +205,8 @@ export async function createAlert(alert: {
   budget?: number;
   discount_threshold?: number;
   preferred_regions?: string[];
+  date_from?: string;
+  date_to?: string;
   frequency?: "instant" | "daily";
   notify_telegram: boolean;
   telegram_id?: string;
@@ -200,12 +252,47 @@ export async function manageAlert(
 export async function searchDeals(params: {
   budget?: number;
   from?: string;
+  destination?: string;
+  maxStops?: number;
+  departureFrom?: string;
+  departureTo?: string;
+  maxFlightTimeMinutes?: number;
 }): Promise<Deal[]> {
   const all = await getDeals();
-  
-  return all.filter((d) => {
+  return filterDeals(all, params);
+}
+
+export function filterDeals(deals: Deal[], params: {
+  budget?: number;
+  from?: string;
+  destination?: string;
+  maxStops?: number;
+  departureFrom?: string;
+  departureTo?: string;
+  maxFlightTimeMinutes?: number;
+}): Deal[] {
+  const fromDate = params.departureFrom && /^\d{4}-\d{2}-\d{2}$/.test(params.departureFrom) ? params.departureFrom : undefined;
+  const toDate = params.departureTo && /^\d{4}-\d{2}-\d{2}$/.test(params.departureTo) ? params.departureTo : undefined;
+  if (fromDate && toDate && fromDate > toDate) return [];
+  const destination = params.destination?.trim().toLocaleLowerCase("vi");
+  const maxFlightTime = params.maxFlightTimeMinutes && Number.isFinite(params.maxFlightTimeMinutes) && params.maxFlightTimeMinutes > 0
+    ? params.maxFlightTimeMinutes
+    : undefined;
+  const durationInMinutes = (duration: string): number | undefined => {
+    const hours = duration.match(/(\d+)\s*h/i)?.[1];
+    const minutes = duration.match(/(\d+)\s*m/i)?.[1];
+    if (!hours && !minutes) return undefined;
+    return Number(hours ?? 0) * 60 + Number(minutes ?? 0);
+  };
+  return deals.filter((d) => {
     if (params.budget && d.price > params.budget) return false;
     if (params.from && d.fromCode !== params.from) return false;
+    if (destination && !`${d.to} ${d.toCode} ${d.country}`.toLocaleLowerCase("vi").includes(destination)) return false;
+    if (params.maxStops != null && d.stops > params.maxStops) return false;
+    if (fromDate && d.departDate < fromDate) return false;
+    if (toDate && d.departDate > toDate) return false;
+    const duration = maxFlightTime == null ? undefined : durationInMinutes(d.duration);
+    if (maxFlightTime != null && duration != null && duration > maxFlightTime) return false;
     return true;
   });
 }

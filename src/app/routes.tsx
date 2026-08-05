@@ -30,6 +30,10 @@ export const router = createBrowserRouter([
         }),
       },
       {
+        path: "historical-deals",
+        lazy: async () => ({ Component: (await import("./pages/HistoricalDealsPage")).HistoricalDealsPage }),
+      },
+      {
         path: "explore",
         lazy: async () => ({ Component: (await import("./pages/ExplorePage")).ExplorePage }),
       },
@@ -40,6 +44,18 @@ export const router = createBrowserRouter([
       {
         path: "alerts",
         lazy: async () => ({ Component: (await import("./pages/AlertsPage")).AlertsPage }),
+      },
+      {
+        path: "saved",
+        lazy: async () => ({ Component: (await import("./pages/SavedDealsPage")).SavedDealsPage }),
+      },
+      {
+        path: "auth",
+        lazy: async () => ({ Component: (await import("./pages/AuthPage")).AuthPage }),
+      },
+      {
+        path: "advisor",
+        lazy: async () => ({ Component: (await import("./pages/TripAdvisorPage")).TripAdvisorPage }),
       },
       {
         path: "alerts/confirm",
