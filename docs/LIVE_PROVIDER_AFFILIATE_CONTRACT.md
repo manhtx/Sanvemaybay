@@ -77,6 +77,7 @@ constructing untracked Skyscanner or airline URLs. The reference project
 demonstrates the provider's search integration, while Travelpayouts' link
 generator creates deep links containing the partner marker. The production
 adapter remains disabled until the partner approves the project and issues
-`TRAVELPAYOUTS_TOKEN`, `TRAVELPAYOUTS_MARKER`, and an approved program/deep-link
-configuration. A normal Google Flights or Skyscanner search URL is never
+`TRAVELPAYOUTS_TOKEN` plus an approved program/deep-link configuration. The
+partner marker is carried by that approved deep-link template; this adapter
+does not read a separate `TRAVELPAYOUTS_MARKER` runtime variable. A normal Google Flights or Skyscanner search URL is never
 promoted to `live_affiliate` merely because it contains route parameters.
