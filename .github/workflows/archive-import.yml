@@ -34,16 +34,23 @@ jobs:
           const body = await response.text();
           console.log(body);
           if (!response.ok) process.exit(1);
-          const analysis = await fetch(`${process.env.SUPABASE_URL}/functions/v1/analyze-price`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              apikey: process.env.SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
-              "x-internal-secret": process.env.INTERNAL_FUNCTION_SECRET,
-            },
-          });
-          const analysisBody = await analysis.text();
-          console.log(analysisBody);
-          if (!analysis.ok) process.exit(1);
+          let beforeTimestamp = "";
+          for (let page = 0; page < 20; page += 1) {
+            const analysis = await fetch(`${process.env.SUPABASE_URL}/functions/v1/analyze-price`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                apikey: process.env.SUPABASE_ANON_KEY,
+                Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+                "x-internal-secret": process.env.INTERNAL_FUNCTION_SECRET,
+              },
+              body: JSON.stringify(beforeTimestamp ? { before_timestamp: beforeTimestamp } : {}),
+            });
+            const analysisBody = await analysis.text();
+            console.log(analysisBody);
+            if (!analysis.ok) process.exit(1);
+            const result = JSON.parse(analysisBody);
+            if (!result.observations_processed || !result.oldest_observed_at) break;
+            beforeTimestamp = result.oldest_observed_at;
+          }
           NODE

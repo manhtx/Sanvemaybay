@@ -40,6 +40,14 @@ Deno.serve(async (request) => {
   const unauthorized = requireInternalSecret(request);
   if (unauthorized) return unauthorized;
 
+  let beforeTimestamp = "";
+  try {
+    const body = await request.json();
+    beforeTimestamp = typeof body?.before_timestamp === "string" ? body.before_timestamp : "";
+  } catch {
+    // Empty request bodies retain the default newest-flight page.
+  }
+
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -51,12 +59,15 @@ Deno.serve(async (request) => {
       { data: routes, error: routeError },
       { data: routeStats, error: routeStatsError },
     ] = await Promise.all([
-      supabase
-        .from("flights")
-        .select("*")
-        .gte("date", new Date().toISOString().slice(0, 10))
-        .order("timestamp", { ascending: false })
-        .limit(ANALYZE_FLIGHT_LIMIT),
+      (() => {
+        let query = supabase
+          .from("flights")
+          .select("*")
+          .gte("date", new Date().toISOString().slice(0, 10))
+          .order("timestamp", { ascending: false })
+          .limit(ANALYZE_FLIGHT_LIMIT);
+        return beforeTimestamp ? query.lt("timestamp", beforeTimestamp) : query;
+      })(),
       supabase.from("tracked_routes").select("id, deal_threshold_percent"),
       supabase.from("route_market_stats").select("*"),
     ]);
@@ -261,6 +272,7 @@ Deno.serve(async (request) => {
       ai_failures: aiFailures,
       ai_explanations_requested: aiExplanationsRequested,
       ai_explanations_skipped: aiExplanationsSkipped,
+      oldest_observed_at: flights?.at(-1)?.timestamp ?? null,
       skipped,
     });
   } catch (error) {
