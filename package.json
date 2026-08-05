@@ -10,11 +10,17 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:all": "npm test && npm run test:functions && npm run test:e2e",
+    "check:functions": "for f in supabase/functions/*/index.ts; do npx --yes deno check --quiet \"$f\" || exit 1; done",
+    "test:functions": "npx --yes deno test --allow-env supabase/functions/_shared",
+    "test:integration": "node scripts/supabase-smoke.mjs",
+    "pipeline:live": "node scripts/live-pipeline.mjs",
     "check": "npm run typecheck && npm run lint && npm test && npm run build",
     "deploy": "node scripts/deploy.mjs",
     "supabase:link": "npx supabase link",
     "supabase:push": "npx supabase db push",
-    "supabase:functions": "npx supabase functions deploy flight-scanner && npx supabase functions deploy analyze-price && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert"
+    "supabase:functions": "npx supabase functions deploy flight-scanner && npx supabase functions deploy analyze-price && npx supabase functions deploy ai-explainer && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert && npx supabase functions deploy feed-snapshot"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -76,6 +82,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/vite": "4.1.12",
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18.3.7",
