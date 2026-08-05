@@ -11,6 +11,12 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      # Public client configuration is required so E2E mocks exercise the
+      # same Supabase URL paths as the production client. Server credentials
+      # are intentionally never exposed to this job.
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
