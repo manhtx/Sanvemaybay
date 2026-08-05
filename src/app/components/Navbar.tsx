@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
-import { Plane, Bell, Search, Menu, X, Zap, TrendingDown } from "lucide-react";
+import { Plane, Bell, Search, Menu, X, Zap, TrendingDown, UserRound, Compass, History } from "lucide-react";
 
 export function Navbar() {
   const location = useLocation();
@@ -8,8 +8,10 @@ export function Navbar() {
 
   const navLinks = [
     { label: "Deal Nóng", href: "/deals", icon: TrendingDown },
+    { label: "Lịch sử deal", href: "/historical-deals", icon: History },
     { label: "Tìm Vé Thông Minh", href: "/search", icon: Search },
     { label: "Cài Báo Giá", href: "/alerts", icon: Bell },
+    { label: "Trip Advisor", href: "/advisor", icon: Compass },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -62,6 +64,7 @@ export function Navbar() {
               <Zap className="w-4 h-4" />
               Đặt Alert
             </Link>
+            <Link to="/auth" aria-label="Tài khoản" className="p-2 text-slate-400 hover:text-white"><UserRound className="w-5 h-5" /></Link>
           </div>
 
           {/* Mobile toggle */}
@@ -100,6 +103,7 @@ export function Navbar() {
               <Zap className="w-4 h-4" />
               Đặt Alert Miễn Phí
             </Link>
+            <Link to="/auth" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-4 py-3 rounded-lg text-slate-400 hover:text-white"><UserRound className="w-4 h-4" /> Tài khoản</Link>
           </div>
         )}
       </div>
