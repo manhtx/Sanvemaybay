@@ -7,14 +7,15 @@ deal và gửi cảnh báo qua email hoặc Telegram.
 
 - React + Vite: giao diện và truy vấn dữ liệu deal đã công bố.
 - Supabase Postgres: lưu quan sát giá, deal, alert và lịch sử gửi.
-- `flight-scanner`: lấy dữ liệu nhà cung cấp và lưu vào `flights`.
+- `scripts/fast-flights-worker.py`: quét dữ liệu source-backed từ `fast-flights`,
+  chuẩn hóa và ingest vào `flights`.
 - `analyze-price`: so sánh lịch sử và công bố deal đủ điều kiện.
 - `alert-processor`: ghép deal với alert và gửi thông báo.
 - `setup-alert`: kiểm tra yêu cầu, giới hạn tần suất và gửi email xác nhận.
 - `manage-alert`: xác nhận hoặc hủy đăng ký bằng liên kết có chữ ký.
 
-Frontend không gọi SerpApi hoặc Resend trực tiếp. Không đặt secret trong biến
-có tiền tố `VITE_`.
+Frontend không gọi provider bay hoặc Resend trực tiếp. Không đặt server secret
+trong biến có tiền tố `VITE_`.
 
 ## Chạy local
 
@@ -71,17 +72,13 @@ Read-only Supabase integration smoke test:
 npm run test:integration
 ```
 
-Live pipeline runner (chỉ dùng provider thật, không tạo mock):
+Production refresh is scheduled by `.github/workflows/fast-flights-pipeline.yml`.
+The worker calls `fast-flights → direct ingest → analyze-price → feed snapshot`
+using server-only GitHub Actions secrets. It never creates mock deals. The
+snapshot quality gate rejects sparse, expired or non-HTTPS rows.
 
-```bash
-TARGET_DEALS=1000 PIPELINE_MAX_CYCLES=48 npm run pipeline:live
-```
-
-Production refresh is scheduled by `.github/workflows/real-data-pipeline.yml`. Configure GitHub Actions secrets `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `INTERNAL_FUNCTION_SECRET`; provider keys stay in Supabase Edge Function secrets.
-
-Runner gọi `flight-scanner → analyze-price → feed-snapshot`, đếm deal còn hạn
-trong Supabase và chỉ exit thành công khi đạt target. Nếu thiếu secret, provider
-quota hoặc function chưa deploy, runner dừng với lỗi blocker rõ ràng.
+For the production Supabase migration/function deployment path, see
+[`docs/PRODUCTION_DEPLOYMENT_RUNBOOK.md`](docs/PRODUCTION_DEPLOYMENT_RUNBOOK.md).
 
 ## Cấu hình Supabase
 
@@ -93,14 +90,16 @@ npm run supabase:link -- --project-ref YOUR_PROJECT_REF
 npm run supabase:push
 ```
 
-2. Deploy các Edge Functions (bao gồm `feed-snapshot`):
-   - `flight-scanner`
+2. Deploy các Edge Functions (bao gồm `feed-snapshot` và `flight-search`):
+   - `flight-ingest`
    - `analyze-price`
    - `ai-explainer`
    - `setup-alert`
    - `alert-processor`
    - `manage-alert`
    - `feed-snapshot`
+   - `deal-redirect`
+   - `flight-search`
 
 ```bash
 npm run supabase:functions
@@ -110,7 +109,6 @@ npm run supabase:functions
 
 ```bash
 npx supabase secrets set \
-  SERPAPI_KEY=... \
   RESEND_API_KEY=... \
   ALERT_FROM_EMAIL='FlyCheap Alerts <alerts@example.com>' \
   TELEGRAM_BOT_TOKEN=... \
@@ -127,20 +125,15 @@ thoại với bot trước khi bot có thể gửi cảnh báo.
 
 ## Lịch chạy
 
-Không hard-code project URL hoặc token trong migration. Tạo ba Cron job trong
-Supabase Dashboard:
-
-1. `flight-scanner` mỗi 12 giờ.
-2. `analyze-price` sau scanner.
-3. `alert-processor` sau analyzer.
-
-Trong giai đoạn đầu, nên chạy lệch nhau 10 phút để mỗi bước hoàn thành trước
-khi bước kế tiếp bắt đầu. Ba request nội bộ phải gửi header
-`x-internal-secret` trùng với `INTERNAL_FUNCTION_SECRET`. Không dùng secret này
+Không hard-code project URL hoặc token trong migration. GitHub Actions chạy
+`fast-flights-pipeline.yml` theo lịch 12 giờ; workflow thực hiện scan, ingest,
+analyze và refresh snapshot theo thứ tự. Các function nội bộ dùng header
+`x-internal-secret` trùng với `INTERNAL_FUNCTION_SECRET`; không dùng secret này
 trong frontend hoặc biến môi trường có tiền tố `VITE_`.
 
-Chỉ bật Cron sau khi đã cấu hình `SERPAPI_KEY`; nếu chưa có key thật, scanner
-sẽ chủ động trả lỗi thay vì tạo dữ liệu giả.
+Chỉ bật pipeline sau khi đã cấu hình các provider credentials được phê duyệt;
+nếu thiếu credential, worker phải dừng hoặc giữ source-only, không tạo dữ liệu
+giả và không tự gắn affiliate URL.
 
 ## Quy tắc dữ liệu
 
@@ -157,8 +150,9 @@ sẽ chủ động trả lỗi thay vì tạo dữ liệu giả.
 - Alert chỉ hoạt động sau khi người nhận xác nhận email trong 24 giờ.
 - Không có tuyến mẫu: thêm các tuyến thật cần theo dõi vào `tracked_routes`.
 
-Mỗi cửa sổ ngày tương ứng một request tới nhà cung cấp dữ liệu. Có thể giảm
-`tracked_routes.departure_offsets_days` nếu cần kiểm soát quota SerpApi.
+Mỗi cửa sổ ngày tương ứng một request tới nhà cung cấp dữ liệu. Điều chỉnh
+`FAST_FLIGHTS_WINDOW_LIMIT` và `FAST_FLIGHTS_ROUTE_LIMIT` trong workflow để
+kiểm soát tải và thời gian scan.
 
 ## Deploy Vercel và push GitHub
 
@@ -174,13 +168,13 @@ branch hiện tại lên GitHub rồi mới deploy production lên Vercel. Đi�
 đảm GitHub và bản production dùng cùng một commit.
 
 Trên Vercel, cấu hình `VITE_SUPABASE_URL` và `VITE_SUPABASE_ANON_KEY`. Không
-đưa service-role key, SerpApi key, Resend key hoặc Telegram bot token lên
+đưa service-role key, provider token, Resend key hoặc Telegram bot token lên
 frontend/Vercel.
 
 ## Bảo mật
 
 Nếu repository từng chứa key thật, thêm `.gitignore` không đủ để thu hồi key.
-Phải rotate key tại SerpApi/Resend/Supabase và cân nhắc xóa secret khỏi lịch sử
+Phải rotate key tại provider/Resend/Supabase và cân nhắc xóa secret khỏi lịch sử
 Git trước khi công khai repository.
 
 Thiết kế ban đầu của giao diện được phát triển từ
