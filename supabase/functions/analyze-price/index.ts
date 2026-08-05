@@ -82,6 +82,20 @@ Deno.serve(async (request) => {
     const windowPrices = new Map<string, number[]>();
 
     for (const flight of flights ?? []) {
+      const windowKey = [
+        flight.scan_run_id,
+        flight.origin_code,
+        flight.destination_code,
+        flight.date,
+        flight.return_date,
+      ].join(":");
+      const prices = windowPrices.get(windowKey) ?? [];
+      const price = Number(flight.price);
+      if (Number.isFinite(price)) prices.push(price);
+      windowPrices.set(windowKey, prices);
+    }
+
+    for (const flight of flights ?? []) {
       if (!flight.itinerary_key || seenItineraries.has(flight.itinerary_key)) continue;
       seenItineraries.add(flight.itinerary_key);
 
@@ -92,24 +106,6 @@ Deno.serve(async (request) => {
         flight.date,
         flight.return_date,
       ].join(":");
-      if (!windowPrices.has(windowKey)) {
-        const { data: comparableFlights, error: comparableError } = await supabase
-          .from("flights")
-          .select("price")
-          .eq("scan_run_id", flight.scan_run_id)
-          .eq("origin_code", flight.origin_code)
-          .eq("destination_code", flight.destination_code)
-          .eq("date", flight.date)
-          .eq("return_date", flight.return_date);
-        if (comparableError) throw comparableError;
-        windowPrices.set(
-          windowKey,
-          (comparableFlights ?? [])
-            .map((item) => Number(item.price))
-            .filter(Number.isFinite),
-        );
-      }
-
       const comparablePrices = windowPrices.get(windowKey) ?? [];
       const stats = statsByRoute.get(`${flight.origin_code}:${flight.destination_code}`);
       const historicalSamples = Number(stats?.samples_30d ?? 0);
