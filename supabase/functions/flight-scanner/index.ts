@@ -16,6 +16,7 @@ const AMADEUS_CLIENT_ID = Deno.env.get("AMADEUS_CLIENT_ID") ?? "";
 const AMADEUS_CLIENT_SECRET = Deno.env.get("AMADEUS_CLIENT_SECRET") ?? "";
 const AMADEUS_BASE_URL = Deno.env.get("AMADEUS_BASE_URL") ?? "https://test.api.amadeus.com";
 const AMADEUS_CURRENCY = Deno.env.get("AMADEUS_CURRENCY") ?? "VND";
+const SERPAPI_REQUEST_DELAY_MS = Math.max(0, Number(Deno.env.get("SERPAPI_REQUEST_DELAY_MS") ?? 1500));
 
 function dateAfter(days: number): string {
   const value = new Date();
@@ -29,6 +30,8 @@ function json(body: unknown, status = 200): Response {
     headers: { "Content-Type": "application/json" },
   });
 }
+
+const sleep = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 Deno.serve(async (request) => {
   const unauthorized = requireInternalSecret(request);
@@ -150,6 +153,7 @@ Deno.serve(async (request) => {
             });
             providerSource = "amadeus_flight_offers";
           } else {
+            if (SERPAPI_REQUEST_DELAY_MS > 0) await sleep(SERPAPI_REQUEST_DELAY_MS);
             const query = new URLSearchParams({
               engine: "google_flights",
               departure_id: route.origin_code,
@@ -160,7 +164,11 @@ Deno.serve(async (request) => {
               hl: "vi",
               api_key: SERPAPI_KEY,
             });
-            const response = await fetch(`https://serpapi.com/search.json?${query}`);
+            let response = await fetch(`https://serpapi.com/search.json?${query}`);
+            if (response.status === 429) {
+              await sleep(5000);
+              response = await fetch(`https://serpapi.com/search.json?${query}`);
+            }
             if (!response.ok) throw new Error(`Provider returned HTTP ${response.status}`);
             const serpPayload = await response.json() as Record<string, any>;
             payload = serpPayload;
