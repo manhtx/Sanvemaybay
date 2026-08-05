@@ -1,5 +1,18 @@
 import { expect, test } from "@playwright/test";
 
+// Production reads the published snapshot first and only falls back to the
+// deals table. Keep E2E fixtures deterministic by explicitly exercising that
+// fallback unless a test opts into a feed-snapshot response.
+test.beforeEach(async ({ page }) => {
+  await page.route("**/functions/v1/feed-snapshot", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ deals: [] }),
+    });
+  });
+});
+
 test("homepage renders the opportunity-first experience", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Không cần biết đi đâu. Chỉ cần biết khi nào rẻ." })).toBeVisible();

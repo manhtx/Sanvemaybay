@@ -64,11 +64,17 @@ export function DealCard({ deal }: DealCardProps) {
 
           {/* Discount badge */}
           <div className="absolute top-3 right-3">
-            <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white text-xs leading-tight text-center" style={{ fontWeight: 800 }}>
-                -{deal.discount}%
+            {deal.linkKind === "indicative" ? (
+              <span className="block px-2.5 py-1.5 bg-amber-500/95 text-white text-[10px] rounded-full shadow-lg uppercase tracking-wide" style={{ fontWeight: 800 }}>
+                Giá tham khảo
               </span>
-            </div>
+            ) : (
+              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+                <span className="text-white text-xs leading-tight text-center" style={{ fontWeight: 800 }}>
+                  -{deal.discount}%
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Destination overlay */}
@@ -114,7 +120,9 @@ export function DealCard({ deal }: DealCardProps) {
           {/* Price section */}
           <div className="flex items-end justify-between mb-3">
             <div>
-              <div className="text-slate-500 text-xs line-through">{formatVND(deal.normalPrice)}</div>
+              {deal.linkKind !== "indicative" && (
+                <div className="text-slate-500 text-xs line-through">{formatVND(deal.normalPrice)}</div>
+              )}
               <div className="text-2xl text-emerald-400" style={{ fontWeight: 800, letterSpacing: "-0.02em" }}>
                 {formatVND(deal.price)}
               </div>
@@ -130,6 +138,14 @@ export function DealCard({ deal }: DealCardProps) {
             <div className={`px-3 py-1.5 rounded-lg text-xs ${getRecommendationColor(deal.aiInsight.recommendation)}`} style={{ fontWeight: 700 }}>
               {getRecommendationLabel(deal.aiInsight.recommendation)}
             </div>
+          </div>
+
+          <div className={`mb-3 rounded-lg border px-3 py-2 text-xs ${deal.linkKind === "live_affiliate" ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-300" : "border-amber-500/20 bg-amber-500/5 text-amber-300"}`}>
+            {deal.linkKind === "live_affiliate"
+              ? "Link đối tác đã được cấp — kiểm tra giá lần cuối trước khi đặt."
+              : deal.linkKind === "indicative"
+                ? "Giá lịch tham khảo từ provider; chưa phải cam kết còn chỗ."
+                : "Giá ghi nhận từ nguồn; có thể thay đổi khi mở trang đặt vé."}
           </div>
 
           {/* Departure date */}
