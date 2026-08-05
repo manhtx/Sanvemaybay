@@ -7,6 +7,10 @@ on:
         description: "Maximum enabled routes to scan"
         required: false
         default: "40"
+      window_limit:
+        description: "Round-trip date windows per route"
+        required: false
+        default: "4"
   schedule:
     - cron: "37 */12 * * *"
 
@@ -31,7 +35,7 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           FAST_FLIGHTS_ROUTE_LIMIT: ${{ inputs.route_limit || '40' }}
-          FAST_FLIGHTS_WINDOW_LIMIT: "4"
+          FAST_FLIGHTS_WINDOW_LIMIT: ${{ inputs.window_limit || '4' }}
           FAST_FLIGHTS_START_OFFSET: "14"
         run: python scripts/fast-flights-worker.py
       - name: Analyze and publish verified source deals
