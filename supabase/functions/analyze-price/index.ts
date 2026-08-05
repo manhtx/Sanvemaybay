@@ -10,6 +10,8 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
+const AI_EXPLANATION_BATCH_LIMIT = Math.max(0, Number(Deno.env.get("AI_EXPLANATION_BATCH_LIMIT") ?? 20));
+
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
   const middle = Math.floor(sorted.length / 2);
@@ -63,6 +65,8 @@ Deno.serve(async (request) => {
 
     const published: string[] = [];
     const aiFailures: Array<{ itinerary: string; reason: string }> = [];
+    let aiExplanationsRequested = 0;
+    let aiExplanationsSkipped = 0;
     const skipped: Array<{ itinerary: string; reason: string }> = [];
     const priceHistoryRows = (flights ?? [])
       .map(toPriceHistoryRow)
@@ -230,7 +234,8 @@ Deno.serve(async (request) => {
         payload: deal,
       }, { onConflict: "itinerary_key,observed_at" });
       if (snapshotError) throw snapshotError;
-      if (publishedDeal?.id) {
+      if (publishedDeal?.id && aiExplanationsRequested < AI_EXPLANATION_BATCH_LIMIT) {
+        aiExplanationsRequested += 1;
         try {
           await requestAiExplanation(publishedDeal.id);
         } catch (error) {
@@ -239,6 +244,8 @@ Deno.serve(async (request) => {
             reason: error instanceof Error ? error.message : "Unknown AI explanation error",
           });
         }
+      } else if (publishedDeal?.id) {
+        aiExplanationsSkipped += 1;
       }
     }
 
@@ -255,6 +262,8 @@ Deno.serve(async (request) => {
       price_history_saved: priceHistoryRows.length,
       deals_published: published.length,
       ai_failures: aiFailures,
+      ai_explanations_requested: aiExplanationsRequested,
+      ai_explanations_skipped: aiExplanationsSkipped,
       skipped,
     });
   } catch (error) {

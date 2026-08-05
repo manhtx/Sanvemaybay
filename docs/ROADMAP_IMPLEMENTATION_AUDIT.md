@@ -26,6 +26,8 @@ Migration `20260805000100_deal_snapshots.sql` adds immutable source-backed snaps
 
 `.github/workflows/real-data-pipeline.yml` now schedules one bounded adaptive batch every 12 hours and supports manual dispatch. It requires GitHub Actions secrets `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` and `INTERNAL_FUNCTION_SECRET`; provider credentials remain server-side Supabase secrets.
 
+`analyze-price` limits sequential `ai-explainer` enrichment to `AI_EXPLANATION_BATCH_LIMIT` (default 20) per invocation; deal scoring, publication and snapshots still process the full provider batch. This prevents the Supabase 150-second idle timeout when hundreds of real deals are analyzed together.
+
 - `npm run check` passes: typecheck, ESLint, 58 Vitest tests and production build.
 - Current automated tests include 20 Vitest files, 58 unit/domain tests, 15 shared Deno tests and 24 Playwright executions across Desktop Chromium and Pixel 5 mobile emulation.
 - CI now runs frontend checks, all seven Edge Function typechecks, all 15 shared Deno tests and the 22 responsive Playwright executions; Supabase integration smoke remains an environment-credentialed check.
