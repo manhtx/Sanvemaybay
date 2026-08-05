@@ -47,6 +47,7 @@ jobs:
           INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
         run: |
           curl --fail-with-body --retry 2 --retry-delay 5 \
+            --connect-timeout 15 --max-time 180 \
             -X POST "$VITE_SUPABASE_URL/functions/v1/analyze-price" \
             -H "Content-Type: application/json" \
             -H "apikey: $VITE_SUPABASE_ANON_KEY" \
