@@ -23,6 +23,7 @@ jobs:
           INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
           TARGET_DEALS: "1000"
           PIPELINE_MAX_CYCLES: "1"
+          PIPELINE_ALLOW_BELOW_TARGET: "true"
           SCAN_ROUTE_BATCH_COUNT: "12"
           PIPELINE_CYCLE_DELAY_MS: "1000"
         run: npm run pipeline:live
