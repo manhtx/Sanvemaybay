@@ -3,6 +3,10 @@ name: Deploy FlyCheap Supabase runtime
 on:
   workflow_dispatch:
 
+concurrency:
+  group: supabase-runtime-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -42,3 +46,24 @@ jobs:
           for function in flight-ingest analyze-price ai-explainer alert-processor setup-alert manage-alert feed-snapshot deal-redirect flight-search; do
             supabase functions deploy "$function" --project-ref "$SUPABASE_PROJECT_REF"
           done
+      - name: Smoke test public runtime boundaries
+        env:
+          SUPABASE_URL: https://${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co
+          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          feed_status=$(curl -sS -o /tmp/feed-response.json -w '%{http_code}' \
+            -X POST "$SUPABASE_URL/functions/v1/feed-snapshot" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{}')
+          test "$feed_status" = "200"
+          grep -q '"deals"' /tmp/feed-response.json
+
+          search_status=$(curl -sS -o /tmp/search-response.json -w '%{http_code}' \
+            -X POST "$SUPABASE_URL/functions/v1/flight-search" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{"origin":"HAN","destination":"BKK","departureFrom":"2099-01-01","departureTo":"2099-01-01"}')
+          test "$search_status" != "404"
