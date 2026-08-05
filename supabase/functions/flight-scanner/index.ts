@@ -164,10 +164,10 @@ Deno.serve(async (request) => {
               hl: "vi",
               api_key: SERPAPI_KEY,
             });
-            let response = await fetch(`https://serpapi.com/search.json?${query}`);
+            const response = await fetch(`https://serpapi.com/search.json?${query}`);
             if (response.status === 429) {
-              await sleep(5000);
-              response = await fetch(`https://serpapi.com/search.json?${query}`);
+              const retryAfter = response.headers.get("retry-after");
+              throw new Error(`Provider rate limited HTTP 429${retryAfter ? `; retry after ${retryAfter}s` : ""}`);
             }
             if (!response.ok) throw new Error(`Provider returned HTTP ${response.status}`);
             const serpPayload = await response.json() as Record<string, any>;
