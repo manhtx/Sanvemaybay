@@ -87,6 +87,14 @@ for (let cycle = 1; cycle <= maxCycles; cycle += 1) {
     offsetCount: 4,
     forceRefresh,
   });
+  const providerWindowFailures = scan.provider_window_failures ?? [];
+  const allProviderRequestsRateLimited =
+    scan.observations_saved === 0 &&
+    providerWindowFailures.length > 0 &&
+    providerWindowFailures.every((failure) => String(failure.reason).includes("HTTP 429"));
+  if (allProviderRequestsRateLimited) {
+    throw new Error("Live provider quota/rate limit exhausted: all requested SerpApi windows returned HTTP 429.");
+  }
   const analysis = await invoke("analyze-price");
   let feed;
   try { feed = await invoke("feed-snapshot", "GET"); } catch (error) {
