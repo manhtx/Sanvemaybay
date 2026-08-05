@@ -50,8 +50,9 @@ Deno.serve(async (request) => {
     const departDate = typeof row.depart_date === "string" ? row.depart_date : outbound;
     const returnDate = typeof row.return_date === "string" ? row.return_date : returned;
     if (!Number.isFinite(price) || price <= 0 || !validDate(departDate) || !validDate(returnDate)) return [];
+    const isActual = row.actual === true;
     let affiliateUrl: string | null = null;
-    if (deeplinkTemplate) {
+    if (isActual && deeplinkTemplate) {
       try {
         const candidate = deeplinkTemplate
           .replaceAll("{origin}", origin)
@@ -73,8 +74,11 @@ Deno.serve(async (request) => {
       airline_code: typeof row.airline === "string" ? row.airline : null,
       stops: Number(row.number_of_changes ?? 0),
       source: "travelpayouts_week_matrix",
-      link_kind: affiliateUrl ? "live_affiliate" : "indicative",
+      // Travelpayouts exposes both cached/indicative and current offers.
+      // A tracking URL alone does not make a cached price bookable.
+      link_kind: affiliateUrl && isActual ? "live_affiliate" : "indicative",
       affiliate_url: affiliateUrl,
+      actual: isActual,
       booking_url: `https://www.google.com/travel/flights?${new URLSearchParams({
         q: `Flights to ${destination} from ${origin} on ${departDate} through ${returnDate}`,
         hl: "vi",
