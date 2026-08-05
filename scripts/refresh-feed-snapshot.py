@@ -51,10 +51,10 @@ deals = request_json(
 if not isinstance(deals, list):
     raise RuntimeError("Supabase deals response was not a list")
 
-payload = json.dumps({"snapshot_key": "homepage", "payload": deals, "generated_at": now}).encode("utf-8")
+payload = json.dumps({"snapshot_key": "active-deals", "payload": deals, "generated_at": now}).encode("utf-8")
 request_json(
     f"{base_url}/rest/v1/feed_snapshots?on_conflict=snapshot_key",
     method="POST",
     body=payload,
 )
-print(json.dumps({"snapshot": "homepage", "deals": len(deals), "generated_at": now}))
+print(json.dumps({"snapshot": "active-deals", "deals": len(deals), "generated_at": now}))
