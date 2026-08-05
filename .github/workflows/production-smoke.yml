@@ -1,0 +1,65 @@
+name: FlyCheap production smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+concurrency:
+  group: flycheap-production-smoke
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check public feed
+        env:
+          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          curl --fail-with-body --retry 2 --retry-delay 3 \
+            --connect-timeout 10 --max-time 30 \
+            -X POST "$SUPABASE_URL/functions/v1/feed-snapshot" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{}' > /tmp/feed.json
+          python3 - <<'PY'
+          import json
+          from datetime import datetime, timezone
+
+          payload = json.load(open('/tmp/feed.json'))
+          deals = payload.get('deals')
+          if not isinstance(deals, list):
+              raise SystemExit('feed payload has no deals array')
+          future = []
+          for deal in deals:
+              try:
+                  valid_until = datetime.fromisoformat(deal['valid_until'].replace('Z', '+00:00'))
+                  if valid_until > datetime.now(timezone.utc) and str(deal['booking_url']).startswith('https://'):
+                      future.append(deal)
+              except (KeyError, TypeError, ValueError):
+                  pass
+          routes = {(deal.get('from_code'), deal.get('to_code')) for deal in future}
+          if len(future) < 10 or len(routes) < 3:
+              raise SystemExit(f'feed quality failed: {len(future)} deals / {len(routes)} routes')
+          print(f'feed smoke passed: {len(future)} deals / {len(routes)} routes')
+          PY
+
+      - name: Check live search function boundary
+        env:
+          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          status=$(curl --silent --show-error --output /tmp/search.json --write-out '%{http_code}' \
+            --connect-timeout 10 --max-time 30 \
+            -X POST "$SUPABASE_URL/functions/v1/flight-search" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{"origin":"HAN","destination":"BKK","departureFrom":"2099-01-01","departureTo":"2099-01-01"}')
+          test "$status" != "404"
+          echo "flight-search boundary returned HTTP $status"
+
