@@ -68,3 +68,15 @@ The production gate is not “rows exist”. It is:
 - provider 429/5xx/auth failures are recorded and retried only under bounded policy.
 
 Until provider and affiliate credentials are configured, the system must remain empty or source-only and must not fabricate deals, prices, booking links, or commission claims.
+
+## Chosen affiliate integration path
+
+The first commercial adapter should target Travelpayouts/Aviasales rather than
+constructing untracked Skyscanner or airline URLs. The reference project
+[`travelpayouts/flights-api-project`](https://github.com/travelpayouts/flights-api-project)
+demonstrates the provider's search integration, while Travelpayouts' link
+generator creates deep links containing the partner marker. The production
+adapter remains disabled until the partner approves the project and issues
+`TRAVELPAYOUTS_TOKEN`, `TRAVELPAYOUTS_MARKER`, and an approved program/deep-link
+configuration. A normal Google Flights or Skyscanner search URL is never
+promoted to `live_affiliate` merely because it contains route parameters.
