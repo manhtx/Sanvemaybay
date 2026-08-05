@@ -29,7 +29,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           FAST_FLIGHTS_ROUTE_LIMIT: ${{ inputs.route_limit || '40' }}
           FAST_FLIGHTS_WINDOW_LIMIT: "4"
           FAST_FLIGHTS_START_OFFSET: "14"

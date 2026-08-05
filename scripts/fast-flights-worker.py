@@ -1,8 +1,9 @@
 """Discover current flight candidates with the open-source fast-flights package.
 
-This worker is intentionally isolated from Supabase provider credentials. It reads
-enabled routes with the public key, queries Google Flights through fast-flights,
-and sends normalized observations to the authenticated flight-ingest function.
+This worker reads enabled routes with the public key, queries Google Flights
+through fast-flights, and writes normalized observations directly to Supabase
+with a server-only secret key. The secret is supplied by GitHub Actions and is
+never shipped to the browser.
 The result is a source observation; affiliate attribution is added only when a
 real partner-issued marker/configuration exists.
 """
@@ -30,12 +31,12 @@ def env(name: str, required: bool = True) -> str:
 
 BASE_URL = env("VITE_SUPABASE_URL").rstrip("/")
 ANON_KEY = env("VITE_SUPABASE_ANON_KEY")
-INTERNAL_SECRET = env("INTERNAL_FUNCTION_SECRET")
 ROUTE_LIMIT = int(os.environ.get("FAST_FLIGHTS_ROUTE_LIMIT", "40"))
 WINDOW_LIMIT = int(os.environ.get("FAST_FLIGHTS_WINDOW_LIMIT", "4"))
 START_OFFSET = int(os.environ.get("FAST_FLIGHTS_START_OFFSET", "14"))
 TRIP_LENGTH_DEFAULT = int(os.environ.get("FAST_FLIGHTS_TRIP_LENGTH_DAYS", "4"))
 DRY_RUN = os.environ.get("FAST_FLIGHTS_DRY_RUN", "false").lower() == "true"
+SUPABASE_SECRET_KEY = env("SUPABASE_SECRET_KEY", required=not DRY_RUN)
 
 
 def request_json(url: str, headers: dict[str, str], body: bytes | None = None) -> Any:
@@ -168,6 +169,60 @@ def search_route(route: dict[str, Any]) -> list[dict[str, Any]]:
     return list(observations.values())
 
 
+def direct_ingest(routes: list[dict[str, Any]], observations: list[dict[str, Any]]) -> dict[str, Any]:
+    service_headers = {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_SECRET_KEY,
+        "Authorization": f"Bearer {SUPABASE_SECRET_KEY}",
+        "Prefer": "return=representation",
+    }
+    route_map = {f"{route['origin_code']}:{route['destination_code']}": route for route in routes}
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for observation in observations:
+        grouped.setdefault(f"{observation['origin_code']}:{observation['destination_code']}", []).append(observation)
+    saved = 0
+    failures: list[dict[str, str]] = []
+    for key, rows in grouped.items():
+        route = route_map.get(key)
+        if not route:
+            failures.append({"route": key, "reason": "Route is not enabled"})
+            continue
+        observed_at = max(row["timestamp"] for row in rows)
+        scan_body = json.dumps({
+            "route_id": route["id"],
+            "provider": "fast_flights_google",
+            "status": "completed",
+            "observations_saved": len(rows),
+            "started_at": observed_at,
+            "completed_at": observed_at,
+            "response_payload": {"worker": "fast-flights", "source": "github-actions"},
+        }).encode("utf-8")
+        try:
+            scan_response = request_json(f"{BASE_URL}/rest/v1/scan_runs", service_headers, scan_body)
+            scan_id = scan_response[0]["id"]
+            flight_rows = [{
+                "origin": row["origin"], "origin_code": row["origin_code"],
+                "destination": row["destination"], "destination_code": row["destination_code"],
+                "country": row["country"], "region": row["region"], "price": row["price"],
+                "currency": row["currency"], "date": row["date"], "return_date": row["return_date"],
+                "airline": row["airline"], "airline_code": row["airline_code"],
+                "flight_number": row["flight_number"], "stops": row["stops"],
+                "duration": row["duration"], "source": row["source"],
+                "booking_url": row["booking_url"], "itinerary_key": row["itinerary_key"],
+                "timestamp": row["timestamp"], "route_id": route["id"], "scan_run_id": scan_id,
+            } for row in rows]
+            flight_headers = {**service_headers, "Prefer": "resolution=merge-duplicates,return=representation"}
+            request_json(
+                f"{BASE_URL}/rest/v1/flights?on_conflict=itinerary_key,timestamp",
+                flight_headers,
+                json.dumps(flight_rows).encode("utf-8"),
+            )
+            saved += len(flight_rows)
+        except Exception as error:
+            failures.append({"route": key, "reason": str(error)})
+    return {"observations_received": len(observations), "observations_saved": saved, "failures": failures}
+
+
 def main() -> int:
     public_headers = {"apikey": ANON_KEY, "Authorization": f"Bearer {ANON_KEY}"}
     routes_url = f"{BASE_URL}/rest/v1/tracked_routes?select=*&enabled=eq.true&limit={ROUTE_LIMIT}"
@@ -186,14 +241,7 @@ def main() -> int:
     if DRY_RUN:
         print(json.dumps({"routes": len(routes), "observations": len(observations), "sample": observations[:3], "failures": failures}))
         return 0
-    payload = json.dumps({"observations": observations, "failures": failures}).encode("utf-8")
-    headers = {
-        "Content-Type": "application/json",
-        "apikey": ANON_KEY,
-        "Authorization": f"Bearer {ANON_KEY}",
-        "x-internal-secret": INTERNAL_SECRET,
-    }
-    result = request_json(f"{BASE_URL}/functions/v1/flight-ingest", headers, payload)
+    result = direct_ingest(routes, observations)
     print(json.dumps({"routes": len(routes), "observations": len(observations), "ingest": result, "failures": failures}))
     return 0
 
