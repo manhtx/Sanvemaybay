@@ -13,6 +13,20 @@ function response(body: unknown, status = 200): Response {
 
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response("ok", { headers });
+  let forceRefresh = false;
+  try {
+    const body = await request.json();
+    forceRefresh = body?.force_refresh === true;
+  } catch {
+    // Empty public requests read the cached snapshot as usual.
+  }
+  if (forceRefresh) {
+    const configuredSecret = Deno.env.get("INTERNAL_FUNCTION_SECRET") ?? "";
+    const suppliedSecret = request.headers.get("x-internal-secret") ?? "";
+    if (!configuredSecret || suppliedSecret !== configuredSecret) {
+      return response({ error: "Unauthorized" }, 401);
+    }
+  }
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -23,7 +37,7 @@ Deno.serve(async (request) => {
       .select("payload, generated_at")
       .eq("snapshot_key", FEED_SNAPSHOT_KEY)
       .maybeSingle();
-    if (snapshot && !shouldRefreshSnapshot(snapshot.generated_at)) {
+    if (snapshot && !forceRefresh && !shouldRefreshSnapshot(snapshot.generated_at)) {
       return response({ deals: snapshot.payload, source: "snapshot", generated_at: snapshot.generated_at });
     }
 
