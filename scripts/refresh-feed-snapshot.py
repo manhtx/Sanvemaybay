@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import urllib.parse
 import urllib.error
 import urllib.request
@@ -32,14 +33,25 @@ headers = {
 
 
 def request_json(url: str, method: str = "GET", body: bytes | None = None) -> object:
-    request = urllib.request.Request(url, headers=headers, data=body, method=method)
-    try:
-        with urllib.request.urlopen(request, timeout=45) as response:
-            raw = response.read().decode("utf-8")
-            return json.loads(raw) if raw else None
-    except urllib.error.HTTPError as error:
-        detail = error.read().decode("utf-8", errors="replace")[:500]
-        raise RuntimeError(f"HTTP {error.code} from {url}: {detail}") from error
+    retryable_statuses = {408, 425, 429, 500, 502, 503, 504}
+    last_error: Exception | None = None
+    for attempt in range(3):
+        request = urllib.request.Request(url, headers=headers, data=body, method=method)
+        try:
+            with urllib.request.urlopen(request, timeout=45) as response:
+                raw = response.read().decode("utf-8")
+                return json.loads(raw) if raw else None
+        except urllib.error.HTTPError as error:
+            detail = error.read().decode("utf-8", errors="replace")[:500]
+            last_error = RuntimeError(f"HTTP {error.code} from {url}: {detail}")
+            if error.code not in retryable_statuses or attempt == 2:
+                raise last_error from error
+        except urllib.error.URLError as error:
+            last_error = RuntimeError(f"Network error from {url}: {error.reason}")
+            if attempt == 2:
+                raise last_error from error
+        time.sleep(2 ** attempt)
+    raise last_error or RuntimeError(f"Request failed: {url}")
 
 
 today = datetime.now(timezone.utc).date().isoformat()
