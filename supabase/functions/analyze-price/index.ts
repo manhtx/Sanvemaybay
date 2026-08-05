@@ -1,5 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireInternalSecret } from "../_shared/internal-auth.ts";
+import { toPriceHistoryRow } from "../_shared/price-history.ts";
+import { decideBuyRecommendation } from "../_shared/buy-decision.ts";
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -14,6 +16,21 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0
     ? (sorted[middle - 1] + sorted[middle]) / 2
     : sorted[middle];
+}
+
+async function requestAiExplanation(dealId: string): Promise<void> {
+  const baseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+  const secret = Deno.env.get("INTERNAL_FUNCTION_SECRET") ?? "";
+  if (!baseUrl || !secret) throw new Error("AI explanation service is not configured.");
+  const response = await fetch(`${baseUrl}/functions/v1/ai-explainer`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-internal-secret": secret,
+    },
+    body: JSON.stringify({ dealId }),
+  });
+  if (!response.ok) throw new Error(`AI explanation returned HTTP ${response.status}`);
 }
 
 Deno.serve(async (request) => {
@@ -45,7 +62,11 @@ Deno.serve(async (request) => {
     if (routeStatsError) throw routeStatsError;
 
     const published: string[] = [];
+    const aiFailures: Array<{ itinerary: string; reason: string }> = [];
     const skipped: Array<{ itinerary: string; reason: string }> = [];
+    const priceHistoryRows = (flights ?? [])
+      .map(toPriceHistoryRow)
+      .filter((row): row is NonNullable<typeof row> => Boolean(row));
     const seenItineraries = new Set<string>();
     const routeConfigById = new Map((routes ?? []).map((route) => [route.id, route]));
     const statsByRoute = new Map(
@@ -115,7 +136,11 @@ Deno.serve(async (request) => {
         ? Math.min(0.9, 0.55 + Math.min(comparisonSamples, 20) / 60)
         : Math.min(0.95, 0.55 + Math.min(historicalSamples, 30) / 75);
       const score = Math.min(100, Math.round(discount * 1.7 + confidence * 30));
-      const recommendation = discount >= 30 && confidence >= 0.75 ? "buy_now" : "wait";
+      const recommendation = decideBuyRecommendation({
+        discount,
+        confidence,
+        comparableSamples: comparisonSamples,
+      });
 
       const deal = {
         itinerary_key: flight.itinerary_key,
@@ -178,17 +203,58 @@ Deno.serve(async (request) => {
         },
       };
 
-      const { error: publishError } = await supabase
+      const { data: publishedDeal, error: publishError } = await supabase
         .from("deals")
-        .upsert(deal, { onConflict: "itinerary_key" });
+        .upsert(deal, { onConflict: "itinerary_key" })
+        .select("id")
+        .single();
       if (publishError) throw publishError;
       published.push(flight.itinerary_key);
+      const { error: snapshotError } = await supabase.from("deal_snapshots").upsert({
+        deal_id: publishedDeal?.id ?? null,
+        itinerary_key: flight.itinerary_key,
+        from_code: flight.origin_code,
+        to_code: flight.destination_code,
+        depart_date: flight.date,
+        return_date: flight.return_date,
+        price: flight.price,
+        normal_price: Math.round(baseline),
+        discount,
+        deal_score: score,
+        confidence,
+        currency: flight.currency,
+        booking_url: flight.booking_url,
+        source: flight.source,
+        observed_at: flight.timestamp,
+        valid_until: deal.valid_until,
+        payload: deal,
+      }, { onConflict: "itinerary_key,observed_at" });
+      if (snapshotError) throw snapshotError;
+      if (publishedDeal?.id) {
+        try {
+          await requestAiExplanation(publishedDeal.id);
+        } catch (error) {
+          aiFailures.push({
+            itinerary: flight.itinerary_key,
+            reason: error instanceof Error ? error.message : "Unknown AI explanation error",
+          });
+        }
+      }
+    }
+
+    if (priceHistoryRows.length > 0) {
+      const { error: historyError } = await supabase
+        .from("price_history")
+        .insert(priceHistoryRows);
+      if (historyError) throw historyError;
     }
 
     return json({
       success: true,
       observations_processed: flights?.length ?? 0,
+      price_history_saved: priceHistoryRows.length,
       deals_published: published.length,
+      ai_failures: aiFailures,
       skipped,
     });
   } catch (error) {

@@ -39,6 +39,50 @@ npm run check
 
 Lệnh này chạy typecheck, lint, unit test và production build.
 
+UI/E2E test chạy riêng bằng Playwright:
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+`npm run test:all` chạy unit test, Deno shared tests và UI/E2E test.
+
+CI chạy cùng các gate này; Supabase integration smoke được giữ riêng vì cần
+`VITE_SUPABASE_URL` và `VITE_SUPABASE_ANON_KEY` của môi trường kiểm thử.
+
+Kiểm tra type cho Supabase Edge Functions:
+
+```bash
+npm run check:functions
+```
+
+Test service authentication:
+
+```bash
+npm run test:functions
+```
+
+Lệnh này chạy toàn bộ Deno tests dưới `supabase/functions/_shared`.
+
+Read-only Supabase integration smoke test:
+
+```bash
+npm run test:integration
+```
+
+Live pipeline runner (chỉ dùng provider thật, không tạo mock):
+
+```bash
+TARGET_DEALS=1000 PIPELINE_MAX_CYCLES=48 npm run pipeline:live
+```
+
+Production refresh is scheduled by `.github/workflows/real-data-pipeline.yml`. Configure GitHub Actions secrets `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `INTERNAL_FUNCTION_SECRET`; provider keys stay in Supabase Edge Function secrets.
+
+Runner gọi `flight-scanner → analyze-price → feed-snapshot`, đếm deal còn hạn
+trong Supabase và chỉ exit thành công khi đạt target. Nếu thiếu secret, provider
+quota hoặc function chưa deploy, runner dừng với lỗi blocker rõ ràng.
+
 ## Cấu hình Supabase
 
 1. Đăng nhập và liên kết project:
@@ -49,12 +93,14 @@ npm run supabase:link -- --project-ref YOUR_PROJECT_REF
 npm run supabase:push
 ```
 
-2. Deploy các Edge Functions:
+2. Deploy các Edge Functions (bao gồm `feed-snapshot`):
    - `flight-scanner`
    - `analyze-price`
+   - `ai-explainer`
    - `setup-alert`
    - `alert-processor`
    - `manage-alert`
+   - `feed-snapshot`
 
 ```bash
 npm run supabase:functions

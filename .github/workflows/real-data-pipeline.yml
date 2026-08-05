@@ -1,0 +1,28 @@
+name: FlyCheap real-data pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */12 * * *"
+
+jobs:
+  scan-and-analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Run adaptive live pipeline
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
+          TARGET_DEALS: "1000"
+          PIPELINE_MAX_CYCLES: "1"
+          SCAN_ROUTE_BATCH_COUNT: "12"
+          PIPELINE_CYCLE_DELAY_MS: "1000"
+        run: npm run pipeline:live
