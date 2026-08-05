@@ -27,6 +27,7 @@ headers = {
     "apikey": secret,
     "Authorization": f"Bearer {secret}",
     "Content-Type": "application/json",
+    "Prefer": "resolution=merge-duplicates,return=minimal",
 }
 
 
