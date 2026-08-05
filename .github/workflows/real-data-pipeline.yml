@@ -31,6 +31,8 @@ jobs:
           PIPELINE_MAX_CYCLES: "6"
           PIPELINE_ALLOW_BELOW_TARGET: "false"
           PIPELINE_FORCE_REFRESH: ${{ inputs.force_refresh || false }}
-          SCAN_ROUTE_BATCH_COUNT: ${{ inputs.force_refresh && 88 || 12 }}
+          # Two routes x four date windows keeps each Edge Function invocation
+          # below the observed worker resource limit while cycles expand coverage.
+          SCAN_ROUTE_BATCH_COUNT: "44"
           PIPELINE_CYCLE_DELAY_MS: "15000"
         run: npm run pipeline:live
