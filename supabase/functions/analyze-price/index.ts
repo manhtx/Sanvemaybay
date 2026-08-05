@@ -11,6 +11,7 @@ function json(body: unknown, status = 200): Response {
 }
 
 const AI_EXPLANATION_BATCH_LIMIT = Math.max(0, Number(Deno.env.get("AI_EXPLANATION_BATCH_LIMIT") ?? 20));
+const ANALYZE_FLIGHT_LIMIT = Math.max(1, Number(Deno.env.get("ANALYZE_FLIGHT_LIMIT") ?? 300));
 
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
@@ -55,7 +56,7 @@ Deno.serve(async (request) => {
         .select("*")
         .gte("date", new Date().toISOString().slice(0, 10))
         .order("timestamp", { ascending: false })
-        .limit(1000),
+        .limit(ANALYZE_FLIGHT_LIMIT),
       supabase.from("tracked_routes").select("id, deal_threshold_percent"),
       supabase.from("route_market_stats").select("*"),
     ]);
