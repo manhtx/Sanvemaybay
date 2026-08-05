@@ -6,8 +6,11 @@ import { getAmadeusAccessToken, searchAmadeusFlights } from "../_shared/amadeus-
 const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const CACHE_TTL_HOURS = Math.max(1, Number(Deno.env.get("SCAN_CACHE_TTL_HOURS") ?? 72));
-const HOT_ROUTE_CACHE_TTL_HOURS = Math.max(1, Number(Deno.env.get("SCAN_HOT_ROUTE_CACHE_TTL_HOURS") ?? 6));
+// Observations are published with a short-lived validity window. Keep the
+// default refresh window below that window so an expired deal cannot remain
+// the only result merely because its observation is still considered fresh.
+const CACHE_TTL_HOURS = Math.max(1, Number(Deno.env.get("SCAN_CACHE_TTL_HOURS") ?? 4));
+const HOT_ROUTE_CACHE_TTL_HOURS = Math.max(1, Number(Deno.env.get("SCAN_HOT_ROUTE_CACHE_TTL_HOURS") ?? 3));
 const FLIGHT_PROVIDER = Deno.env.get("FLIGHT_PROVIDER") ?? "serpapi";
 const AMADEUS_CLIENT_ID = Deno.env.get("AMADEUS_CLIENT_ID") ?? "";
 const AMADEUS_CLIENT_SECRET = Deno.env.get("AMADEUS_CLIENT_SECRET") ?? "";
