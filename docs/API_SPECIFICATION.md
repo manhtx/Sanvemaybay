@@ -12,6 +12,10 @@ The web client reads normalized deals, tracked routes and permitted price histor
 | Function | Contract | Authentication |
 |---|---|---|
 | `flight-ingest` | accept validated fast-flights worker observations and persist them | internal secret |
+
+The deployment workflow requires GitHub Actions secrets `SUPABASE_ACCESS_TOKEN`
+and `SUPABASE_PROJECT_REF`. The public Supabase anon key is not sufficient to
+deploy an Edge Function.
 | `analyze-price` | validate observations, score/analyze and persist history | internal secret |
 | `ai-explainer` | explain supplied evidence | internal secret |
 | `setup-alert` | validate and create an alert | public user flow / validated payload |
