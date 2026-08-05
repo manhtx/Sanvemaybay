@@ -1,6 +1,6 @@
--- Cron is intentionally not created in a migration because the project URL
--- and authorization token are deployment secrets. Configure these three jobs
--- after deployment using Supabase Dashboard > Integrations > Cron:
--- 1. flight-scanner every 12 hours
--- 2. analyze-price after the scanner
--- 3. alert-processor after price analysis
+-- Scheduling is intentionally not created in a migration because project
+-- URLs and authorization tokens are deployment secrets. The source-backed
+-- scan/analyze/feed sequence is owned by GitHub Actions workflow
+-- `.github/workflows/fast-flights-pipeline.yml` and runs every 12 hours.
+-- Configure alert delivery separately only after the internal function secret
+-- and notification provider credentials are present.
