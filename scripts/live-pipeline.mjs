@@ -21,6 +21,7 @@ const hotScore = Number(env.HOT_DEAL_SCORE ?? 80);
 const hotDiscount = Number(env.HOT_DEAL_DISCOUNT ?? 20);
 const hotConfidence = Number(env.HOT_DEAL_CONFIDENCE ?? 0.65);
 const allowBelowTarget = String(env.PIPELINE_ALLOW_BELOW_TARGET ?? "false").toLowerCase() === "true";
+const forceRefresh = String(env.PIPELINE_FORCE_REFRESH ?? "false").toLowerCase() === "true";
 
 if (!baseUrl || !anonKey || !internalSecret) {
   console.error("Live pipeline blocked: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY and INTERNAL_FUNCTION_SECRET are required.");
@@ -84,6 +85,7 @@ for (let cycle = 1; cycle <= maxCycles; cycle += 1) {
     routeCount: routeBatchCount,
     offsetIndex: batchNumber % 4,
     offsetCount: 4,
+    forceRefresh,
   });
   const analysis = await invoke("analyze-price");
   let feed;

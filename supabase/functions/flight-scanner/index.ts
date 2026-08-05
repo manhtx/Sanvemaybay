@@ -35,6 +35,7 @@ Deno.serve(async (request) => {
   if (unauthorized) return unauthorized;
 
   let batch = { routeIndex: 0, routeCount: 1, offsetIndex: 0, offsetCount: 1 };
+  let forceRefresh = false;
   try {
     const body = await request.json();
     batch = {
@@ -43,6 +44,7 @@ Deno.serve(async (request) => {
       offsetIndex: Number.isInteger(body?.offsetIndex) ? body.offsetIndex : 0,
       offsetCount: Number.isInteger(body?.offsetCount) && body.offsetCount > 0 ? body.offsetCount : 1,
     };
+    forceRefresh = body?.forceRefresh === true;
   } catch {
     // Empty POST bodies retain the single-batch behavior for manual invocations.
   }
@@ -126,7 +128,7 @@ Deno.serve(async (request) => {
       for (const offset of offsets) {
         const outboundDate = dateAfter(offset);
         const returnDate = dateAfter(offset + route.trip_length_days);
-        if (cachedWindowKeys.has(`${outboundDate}:${returnDate}`)) {
+        if (!forceRefresh && cachedWindowKeys.has(`${outboundDate}:${returnDate}`)) {
           cachedWindowCount += 1;
           continue;
         }

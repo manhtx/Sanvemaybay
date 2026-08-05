@@ -2,6 +2,12 @@ name: FlyCheap real-data pipeline
 
 on:
   workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: "Force provider refresh for this run (uses provider quota)"
+        required: false
+        default: false
+        type: boolean
   schedule:
     - cron: "17 */12 * * *"
 
@@ -24,6 +30,7 @@ jobs:
           TARGET_DEALS: "1000"
           PIPELINE_MAX_CYCLES: "1"
           PIPELINE_ALLOW_BELOW_TARGET: "true"
+          PIPELINE_FORCE_REFRESH: ${{ inputs.force_refresh || false }}
           SCAN_ROUTE_BATCH_COUNT: "12"
           PIPELINE_CYCLE_DELAY_MS: "1000"
         run: npm run pipeline:live
