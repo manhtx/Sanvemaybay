@@ -12,7 +12,6 @@ test('database backup and restore drill: procedures are documented, simulated an
   assert.match(runbook, /rollback|restore/i, 'Runbook must document restore/recovery procedure');
 
   // Simulate SQL dump and restore verification on core FlyCheap schema objects
-  const migrationsDir = join(process.cwd(), 'supabase', 'migrations');
   const coreTables = [
     'deals',
     'price_history',

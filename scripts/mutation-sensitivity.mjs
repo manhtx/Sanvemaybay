@@ -7,7 +7,7 @@ export function testMutationSensitivity() {
   // Normal behavior: Score 95 with confidence 30 gives "Giá đáng chú ý"
   // Mutant behavior: If confidence check is disabled, returns "Deal cực nóng"
   {
-    const mutantLabel = (score, conf) => {
+    const mutantLabel = (score) => {
       // Mutant ignores confidence check
       if (score >= 90) return "Deal cực nóng";
       return "Giá quan sát";

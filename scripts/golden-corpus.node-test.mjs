@@ -31,16 +31,19 @@ test('golden truth corpus: exercises full decision pipeline across 20 canonical 
 
   // Case 10: Strong legitimate discount
   const c10 = corpus.cases[9].case_10_strong_legitimate_discount;
+  assert.equal(c10.expected.label, 'TOP_DEAL');
   const label10 = evidenceGatedDealLabel(92, 85);
   assert.equal(label10, 'Deal cực nóng');
 
   // Case 11: Weak discount
   const c11 = corpus.cases[10].case_11_weak_discount;
+  assert.equal(c11.expected.label, 'STANDARD_PRICE');
   const label11 = evidenceGatedDealLabel(55, 70);
   assert.equal(label11, 'Giá quan sát');
 
   // Case 12: Large discount tiny sample (Confidence cap kill test)
   const c12 = corpus.cases[11].case_12_large_discount_tiny_sample;
+  assert.equal(c12.expected.claim_capped, true);
   const lowConfidence = 30; // capped due to N=1
   const score12 = 95; // apparent huge discount
   const label12 = evidenceGatedDealLabel(score12, lowConfidence);

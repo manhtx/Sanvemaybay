@@ -1,7 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { generateReleaseAttestation } from './generate-release-attestation.mjs';
 
 test('release attestation: hashes and test suites are verifiable and consistent', () => {
