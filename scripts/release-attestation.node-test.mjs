@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { generateReleaseAttestation } from './generate-release-attestation.mjs';
 
 test('release attestation: hashes and test suites are verifiable and consistent', () => {
-  const attestation = generateReleaseAttestation();
+  const attestation = generateReleaseAttestation(process.cwd(), null, false);
   assert.equal(attestation.release_candidate_id, 'RC-V6.0-001');
   assert.equal(attestation.branch, 'rc/v6.0-candidate');
   assert.ok(typeof attestation.git_sha === 'string' && attestation.git_sha.length === 40);

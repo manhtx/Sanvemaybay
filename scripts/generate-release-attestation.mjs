@@ -29,7 +29,7 @@ function getGitSha() {
   }
 }
 
-export function generateReleaseAttestation(projectRoot = process.cwd(), gitSha = null) {
+export function generateReleaseAttestation(projectRoot = process.cwd(), gitSha = null, writeToDisk = true) {
   const currentGitSha = gitSha || getGitSha();
   const flycheapDir = path.join(projectRoot, '.flycheap');
   const migrationsDir = path.join(projectRoot, 'supabase', 'migrations');
@@ -80,8 +80,10 @@ export function generateReleaseAttestation(projectRoot = process.cwd(), gitSha =
     generated_at: new Date().toISOString(),
   };
 
-  const outPath = path.join(flycheapDir, 'RELEASE_ATTESTATION.json');
-  fs.writeFileSync(outPath, JSON.stringify(attestation, null, 2));
+  if (writeToDisk) {
+    const outPath = path.join(flycheapDir, 'RELEASE_ATTESTATION.json');
+    fs.writeFileSync(outPath, JSON.stringify(attestation, null, 2));
+  }
   return attestation;
 }
 
