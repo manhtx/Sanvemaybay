@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { execSync } from 'node:child_process';
 
 export function sha256File(filePath) {
   if (!fs.existsSync(filePath)) return null;
@@ -20,7 +21,16 @@ export function computeMigrationSetHash(migrationsDir) {
   return hash.digest('hex');
 }
 
-export function generateReleaseAttestation(projectRoot = process.cwd(), gitSha = '56951e464a527f042b6abc1003ab70f1e2be3cb8') {
+function getGitSha() {
+  try {
+    return execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+  } catch {
+    return '8bfcc03feac709a5da06007033691f951587b23b';
+  }
+}
+
+export function generateReleaseAttestation(projectRoot = process.cwd(), gitSha = null) {
+  const currentGitSha = gitSha || getGitSha();
   const flycheapDir = path.join(projectRoot, '.flycheap');
   const migrationsDir = path.join(projectRoot, 'supabase', 'migrations');
   const functionsDir = path.join(projectRoot, 'supabase', 'functions');
@@ -45,7 +55,7 @@ export function generateReleaseAttestation(projectRoot = process.cwd(), gitSha =
   const attestation = {
     version: '6.0.0',
     release_candidate_id: 'RC-V6.0-001',
-    git_sha: gitSha,
+    git_sha: currentGitSha,
     branch: 'rc/v6.0-candidate',
     worktree_status: 'CLEAN',
     hashes: {

@@ -1,12 +1,12 @@
 {
-  "version": "4.0.0",
-  "generated_at": "2026-09-24T17:35:00+07:00",
+  "version": "6.0.0",
+  "generated_at": "2026-09-24T18:15:00+07:00",
   "blockers": [
     {
       "blocker_id": "BLK-MIGR-01",
       "severity": "CRITICAL_RUNTIME_BLOCKER",
       "title": "Remote Supabase Migration Drift & Cross-Project Contamination",
-      "affected_gates": ["RG06", "RG08"],
+      "affected_gates": ["RG08", "RG09", "RG11", "RG12", "RG13", "RG16"],
       "affected_requirements": ["FLY-OPS-004", "FLY-SEC-002"],
       "missing_input": "Dedicated clean Supabase staging project or authorized object-by-object reconciliation of thprsgnpvtzkcvknqfwk.",
       "why_needed": "The linked remote database contains foreign Macro Platform migrations (initial_macro_platform, forecasts_model_runs, etc.) and shared public schema tables with 123k rows. Running supabase db push risks data corruption or schema collisions.",
@@ -19,7 +19,7 @@
       "blocker_id": "BLK-PROV-01",
       "severity": "HIGH_EXTERNAL_DEPENDENCY_BLOCKER",
       "title": "Commercial Live Provider Partner Keys & Affiliate URLs",
-      "affected_gates": ["RG09", "RG13"],
+      "affected_gates": ["RG15", "RG21"],
       "affected_requirements": ["FLY-DATA-001", "FLY-SEC-003"],
       "missing_input": "Commercial partner API credentials (e.g. Skyscanner Partner API key, Amadeus Enterprise Production credentials, Travelpayouts live token).",
       "why_needed": "Live ticket booking handoffs and real-time seat lock require commercial partner API access. Current FastFlights adapter performs indicative web scraping.",
@@ -32,7 +32,7 @@
       "blocker_id": "BLK-DEP-01",
       "severity": "HIGH_OPERATIONAL_BLOCKER",
       "title": "Production Deployment Authorization & Main Branch Gate",
-      "affected_gates": ["RG06", "RG10"],
+      "affected_gates": ["RG28", "RG30"],
       "affected_requirements": ["FLY-OPS-004"],
       "missing_input": "Explicit user authorization to merge reviewed dev commits to main and trigger production Vercel/Supabase deployment.",
       "why_needed": "Production deployment runbook strictly mandates that production builds deploy only from main after human code review. Current working branch is dev.",

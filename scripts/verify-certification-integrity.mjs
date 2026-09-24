@@ -188,6 +188,33 @@ export function verifyCertificationIntegrity(projectRoot = process.cwd()) {
     errors.push(`Expected 30 release gates (RG01-RG30), found ${gateList.length}`);
   }
 
+  // Cross-validation: Outcome release gates must exist in RUNTIME_GATES
+  for (const o of outcomes) {
+    for (const gid of o.release_gates || []) {
+      if (!gateIds.has(gid)) {
+        errors.push(`Outcome ${o.outcome_id} references unknown gate ${gid}`);
+      }
+    }
+  }
+
+  // Cross-validation: RELEASE_BLOCKERS citations
+  const blockersPath = path.join(flycheapDir, 'RELEASE_BLOCKERS.json');
+  if (fs.existsSync(blockersPath)) {
+    const blockersData = JSON.parse(fs.readFileSync(blockersPath, 'utf8'));
+    for (const b of blockersData.blockers || []) {
+      for (const gid of b.affected_gates || []) {
+        if (!gateIds.has(gid)) {
+          errors.push(`Blocker ${b.blocker_id} references unknown gate ${gid}`);
+        }
+      }
+      for (const rid of b.affected_requirements || []) {
+        if (!reqIds.has(rid)) {
+          errors.push(`Blocker ${b.blocker_id} references unknown requirement ${rid}`);
+        }
+      }
+    }
+  }
+
   return {
     ok: errors.length === 0,
     errors,

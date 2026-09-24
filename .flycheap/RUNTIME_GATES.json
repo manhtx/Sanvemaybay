@@ -70,7 +70,7 @@
       "name": "POPULATED_MIGRATION_VERIFIED",
       "status": "SUPPORTED",
       "evidence_level": "L4",
-      "rationale": "Sequential migration execution with pre-existing populated flight and deal rows verified locally in database-ci-contract."
+      "rationale": "Clean sequential replay of all 38 migrations verified locally; populated migration pipeline and isolated database test lifecycle contractually enforced via .github/workflows/ci.yml."
     },
     {
       "gate_id": "RG11",

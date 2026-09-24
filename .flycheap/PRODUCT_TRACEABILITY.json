@@ -36,8 +36,9 @@
       "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
       "release_gates": [
         "RG01",
+        "RG04",
         "RG05",
-        "RG11"
+        "RG07"
       ]
     },
     {
@@ -254,7 +255,7 @@
       "release_gates": [
         "RG01",
         "RG05",
-        "RG11"
+        "RG17"
       ]
     },
     {
@@ -321,7 +322,7 @@
       "release_gates": [
         "RG01",
         "RG05",
-        "RG12"
+        "RG18"
       ]
     },
     {
@@ -352,7 +353,7 @@
       "release_gates": [
         "RG01",
         "RG05",
-        "RG13"
+        "RG20"
       ]
     },
     {
@@ -385,8 +386,8 @@
       "evidence_level": "L4_LOCAL_INTEGRATION_VERIFIED",
       "release_gates": [
         "RG01",
-        "RG08",
-        "RG15"
+        "RG07",
+        "RG24"
       ]
     },
     {
@@ -418,7 +419,7 @@
       "release_gates": [
         "RG01",
         "RG05",
-        "RG14"
+        "RG23"
       ]
     },
     {
