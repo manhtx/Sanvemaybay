@@ -2,6 +2,7 @@ import { Outlet } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Link } from "react-router";
 import { Plane, Heart } from "lucide-react";
+import { RouteMetadata } from "../components/RouteMetadata";
 
 function Footer() {
   return (
@@ -78,9 +79,11 @@ function Footer() {
           <p className="text-slate-600 text-xs">
             © 2026 FlyCheap AI. Built with <Heart className="w-3 h-3 inline text-red-500" /> for budget travelers.
           </p>
-          <p className="text-slate-600 text-xs">
-            Giá hiển thị chỉ mang tính tham khảo. Luôn kiểm tra lại trước khi đặt vé.
-          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
+            <Link to="/privacy" className="min-h-11 py-3 text-slate-500 hover:text-slate-300">Quyền riêng tư</Link>
+            <Link to="/terms" className="min-h-11 py-3 text-slate-500 hover:text-slate-300">Điều khoản</Link>
+            <p className="text-slate-600">Giá chỉ mang tính tham khảo. Luôn kiểm tra lại trước khi đặt vé.</p>
+          </div>
         </div>
       </div>
     </footer>
@@ -90,9 +93,15 @@ function Footer() {
 export function Root() {
   return (
     <div className="min-h-screen bg-slate-950">
+      <RouteMetadata />
+      <a href="#main-content" className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-lg bg-white px-4 py-3 font-semibold text-slate-950 shadow-xl transition-transform focus:translate-y-0">
+        Bỏ qua điều hướng
+      </a>
       <Navbar />
-      <Outlet />
-      <Footer />
+      <div id="main-content" tabIndex={-1} className="lg:pl-64">
+        <Outlet />
+        <Footer />
+      </div>
     </div>
   );
 }

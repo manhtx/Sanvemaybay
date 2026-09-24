@@ -1,0 +1,92 @@
+{
+  "release_gates": [
+    {
+      "gate_id": "GATE-SEC-01",
+      "name": "Zero Committed Secrets and Clean Client Bundle",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "No private API keys, service role tokens, or internal secrets in repository or client bundle.",
+      "status": "PASSING",
+      "verification_command": "node scripts/release-manifest.node-test.mjs && node scripts/security-smoke.node-test.mjs"
+    },
+    {
+      "gate_id": "GATE-SEC-02",
+      "name": "Cross-User RLS Data Isolation",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "User A cannot read or modify User B alerts, bookmarks, or preferences. Anon reads are restricted.",
+      "status": "PASSING",
+      "verification_command": "node --test scripts/security-smoke.node-test.mjs"
+    },
+    {
+      "gate_id": "GATE-DATA-01",
+      "name": "Strict Currency and Monetary Precision",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "Prices must be positive finite numbers. No zero/negative fares allowed in ingestion or feed.",
+      "status": "PASSING",
+      "verification_command": "npx --yes deno test --allow-env supabase/functions/_shared/flight-normalization.test.ts"
+    },
+    {
+      "gate_id": "GATE-DATA-02",
+      "name": "No False Freshness",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "Observations older than 120m are never presented as healthy fresh. Stale deals carry explicit recheck warnings.",
+      "status": "PASSING",
+      "verification_command": "npx --yes deno test --allow-env supabase/functions/_shared/feed-health.test.ts"
+    },
+    {
+      "gate_id": "GATE-DATA-03",
+      "name": "AI Output Grounding / Deterministic Truth Dominance",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "AI must never fabricate flight facts, prices, or schedules. Schema validation and rule-based fallback enforced.",
+      "status": "PASSING",
+      "verification_command": "npx vitest run src/app/data/api.test.ts"
+    },
+    {
+      "gate_id": "GATE-RISK-01",
+      "name": "Self-Transfer and Risk Disclosure Invariant",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "Separate-ticket journeys must never be mislabeled as protected connections. Layover buffers strictly checked.",
+      "status": "PASSING",
+      "verification_command": "npx vitest run src/app/domain/routeOptimization.test.ts"
+    },
+    {
+      "gate_id": "GATE-INTEL-01",
+      "name": "Quarantine for Extreme Outliers with Low Sample Size",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "Extreme price drops with n<3 cannot trigger top alerts or be labeled 'Deal cực nóng'. Confidence gating enforced.",
+      "status": "PASSING",
+      "verification_command": "npx vitest run src/app/domain/dealClaims.test.ts"
+    },
+    {
+      "gate_id": "GATE-ALERTS-01",
+      "name": "Notification Spam Prevention and 24h Deduplication",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "Notification dispatch enforces effectively-once semantics with 24h deduplication per user/route.",
+      "status": "PASSING",
+      "verification_command": "npx --yes deno test --allow-env supabase/functions/_shared/alert-matching.test.ts"
+    },
+    {
+      "gate_id": "GATE-MIGR-01",
+      "name": "Clean Migration Chain Reproducibility",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "All 38 migrations apply sequentially on clean PostgreSQL without schema drift.",
+      "status": "PASSING",
+      "verification_command": "node --test scripts/database-ci-contract.node-test.mjs"
+    },
+    {
+      "gate_id": "GATE-BUILD-01",
+      "name": "Production Build & Typecheck Integrity",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "Zero TypeScript errors, zero ESLint warnings, production build succeeds cleanly.",
+      "status": "PASSING",
+      "verification_command": "npm run check"
+    },
+    {
+      "gate_id": "GATE-E2E-01",
+      "name": "Critical End-to-End User Flow Execution",
+      "severity": "CRITICAL_BLOCKER",
+      "description": "All 32 Playwright E2E tests execute cleanly on desktop and mobile viewports.",
+      "status": "IN_PROGRESS",
+      "verification_command": "npm run test:e2e"
+    }
+  ]
+}

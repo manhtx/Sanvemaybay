@@ -3,9 +3,10 @@ import { Bell, Send, Mail, Zap, CheckCircle, Globe, TrendingDown, Clock, Shield 
 import { toast, Toaster } from "sonner";
 import { useSearchParams } from "react-router";
 import { formatVND } from "../data/deals";
-import { createAlert, getTrackedRoutes, TrackedRoute } from "../data/api";
+import { createAlerts, getTrackedRoutes, TrackedRoute } from "../data/api";
 import { getUserPreferences, loadRemoteUserPreferences, saveRemoteUserPreferences, saveUserPreferences } from "../lib/preferences";
 import { trackProductEvent } from "../lib/analytics";
+import { TurnstileWidget } from "../components/TurnstileWidget";
 
 const discountLevels = [
   { value: 20, label: "Từ -20%" },
@@ -35,6 +36,9 @@ export function AlertsPage() {
   const [frequency, setFrequency] = useState("instant");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileReset, setTurnstileReset] = useState(0);
+  const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY ?? "";
 
   useEffect(() => {
     loadRemoteUserPreferences().then((remote) => {
@@ -126,14 +130,16 @@ export function AlertsPage() {
       toast.error("Chọn ít nhất một điểm đến");
       return;
     }
+    if (!turnstileSiteKey || !turnstileToken) {
+      toast.error("Vui lòng hoàn tất bước xác minh chống spam");
+      return;
+    }
     
     setIsSubmitting(true);
-    let successCount = 0;
-    
     try {
-      for (const dest of selectedDests) {
+      const alerts = selectedDests.map((dest) => {
         const destLabel = destinations.find(d => d.code === dest)?.name || dest;
-        await createAlert({
+        return {
           destination: destLabel,
           destination_code: dest,
           origin_code: fromCity,
@@ -147,33 +153,35 @@ export function AlertsPage() {
           notify_email: true, // always notify via email as backup
           email: emailToUse,
           telegram_id: channel === 'telegram' ? contact : '',
-          channel: channel
-        });
-        successCount++;
+          channel,
+        };
+      });
+      const result = await createAlerts(alerts, turnstileToken);
+      for (const dest of selectedDests) {
         void trackProductEvent({ eventType: "alert_created", entityId: dest, metadata: { route: `${fromCity}-${dest}`, channel } });
       }
       
       toast.success("🎉 Đã đăng ký báo giá thành công!", {
-        description: `${successCount} cảnh báo đã được thiết lập. Kiểm tra ${emailToUse} để xác nhận.`,
+        description: `${result.alert_ids?.length ?? alerts.length} cảnh báo đã được thiết lập. Kiểm tra ${emailToUse} để xác nhận.`,
         duration: 6000,
       });
-    } catch (err: any) {
-      console.error(err);
+    } catch (err: unknown) {
       toast.error("Có lỗi xảy ra khi tạo Alert", {
-        description: err?.message || "Vui lòng thử lại sau.",
+        description: err instanceof Error ? err.message : "Vui lòng thử lại sau.",
       });
     } finally {
       setIsSubmitting(false);
+      setTurnstileReset((value) => value + 1);
     }
   };
 
   return (
-    <div className="pt-24 pb-16">
+    <main className="min-h-screen pb-16 pt-24">
       <Toaster position="top-center" theme="dark" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="w-14 h-14 bg-gradient-to-br from-sky-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-sky-500/25">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 via-pink-500 to-violet-600 shadow-lg shadow-pink-500/20">
             <Bell className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-white mb-3" style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
@@ -189,9 +197,9 @@ export function AlertsPage() {
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Step 1: Channel */}
-              <div className="bg-slate-900 border border-white/8 rounded-2xl p-6">
+              <div className="rounded-2xl border border-white/10 bg-[#171719] p-6">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center text-white text-xs" style={{ fontWeight: 800 }}>1</div>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">1</div>
                   <h2 className="text-white" style={{ fontWeight: 700 }}>Kênh nhận thông báo</h2>
                 </div>
 
@@ -205,7 +213,7 @@ export function AlertsPage() {
                         onClick={() => setChannel(ch.value)}
                         className={`flex items-center gap-3 p-4 rounded-xl border transition-all text-left ${
                           channel === ch.value
-                            ? "bg-sky-500/15 border-sky-500/40 text-white"
+                            ? "bg-pink-500/15 border-pink-500/40 text-white"
                             : "bg-slate-800/50 border-white/10 text-slate-400 hover:border-white/20"
                         }`}
                       >
@@ -225,6 +233,7 @@ export function AlertsPage() {
                     📧 Địa chỉ Email <span className="text-sky-400">(để nhận xác nhận)</span>
                   </label>
                   <input
+                    aria-label="Email nhận xác nhận báo giá"
                     type="email"
                     value={channel === "email" ? contact : email}
                     onChange={(e) => channel === "email" ? setContact(e.target.value) : setEmail(e.target.value)}
@@ -252,9 +261,9 @@ export function AlertsPage() {
               </div>
 
               {/* Step 2: Departure */}
-              <div className="bg-slate-900 border border-white/8 rounded-2xl p-6">
+              <div className="rounded-2xl border border-white/10 bg-[#171719] p-6">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center text-white text-xs" style={{ fontWeight: 800 }}>2</div>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">2</div>
                   <h2 className="text-white" style={{ fontWeight: 700 }}>Sân bay khởi hành</h2>
                 </div>
                 <div className="flex gap-3 flex-wrap">
@@ -281,9 +290,9 @@ export function AlertsPage() {
               </div>
 
               {/* Step 3: Destinations */}
-              <div className="bg-slate-900 border border-white/8 rounded-2xl p-6">
+              <div className="rounded-2xl border border-white/10 bg-[#171719] p-6">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center text-white text-xs" style={{ fontWeight: 800 }}>3</div>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">3</div>
                   <h2 className="text-white" style={{ fontWeight: 700 }}>Điểm đến quan tâm</h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -314,9 +323,9 @@ export function AlertsPage() {
               </div>
 
               {/* Step 4: Discount threshold */}
-              <div className="bg-slate-900 border border-white/8 rounded-2xl p-6">
+              <div className="rounded-2xl border border-white/10 bg-[#171719] p-6">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center text-white text-xs" style={{ fontWeight: 800 }}>4</div>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">4</div>
                   <h2 className="text-white" style={{ fontWeight: 700 }}>Ngưỡng giảm giá</h2>
                 </div>
                 <p className="text-slate-500 text-sm mb-4">Chỉ nhận thông báo khi giá giảm ít nhất bao nhiêu?</p>
@@ -341,10 +350,10 @@ export function AlertsPage() {
               </div>
 
               {/* Step 5: Advanced Personalization (Module 6.2) */}
-              <div className="bg-slate-900 border border-white/8 rounded-2xl p-6 space-y-8">
+              <div className="space-y-8 rounded-2xl border border-white/10 bg-[#171719] p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center text-white text-xs" style={{ fontWeight: 800 }}>5</div>
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">5</div>
                     <h2 className="text-white" style={{ fontWeight: 700 }}>Tùy chỉnh cá nhân</h2>
                   </div>
                   <span className="text-[10px] bg-sky-500/10 text-sky-400 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Bộ lọc dữ liệu</span>
@@ -356,7 +365,7 @@ export function AlertsPage() {
                     <label className="text-slate-400 text-sm font-bold uppercase tracking-wider">Ngân sách tối đa</label>
                     <span className="text-sky-400 font-black">{formatVND(budgetMax)}</span>
                   </div>
-                  <input 
+                  <input aria-label="Ngưỡng giảm giá tối thiểu"
                     type="range" 
                     min="1000000" 
                     max="50000000" 
@@ -428,11 +437,19 @@ export function AlertsPage() {
                 </div>
               </div>
 
+              {turnstileSiteKey ? (
+                <TurnstileWidget siteKey={turnstileSiteKey} onToken={setTurnstileToken} resetSignal={turnstileReset} />
+              ) : (
+                <p role="alert" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">
+                  Dịch vụ xác minh chống spam chưa được cấu hình. Tạm thời chưa thể tạo cảnh báo.
+                </p>
+              )}
+
               {/* Submit */}
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white rounded-2xl transition-all hover:shadow-lg hover:shadow-sky-500/30 disabled:opacity-50"
+                disabled={isSubmitting || !turnstileSiteKey || !turnstileToken}
+                className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 py-4 text-white transition-all hover:opacity-90 disabled:opacity-50"
                 style={{ fontWeight: 700, fontSize: "1rem" }}
               >
                 {isSubmitting ? (
@@ -528,6 +545,6 @@ export function AlertsPage() {
           ))}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { reportClientIssue } from "./clientDiagnostics";
 
 // types/supabase.ts will be generated via Supabase CLI
 // For now, using 'any' or defining a subset of types
@@ -14,7 +15,7 @@ export const isSupabaseConfigured =
   !supabaseAnonKey.includes("your-anon");
 
 if (!isSupabaseConfigured) {
-  console.warn("Supabase credentials missing. Live deal data is unavailable.");
+  reportClientIssue("supabase_configuration_missing");
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

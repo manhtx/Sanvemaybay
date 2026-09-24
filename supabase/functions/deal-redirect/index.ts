@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { approvedBookingHosts, isApprovedHttpsUrl } from "../_shared/live-deal.ts";
 
 const headers = {
   "Content-Type": "application/json",
@@ -8,15 +9,6 @@ const headers = {
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status, headers });
-}
-
-function validHttpsUrl(value: unknown): value is string {
-  if (typeof value !== "string") return false;
-  try {
-    return new URL(value).protocol === "https:";
-  } catch {
-    return false;
-  }
 }
 
 Deno.serve(async (request) => {
@@ -38,11 +30,13 @@ Deno.serve(async (request) => {
     return json({ error: "Deal has expired" }, 410);
   }
 
+  const bookingHosts = approvedBookingHosts(Deno.env.get("APPROVED_BOOKING_HOSTS"));
   const isAffiliate = deal.link_kind === "live_affiliate" &&
     typeof deal.affiliate_network === "string" && deal.affiliate_network.trim() &&
-    validHttpsUrl(deal.affiliate_url);
-  const target = isAffiliate ? deal.affiliate_url : deal.booking_url;
-  if (!validHttpsUrl(target)) return json({ error: "No verified booking link" }, 404);
+    isApprovedHttpsUrl(deal.affiliate_url, bookingHosts);
+  const isLiveSource = deal.link_kind === "live_source" && isApprovedHttpsUrl(deal.booking_url, bookingHosts);
+  const target = isAffiliate ? deal.affiliate_url : isLiveSource ? deal.booking_url : undefined;
+  if (!target) return json({ error: "No verified booking link" }, 404);
 
   return new Response(null, {
     status: 302,

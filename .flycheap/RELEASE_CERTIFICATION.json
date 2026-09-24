@@ -1,0 +1,68 @@
+{
+  "certification_version": "4.0.0",
+  "evaluated_at": "2026-09-24T17:35:00+07:00",
+  "evaluation_mode": "ZERO_TRUST_INDEPENDENT_AUDIT",
+  "repository_revision": "3c54080eb4aa24872d3fa36c2c90f5e859643d81",
+  "verdict": {
+    "system_claim": "LOCAL_FULLSTACK_VERIFIED",
+    "release_readiness": "RELEASE_CANDIDATE_1_LOCAL_VERIFIED",
+    "staging_activation_ready": false,
+    "production_activation_ready": false,
+    "previous_100_100_claim": "PARTIALLY_FALSIFIED",
+    "falsification_details": "Previous 100/100 score conflated L5 (Local Fullstack Verified via fixtures) with L8 (Production Verified). Remote Supabase database contains 0 qualified live deals, returns 404 for August tables due to Macro migration contamination, and public Vercel domain serves an older commit."
+  },
+  "four_dimension_score": {
+    "dimension_a_product_contract_coverage": {
+      "total_outcomes": 14,
+      "covered_outcomes": 14,
+      "percentage": 100.0,
+      "status": "COMPLETE"
+    },
+    "dimension_b_implementation_completeness": {
+      "total_requirements": 34,
+      "code_complete_requirements": 34,
+      "open_p0_p1_code_defects": 0,
+      "percentage": 100.0,
+      "status": "COMPLETE"
+    },
+    "dimension_c_release_evidence_maturity": {
+      "level_distribution": {
+        "L0_claim_only": 0,
+        "L1_code_present": 0,
+        "L2_static_inspection": 0,
+        "L3_unit_fixture": 3,
+        "L4_local_integration": 19,
+        "L5_local_fullstack": 12,
+        "L6_remote_staging": 0,
+        "L7_live_external": 0,
+        "L8_production": 0,
+        "L9_longitudinal": 0
+      },
+      "local_verification_percentage": 100.0,
+      "remote_runtime_verification_percentage": 0.0,
+      "status": "LOCAL_MATURE_REMOTE_BLOCKED"
+    },
+    "dimension_d_empirical_maturity": {
+      "total_empirical_gates": 6,
+      "mature_count": 0,
+      "instrumented_pending_count": 6,
+      "status": "EMPIRICAL_PENDING"
+    }
+  },
+  "release_gates_summary": {
+    "total_gates": 20,
+    "supported": 16,
+    "blocked": 4,
+    "falsified": 0
+  },
+  "automated_tests_summary": {
+    "total_passed": 185,
+    "total_failed": 0,
+    "breakdown": {
+      "vitest_domain_unit": 77,
+      "node_contracts": 31,
+      "deno_shared_functions": 45,
+      "playwright_e2e_desktop_mobile": 32
+    }
+  }
+}

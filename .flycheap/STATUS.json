@@ -1,0 +1,51 @@
+{
+  "mission_version": "2.0.0",
+  "repository_revision": "3c54080eb4aa24872d3fa36c2c90f5e859643d81",
+  "current_phase": "TECHNICALLY_VERIFIED",
+  "current_slice": "SLICE-002-CORE-VERIFICATION-COMPLETE",
+  "last_verified_slice": "SLICE-001-CONTROL-PLANE-BOOTSTRAP",
+  "critical_path_node": "DAG-RELEASE-01",
+  "next_action": "Complete adversarial stress check, verify release gates, and assemble final completion scorecard and report.",
+  "active_blockers": [],
+  "failing_p0_count": 0,
+  "failing_p1_count": 0,
+  "test_summary": {
+    "vitest": {
+      "files": 25,
+      "passed": 77,
+      "failed": 0
+    },
+    "node_contracts": {
+      "files": 12,
+      "passed": 31,
+      "failed": 0
+    },
+    "deno_shared": {
+      "files": 17,
+      "passed": 45,
+      "failed": 0
+    },
+    "playwright_e2e": {
+      "executions": 32,
+      "passed": 32,
+      "failed": 0,
+      "viewports": ["Desktop Chromium", "Pixel 5 Mobile"]
+    },
+    "total_tests_passed": 185,
+    "total_tests_failed": 0,
+    "deno_check": "PASS",
+    "typecheck": "PASS",
+    "eslint": "PASS"
+  },
+  "build_summary": {
+    "vite_build": "SUCCESS",
+    "seo_assets": "SUCCESS",
+    "release_metadata": "SUCCESS"
+  },
+  "runtime_summary": {
+    "supabase_remote_url": "https://thprsgnpvtzkcvknqfwk.supabase.co",
+    "public_origin": "https://farely.manhtx.com",
+    "observed_fares_count": 623
+  },
+  "last_checkpoint_at": "2026-09-24T16:30:40+07:00"
+}

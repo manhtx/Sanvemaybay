@@ -1,0 +1,865 @@
+{
+  "contract_version": "2.0.0",
+  "frozen_at": "2026-09-24T16:25:00+07:00",
+  "scope": "CORE_V1",
+  "requirements": [
+    {
+      "id": "FLY-DATA-001",
+      "priority": "P0",
+      "category": "data_provider",
+      "requirement": "Flight data provider abstraction layer supporting multiple adapters (FastFlights, Amadeus, SerpApi) with consistent normalized output contract.",
+      "user_outcome": "Users discover flight opportunities aggregated reliably across multiple sources without provider format lock-in.",
+      "acceptance": [
+        "Provider interface defines search, refresh, and health-check capabilities.",
+        "Raw provider payloads are transformed into the internal normalized flight offer contract.",
+        "Missing optional provider fields have safe defaults without crashing normalization."
+      ],
+      "required_evidence": [
+        "Unit tests in supabase/functions/_shared/flight-normalization.test.ts",
+        "Provider adapter tests for Amadeus and FastFlights"
+      ],
+      "dependencies": [],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-DATA-002",
+      "priority": "P0",
+      "category": "data_provider",
+      "requirement": "Strict flight data validation and anomalous fare rejection.",
+      "user_outcome": "Users never see impossible flights (departure after arrival, negative prices, zero prices, missing route codes).",
+      "acceptance": [
+        "Rejects fares with price <= 0 or non-finite values.",
+        "Rejects flights where arrival is earlier than departure or flight duration is <= 0.",
+        "Requires valid IATA/ICAO origin and destination codes.",
+        "Validates departure and return dates as legitimate future calendar dates."
+      ],
+      "required_evidence": [
+        "Unit tests in supabase/functions/_shared/flight-normalization.test.ts",
+        "Adversarial invalid payload integration tests"
+      ],
+      "dependencies": [
+        "FLY-DATA-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-DATA-003",
+      "priority": "P0",
+      "category": "data_provider",
+      "requirement": "Immutable historical fare observation ingestion with idempotent deduplication.",
+      "user_outcome": "Historical price tracking accurately reflects real market movements without duplicate inflation.",
+      "acceptance": [
+        "Stores each fare observation with route, dates, airline, price, currency, timestamp, and provider.",
+        "Deduplication key prevents identical offer re-insertion on repeated pipeline runs.",
+        "Raw observations are append-only to preserve statistical integrity."
+      ],
+      "required_evidence": [
+        "Database schema migrations for flights/observed_fares/price_history",
+        "Deno test in supabase/functions/_shared/price-history.test.ts and observed-fares.test.ts"
+      ],
+      "dependencies": [
+        "FLY-DATA-002"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-DATA-004",
+      "priority": "P1",
+      "category": "data_provider",
+      "requirement": "Adaptive query economics and scan scheduling preventing Cartesian explosion.",
+      "user_outcome": "Background flight monitoring remains sustainable, respecting API rate limits and quotas while capturing high-value deals.",
+      "acceptance": [
+        "Scheduled worker scans prioritized route batches rather than global Cartesian product.",
+        "Configurable cache TTLs prevent redundant immediate re-queries.",
+        "Worker respects rate limits with backoff and jitter."
+      ],
+      "required_evidence": [
+        "Worker implementation in scripts/fast-flights-worker.py",
+        "CI workflow scheduled runs in .github/workflows/fast-flights-pipeline.yml"
+      ],
+      "dependencies": [
+        "FLY-DATA-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-004"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-DATA-005",
+      "priority": "P1",
+      "category": "data_provider",
+      "requirement": "Offline provider fixture replay and regression suite.",
+      "user_outcome": "The system can be tested and verified reproducibly without consuming external provider quotas.",
+      "acceptance": [
+        "Representative JSON fixtures for all supported providers are maintained in test folders.",
+        "Parsers and normalizers execute cleanly against fixture data in automated CI."
+      ],
+      "required_evidence": [
+        "Fixture test executions in vitest and deno test suites"
+      ],
+      "dependencies": [
+        "FLY-DATA-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-001",
+        "EVD-003",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-001",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "Fare comparison cohorts with hierarchical fallback.",
+      "user_outcome": "Prices are compared fairly against similar flights (same route, cabin, seasonality, lead-time bucket) rather than unlike fares.",
+      "acceptance": [
+        "Cohorts group fares by route, trip type (one-way vs round-trip), and lead-time window.",
+        "When sample size in a granular cohort is below threshold, falls back to route-level baseline with reduced confidence.",
+        "Cohort quality explicitly influences deal confidence."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/domain/priceHistoryWindows.test.ts and priceAnalytics.test.ts",
+        "Database aggregation logic in analyze-price function"
+      ],
+      "dependencies": [
+        "FLY-DATA-003"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-002",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "Robust statistical pricing engine.",
+      "user_outcome": "Market price baselines use robust statistics (median, percentiles, dispersion) unaffected by single wild outliers.",
+      "acceptance": [
+        "Calculates median, 20th percentile, 80th percentile, and price volatility.",
+        "Identifies historical min and max observed within rolling time windows (7d, 30d, 90d, 180d).",
+        "Handles sparse cohorts safely without fabricating smooth curves across data voids."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/domain/priceAnalytics.test.ts",
+        "Edge function tests in supabase/functions/_shared/price-history.test.ts"
+      ],
+      "dependencies": [
+        "FLY-INTEL-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-003",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "Deterministic deal detection and Deal Score calculation.",
+      "user_outcome": "Users see clearly quantified deal strength reflecting real savings relative to historical norms.",
+      "acceptance": [
+        "Deal Score is a bounded metric (0-100) combining discount percentage, historical percentile rank, and rarity.",
+        "Formula is deterministic, reproducible, and explainable.",
+        "Zero or negative discount results in Deal Score = 0."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/domain/dealClaims.test.ts and flightIntelligence.test.ts",
+        "Deno tests in supabase/functions/_shared/observed-fares.test.ts"
+      ],
+      "dependencies": [
+        "FLY-INTEL-002"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-004",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "Strict separation of Deal Strength from Evidence Confidence.",
+      "user_outcome": "Users are never misled by high discounts that lack sufficient historical verification or sample size.",
+      "acceptance": [
+        "Confidence is calculated independently from Deal Score based on sample count, provider reliability, and observation age.",
+        "Fares with confidence < 50% are capped at modest labels (e.g. 'Giá đáng chú ý') regardless of high discount.",
+        "'Deal cực nóng' strictly requires confidence >= 75% and Deal Score >= 80.",
+        "'Deal rất ngon' strictly requires confidence >= 65% and Deal Score >= 70."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/domain/dealClaims.test.ts",
+        "Integration checks in src/app/data/api.test.ts"
+      ],
+      "dependencies": [
+        "FLY-INTEL-003"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-005",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "Suspicious data quarantine for anomaly containment.",
+      "user_outcome": "Glitches, error fares below tax floors, and scraping anomalies are quarantined instead of triggering false deal alerts.",
+      "acceptance": [
+        "Offers with prices below estimated airport tax minimums are quarantined.",
+        "Extreme price drops (>75% discount) with sample size < 3 require secondary verification.",
+        "Quarantined offers are excluded from top deal feeds and alert triggers until verified."
+      ],
+      "required_evidence": [
+        "Validation rules in flight-normalization.ts and analyze-price",
+        "Adversarial unit tests"
+      ],
+      "dependencies": [
+        "FLY-DATA-002",
+        "FLY-INTEL-004"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-006",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "True-cost travel calculation engine.",
+      "user_outcome": "Travelers see the real all-in cost of travel, including baggage, seats, and airport transit, not just the headline fare.",
+      "acceptance": [
+        "Itemizes ticket fare, mandatory airport taxes, checked baggage, seat fees, payment surcharge, and airport transfer.",
+        "Classifies each cost component as KNOWN, ESTIMATED, OPTIONAL, or UNKNOWN.",
+        "Displays real total alongside advertised total with clear itemized breakdown."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/domain/dealComparison.test.ts and flightIntelligence.test.ts",
+        "Playwright E2E verification of true cost in DealDetail"
+      ],
+      "dependencies": [
+        "FLY-DATA-002"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-007",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "Foundational route optimization and candidate journey ranking.",
+      "user_outcome": "Users discover optimal route combinations considering true cost, duration, and convenience tradeoffs.",
+      "acceptance": [
+        "Evaluates direct vs 1-stop vs alternative hub routes.",
+        "Penalizes excessive layover times (>8 hours) unless intentionally selected as stopover.",
+        "Ranks route options by a multi-objective score balancing true cost, total duration, and transfer count."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/domain/routeOptimization.test.ts"
+      ],
+      "dependencies": [
+        "FLY-INTEL-006"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-008",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "Self-transfer and connection risk modeling.",
+      "user_outcome": "Travelers booking separate tickets or tight connections receive clear risk disclosures and baggage re-check warnings.",
+      "acceptance": [
+        "Detects self-transfer / separate-ticket connections and flags them with explicit warnings.",
+        "Evaluates connection buffer: flags layovers under 180 min (international) or 90 min (domestic) as HIGH RISK.",
+        "Detects airport changes (e.g. HND to NRT) and requires minimum 5-hour transfer buffer.",
+        "Categorizes risk into low, medium, high with concrete factors."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/domain/routeOptimization.test.ts and flightIntelligence.test.ts",
+        "Deal detail risk UI checks"
+      ],
+      "dependencies": [
+        "FLY-INTEL-007"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-009",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "Deterministic Buy / Monitor / Wait decision engine.",
+      "user_outcome": "Users receive clear, defensible advice on whether to buy immediately or wait, without false deterministic claims.",
+      "acceptance": [
+        "Outputs decision categories: BUY_NOW, BUY_SOON, MONITOR, WAIT, or INSUFFICIENT_DATA.",
+        "Decision is strictly rule-grounded on price percentile, confidence score, lead time, and route volatility.",
+        "Does not claim guaranteed future prices when forecasting data is not statistically validated."
+      ],
+      "required_evidence": [
+        "Unit tests in supabase/functions/_shared/buy-decision.test.ts and src/app/domain/priceForecast.test.ts"
+      ],
+      "dependencies": [
+        "FLY-INTEL-004",
+        "FLY-INTEL-002"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-INTEL-010",
+      "priority": "P0",
+      "category": "intelligence",
+      "requirement": "Grounded AI explanation with deterministic fallback.",
+      "user_outcome": "Users get concise, plain-language insights explaining why an offer is a good deal, backed by real data facts.",
+      "acceptance": [
+        "AI explanation prompt receives only structured, deterministic flight facts, statistics, and risks.",
+        "AI output is schema-validated (reason, tags, risk, recommendation, savingScore).",
+        "If LLM service is unavailable, fails, or violates schema, system falls back to rule-based explanation without disruption."
+      ],
+      "required_evidence": [
+        "Edge function implementation in supabase/functions/ai-explainer",
+        "Normalization and fallback tests in src/app/data/api.test.ts"
+      ],
+      "dependencies": [
+        "FLY-INTEL-009",
+        "FLY-INTEL-006"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-006"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-UX-001",
+      "priority": "P0",
+      "category": "user_experience",
+      "requirement": "Ranked opportunity feed on homepage.",
+      "user_outcome": "First-time and returning visitors immediately see fresh, high-value travel opportunities ranked by real savings.",
+      "acceptance": [
+        "Homepage displays ranked opportunities prioritized by deal score, confidence, and diversity.",
+        "Suppresses duplicate flight cards for the same route and date.",
+        "Features distinct curated sections (e.g. Hot Deals, Biggest Price Drops, Recommended For You)."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/domain/travelFeed.test.ts and travelFeedSections.test.ts",
+        "Playwright E2E test verifying homepage feed cards"
+      ],
+      "dependencies": [
+        "FLY-INTEL-003",
+        "FLY-INTEL-004"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-UX-002",
+      "priority": "P0",
+      "category": "user_experience",
+      "requirement": "Comprehensive Deal Detail view.",
+      "user_outcome": "Users inspecting a deal see complete transparency: route details, true cost, price history chart, risk rating, and verified booking link.",
+      "acceptance": [
+        "Displays itinerary schedule, airline, flight number, duration, and stops.",
+        "Renders true cost analyzer with editable optional add-ons.",
+        "Renders interactive historical price chart when observations exist, or explicit no-data state when empty.",
+        "Displays grounded AI/rule explanation with clear provenance distinction (Fact vs Inference).",
+        "Provides validated booking handoff button."
+      ],
+      "required_evidence": [
+        "DealDetailPage.tsx implementation",
+        "Playwright E2E deal detail test"
+      ],
+      "dependencies": [
+        "FLY-INTEL-006",
+        "FLY-INTEL-008",
+        "FLY-INTEL-010"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-007",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-UX-003",
+      "priority": "P0",
+      "category": "user_experience",
+      "requirement": "Flexible opportunity discovery.",
+      "user_outcome": "Travelers without a fixed destination can explore cheap trips by budget, continent, departure window, and max stops.",
+      "acceptance": [
+        "Explore and Search pages support open destination filtering.",
+        "Filters include origin airport, budget ceiling, region (Southeast Asia, East Asia, Europe, Domestic), and date flexibility.",
+        "Filter state persists in URL query params or session storage."
+      ],
+      "required_evidence": [
+        "ExplorePage.tsx and SearchPage.tsx implementation",
+        "Playwright E2E search and filter test"
+      ],
+      "dependencies": [
+        "FLY-UX-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-UX-004",
+      "priority": "P1",
+      "category": "user_experience",
+      "requirement": "User travel preferences and personalized ranking.",
+      "user_outcome": "Users configure their home airport, budget, and travel preferences to see tailored opportunities.",
+      "acceptance": [
+        "Preferences include home origin, max stops, preferred airlines, budget limit, and risk tolerance.",
+        "Guest preferences persist in local storage; authenticated users sync to Supabase database.",
+        "Feed ranking personalizes deal order based on user preferences."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/lib/preferences.test.ts and src/app/domain/travelFeed.personalized.test.ts",
+        "Database migration 20260407000200_user_prefs.sql and 20260731000300_expand_user_preferences.sql"
+      ],
+      "dependencies": [
+        "FLY-UX-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-UX-005",
+      "priority": "P0",
+      "category": "user_experience",
+      "requirement": "Saved deals with explicit lifecycle state tracking.",
+      "user_outcome": "Users can bookmark deals and check back later, seeing immediately if the deal is still active, price has changed, or expired.",
+      "acceptance": [
+        "Users can toggle bookmark on any deal card or detail page.",
+        "Saved deals page lists bookmarks with current lifecycle status (ACTIVE, PRICE_CHANGED, STALE, EXPIRED).",
+        "Never displays an expired or changed deal as current live fare without clear notice."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/lib/bookmarks.test.ts",
+        "SavedDealsPage.tsx implementation and Playwright E2E test"
+      ],
+      "dependencies": [
+        "FLY-UX-002"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-UX-006",
+      "priority": "P0",
+      "category": "user_experience",
+      "requirement": "Smart price alert creation with abuse protection.",
+      "user_outcome": "Users can set targeted price alerts for specific routes or destinations with budget constraints and secure confirmation.",
+      "acceptance": [
+        "Alert form supports origin, destination, max price, min discount, and date range.",
+        "Requires valid email or Telegram destination.",
+        "Protected by Cloudflare Turnstile verification and rate-limit budgets to prevent bot spam.",
+        "Requires confirmation token before alert activation."
+      ],
+      "required_evidence": [
+        "Deno tests in supabase/functions/_shared/turnstile.test.ts and abuse-protection.test.ts",
+        "Playwright E2E alert creation test"
+      ],
+      "dependencies": [
+        "FLY-INTEL-003"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-005",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-UX-007",
+      "priority": "P0",
+      "category": "user_experience",
+      "requirement": "Effectively-once notification dispatch and deduplication.",
+      "user_outcome": "Users receive timely deal notifications without getting spammed with repeated alerts for the same offer.",
+      "acceptance": [
+        "Alert processor matches published deals against active, confirmed user alerts.",
+        "Enforces 24-hour deduplication window per route/user to prevent spam.",
+        "Bounded retry policy (1m, 5m, 15m) for transient notification provider failures.",
+        "Provides one-click signed unsubscribe link in all notifications."
+      ],
+      "required_evidence": [
+        "Deno tests in supabase/functions/_shared/alert-matching.test.ts and retry-policy.test.ts",
+        "Edge function implementation in alert-processor"
+      ],
+      "dependencies": [
+        "FLY-UX-006"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-005",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-UX-008",
+      "priority": "P0",
+      "category": "user_experience",
+      "requirement": "Freshness lifecycle and transparent freshness indicators.",
+      "user_outcome": "Users always know exactly how old flight observations are and never trust stale data as fresh.",
+      "acceptance": [
+        "Fares <= 120 minutes old are classified as HEALTHY.",
+        "Fares between 121 and 360 minutes old are classified as DEGRADED_FRESHNESS with warning badge.",
+        "Fares > 360 minutes old are classified as STALE_ONLY with prominent re-check prompt.",
+        "No endpoint or UI presents stale data as currently healthy."
+      ],
+      "required_evidence": [
+        "Deno tests in supabase/functions/_shared/feed-health.test.ts",
+        "DealCard.tsx freshness rendering and Playwright E2E freshness test"
+      ],
+      "dependencies": [
+        "FLY-DATA-003"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-005",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-UX-009",
+      "priority": "P0",
+      "category": "user_experience",
+      "requirement": "Responsive UX and accessibility compliance (WCAG 2.2 AA).",
+      "user_outcome": "The application is fully usable across mobile and desktop devices, keyboard navigation, and screen readers.",
+      "acceptance": [
+        "Touch targets for interactive elements meet or exceed 44x44px minimum.",
+        "Color contrast ratios meet WCAG 2.2 AA standards (minimum 4.5:1 for normal text).",
+        "Includes skip-to-content navigation link.",
+        "All icon-only buttons include accessible screen-reader labels.",
+        "Layout adapts cleanly between mobile viewport (375px) and desktop (1280px) without horizontal overflow."
+      ],
+      "required_evidence": [
+        "Playwright desktop and mobile test execution in e2e/app.spec.ts",
+        "Accessibility node tests in scripts/hosting-security.node-test.mjs"
+      ],
+      "dependencies": [
+        "FLY-UX-001",
+        "FLY-UX-002"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-004",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-SEC-001",
+      "priority": "P0",
+      "category": "security_privacy",
+      "requirement": "Zero secret leakage and strict environment isolation.",
+      "user_outcome": "API keys, service role credentials, and internal secrets are never exposed to browser clients or committed to repository.",
+      "acceptance": [
+        "Client bundle contains only VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.",
+        "All privileged database writes, worker triggers, and provider calls reside in secure server/edge environments.",
+        "Automated secret scanning and security smoke test pass cleanly."
+      ],
+      "required_evidence": [
+        "Node test in scripts/release-manifest.node-test.mjs and security-smoke.node-test.mjs",
+        "Code inspection of client build artifacts"
+      ],
+      "dependencies": [],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-004"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-SEC-002",
+      "priority": "P0",
+      "category": "security_privacy",
+      "requirement": "Strict Row Level Security (RLS) and cross-user data isolation.",
+      "user_outcome": "No authenticated or anonymous user can view or alter another user's personal alerts, preferences, or bookmarks.",
+      "acceptance": [
+        "RLS enabled on user_preferences, user_bookmarks, price_alerts, and notification_logs.",
+        "Anonymous reads deny access or return empty sets for protected tables.",
+        "User A cannot read or write records belonging to user B."
+      ],
+      "required_evidence": [
+        "Node tests in scripts/security-smoke.node-test.mjs",
+        "Supabase RLS policy migrations"
+      ],
+      "dependencies": [
+        "FLY-SEC-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-004"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-SEC-003",
+      "priority": "P0",
+      "category": "security_privacy",
+      "requirement": "Safe booking link sanitization and fail-closed affiliate redirects.",
+      "user_outcome": "Users clicking booking links are safely directed only to approved airline or aggregator domains, protected against open redirects.",
+      "acceptance": [
+        "Booking URLs are sanitized against a strict HTTPS allowlist of approved booking hosts.",
+        "Rejects javascript:, data:, or untrusted hostnames.",
+        "deal-redirect function validates deal status and affiliate parameters before emitting 302."
+      ],
+      "required_evidence": [
+        "Unit tests in src/app/lib/bookingUrls.test.ts",
+        "Deno tests in supabase/functions/_shared/live-deal.test.ts"
+      ],
+      "dependencies": [
+        "FLY-DATA-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-005",
+        "EVD-008"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-SEC-004",
+      "priority": "P0",
+      "category": "security_privacy",
+      "requirement": "Transactional account deletion and data export rights (GDPR/Privacy).",
+      "user_outcome": "Users can download their data and permanently delete their account with complete, transactional data removal.",
+      "acceptance": [
+        "Authenticated export endpoint returns user preferences, bookmarks, and alerts with tokens scrubbed.",
+        "Server-authoritative account deletion requires explicit 'DELETE_MY_ACCOUNT' confirmation.",
+        "Transactionally deletes application records across all tables and logs one-way hashed deletion audit.",
+        "Fails closed without partial deletion if any step errors."
+      ],
+      "required_evidence": [
+        "Database migration 20260820000700_idempotent_account_deletion.sql",
+        "Node tests in scripts/account-deletion-contract.node-test.mjs",
+        "Deno tests in supabase/functions/_shared/user-data.test.ts"
+      ],
+      "dependencies": [
+        "FLY-SEC-002"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-004",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-SEC-005",
+      "priority": "P1",
+      "category": "security_privacy",
+      "requirement": "Automated data retention and hygiene cleanup.",
+      "user_outcome": "Stale search caches, temporary snapshots, and anonymous event logs are routinely purged according to retention policy.",
+      "acceptance": [
+        "Retention policy defines lifetimes: 7d for search cache, 30d for telemetry events, 90d for inactive alerts.",
+        "retention-cleanup function executes bounded batch deletions under internal secret authentication.",
+        "Dry-run mode supported for safe verification."
+      ],
+      "required_evidence": [
+        "Database migration 20260820000500_retention_cleanup.sql",
+        "Edge function implementation in supabase/functions/retention-cleanup"
+      ],
+      "dependencies": [
+        "FLY-SEC-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-006"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-OPS-001",
+      "priority": "P1",
+      "category": "operations_resilience",
+      "requirement": "Provider health monitoring and circuit breaking.",
+      "user_outcome": "When external flight data providers experience outages, FlyCheap degrades gracefully without crashing user interfaces.",
+      "acceptance": [
+        "Monitors provider response codes, error rates, and empty responses in operational scan view.",
+        "Marks provider status (HEALTHY, DEGRADED, UNAVAILABLE).",
+        "Switches to cached/historical degraded mode when primary provider is unavailable."
+      ],
+      "required_evidence": [
+        "Database view operational_scan_health migration",
+        "Deno tests in supabase/functions/_shared/feed-health.test.ts"
+      ],
+      "dependencies": [
+        "FLY-DATA-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-OPS-002",
+      "priority": "P0",
+      "category": "operations_resilience",
+      "requirement": "High-throughput precomputed read models.",
+      "user_outcome": "Homepage and deal search pages load quickly (<500ms) even with millions of raw historical fare records.",
+      "acceptance": [
+        "Background refresh job precomputes ranked deal snapshots (refresh-observed-fares).",
+        "Public read endpoints query precomputed materialized read models with pagination and indexes.",
+        "Eliminates on-demand multi-table aggregate scanning on public user requests."
+      ],
+      "required_evidence": [
+        "Database migration 20260820000100_observed_fare_read_model.sql",
+        "Edge function implementation in refresh-observed-fares and observed-fares"
+      ],
+      "dependencies": [
+        "FLY-DATA-003",
+        "FLY-INTEL-003"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-005",
+        "EVD-006"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-OPS-003",
+      "priority": "P1",
+      "category": "operations_resilience",
+      "requirement": "Structured observability, correlation IDs, and privacy-safe client diagnostics.",
+      "user_outcome": "Operational errors are quickly diagnosable without exposing sensitive database or user details.",
+      "acceptance": [
+        "All edge functions and API responses include x-request-id and x-release-sha headers.",
+        "Client error boundaries log bounded diagnostic error codes without leaking internal stack traces.",
+        "Client reports Core Web Vitals (LCP, INP, CLS) sampled at 25% without PII."
+      ],
+      "required_evidence": [
+        "Node tests in scripts/client-error-boundary.node-test.mjs",
+        "Deno tests in supabase/functions/_shared/observability.test.ts",
+        "Unit tests in src/app/lib/reportWebVitals.test.ts"
+      ],
+      "dependencies": [
+        "FLY-SEC-001"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-004",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-OPS-004",
+      "priority": "P0",
+      "category": "operations_resilience",
+      "requirement": "Reproducible database migrations and deployment runbook.",
+      "user_outcome": "The system can be deployed and rebuilt from scratch on any clean PostgreSQL / Supabase instance without migration drift.",
+      "acceptance": [
+        "All 38 SQL migrations replay in strict sequential timestamp order on clean PostgreSQL with 0 errors.",
+        "Automated CI validates migration chain integrity and linting.",
+        "Runbook provides unambiguous setup, test, migration, and verification instructions."
+      ],
+      "required_evidence": [
+        "Node test in scripts/database-ci-contract.node-test.mjs and migration-parity.node-test.mjs",
+        "Runbook artifact in .flycheap/RUNBOOK.md"
+      ],
+      "dependencies": [],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-004"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    },
+    {
+      "id": "FLY-OPS-005",
+      "priority": "P0",
+      "category": "operations_resilience",
+      "requirement": "Adversarial test suite and failure resilience verification.",
+      "user_outcome": "The system remains robust against corrupted payloads, extreme outliers, concurrent duplicates, DST boundaries, and network failures.",
+      "acceptance": [
+        "Tests handle absurd prices ($0, negative, $1,000,000,000).",
+        "Tests handle timezone crossings and DST boundaries.",
+        "Tests handle provider timeouts, empty responses, and rate limit 429s.",
+        "Tests handle concurrent identical alert creation without duplicate notifications."
+      ],
+      "required_evidence": [
+        "Adversarial unit and integration test executions across test suites"
+      ],
+      "dependencies": [
+        "FLY-DATA-002",
+        "FLY-INTEL-004",
+        "FLY-UX-007"
+      ],
+      "status": "PASSING",
+      "evidence_refs": [
+        "EVD-003",
+        "EVD-005"
+      ],
+      "verified_at": "2026-09-24T09:30:11.309Z"
+    }
+  ]
+}

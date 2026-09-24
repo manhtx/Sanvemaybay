@@ -25,8 +25,27 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm audit --audit-level=high
       - run: npm run check
       - run: npm run check:functions
       - run: npm run test:functions
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+
+  clean-database-bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.115.0
+      - name: Start isolated PostgreSQL and apply migrations
+        run: supabase start -x gotrue,realtime,storage-api,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+      - name: Replay the complete migration chain from zero
+        run: supabase db reset --local
+      - name: Lint the resulting public schema
+        run: supabase db lint --local --schema public --level warning --fail-on error
+      - name: Stop isolated database
+        if: always()
+        run: supabase stop --no-backup

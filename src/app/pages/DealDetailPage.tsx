@@ -11,10 +11,14 @@ import { motion } from "motion/react";
 import { getBestBookingUrl, getAllBookingOptions, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "../lib/bookmarks";
 import { shareOrCopy } from "../lib/sharing";
-import { PriceHistoryChart } from "../components/PriceHistoryChart";
 import { HiddenCostAnalyzer } from "../components/HiddenCostAnalyzer";
 import { assessRoute } from "../domain/routeOptimization";
 import { trackProductEvent } from "../lib/analytics";
+import { reportClientIssue } from "../lib/clientDiagnostics";
+
+const PriceHistoryChart = React.lazy(async () => ({
+  default: (await import("../components/PriceHistoryChart")).PriceHistoryChart,
+}));
 
 export function DealDetailPage() {
   const { id } = useParams();
@@ -84,15 +88,15 @@ export function DealDetailPage() {
     try {
       await shareOrCopy(shareData, navigator);
       await trackProductEvent({ eventType: "share", entityId: deal.id, metadata: { route: `${deal.fromCode}-${deal.toCode}` } });
-    } catch (error) {
-      console.error("Share failed.", error);
+    } catch {
+      reportClientIssue("deal_share_failed");
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200">
+    <main className="min-h-screen bg-slate-950 text-slate-200">
       {/* ── TOP NAV ── */}
-      <nav className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5 px-4 py-3">
+      <nav className="sticky top-0 z-40 border-b border-white/10 bg-[#0d0d0f]/90 px-4 py-3 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link to="/deals" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
             <ChevronLeft className="w-5 h-5" />
@@ -124,7 +128,7 @@ export function DealDetailPage() {
             </button>
             <Link
               to={`/alerts?destination=${encodeURIComponent(deal.toCode)}&origin=${encodeURIComponent(deal.fromCode)}`}
-              className="flex items-center gap-2 px-4 py-2 bg-sky-500 hover:bg-sky-400 text-white rounded-full text-sm font-bold transition-colors"
+              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90"
             >
               <Bell className="w-4 h-4" />
               Theo dõi giá
@@ -139,11 +143,11 @@ export function DealDetailPage() {
           {/* ── LEFT COLUMN: IMAGES & CORE INFO ── */}
           <div className="lg:col-span-2 space-y-6">
             {/* Hero Image */}
-            <div className="relative h-[300px] sm:h-[450px] rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-2xl sm:aspect-[16/9]">
               {deal.image ? (
                 <img src={deal.image} alt={deal.to} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-sky-950 via-slate-900 to-indigo-950" />
+                <div className="h-full w-full bg-gradient-to-br from-slate-800 via-[#171719] to-violet-950" />
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
               <div className="absolute bottom-8 left-8 right-8">
@@ -157,7 +161,7 @@ export function DealDetailPage() {
                     GIẢM {deal.discount}%
                   </span>
                 </div>
-                <h1 className="text-4xl sm:text-6xl font-black text-white mb-2 leading-tight">
+                <h1 className="mb-2 text-3xl font-black leading-tight text-white sm:text-6xl">
                   {deal.fromCode} <span className="text-sky-400 px-2">→</span> {deal.to}
                 </h1>
                 <p className="text-slate-300 text-lg flex items-center gap-2">
@@ -167,7 +171,7 @@ export function DealDetailPage() {
             </div>
 
             {/* Flight Timeline Card */}
-            <section className="bg-slate-900/50 border border-white/5 rounded-3xl p-6 sm:p-8">
+            <section className="rounded-2xl border border-white/10 bg-[#171719] p-5 sm:p-8">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <Plane className="w-5 h-5 text-sky-400" />
                 Chi tiết chuyến bay
@@ -225,15 +229,22 @@ export function DealDetailPage() {
 
             {/* Data-backed explanation */}
             {priceHistory.length > 0 ? (
-              <PriceHistoryChart data={priceHistory} currentPrice={deal.price} normalPrice={deal.normalPrice} />
+              <React.Suspense fallback={(
+                <section className="rounded-2xl border border-white/10 bg-[#171719] p-6" aria-busy="true">
+                  <h3 className="text-white font-bold">Lịch sử giá</h3>
+                  <p className="mt-2 text-sm text-slate-500">Đang tải biểu đồ lịch sử…</p>
+                </section>
+              )}>
+                <PriceHistoryChart data={priceHistory} currentPrice={deal.price} normalPrice={deal.normalPrice} />
+              </React.Suspense>
             ) : (
-              <section className="bg-slate-900/50 border border-white/5 rounded-3xl p-6">
+              <section className="rounded-2xl border border-white/10 bg-[#171719] p-6">
                 <h3 className="text-white font-bold">Lịch sử giá</h3>
                 <p className="text-slate-500 text-sm mt-2">Chưa có đủ quan sát lịch sử cho tuyến {deal.fromCode} → {deal.toCode}. Hệ thống không suy đoán biểu đồ khi thiếu dữ liệu.</p>
               </section>
             )}
 
-            <section className="bg-slate-900/50 border border-white/5 rounded-3xl p-6">
+            <section className="rounded-2xl border border-white/10 bg-[#171719] p-6">
               <div className="flex items-center justify-between gap-4 mb-3">
                 <div>
                   <h3 className="text-white font-bold">Đánh giá phương án hiện tại</h3>
@@ -253,11 +264,11 @@ export function DealDetailPage() {
             <HiddenCostAnalyzer deal={deal} />
 
             {/* Data-backed explanation */}
-            <section className="bg-sky-500/5 border border-sky-500/10 rounded-3xl p-8 relative overflow-hidden">
+            <section className="relative overflow-hidden rounded-2xl border border-sky-500/15 bg-sky-500/[0.06] p-6 sm:p-8">
                <div className="absolute -top-10 -right-10 w-40 h-40 bg-sky-500/10 blur-3xl rounded-full" />
                <div className="relative z-10">
                  <div className="flex items-center gap-3 mb-4">
-                   <div className="w-10 h-10 bg-sky-500 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-500/30">
+                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500 shadow-lg shadow-sky-500/30">
                      <span className="text-white font-black text-sm">DATA</span>
                    </div>
                    <h3 className="text-xl font-black text-sky-300">Vì sao hệ thống đánh dấu là deal?</h3>
@@ -280,7 +291,7 @@ export function DealDetailPage() {
           {/* ── RIGHT COLUMN: PRICING & RECOMMENDATION ── */}
           <div className="space-y-6">
             {/* Purchase Card */}
-            <div className="sticky top-24 bg-slate-900 border border-white/10 rounded-3xl p-6 shadow-2xl">
+            <div className="sticky top-24 rounded-2xl border border-white/10 bg-[#171719] p-6 shadow-2xl shadow-black/20">
               <div className="mb-6 pb-6 border-b border-white/5">
                 <div className="text-slate-500 text-sm line-through mb-1">{formatVND(deal.normalPrice)}</div>
                 <div className="text-5xl font-black text-emerald-400 tracking-tighter mb-2">
@@ -328,7 +339,7 @@ export function DealDetailPage() {
                     <motion.div 
                        initial={{ width: 0 }}
                        animate={{ width: `${confidence}%` }}
-                       className="h-full bg-sky-500"
+                       className="h-full bg-gradient-to-r from-pink-500 to-violet-500"
                     />
                  </div>
                  <p className="text-[11px] text-slate-500 mt-2 leading-tight">
@@ -417,7 +428,7 @@ export function DealDetailPage() {
                   const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
                   window.open(bookingUrl, '_blank', 'noopener,noreferrer');
                 }}
-                className="w-full bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 py-5 rounded-2xl font-black text-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 group active:scale-[0.98]">
+                className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 py-5 text-xl font-black text-white shadow-lg shadow-pink-500/20 transition-all hover:opacity-90 active:scale-[0.98]">
                 ✈️ SĂN VÉ NGAY
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
@@ -437,6 +448,6 @@ export function DealDetailPage() {
 
         </div>
       </main>
-    </div>
+    </main>
   );
 }

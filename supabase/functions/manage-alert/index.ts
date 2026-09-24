@@ -68,7 +68,7 @@ Deno.serve(async (req: Request) => {
         .select("id, confirmation_expires_at, status")
         .eq("confirmation_token_hash", tokenHash)
         .maybeSingle();
-      if (error) return json({ error: error.message }, 500);
+      if (error) return json({ error: "Không thể cập nhật cảnh báo lúc này." }, 500);
       if (!alert) return json({ error: "Liên kết xác nhận không tồn tại." }, 404);
       if (alert.status === "active") return json({ success: true, status: "active" });
       if (
@@ -88,7 +88,7 @@ Deno.serve(async (req: Request) => {
           updated_at: new Date().toISOString(),
         })
         .eq("id", alert.id);
-      if (updateError) return json({ error: updateError.message }, 500);
+      if (updateError) return json({ error: "Không thể cập nhật cảnh báo lúc này.", error_code: "alert_update_failed" }, 500);
       return json({ success: true, status: "active" });
     }
 
@@ -106,9 +106,9 @@ Deno.serve(async (req: Request) => {
       .from("user_alerts")
       .update({ status: "unsubscribed", updated_at: new Date().toISOString() })
       .eq("id", alert_id);
-    if (updateError) return json({ error: updateError.message }, 500);
+    if (updateError) return json({ error: "Không thể cập nhật cảnh báo lúc này.", error_code: "alert_update_failed" }, 500);
     return json({ success: true, status: "unsubscribed" });
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "Invalid request" }, 400);
+    return json({ error: "Yêu cầu quản lý cảnh báo không hợp lệ." }, 400);
   }
 });

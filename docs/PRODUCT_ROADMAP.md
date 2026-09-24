@@ -169,6 +169,10 @@ Booking trực tiếp, thanh toán, passport storage, check-in, refund managemen
 **Quality:** verified accuracy, stale rate, incorrect price, AI validation failure, false positive, notification duplicate.  
 **User value:** estimated/verified saving, research time reduced, discovered opportunities và confidence before booking.
 
+Operational targets and release responses are governed by
+[`OPERATIONS_SLO.md`](OPERATIONS_SLO.md). Route count and stored row count are
+capacity signals only, never North Star or release metrics.
+
 ### North Star Metric
 
 **Verified Travel Savings:** tổng tiền được xác nhận đã tiết kiệm so với baseline phù hợp. Trước khi có booking confirmation dùng `Qualified Savings Opportunity`: deal đủ dữ liệu, verified, booking link hợp lệ, vượt Deal Score và không suspicious.
@@ -194,6 +198,26 @@ Chốt MVP → Data Strategy → Database Schema → Collection Prototype
 **Data Validation Prototype:** chứng minh `Thu thập giá → Lưu lịch sử → Phát hiện giá thấp → Xác minh nguồn đặt vé`.
 
 **Required output:** 3–5 route, một source thử nghiệm, bảng observations, scheduled job, basic Deal Detection, dashboard/CLI kiểm tra và báo cáo sau 14–30 ngày.
+
+### Launch cohort và production truth gate
+
+Cho đến khi milestone này PASS, phạm vi launch được giới hạn ở cohort tối đa năm
+tuyến từ HAN/SGN có provider coverage được xác minh. Mở rộng số route không phải
+là success metric.
+
+Release chỉ được coi là có inventory thật khi command production truth gate xác
+nhận đồng thời:
+
+- ngày khởi hành trong tương lai và `valid_until` chưa hết hạn;
+- giá, thời lượng và itinerary đầy đủ, hợp lệ;
+- provenance thuộc provider/source được phê duyệt;
+- `link_kind` là `live_source` hoặc `live_affiliate`;
+- URL HTTPS hợp lệ; `live_affiliate` có đủ network và affiliate URL;
+- deal score, discount và confidence đạt ngưỡng launch.
+
+`publishedDeals`, tổng row trong bảng, HTTP 200, historical snapshot hoặc URL tìm
+kiếm không được dùng thay cho production truth gate. Gate phải trả exit code khác
+0 khi không có qualified live deal trong cohort.
 
 ## 20. One-line Roadmap Strategy
 

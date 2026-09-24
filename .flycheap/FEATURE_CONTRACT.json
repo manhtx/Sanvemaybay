@@ -1,0 +1,538 @@
+{
+  "features": [
+    {
+      "feature_id": "FEAT-FEED-01",
+      "category": "feed",
+      "priority": "P0",
+      "description": "User opens homepage and views fresh ranked flight opportunities.",
+      "preconditions": [
+        "Backend feed-snapshot or observed-fares endpoint is reachable."
+      ],
+      "user_steps": [
+        "Navigate to homepage (/)",
+        "Observe rendered opportunity cards and curated deal sections."
+      ],
+      "expected_behavior": [
+        "Opportunities are ranked by Deal Score and confidence.",
+        "Each card shows origin, destination, price, discount badge, airline, and freshness.",
+        "Discounts are evidence-gated with capped labels if confidence < 50%."
+      ],
+      "failure_behavior": [
+        "If backend is unreachable, displays cached deals or degraded empty state with retry button without crashing."
+      ],
+      "required_backend_behavior": [
+        "feed-snapshot or observed-fares returns HTTP 200 with structured JSON envelope and release_sha."
+      ],
+      "required_data": [
+        "At least one valid flight deal or observed fare."
+      ],
+      "required_UI_state": [
+        "Loading skeleton while fetching, followed by deal card grid or healthy empty message."
+      ],
+      "required_tests": [
+        "vitest: src/app/domain/travelFeed.test.ts",
+        "playwright: e2e/app.spec.ts (homepage renders the opportunity-first experience)"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-UX-001",
+        "FLY-INTEL-003",
+        "FLY-INTEL-004",
+        "FLY-UX-008"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-003",
+        "EVD-007",
+        "EVD-008"
+      ]
+    },
+    {
+      "feature_id": "FEAT-DETAIL-01",
+      "category": "deal_detail",
+      "priority": "P0",
+      "description": "User views Deal Detail with transparent true-cost breakdown, risk rating, and historical chart.",
+      "preconditions": [
+        "User clicks on a deal card or navigates to /deal/:id."
+      ],
+      "user_steps": [
+        "Open deal detail page",
+        "Inspect flight schedule, airline, true-cost analyzer, risk rating, price history chart, and grounded AI explanation."
+      ],
+      "expected_behavior": [
+        "Displays real total alongside advertised total with itemized fee breakdown (baggage, seats, payment).",
+        "Displays route risk level (low, medium, high) with concrete factors (self-transfer, connection buffer).",
+        "Renders historical price chart if observations exist, or clean no-data message if history is empty.",
+        "Displays grounded explanation clearly labeled as Fact vs System Inference vs AI Explanation.",
+        "Booking button links to validated, sanitized HTTPS booking host."
+      ],
+      "failure_behavior": [
+        "If deal is not found, renders clean 404/not-found state with return to feed CTA."
+      ],
+      "required_backend_behavior": [
+        "Provides deal details and price_history query support."
+      ],
+      "required_data": [
+        "Deal row and optional price_history records."
+      ],
+      "required_UI_state": [
+        "Full detail layout with schedule card, true cost card, risk card, chart card, and booking CTA."
+      ],
+      "required_tests": [
+        "vitest: src/app/domain/dealComparison.test.ts",
+        "vitest: src/app/domain/priceAnalytics.test.ts",
+        "playwright: e2e/app.spec.ts (deal detail exposes evidence, cost and booking action)"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-INTEL-006",
+        "FLY-INTEL-008",
+        "FLY-INTEL-010",
+        "FLY-UX-002",
+        "FLY-SEC-003"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-003",
+        "EVD-007",
+        "EVD-008"
+      ]
+    },
+    {
+      "feature_id": "FEAT-DISCOV-01",
+      "category": "discovery",
+      "priority": "P0",
+      "description": "User explores cheap flights by flexible budget, continent/region, and departure window without a fixed destination.",
+      "preconditions": [
+        "Flight opportunities exist across multiple destinations and regions."
+      ],
+      "user_steps": [
+        "Navigate to /explore or /search",
+        "Filter by origin airport, budget ceiling, region, and date range",
+        "Observe filtered destination cards and route insights."
+      ],
+      "expected_behavior": [
+        "Displays matching opportunities respecting all active filter constraints.",
+        "Shows destination insights (average discount, lowest total cost, best travel score).",
+        "Filter changes dynamically update route results without full page reload."
+      ],
+      "failure_behavior": [
+        "If no deals match filter criteria, shows helpful empty state suggesting broader budget or dates."
+      ],
+      "required_backend_behavior": [
+        "Filtered deal queries or client-side filtering over retrieved dataset."
+      ],
+      "required_data": [
+        "Multi-route deals with region and price attributes."
+      ],
+      "required_UI_state": [
+        "Filter sidebar/header and responsive results grid."
+      ],
+      "required_tests": [
+        "vitest: src/app/domain/destinationInsights.test.ts",
+        "playwright: e2e/app.spec.ts (search applies and persists stop and inclusive date preferences)"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-UX-003",
+        "FLY-INTEL-007"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-003",
+        "EVD-007",
+        "EVD-008"
+      ]
+    },
+    {
+      "feature_id": "FEAT-PREF-01",
+      "category": "preferences",
+      "priority": "P1",
+      "description": "User updates home airport and travel preferences, seeing personalized deal rankings.",
+      "preconditions": [
+        "User opens preferences modal or settings."
+      ],
+      "user_steps": [
+        "Select home origin airport (HAN, SGN, DAD, etc.)",
+        "Configure max stops, budget, and risk tolerance",
+        "Save preferences and return to feed."
+      ],
+      "expected_behavior": [
+        "Preferences persist in local storage (guest) and Supabase database (authenticated user).",
+        "Feed prioritizes deals matching home origin and budget preferences."
+      ],
+      "failure_behavior": [
+        "If network sync fails, guest local preferences remain intact."
+      ],
+      "required_backend_behavior": [
+        "user_preferences table RLS protects read/write to authenticated user only."
+      ],
+      "required_data": [
+        "User preference schema."
+      ],
+      "required_UI_state": [
+        "Preference settings form with instant feedback."
+      ],
+      "required_tests": [
+        "vitest: src/app/lib/preferences.test.ts",
+        "vitest: src/app/domain/travelFeed.personalized.test.ts"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-UX-004",
+        "FLY-SEC-002"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-003",
+        "EVD-008"
+      ]
+    },
+    {
+      "feature_id": "FEAT-BOOKMARK-01",
+      "category": "bookmarks",
+      "priority": "P0",
+      "description": "User saves deals to bookmarks and tracks their lifecycle status (active, changed, expired).",
+      "preconditions": [
+        "User is browsing deal feed or deal detail."
+      ],
+      "user_steps": [
+        "Click bookmark icon on a deal",
+        "Navigate to /saved",
+        "Review bookmarked deals with status badges."
+      ],
+      "expected_behavior": [
+        "Deal is added to bookmarks list immediately.",
+        "Bookmark status displays ACTIVE if deal is current, or EXPIRED if past departure/validity date.",
+        "User can remove bookmarks with one click."
+      ],
+      "failure_behavior": [
+        "Empty bookmarks page shows clean placeholder with link back to explore deals."
+      ],
+      "required_backend_behavior": [
+        "user_bookmarks table with RLS isolation for authenticated users."
+      ],
+      "required_data": [
+        "Bookmark records."
+      ],
+      "required_UI_state": [
+        "Saved deals page with filterable list."
+      ],
+      "required_tests": [
+        "vitest: src/app/lib/bookmarks.test.ts",
+        "playwright: e2e/app.spec.ts (saved deals page has a stable empty state without live deals)"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-UX-005",
+        "FLY-SEC-002"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-003",
+        "EVD-008"
+      ]
+    },
+    {
+      "feature_id": "FEAT-ALERT-01",
+      "category": "alerts",
+      "priority": "P0",
+      "description": "User creates a route price alert with Cloudflare Turnstile verification.",
+      "preconditions": [
+        "User navigates to /alerts or clicks set alert on a deal."
+      ],
+      "user_steps": [
+        "Enter origin and destination",
+        "Set target price or discount threshold",
+        "Provide email or Telegram address",
+        "Complete Turnstile verification and submit."
+      ],
+      "expected_behavior": [
+        "Client validates inputs and receives Turnstile token.",
+        "setup-alert Edge Function verifies token server-side and checks rate-limit budget.",
+        "Alert is created in pending status and confirmation dispatch is triggered.",
+        "UI displays success confirmation message."
+      ],
+      "failure_behavior": [
+        "Invalid email or rejected Turnstile token displays inline error message without submitting."
+      ],
+      "required_backend_behavior": [
+        "Turnstile siteverify validation and atomic budget consumption in request_rate_limits."
+      ],
+      "required_data": [
+        "Valid alert payload."
+      ],
+      "required_UI_state": [
+        "Alert form with Turnstile widget, loading state, and success view."
+      ],
+      "required_tests": [
+        "deno: supabase/functions/_shared/turnstile.test.ts",
+        "deno: supabase/functions/_shared/abuse-protection.test.ts",
+        "playwright: e2e/app.spec.ts (alert form creates a valid alert and reaches the success state)"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-UX-006",
+        "FLY-SEC-001"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-005",
+        "EVD-008"
+      ]
+    },
+    {
+      "feature_id": "FEAT-NOTIF-01",
+      "category": "notifications",
+      "priority": "P0",
+      "description": "User receives deduplicated price drop notification with signed unsubscribe link.",
+      "preconditions": [
+        "Active, confirmed alert exists in price_alerts matching a newly published deal."
+      ],
+      "user_steps": [
+        "Background alert-processor executes on schedule",
+        "User receives email or Telegram alert",
+        "User can click unsubscribe link to cancel alert."
+      ],
+      "expected_behavior": [
+        "Alert matches deal criteria (route, price, discount, date range).",
+        "Deduplication suppresses multiple notifications within 24 hours for the same deal.",
+        "Notification includes route, price, savings, and HMAC-signed one-click unsubscribe URL.",
+        "Unsubscribe link cancels alert without requiring login."
+      ],
+      "failure_behavior": [
+        "Transient provider failure triggers bounded exponential retry (1m, 5m, 15m) without double-sending."
+      ],
+      "required_backend_behavior": [
+        "alert-processor evaluates matches, records notification_logs, and updates last_notified_at."
+      ],
+      "required_data": [
+        "price_alerts and deals records."
+      ],
+      "required_UI_state": [
+        "AlertActionPage (/alert-action) renders confirmation or unsubscribe outcome."
+      ],
+      "required_tests": [
+        "deno: supabase/functions/_shared/alert-matching.test.ts",
+        "deno: supabase/functions/_shared/retry-policy.test.ts",
+        "playwright: e2e/app.spec.ts (alert unsubscribe rejects a link without signed parameters)"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-UX-007"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-005",
+        "EVD-008"
+      ]
+    },
+    {
+      "feature_id": "FEAT-FRESH-01",
+      "category": "freshness",
+      "priority": "P0",
+      "description": "User sees honest freshness indicator (healthy, degraded, stale) with re-check guidance.",
+      "preconditions": [
+        "Observed fares or feed snapshots are loaded."
+      ],
+      "user_steps": [
+        "View deal cards on feed, search, or detail page",
+        "Inspect freshness badge (e.g. 'Quan sát trong 1 giờ', 'Quan sát 5 giờ trước')."
+      ],
+      "expected_behavior": [
+        "Observations <= 120 min show green healthy badge.",
+        "Observations 121-360 min show yellow degraded freshness badge.",
+        "Observations > 360 min show orange stale warning with recommendation to verify on airline website."
+      ],
+      "failure_behavior": [
+        "If all observations are stale, page header prominently alerts user that deals are historical/stale."
+      ],
+      "required_backend_behavior": [
+        "Endpoint computes feed_age_minutes from MAX(observed_at)."
+      ],
+      "required_data": [
+        "Observation timestamps."
+      ],
+      "required_UI_state": [
+        "Freshness banner and card badges."
+      ],
+      "required_tests": [
+        "deno: supabase/functions/_shared/feed-health.test.ts",
+        "playwright: e2e/app.spec.ts (deals page distinguishes a degraded feed from healthy zero inventory)"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-UX-008"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-003",
+        "EVD-005",
+        "EVD-008"
+      ]
+    },
+    {
+      "feature_id": "FEAT-ACCESSIB-01",
+      "category": "accessibility",
+      "priority": "P0",
+      "description": "Keyboard and screen-reader user navigates application cleanly with 44px tap targets and skip links.",
+      "preconditions": [
+        "User accesses application with keyboard (Tab/Shift-Tab) or screen reader."
+      ],
+      "user_steps": [
+        "Press Tab on initial page load to reveal skip-to-content link",
+        "Navigate through navigation bar, filter controls, deal cards, and modal dialogs."
+      ],
+      "expected_behavior": [
+        "Skip link moves focus directly to main content area.",
+        "Interactive buttons and touch targets meet minimum 44x44px dimensions.",
+        "Focus rings are clearly visible on all focused elements.",
+        "All icon buttons (bookmarks, close, menu) have aria-label attributes."
+      ],
+      "failure_behavior": [
+        "No focus traps or invisible interactive controls."
+      ],
+      "required_backend_behavior": [
+        "None (client-side accessibility)."
+      ],
+      "required_data": [
+        "None."
+      ],
+      "required_UI_state": [
+        "Semantic HTML elements with ARIA roles."
+      ],
+      "required_tests": [
+        "node: scripts/hosting-security.node-test.mjs",
+        "playwright: e2e/app.spec.ts (privacy and accessibility foundations are reachable)"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-UX-009"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-004",
+        "EVD-008"
+      ]
+    },
+    {
+      "feature_id": "FEAT-PRIVACY-01",
+      "category": "privacy",
+      "priority": "P0",
+      "description": "Authenticated user requests account deletion, triggering transactional purging of user data.",
+      "preconditions": [
+        "User is logged in and navigates to privacy settings."
+      ],
+      "user_steps": [
+        "Open account privacy settings",
+        "Click delete account, type explicit confirmation 'DELETE_MY_ACCOUNT'",
+        "Submit deletion request."
+      ],
+      "expected_behavior": [
+        "Server verifies authenticated identity and exact confirmation phrase.",
+        "Transactionally deletes user preferences, bookmarks, alerts, and auth records.",
+        "Logs one-way hashed deletion audit entry without storing user UUID in plaintext.",
+        "Logs user out and redirects to goodbye/home page."
+      ],
+      "failure_behavior": [
+        "Mismatched confirmation phrase or missing auth fails closed with 400/401 error."
+      ],
+      "required_backend_behavior": [
+        "manage-user-data Edge Function invokes transactional SQL procedure."
+      ],
+      "required_data": [
+        "User account records."
+      ],
+      "required_UI_state": [
+        "Confirmation dialog with text input and destructive confirmation button."
+      ],
+      "required_tests": [
+        "node: scripts/account-deletion-contract.node-test.mjs",
+        "deno: supabase/functions/_shared/user-data.test.ts"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-SEC-004",
+        "FLY-SEC-002"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-004",
+        "EVD-005"
+      ]
+    },
+    {
+      "feature_id": "FEAT-REPLAY-01",
+      "category": "data_replay",
+      "priority": "P1",
+      "description": "Developer/CI replays representative provider fixtures offline without live quota.",
+      "preconditions": [
+        "Test fixtures exist for FastFlights, Amadeus, and SerpApi in repository."
+      ],
+      "user_steps": [
+        "Run npm test or npm run test:functions."
+      ],
+      "expected_behavior": [
+        "All provider parsers normalize fixtures into standard flight offer schemas.",
+        "Fails closed if provider structure changes unexpectedly."
+      ],
+      "failure_behavior": [
+        "Test fails with clear assertion diff if normalization contract is broken."
+      ],
+      "required_backend_behavior": [
+        "Deterministic normalization functions."
+      ],
+      "required_data": [
+        "Provider response JSON fixtures."
+      ],
+      "required_UI_state": [
+        "N/A."
+      ],
+      "required_tests": [
+        "deno: supabase/functions/_shared/flight-normalization.test.ts",
+        "vitest: src/app/data/api.test.ts"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-DATA-001",
+        "FLY-DATA-005"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-003",
+        "EVD-005"
+      ]
+    },
+    {
+      "feature_id": "FEAT-CIRCUIT-01",
+      "category": "resilience",
+      "priority": "P1",
+      "description": "Application gracefully degrades to cached/historical inventory during provider outage without crashing.",
+      "preconditions": [
+        "External provider API returns HTTP 500/503 or network times out."
+      ],
+      "user_steps": [
+        "User opens homepage or search page during provider outage."
+      ],
+      "expected_behavior": [
+        "System falls back to cached feed snapshots or local storage cache.",
+        "Displays degraded inventory notice without throwing unhandled exceptions.",
+        "Retry button allows user to check again when service restores."
+      ],
+      "failure_behavior": [
+        "No blank screens or raw stack traces."
+      ],
+      "required_backend_behavior": [
+        "feed-snapshot returns status: provider_unavailable with retryable: true."
+      ],
+      "required_data": [
+        "Cached snapshot."
+      ],
+      "required_UI_state": [
+        "Degraded status banner and cached card grid."
+      ],
+      "required_tests": [
+        "deno: supabase/functions/_shared/feed-health.test.ts",
+        "vitest: src/app/data/api.test.ts"
+      ],
+      "acceptance_requirement_ids": [
+        "FLY-OPS-001",
+        "FLY-UX-008"
+      ],
+      "status": "PASSING",
+      "evidence": [
+        "EVD-003",
+        "EVD-005"
+      ]
+    }
+  ]
+}

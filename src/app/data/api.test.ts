@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterDeals, mapDealRow, mapPriceHistoryRows, sanitizeBookingUrl } from "./api";
+import { filterDeals, isActiveFeedDeal, mapDealRow, mapObservedFare, mapPriceHistoryRows, parseFeedEnvelope, sanitizeBookingUrl } from "./api";
 import { normalizeAIInsight } from "./deals";
 
 describe("mapDealRow", () => {
@@ -55,6 +55,61 @@ describe("mapDealRow", () => {
     expect(deal.aiInsight.recommendation).toBe("buy_now");
     expect(deal.dealScore).toBe(85);
     expect(deal.bookingUrl).toContain("google.com/travel/flights");
+  });
+});
+
+describe("isActiveFeedDeal", () => {
+  const base = mapDealRow({
+    id: "live", from: "Hà Nội", from_code: "HAN", to: "Bangkok", to_code: "BKK",
+    country: "Thái Lan", region: "asia", price: 2_000_000, normal_price: 3_000_000,
+    discount: 33, currency: "VND", airline: "Provider", airline_code: "PA",
+    depart_date: "2026-09-01", return_date: "2026-09-05", duration: "2h", stops: 0,
+    seats_left: 0, expires_in: "Kiểm tra lại", ai_insight: {}, hidden_costs: [],
+    advertised_total: 2_000_000, real_total: 2_000_000, trip_type: "international",
+    valid_until: "2026-08-12T00:00:00Z", booking_url: "https://aviasales.com/offer",
+    link_kind: "live_source",
+  });
+
+  it("fails closed for legacy and stale feed rows", () => {
+    const now = new Date("2026-08-11T00:00:00Z");
+    expect(isActiveFeedDeal(base, now)).toBe(true);
+    expect(isActiveFeedDeal({ ...base, linkKind: undefined }, now)).toBe(false);
+    expect(isActiveFeedDeal({ ...base, validUntil: "2026-08-10T00:00:00Z" }, now)).toBe(false);
+  });
+});
+
+describe("parseFeedEnvelope", () => {
+  it("preserves a typed degraded schema state", () => {
+    expect(parseFeedEnvelope({
+      deals: [], status: "degraded_schema", source: "schema_check",
+      generated_at: "2026-08-19T00:00:00Z", retryable: true,
+      message: "Hệ thống dữ liệu đang được đồng bộ phiên bản.",
+    })).toMatchObject({ status: "degraded_schema", retryable: true, rows: [] });
+  });
+
+  it("rejects legacy and unknown status payloads", () => {
+    expect(parseFeedEnvelope({ deals: [] })).toBeUndefined();
+    expect(parseFeedEnvelope({ deals: [], status: "ok" })).toBeUndefined();
+  });
+});
+
+describe("mapObservedFare", () => {
+  it("maps scoring, provenance and comparison evidence", () => {
+    const fare = mapObservedFare({ id: "fare", origin: "Hà Nội", origin_code: "HAN", destination: "TP.HCM", destination_code: "SGN", country: "Việt Nam", region: "domestic", price: 2_000_000, baseline_price: 3_000_000, discount_percent: 33.3, currency: "VND", airline: "Air", airline_code: "VN", date: "2099-01-01", return_date: "2099-01-05", duration: "2h", stops: 0, deal_score: 88, deal_label: "Deal rất ngon", sample_size: 12, confidence_percent: 100, freshness_minutes: 20, booking_url: "https://www.google.com/travel/flights?q=HAN-SGN", timestamp: "2026-08-19T10:00:00Z" });
+    expect(fare.discount).toBe(33.3);
+    expect(fare.dealScore).toBe(88);
+    expect(fare.linkKind).toBe("indicative");
+    expect(fare.aiInsight.reason).toContain("33.3%");
+    expect(fare.isFlashDeal).toBe(true);
+    expect(fare.confidence).toBe(1);
+  });
+
+  it("does not present low-confidence observations as flash or trending", () => {
+    const fare = mapObservedFare({ id: "low", origin: "Hà Nội", origin_code: "HAN", destination: "TP.HCM", destination_code: "SGN", country: "Việt Nam", region: "domestic", price: 2_000_000, baseline_price: 4_000_000, discount_percent: 50, currency: "VND", airline: "Air", airline_code: "VN", date: "2099-01-01", duration: "2h", stops: 0, deal_score: 95, deal_label: "Giá đáng chú ý", sample_size: 3, confidence_percent: 25, freshness_minutes: 20, booking_url: "https://www.google.com/travel/flights?q=HAN-SGN" });
+    expect(fare.isFlashDeal).toBe(false);
+    expect(fare.isTrending).toBe(false);
+    expect(fare.confidence).toBe(0.25);
+    expect(fare.aiInsight.tags).toContain("Tin cậy thấp");
   });
 });
 

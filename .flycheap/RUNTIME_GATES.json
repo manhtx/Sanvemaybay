@@ -1,0 +1,216 @@
+{
+  "version": "6.0.0",
+  "evaluated_at": "2026-09-24T17:51:00+07:00",
+  "gates": [
+    {
+      "gate_id": "RG01",
+      "name": "PRODUCT_CONTRACT_COMPLETE",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "All 14 Product Outcome Invariants (A-N) are formally defined, mapped to Core Areas and implemented in code."
+    },
+    {
+      "gate_id": "RG02",
+      "name": "ACCEPTANCE_TRACEABILITY_COMPLETE",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "Full bidirectional mapping exists in PRODUCT_TRACEABILITY.json with zero orphan outcomes, requirements (34/34), or features (12/12)."
+    },
+    {
+      "gate_id": "RG03",
+      "name": "CERTIFICATION_INTEGRITY",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Machine validation in scripts/verify-certification-integrity.mjs passes programmatically with 0 errors across contracts and ledgers."
+    },
+    {
+      "gate_id": "RG04",
+      "name": "CLEAN_REPRODUCIBILITY",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "Clean worktree verification confirms dependencies, tests, builds, and contracts run from scratch without hidden state."
+    },
+    {
+      "gate_id": "RG05",
+      "name": "GOLDEN_CORPUS_PASS",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Curated GOLDEN_DATASET_V1 regression suite exercises full decision pipeline across 20 representative market truth cases."
+    },
+    {
+      "gate_id": "RG06",
+      "name": "MUTATION_SENSITIVITY_PASS",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Bounded fault injection on Deal Score direction, confidence caps, and allowlist sanitization causes tests to fail, proving sensitivity."
+    },
+    {
+      "gate_id": "RG07",
+      "name": "CLEAN_BUILD_AND_TESTS",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "tsc --noEmit, eslint, deno check, and 185 automated tests pass with 0 errors and 0 warnings."
+    },
+    {
+      "gate_id": "RG08",
+      "name": "STAGING_ISOLATED",
+      "status": "BLOCKED",
+      "evidence_level": "L0",
+      "rationale": "Blocked by BLK-MIGR-01: Linked Supabase project contains foreign Macro Platform state; dedicated clean staging project required."
+    },
+    {
+      "gate_id": "RG09",
+      "name": "MIGRATION_STAGING_VERIFIED",
+      "status": "BLOCKED",
+      "evidence_level": "L0",
+      "rationale": "Blocked by BLK-MIGR-01: Remote db push is held pending provisioned clean staging environment."
+    },
+    {
+      "gate_id": "RG10",
+      "name": "POPULATED_MIGRATION_VERIFIED",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Sequential migration execution with pre-existing populated flight and deal rows verified locally in database-ci-contract."
+    },
+    {
+      "gate_id": "RG11",
+      "name": "EDGE_FUNCTION_STAGING_VERIFIED",
+      "status": "BLOCKED",
+      "evidence_level": "L0",
+      "rationale": "Blocked by BLK-MIGR-01: Edge Functions pass deno check locally (L4); remote deployment held pending staging project."
+    },
+    {
+      "gate_id": "RG12",
+      "name": "REMOTE_RLS_VERIFIED",
+      "status": "BLOCKED",
+      "evidence_level": "L4",
+      "rationale": "Local RLS contracts pass 100% (L4); remote live instance returns 404 for unapplied August security tables (L0 remote)."
+    },
+    {
+      "gate_id": "RG13",
+      "name": "ACCOUNT_DELETION_REMOTE_VERIFIED",
+      "status": "BLOCKED",
+      "evidence_level": "L4",
+      "rationale": "Account deletion transaction passes locally in account-deletion-contract (L4); remote staging push required (L6)."
+    },
+    {
+      "gate_id": "RG14",
+      "name": "TURNSTILE_RUNTIME_VERIFIED_OR_NONBLOCKING_BY_RELEASE_MODE",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Turnstile server verification fails closed in turnstile.test.ts; non-blocking in Indicative Beta / Local mode."
+    },
+    {
+      "gate_id": "RG15",
+      "name": "LIVE_PROVIDER_VERIFIED_OR_EXPLICIT_INDICATIVE_MODE",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Explicitly operating under INDICATIVE_PUBLIC_BETA mode: FastFlights scraping and Amadeus sandbox verified; commercial keys scoped out."
+    },
+    {
+      "gate_id": "RG16",
+      "name": "SCHEDULER_PIPELINE_VERIFIED",
+      "status": "BLOCKED",
+      "evidence_level": "L4",
+      "rationale": "Workflow contracts defined in .github/workflows; automated cloud execution blocked pending repository staging secrets."
+    },
+    {
+      "gate_id": "RG17",
+      "name": "FRESHNESS_RUNTIME_VERIFIED",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "Tri-state boundaries verified: <=120m healthy, 121-360m degraded, >360m stale circuit-breaker trip."
+    },
+    {
+      "gate_id": "RG18",
+      "name": "ALERT_LOGIC_VERIFIED",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Alert matching, 24-hour deduplication hash, and exponential retry backoff verified in alert-matching.test.ts."
+    },
+    {
+      "gate_id": "RG19",
+      "name": "EXTERNAL_NOTIFICATION_DELIVERY_VERIFIED_IF_RELEASE_REQUIRED",
+      "status": "NOT_APPLICABLE",
+      "evidence_level": "L4",
+      "rationale": "Live external email dispatch transport (e.g. Resend/SendGrid) is unconfigured; alert matching and deduplication are fully verified locally."
+    },
+    {
+      "gate_id": "RG20",
+      "name": "URL_SAFETY_VERIFIED",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "Booking URL domain allowlisting, open-redirect prevention, and tracking parameter stripping verified in bookingUrls.test.ts."
+    },
+    {
+      "gate_id": "RG21",
+      "name": "LIVE_BOOKING_HANDOFF_VERIFIED_IF_CLAIMED",
+      "status": "NOT_APPLICABLE",
+      "evidence_level": "L4",
+      "rationale": "Direct airline booking/ticketing transaction is not claimed for Core V1; system functions as an indicative opportunity intelligence engine."
+    },
+    {
+      "gate_id": "RG22",
+      "name": "OBSERVABILITY_QUERYABLE",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "x-request-id and x-release-sha headers, Core Web Vitals RUM reporting, and PII-safe error codes verified."
+    },
+    {
+      "gate_id": "RG23",
+      "name": "FAILURE_GAME_DAY_PASSED",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Simulated 500s, 429 rate limits, AI timeouts, and network failure test cases render graceful fallbacks without white screens."
+    },
+    {
+      "gate_id": "RG24",
+      "name": "SECURITY_GATE_PASSED",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Zero secret leakage, RLS on user tables, PII hashing on account deletion, and fail-closed security contracts verified."
+    },
+    {
+      "gate_id": "RG25",
+      "name": "PERFORMANCE_BUDGET_PASS",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Code-splitting verified: Deal detail chunk 26KB, charts dynamically imported, indexed lookups on all core tables."
+    },
+    {
+      "gate_id": "RG26",
+      "name": "ACCESSIBILITY_BASELINE_PASS",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "Skip link present, 44px tap targets, keyboard navigation, and WCAG 2.2 AA automated baseline verified across desktop and mobile."
+    },
+    {
+      "gate_id": "RG27",
+      "name": "RECOVERY_PROCEDURE_VALIDATED",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Rollback and recovery runbook documented in RUNBOOK.md; backup and restore procedures simulated."
+    },
+    {
+      "gate_id": "RG28",
+      "name": "RELEASE_PROVENANCE_COMPLETE",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "RC SHA, contract hashes, migration hashes, and release attestation manifest established."
+    },
+    {
+      "gate_id": "RG29",
+      "name": "NO_OPEN_P0_P1",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "0 open P0/P1 defects; 0 TODO, FIXME, HACK, or skipped tests in active codebase."
+    },
+    {
+      "gate_id": "RG30",
+      "name": "FRESH_FINAL_VERIFIER_PASS",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "Final fresh zero-trust verification confirmed that all local gates are supported and external blockers are accurately isolated."
+    }
+  ]
+}

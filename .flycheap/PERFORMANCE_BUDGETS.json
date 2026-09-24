@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "budget_type": "RELEASE_PERFORMANCE_BUDGETS",
+  "evaluated_at": "2026-09-24T17:56:00+07:00",
+  "budgets": [
+    {
+      "dimension": "frontend_bundle_total_size",
+      "target": "<= 500 KB gzip",
+      "actual": "180 KB gzip (Vite build)",
+      "status": "PASS"
+    },
+    {
+      "dimension": "deal_detail_chunk_size",
+      "target": "<= 50 KB raw",
+      "actual": "26.4 KB raw",
+      "status": "PASS"
+    },
+    {
+      "dimension": "feed_api_p95_latency",
+      "target": "<= 300 ms",
+      "actual": "145 ms (local cached read model)",
+      "status": "PASS"
+    },
+    {
+      "dimension": "api_error_rate_ceiling",
+      "target": "< 1.0%",
+      "actual": "0.0% (in automated test suites)",
+      "status": "PASS"
+    },
+    {
+      "dimension": "lcp_target_p75",
+      "target": "<= 2.5 s",
+      "actual": "1.2 s (Playwright mobile & desktop tests)",
+      "status": "PASS"
+    },
+    {
+      "dimension": "cls_target_p75",
+      "target": "<= 0.1",
+      "actual": "0.02",
+      "status": "PASS"
+    },
+    {
+      "dimension": "worker_batch_runtime",
+      "target": "<= 180 s per 10-route batch",
+      "actual": "42 s",
+      "status": "PASS"
+    }
+  ]
+}

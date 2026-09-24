@@ -111,7 +111,8 @@
         "npm:typescript@^5.9.3",
         "npm:vaul@1.1.2",
         "npm:vite@^6.4.3",
-        "npm:vitest@^3.2.6"
+        "npm:vitest@^3.2.6",
+        "npm:web-vitals@6.1.1"
       ]
     }
   }

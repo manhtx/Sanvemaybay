@@ -2,15 +2,71 @@ import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import { Deal, normalizeAIInsight, PricePoint } from "./deals";
 import { rankTravelFeed } from "../domain/travelFeed";
 import { readFeedCache, writeFeedCache } from "../lib/feedCache";
+import { evidenceGatedDealLabel } from "../domain/dealClaims";
+import { reportClientIssue } from "../lib/clientDiagnostics";
+export { createAlerts, manageAlert } from "./alertApi";
+export type { CreateAlertInput } from "./alertApi";
+export { getTrackedRoutes } from "./routeApi";
+export type { TrackedRoute } from "./routeApi";
 
-export interface TrackedRoute {
-  id: string;
-  originCode: string;
-  originName: string;
-  destinationCode: string;
-  destinationName: string;
-  country: string;
-  region: Deal["region"];
+export type FeedStatus =
+  | "healthy"
+  | "healthy_empty"
+  | "stale_only"
+  | "degraded_schema"
+  | "provider_unavailable";
+
+export interface DealFeedResult {
+  deals: Deal[];
+  status: FeedStatus;
+  source: string;
+  generatedAt?: string;
+  retryable: boolean;
+  message: string;
+}
+
+export interface ObservedFarePage {
+  fares: Deal[];
+  total: number;
+  nextPage: number | null;
+  generatedAt?: string;
+  latestObservedAt?: string;
+  feedAgeMinutes?: number;
+  retryable: boolean;
+  status: "healthy" | "healthy_empty" | "degraded_freshness" | "stale_only" | "provider_unavailable";
+}
+
+const feedStatuses = new Set<FeedStatus>([
+  "healthy",
+  "healthy_empty",
+  "stale_only",
+  "degraded_schema",
+  "provider_unavailable",
+]);
+
+export function parseFeedEnvelope(value: unknown): Omit<DealFeedResult, "deals"> & { rows: Record<string, any>[] } | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const payload = value as Record<string, unknown>;
+  if (!feedStatuses.has(payload.status as FeedStatus) || !Array.isArray(payload.deals)) return undefined;
+  return {
+    rows: payload.deals as Record<string, any>[],
+    status: payload.status as FeedStatus,
+    source: typeof payload.source === "string" ? payload.source : "unknown",
+    generatedAt: typeof payload.generated_at === "string" ? payload.generated_at : undefined,
+    retryable: payload.retryable === true,
+    message: typeof payload.message === "string" ? payload.message : "Không thể xác định trạng thái nguồn deal.",
+  };
+}
+
+async function parseFunctionErrorEnvelope(error: unknown) {
+  if (!error || typeof error !== "object") return undefined;
+  const context = (error as { context?: unknown }).context;
+  if (!context || typeof context !== "object" || !("json" in context)) return undefined;
+  try {
+    return parseFeedEnvelope(await (context as { json: () => Promise<unknown> }).json());
+  } catch {
+    return undefined;
+  }
 }
 
 const bookingHosts = [
@@ -20,6 +76,8 @@ const bookingHosts = [
   "vietnamairlines.com",
   "vietjetair.com",
   "bambooairways.com",
+  "aviasales.com",
+  "travelpayouts.com",
 ];
 
 export function sanitizeBookingUrl(value: unknown): string | undefined {
@@ -42,14 +100,40 @@ export function sanitizeBookingUrl(value: unknown): string | undefined {
  * to the browser.
  */
 export async function getDeals(): Promise<Deal[]> {
+  return (await getDealsResult()).deals;
+}
+
+export async function getDealsResult(): Promise<DealFeedResult> {
   const storage = typeof window === "undefined" ? undefined : window.localStorage;
-  if (!isSupabaseConfigured) return readFeedCache(storage)?.deals ?? [];
+  const cachedDeals = (readFeedCache(storage)?.deals ?? []).filter((deal) => isActiveFeedDeal(deal));
+  if (!isSupabaseConfigured) {
+    return {
+      deals: cachedDeals,
+      status: cachedDeals.length > 0 ? "stale_only" : "provider_unavailable",
+      source: "local_cache",
+      retryable: true,
+      message: "Ứng dụng chưa được cấu hình kết nối nguồn deal.",
+    };
+  }
 
   const { data: snapshot, error: snapshotError } = await supabase.functions.invoke("feed-snapshot", { body: {} });
+  const envelope = parseFeedEnvelope(snapshot) ?? await parseFunctionErrorEnvelope(snapshotError);
+  if (envelope) {
+    const rankedSnapshot = rankTravelFeed(envelope.rows.map(mapDealRow).filter((deal: Deal) => isActiveFeedDeal(deal)));
+    if (rankedSnapshot.length > 0) writeFeedCache(storage, rankedSnapshot);
+    return { ...envelope, deals: rankedSnapshot };
+  }
   if (!snapshotError && Array.isArray(snapshot?.deals) && snapshot.deals.length > 0) {
-    const rankedSnapshot = rankTravelFeed(snapshot.deals.map(mapDealRow));
+    const rankedSnapshot = rankTravelFeed(snapshot.deals.map(mapDealRow).filter((deal: Deal) => isActiveFeedDeal(deal)));
     writeFeedCache(storage, rankedSnapshot);
-    return rankedSnapshot;
+    return {
+      deals: rankedSnapshot,
+      status: rankedSnapshot.length > 0 ? "healthy" : "stale_only",
+      source: "legacy_snapshot",
+      generatedAt: typeof snapshot.generated_at === "string" ? snapshot.generated_at : undefined,
+      retryable: false,
+      message: rankedSnapshot.length > 0 ? "Deal live đã được xác minh." : "Snapshot hiện không còn deal hợp lệ.",
+    };
   }
 
   const { data, error } = await supabase
@@ -60,13 +144,105 @@ export async function getDeals(): Promise<Deal[]> {
     .order("deal_score", { ascending: false });
 
   if (error || !data?.length) {
-    if (error) console.error("Deal service unavailable.", error);
-    return readFeedCache(storage)?.deals ?? [];
+    if (error) reportClientIssue("deal_service_unavailable");
+    return {
+      deals: cachedDeals,
+      status: cachedDeals.length > 0 ? "stale_only" : "provider_unavailable",
+      source: cachedDeals.length > 0 ? "local_cache" : "direct_query",
+      retryable: true,
+      message: cachedDeals.length > 0
+        ? "Đang hiển thị dữ liệu dự phòng còn hiệu lực."
+        : "Nguồn deal hiện tạm thời không khả dụng.",
+    };
   }
 
-  const ranked = rankTravelFeed(data.map(mapDealRow));
-  writeFeedCache(storage, ranked);
-  return ranked;
+  const ranked = rankTravelFeed(data.map(mapDealRow).filter((deal) => isActiveFeedDeal(deal)));
+  if (ranked.length > 0) writeFeedCache(storage, ranked);
+  return {
+    deals: ranked,
+    status: ranked.length > 0 ? "healthy" : "stale_only",
+    source: "direct_query",
+    retryable: false,
+    message: ranked.length > 0 ? "Deal live đã được xác minh." : "Dữ liệu hiện có đã cũ hoặc chưa đủ điều kiện công bố.",
+  };
+}
+
+export function mapObservedFare(row: Record<string, any>): Deal {
+  const score = Math.max(0, Math.min(100, Number(row.deal_score) || 0));
+  const sampleSize = Math.max(0, Number(row.sample_size) || 0);
+  const confidencePercent = Math.max(0, Math.min(100, Number(row.confidence_percent) || Math.min(100, (sampleSize / 12) * 100)));
+  const discount = row.discount_percent == null ? 0 : Math.max(0, Number(row.discount_percent));
+  const baseline = row.baseline_price == null ? Number(row.price) : Number(row.baseline_price);
+  const safeLabel = evidenceGatedDealLabel(score, confidencePercent);
+  return {
+    id: `observed-${row.id}`,
+    from: row.origin,
+    fromCode: row.origin_code,
+    to: row.destination,
+    toCode: row.destination_code,
+    country: row.country,
+    region: row.region,
+    price: Number(row.price),
+    normalPrice: baseline,
+    discount,
+    currency: row.currency ?? "VND",
+    airline: row.airline,
+    airlineCode: row.airline_code,
+    departDate: row.date,
+    returnDate: row.return_date ?? undefined,
+    duration: row.duration,
+    stops: Number(row.stops),
+    stopCity: null,
+    seatsLeft: 0,
+    expiresIn: row.freshness_minutes <= 60 ? "Quan sát trong 1 giờ" : `Quan sát ${Math.max(1, Math.round(Number(row.freshness_minutes) / 60))} giờ trước`,
+    image: "",
+    flightNumber: row.flight_number ?? "",
+    aiInsight: {
+      reason: row.discount_percent == null
+        ? "Đang tích lũy thêm giá tương đương để tính mức chênh lệch."
+        : `Thấp hơn mặt bằng cùng nhóm ${discount.toFixed(1)}% từ ${sampleSize} quan sát.`,
+      tags: [safeLabel, `Tin cậy ${confidencePercent < 50 ? "thấp" : confidencePercent < 75 ? "vừa" : "cao"}`, `${sampleSize} mẫu so sánh`],
+      risk: sampleSize >= 8 ? "low" : "medium",
+      riskDetails: "Giá tham khảo có thể thay đổi khi kiểm tra lại trên nguồn.",
+      recommendation: "wait",
+      recommendationNote: "Kiểm tra giá hiện tại trước khi quyết định.",
+      savingScore: score,
+    },
+    hiddenCosts: [],
+    advertisedTotal: Number(row.price),
+    realTotal: Number(row.price),
+    isTrending: score >= 70 && confidencePercent >= 50,
+    isFlashDeal: discount >= 30 && confidencePercent >= 65,
+    tripType: row.region === "domestic" ? "domestic" : "international",
+    confidence: confidencePercent / 100,
+    dealScore: score,
+    aiReasoning: safeLabel,
+    bookingUrl: sanitizeBookingUrl(row.booking_url),
+    linkKind: "indicative",
+    observedAt: row.timestamp,
+  };
+}
+
+export async function getObservedFares(page = 1, pageSize = 60): Promise<ObservedFarePage> {
+  if (!isSupabaseConfigured) return { fares: [], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" };
+  const { data, error } = await supabase.functions.invoke("observed-fares", { body: { page, page_size: pageSize } });
+  if (error || !data || !Array.isArray(data.fares)) {
+    return { fares: [], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" };
+  }
+  const acceptedStatuses: ObservedFarePage["status"][] = ["healthy", "healthy_empty", "degraded_freshness", "stale_only", "provider_unavailable"];
+  const status: ObservedFarePage["status"] = acceptedStatuses.includes(data.status as ObservedFarePage["status"])
+    ? data.status as ObservedFarePage["status"]
+    : "provider_unavailable";
+  return {
+    fares: data.fares.map(mapObservedFare),
+    total: Math.max(0, Number(data.total) || 0),
+    nextPage: Number.isInteger(data.next_page) ? data.next_page : null,
+    generatedAt: typeof data.generated_at === "string" ? data.generated_at : undefined,
+    latestObservedAt: typeof data.latest_observed_at === "string" ? data.latest_observed_at : undefined,
+    feedAgeMinutes: Number.isFinite(Number(data.feed_age_minutes)) ? Math.max(0, Number(data.feed_age_minutes)) : undefined,
+    retryable: data.retryable === true,
+    status,
+  };
 }
 
 export async function getHistoricalDeals(): Promise<Deal[]> {
@@ -130,6 +306,18 @@ export function mapDealRow(row: Record<string, any>): Deal {
   };
 }
 
+export function isActiveFeedDeal(deal: Deal, now = new Date()): boolean {
+  if (deal.linkKind !== "live_source" && deal.linkKind !== "live_affiliate") return false;
+  const departDate = new Date(`${deal.departDate}T00:00:00Z`);
+  const validUntil = deal.validUntil ? new Date(deal.validUntil) : undefined;
+  if (!(departDate > now) || !validUntil || !(validUntil > now)) return false;
+  if (!(deal.price > 0) || !deal.duration.trim()) return false;
+  if (deal.linkKind === "live_affiliate") {
+    return Boolean(deal.affiliateNetwork && deal.affiliateUrl);
+  }
+  return Boolean(deal.bookingUrl);
+}
+
 /**
  * Fetch a single deal by ID.
  */
@@ -147,9 +335,10 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
 
     if (error) throw error;
     
-    return mapDealRow(data);
-  } catch (err) {
-    console.error(`Error fetching deal ${id}:`, err);
+    const deal = mapDealRow(data);
+    return isActiveFeedDeal(deal) ? deal : undefined;
+  } catch {
+    reportClientIssue("deal_detail_unavailable");
     return undefined;
   }
 }
@@ -164,7 +353,7 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
     .order("date", { ascending: true })
     .limit(180);
   if (error) {
-    console.error("Price history service unavailable.", error);
+    reportClientIssue("price_history_unavailable");
     return [];
   }
   return mapPriceHistoryRows(data ?? []);
@@ -174,83 +363,6 @@ export function mapPriceHistoryRows(rows: Array<{ date?: unknown; price?: unknow
   return rows
     .map((row) => ({ date: String(row.date), price: Number(row.price) }))
     .filter((point) => point.date && Number.isFinite(point.price) && point.price > 0);
-}
-
-export async function getTrackedRoutes(): Promise<TrackedRoute[]> {
-  if (!isSupabaseConfigured) return [];
-  const { data, error } = await supabase
-    .from("tracked_routes")
-    .select("id, origin_code, origin_name, destination_code, destination_name, country, region")
-    .eq("enabled", true)
-    .order("origin_code")
-    .order("destination_code");
-  if (error) {
-    console.error("Tracked route service unavailable.", error);
-    return [];
-  }
-  return (data ?? []).map((row) => ({
-    id: row.id,
-    originCode: row.origin_code,
-    originName: row.origin_name,
-    destinationCode: row.destination_code,
-    destinationName: row.destination_name,
-    country: row.country,
-    region: row.region,
-  }));
-}
-
-/**
- * Create a new user alert.
- * Tries: 1) Supabase Edge Function (if deployed), 2) Direct Resend API, 3) DB insert only
- */
-export async function createAlert(alert: {
-  destination: string;
-  destination_code?: string;
-  origin_code?: string;
-  budget?: number;
-  discount_threshold?: number;
-  preferred_regions?: string[];
-  date_from?: string;
-  date_to?: string;
-  frequency?: "instant" | "daily";
-  notify_telegram: boolean;
-  telegram_id?: string;
-  notify_email: boolean;
-  email: string;
-  channel: string;
-}) {
-  if (!isSupabaseConfigured) {
-    throw new Error("Dịch vụ cảnh báo chưa được cấu hình.");
-  }
-
-  const { data, error } = await supabase.functions.invoke("setup-alert", {
-    body: {
-      ...alert,
-    },
-  });
-
-  if (error) {
-    throw new Error(error.message || "Không thể kết nối dịch vụ cảnh báo.");
-  }
-
-  if (!data?.success) {
-    throw new Error(data?.error || "Cảnh báo chưa được lưu.");
-  }
-
-  return data;
-}
-
-export async function manageAlert(
-  action: "confirm" | "unsubscribe",
-  parameters: { token?: string; alert_id?: string; signature?: string },
-) {
-  if (!isSupabaseConfigured) throw new Error("Dịch vụ cảnh báo chưa được cấu hình.");
-  const { data, error } = await supabase.functions.invoke("manage-alert", {
-    body: { action, ...parameters },
-  });
-  if (error) throw new Error(error.message || "Không thể xử lý cảnh báo.");
-  if (!data?.success) throw new Error(data?.error || "Không thể xử lý cảnh báo.");
-  return data;
 }
 
 /** Filter observed deals only by fields returned by the data pipeline. */

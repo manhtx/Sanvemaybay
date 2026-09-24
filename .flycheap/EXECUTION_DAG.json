@@ -1,0 +1,172 @@
+{
+  "version": "2.0.0",
+  "critical_path": [
+    "DAG-BASE-01",
+    "DAG-SCHEMA-01",
+    "DAG-DATA-01",
+    "DAG-INTEL-01",
+    "DAG-INTEL-02",
+    "DAG-UX-01",
+    "DAG-UX-02",
+    "DAG-E2E-01",
+    "DAG-HARDEN-01",
+    "DAG-RELEASE-01"
+  ],
+  "nodes": [
+    {
+      "id": "DAG-BASE-01",
+      "type": "BASELINE",
+      "title": "Establish Clean Baseline Environment and Dependency Verification",
+      "status": "PASSING",
+      "description": "Install node_modules, verify deno, typecheck, lint, and run all 108 existing vitest/node tests and 45 deno tests.",
+      "dependencies": []
+    },
+    {
+      "id": "DAG-SCHEMA-01",
+      "type": "SCHEMA",
+      "title": "Validate Clean Sequential Migrations Chain",
+      "status": "IN_PROGRESS",
+      "description": "Verify all 38 migrations apply sequentially on clean PostgreSQL without schema drift.",
+      "dependencies": [
+        {
+          "target": "DAG-BASE-01",
+          "relationship": "MUST_COMPLETE_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-DATA-01",
+      "type": "IMPLEMENT",
+      "title": "Provider Ingestion, Normalization, and Anomaly Quarantine",
+      "status": "IN_PROGRESS",
+      "description": "Harden multi-provider adapter contracts (FastFlights, Amadeus, SerpApi) and ensure strict validation against zero/negative/DST/impossible flights.",
+      "dependencies": [
+        {
+          "target": "DAG-SCHEMA-01",
+          "relationship": "MUST_EXIST_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-INTEL-01",
+      "type": "IMPLEMENT",
+      "title": "Statistical Cohorting, Historical Baselines, and Deal Score Calculation",
+      "status": "IN_PROGRESS",
+      "description": "Compute robust percentiles (p20, median, p80), dispersion, and deterministic Deal Scores with confidence separation.",
+      "dependencies": [
+        {
+          "target": "DAG-DATA-01",
+          "relationship": "MUST_INTEGRATE_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-INTEL-02",
+      "type": "IMPLEMENT",
+      "title": "True Cost, Route Optimization, Connection Risk, and Buy Decision",
+      "status": "IN_PROGRESS",
+      "description": "Itemize baggage/seat/transit fees into known/estimated/optional, assess self-transfer buffers, and output rule-grounded Buy/Monitor/Wait decisions.",
+      "dependencies": [
+        {
+          "target": "DAG-INTEL-01",
+          "relationship": "MUST_COMPLETE_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-UX-01",
+      "type": "INTEGRATE",
+      "title": "Opportunity Feed and Homepage Architecture",
+      "status": "IN_PROGRESS",
+      "description": "Display ranked, diversified deals with evidence badges, freshness indicators, and responsive layouts.",
+      "dependencies": [
+        {
+          "target": "DAG-INTEL-02",
+          "relationship": "MUST_COMPLETE_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-UX-02",
+      "type": "INTEGRATE",
+      "title": "Deal Detail, True Cost Calculator, Risk Transparency, and AI Grounding",
+      "status": "IN_PROGRESS",
+      "description": "Wire complete transparency into /deal/:id, including interactive cost breakdowns, risk factors, price history windows, and sanitized booking links.",
+      "dependencies": [
+        {
+          "target": "DAG-UX-01",
+          "relationship": "MUST_COMPLETE_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-ALERTS-01",
+      "type": "INTEGRATE",
+      "title": "Smart Alerts, Turnstile Abuse Prevention, and Deduped Notifications",
+      "status": "IN_PROGRESS",
+      "description": "Validate alert creation with Turnstile tokens, rate-limit budgets, and 24-hour notification deduplication.",
+      "dependencies": [
+        {
+          "target": "DAG-DATA-01",
+          "relationship": "MUST_COMPLETE_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-SEC-01",
+      "type": "VERIFY",
+      "title": "Security, RLS Isolation, and Transactional Account Deletion",
+      "status": "IN_PROGRESS",
+      "description": "Ensure zero secret leaks in client builds, verify user RLS separation, and validate explicit DELETE_MY_ACCOUNT flow.",
+      "dependencies": [
+        {
+          "target": "DAG-BASE-01",
+          "relationship": "MUST_VERIFY_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-E2E-01",
+      "type": "TEST",
+      "title": "Full End-to-End Playwright Suite & Browser Verification",
+      "status": "BLOCKED",
+      "description": "Execute all Playwright E2E tests on desktop and mobile viewports across all 9 core user flows.",
+      "dependencies": [
+        {
+          "target": "DAG-UX-02",
+          "relationship": "MUST_VALIDATE_BEFORE"
+        },
+        {
+          "target": "DAG-ALERTS-01",
+          "relationship": "MUST_VALIDATE_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-HARDEN-01",
+      "type": "REGRESSION",
+      "title": "Adversarial Stress Testing and Contract Saturation Check",
+      "status": "BLOCKED",
+      "description": "Falsify requirements against corrupted payloads, DST boundaries, extreme outliers, concurrency, and scan for dead artifacts or unaddressed TODOs.",
+      "dependencies": [
+        {
+          "target": "DAG-E2E-01",
+          "relationship": "MUST_COMPLETE_BEFORE"
+        }
+      ]
+    },
+    {
+      "id": "DAG-RELEASE-01",
+      "type": "RELEASE_READY",
+      "title": "Release Candidate Audit and Proof Index Signoff",
+      "status": "BLOCKED",
+      "description": "Verify all 33 frozen acceptance criteria pass with durable evidence, release gates close, and 100-point scorecard reaches maximum defensible score.",
+      "dependencies": [
+        {
+          "target": "DAG-HARDEN-01",
+          "relationship": "MUST_COMPLETE_BEFORE"
+        }
+      ]
+    }
+  ]
+}

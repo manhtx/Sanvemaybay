@@ -58,6 +58,14 @@ export const router = createBrowserRouter([
         lazy: async () => ({ Component: (await import("./pages/TripAdvisorPage")).TripAdvisorPage }),
       },
       {
+        path: "privacy",
+        lazy: async () => ({ Component: (await import("./pages/PrivacyPage")).PrivacyPage }),
+      },
+      {
+        path: "terms",
+        lazy: async () => ({ Component: (await import("./pages/TermsPage")).TermsPage }),
+      },
+      {
         path: "alerts/confirm",
         lazy: async () => {
           const { AlertActionPage } = await import("./pages/AlertActionPage");

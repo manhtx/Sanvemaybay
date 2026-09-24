@@ -1,6 +1,7 @@
 import { isSupabaseConfigured, supabase } from "./supabase";
+import { reportClientIssue } from "./clientDiagnostics";
 
-export type ProductEventType = "detail_view" | "bookmark" | "share" | "booking_click" | "alert_created";
+export type ProductEventType = "detail_view" | "bookmark" | "share" | "booking_click" | "alert_created" | "web_vital";
 export interface ProductEvent {
   eventType: ProductEventType;
   entityId?: string;
@@ -10,7 +11,7 @@ export interface ProductEvent {
 
 const STORAGE_KEY = "flycheap.product-events";
 const MAX_LOCAL_EVENTS = 100;
-const allowedMetadata = new Set(["route", "source", "channel", "bookmarked", "provider", "device"]);
+const allowedMetadata = new Set(["route", "source", "channel", "bookmarked", "provider", "device", "metric", "value", "delta", "rating", "navigation_type"]);
 
 export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
   const metadata = Object.fromEntries(Object.entries(input.metadata ?? {})
@@ -42,9 +43,11 @@ export async function trackProductEvent(input: ProductEvent, storage: Storage | 
   appendLocalProductEvent(event, storage);
   if (!isSupabaseConfigured) return;
   try {
-    const { error } = await supabase.from("product_events").insert({ event_type: event.eventType, entity_id: event.entityId ?? null, metadata: event.metadata });
-    if (error) console.warn("Product analytics unavailable.", error.message);
-  } catch (error) {
-    console.warn("Product analytics unavailable.", error);
+    const { error } = await supabase.functions.invoke("track-event", {
+      body: { event_type: event.eventType, entity_id: event.entityId ?? null, metadata: event.metadata },
+    });
+    if (error) reportClientIssue("product_analytics_unavailable");
+  } catch {
+    reportClientIssue("product_analytics_unavailable");
   }
 }

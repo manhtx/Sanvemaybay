@@ -14,6 +14,7 @@ Deno.test("normalizes valid options and deduplicates itinerary keys", () => {
   assertEquals(rows.length, 1);
   assertEquals(rows[0].price, 1_900_000);
   assertEquals(rows[0].duration, "2h 30m");
+  assertEquals(rows[0].link_kind, "indicative");
   assertEquals(rows[0].booking_url, "https://www.google.com/travel/flights?q=Flights+to+BKK+from+HAN+on+2026-08-01+through+2026-08-05&hl=vi&curr=VND");
 });
 

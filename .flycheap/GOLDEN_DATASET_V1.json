@@ -1,0 +1,372 @@
+{
+  "version": "1.0.0",
+  "name": "GOLDEN_DATASET_V1",
+  "description": "Deterministic validation corpus representing 20 canonical FlyCheap market and failure truth scenarios",
+  "cases": [
+    {
+      "case_id": "case_01_normal_direct",
+      "description": "Normal direct flight SGN -> HAN with solid historical baseline",
+      "input": {
+        "origin": "SGN",
+        "destination": "HAN",
+        "departure_date": "2026-11-15T08:00:00Z",
+        "arrival_date": "2026-11-15T10:15:00Z",
+        "price": 85.0,
+        "currency": "USD",
+        "airline": "Vietnam Airlines",
+        "stops": 0,
+        "segments": [{"from": "SGN", "to": "HAN", "carrier": "VN", "flight_number": "VN210"}],
+        "baggage_included": true,
+        "booking_url": "https://www.vietnamairlines.com/deal",
+        "observed_minutes_ago": 30,
+        "history_sample_count": 25,
+        "history_median_price": 125.0
+      },
+      "expected": {
+        "valid": true,
+        "discount_percent": 32,
+        "deal_score_min": 75,
+        "confidence_level": "HIGH",
+        "is_self_transfer": false,
+        "cost_completeness": "FULL",
+        "decision": "BUY",
+        "claim_ceiling": "STRONG_DEAL"
+      }
+    },
+    {
+      "case_02_direct_lcc": {
+        "description": "Direct low-cost carrier fare HAN -> BKK without checked bag",
+        "input": {
+          "origin": "HAN",
+          "destination": "BKK",
+          "departure_date": "2026-11-20T11:00:00Z",
+          "arrival_date": "2026-11-20T13:00:00Z",
+          "price": 55.0,
+          "currency": "USD",
+          "airline": "VietJet Air",
+          "stops": 0,
+          "segments": [{"from": "HAN", "to": "BKK", "carrier": "VJ", "flight_number": "VJ901"}],
+          "baggage_included": false,
+          "booking_url": "https://www.vietjetair.com/booking",
+          "observed_minutes_ago": 15,
+          "history_sample_count": 30,
+          "history_median_price": 95.0
+        },
+        "expected": {
+          "valid": true,
+          "discount_percent": 42,
+          "deal_score_min": 70,
+          "confidence_level": "HIGH",
+          "is_self_transfer": false,
+          "cost_completeness": "ESTIMATED_OPTIONAL_BAG_UNKNOWN",
+          "decision": "BUY",
+          "claim_ceiling": "STRONG_DEAL"
+        }
+      }
+    },
+    {
+      "case_03_protected_connection": {
+        "description": "Standard protected connection via ICN with single ticket",
+        "input": {
+          "origin": "HAN",
+          "destination": "NRT",
+          "departure_date": "2026-12-01T00:30:00Z",
+          "arrival_date": "2026-12-01T11:45:00Z",
+          "price": 280.0,
+          "currency": "USD",
+          "airline": "Korean Air",
+          "stops": 1,
+          "segments": [
+            {"from": "HAN", "to": "ICN", "carrier": "KE", "flight_number": "KE484"},
+            {"from": "ICN", "to": "NRT", "carrier": "KE", "flight_number": "KE703"}
+          ],
+          "layover_minutes": 150,
+          "is_protected": true,
+          "booking_url": "https://www.koreanair.com/booking",
+          "observed_minutes_ago": 45,
+          "history_sample_count": 20,
+          "history_median_price": 380.0
+        },
+        "expected": {
+          "valid": true,
+          "discount_percent": 26,
+          "deal_score_min": 68,
+          "is_self_transfer": false,
+          "connection_risk": "LOW",
+          "decision": "BUY"
+        }
+      }
+    },
+    {
+      "case_04_self_transfer": {
+        "description": "Self-transfer itinerary on separate carriers with tight layover",
+        "input": {
+          "origin": "SGN",
+          "destination": "DPS",
+          "departure_date": "2026-11-25T09:00:00Z",
+          "arrival_date": "2026-11-25T18:00:00Z",
+          "price": 110.0,
+          "currency": "USD",
+          "airline": "Scoot / AirAsia",
+          "stops": 1,
+          "segments": [
+            {"from": "SGN", "to": "SIN", "carrier": "TR", "flight_number": "TR305"},
+            {"from": "SIN", "to": "DPS", "carrier": "QZ", "flight_number": "QZ507"}
+          ],
+          "layover_minutes": 95,
+          "is_protected": false,
+          "booking_url": "https://www.skyscanner.com/transport/flights/sgn/dps",
+          "observed_minutes_ago": 20,
+          "history_sample_count": 18,
+          "history_median_price": 190.0
+        },
+        "expected": {
+          "valid": true,
+          "is_self_transfer": true,
+          "connection_risk": "HIGH",
+          "requires_disclaimer": true
+        }
+      }
+    },
+    {
+      "case_05_airport_change": {
+        "description": "Itinerary requiring physical airport change in Tokyo (NRT to HND)",
+        "input": {
+          "origin": "HAN",
+          "destination": "SFO",
+          "departure_date": "2026-12-10T08:00:00Z",
+          "arrival_date": "2026-12-10T21:00:00Z",
+          "price": 550.0,
+          "currency": "USD",
+          "stops": 1,
+          "segments": [
+            {"from": "HAN", "to": "NRT", "carrier": "NH", "flight_number": "NH898"},
+            {"from": "HND", "to": "SFO", "carrier": "UA", "flight_number": "UA876"}
+          ],
+          "layover_minutes": 360,
+          "booking_url": "https://www.google.com/travel/flights",
+          "observed_minutes_ago": 10
+        },
+        "expected": {
+          "valid": true,
+          "has_airport_change": true,
+          "connection_risk": "VERY_HIGH",
+          "route_note": "TRANSIT_AIRPORT_CHANGE"
+        }
+      }
+    },
+    {
+      "case_06_baggage_excluded": {
+        "description": "Base fare excluding checked bag; total all-in must reflect bag addition",
+        "input": {
+          "price": 90.0,
+          "baggage_fee": 40.0,
+          "baggage_included": false
+        },
+        "expected": {
+          "base_price": 90.0,
+          "all_in_price": 130.0,
+          "monotonicity_satisfied": true
+        }
+      }
+    },
+    {
+      "case_07_baggage_included": {
+        "description": "Full-service fare including checked baggage",
+        "input": {
+          "price": 150.0,
+          "baggage_fee": 0.0,
+          "baggage_included": true
+        },
+        "expected": {
+          "base_price": 150.0,
+          "all_in_price": 150.0,
+          "cost_completeness": "FULL"
+        }
+      }
+    },
+    {
+      "case_08_round_trip": {
+        "description": "Valid round trip with consistent return chronology",
+        "input": {
+          "origin": "SGN",
+          "destination": "BKK",
+          "departure_date": "2026-11-10T10:00:00Z",
+          "return_date": "2026-11-15T16:00:00Z",
+          "price": 120.0
+        },
+        "expected": {
+          "valid": true,
+          "trip_type": "ROUND_TRIP",
+          "duration_days": 5
+        }
+      }
+    },
+    {
+      "case_09_one_way": {
+        "description": "Valid one way flight without return parameters",
+        "input": {
+          "origin": "HAN",
+          "destination": "DAD",
+          "departure_date": "2026-11-12T07:00:00Z",
+          "price": 45.0
+        },
+        "expected": {
+          "valid": true,
+          "trip_type": "ONE_WAY"
+        }
+      }
+    },
+    {
+      "case_10_strong_legitimate_discount": {
+        "description": "68% legitimate discount with dense historical sample (45 obs)",
+        "input": {
+          "price": 70.0,
+          "history_median": 220.0,
+          "history_count": 45
+        },
+        "expected": {
+          "discount_percent": 68,
+          "deal_score_min": 90,
+          "confidence_min": 85,
+          "label": "TOP_DEAL",
+          "decision": "BUY"
+        }
+      }
+    },
+    {
+      "case_11_weak_discount": {
+        "description": "Marginal 4% discount vs historical median",
+        "input": {
+          "price": 115.0,
+          "history_median": 120.0,
+          "history_count": 30
+        },
+        "expected": {
+          "discount_percent": 4,
+          "deal_score_max": 59,
+          "label": "STANDARD_PRICE",
+          "decision": "WAIT"
+        }
+      }
+    },
+    {
+      "case_12_large_discount_tiny_sample": {
+        "description": "73% apparent discount based on only 1 historical observation",
+        "input": {
+          "price": 80.0,
+          "history_median": 300.0,
+          "history_count": 1
+        },
+        "expected": {
+          "confidence_max": 35,
+          "claim_capped": true,
+          "claim_ceiling": "UNVERIFIED_OPPORTUNITY",
+          "prohibited_label": "TOP_DEAL"
+        }
+      }
+    },
+    {
+      "case_13_stale_fare": {
+        "description": "Observation older than 360 minutes must trip stale circuit breaker",
+        "input": {
+          "observed_minutes_ago": 410
+        },
+        "expected": {
+          "freshness_state": "STALE",
+          "suppressed_from_feed": true
+        }
+      }
+    },
+    {
+      "case_14_provider_disagreement": {
+        "description": "Substantial price variance between two discovery providers",
+        "input": {
+          "provider_a_price": 110.0,
+          "provider_b_price": 180.0
+        },
+        "expected": {
+          "disagreement_detected": true,
+          "confidence_penalty": true
+        }
+      }
+    },
+    {
+      "case_15_currency_anomaly": {
+        "description": "Extreme price anomaly or currency confusion (e.g. 2,500,000 USD)",
+        "input": {
+          "price": 2500000.0,
+          "currency": "USD"
+        },
+        "expected": {
+          "valid": false,
+          "error": "ANOMALOUS_PRICE_CEILING"
+        }
+      }
+    },
+    {
+      "case_16_tax_only_anomaly": {
+        "description": "Impossible international flight fare of $2.00",
+        "input": {
+          "origin": "HAN",
+          "destination": "ICN",
+          "price": 2.0,
+          "currency": "USD"
+        },
+        "expected": {
+          "valid": false,
+          "error": "ANOMALOUS_PRICE_FLOOR"
+        }
+      }
+    },
+    {
+      "case_17_missing_fee_component": {
+        "description": "Mandatory fee unverified in provider feed",
+        "input": {
+          "mandatory_tax_verified": false
+        },
+        "expected": {
+          "cost_completeness": "PARTIAL",
+          "disclaimer_required": true
+        }
+      }
+    },
+    {
+      "case_18_expired_fare": {
+        "description": "Flight departure date in the past",
+        "input": {
+          "departure_date": "2025-01-01T00:00:00Z"
+        },
+        "expected": {
+          "valid": false,
+          "error": "DEPARTURE_IN_PAST"
+        }
+      }
+    },
+    {
+      "case_19_malicious_booking_url": {
+        "description": "Phishing/malicious domain in provider booking URL",
+        "input": {
+          "booking_url": "https://evil-phishing-flights.com/steal?token=123"
+        },
+        "expected": {
+          "safe_redirect": false,
+          "blocked_by_allowlist": true,
+          "sanitized_url": "https://www.google.com/travel/flights"
+        }
+      }
+    },
+    {
+      "case_20_sparse_history": {
+        "description": "Route with only 2 historical observations requires confidence penalty",
+        "input": {
+          "history_count": 2
+        },
+        "expected": {
+          "confidence_max": 45,
+          "fallback_used": true
+        }
+      }
+    }
+  ]
+}

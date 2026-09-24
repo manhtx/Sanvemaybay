@@ -1,0 +1,459 @@
+{
+  "version": "6.0.0",
+  "generated_at": "2026-09-24T17:35:00+07:00",
+  "outcomes": [
+    {
+      "outcome_id": "OUTCOME-A",
+      "description": "Discover meaningful flight opportunities without knowing a fixed destination",
+      "core_areas": [
+        "flexible_discovery",
+        "ranked_opportunity_feed",
+        "destination_insights"
+      ],
+      "requirements": [
+        "FLY-UX-001",
+        "FLY-UX-003",
+        "FLY-DATA-001",
+        "FLY-DATA-004",
+        "FLY-DATA-005"
+      ],
+      "features": [
+        "FEAT-FEED-01",
+        "FEAT-DISCOV-01",
+        "FEAT-REPLAY-01"
+      ],
+      "implementation": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/ExplorePage.tsx",
+        "src/app/pages/SearchPage.tsx",
+        "src/app/domain/travelFeed.ts"
+      ],
+      "tests": [
+        "src/app/domain/travelFeed.test.ts",
+        "src/app/domain/destinationInsights.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05",
+        "RG11"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-B",
+      "description": "Understand whether a fare is genuinely unusual relative to sufficiently comparable historical evidence",
+      "core_areas": [
+        "fare_comparison_cohorts",
+        "statistical_pricing",
+        "deal_detection",
+        "price_history"
+      ],
+      "requirements": [
+        "FLY-INTEL-001",
+        "FLY-INTEL-002",
+        "FLY-INTEL-003",
+        "FLY-DATA-003"
+      ],
+      "features": [
+        "FEAT-FEED-01",
+        "FEAT-DETAIL-01"
+      ],
+      "implementation": [
+        "src/app/domain/priceAnalytics.ts",
+        "src/app/domain/priceHistoryWindows.ts",
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/price-history.ts"
+      ],
+      "tests": [
+        "src/app/domain/priceAnalytics.test.ts",
+        "src/app/domain/priceHistoryWindows.test.ts",
+        "supabase/functions/_shared/price-history.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-C",
+      "description": "Distinguish strong price advantage from weak evidence confidence",
+      "core_areas": [
+        "deal_confidence",
+        "suspicious_data_quarantine"
+      ],
+      "requirements": [
+        "FLY-INTEL-004",
+        "FLY-INTEL-005"
+      ],
+      "features": [
+        "FEAT-FEED-01",
+        "FEAT-DETAIL-01"
+      ],
+      "implementation": [
+        "src/app/domain/dealClaims.ts",
+        "src/app/components/DealCard.tsx",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "tests": [
+        "src/app/domain/dealClaims.test.ts",
+        "supabase/functions/_shared/observed-fares.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-D",
+      "description": "Understand estimated all-in cost rather than misleading headline fare",
+      "core_areas": [
+        "true_cost_analysis",
+        "hidden_cost_breakdown"
+      ],
+      "requirements": [
+        "FLY-INTEL-006",
+        "FLY-UX-002"
+      ],
+      "features": [
+        "FEAT-DETAIL-01"
+      ],
+      "implementation": [
+        "src/app/domain/dealComparison.ts",
+        "src/app/pages/DealDetailPage.tsx"
+      ],
+      "tests": [
+        "src/app/domain/dealComparison.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-E",
+      "description": "Understand meaningful route/self-transfer risks",
+      "core_areas": [
+        "self_transfer_analysis",
+        "risk_engine",
+        "route_optimization"
+      ],
+      "requirements": [
+        "FLY-INTEL-007",
+        "FLY-INTEL-008",
+        "FLY-UX-002"
+      ],
+      "features": [
+        "FEAT-DETAIL-01"
+      ],
+      "implementation": [
+        "src/app/domain/routeOptimization.ts",
+        "src/app/pages/DealDetailPage.tsx"
+      ],
+      "tests": [
+        "src/app/domain/routeOptimization.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-F",
+      "description": "Compare alternative travel options coherently",
+      "core_areas": [
+        "route_comparison",
+        "flight_comparison"
+      ],
+      "requirements": [
+        "FLY-INTEL-007",
+        "FLY-UX-002"
+      ],
+      "features": [
+        "FEAT-DETAIL-01"
+      ],
+      "implementation": [
+        "src/app/domain/dealComparison.ts",
+        "src/app/pages/DealDetailPage.tsx"
+      ],
+      "tests": [
+        "src/app/domain/dealComparison.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-G",
+      "description": "Receive a grounded action signal without fake future-price certainty",
+      "core_areas": [
+        "buy_monitor_wait",
+        "grounded_ai_explanation"
+      ],
+      "requirements": [
+        "FLY-INTEL-009",
+        "FLY-INTEL-010"
+      ],
+      "features": [
+        "FEAT-DETAIL-01"
+      ],
+      "implementation": [
+        "supabase/functions/_shared/buy-decision.ts",
+        "src/app/domain/priceForecast.ts",
+        "supabase/functions/ai-explainer/index.ts",
+        "src/app/data/api.ts"
+      ],
+      "tests": [
+        "supabase/functions/_shared/buy-decision.test.ts",
+        "src/app/domain/priceForecast.test.ts",
+        "src/app/data/api.test.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-H",
+      "description": "See data freshness and provenance clearly",
+      "core_areas": [
+        "freshness_lifecycle",
+        "provider_provenance"
+      ],
+      "requirements": [
+        "FLY-UX-008",
+        "FLY-OPS-001",
+        "FLY-OPS-002"
+      ],
+      "features": [
+        "FEAT-FRESH-01",
+        "FEAT-CIRCUIT-01"
+      ],
+      "implementation": [
+        "supabase/functions/_shared/feed-health.ts",
+        "src/app/components/DealCard.tsx",
+        "src/app/pages/DealsPage.tsx"
+      ],
+      "tests": [
+        "supabase/functions/_shared/feed-health.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05",
+        "RG11"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-I",
+      "description": "Save and monitor flight opportunities with lifecycle tracking",
+      "core_areas": [
+        "saved_deals",
+        "user_preferences"
+      ],
+      "requirements": [
+        "FLY-UX-004",
+        "FLY-UX-005"
+      ],
+      "features": [
+        "FEAT-PREF-01",
+        "FEAT-BOOKMARK-01"
+      ],
+      "implementation": [
+        "src/app/lib/bookmarks.ts",
+        "src/app/lib/preferences.ts",
+        "src/app/pages/SavedDealsPage.tsx"
+      ],
+      "tests": [
+        "src/app/lib/bookmarks.test.ts",
+        "src/app/lib/preferences.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-J",
+      "description": "Create alerts without receiving duplicate or spam notifications",
+      "core_areas": [
+        "alert_engine",
+        "effectively_once_notifications",
+        "abuse_protection"
+      ],
+      "requirements": [
+        "FLY-UX-006",
+        "FLY-UX-007",
+        "FLY-OPS-003"
+      ],
+      "features": [
+        "FEAT-ALERT-01",
+        "FEAT-NOTIF-01"
+      ],
+      "implementation": [
+        "supabase/functions/setup-alert/index.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/functions/_shared/alert-matching.ts"
+      ],
+      "tests": [
+        "supabase/functions/_shared/turnstile.test.ts",
+        "supabase/functions/_shared/alert-matching.test.ts",
+        "supabase/functions/_shared/retry-policy.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05",
+        "RG12"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-K",
+      "description": "Reach a legitimate, sanitized booking handoff without malicious redirects",
+      "core_areas": [
+        "booking_handoff",
+        "affiliate_redirect",
+        "safe_urls"
+      ],
+      "requirements": [
+        "FLY-SEC-003"
+      ],
+      "features": [
+        "FEAT-DETAIL-01"
+      ],
+      "implementation": [
+        "src/app/lib/bookingUrls.ts",
+        "supabase/functions/deal-redirect/index.ts",
+        "supabase/functions/_shared/live-deal.ts"
+      ],
+      "tests": [
+        "src/app/lib/bookingUrls.test.ts",
+        "supabase/functions/_shared/live-deal.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05",
+        "RG13"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-L",
+      "description": "Use the product without cross-user data leakage or privacy violation",
+      "core_areas": [
+        "authorization_rls",
+        "privacy_rights",
+        "account_deletion"
+      ],
+      "requirements": [
+        "FLY-SEC-001",
+        "FLY-SEC-002",
+        "FLY-SEC-004",
+        "FLY-SEC-005"
+      ],
+      "features": [
+        "FEAT-PRIVACY-01"
+      ],
+      "implementation": [
+        "supabase/functions/manage-user-data/index.ts",
+        "supabase/migrations/20260820000700_idempotent_account_deletion.sql",
+        "src/app/domain/authPolicy.ts"
+      ],
+      "tests": [
+        "scripts/account-deletion-contract.node-test.mjs",
+        "scripts/security-smoke.node-test.mjs",
+        "src/app/domain/authPolicy.test.ts"
+      ],
+      "evidence_level": "L4_LOCAL_INTEGRATION_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG08",
+        "RG15"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-M",
+      "description": "Continue using the product when optional AI or external providers fail",
+      "core_areas": [
+        "provider_health",
+        "circuit_breaking",
+        "ai_failure_independence"
+      ],
+      "requirements": [
+        "FLY-OPS-001",
+        "FLY-INTEL-010",
+        "FLY-OPS-005"
+      ],
+      "features": [
+        "FEAT-CIRCUIT-01"
+      ],
+      "implementation": [
+        "supabase/functions/_shared/feed-health.ts",
+        "src/app/data/api.ts"
+      ],
+      "tests": [
+        "supabase/functions/_shared/feed-health.test.ts",
+        "src/app/data/api.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05",
+        "RG14"
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-N",
+      "description": "Receive claims whose certainty strictly matches available evidence",
+      "core_areas": [
+        "evidence_confidence",
+        "claim_label_capping",
+        "zero_hallucination"
+      ],
+      "requirements": [
+        "FLY-INTEL-004",
+        "FLY-INTEL-009",
+        "FLY-DATA-002",
+        "FLY-UX-009",
+        "FLY-OPS-004"
+      ],
+      "features": [
+        "FEAT-FEED-01",
+        "FEAT-DETAIL-01",
+        "FEAT-ACCESSIB-01"
+      ],
+      "implementation": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/buy-decision.ts"
+      ],
+      "tests": [
+        "src/app/domain/dealClaims.test.ts",
+        "supabase/functions/_shared/buy-decision.test.ts"
+      ],
+      "evidence_level": "L5_LOCAL_FULLSTACK_VERIFIED",
+      "release_gates": [
+        "RG01",
+        "RG05"
+      ]
+    }
+  ]
+}

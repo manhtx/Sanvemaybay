@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
       - name: Check public feed
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -48,18 +49,134 @@ jobs:
           print(f'feed smoke passed: {len(future)} deals / {len(routes)} routes')
           PY
 
-      - name: Check live search function boundary
+      - name: Check indicative search provider boundary
+        if: always()
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
+          outbound_date=$(date -u -d '+30 days' +%F)
+          return_date=$(date -u -d '+37 days' +%F)
           status=$(curl --silent --show-error --output /tmp/search.json --write-out '%{http_code}' \
             --connect-timeout 10 --max-time 30 \
             -X POST "$SUPABASE_URL/functions/v1/flight-search" \
             -H "apikey: $SUPABASE_ANON_KEY" \
             -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
             -H "Content-Type: application/json" \
-            --data '{"origin":"HAN","destination":"BKK","departureFrom":"2099-01-01","departureTo":"2099-01-01"}')
-          test "$status" != "404"
+            --data "{\"origin\":\"HAN\",\"destination\":\"BKK\",\"outbound_date\":\"$outbound_date\",\"return_date\":\"$return_date\"}")
+          case "$status" in
+            200|429|503) ;;
+            *) cat /tmp/search.json; exit 1 ;;
+          esac
           echo "flight-search boundary returned HTTP $status"
 
+      - name: Check public web security and static contracts
+        if: always()
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+        run: |
+          test -n "$PUBLIC_SITE_URL"
+          origin="${PUBLIC_SITE_URL%/}"
+          curl --fail-with-body --retry 2 --retry-delay 3 \
+            --connect-timeout 10 --max-time 30 -D /tmp/site-headers.txt \
+            "$origin/" > /tmp/site-home.html
+          grep -qi '^content-security-policy:' /tmp/site-headers.txt
+          if grep -qi 'tpembars.com' /tmp/site-home.html; then
+            echo 'unapproved third-party script remains in production' >&2
+            exit 1
+          fi
+          curl --fail-with-body --connect-timeout 10 --max-time 30 \
+            -D /tmp/robots-headers.txt "$origin/robots.txt" > /tmp/robots.txt
+          grep -qi '^content-type: text/plain' /tmp/robots-headers.txt
+          grep -q '^User-agent:' /tmp/robots.txt
+          grep -Fq "Sitemap: $origin/sitemap.xml" /tmp/robots.txt
+          curl --fail-with-body --connect-timeout 10 --max-time 30 \
+            -D /tmp/sitemap-headers.txt "$origin/sitemap.xml" > /tmp/sitemap.xml
+          grep -Eqi '^content-type: (application|text)/xml' /tmp/sitemap-headers.txt
+          grep -Fq "<loc>$origin/deals</loc>" /tmp/sitemap.xml
+
+      - name: Check observed-fare freshness and release identity
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+          MIN_OBSERVED_FARES: ${{ vars.MIN_OBSERVED_FARES }}
+        run: |
+          test -n "$PUBLIC_SITE_URL"
+          curl --fail-with-body --retry 2 --retry-delay 3 \
+            --connect-timeout 10 --max-time 30 \
+            "${PUBLIC_SITE_URL%/}/release.json" > /tmp/frontend-release.json
+          curl --fail-with-body --retry 2 --retry-delay 3 \
+            --connect-timeout 10 --max-time 30 \
+            -X POST "$SUPABASE_URL/functions/v1/observed-fares" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{"page":1,"page_size":1}' > /tmp/observed.json
+          python3 - <<'PY'
+          import json, os
+          payload = json.load(open('/tmp/observed.json'))
+          frontend = json.load(open('/tmp/frontend-release.json'))
+          if payload.get('status') != 'healthy':
+              raise SystemExit(f"observed feed is not healthy: {payload.get('status')}")
+          minimum = int(os.environ.get('MIN_OBSERVED_FARES') or '100')
+          total = payload.get('total')
+          if not isinstance(total, int) or total < minimum:
+              raise SystemExit(f'observed inventory below gate: {total} < {minimum}')
+          age = payload.get('feed_age_minutes')
+          if not isinstance(age, (int, float)):
+              raise SystemExit('observed feed has no freshness age')
+          if age > 120:
+              raise SystemExit(f'observed feed age exceeds 120 minutes: {age}')
+          if payload.get('release_sha') in {None, '', 'unknown'}:
+              raise SystemExit('observed feed has no deployed release SHA')
+          if frontend.get('release_sha') in {None, '', 'unknown'}:
+              raise SystemExit('frontend has no deployed release SHA')
+          if frontend.get('release_sha') != payload.get('release_sha'):
+              raise SystemExit(f"frontend/runtime release mismatch: {frontend.get('release_sha')} != {payload.get('release_sha')}")
+          print(f"same-SHA release passed: status={payload.get('status')} total={total} age={age} release={payload.get('release_sha')}")
+          PY
+
+      - name: Run canonical production truth gate
+        if: always()
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          LIVE_LAUNCH_ROUTES: ${{ vars.LIVE_LAUNCH_ROUTES }}
+          APPROVED_LIVE_SOURCES: ${{ vars.APPROVED_LIVE_SOURCES }}
+          APPROVED_BOOKING_HOSTS: ${{ vars.APPROVED_BOOKING_HOSTS }}
+          HOT_DEAL_SCORE: "80"
+          HOT_DEAL_DISCOUNT: "20"
+          HOT_DEAL_CONFIDENCE: "0.65"
+        run: node scripts/production-truth.mjs
+
+      - name: Verify anonymous read boundaries
+        if: always()
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: node scripts/security-smoke.mjs
+
+      - name: Verify retention cleanup dry run
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
+        run: |
+          curl --fail-with-body --retry 2 --retry-delay 3 \
+            --connect-timeout 10 --max-time 30 \
+            -X POST "$SUPABASE_URL/functions/v1/retention-cleanup" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "x-internal-secret: $INTERNAL_FUNCTION_SECRET" \
+            -H "Content-Type: application/json" \
+            --data '{"dry_run":true}' > /tmp/retention.json
+          python3 - <<'PY'
+          import json
+          payload = json.load(open('/tmp/retention.json'))
+          if payload.get('status') != 'completed' or payload.get('retention', {}).get('dry_run') is not True:
+              raise SystemExit('retention dry-run contract failed')
+          print('retention dry-run passed')
+          PY

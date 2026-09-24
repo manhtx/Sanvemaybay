@@ -1,72 +1,78 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { clientAddress, consumeRequestBudget, hashRateLimitKey } from "../_shared/abuse-protection.ts";
+import { boundedProviderRows, isIsoCalendarDate, validateFlightSearchInput } from "../_shared/flight-search.ts";
+import { operationalFields, operationalHeaders, requestId } from "../_shared/observability.ts";
+
 const headers = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Cache-Control": "no-store",
 };
 
-function json(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), { status, headers });
-}
-
-function validDate(value: unknown): value is string {
-  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
-}
-
-function validCode(value: unknown): value is string {
-  return typeof value === "string" && /^[A-Z]{3}$/.test(value);
+function json(body: Record<string, unknown>, id: string, status = 200): Response {
+  return new Response(JSON.stringify({ ...body, ...operationalFields(id) }), {
+    status,
+    headers: { ...headers, ...operationalHeaders(id) },
+  });
 }
 
 Deno.serve(async (request) => {
-  if (request.method === "OPTIONS") return new Response("ok", { headers });
+  const id = requestId(request);
+  if (request.method === "OPTIONS") return new Response("ok", { headers: { ...headers, ...operationalHeaders(id) } });
+  if (request.method !== "POST") return json({ error: "Method not allowed" }, id, 405);
   const token = Deno.env.get("TRAVELPAYOUTS_TOKEN") ?? "";
-  if (!token) return json({ error: "Live search provider is not configured." }, 503);
+  if (!token) return json({ error: "Search data provider is not configured." }, id, 503);
 
   const body = await request.json().catch(() => null);
-  const origin = typeof body?.origin === "string" ? body.origin.toUpperCase() : "";
-  const destination = typeof body?.destination === "string" ? body.destination.toUpperCase() : "";
-  const outbound = body?.outbound_date;
-  const returned = body?.return_date;
-  if (!validCode(origin) || !validCode(destination) || !validDate(outbound) || !validDate(returned)) {
-    return json({ error: "origin, destination, outbound_date and return_date are required" }, 400);
+  const input = validateFlightSearchInput(body);
+  if (!input) return json({ error: "A valid bounded future round trip is required" }, id, 400);
+
+  const salt = Deno.env.get("RATE_LIMIT_SALT") ?? "";
+  const address = clientAddress(request);
+  if (salt.length < 16 || !address) return json({ error: "Search is temporarily unavailable" }, id, 503);
+  const service = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+  );
+  try {
+    const bucket = await hashRateLimitKey("flight-search-ip", address, salt);
+    const allowed = await consumeRequestBudget(service, "flight-search", bucket, 30, 3_600);
+    if (!allowed) return json({ error: "Rate limit exceeded" }, id, 429);
+  } catch {
+    return json({ error: "Search is temporarily unavailable" }, id, 503);
   }
-  if (outbound >= returned) return json({ error: "return_date must be after outbound_date" }, 400);
 
   const query = new URLSearchParams({
-    origin,
-    destination,
-    depart_date: outbound,
-    return_date: returned,
+    origin: input.origin,
+    destination: input.destination,
+    depart_date: input.outboundDate,
+    return_date: input.returnDate,
     currency: "vnd",
     show_to_affiliates: "true",
     token,
   });
-  const response = await fetch(`https://api.travelpayouts.com/v2/prices/week-matrix?${query}`);
-  if (!response.ok) return json({ error: `Live search provider HTTP ${response.status}` }, 502);
-  const payload = await response.json();
-  const rows = Array.isArray(payload?.data) ? payload.data : [];
-  const deeplinkTemplate = Deno.env.get("TRAVELPAYOUTS_DEEPLINK_TEMPLATE") ?? "";
+  let response: Response;
+  try {
+    response = await fetch(`https://api.travelpayouts.com/v2/prices/week-matrix?${query}`, {
+      signal: AbortSignal.timeout(12_000),
+    });
+  } catch {
+    return json({ error: "Search data provider timed out" }, id, 502);
+  }
+  if (!response.ok) return json({ error: "Search data provider failed" }, id, 502);
+  const payload = await response.json().catch(() => null);
+  const rows = boundedProviderRows(payload);
   const results = rows.flatMap((row: Record<string, unknown>) => {
     const price = Number(row.value);
-    const departDate = typeof row.depart_date === "string" ? row.depart_date : outbound;
-    const returnDate = typeof row.return_date === "string" ? row.return_date : returned;
-    if (!Number.isFinite(price) || price <= 0 || !validDate(departDate) || !validDate(returnDate)) return [];
+    const departDate = typeof row.depart_date === "string" ? row.depart_date : input.outboundDate;
+    const returnDate = typeof row.return_date === "string" ? row.return_date : input.returnDate;
+    if (!Number.isFinite(price) || price <= 0 || !isIsoCalendarDate(departDate) || !isIsoCalendarDate(returnDate)) return [];
     const isActual = row.actual === true;
-    let affiliateUrl: string | null = null;
-    if (isActual && deeplinkTemplate) {
-      try {
-        const candidate = deeplinkTemplate
-          .replaceAll("{origin}", origin)
-          .replaceAll("{destination}", destination)
-          .replaceAll("{outbound}", departDate)
-          .replaceAll("{returned}", returnDate);
-        if (new URL(candidate).protocol === "https:") affiliateUrl = candidate;
-      } catch {
-        affiliateUrl = null;
-      }
-    }
     return [{
-      origin_code: origin,
-      destination_code: destination,
+      origin_code: input.origin,
+      destination_code: input.destination,
       price,
       currency: "VND",
       depart_date: departDate,
@@ -74,18 +80,18 @@ Deno.serve(async (request) => {
       airline_code: typeof row.airline === "string" ? row.airline : null,
       stops: Number(row.number_of_changes ?? 0),
       source: "travelpayouts_week_matrix",
-      // Travelpayouts exposes both cached/indicative and current offers.
-      // A tracking URL alone does not make a cached price bookable.
-      link_kind: affiliateUrl && isActual ? "live_affiliate" : "indicative",
-      affiliate_url: affiliateUrl,
+      // Week Matrix is cached/indicative. `actual` and a route template do not
+      // prove that an exact offer or provider-issued deeplink is bookable.
+      link_kind: "indicative",
+      affiliate_url: null,
       actual: isActual,
       booking_url: `https://www.google.com/travel/flights?${new URLSearchParams({
-        q: `Flights to ${destination} from ${origin} on ${departDate} through ${returnDate}`,
+        q: `Flights to ${input.destination} from ${input.origin} on ${departDate} through ${returnDate}`,
         hl: "vi",
         curr: "VND",
       }).toString()}`,
       observed_at: new Date().toISOString(),
     }];
   });
-  return json({ results, source: "travelpayouts", indicative: true });
+  return json({ results, source: "travelpayouts_week_matrix", indicative: true }, id);
 });

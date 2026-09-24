@@ -83,7 +83,7 @@ export function SearchPage() {
   }, [runSearch]);
 
   return (
-    <div className="pt-24 pb-20 min-h-screen bg-slate-950 overflow-hidden relative">
+    <main className="relative min-h-screen overflow-hidden pb-20 pt-24">
       {/* Background Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[500px] bg-sky-500/10 blur-[120px] rounded-full pointer-events-none" />
 
@@ -96,12 +96,12 @@ export function SearchPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 border border-sky-500/20 rounded-full mb-6">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-3 py-1">
                 <Search className="w-3.5 h-3.5 text-sky-400" />
-                <span className="text-sky-400 text-[10px] font-bold uppercase tracking-wider">Tìm dữ liệu quan sát + provider live</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-pink-400">Tìm dữ liệu quan sát + provider live</span>
               </div>
-              <h1 className="text-white text-4xl font-extrabold tracking-tight mb-4 leading-tight">
-                Quét Deal <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500">Thông Minh</span>
+              <h1 className="mb-4 text-4xl font-extrabold leading-tight tracking-tight text-white">
+                Quét Deal <span className="text-pink-400">Thông Minh</span>
               </h1>
               <p className="text-slate-400 text-lg max-w-md">
                 Lọc các mức giá đã được hệ thống ghi nhận theo <span className="text-white font-medium">điểm khởi hành</span> và <span className="text-white font-medium">ngân sách</span>.
@@ -109,7 +109,7 @@ export function SearchPage() {
             </motion.div>
 
             {/* From City */}
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+            <div className="rounded-2xl border border-white/10 bg-[#171719] p-5">
               <label className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest mb-4">
                 <MapPin className="w-4 h-4 text-sky-500" />
                 Điểm khởi hành
@@ -135,7 +135,7 @@ export function SearchPage() {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+            <div className="rounded-2xl border border-white/10 bg-[#171719] p-5">
               <label htmlFor="search-destination" className="text-slate-500 text-xs font-bold uppercase tracking-widest block mb-3">
                 Điểm đến (tuỳ chọn)
               </label>
@@ -144,7 +144,7 @@ export function SearchPage() {
               <p className="text-slate-500 text-xs mt-2">Tìm theo mã sân bay, tên thành phố hoặc quốc gia.</p>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+            <div className="rounded-2xl border border-white/10 bg-[#171719] p-5">
               <label className="text-slate-500 text-xs font-bold uppercase tracking-widest block mb-3">Khoảng ngày khởi hành</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input aria-label="Ngày khởi hành từ" type="date" value={departureFrom} max={departureTo || undefined}
@@ -158,7 +158,7 @@ export function SearchPage() {
             </div>
 
             {/* Budget Slider */}
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+            <div className="rounded-2xl border border-white/10 bg-[#171719] p-5">
               <div className="flex justify-between items-center mb-6">
                 <label className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest">
                   <SlidersHorizontal className="w-4 h-4 text-emerald-500" />
@@ -167,6 +167,7 @@ export function SearchPage() {
                 <span className="text-emerald-400 text-lg font-black">{formatVND(budget)}</span>
               </div>
               <input
+                aria-label="Ngân sách tối đa"
                 type="range"
                 min={2000000}
                 max={50000000}
@@ -187,7 +188,7 @@ export function SearchPage() {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+            <div className="rounded-2xl border border-white/10 bg-[#171719] p-5">
               <label htmlFor="search-max-stops" className="text-slate-500 text-xs font-bold uppercase tracking-widest block mb-3">
                 Số điểm dừng tối đa
               </label>
@@ -209,7 +210,7 @@ export function SearchPage() {
               </select>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+            <div className="rounded-2xl border border-white/10 bg-[#171719] p-5">
               <label htmlFor="search-max-flight-time" className="text-slate-500 text-xs font-bold uppercase tracking-widest block mb-3">
                 Thời lượng bay tối đa
               </label>
@@ -232,7 +233,7 @@ export function SearchPage() {
             {/* CTA Refresh */}
             <button
               onClick={() => runSearch(true)}
-              className="w-full h-16 bg-gradient-to-r from-sky-500 to-blue-600 rounded-3xl flex items-center justify-center gap-3 text-white font-black text-lg hover:shadow-2xl hover:shadow-sky-500/40 transition-all border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed group"
+              className="group flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 text-lg font-black text-white shadow-lg shadow-pink-500/15 transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={isScanning}
             >
               {isScanning ? (
@@ -250,7 +251,7 @@ export function SearchPage() {
           <div className="lg:col-span-7 space-y-8">
             
             {/* Visual Radar */}
-            <div className="relative aspect-square sm:aspect-video lg:aspect-auto lg:h-[400px] bg-slate-900 border border-white/5 rounded-[40px] overflow-hidden flex items-center justify-center">
+            <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-[#171719] sm:aspect-video lg:h-[400px] lg:aspect-auto">
               {/* Radar Background Lines */}
               <div className="absolute inset-0 opacity-20">
                 {[10, 30, 50, 70, 90].map(size => (
@@ -321,7 +322,7 @@ export function SearchPage() {
               </div>
 
               {/* Center Icon */}
-              <div className="w-16 h-16 bg-slate-900 border border-white/10 rounded-3xl flex items-center justify-center relative z-20 shadow-2xl">
+              <div className="relative z-20 flex h-16 w-16 items-center justify-center rounded-3xl border border-white/10 bg-[#202023] shadow-2xl">
                 <Zap className="w-8 h-8 text-sky-400 fill-sky-400/20" />
               </div>
             </div>
@@ -352,7 +353,7 @@ export function SearchPage() {
                     </motion.div>
                   ))
                 ) : (
-                  <div className="col-span-full py-20 text-center bg-white/5 border border-dashed border-white/10 rounded-[32px]">
+                  <div className="col-span-full rounded-2xl border border-dashed border-white/10 bg-white/[0.03] py-20 text-center">
                     <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-6">
                       <Search className="w-8 h-8 text-slate-600" />
                     </div>
@@ -365,7 +366,7 @@ export function SearchPage() {
               </div>
               
               {results.length > 0 && (
-                <div className="p-8 bg-gradient-to-br from-indigo-500/10 to-blue-500/10 border border-indigo-500/20 rounded-[32px] text-center">
+                <div className="rounded-2xl border border-pink-500/20 bg-gradient-to-br from-orange-500/10 via-pink-500/10 to-violet-500/10 p-8 text-center">
                   <p className="text-slate-400 text-sm mb-4">Bạn muốn nhận thông báo khi có thêm mức giá phù hợp?</p>
                   <Link 
                     to="/alerts" 
@@ -380,6 +381,6 @@ export function SearchPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

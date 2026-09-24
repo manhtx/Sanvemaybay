@@ -286,7 +286,7 @@ export function HomePage() {
   ];
 
   return (
-    <div className="pt-16 pb-0">
+    <main className="pb-0 pt-16">
       {/* ── CSS KEYFRAMES ── */}
       <style>{`
         @keyframes planeFly {
@@ -351,13 +351,13 @@ export function HomePage() {
         <FloatingPlane top="54%" duration={24} delay={6}  size={38} opacity={0.7}  animKey="p3" />
 
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full mb-10" style={{ background: "rgba(2,6,23,0.85)", border: "1px solid rgba(14,165,233,0.25)", backdropFilter: "blur(16px)", animation: "borderGlow 3s ease-in-out infinite" }}>
+          <div className="mb-10 flex max-w-full items-center gap-2 overflow-hidden rounded-full px-3 py-2.5 sm:gap-3 sm:px-5" style={{ background: "rgba(2,6,23,0.85)", border: "1px solid rgba(14,165,233,0.25)", backdropFilter: "blur(16px)", animation: "borderGlow 3s ease-in-out infinite" }}>
             <div className="flex items-center gap-1.5"><div className="w-2 h-2 bg-sky-400 rounded-full" /><span className="text-sky-400 text-xs" style={{ fontWeight: 700, letterSpacing: "0.05em" }}>DỮ LIỆU</span></div>
             <div className="w-px h-4" style={{ background: "rgba(255,255,255,0.12)" }} />
-            <div className="flex items-center gap-2 text-sm overflow-hidden" style={{ height: 20 }}>
+            <div className="flex min-w-0 items-center gap-2 overflow-hidden text-sm" style={{ height: 20 }}>
               <Plane className="w-3.5 h-3.5 text-sky-400 shrink-0" />
               <AnimatePresence mode="wait">
-                <motion.span key={tickerIndex} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }} className="text-slate-300 whitespace-nowrap font-semibold">
+                <motion.span key={tickerIndex} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }} className="truncate whitespace-nowrap font-semibold text-slate-300">
                   {currentTicker ? (
                     <>
                       {currentTicker.fromCode} → {currentTicker.toCode}
@@ -372,7 +372,7 @@ export function HomePage() {
             </div>
           </div>
 
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-white mb-6 text-[clamp(2.8rem,7.5vw,5rem)] font-black tracking-tight leading-[1.05]">
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="mx-auto mb-6 max-w-4xl text-balance text-[clamp(2.45rem,7.5vw,5rem)] font-black leading-[1.05] tracking-tight text-white">
             Không cần biết <span style={{ background: "linear-gradient(135deg, #38bdf8 0%, #818cf8 60%, #e879f9 100%)", backgroundSize: "200% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "shimmer 6s linear infinite" }}>đi đâu.</span><br />
             Chỉ cần biết khi nào <span style={{ background: "linear-gradient(135deg, #34d399 0%, #06b6d4 60%, #38bdf8 100%)", backgroundSize: "200% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "shimmer 5s 1s linear infinite" }}>rẻ.</span>
           </motion.h1>
@@ -482,6 +482,6 @@ export function HomePage() {
         </div>
       </section>
 
-    </div>
+    </main>
   );
 }

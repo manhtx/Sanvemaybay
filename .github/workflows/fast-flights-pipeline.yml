@@ -6,13 +6,13 @@ on:
       route_limit:
         description: "Maximum enabled routes to scan"
         required: false
-        default: "40"
+        default: "20"
       window_limit:
         description: "Round-trip date windows per route"
         required: false
-        default: "4"
+        default: "2"
   schedule:
-    - cron: "37 */12 * * *"
+    - cron: "17 * * * *"
 
 concurrency:
   group: flycheap-fast-flights-pipeline
@@ -29,18 +29,18 @@ jobs:
           python-version: "3.12"
       - name: Install fast-flights worker
         run: python -m pip install --disable-pip-version-check fast-flights typing_extensions
-      - name: Discover and ingest live source observations
+      - name: Discover and ingest indicative observations
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          AFFILIATE_NETWORK: ${{ secrets.AFFILIATE_NETWORK }}
-          AFFILIATE_DEEPLINK_TEMPLATE: ${{ secrets.AFFILIATE_DEEPLINK_TEMPLATE }}
-          FAST_FLIGHTS_ROUTE_LIMIT: ${{ inputs.route_limit || '40' }}
-          FAST_FLIGHTS_WINDOW_LIMIT: ${{ inputs.window_limit || '4' }}
+          FAST_FLIGHTS_ROUTE_LIMIT: ${{ inputs.route_limit || '20' }}
+          FAST_FLIGHTS_WINDOW_LIMIT: ${{ inputs.window_limit || '2' }}
           FAST_FLIGHTS_START_OFFSET: "14"
+          DEPLOYED_COMMIT: ${{ github.sha }}
+          FLYCHEAP_RUN_ID: github-${{ github.run_id }}-${{ github.run_attempt }}
         run: python scripts/fast-flights-worker.py
-      - name: Analyze and publish verified source deals
+      - name: Analyze eligible provider observations
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
@@ -54,9 +54,37 @@ jobs:
             -H "Authorization: Bearer $VITE_SUPABASE_ANON_KEY" \
             -H "x-internal-secret: $INTERNAL_FUNCTION_SECRET" \
             --data '{}'
+      - name: Refresh precomputed observed-fare read model
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
+        run: |
+          curl --fail-with-body --retry 2 --retry-delay 5 \
+            --connect-timeout 15 --max-time 180 \
+            -X POST "$VITE_SUPABASE_URL/functions/v1/refresh-observed-fares" \
+            -H "Content-Type: application/json" \
+            -H "apikey: $VITE_SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $VITE_SUPABASE_ANON_KEY" \
+            -H "x-internal-secret: $INTERNAL_FUNCTION_SECRET" \
+            --data '{}'
       - name: Refresh public feed snapshot
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: |
           python scripts/refresh-feed-snapshot.py
+      - name: Apply bounded data retention
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          INTERNAL_FUNCTION_SECRET: ${{ secrets.INTERNAL_FUNCTION_SECRET }}
+        run: |
+          curl --fail-with-body --retry 2 --retry-delay 5 \
+            --connect-timeout 15 --max-time 180 \
+            -X POST "$VITE_SUPABASE_URL/functions/v1/retention-cleanup" \
+            -H "Content-Type: application/json" \
+            -H "apikey: $VITE_SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $VITE_SUPABASE_ANON_KEY" \
+            -H "x-internal-secret: $INTERNAL_FUNCTION_SECRET" \
+            --data '{"dry_run":false}'

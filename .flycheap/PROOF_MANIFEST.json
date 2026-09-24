@@ -1,0 +1,97 @@
+{
+  "version": "4.0.0",
+  "generated_at": "2026-09-24T17:35:00+07:00",
+  "manifests": [
+    {
+      "claim_id": "PROOF-BUILD-001",
+      "requirement": "FLY-OPS-004",
+      "environment": "local_node_v24.18.0",
+      "revision": "3c54080eb4aa24872d3fa36c2c90f5e859643d81",
+      "setup": ["npm install"],
+      "commands": ["npm run typecheck", "npm run lint", "npm run build"],
+      "expected": ["TypeScript exit 0", "ESLint exit 0", "Vite build outputs dist/ with release.json and SEO assets"],
+      "actual": ["tsc --noEmit exited 0", "eslint . exited 0", "Vite built in 2.39s with code-split bundles"],
+      "artifact_refs": ["dist/index.html", "dist/release.json", "dist/robots.txt", "dist/sitemap.xml"],
+      "verified_at": "2026-09-24T16:23:28+07:00",
+      "result": "SUPPORTED"
+    },
+    {
+      "claim_id": "PROOF-TEST-UNIT-001",
+      "requirement": "FLY-INTEL-003",
+      "environment": "local_vitest_v3.2.6",
+      "revision": "3c54080eb4aa24872d3fa36c2c90f5e859643d81",
+      "setup": ["npm install"],
+      "commands": ["vitest run"],
+      "expected": ["All unit and domain test files pass"],
+      "actual": ["25 test files passed, 77 tests passed, 0 failed in 1.02s"],
+      "artifact_refs": ["src/app/domain/*.test.ts", "src/app/data/*.test.ts"],
+      "verified_at": "2026-09-24T16:18:20+07:00",
+      "result": "SUPPORTED"
+    },
+    {
+      "claim_id": "PROOF-TEST-NODE-001",
+      "requirement": "FLY-SEC-004",
+      "environment": "local_node_v24.18.0",
+      "revision": "3c54080eb4aa24872d3fa36c2c90f5e859643d81",
+      "setup": ["npm install"],
+      "commands": ["node --test scripts/*.node-test.mjs"],
+      "expected": ["All 12 Node contract test files pass"],
+      "actual": ["31 tests passed, 0 failed in 160ms"],
+      "artifact_refs": ["scripts/*.node-test.mjs"],
+      "verified_at": "2026-09-24T16:18:20+07:00",
+      "result": "SUPPORTED"
+    },
+    {
+      "claim_id": "PROOF-TEST-DENO-001",
+      "requirement": "FLY-DATA-001",
+      "environment": "local_deno_2.9.6",
+      "revision": "3c54080eb4aa24872d3fa36c2c90f5e859643d81",
+      "setup": ["npx --yes deno --version"],
+      "commands": ["npm run test:functions", "npm run check:functions"],
+      "expected": ["45 shared tests pass, all 14 functions pass deno check"],
+      "actual": ["45 passed, 0 failed in 314ms; all 14 function entrypoints pass check"],
+      "artifact_refs": ["supabase/functions/_shared/*.test.ts", "supabase/functions/*/index.ts"],
+      "verified_at": "2026-09-24T16:29:15+07:00",
+      "result": "SUPPORTED"
+    },
+    {
+      "claim_id": "PROOF-TEST-E2E-001",
+      "requirement": "FLY-UX-002",
+      "environment": "playwright_chromium_headless_shell_1234",
+      "revision": "3c54080eb4aa24872d3fa36c2c90f5e859643d81",
+      "setup": ["npx playwright install chromium"],
+      "commands": ["npx playwright test"],
+      "expected": ["All 32 E2E test executions pass across Desktop and Mobile Pixel 5"],
+      "actual": ["32 passed in 10.0s (16 desktop, 16 mobile)"],
+      "artifact_refs": ["e2e/app.spec.ts", "playwright.config.ts"],
+      "verified_at": "2026-09-24T16:28:56+07:00",
+      "result": "SUPPORTED"
+    },
+    {
+      "claim_id": "PROOF-MIGRATION-REPLAY-001",
+      "requirement": "FLY-OPS-004",
+      "environment": "clean_postgresql_16",
+      "revision": "3c54080eb4aa24872d3fa36c2c90f5e859643d81",
+      "setup": ["Temporary PostgreSQL 16 cluster with auth schema stubs"],
+      "commands": ["Replay all 38 migrations in timestamp order with ON_ERROR_STOP=1"],
+      "expected": ["38 migrations applied without error, 17 public tables, 15 RLS-enabled"],
+      "actual": ["38 migrations applied cleanly; confirmed in database-ci-contract.node-test.mjs"],
+      "artifact_refs": ["supabase/migrations/*.sql", "scripts/database-ci-contract.node-test.mjs"],
+      "verified_at": "2026-08-20 / 2026-09-24",
+      "result": "SUPPORTED"
+    },
+    {
+      "claim_id": "PROOF-REMOTE-TRUTH-001",
+      "requirement": "FLY-DATA-001",
+      "environment": "remote_supabase_thprsgnpvtzkcvknqfwk",
+      "revision": "3c54080eb4aa24872d3fa36c2c90f5e859643d81",
+      "setup": [".env credentials"],
+      "commands": ["LIVE_LAUNCH_ROUTES='HAN-BKK,HAN-SIN,HAN-ICN' APPROVED_LIVE_SOURCES='fast_flights_google,serpapi_google_flights_archive' APPROVED_BOOKING_HOSTS='google.com,aviasales.com' node scripts/production-truth.mjs"],
+      "expected": ["Qualified live deals > 0 on launch routes"],
+      "actual": ["0 qualified live deals. 1000/1000 rows expired or missing validity."],
+      "artifact_refs": [".flycheap/NEGATIVE_EVIDENCE.jsonl#NEG-EVD-001"],
+      "verified_at": "2026-09-24T17:32:13+07:00",
+      "result": "FALSIFIED"
+    }
+  ]
+}

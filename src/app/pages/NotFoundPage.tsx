@@ -3,7 +3,7 @@ import { Link } from "react-router";
 export function NotFoundPage() {
   return (
     <main className="min-h-[70vh] px-4 pt-32 text-center">
-      <p className="text-sm font-bold uppercase tracking-widest text-sky-400">404</p>
+      <p className="text-sm font-bold uppercase tracking-widest text-pink-400">404</p>
       <h1 className="mt-3 text-3xl font-extrabold text-white">
         Không tìm thấy trang
       </h1>
@@ -12,7 +12,7 @@ export function NotFoundPage() {
       </p>
       <Link
         to="/"
-        className="mt-8 inline-flex rounded-xl bg-sky-500 px-5 py-3 font-bold text-white hover:bg-sky-400"
+        className="mt-8 inline-flex rounded-xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 px-5 py-3 font-bold text-white transition-opacity hover:opacity-90"
       >
         Về trang chủ
       </Link>

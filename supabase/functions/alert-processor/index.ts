@@ -2,6 +2,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireInternalSecret } from "../_shared/internal-auth.ts";
 import { matchesAlert, selectDailyDeal } from "../_shared/alert-matching.ts";
 import { nextNotificationRetry } from "../_shared/retry-policy.ts";
+import { approvedBookingHosts, isActiveLiveDeal } from "../_shared/live-deal.ts";
+import { safeOperationalErrorCode } from "../_shared/observability.ts";
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -81,6 +83,7 @@ async function sendTelegram(alert: any, deal: any): Promise<string> {
 }
 
 Deno.serve(async (request) => {
+  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
   const unauthorized = requireInternalSecret(request);
   if (unauthorized) return unauthorized;
 
@@ -106,8 +109,10 @@ Deno.serve(async (request) => {
     let sent = 0;
     let failed = 0;
 
+    const bookingHosts = approvedBookingHosts(Deno.env.get("APPROVED_BOOKING_HOSTS"));
+    const activeDeals = (deals ?? []).filter((deal) => isActiveLiveDeal(deal, bookingHosts));
     for (const alert of alerts ?? []) {
-      let matchingDeals = (deals ?? []).filter((deal) => matchesAlert(alert, deal));
+      let matchingDeals = activeDeals.filter((deal) => matchesAlert(alert, deal));
 
       if (alert.frequency === "daily") {
         const today = new Date();
@@ -163,7 +168,7 @@ Deno.serve(async (request) => {
               deal_id: deal.id,
               channel: channel.name,
               status: "failed",
-              error_message: error instanceof Error ? error.message : "Unknown delivery error",
+              error_message: safeOperationalErrorCode(error, "delivery_failed"),
               attempt_count: retry.attemptCount,
               next_retry_at: retry.nextRetryAt ?? null,
               created_at: new Date().toISOString(),
@@ -176,6 +181,6 @@ Deno.serve(async (request) => {
 
     return json({ success: true, sent, failed });
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "Unknown processor error" }, 500);
+    return json({ error: "Alert processing failed", error_code: safeOperationalErrorCode(error) }, 500);
   }
 });

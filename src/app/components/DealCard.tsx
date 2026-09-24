@@ -28,13 +28,19 @@ export function DealCard({ deal }: DealCardProps) {
   const [bookmarked, setBookmarked] = useState(() => isBookmarkedDeal(deal.id));
   const priceDiff = deal.realTotal - deal.advertisedTotal;
   const hasHiddenCosts = priceDiff > 0;
+  const discountTone = deal.discount >= 30
+    ? "bg-red-500/95 text-white"
+    : deal.discount >= 15
+      ? "bg-amber-400 text-slate-950"
+      : "bg-emerald-500/95 text-white";
+  const cardTarget = deal.linkKind === "indicative" && deal.bookingUrl ? deal.bookingUrl : `/deals/${deal.id}`;
 
   return (
     <div className="relative group">
-      <Link to={`/deals/${deal.id}`} className="block">
-      <div className="relative bg-slate-900 border border-white/8 rounded-2xl overflow-hidden hover:border-sky-500/40 hover:shadow-lg hover:shadow-sky-500/10 transition-all duration-300">
+      <Link aria-label={`${deal.linkKind === "indicative" ? "Kiểm tra giá" : "Xem deal"} ${deal.fromCode} đến ${deal.toCode}, ${formatVND(deal.price)}, ${deal.aiReasoning || deal.aiInsight.reason}`} to={cardTarget} target={deal.linkKind === "indicative" ? "_blank" : undefined} rel={deal.linkKind === "indicative" ? "noopener noreferrer" : undefined} className="block">
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#171719] transition-all duration-300 hover:border-pink-500/35 hover:bg-[#1b1b1e] hover:shadow-xl hover:shadow-black/20">
         {/* Image */}
-        <div className="relative h-44 overflow-hidden">
+        <div className="relative aspect-[16/10] overflow-hidden">
           {deal.image ? (
             <img
               src={deal.image}
@@ -42,22 +48,22 @@ export function DealCard({ deal }: DealCardProps) {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-sky-950 via-slate-900 to-indigo-950" />
+            <div className="h-full w-full bg-gradient-to-br from-slate-800 via-[#171719] to-violet-950" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex gap-2">
             {deal.isFlashDeal && (
-              <span className="flex items-center gap-1 px-2.5 py-1 bg-orange-500 text-white text-xs rounded-full" style={{ fontWeight: 700 }}>
+                <span className="flex items-center gap-1 rounded-full bg-orange-500/90 px-2.5 py-1 text-xs font-bold text-white">
                 <Zap className="w-3 h-3" />
-                FLASH
+                GIẢM MẠNH
               </span>
             )}
             {deal.isTrending && (
               <span className="flex items-center gap-1 px-2.5 py-1 bg-violet-500/90 text-white text-xs rounded-full" style={{ fontWeight: 600 }}>
                 <TrendingDown className="w-3 h-3" />
-                TRENDING
+                ĐÁNG CHÚ Ý
               </span>
             )}
           </div>
@@ -65,11 +71,11 @@ export function DealCard({ deal }: DealCardProps) {
           {/* Discount badge */}
           <div className="absolute top-3 right-3">
             {deal.linkKind === "indicative" ? (
-              <span className="block px-2.5 py-1.5 bg-amber-500/95 text-white text-[10px] rounded-full shadow-lg uppercase tracking-wide" style={{ fontWeight: 800 }}>
-                Giá tham khảo
+              <span className={`block rounded-full px-2.5 py-1.5 text-[10px] shadow-lg uppercase tracking-wide ${discountTone}`} style={{ fontWeight: 800 }}>
+                {deal.discount > 0 ? `↓ ${deal.discount.toFixed(1)}%` : "Đang tính mặt bằng"}
               </span>
             ) : (
-              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/90 shadow-lg shadow-emerald-900/20">
                 <span className="text-white text-xs leading-tight text-center" style={{ fontWeight: 800 }}>
                   -{deal.discount}%
                 </span>
@@ -95,7 +101,7 @@ export function DealCard({ deal }: DealCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-4">
+          <div className="p-4 sm:p-5">
           {/* Airline + flight info */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -118,12 +124,12 @@ export function DealCard({ deal }: DealCardProps) {
           </div>
 
           {/* Price section */}
-          <div className="flex items-end justify-between mb-3">
+          <div className="mb-3 flex items-end justify-between gap-3">
             <div>
-              {deal.linkKind !== "indicative" && (
-                <div className="text-slate-500 text-xs line-through">{formatVND(deal.normalPrice)}</div>
+              {deal.normalPrice > deal.price && (
+                <div className="text-slate-500 text-xs line-through">Mặt bằng {formatVND(deal.normalPrice)}</div>
               )}
-              <div className="text-2xl text-emerald-400" style={{ fontWeight: 800, letterSpacing: "-0.02em" }}>
+              <div className="text-2xl font-extrabold tracking-tight text-emerald-300">
                 {formatVND(deal.price)}
               </div>
               {hasHiddenCosts && (
@@ -135,12 +141,18 @@ export function DealCard({ deal }: DealCardProps) {
                 </div>
               )}
             </div>
-            <div className={`px-3 py-1.5 rounded-lg text-xs ${getRecommendationColor(deal.aiInsight.recommendation)}`} style={{ fontWeight: 700 }}>
-              {getRecommendationLabel(deal.aiInsight.recommendation)}
-            </div>
+            {deal.linkKind === "indicative" ? (
+              <div className="rounded-lg border border-sky-500/25 bg-sky-500/10 px-2.5 py-1.5 text-right text-xs font-bold text-sky-300">
+                {deal.aiReasoning || "Giá quan sát"}
+              </div>
+            ) : (
+              <div className={`rounded-lg px-2.5 py-1.5 text-right text-xs ${getRecommendationColor(deal.aiInsight.recommendation)}`} style={{ fontWeight: 700 }}>
+                {getRecommendationLabel(deal.aiInsight.recommendation)}
+              </div>
+            )}
           </div>
 
-          <div className={`mb-3 rounded-lg border px-3 py-2 text-xs ${deal.linkKind === "live_affiliate" ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-300" : "border-amber-500/20 bg-amber-500/5 text-amber-300"}`}>
+          <div className={`mb-3 rounded-xl border px-3 py-2 text-xs leading-relaxed ${deal.linkKind === "live_affiliate" ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-300" : "border-amber-500/20 bg-amber-500/5 text-amber-300"}`}>
             {deal.linkKind === "live_affiliate"
               ? "Link đối tác đã được cấp — kiểm tra giá lần cuối trước khi đặt."
               : deal.linkKind === "indicative"
@@ -161,10 +173,10 @@ export function DealCard({ deal }: DealCardProps) {
           </div>
 
           {/* AI reasoning snippet */}
-          <div className="bg-sky-500/5 border border-sky-500/10 rounded-lg p-3 mb-3">
+          <div className="mb-3 rounded-xl border border-white/8 bg-white/[0.03] p-3">
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 bg-sky-500 rounded-full flex items-center justify-center mt-0.5 shrink-0">
-                <span className="text-white" style={{ fontSize: "8px", fontWeight: 800 }}>DATA</span>
+              <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-sky-500/80">
+                <span className="text-[7px] font-extrabold text-white">D</span>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed line-clamp-3">
                 {deal.aiReasoning || deal.aiInsight.reason}
@@ -201,10 +213,10 @@ export function DealCard({ deal }: DealCardProps) {
         </div>
 
         {/* Intelligence Stats Bar */}
-        <div className="px-4 pb-4 space-y-2">
+        <div className="space-y-2 px-4 pb-5 sm:px-5">
           {/* Saving Score */}
           <div className="flex items-center gap-2">
-            <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Saving Score</span>
+            <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Điểm cơ hội</span>
             <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full"
@@ -215,10 +227,15 @@ export function DealCard({ deal }: DealCardProps) {
               {deal.dealScore ?? deal.aiInsight.savingScore}/100
             </span>
           </div>
+          {deal.linkKind === "indicative" && (
+            <p className="text-right text-[10px] font-bold uppercase tracking-wide text-sky-300">
+              {deal.aiReasoning || "Giá quan sát"}
+            </p>
+          )}
           
           {deal.confidence != null && (
             <div className="flex items-center gap-2">
-              <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Confidence</span>
+              <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Độ tin cậy</span>
               <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-sky-400 rounded-full opacity-60"
@@ -245,7 +262,7 @@ export function DealCard({ deal }: DealCardProps) {
           void saveRemoteBookmark(deal.id, next);
           void trackProductEvent({ eventType: "bookmark", entityId: deal.id, metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}`, source: "deal_card" } });
         }}
-        className="absolute top-3 right-16 z-10 p-2 rounded-full bg-slate-950/70 text-white hover:bg-sky-500 transition-colors"
+        className="absolute right-16 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm transition-colors hover:bg-pink-500"
       >
         <Bookmark className={`w-4 h-4 ${bookmarked ? "fill-sky-400 text-sky-400" : "text-slate-300"}`} />
       </button>

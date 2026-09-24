@@ -1,0 +1,97 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-09-24T17:55:00+07:00",
+  "environments": {
+    "local": {
+      "runtime_versions": {
+        "node": "v24.18.0",
+        "deno": "2.9.6",
+        "python": "3.14.6"
+      },
+      "database_engine": "PostgreSQL 16 (Isolated Runner / Docker)",
+      "migration_version": "20260820000700_idempotent_account_deletion",
+      "total_migrations_applied": 38,
+      "edge_functions_count": 14,
+      "scheduler_mechanism": "CLI / Local worker invocation",
+      "provider_adapters": ["fast_flights_google", "amadeus_sandbox", "serpapi_archive"],
+      "ai_provider": "Rule-based fallback + Gemini mock",
+      "turnstile_status": "Fail-closed validation contract active",
+      "notification_transport": "In-memory / mock log",
+      "canonical_url": "http://localhost:5173",
+      "release_sha": "LOCAL_RC",
+      "status": "OPERATIONAL"
+    },
+    "staging": {
+      "runtime_versions": {
+        "node": "v20.x (GitHub Actions)",
+        "deno": "v2.x (Supabase Cloud)",
+        "python": "3.11 (GitHub Actions)"
+      },
+      "database_engine": "Supabase Cloud Managed PostgreSQL",
+      "migration_version": "BLOCKED (Foreign Macro migrations on shared instance)",
+      "total_migrations_applied": 0,
+      "edge_functions_count": 0,
+      "scheduler_mechanism": "GitHub Actions .github/workflows/fast-flights-pipeline.yml",
+      "provider_adapters": ["fast_flights_google"],
+      "ai_provider": "Pending Supabase secret provisioning",
+      "turnstile_status": "Pending Cloudflare staging secret",
+      "notification_transport": "Pending email transport secret",
+      "canonical_url": "Pending staging Vercel preview",
+      "release_sha": "PENDING_STAGING_DEPLOYMENT",
+      "status": "BLOCKED_PENDING_CLEAN_PROJECT"
+    },
+    "production": {
+      "runtime_versions": {
+        "node": "v20.x (Vercel)",
+        "deno": "v2.x (Supabase Cloud)",
+        "python": "3.11 (GitHub Actions)"
+      },
+      "database_engine": "Supabase Cloud Managed PostgreSQL",
+      "migration_version": "20260805000000 (Outdated)",
+      "total_migrations_applied": 29,
+      "edge_functions_count": 10,
+      "scheduler_mechanism": "GitHub Actions .github/workflows/production-smoke.yml",
+      "provider_adapters": ["fast_flights_google"],
+      "ai_provider": "Unverified in production",
+      "turnstile_status": "Unverified in production",
+      "notification_transport": "Unverified in production",
+      "canonical_url": "https://farely.manhtx.com",
+      "release_sha": "3c54080 (August 5, 2026 commit)",
+      "status": "OUTDATED_PENDING_PROMOTION"
+    }
+  },
+  "drift_classification": [
+    {
+      "dimension": "database_migrations",
+      "local": "38 migrations (up to 20260820000700)",
+      "staging": "0 on dedicated project (BLK-MIGR-01)",
+      "production": "29 migrations",
+      "severity": "RELEASE_BLOCKING",
+      "remediation": "Push 38 migrations to dedicated clean Supabase project"
+    },
+    {
+      "dimension": "edge_functions",
+      "local": "14 functions (all pass deno check)",
+      "staging": "0 deployed",
+      "production": "10 functions deployed (missing 4 August functions)",
+      "severity": "RELEASE_BLOCKING",
+      "remediation": "Deploy all 14 Edge Functions via Supabase CLI"
+    },
+    {
+      "dimension": "commercial_provider_keys",
+      "local": "Synthetic / sandbox test fixtures",
+      "staging": "FastFlights scraping only",
+      "production": "FastFlights scraping only",
+      "severity": "NON_BLOCKING_FOR_INDICATIVE_BETA",
+      "remediation": "Core V1 operates under INDICATIVE_PUBLIC_BETA mode; commercial keys scoped out"
+    },
+    {
+      "dimension": "production_frontend_deployment",
+      "local": "Commit on rc/v6.0-candidate",
+      "staging": "Pending preview build",
+      "production": "Serving outdated commit 3c54080",
+      "severity": "RELEASE_BLOCKING",
+      "remediation": "Merge dev to main and deploy to Vercel after clean staging validation"
+    }
+  ]
+}

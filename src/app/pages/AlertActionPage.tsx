@@ -34,8 +34,8 @@ export function AlertActionPage({ action }: { action: "confirm" | "unsubscribe" 
 
   return (
     <main className="min-h-[75vh] pt-32 px-4 flex justify-center">
-      <section className="w-full max-w-lg h-fit bg-slate-900 border border-white/10 rounded-3xl p-8 text-center">
-        {state === "loading" && <LoaderCircle className="w-12 h-12 text-sky-400 animate-spin mx-auto mb-5" />}
+      <section className="h-fit w-full max-w-lg rounded-2xl border border-white/10 bg-[#171719] p-6 text-center sm:p-8">
+        {state === "loading" && <LoaderCircle className="mx-auto mb-5 h-12 w-12 animate-spin text-pink-400" />}
         {state === "success" && <CheckCircle className="w-12 h-12 text-emerald-400 mx-auto mb-5" />}
         {state === "error" && <XCircle className="w-12 h-12 text-red-400 mx-auto mb-5" />}
         <h1 className="text-white text-2xl font-bold mb-3">
@@ -47,7 +47,7 @@ export function AlertActionPage({ action }: { action: "confirm" | "unsubscribe" 
         </h1>
         <p className="text-slate-400 mb-7">{message || "Vui lòng chờ trong giây lát."}</p>
         {state !== "loading" && (
-          <Link to="/" className="inline-flex px-5 py-2.5 bg-sky-500 text-white rounded-xl hover:bg-sky-400">
+          <Link to="/" className="inline-flex rounded-xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 px-5 py-2.5 text-white transition-opacity hover:opacity-90">
             Về trang chủ
           </Link>
         )}

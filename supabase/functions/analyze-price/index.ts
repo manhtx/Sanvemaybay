@@ -2,6 +2,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireInternalSecret } from "../_shared/internal-auth.ts";
 import { toPriceHistoryRow } from "../_shared/price-history.ts";
 import { decideBuyRecommendation } from "../_shared/buy-decision.ts";
+import { approvedBookingHosts, isApprovedHttpsUrl } from "../_shared/live-deal.ts";
+import { safeOperationalErrorCode } from "../_shared/observability.ts";
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -12,6 +14,7 @@ function json(body: unknown, status = 200): Response {
 
 const AI_EXPLANATION_BATCH_LIMIT = Math.max(0, Number(Deno.env.get("AI_EXPLANATION_BATCH_LIMIT") ?? 20));
 const ANALYZE_FLIGHT_LIMIT = Math.max(1, Number(Deno.env.get("ANALYZE_FLIGHT_LIMIT") ?? 300));
+const BOOKING_HOSTS = approvedBookingHosts(Deno.env.get("APPROVED_BOOKING_HOSTS"));
 
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
@@ -22,6 +25,7 @@ function median(values: number[]): number {
 }
 
 Deno.serve(async (request) => {
+  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
   const unauthorized = requireInternalSecret(request);
   if (unauthorized) return unauthorized;
 
@@ -139,6 +143,16 @@ Deno.serve(async (request) => {
         comparableSamples: comparisonSamples,
       });
 
+      const linkKind = flight.link_kind;
+      const hasLiveSource = linkKind === "live_source" && isApprovedHttpsUrl(flight.booking_url, BOOKING_HOSTS);
+      const hasLiveAffiliate = linkKind === "live_affiliate" &&
+        typeof flight.affiliate_network === "string" && Boolean(flight.affiliate_network.trim()) &&
+        isApprovedHttpsUrl(flight.affiliate_url, BOOKING_HOSTS);
+      if (!hasLiveSource && !hasLiveAffiliate) {
+        skipped.push({ itinerary: flight.itinerary_key, reason: "unverified_link_provenance" });
+        continue;
+      }
+
       const deal = {
         itinerary_key: flight.itinerary_key,
         from: flight.origin,
@@ -163,7 +177,7 @@ Deno.serve(async (request) => {
         expires_in: "Kiểm tra lại trước khi đặt",
         flight_number: flight.flight_number,
         booking_url: flight.booking_url,
-        link_kind: flight.link_kind ?? "live_source",
+        link_kind: linkKind,
         affiliate_network: flight.affiliate_network ?? null,
         affiliate_url: flight.affiliate_url ?? null,
         source: flight.source,
@@ -260,6 +274,6 @@ Deno.serve(async (request) => {
       skipped,
     });
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "Unknown analyzer error" }, 500);
+    return json({ error: "Analyzer failed", error_code: safeOperationalErrorCode(error) }, 500);
   }
 });

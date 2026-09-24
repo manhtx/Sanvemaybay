@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   TrendingDown,
   Globe,
@@ -10,13 +10,18 @@ import {
   Bell,
   ChevronDown,
   ChevronUp,
+  AlertTriangle,
+  RefreshCw,
+  LoaderCircle,
+  CircleCheckBig,
 } from "lucide-react";
 import { DealCard } from "../components/DealCard";
 import { Deal } from "../data/deals";
 import { formatVND } from "../data/deals";
 import { compareDeals } from "../domain/dealComparison";
 import { Link } from "react-router";
-import { getDeals } from "../data/api";
+import { getDealsResult, getObservedFares } from "../data/api";
+import type { DealFeedResult, ObservedFarePage } from "../data/api";
 import { useEffect } from "react";
 import { isSupabaseConfigured } from "../lib/supabase";
 
@@ -45,26 +50,47 @@ const allRegions: { value: RegionType; label: string; flag: string }[] = [
 
 export function DealsPage() {
   const [deals, setDeals] = useState<Deal[]>([]);
+  const [observedFares, setObservedFares] = useState<Deal[]>([]);
+  const [observedTotal, setObservedTotal] = useState(0);
+  const [nextObservedPage, setNextObservedPage] = useState<number | null>(null);
+  const [observedUnavailable, setObservedUnavailable] = useState(false);
+  const [observedHealth, setObservedHealth] = useState<Pick<ObservedFarePage, "status" | "feedAgeMinutes" | "latestObservedAt" | "retryable">>({ status: "provider_unavailable", retryable: true });
+  const [mode, setMode] = useState<"observed" | "live">("observed");
+  const [feed, setFeed] = useState<DealFeedResult | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [region, setRegion] = useState<RegionType>("all");
   const [sort, setSort] = useState<SortType>("discount");
 
-  useEffect(() => {
-    getDeals().then(setDeals);
+  const loadDeals = useCallback(async () => {
+    setIsLoading(true);
+    const [result, observed] = await Promise.all([getDealsResult(), getObservedFares()]);
+    setDeals(result.deals);
+    setFeed(result);
+    setObservedFares(observed.fares);
+    setObservedTotal(observed.total);
+    setNextObservedPage(observed.nextPage);
+    setObservedUnavailable(observed.status === "provider_unavailable");
+    setObservedHealth({ status: observed.status, feedAgeMinutes: observed.feedAgeMinutes, latestObservedAt: observed.latestObservedAt, retryable: observed.retryable });
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    void loadDeals();
+    const timer = window.setInterval(() => void loadDeals(), 5 * 60 * 1000);
+    return () => window.clearInterval(timer);
+  }, [loadDeals]);
   const [flashOnly, setFlashOnly] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
   const [selectedWatchDest, setSelectedWatchDest] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [comparisonIds, setComparisonIds] = useState<string[]>([]);
-  const baseDestinations = useMemo(
-    () => [...new Set(deals.map((deal) => deal.to))],
-    [deals],
-  );
+  const displayDeals = mode === "observed" ? observedFares : deals;
+  const baseDestinations = useMemo(() => [...new Set(displayDeals.map((deal) => deal.to))], [displayDeals]);
 
   // Derive available months from actual deal dates — sorted chronologically
   const availableMonths = useMemo(() => {
     const monthSet = new Set(
-      deals.map((d: Deal) => {
+      displayDeals.map((d: Deal) => {
         const date = new Date(d.departDate);
         return `${date.getMonth() + 1}/${date.getFullYear()}`;
       })
@@ -74,9 +100,9 @@ export function DealsPage() {
       const [mb, yb] = b.split("/").map(Number);
       return ya !== yb ? ya - yb : ma - mb;
     });
-  }, [deals]);
+  }, [displayDeals]);
 
-  const filtered = deals
+  const filtered = displayDeals
     .filter((d: Deal) => {
       if (region !== "all" && d.region !== region) return false;
       if (flashOnly && !d.isFlashDeal) return false;
@@ -108,52 +134,60 @@ export function DealsPage() {
       allRegions.reduce((acc, r) => {
         acc[r.value] =
           r.value === "all"
-            ? deals.length
-            : deals.filter((d: Deal) => d.region === r.value).length;
+            ? displayDeals.length
+            : displayDeals.filter((d: Deal) => d.region === r.value).length;
         return acc;
       }, {} as Record<string, number>),
-    [deals]
+    [displayDeals]
   );
   const comparisonDeals = useMemo(
     () => filtered.filter((deal) => comparisonIds.includes(deal.id)),
     [comparisonIds, filtered],
   );
   const comparisonRows = useMemo(() => compareDeals(comparisonDeals), [comparisonDeals]);
+  const isDegraded = feed?.status === "degraded_schema" || feed?.status === "provider_unavailable";
+  const isStaleOnly = feed?.status === "stale_only";
+  const isHealthyEmpty = feed?.status === "healthy_empty";
+  const showInventoryControls = !isLoading && displayDeals.length > 0;
+  const feedSummary = isLoading
+    ? "Đang kiểm tra nguồn deal hiện tại…"
+    : isDegraded
+      ? "Nguồn deal đang tạm thời không khả dụng"
+      : isHealthyEmpty
+        ? "Nguồn dữ liệu hoạt động — hiện chưa có deal live đạt chuẩn"
+      : isStaleOnly && deals.length === 0
+        ? "Chưa có deal live còn hiệu lực"
+        : `Hệ thống phát hiện ${deals.length} deal trên ${new Set(deals.map((d: Deal) => d.country)).size} quốc gia`;
 
   return (
-    <div className="pt-24 pb-16">
+    <main className="min-h-screen pb-16 pt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-1.5 bg-sky-400 rounded-full" />
-            <span className="text-sky-400 text-xs" style={{ fontWeight: 700 }}>
+            <div className="h-1.5 w-1.5 rounded-full bg-pink-400" />
+            <span className="text-xs font-bold tracking-[0.12em] text-pink-400">
               DỮ LIỆU QUAN SÁT
             </span>
           </div>
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
               <h1
-                className="text-white mb-2"
+                className="mb-2 text-white"
                 style={{ fontSize: "clamp(1.75rem, 4vw, 2.25rem)", fontWeight: 800, letterSpacing: "-0.03em" }}
               >
-            Deal Vé Máy Bay Được Xác Minh
+            {mode === "observed" ? "Giá Vé Máy Bay Đang Giảm Mạnh" : "Deal Vé Máy Bay Được Xác Minh"}
               </h1>
-              <p className="text-slate-500">
-                Hệ thống phát hiện{" "}
-                <span className="text-sky-400" style={{ fontWeight: 700 }}>
-                  {deals.length} deal
+              <p className="max-w-2xl text-sm leading-relaxed text-slate-400" aria-live="polite">
+                <span className={isDegraded ? "text-amber-300" : "text-sky-400"} style={{ fontWeight: 700 }}>
+                  {mode === "observed" ? `${observedTotal} giá quan sát — ưu tiên mức giảm lớn nhất` : feedSummary}
                 </span>{" "}
-                trên{" "}
-                <span className="text-sky-400" style={{ fontWeight: 700 }}>
-                  {new Set(deals.map((d: Deal) => d.country)).size} quốc gia
-                </span>{" "}
-                — chỉ hiển thị các mức giá đạt ngưỡng so với dữ liệu lịch sử
+                {!isLoading && mode === "live" && !isDegraded && "— chỉ hiển thị các mức giá đạt ngưỡng so với dữ liệu lịch sử"}
               </p>
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/10 text-slate-300 rounded-xl text-sm transition-colors sm:hidden"
+              className="flex min-h-11 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-sm text-slate-300 transition-colors hover:bg-white/[0.1] sm:hidden"
               style={{ fontWeight: 600 }}
             >
               <SlidersHorizontal className="w-4 h-4" />
@@ -161,6 +195,15 @@ export function DealsPage() {
               {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
           </div>
+        </div>
+
+        <div className="mb-6 inline-flex rounded-xl border border-white/10 bg-white/[0.04] p-1" role="tablist" aria-label="Loại giá vé">
+          <button type="button" role="tab" aria-selected={mode === "observed"} onClick={() => setMode("observed")} className={`min-h-11 rounded-lg px-4 py-2 text-sm font-semibold ${mode === "observed" ? "bg-white text-slate-950" : "text-slate-400"}`}>
+            Giá đang giảm ({observedTotal})
+          </button>
+          <button type="button" role="tab" aria-selected={mode === "live"} onClick={() => setMode("live")} className={`min-h-11 rounded-lg px-4 py-2 text-sm font-semibold ${mode === "live" ? "bg-white text-slate-950" : "text-slate-400"}`}>
+            Deal live ({deals.length})
+          </button>
         </div>
 
         {!isSupabaseConfigured && (
@@ -173,10 +216,83 @@ export function DealsPage() {
           </div>
         )}
 
+        {isLoading && (
+          <div className="mb-6 flex items-center gap-3 rounded-2xl border border-sky-500/20 bg-sky-500/10 p-4 text-sm text-sky-200" role="status">
+            <LoaderCircle className="h-5 w-5 animate-spin" />
+            Đang xác minh tình trạng nguồn deal…
+          </div>
+        )}
+
+        {!isLoading && mode === "live" && (isDegraded || isStaleOnly || isHealthyEmpty) && (
+          <section
+            className={`mb-6 rounded-2xl border p-5 ${isDegraded ? "border-amber-500/30 bg-amber-500/10" : isHealthyEmpty ? "border-emerald-500/25 bg-emerald-500/10" : "border-violet-500/25 bg-violet-500/10"}`}
+            role={isDegraded ? "alert" : "status"}
+            aria-label="Trạng thái nguồn deal"
+          >
+            <div className="flex items-start gap-3">
+              {isHealthyEmpty
+                ? <CircleCheckBig className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
+                : <AlertTriangle className={`mt-0.5 h-5 w-5 shrink-0 ${isDegraded ? "text-amber-300" : "text-violet-300"}`} />}
+              <div className="flex-1">
+                <h2 className="font-bold text-white">
+                  {isDegraded
+                    ? "Nguồn deal đang cần được khôi phục"
+                    : isHealthyEmpty
+                      ? "Chưa có deal live đạt chuẩn lúc này"
+                      : "Chưa có deal live còn hiệu lực"}
+                </h2>
+                <p className="mt-1 text-sm leading-relaxed text-slate-300">
+                  {feed?.message} Hệ thống không hiển thị dữ liệu cũ hoặc chưa được xác minh thay cho deal thật. Bạn có thể đặt alert để nhận thông báo khi xuất hiện offer hợp lệ.
+                </p>
+                {feed?.generatedAt && (
+                  <p className="mt-2 text-xs text-slate-500">Cập nhật nguồn gần nhất: {new Date(feed.generatedAt).toLocaleString("vi-VN")}</p>
+                )}
+              </div>
+              {feed?.retryable && (
+                <button
+                  type="button"
+                  onClick={() => void loadDeals()}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-white/15 bg-white/[0.07] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12]"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Thử lại
+                </button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {!isLoading && mode === "observed" && observedUnavailable && (
+          <section className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5" role="alert">
+            <h2 className="font-bold text-white">Nguồn giá quan sát đang tạm gián đoạn</h2>
+            <p className="mt-1 text-sm text-slate-300">Hệ thống sẽ tự thử lại; dữ liệu archive không được dùng thay cho giá hiện tại.</p>
+          </section>
+        )}
+        {!isLoading && mode === "observed" && !observedUnavailable && (observedHealth.status === "degraded_freshness" || observedHealth.status === "stale_only") && (
+          <section className={`mb-6 rounded-2xl border p-5 ${observedHealth.status === "stale_only" ? "border-red-500/30 bg-red-500/10" : "border-amber-500/30 bg-amber-500/10"}`} role="alert">
+            <h2 className="font-bold text-white">
+              {observedHealth.status === "stale_only" ? "Dữ liệu giá đã quá cũ" : "Dữ liệu giá đang cập nhật chậm"}
+            </h2>
+            <p className="mt-1 text-sm text-slate-300">
+              Lần quan sát mới nhất cách đây {observedHealth.feedAgeMinutes == null ? "không xác định" : `${Math.max(1, Math.round(observedHealth.feedAgeMinutes / 60))} giờ`}.
+              Các mức giá vẫn là dữ liệu tham khảo và phải được kiểm tra lại trên nguồn trước khi quyết định.
+            </p>
+            {observedHealth.latestObservedAt && (
+              <p className="mt-2 text-xs text-slate-500">Quan sát mới nhất: {new Date(observedHealth.latestObservedAt).toLocaleString("vi-VN")}</p>
+            )}
+          </section>
+        )}
+        {!isLoading && mode === "observed" && !observedUnavailable && observedTotal === 0 && (
+          <section className="mb-6 rounded-2xl border border-sky-500/25 bg-sky-500/10 p-5" role="status">
+            <h2 className="font-bold text-white">Đang chờ lượt quét giá đầu tiên</h2>
+            <p className="mt-1 text-sm text-slate-300">Pipeline chạy nền mỗi giờ; giá hợp lệ sẽ tự xuất hiện và được xếp theo mức giảm.</p>
+          </section>
+        )}
+
         {/* ── DESTINATION FILTER ── */}
-        <div className="mb-6">
+        {showInventoryControls && <div className="mb-6 overflow-x-auto pb-1">
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-slate-500 text-sm shrink-0" style={{ fontWeight: 600 }}>
+              <span className="shrink-0 text-sm font-semibold text-slate-400">
               Lọc điểm đến đang có dữ liệu:
             </span>
 
@@ -184,7 +300,7 @@ export function DealsPage() {
               <button
                 key={dest}
                 onClick={() => setSelectedWatchDest(selectedWatchDest === dest ? null : dest)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border transition-all ${
+                className={`flex min-h-11 items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border transition-all ${
                   selectedWatchDest === dest
                     ? "bg-sky-500/20 border-sky-500/40 text-sky-300"
                     : "bg-slate-800/50 border-white/10 text-slate-400 hover:border-sky-500/30 hover:text-slate-200"
@@ -196,10 +312,10 @@ export function DealsPage() {
             ))}
 
           </div>
-        </div>
+        </div>}
 
         {/* ── FILTER & SORT BAR ── */}
-        <div className={`bg-slate-900/60 border border-white/8 rounded-2xl p-4 mb-8 ${showFilters ? "" : "hidden sm:block"}`}>
+        {showInventoryControls && <div className={`mb-8 rounded-2xl border border-white/10 bg-[#171719] p-4 ${showFilters ? "" : "hidden sm:block"}`}>
           {/* Region tabs - scrollable on mobile */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4 scrollbar-hide">
             {allRegions
@@ -208,10 +324,10 @@ export function DealsPage() {
                 <button
                   key={r.value}
                   onClick={() => setRegion(r.value)}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all shrink-0 ${
+                  className={`flex min-h-11 items-center gap-1.5 px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all shrink-0 ${
                     region === r.value
-                      ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20"
-                      : "bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-700/50"
+                        ? "bg-white text-slate-950 shadow-lg shadow-black/20"
+                        : "bg-white/[0.05] text-slate-400 hover:bg-white/[0.1] hover:text-white"
                   }`}
                   style={{ fontWeight: 600 }}
                 >
@@ -237,7 +353,7 @@ export function DealsPage() {
             {/* Flash toggle */}
             <button
               onClick={() => setFlashOnly(!flashOnly)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm border transition-all ${
+              className={`flex min-h-11 items-center gap-2 px-4 py-2 rounded-xl text-sm border transition-all ${
                 flashOnly
                   ? "bg-orange-500/20 border-orange-500/40 text-orange-400"
                   : "bg-transparent border-white/10 text-slate-400 hover:border-white/20"
@@ -251,6 +367,7 @@ export function DealsPage() {
             {/* Month & Sort selectors — pushed to the right as one group */}
             <div className="ml-auto flex items-center gap-3 flex-wrap">
               <select
+                aria-label="Lọc theo tháng khởi hành"
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
                 className="bg-slate-800 border border-white/10 text-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-500/40 cursor-pointer"
@@ -265,6 +382,7 @@ export function DealsPage() {
               <div className="flex items-center gap-2">
                 <ArrowUpDown className="w-4 h-4 text-slate-500 shrink-0" />
                 <select
+                  aria-label="Sắp xếp deal"
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortType)}
                   className="bg-slate-800 border border-white/10 text-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-500/40 cursor-pointer"
@@ -277,14 +395,14 @@ export function DealsPage() {
               </div>
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* ── STATS ROW ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        {showInventoryControls && <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {[
             { icon: TrendingDown, label: "Deals đang có", value: `${filtered.length}`, color: "text-sky-400" },
             { icon: Zap, label: "Flash deals", value: `${filtered.filter((d: Deal) => d.isFlashDeal).length}`, color: "text-orange-400" },
-            { icon: Clock, label: "Hết hạn sớm nhất", value: filtered.length > 0 ? [...filtered].sort((a: Deal, b: Deal) => a.expiresIn.localeCompare(b.expiresIn))[0]?.expiresIn.split(" ").slice(0, 2).join(" ") : "—", color: "text-red-400" },
+            { icon: Clock, label: mode === "observed" ? "Độ mới dữ liệu" : "Hết hạn sớm nhất", value: mode === "observed" ? (filtered[0]?.expiresIn ?? "—") : filtered.length > 0 ? [...filtered].sort((a: Deal, b: Deal) => a.expiresIn.localeCompare(b.expiresIn))[0]?.expiresIn.split(" ").slice(0, 2).join(" ") : "—", color: "text-red-400" },
             { icon: Globe, label: "Quốc gia / Vùng", value: `${new Set(filtered.map((d: Deal) => d.country)).size}`, color: "text-violet-400" },
           ].map(({ icon: Icon, label, value, color }) => (
             <div key={label} className="bg-slate-900/60 border border-white/8 rounded-xl p-4 flex items-center gap-3">
@@ -295,7 +413,7 @@ export function DealsPage() {
               </div>
             </div>
           ))}
-        </div>
+        </div>}
 
         {comparisonRows.length > 0 && (
           <section className="mb-8 rounded-2xl border border-sky-500/20 bg-sky-500/5 p-5" aria-label="So sánh deal">
@@ -383,14 +501,14 @@ export function DealsPage() {
                       ? current.filter((id) => id !== deal.id)
                       : current.length < 3 ? [...current, deal.id] : current);
                   }}
-                  className={`absolute top-3 left-3 z-20 rounded-full px-2.5 py-1 text-[10px] font-bold border ${comparisonIds.includes(deal.id) ? "bg-sky-500 border-sky-400 text-white" : "bg-slate-950/80 border-white/20 text-slate-300"}`}
+                  className={`absolute left-3 top-3 z-20 min-h-11 rounded-full border px-3 py-2 text-[10px] font-bold ${comparisonIds.includes(deal.id) ? "bg-sky-500 border-sky-400 text-white" : "bg-slate-950/80 border-white/20 text-slate-300"}`}
                 >
                   {comparisonIds.includes(deal.id) ? "Đã chọn" : "So sánh"}
                 </button>
               </div>
             ))}
           </div>
-        ) : (
+        ) : !isLoading && !isDegraded && !isStaleOnly && !isHealthyEmpty ? (
           <div className="text-center py-20">
             <SlidersHorizontal className="w-12 h-12 text-slate-700 mx-auto mb-4" />
             <p className="text-slate-500" style={{ fontWeight: 600 }}>Không có deal nào phù hợp</p>
@@ -410,6 +528,22 @@ export function DealsPage() {
               </Link>
             )}
           </div>
+        ) : null}
+
+        {mode === "observed" && nextObservedPage && (
+          <div className="mt-8 text-center">
+            <button
+              type="button"
+              onClick={async () => {
+                const next = await getObservedFares(nextObservedPage);
+                setObservedFares((current) => [...current, ...next.fares.filter((fare) => !current.some((existing) => existing.id === fare.id))]);
+                setNextObservedPage(next.nextPage);
+              }}
+              className="rounded-xl bg-sky-500 px-6 py-3 text-sm font-bold text-white hover:bg-sky-400"
+            >
+              Xem thêm giá vé
+            </button>
+          </div>
         )}
 
         {/* ── DISCLAIMER + ALERT CTA ── */}
@@ -424,7 +558,9 @@ export function DealsPage() {
                 Không giới hạn thời điểm bay
               </p>
               <p className="text-slate-500 text-sm">
-                Chỉ các chuyến bay tương lai còn trong thời hạn xác minh mới được hiển thị. Giá có thể thay đổi khi bạn chuyển sang trang đặt vé.
+                {mode === "observed"
+                  ? "Giá được quét nền mỗi giờ và xếp theo mức chênh lệch so với nhóm tương đương. Luôn kiểm tra lại giá hiện tại trên nguồn."
+                  : "Chỉ các chuyến bay tương lai còn trong thời hạn xác minh mới được hiển thị. Giá có thể thay đổi khi bạn chuyển sang trang đặt vé."}
               </p>
             </div>
           </div>
@@ -453,6 +589,6 @@ export function DealsPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

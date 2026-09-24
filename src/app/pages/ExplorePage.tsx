@@ -27,11 +27,11 @@ export function ExplorePage() {
   const destinationInsights = buildDestinationInsights(filteredDeals);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 pb-20">
+    <main className="min-h-screen bg-slate-950 pb-20 text-slate-200">
       {/* ── HERO DISCOVERY ── */}
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-           <div className="absolute inset-0 bg-gradient-to-b from-sky-500/10 via-slate-950 to-slate-950" />
+           <div className="absolute inset-0 bg-gradient-to-b from-pink-500/10 via-slate-950 to-slate-950" />
            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-sky-500/5 blur-[120px] rounded-full animate-pulse" />
         </div>
         
@@ -40,19 +40,20 @@ export function ExplorePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-black tracking-widest uppercase mb-6">
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-2 text-xs font-black uppercase tracking-widest text-pink-400">
               <Globe className="w-4 h-4" /> Khám phá từ dữ liệu deal hiện có
             </span>
             <h1 className="text-4xl sm:text-6xl font-black text-white mb-6 tracking-tight">
               Bạn muốn đi đâu <br />
-              với <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400">ngân sách tốt nhất?</span>
+              với <span className="text-pink-400">ngân sách tốt nhất?</span>
             </h1>
           </motion.div>
 
-          <div className="flex bg-slate-900/50 backdrop-blur-xl border border-white/10 p-2 rounded-2xl shadow-2xl max-w-xl mx-auto">
+          <div className="mx-auto flex max-w-xl rounded-2xl border border-white/10 bg-[#171719] p-2 shadow-2xl">
             <div className="flex-1 px-4 flex items-center gap-3">
               <Globe className="w-5 h-5 text-slate-500" />
               <input 
+                aria-label="Tìm điểm đến"
                 type="text" 
                 placeholder="Tìm điểm đến, quốc gia..." 
                 value={query}
@@ -76,7 +77,7 @@ export function ExplorePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {destinationInsights.slice(0, 4).map((insight) => (
-                <Link key={insight.destinationCode} to={`/deals/${insight.topDealId}`} className="rounded-2xl border border-white/10 bg-slate-900/70 p-4 hover:border-sky-500/40 transition-colors">
+                <Link key={insight.destinationCode} to={`/deals/${insight.topDealId}`} className="rounded-2xl border border-white/10 bg-[#171719] p-4 transition-colors hover:border-pink-500/40">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-white font-bold">{insight.destination}</span>
                     {insight.hasWeekendDeal && <span className="text-[10px] text-emerald-400">Cuối tuần</span>}
@@ -106,7 +107,7 @@ export function ExplorePage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.05 }}
               >
-                <Link to={`/deals/${deal.id}`} className="group block relative h-[400px] rounded-3xl overflow-hidden bg-slate-900 border border-white/5 hover:border-sky-500/50 transition-all shadow-xl">
+                <Link to={`/deals/${deal.id}`} className="group relative block h-[400px] overflow-hidden rounded-3xl border border-white/10 bg-[#171719] shadow-xl transition-all hover:border-pink-500/50">
                   {deal.image ? (
                     <img
                       src={deal.image}
@@ -153,6 +154,6 @@ export function ExplorePage() {
           </div>
         )}
       </main>
-    </div>
+    </main>
   );
 }

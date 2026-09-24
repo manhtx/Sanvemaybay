@@ -7,8 +7,9 @@ deal và gửi cảnh báo qua email hoặc Telegram.
 
 - React + Vite: giao diện và truy vấn dữ liệu deal đã công bố.
 - Supabase Postgres: lưu quan sát giá, deal, alert và lịch sử gửi.
-- `scripts/fast-flights-worker.py`: quét dữ liệu source-backed từ `fast-flights`,
-  chuẩn hóa và ingest vào `flights`.
+- `scripts/fast-flights-worker.py`: quét candidate discovery từ `fast-flights`,
+  chuẩn hóa và ingest vào `flights` với trạng thái `indicative`; dữ liệu này
+  không được công bố như deal live hoặc affiliate.
 - `analyze-price`: so sánh lịch sử và công bố deal đủ điều kiện.
 - `alert-processor`: ghép deal với alert và gửi thông báo.
 - `setup-alert`: kiểm tra yêu cầu, giới hạn tần suất và gửi email xác nhận.
@@ -30,6 +31,8 @@ Frontend cần:
 ```dotenv
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_TURNSTILE_SITE_KEY=your-turnstile-site-key
+VITE_PUBLIC_SITE_URL=http://localhost:5173
 ```
 
 ## Kiểm tra chất lượng
@@ -73,7 +76,8 @@ npm run test:integration
 ```
 
 Production refresh is scheduled by `.github/workflows/fast-flights-pipeline.yml`.
-The worker calls `fast-flights → direct ingest → analyze-price → feed snapshot`
+The worker calls `fast-flights → direct ingest → analyze-price → observed-fare
+read model → feed snapshot → retention cleanup`
 using server-only GitHub Actions secrets. It never creates mock deals. The
 snapshot quality gate rejects sparse, expired or non-HTTPS rows.
 
@@ -100,6 +104,10 @@ npm run supabase:push
    - `feed-snapshot`
    - `deal-redirect`
    - `flight-search`
+   - `observed-fares`
+   - `refresh-observed-fares`
+   - `track-event`
+   - `retention-cleanup`
 
 ```bash
 npm run supabase:functions
@@ -114,7 +122,10 @@ npx supabase secrets set \
   TELEGRAM_BOT_TOKEN=... \
   PUBLIC_SITE_URL='https://your-domain.example' \
   UNSUBSCRIBE_SECRET='a-long-random-secret' \
-  INTERNAL_FUNCTION_SECRET='a-separate-long-random-secret'
+  INTERNAL_FUNCTION_SECRET='a-separate-long-random-secret' \
+  RATE_LIMIT_SALT='at-least-16-random-characters' \
+  TURNSTILE_SECRET_KEY='server-only-turnstile-secret' \
+  TURNSTILE_ALLOWED_HOSTNAMES='your-domain.example'
 ```
 
 `SUPABASE_URL` và `SUPABASE_SERVICE_ROLE_KEY` được Supabase cung cấp cho Edge
@@ -126,8 +137,8 @@ thoại với bot trước khi bot có thể gửi cảnh báo.
 ## Lịch chạy
 
 Không hard-code project URL hoặc token trong migration. GitHub Actions chạy
-`fast-flights-pipeline.yml` theo lịch 12 giờ; workflow thực hiện scan, ingest,
-analyze và refresh snapshot theo thứ tự. Các function nội bộ dùng header
+`fast-flights-pipeline.yml` theo lịch mỗi giờ; workflow thực hiện scan, ingest,
+analyze, refresh snapshot và retention theo thứ tự. Các function nội bộ dùng header
 `x-internal-secret` trùng với `INTERNAL_FUNCTION_SECRET`; không dùng secret này
 trong frontend hoặc biến môi trường có tiền tố `VITE_`.
 
@@ -167,7 +178,8 @@ Lệnh deploy dừng nếu working tree còn thay đổi, chạy toàn bộ ki�
 branch hiện tại lên GitHub rồi mới deploy production lên Vercel. Điều này bảo
 đảm GitHub và bản production dùng cùng một commit.
 
-Trên Vercel, cấu hình `VITE_SUPABASE_URL` và `VITE_SUPABASE_ANON_KEY`. Không
+Trên Vercel, cấu hình `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
+`VITE_TURNSTILE_SITE_KEY` và `VITE_PUBLIC_SITE_URL`. Không
 đưa service-role key, provider token, Resend key hoặc Telegram bot token lên
 frontend/Vercel.
 

@@ -4,8 +4,8 @@ This worker reads enabled routes with the public key, queries Google Flights
 through fast-flights, and writes normalized observations directly to Supabase
 with a server-only secret key. The secret is supplied by GitHub Actions and is
 never shipped to the browser.
-The result is a source observation; affiliate attribution is added only when a
-real partner-issued marker/configuration exists.
+The result is an indicative discovery observation. Scraped search results and
+route-based URLs are never promoted to live or affiliate inventory.
 """
 
 from __future__ import annotations
@@ -17,7 +17,8 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import date, timedelta
+import uuid
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from fast_flights import FlightQuery, Passengers, create_query, get_flights
@@ -37,9 +38,10 @@ WINDOW_LIMIT = int(os.environ.get("FAST_FLIGHTS_WINDOW_LIMIT", "4"))
 START_OFFSET = int(os.environ.get("FAST_FLIGHTS_START_OFFSET", "14"))
 TRIP_LENGTH_DEFAULT = int(os.environ.get("FAST_FLIGHTS_TRIP_LENGTH_DAYS", "4"))
 DRY_RUN = os.environ.get("FAST_FLIGHTS_DRY_RUN", "false").lower() == "true"
+DRY_RUN_FULL_JSON = os.environ.get("FAST_FLIGHTS_DRY_RUN_FULL_JSON", "false").lower() == "true"
 SUPABASE_SECRET_KEY = env("SUPABASE_SECRET_KEY", required=not DRY_RUN)
-AFFILIATE_NETWORK = os.environ.get("AFFILIATE_NETWORK", "").strip()
-AFFILIATE_DEEPLINK_TEMPLATE = os.environ.get("AFFILIATE_DEEPLINK_TEMPLATE", "").strip()
+WORKER_RELEASE_SHA = os.environ.get("DEPLOYED_COMMIT", os.environ.get("GITHUB_SHA", "unknown")).strip() or "unknown"
+RUN_ID = os.environ.get("FLYCHEAP_RUN_ID", "").strip() or str(uuid.uuid4())
 
 
 def request_json(url: str, headers: dict[str, str], body: bytes | None = None) -> Any:
@@ -61,6 +63,14 @@ def request_json(url: str, headers: dict[str, str], body: bytes | None = None) -
                 raise last_error from error
         time.sleep(2 ** attempt)
     raise last_error or RuntimeError(f"Request failed: {url}")
+
+
+def cleanup_old_observations(headers: dict[str, str]) -> None:
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    params = urllib.parse.urlencode({"link_kind": "eq.indicative", "timestamp": f"lt.{cutoff}"})
+    request = urllib.request.Request(f"{BASE_URL}/rest/v1/flights?{params}", headers=headers, method="DELETE")
+    with urllib.request.urlopen(request, timeout=45):
+        return
 
 
 def iso_date(days: int) -> str:
@@ -93,21 +103,6 @@ def google_source_url(origin: str, destination: str, outbound: str, returned: st
     query = f"Flights to {destination} from {origin} on {outbound} through {returned}"
     params = urllib.parse.urlencode({"q": query, "hl": "vi", "curr": "VND"})
     return f"https://www.google.com/travel/flights?{params}"
-
-
-def affiliate_deep_link(origin: str, destination: str, outbound: str, returned: str) -> str | None:
-    if not AFFILIATE_NETWORK or not AFFILIATE_DEEPLINK_TEMPLATE:
-        return None
-    try:
-        candidate = AFFILIATE_DEEPLINK_TEMPLATE.format(
-            origin=origin, destination=destination, outbound=outbound, returned=returned,
-        )
-        parsed = urllib.parse.urlparse(candidate)
-        if parsed.scheme != "https" or not parsed.netloc:
-            return None
-        return candidate
-    except (KeyError, ValueError):
-        return None
 
 
 def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, observed_at: str) -> dict[str, Any] | None:
@@ -143,7 +138,6 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
         str(price),
     ])
     source_url = google_source_url(origin_code, destination_code, outbound, returned)
-    affiliate_url = affiliate_deep_link(origin_code, destination_code, outbound, returned)
     return {
         "origin": route["origin_name"],
         "origin_code": origin_code,
@@ -162,9 +156,9 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
         "duration": f"{duration // 60}h {duration % 60}m",
         "booking_url": source_url,
         "source": "fast_flights_google",
-        "link_kind": "live_affiliate" if affiliate_url else "live_source",
-        "affiliate_network": AFFILIATE_NETWORK if affiliate_url else None,
-        "affiliate_url": affiliate_url,
+        "link_kind": "indicative",
+        "affiliate_network": None,
+        "affiliate_url": None,
         "itinerary_key": itinerary_key,
         "timestamp": observed_at,
         "departure_time": depart_time,
@@ -172,10 +166,20 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
     }
 
 
-def search_route(route: dict[str, Any]) -> list[dict[str, Any]]:
+def search_route(route: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     trip_length = int(route.get("trip_length_days") or TRIP_LENGTH_DEFAULT)
     observations: dict[str, dict[str, Any]] = {}
+    metrics: dict[str, Any] = {
+        "windows_attempted": 0,
+        "windows_succeeded": 0,
+        "windows_failed": 0,
+        "provider_results": 0,
+        "normalized_rows": 0,
+        "rejected_rows": 0,
+        "failure_reasons": [],
+    }
     for index in range(WINDOW_LIMIT):
+        metrics["windows_attempted"] += 1
         offset = START_OFFSET + index * 30
         outbound = iso_date(offset)
         returned = iso_date(offset + trip_length)
@@ -195,7 +199,10 @@ def search_route(route: dict[str, Any]) -> list[dict[str, Any]]:
         except (IndexError, KeyError, TypeError, ValueError) as error:
             # Google occasionally returns an incomplete result page for one
             # date window. Keep the route alive and let later windows run.
+            metrics["windows_failed"] += 1
+            metrics["failure_reasons"].append({"type": type(error).__name__, "message": str(error)[:160]})
             print(json.dumps({
+                "run_id": RUN_ID,
                 "window_failure": {
                     "route": f"{route['origin_code']}-{route['destination_code']}",
                     "outbound": outbound,
@@ -204,6 +211,8 @@ def search_route(route: dict[str, Any]) -> list[dict[str, Any]]:
                 }
             }), file=sys.stderr)
             continue
+        metrics["windows_succeeded"] += 1
+        metrics["provider_results"] += len(results)
         observed_at = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()
         for result in results:
             try:
@@ -212,40 +221,56 @@ def search_route(route: dict[str, Any]) -> list[dict[str, Any]]:
                 row = None
             if row:
                 observations[row["itinerary_key"]] = row
-    return list(observations.values())
+                metrics["normalized_rows"] += 1
+            else:
+                metrics["rejected_rows"] += 1
+    metrics["deduped_rows"] = len(observations)
+    return list(observations.values()), metrics
 
 
-def direct_ingest(routes: list[dict[str, Any]], observations: list[dict[str, Any]]) -> dict[str, Any]:
+def direct_ingest(
+    routes: list[dict[str, Any]],
+    observations: list[dict[str, Any]],
+    route_metrics: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
     service_headers = {
         "Content-Type": "application/json",
         "apikey": SUPABASE_SECRET_KEY,
         "Authorization": f"Bearer {SUPABASE_SECRET_KEY}",
         "Prefer": "return=representation",
     }
-    route_map = {f"{route['origin_code']}:{route['destination_code']}": route for route in routes}
     grouped: dict[str, list[dict[str, Any]]] = {}
     for observation in observations:
         grouped.setdefault(f"{observation['origin_code']}:{observation['destination_code']}", []).append(observation)
     saved = 0
     failures: list[dict[str, str]] = []
-    for key, rows in grouped.items():
-        route = route_map.get(key)
-        if not route:
-            failures.append({"route": key, "reason": "Route is not enabled"})
-            continue
-        observed_at = max(row["timestamp"] for row in rows)
+    for route in routes:
+        key = f"{route['origin_code']}:{route['destination_code']}"
+        rows = grouped.get(key, [])
+        metrics = route_metrics.get(key, {})
+        observed_at = max((row["timestamp"] for row in rows), default=datetime.now(timezone.utc).isoformat())
+        scan_status = "completed" if int(metrics.get("windows_succeeded", 0)) > 0 else "failed"
         scan_body = json.dumps({
             "route_id": route["id"],
             "provider": "fast_flights_google",
-            "status": "completed",
+            "status": scan_status,
             "observations_saved": len(rows),
             "started_at": observed_at,
             "completed_at": observed_at,
-            "response_payload": {"worker": "fast-flights", "source": "github-actions"},
+            "error_message": "All route windows failed" if scan_status == "failed" else None,
+            "response_payload": {
+                "worker": "fast-flights",
+                "source": "github-actions",
+                "run_id": RUN_ID,
+                "release_sha": WORKER_RELEASE_SHA,
+                **metrics,
+            },
         }).encode("utf-8")
         try:
             scan_response = request_json(f"{BASE_URL}/rest/v1/scan_runs", service_headers, scan_body)
             scan_id = scan_response[0]["id"]
+            if not rows:
+                continue
             flight_rows = [{
                 "origin": row["origin"], "origin_code": row["origin_code"],
                 "destination": row["destination"], "destination_code": row["destination_code"],
@@ -256,8 +281,8 @@ def direct_ingest(routes: list[dict[str, Any]], observations: list[dict[str, Any
                 "duration": row["duration"], "source": row["source"],
                 "booking_url": row["booking_url"], "itinerary_key": row["itinerary_key"],
                 "timestamp": row["timestamp"], "route_id": route["id"], "scan_run_id": scan_id,
-                **({"link_kind": row["link_kind"], "affiliate_network": row["affiliate_network"],
-                   "affiliate_url": row["affiliate_url"]} if row.get("affiliate_url") else {}),
+                "link_kind": row["link_kind"], "affiliate_network": row["affiliate_network"],
+                "affiliate_url": row["affiliate_url"],
             } for row in rows]
             flight_headers = {**service_headers, "Prefer": "resolution=merge-duplicates,return=representation"}
             request_json(
@@ -268,10 +293,19 @@ def direct_ingest(routes: list[dict[str, Any]], observations: list[dict[str, Any
             saved += len(flight_rows)
         except Exception as error:
             failures.append({"route": key, "reason": str(error)})
-    return {"observations_received": len(observations), "observations_saved": saved, "failures": failures}
+    cleanup_old_observations(service_headers)
+    return {
+        "run_id": RUN_ID,
+        "release_sha": WORKER_RELEASE_SHA,
+        "observations_received": len(observations),
+        "observations_saved": saved,
+        "retention_days": 7,
+        "failures": failures,
+    }
 
 
 def main() -> int:
+    started = time.monotonic()
     public_headers = {"apikey": ANON_KEY, "Authorization": f"Bearer {ANON_KEY}"}
     routes_url = f"{BASE_URL}/rest/v1/tracked_routes?select=*&enabled=eq.true&limit={ROUTE_LIMIT}"
     routes = request_json(routes_url, public_headers)
@@ -279,18 +313,24 @@ def main() -> int:
         raise RuntimeError("No enabled tracked routes were returned")
     observations: list[dict[str, Any]] = []
     failures: list[dict[str, str]] = []
+    route_metrics: dict[str, dict[str, Any]] = {}
     for route in routes:
         try:
-            observations.extend(search_route(route))
+            found, metrics = search_route(route)
+            observations.extend(found)
+            route_metrics[f"{route['origin_code']}:{route['destination_code']}"] = metrics
         except Exception as error:  # keep other routes alive when one query fails
             failures.append({"route": f"{route.get('origin_code')}-{route.get('destination_code')}", "reason": str(error)})
     if not observations:
         raise RuntimeError(json.dumps({"message": "fast-flights returned no observations", "failures": failures}))
     if DRY_RUN:
-        print(json.dumps({"routes": len(routes), "observations": len(observations), "sample": observations[:3], "failures": failures}))
+        payload = {"run_id": RUN_ID, "release_sha": WORKER_RELEASE_SHA, "duration_ms": round((time.monotonic() - started) * 1000), "routes": len(routes), "observations": len(observations), "route_metrics": route_metrics, "sample": observations[:3], "failures": failures}
+        if DRY_RUN_FULL_JSON:
+            payload["observations_data"] = observations
+        print(json.dumps(payload))
         return 0
-    result = direct_ingest(routes, observations)
-    print(json.dumps({"routes": len(routes), "observations": len(observations), "ingest": result, "failures": failures}))
+    result = direct_ingest(routes, observations, route_metrics)
+    print(json.dumps({"event": "fast_flights_run_completed", "run_id": RUN_ID, "release_sha": WORKER_RELEASE_SHA, "duration_ms": round((time.monotonic() - started) * 1000), "routes": len(routes), "observations": len(observations), "route_metrics": route_metrics, "ingest": result, "failures": failures}))
     return 0
 
 

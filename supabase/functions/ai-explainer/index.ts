@@ -2,6 +2,12 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireInternalSecret } from "../_shared/internal-auth.ts";
 
 Deno.serve(async (req: Request) => {
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json", Allow: "POST" },
+    });
+  }
   const unauthorized = requireInternalSecret(req);
   if (unauthorized) return unauthorized;
 
@@ -47,10 +53,10 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify({ success: true, reasoning: aiReasoning }), {
       headers: { "Content-Type": "application/json" },
     });
-  } catch (err) {
+  } catch {
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : "Unknown AI explainer error" }),
-      { status: 500 },
+      JSON.stringify({ error: "Không thể tạo giải thích lúc này.", error_code: "ai_explainer_failed" }),
+      { status: 500, headers: { "Content-Type": "application/json" } },
     );
   }
 });

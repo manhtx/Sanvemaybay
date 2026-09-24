@@ -1,0 +1,51 @@
+{
+  "version": "4.0.0",
+  "generated_at": "2026-09-24T17:35:00+07:00",
+  "blockers": [
+    {
+      "blocker_id": "BLK-MIGR-01",
+      "severity": "CRITICAL_RUNTIME_BLOCKER",
+      "title": "Remote Supabase Migration Drift & Cross-Project Contamination",
+      "affected_gates": ["RG06", "RG08"],
+      "affected_requirements": ["FLY-OPS-004", "FLY-SEC-002"],
+      "missing_input": "Dedicated clean Supabase staging project or authorized object-by-object reconciliation of thprsgnpvtzkcvknqfwk.",
+      "why_needed": "The linked remote database contains foreign Macro Platform migrations (initial_macro_platform, forecasts_model_runs, etc.) and shared public schema tables with 123k rows. Running supabase db push risks data corruption or schema collisions.",
+      "work_attempted": "Verified all 38 local migrations apply sequentially from scratch on clean PostgreSQL 16 with zero errors (database-ci-contract.node-test.mjs).",
+      "independent_work_completed": "Local migration replay, typecheck, lint, and full-stack E2E tests verified locally.",
+      "minimum_unblock_action": "Provision a dedicated clean Supabase project for FlyCheap staging, set VITE_SUPABASE_URL and SUPABASE_ACCESS_TOKEN, and run supabase db push.",
+      "next_command": "npx supabase link --project-ref <clean-staging-ref> && npx supabase db push"
+    },
+    {
+      "blocker_id": "BLK-PROV-01",
+      "severity": "HIGH_EXTERNAL_DEPENDENCY_BLOCKER",
+      "title": "Commercial Live Provider Partner Keys & Affiliate URLs",
+      "affected_gates": ["RG09", "RG13"],
+      "affected_requirements": ["FLY-DATA-001", "FLY-SEC-003"],
+      "missing_input": "Commercial partner API credentials (e.g. Skyscanner Partner API key, Amadeus Enterprise Production credentials, Travelpayouts live token).",
+      "why_needed": "Live ticket booking handoffs and real-time seat lock require commercial partner API access. Current FastFlights adapter performs indicative web scraping.",
+      "work_attempted": "Implemented provider abstraction adapter supporting FastFlights, Amadeus, and SerpApi with normalization and offline fixture replay.",
+      "independent_work_completed": "Unit tests, integration tests, and Playwright booking URL allowlist sanitization pass completely.",
+      "minimum_unblock_action": "Provide authorized provider API keys and configure them in staging/production secret environment.",
+      "next_command": "npx supabase secrets set AMADEUS_CLIENT_ID=... AMADEUS_CLIENT_SECRET=..."
+    },
+    {
+      "blocker_id": "BLK-DEP-01",
+      "severity": "HIGH_OPERATIONAL_BLOCKER",
+      "title": "Production Deployment Authorization & Main Branch Gate",
+      "affected_gates": ["RG06", "RG10"],
+      "affected_requirements": ["FLY-OPS-004"],
+      "missing_input": "Explicit user authorization to merge reviewed dev commits to main and trigger production Vercel/Supabase deployment.",
+      "why_needed": "Production deployment runbook strictly mandates that production builds deploy only from main after human code review. Current working branch is dev.",
+      "work_attempted": "Local build generates production-ready bundle with release.json, robots.txt, and sitemap.xml in 2.39s.",
+      "independent_work_completed": "Playwright 32/32 tests pass on built artifacts locally.",
+      "minimum_unblock_action": "Review changeset, merge dev to main, and run CI deployment pipeline with required production secrets.",
+      "next_command": "git checkout main && git merge dev && git push origin main"
+    }
+  ],
+  "summary": {
+    "total_blockers": 3,
+    "blocks_local_verification": false,
+    "blocks_staging_cutover": true,
+    "blocks_production_verification": true
+  }
+}
