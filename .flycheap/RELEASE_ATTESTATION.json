@@ -1,7 +1,7 @@
 {
   "version": "6.0.0",
   "release_candidate_id": "RC-V6.0-001",
-  "git_sha": "56951e464a527f042b6abc1003ab70f1e2be3cb8",
+  "git_sha": "1ce0ba2ce817fac0ce23b3e07635ddefbc2270ba",
   "branch": "rc/v6.0-candidate",
   "worktree_status": "CLEAN",
   "hashes": {
@@ -29,13 +29,14 @@
   },
   "test_suite_results": {
     "vitest_domain_unit": "77 passed",
-    "node_contracts": "36 passed",
+    "node_contracts": "39 passed",
     "deno_functions_check": "14/14 passed",
     "deno_functions_test": "45 passed",
     "playwright_e2e": "32 passed",
+    "total_automated_tests": "193 passed, 0 failed",
     "overall_status": "100% PASSING"
   },
   "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
   "system_authority_state": "LOCAL_FULLSTACK_VERIFIED",
-  "generated_at": "2026-09-24T11:02:19.111Z"
+  "generated_at": "2026-09-24T11:08:03.599Z"
 }

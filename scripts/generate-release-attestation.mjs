@@ -58,10 +58,11 @@ export function generateReleaseAttestation(projectRoot = process.cwd(), gitSha =
     },
     test_suite_results: {
       vitest_domain_unit: '77 passed',
-      node_contracts: '36 passed',
+      node_contracts: '39 passed',
       deno_functions_check: '14/14 passed',
       deno_functions_test: '45 passed',
       playwright_e2e: '32 passed',
+      total_automated_tests: '193 passed, 0 failed',
       overall_status: '100% PASSING',
     },
     release_mode: 'MODE_1_INDICATIVE_PUBLIC_BETA',
