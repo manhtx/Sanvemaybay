@@ -1,7 +1,7 @@
 {
   "version": "6.0.0",
   "release_candidate_id": "RC-V6.0-001",
-  "git_sha": "6f2528d6b94030752a6651889da760875892a6ed",
+  "git_sha": "8ceffc4b5e134cedf418a691fcde070d32627710",
   "branch": "rc/v6.0-candidate",
   "worktree_status": "CLEAN",
   "hashes": {
@@ -38,5 +38,5 @@
   },
   "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
   "system_authority_state": "LOCAL_FULLSTACK_VERIFIED",
-  "generated_at": "2026-09-28T03:39:44.498Z"
+  "generated_at": "2026-09-28T03:39:52.271Z"
 }
