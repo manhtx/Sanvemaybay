@@ -206,8 +206,9 @@
       "acceptance": [
         "Confidence is calculated independently from Deal Score based on sample count, provider reliability, and observation age.",
         "Fares with confidence < 50% are capped at modest labels (e.g. 'Giá đáng chú ý') regardless of high discount.",
-        "'Deal cực nóng' strictly requires confidence >= 75% and Deal Score >= 80.",
-        "'Deal rất ngon' strictly requires confidence >= 65% and Deal Score >= 70."
+        "'Deal cực nóng' strictly requires confidence >= 75% and Deal Score >= 90.",
+        "'Deal rất ngon' strictly requires confidence >= 65% and Deal Score >= 80.",
+        "'Deal ngon' strictly requires Deal Score >= 70 and confidence >= 50%."
       ],
       "required_evidence": [
         "Unit tests in src/app/domain/dealClaims.test.ts",

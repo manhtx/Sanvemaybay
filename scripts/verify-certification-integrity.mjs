@@ -215,6 +215,22 @@ export function verifyCertificationIntegrity(projectRoot = process.cwd()) {
     }
   }
 
+  // Cross-validation: Threshold Registry & Evidence Kernel
+  const thresholdPath = path.join(flycheapDir, 'THRESHOLD_REGISTRY.json');
+  const kernelPath = path.join(flycheapDir, 'RELEASE_EVIDENCE_KERNEL.json');
+  if (fs.existsSync(thresholdPath) && fs.existsSync(kernelPath)) {
+    const thresholdData = JSON.parse(fs.readFileSync(thresholdPath, 'utf8'));
+    const kernelData = JSON.parse(fs.readFileSync(kernelPath, 'utf8'));
+    const regThreshIds = new Set((thresholdData.thresholds || []).map((t) => t.threshold_id));
+    for (const claim of kernelData.claims || []) {
+      for (const tid of claim.threshold_dependencies || []) {
+        if (!regThreshIds.has(tid)) {
+          errors.push(`Claim ${claim.claim_id} references unregistered threshold ${tid}`);
+        }
+      }
+    }
+  }
+
   return {
     ok: errors.length === 0,
     errors,

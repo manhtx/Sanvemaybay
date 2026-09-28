@@ -1,138 +1,122 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
   "thresholds": [
-    {
-      "threshold_id": "THR-FRESHNESS-MAX-HOURS",
-      "value": 24,
-      "unit": "hours",
-      "meaning": "Maximum age for active feed deals; observations older than 24h are categorized as historical.",
-      "implementation_locations": [
-        "src/app/domain/travelFeedSections.ts",
-        "supabase/functions/_shared/feed-health.ts",
-        "supabase/functions/_shared/observed-fares.ts"
-      ],
-      "origin_type": "BUSINESS_POLICY",
-      "source_evidence": "Airfare volatility research: dynamic pricing resets daily at minimum.",
-      "calibration_state": "CALIBRATED",
-      "claim_ceiling": "Guarantees that active feed does not present day-old fares as live.",
-      "review_trigger": "Feedback on expired fare rates or API update interval change."
-    },
-    {
-      "threshold_id": "THR-CONFIDENCE-CAP-FLOOR",
-      "value": 50,
-      "unit": "percent",
-      "meaning": "Confidence floor below which deal claims are strictly capped (no strong deal labels allowed).",
-      "implementation_locations": [
-        "src/app/domain/dealClaims.ts",
-        "supabase/functions/_shared/observed-fares.ts"
-      ],
-      "origin_type": "SAFETY_HEURISTIC",
-      "source_evidence": "Golden dataset case 12: high discount with 1 sample must not trigger aggressive buy recommendation.",
-      "calibration_state": "CALIBRATED",
-      "claim_ceiling": "Prevents false-positive buy recommendations on sparse data.",
-      "review_trigger": "Expansion to new low-frequency long-haul routes."
-    },
-    {
-      "threshold_id": "THR-CONFIDENCE-HIGH",
-      "value": 75,
-      "unit": "percent",
-      "meaning": "Confidence threshold required for Deal cực nóng label.",
-      "implementation_locations": [
-        "src/app/domain/dealClaims.ts",
-        "supabase/functions/_shared/observed-fares.ts"
-      ],
-      "origin_type": "SAFETY_HEURISTIC",
-      "source_evidence": "Requires >= 9 comparable historical observations.",
-      "calibration_state": "CALIBRATED",
-      "claim_ceiling": "Limits top urgency language to well-sampled routes.",
-      "review_trigger": "User feedback on false urgency."
-    },
-    {
-      "threshold_id": "THR-CONFIDENCE-MEDIUM",
-      "value": 65,
-      "unit": "percent",
-      "meaning": "Confidence threshold required for Deal rất ngon label.",
-      "implementation_locations": [
-        "src/app/domain/dealClaims.ts",
-        "supabase/functions/_shared/observed-fares.ts"
-      ],
-      "origin_type": "SAFETY_HEURISTIC",
-      "source_evidence": "Requires >= 8 comparable historical observations.",
-      "calibration_state": "CALIBRATED",
-      "claim_ceiling": "Limits second-tier urgency language to verified cohorts.",
-      "review_trigger": "Quarterly deal conversion analysis."
-    },
     {
       "threshold_id": "THR-SCORE-HOT",
       "value": 90,
       "unit": "points",
-      "meaning": "Deal score threshold for Deal cực nóng.",
+      "meaning": "Deal score floor for Deal cực nóng urgency label.",
       "implementation_locations": [
         "src/app/domain/dealClaims.ts",
         "supabase/functions/_shared/observed-fares.ts"
       ],
       "origin_type": "BUSINESS_POLICY",
-      "source_evidence": "Scores >= 90 represent top 5th percentile price + high freshness + direct flight.",
+      "source_evidence": "FLY-INTEL-004: Scores >= 90 combined with confidence >= 75% denote top 5th percentile price anomaly.",
       "calibration_state": "CALIBRATED",
-      "claim_ceiling": "Reserved for extraordinary price anomalies.",
-      "review_trigger": "Feed distribution audits."
+      "claim_ceiling": "Reserved for verified high-discount flights on reliable cohorts.",
+      "review_trigger": "Feed distribution quarterly reviews."
     },
     {
       "threshold_id": "THR-SCORE-VERY-GOOD",
       "value": 80,
       "unit": "points",
-      "meaning": "Deal score threshold for Deal rất ngon.",
+      "meaning": "Deal score floor for Deal rất ngon urgency label.",
       "implementation_locations": [
         "src/app/domain/dealClaims.ts",
         "supabase/functions/_shared/observed-fares.ts"
       ],
       "origin_type": "BUSINESS_POLICY",
-      "source_evidence": "Scores >= 80 represent >= 20% discount with solid cohort support.",
+      "source_evidence": "FLY-INTEL-004: Scores >= 80 combined with confidence >= 65% denote strong verified discount.",
       "calibration_state": "CALIBRATED",
-      "claim_ceiling": "Represents strong savings opportunities.",
-      "review_trigger": "Feed distribution audits."
+      "claim_ceiling": "Guarantees second-tier deal label requires verified cohort.",
+      "review_trigger": "Feed distribution quarterly reviews."
     },
     {
       "threshold_id": "THR-SCORE-GOOD",
       "value": 70,
       "unit": "points",
-      "meaning": "Deal score threshold for Deal ngon.",
+      "meaning": "Deal score floor for Deal ngon label.",
       "implementation_locations": [
         "src/app/domain/dealClaims.ts",
         "supabase/functions/_shared/observed-fares.ts"
       ],
       "origin_type": "BUSINESS_POLICY",
-      "source_evidence": "Scores >= 70 represent notable discount relative to median.",
+      "source_evidence": "FLY-INTEL-004: Scores >= 70 denote above-average savings.",
       "calibration_state": "CALIBRATED",
-      "claim_ceiling": "Standard recommended opportunity tier.",
-      "review_trigger": "Feed distribution audits."
+      "claim_ceiling": "Standard recommended deal threshold.",
+      "review_trigger": "Feed distribution quarterly reviews."
     },
     {
       "threshold_id": "THR-SCORE-NOTEWORTHY",
       "value": 60,
       "unit": "points",
-      "meaning": "Deal score threshold for Giá đáng chú ý.",
+      "meaning": "Deal score floor for Giá đáng chú ý label.",
       "implementation_locations": [
         "src/app/domain/dealClaims.ts",
         "supabase/functions/_shared/observed-fares.ts"
       ],
       "origin_type": "BUSINESS_POLICY",
-      "source_evidence": "Scores >= 60 represent slightly below average prices or interesting routes.",
+      "source_evidence": "FLY-INTEL-004: Scores >= 60 represent noteworthy fare or capped low-confidence deal.",
       "calibration_state": "CALIBRATED",
       "claim_ceiling": "Entry-level attention tier.",
-      "review_trigger": "Feed distribution audits."
+      "review_trigger": "Feed distribution quarterly reviews."
+    },
+    {
+      "threshold_id": "THR-CONFIDENCE-CAP-FLOOR",
+      "value": 50,
+      "unit": "percent",
+      "meaning": "Confidence percentage floor below which deal claims are strictly capped at modest labels.",
+      "implementation_locations": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "origin_type": "SAFETY_HEURISTIC",
+      "source_evidence": "FLY-INTEL-004: Fares with confidence < 50% are capped at Giá đáng chú ý or Giá quan sát regardless of discount.",
+      "calibration_state": "CALIBRATED",
+      "claim_ceiling": "Prevents false-positive buy urgency on small or noisy samples.",
+      "review_trigger": "Route onboarding frequency."
+    },
+    {
+      "threshold_id": "THR-CONFIDENCE-MEDIUM",
+      "value": 65,
+      "unit": "percent",
+      "meaning": "Confidence floor required for Deal rất ngon label.",
+      "implementation_locations": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "origin_type": "SAFETY_HEURISTIC",
+      "source_evidence": "FLY-INTEL-004: Deal rất ngon requires confidence >= 65%.",
+      "calibration_state": "CALIBRATED",
+      "claim_ceiling": "Ensures second-tier label is supported by >= 8 comparable historical observations.",
+      "review_trigger": "Quarterly conversion audits."
+    },
+    {
+      "threshold_id": "THR-CONFIDENCE-HIGH",
+      "value": 75,
+      "unit": "percent",
+      "meaning": "Confidence floor required for Deal cực nóng label.",
+      "implementation_locations": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "origin_type": "SAFETY_HEURISTIC",
+      "source_evidence": "FLY-INTEL-004: Deal cực nóng requires confidence >= 75%.",
+      "calibration_state": "CALIBRATED",
+      "claim_ceiling": "Ensures top urgency label is supported by >= 9 comparable historical observations.",
+      "review_trigger": "User feedback on urgency accuracy."
     },
     {
       "threshold_id": "THR-SAMPLE-MIN-COHORT",
       "value": 3,
       "unit": "observations",
-      "meaning": "Minimum observations required before median baseline and percentile can be computed.",
+      "meaning": "Minimum observation count required to calculate median baseline and percentile.",
       "implementation_locations": [
         "supabase/functions/_shared/observed-fares.ts"
       ],
       "origin_type": "EMPIRICALLY_CALIBRATED",
-      "source_evidence": "Statistical rule: median of sample size < 3 is degenerate.",
+      "source_evidence": "FLY-INTEL-001 & FLY-INTEL-002: Statistical median requires >= 3 points to avoid degenerate single-value baseline.",
       "calibration_state": "CALIBRATED",
       "claim_ceiling": "Suppresses statistical claims on 1-2 flights.",
       "review_trigger": "Route onboarding frequency."
@@ -141,33 +125,98 @@
       "threshold_id": "THR-SAMPLE-FULL-CONFIDENCE",
       "value": 12,
       "unit": "observations",
-      "meaning": "Cohort sample count required to achieve 100% confidence score.",
+      "meaning": "Sample size in comparison cohort required to achieve 100% confidence score.",
       "implementation_locations": [
         "supabase/functions/_shared/observed-fares.ts"
       ],
       "origin_type": "EMPIRICALLY_CALIBRATED",
-      "source_evidence": "12 observations cover multiple departure windows across comparable carriers.",
+      "source_evidence": "FLY-INTEL-004: 12 observations span multiple carriers and day-parts for solid statistical confidence.",
       "calibration_state": "CALIBRATED",
       "claim_ceiling": "Normalizes confidence score scale.",
-      "review_trigger": "Historical data volume scale-up."
+      "review_trigger": "Data volume growth."
+    },
+    {
+      "threshold_id": "THR-FRESHNESS-HEALTHY-MINUTES",
+      "value": 120,
+      "unit": "minutes",
+      "meaning": "Maximum observation age for healthy live feed status (2 hours).",
+      "implementation_locations": [
+        "supabase/functions/observed-fares/index.ts",
+        "supabase/functions/_shared/feed-health.ts"
+      ],
+      "origin_type": "BUSINESS_POLICY",
+      "source_evidence": "FLY-UX-008: Observations <= 120 min are badged as live.",
+      "calibration_state": "CALIBRATED",
+      "claim_ceiling": "Ensures live feed offers are current within 2 hours.",
+      "review_trigger": "Scan frequency changes."
+    },
+    {
+      "threshold_id": "THR-FRESHNESS-DEGRADED-MINUTES",
+      "value": 360,
+      "unit": "minutes",
+      "meaning": "Maximum observation age for degraded feed status; beyond 360 minutes (6 hours) fares are categorized as stale_only.",
+      "implementation_locations": [
+        "supabase/functions/observed-fares/index.ts",
+        "supabase/functions/_shared/feed-health.ts"
+      ],
+      "origin_type": "BUSINESS_POLICY",
+      "source_evidence": "FLY-UX-008: Fares > 6h old are never badged as Live and display explicit observed timestamp.",
+      "calibration_state": "CALIBRATED",
+      "claim_ceiling": "Strict cutoff preventing 6+ hour old fares from masquerading as fresh.",
+      "review_trigger": "Scan frequency changes."
+    },
+    {
+      "threshold_id": "THR-FRESHNESS-MAX-HOURS",
+      "value": 24,
+      "unit": "hours",
+      "meaning": "Maximum operational retention for observed fares in active snapshot cache.",
+      "implementation_locations": [
+        "supabase/functions/retention-cleanup/index.ts"
+      ],
+      "origin_type": "ENGINEERING_BUDGET",
+      "source_evidence": "FLY-SEC-005 & FLY-OPS-002: Active snapshot tables purge records older than 24 hours to cold history.",
+      "calibration_state": "CALIBRATED",
+      "claim_ceiling": "Bounds database storage size and query latency.",
+      "review_trigger": "Database storage audits."
     },
     {
       "threshold_id": "THR-RETRY-BACKOFF-MINUTES",
-      "value": [
-        1,
-        5,
-        15
-      ],
+      "value": [1, 5, 15],
       "unit": "minutes",
-      "meaning": "Bounded backoff intervals for failed notification delivery.",
+      "meaning": "Bounded backoff intervals for failed notification delivery retry.",
       "implementation_locations": [
         "supabase/functions/_shared/retry-policy.ts"
       ],
       "origin_type": "ENGINEERING_BUDGET",
-      "source_evidence": "RFC exponential backoff standard adapted for transactional email/push.",
+      "source_evidence": "FLY-UX-007: Standard 3-stage exponential backoff for transactional notification delivery.",
       "calibration_state": "CALIBRATED",
-      "claim_ceiling": "Prevents provider mail server blacklisting.",
-      "review_trigger": "Notification queue latency metrics."
+      "claim_ceiling": "Prevents downstream mail server rate limiting.",
+      "review_trigger": "Notification delivery success metrics."
+    },
+    {
+      "threshold_id": "THR-APPROVED-BOOKING-HOSTS",
+      "value": [
+        "vietjetair.com",
+        "vietnamairlines.com",
+        "bambooairways.com",
+        "google.com",
+        "skyscanner.net",
+        "kayak.com",
+        "trip.com",
+        "traveloka.com",
+        "agoda.com"
+      ],
+      "unit": "domain_names",
+      "meaning": "Allowlist of verified booking domains and airline merchants.",
+      "implementation_locations": [
+        "supabase/functions/_shared/live-deal.ts",
+        "scripts/golden-corpus-runner.mjs"
+      ],
+      "origin_type": "EXTERNAL_STANDARD",
+      "source_evidence": "FLY-SEC-003: Booking URLs must resolve to approved HTTPS partner domains only.",
+      "calibration_state": "CALIBRATED",
+      "claim_ceiling": "Completely prevents arbitrary or malicious external redirects.",
+      "review_trigger": "New commercial affiliate partnerships."
     }
   ]
 }

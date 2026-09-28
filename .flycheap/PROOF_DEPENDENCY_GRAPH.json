@@ -248,5 +248,199 @@
       ],
       "status": "FRESH"
     }
+  ],
+  "threshold_nodes": [
+    {
+      "node_id": "THR-SCORE-HOT",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "points",
+      "files": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-SCORE-VERY-GOOD",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "points",
+      "files": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-SCORE-GOOD",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "points",
+      "files": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-SCORE-NOTEWORTHY",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "points",
+      "files": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-CONFIDENCE-CAP-FLOOR",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "percent",
+      "files": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-CONFIDENCE-MEDIUM",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "percent",
+      "files": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-CONFIDENCE-HIGH",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "percent",
+      "files": [
+        "src/app/domain/dealClaims.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-SAMPLE-MIN-COHORT",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "observations",
+      "files": [
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-SAMPLE-FULL-CONFIDENCE",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "observations",
+      "files": [
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-FRESHNESS-HEALTHY-MINUTES",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "minutes",
+      "files": [
+        "supabase/functions/observed-fares/index.ts",
+        "supabase/functions/_shared/feed-health.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-FRESHNESS-DEGRADED-MINUTES",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "minutes",
+      "files": [
+        "supabase/functions/observed-fares/index.ts",
+        "supabase/functions/_shared/feed-health.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-FRESHNESS-MAX-HOURS",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "hours",
+      "files": [
+        "supabase/functions/retention-cleanup/index.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-RETRY-BACKOFF-MINUTES",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "minutes",
+      "files": [
+        "supabase/functions/_shared/retry-policy.ts"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    },
+    {
+      "node_id": "THR-APPROVED-BOOKING-HOSTS",
+      "type": "LOAD_BEARING_THRESHOLD",
+      "unit": "domain_names",
+      "files": [
+        "supabase/functions/_shared/live-deal.ts",
+        "scripts/golden-corpus-runner.mjs"
+      ],
+      "dependents": [
+        "PRF-DIFF-METAMORPHIC",
+        "PRF-DRIFT-KILLSWITCH",
+        "PRF-GOLDEN-CORPUS"
+      ]
+    }
   ]
 }

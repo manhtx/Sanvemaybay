@@ -1,18 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
   "claims": [
     {
       "claim_id": "CLM-DEAL-SCORE",
       "claim": "Deal Score calculation compares observed price against comparable historical cohort without lookahead bias.",
-      "product_outcomes": [
-        "OUTCOME-B"
-      ],
-      "requirements": [
-        "FLY-INTEL-001",
-        "FLY-INTEL-002",
-        "FLY-INTEL-003"
-      ],
+      "product_outcomes": ["OUTCOME-B"],
+      "requirements": ["FLY-INTEL-001", "FLY-INTEL-002", "FLY-INTEL-003"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -26,13 +20,13 @@
       "proof_obligation": "PO-DEAL-SCORE",
       "claim_lineage": "LIN-DEAL-SCORE",
       "threshold_dependencies": [
-        "THR-DISCOUNT-MIN",
-        "THR-SAMPLE-MIN"
+        "THR-SCORE-NOTEWORTHY",
+        "THR-SCORE-GOOD",
+        "THR-SCORE-VERY-GOOD",
+        "THR-SCORE-HOT",
+        "THR-SAMPLE-MIN-COHORT"
       ],
-      "artifact_dependencies": [
-        "src/app/domain/dealComparison.ts",
-        "supabase/functions/_shared/observed-fares.ts"
-      ],
+      "artifact_dependencies": ["src/app/domain/dealComparison.ts", "supabase/functions/_shared/observed-fares.ts"],
       "counterevidence": "Negative evidence log records 0 unhandled NaN or infinite price values.",
       "invalidation_rule": "Invalidate if dealComparison.ts or priceAnalytics.ts changes without rerunning vitest domain unit suite.",
       "status": "LOCAL_VERIFIED"
@@ -40,13 +34,8 @@
     {
       "claim_id": "CLM-CONFIDENCE-CAP",
       "claim": "Deal confidence is strictly capped for small observation samples (<5 observations) and indicative providers.",
-      "product_outcomes": [
-        "OUTCOME-C"
-      ],
-      "requirements": [
-        "FLY-INTEL-004",
-        "FLY-INTEL-005"
-      ],
+      "product_outcomes": ["OUTCOME-C"],
+      "requirements": ["FLY-INTEL-004", "FLY-INTEL-005"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -60,12 +49,13 @@
       "proof_obligation": "PO-CONFIDENCE-CAP",
       "claim_lineage": "LIN-CONFIDENCE-CAP",
       "threshold_dependencies": [
-        "THR-SAMPLE-MIN",
-        "THR-CONFIDENCE-CAP"
+        "THR-CONFIDENCE-CAP-FLOOR",
+        "THR-CONFIDENCE-MEDIUM",
+        "THR-CONFIDENCE-HIGH",
+        "THR-SAMPLE-MIN-COHORT",
+        "THR-SAMPLE-FULL-CONFIDENCE"
       ],
-      "artifact_dependencies": [
-        "src/app/domain/dealClaims.ts"
-      ],
+      "artifact_dependencies": ["src/app/domain/dealClaims.ts"],
       "counterevidence": "Golden corpus case 12 proves 1-sample 80% discount is capped at LOW confidence.",
       "invalidation_rule": "Invalidate if dealClaims.ts changes without rerunning dealClaims.test.ts.",
       "status": "LOCAL_VERIFIED"
@@ -73,13 +63,8 @@
     {
       "claim_id": "CLM-ALL-IN-COST",
       "claim": "True-cost calculation aggregates baseline fare, mandatory airport/fuel fees, and luggage/card surcharges.",
-      "product_outcomes": [
-        "OUTCOME-D"
-      ],
-      "requirements": [
-        "FLY-INTEL-006",
-        "FLY-UX-002"
-      ],
+      "product_outcomes": ["OUTCOME-D"],
+      "requirements": ["FLY-INTEL-006", "FLY-UX-002"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -92,27 +77,17 @@
       },
       "proof_obligation": "PO-ALL-IN-COST",
       "claim_lineage": "LIN-ALL-IN-COST",
-      "threshold_dependencies": [
-        "THR-LUGGAGE-DEFAULT",
-        "THR-PAYMENT-FEE"
-      ],
-      "artifact_dependencies": [
-        "src/app/domain/flightIntelligence.ts"
-      ],
+      "threshold_dependencies": [],
+      "artifact_dependencies": ["src/app/domain/flightIntelligence.ts"],
       "counterevidence": "Zero negative total cost calculations observed.",
       "invalidation_rule": "Invalidate if flightIntelligence.ts changes without rerunning unit and E2E tests.",
       "status": "LOCAL_VERIFIED"
     },
     {
       "claim_id": "CLM-FRESHNESS-EXPIRATION",
-      "claim": "Deals older than 24 hours are suppressed from top ranked feeds or explicitly badged as stale.",
-      "product_outcomes": [
-        "OUTCOME-H"
-      ],
-      "requirements": [
-        "FLY-UX-008",
-        "FLY-OPS-001"
-      ],
+      "claim": "Deals older than 24 hours are suppressed from active snapshot cache; older than 6 hours are marked stale.",
+      "product_outcomes": ["OUTCOME-H"],
+      "requirements": ["FLY-UX-008", "FLY-OPS-001"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -126,26 +101,20 @@
       "proof_obligation": "PO-FRESHNESS",
       "claim_lineage": "LIN-FRESHNESS",
       "threshold_dependencies": [
-        "THR-FRESHNESS-HOURS"
+        "THR-FRESHNESS-HEALTHY-MINUTES",
+        "THR-FRESHNESS-DEGRADED-MINUTES",
+        "THR-FRESHNESS-MAX-HOURS"
       ],
-      "artifact_dependencies": [
-        "supabase/functions/_shared/feed-health.ts",
-        "src/app/domain/travelFeedSections.ts"
-      ],
-      "counterevidence": "Adversarial clock test verifies exact cross-midnight and 24h boundary rejection.",
-      "invalidation_rule": "Invalidate if feed-health.ts or travelFeedSections.ts changes.",
+      "artifact_dependencies": ["supabase/functions/_shared/feed-health.ts", "supabase/functions/observed-fares/index.ts"],
+      "counterevidence": "Adversarial clock test verifies exact cross-midnight and freshness boundary classification.",
+      "invalidation_rule": "Invalidate if feed-health.ts or observed-fares/index.ts changes.",
       "status": "LOCAL_VERIFIED"
     },
     {
       "claim_id": "CLM-ALERT-DEDUPE",
       "claim": "Price alerts are deduplicated and rate-limited to avoid spamming users.",
-      "product_outcomes": [
-        "OUTCOME-J"
-      ],
-      "requirements": [
-        "FLY-UX-006",
-        "FLY-UX-007"
-      ],
+      "product_outcomes": ["OUTCOME-J"],
+      "requirements": ["FLY-UX-006", "FLY-UX-007"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -159,12 +128,9 @@
       "proof_obligation": "PO-ALERT-DEDUPE",
       "claim_lineage": "LIN-ALERT-DEDUPE",
       "threshold_dependencies": [
-        "THR-NOTIFICATION-BACKOFF"
+        "THR-RETRY-BACKOFF-MINUTES"
       ],
-      "artifact_dependencies": [
-        "supabase/functions/_shared/alert-matching.ts",
-        "supabase/functions/_shared/retry-policy.ts"
-      ],
+      "artifact_dependencies": ["supabase/functions/_shared/alert-matching.ts", "supabase/functions/_shared/retry-policy.ts"],
       "counterevidence": "Retry policy test verifies bounded 1/5/15 minute backoff intervals.",
       "invalidation_rule": "Invalidate if alert-matching.ts or retry-policy.ts changes.",
       "status": "LOCAL_VERIFIED"
@@ -172,12 +138,8 @@
     {
       "claim_id": "CLM-URL-SANITIZATION",
       "claim": "Booking handoffs reject non-HTTPS URLs and restrict external redirects to allowlisted partner domains.",
-      "product_outcomes": [
-        "OUTCOME-K"
-      ],
-      "requirements": [
-        "FLY-SEC-003"
-      ],
+      "product_outcomes": ["OUTCOME-K"],
+      "requirements": ["FLY-SEC-003"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -191,12 +153,9 @@
       "proof_obligation": "PO-URL-SANITIZATION",
       "claim_lineage": "LIN-URL-SANITIZATION",
       "threshold_dependencies": [
-        "THR-APPROVED-DOMAINS"
+        "THR-APPROVED-BOOKING-HOSTS"
       ],
-      "artifact_dependencies": [
-        "src/app/lib/bookingUrls.ts",
-        "supabase/functions/_shared/live-deal.ts"
-      ],
+      "artifact_dependencies": ["src/app/lib/bookingUrls.ts", "supabase/functions/_shared/live-deal.ts"],
       "counterevidence": "Metamorphic test verifies malicious query params or subdomains fail closed.",
       "invalidation_rule": "Invalidate if bookingUrls.ts or live-deal.ts changes.",
       "status": "LOCAL_VERIFIED"
@@ -204,12 +163,8 @@
     {
       "claim_id": "CLM-RLS-ISOLATION",
       "claim": "User alerts, bookmarks, and preferences are strictly isolated across tenants via Row-Level Security.",
-      "product_outcomes": [
-        "OUTCOME-L"
-      ],
-      "requirements": [
-        "FLY-SEC-002"
-      ],
+      "product_outcomes": ["OUTCOME-L"],
+      "requirements": ["FLY-SEC-002"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -223,9 +178,7 @@
       "proof_obligation": "PO-RLS-ISOLATION",
       "claim_lineage": "LIN-RLS-ISOLATION",
       "threshold_dependencies": [],
-      "artifact_dependencies": [
-        "supabase/migrations/"
-      ],
+      "artifact_dependencies": ["supabase/migrations/"],
       "counterevidence": "Security smoke contract test verifies empty reads for unauthenticated and cross-tenant callers.",
       "invalidation_rule": "Invalidate if any SQL migration modifying RLS policies is changed.",
       "status": "LOCAL_VERIFIED"
@@ -233,12 +186,8 @@
     {
       "claim_id": "CLM-ACCOUNT-DELETION",
       "claim": "Account deletion transactionally wipes user application data and pseudonymizes audit records.",
-      "product_outcomes": [
-        "OUTCOME-L"
-      ],
-      "requirements": [
-        "FLY-SEC-004"
-      ],
+      "product_outcomes": ["OUTCOME-L"],
+      "requirements": ["FLY-SEC-004"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -252,10 +201,7 @@
       "proof_obligation": "PO-ACCOUNT-DELETION",
       "claim_lineage": "LIN-ACCOUNT-DELETION",
       "threshold_dependencies": [],
-      "artifact_dependencies": [
-        "supabase/functions/_shared/user-data.ts",
-        "scripts/account-deletion.node-test.mjs"
-      ],
+      "artifact_dependencies": ["supabase/functions/_shared/user-data.ts", "scripts/account-deletion.node-test.mjs"],
       "counterevidence": "Contract test verifies atomic transaction and pseudonymized one-way hash audit logging.",
       "invalidation_rule": "Invalidate if user-data.ts or account deletion scripts change.",
       "status": "LOCAL_VERIFIED"
@@ -263,13 +209,8 @@
     {
       "claim_id": "CLM-PROVIDER-RESILIENCE",
       "claim": "When an external flight provider fails or rate-limits, the system falls back to cached fares without frontend crash.",
-      "product_outcomes": [
-        "OUTCOME-M"
-      ],
-      "requirements": [
-        "FLY-OPS-001",
-        "FLY-OPS-005"
-      ],
+      "product_outcomes": ["OUTCOME-M"],
+      "requirements": ["FLY-OPS-001", "FLY-OPS-005"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -283,11 +224,9 @@
       "proof_obligation": "PO-PROVIDER-RESILIENCE",
       "claim_lineage": "LIN-PROVIDER-RESILIENCE",
       "threshold_dependencies": [
-        "THR-CIRCUIT-FAILURES"
+        "THR-FRESHNESS-DEGRADED-MINUTES"
       ],
-      "artifact_dependencies": [
-        "supabase/functions/_shared/feed-health.ts"
-      ],
+      "artifact_dependencies": ["supabase/functions/_shared/feed-health.ts"],
       "counterevidence": "Failure game day tests verify empty and stale feed envelopes degrade gracefully.",
       "invalidation_rule": "Invalidate if feed-health.ts changes.",
       "status": "LOCAL_VERIFIED"
@@ -295,12 +234,8 @@
     {
       "claim_id": "CLM-STATIC-HOSTING",
       "claim": "Static public assets (/robots.txt, /release.json) resolve to static content and never fall back to SPA index.html.",
-      "product_outcomes": [
-        "OUTCOME-N"
-      ],
-      "requirements": [
-        "FLY-OPS-004"
-      ],
+      "product_outcomes": ["OUTCOME-N"],
+      "requirements": ["FLY-OPS-004"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -314,10 +249,7 @@
       "proof_obligation": "PO-STATIC-HOSTING",
       "claim_lineage": "LIN-STATIC-HOSTING",
       "threshold_dependencies": [],
-      "artifact_dependencies": [
-        "public/robots.txt",
-        "scripts/hosting-security.node-test.mjs"
-      ],
+      "artifact_dependencies": ["public/robots.txt", "scripts/hosting-security.node-test.mjs"],
       "counterevidence": "Regression test hosting-security.node-test.mjs verifies /robots.txt resolves directly without HTML fallback.",
       "invalidation_rule": "Invalidate if vercel.json, vite.config.ts, or public/robots.txt changes.",
       "status": "LOCAL_VERIFIED"
@@ -325,12 +257,8 @@
     {
       "claim_id": "CLM-STAGING-MIGRATION-PARITY",
       "claim": "All database migrations apply cleanly and deterministically on remote clean staging without schema drift.",
-      "product_outcomes": [
-        "OUTCOME-N"
-      ],
-      "requirements": [
-        "FLY-OPS-004"
-      ],
+      "product_outcomes": ["OUTCOME-N"],
+      "requirements": ["FLY-OPS-004"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -344,9 +272,7 @@
       "proof_obligation": "PO-MIGRATION-PARITY",
       "claim_lineage": "LIN-MIGRATION-PARITY",
       "threshold_dependencies": [],
-      "artifact_dependencies": [
-        "supabase/migrations/"
-      ],
+      "artifact_dependencies": ["supabase/migrations/"],
       "counterevidence": "Blocked on remote staging by BLK-MIGR-01 due to foreign Macro Platform rows in legacy database.",
       "invalidation_rule": "Invalidate if migration directory changes.",
       "status": "STAGING_BLOCKED"
@@ -354,12 +280,8 @@
     {
       "claim_id": "CLM-REMOTE-SOURCE-PROVENANCE",
       "claim": "The release candidate branch on remote origin is cleanly cloneable and verifiable in an isolated worktree.",
-      "product_outcomes": [
-        "OUTCOME-N"
-      ],
-      "requirements": [
-        "FLY-OPS-004"
-      ],
+      "product_outcomes": ["OUTCOME-N"],
+      "requirements": ["FLY-OPS-004"],
       "evidence_vector": {
         "implementation": "SUPPORTED",
         "local_unit": "SUPPORTED",
@@ -373,10 +295,8 @@
       "proof_obligation": "PO-REMOTE-SOURCE-PROVENANCE",
       "claim_lineage": "LIN-REMOTE-SOURCE-PROVENANCE",
       "threshold_dependencies": [],
-      "artifact_dependencies": [
-        ".flycheap/MISSION_BASELINE.json"
-      ],
-      "counterevidence": "Clean clone into /tmp/flycheap-remote-origin-check passed 197/197 tests.",
+      "artifact_dependencies": [".flycheap/MISSION_BASELINE.json"],
+      "counterevidence": "Clean clone into /tmp/flycheap-epoch7-remote-check passed 207/207 tests.",
       "invalidation_rule": "Invalidate if remote branch diverges from local candidate.",
       "status": "REMOTE_VERIFIED"
     }
