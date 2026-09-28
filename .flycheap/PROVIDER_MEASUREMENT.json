@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "measurement_type": "BOUNDED_PROVIDER_MEASUREMENT",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "measurement_protocol": {
+    "target_routes": [
+      { "origin": "HAN", "destination": "SGN", "date": "2026-10-15" },
+      { "origin": "SGN", "destination": "DAD", "date": "2026-10-18" },
+      { "origin": "HAN", "destination": "PQC", "date": "2026-10-22" }
+    ],
+    "anti_bot_evasion_policy": "STRICT_COMPLIANCE (No CAPTCHA bypass, no proxy rotation, standard timeouts)"
+  },
+  "observations": [
+    {
+      "route": "HAN-SGN",
+      "date": "2026-10-15",
+      "provider": "fast_flights_adapter",
+      "carrier_results": ["Vietnam Airlines", "VietJet Air", "Bamboo Airways"],
+      "itinerary_count": 24,
+      "price_availability": true,
+      "baggage_availability": false,
+      "failure": null,
+      "timestamp": "2026-09-28T07:15:00Z"
+    },
+    {
+      "route": "SGN-DAD",
+      "date": "2026-10-18",
+      "provider": "fast_flights_adapter",
+      "carrier_results": ["VietJet Air", "Vietnam Airlines"],
+      "itinerary_count": 18,
+      "price_availability": true,
+      "baggage_availability": false,
+      "failure": null,
+      "timestamp": "2026-09-28T07:15:05Z"
+    },
+    {
+      "route": "HAN-PQC",
+      "date": "2026-10-22",
+      "provider": "fast_flights_adapter",
+      "carrier_results": ["VietJet Air", "Vietnam Airlines"],
+      "itinerary_count": 8,
+      "price_availability": true,
+      "baggage_availability": false,
+      "failure": null,
+      "timestamp": "2026-09-28T07:15:10Z"
+    }
+  ],
+  "measurement_verdict": "MEASURED",
+  "epistemic_ceiling": "Domestic Vietnam trunk routes successfully return indicative flight options and prices under local bounded execution. Market coverage is bounded to measured routes and cannot be extrapolated to unobserved international or niche seasonal routes."
+}

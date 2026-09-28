@@ -1,0 +1,186 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "target_candidate": "RC-V7.0-001",
+  "evidence_vector_dimensions": [
+    "implementation",
+    "local_unit",
+    "local_integration",
+    "local_browser",
+    "local_ephemeral_runtime",
+    "remote_staging",
+    "external_dependency",
+    "production",
+    "empirical"
+  ],
+  "claim_vectors": [
+    {
+      "claim_id": "CLM-DEAL-SCORE",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-CONFIDENCE-GATING",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-FRESHNESS-BOUNDARIES",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-INDICATIVE-DEGRADATION",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-DATA-SOURCE-ISOLATION",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-SECURITY-PREFLIGHT-INTERNAL",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-SAFE-BOOKING-ALLOWLIST",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-USER-DATA-DELETION",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-OBSERVABILITY-STRUCTURED-LOGS",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-SYNTHETIC-HEALTH-CHECK",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-DATABASE-RECOVERY-RUNBOOK",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    },
+    {
+      "claim_id": "CLM-DEPLOYMENT-CONFIG-STRICT",
+      "vector": {
+        "implementation": "SUPPORTED",
+        "local_unit": "SUPPORTED",
+        "local_integration": "SUPPORTED",
+        "local_browser": "SUPPORTED",
+        "local_ephemeral_runtime": "SUPPORTED",
+        "remote_staging": "BLOCKED",
+        "external_dependency": "NOT_APPLICABLE",
+        "production": "UNVERIFIED",
+        "empirical": "PENDING"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "controller_version": "7.0.0-FINAL-CONTROLLER",
+  "updated_at": "2026-09-28T14:17:00+07:00",
+  "active_rc_id": "RC-V7.0-001",
+  "candidate_git_sha": "50c6d98628eca005db4c171ec93abce406e08127",
+  "sealing_git_sha": "0e97c326c83669768b5e25a39ff7bf15f9af7ef8",
+  "current_branch": "rc/v6.0-candidate",
+  "worktree_status": "CLEAN",
+  "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
+  "system_authority_state": "LOCAL_FULLSTACK_VERIFIED",
+  "adversarial_audit_verdict": "SUPPORTED",
+  "last_checkpoint": "SEALED_VERIFICATION_AND_HUMAN_HANDOFF_CONSOLIDATED",
+  "test_metrics": {
+    "total_tests": 207,
+    "passed": 207,
+    "failed": 0,
+    "vitest": 87,
+    "node_contracts": 43,
+    "deno_functions_check": 14,
+    "deno_functions_test": 45,
+    "playwright_browser_e2e": 32,
+    "instability_rate": "0.0%"
+  },
+  "causal_traceability": {
+    "canonical_requirements": 34,
+    "product_outcomes": 14,
+    "valid_edges": 40,
+    "invalid_edges": 0,
+    "ambiguous_edges": 0,
+    "orphan_nodes": 0
+  },
+  "blockers": [
+    "BLK-MIGR-01",
+    "BLK-PROV-01",
+    "BLK-DEP-01"
+  ]
+}

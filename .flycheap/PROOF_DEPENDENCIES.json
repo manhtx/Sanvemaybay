@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "reference_graph": ".flycheap/PROOF_DEPENDENCY_GRAPH.json",
+  "dependencies": [
+    {
+      "source_component": "src/app/domain/dealComparison.ts",
+      "dependent_proofs": ["PO-DEAL-SCORE", "PO-DIFF-ORACLE"],
+      "invalidation_action": "Rerun vitest domain unit suite and differential oracle tests"
+    },
+    {
+      "source_component": "src/app/domain/dealClaims.ts",
+      "dependent_proofs": ["PO-CONFIDENCE-GATING", "PO-CLAIM-KILLSWITCH"],
+      "invalidation_action": "Rerun deal claims unit tests and killswitch tests"
+    },
+    {
+      "source_component": "supabase/functions/_shared/observed-fares.ts",
+      "dependent_proofs": ["PO-DEAL-SCORE", "PO-CONFIDENCE-GATING", "PO-FRESHNESS-BOUNDARIES"],
+      "invalidation_action": "Rerun deno function tests for observed-fares"
+    },
+    {
+      "source_component": "src/app/domain/differentialAndMetamorphic.test.ts",
+      "dependent_proofs": ["PO-DIFF-ORACLE", "PO-METAMORPHIC-INVARIANTS"],
+      "invalidation_action": "Rerun metamorphic property tests"
+    },
+    {
+      "source_component": "supabase/migrations",
+      "dependent_proofs": ["PO-MIGRATION-PARITY", "PO-SECURITY-PREFLIGHT-INTERNAL"],
+      "invalidation_action": "Rerun database-ci-contract.node-test.mjs"
+    },
+    {
+      "source_component": "scripts/verify-certification-integrity.mjs",
+      "dependent_proofs": ["PO-INTEGRITY-CROSS-VALIDATION"],
+      "invalidation_action": "Rerun verify-certification-integrity script"
+    }
+  ]
+}

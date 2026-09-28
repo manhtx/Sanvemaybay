@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "review_type": "DATA_SOURCE_RISK_REVIEW",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "evaluated_at": "2026-09-28T14:17:00+07:00",
+  "sources": [
+    {
+      "source_id": "SRC-FAST-FLIGHTS",
+      "name": "FastFlights Google Adapter",
+      "access_mechanism": "Direct HTTP extraction via fast-flights library (indicative scraping)",
+      "fragility": "HIGH",
+      "rate_limit_and_block_risk": "MEDIUM_HIGH",
+      "known_commercial_terms_uncertainty": "Web interface scraping without formal SLA; subject to layout shifts",
+      "authority_level": "INDICATIVE_ONLY",
+      "fallback": "Cached snapshot feed with stale markers or offline synthetic baseline",
+      "product_role": "Primary indicative feed provider for Mode 1 Public Beta discovery",
+      "evidence_model_status": {
+        "ADAPTER_IMPLEMENTED": true,
+        "INDICATIVE_PATH_VERIFIED": true,
+        "COVERAGE_MEASURED": true,
+        "COVERAGE_FIT": "DOMESTIC_VIETNAM_ACCEPTABLE",
+        "COMMERCIAL_PATH_VERIFIED": false,
+        "LONG_RUN_RELIABILITY": "PENDING_EMPIRICAL"
+      }
+    },
+    {
+      "source_id": "SRC-AMADEUS-GDS",
+      "name": "Amadeus Enterprise Flight Search API",
+      "access_mechanism": "Official REST API via OAuth2 client credentials",
+      "fragility": "LOW",
+      "rate_limit_and_block_risk": "LOW (contractually bounded quota)",
+      "known_commercial_terms_uncertainty": "Requires commercial production subscription for live pricing and booking",
+      "authority_level": "COMMERCIAL_AUTHORITATIVE",
+      "fallback": "FastFlights adapter or indicative snapshot",
+      "product_role": "Planned Mode 2 provider for guaranteed bookability and international itineraries",
+      "evidence_model_status": {
+        "ADAPTER_IMPLEMENTED": true,
+        "INDICATIVE_PATH_VERIFIED": true,
+        "COVERAGE_MEASURED": false,
+        "COVERAGE_FIT": "GLOBAL_EXCELLENT",
+        "COMMERCIAL_PATH_VERIFIED": false,
+        "LONG_RUN_RELIABILITY": "NOT_APPLICABLE_IN_MODE_1"
+      }
+    },
+    {
+      "source_id": "SRC-SERPAPI-FLIGHTS",
+      "name": "SerpApi Google Flights Engine",
+      "access_mechanism": "Official JSON API over search engine results",
+      "fragility": "MEDIUM",
+      "rate_limit_and_block_risk": "LOW (paid API keys manage proxy pool)",
+      "known_commercial_terms_uncertainty": "Commercial subscription cost per 1,000 queries",
+      "authority_level": "INDICATIVE_AGGREGATED",
+      "fallback": "Direct FastFlights fallback or cached snapshots",
+      "product_role": "Secondary validation and cross-check provider",
+      "evidence_model_status": {
+        "ADAPTER_IMPLEMENTED": true,
+        "INDICATIVE_PATH_VERIFIED": true,
+        "COVERAGE_MEASURED": false,
+        "COVERAGE_FIT": "HIGH",
+        "COMMERCIAL_PATH_VERIFIED": false,
+        "LONG_RUN_RELIABILITY": "NOT_APPLICABLE_IN_MODE_1"
+      }
+    }
+  ],
+  "epistemic_disclaimer": "This document is a technical DATA_SOURCE_RISK_REVIEW reflecting operational resilience and failure boundaries. It is NOT legal advice or formal legal approval."
+}

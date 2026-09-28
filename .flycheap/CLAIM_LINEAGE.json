@@ -1,0 +1,166 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "lineage_cases": [
+    {
+      "case_id": "LIN-CASE-STRONG-DEAL",
+      "category": "STRONG_DEAL",
+      "description": "High discount (45%), large sample size (12), fresh observation (30m).",
+      "pipeline_trace": {
+        "1_raw_observation": { "price": 1000000, "duration": 120, "flight_number": "VN210" },
+        "2_normalization": { "valid": true, "price": 1000000, "currency": "VND" },
+        "3_validation": { "status": "APPROVED", "reason": "Finite positive numbers and valid airline" },
+        "4_historical_cohort": { "sample_size": 12, "baseline_median": 2000000 },
+        "5_statistical_reference": { "discount_percent": 50, "percentile": 95 },
+        "6_deal_score": { "score": 92, "threshold_dependency": "THR-SCORE-HOT" },
+        "7_confidence": { "confidence_percent": 100, "threshold_dependency": "THR-CONFIDENCE-HIGH" },
+        "8_cost_assumptions": { "all_in_estimated": 1000000, "baggage_included": false },
+        "9_route_risk": { "self_transfer": false, "risk_level": "LOW" },
+        "10_action_signal": "BUY_NOW",
+        "11_api_response": { "deal_label": "Deal cực nóng", "action": "BUY_NOW" },
+        "12_rendered_ui": "Badge 'Deal cực nóng' rendered with green highlight and direct partner link"
+      },
+      "verification_proof": "scripts/provider-drift-and-killswitch.node-test.mjs"
+    },
+    {
+      "case_id": "LIN-CASE-WEAK-DEAL",
+      "category": "WEAK_DEAL",
+      "description": "Modest discount (10%), large sample size (10), fresh observation (45m).",
+      "pipeline_trace": {
+        "1_raw_observation": { "price": 1800000, "duration": 120, "flight_number": "VJ123" },
+        "2_normalization": { "valid": true, "price": 1800000, "currency": "VND" },
+        "3_validation": { "status": "APPROVED" },
+        "4_historical_cohort": { "sample_size": 10, "baseline_median": 2000000 },
+        "5_statistical_reference": { "discount_percent": 10, "percentile": 40 },
+        "6_deal_score": { "score": 55, "threshold_dependency": "THR-SCORE-NOTEWORTHY" },
+        "7_confidence": { "confidence_percent": 83 },
+        "8_cost_assumptions": { "all_in_estimated": 1800000 },
+        "9_route_risk": { "self_transfer": false },
+        "10_action_signal": "MONITOR",
+        "11_api_response": { "deal_label": "Giá quan sát", "action": "MONITOR" },
+        "12_rendered_ui": "Neutral display with price observation label"
+      },
+      "verification_proof": "scripts/provider-drift-and-killswitch.node-test.mjs"
+    },
+    {
+      "case_id": "LIN-CASE-LOW-SAMPLE",
+      "category": "LOW_SAMPLE_DEAL",
+      "description": "Apparent 60% discount but only 1 historical observation in database.",
+      "pipeline_trace": {
+        "1_raw_observation": { "price": 800000, "duration": 120, "flight_number": "QH202" },
+        "2_normalization": { "valid": true, "price": 800000 },
+        "3_validation": { "status": "APPROVED" },
+        "4_historical_cohort": { "sample_size": 1, "insufficient": true },
+        "5_statistical_reference": { "baseline_median": null },
+        "6_deal_score": { "score": 50, "kill_switch_triggered": true },
+        "7_confidence": { "confidence_percent": 8, "capped_at_floor": true, "threshold_dependency": "THR-CONFIDENCE-CAP-FLOOR" },
+        "8_cost_assumptions": { "all_in_estimated": 800000 },
+        "9_route_risk": { "self_transfer": false },
+        "10_action_signal": "MONITOR",
+        "11_api_response": { "deal_label": "Giá quan sát", "action": "MONITOR" },
+        "12_rendered_ui": "Suppressed strong deal badge; rendered as unverified observation"
+      },
+      "verification_proof": "scripts/provider-drift-and-killswitch.node-test.mjs"
+    },
+    {
+      "case_id": "LIN-CASE-STALE-DEAL",
+      "category": "STALE_DEAL",
+      "description": "High discount (50%) but observed 26 hours ago (>24h).",
+      "pipeline_trace": {
+        "1_raw_observation": { "price": 1000000, "observed_age_hours": 26 },
+        "2_normalization": { "valid": true },
+        "3_validation": { "status": "STALE_WARNING" },
+        "4_historical_cohort": { "sample_size": 12, "baseline_median": 2000000 },
+        "5_statistical_reference": { "discount_percent": 50 },
+        "6_deal_score": { "score": 62, "stale_penalty_applied": -30, "threshold_dependency": "THR-FRESHNESS-MAX-HOURS" },
+        "7_confidence": { "confidence_percent": 100 },
+        "8_cost_assumptions": { "all_in_estimated": 1000000 },
+        "9_route_risk": { "self_transfer": false },
+        "10_action_signal": "WAIT_FOR_REFRESH",
+        "11_api_response": { "deal_label": "Giá đáng chú ý", "is_stale": true, "action": "WAIT_FOR_REFRESH" },
+        "12_rendered_ui": "Stale data warning indicator, prompt to trigger refresh"
+      },
+      "verification_proof": "scripts/clock-timezone-adversarial.node-test.mjs"
+    },
+    {
+      "case_id": "LIN-CASE-PROVIDER-DISAGREEMENT",
+      "category": "PROVIDER_DISAGREEMENT",
+      "description": "Provider A reports 1,000,000 VND; Provider B reports 2,500,000 VND for same flight.",
+      "pipeline_trace": {
+        "1_raw_observation": { "provider_a": 1000000, "provider_b": 2500000 },
+        "2_normalization": { "both_valid": true },
+        "3_validation": { "divergence_ratio": 2.5 },
+        "4_historical_cohort": { "median": 2000000 },
+        "5_statistical_reference": { "variance_elevated": true },
+        "6_deal_score": { "score": 68 },
+        "7_confidence": { "confidence_penalty": -25, "final_confidence": 50 },
+        "8_cost_assumptions": { "divergence_flagged": true },
+        "9_route_risk": { "risk_level": "MEDIUM" },
+        "10_action_signal": "MONITOR",
+        "11_api_response": { "deal_label": "Giá quan sát", "confidence_level": "medium" },
+        "12_rendered_ui": "Advisory note indicating price discrepancy across sources"
+      },
+      "verification_proof": "src/app/domain/dealClaims.test.ts"
+    },
+    {
+      "case_id": "LIN-CASE-SELF-TRANSFER",
+      "category": "SELF_TRANSFER",
+      "description": "Two separate tickets with tight 75m layover at non-hub airport.",
+      "pipeline_trace": {
+        "1_raw_observation": { "segments": 2, "carriers": ["VJ", "VN"], "layover_minutes": 75 },
+        "2_normalization": { "multi_carrier": true },
+        "3_validation": { "status": "APPROVED" },
+        "4_historical_cohort": { "comparable_itineraries": 8 },
+        "5_statistical_reference": { "price": 1400000 },
+        "6_deal_score": { "score": 75 },
+        "7_confidence": { "confidence_percent": 70 },
+        "8_cost_assumptions": { "baggage_recheck_fee_estimated": 300000 },
+        "9_route_risk": { "self_transfer": true, "risk_warning": "RISK_SELF_TRANSFER_TIGHT_LAYOVER" },
+        "10_action_signal": "CAUTION_PROCEED",
+        "11_api_response": { "deal_label": "Deal ngon", "warnings": ["SELF_TRANSFER"] },
+        "12_rendered_ui": "Prominent yellow warning banner regarding separate tickets and baggage recheck"
+      },
+      "verification_proof": "src/app/domain/routeOptimization.test.ts"
+    },
+    {
+      "case_id": "LIN-CASE-INCOMPLETE-COST",
+      "category": "INCOMPLETE_COST",
+      "description": "Ultra-low base fare with unknown mandatory payment fee or carry-on fee.",
+      "pipeline_trace": {
+        "1_raw_observation": { "base_fare": 99000, "taxes_fees": null },
+        "2_normalization": { "base_only": true },
+        "3_validation": { "status": "INCOMPLETE_FEES" },
+        "4_historical_cohort": { "median_all_in": 1200000 },
+        "5_statistical_reference": { "base_ratio_abnormal": true },
+        "6_deal_score": { "score": 60, "heuristic_fee_addition": 450000 },
+        "7_confidence": { "confidence_percent": 45, "capped_below_floor": true },
+        "8_cost_assumptions": { "all_in_uncertain": true },
+        "9_route_risk": { "fee_transparency_low": true },
+        "10_action_signal": "MONITOR",
+        "11_api_response": { "deal_label": "Giá quan sát", "cost_disclaimer": "Taxes and fees estimated" },
+        "12_rendered_ui": "Price displayed with indicative fee disclaimer"
+      },
+      "verification_proof": "src/app/domain/differentialAndMetamorphic.test.ts"
+    },
+    {
+      "case_id": "LIN-CASE-SUSPICIOUS-PRICE",
+      "category": "SUSPICIOUS_PRICE",
+      "description": "Price is 0 or negative or non-finite.",
+      "pipeline_trace": {
+        "1_raw_observation": { "price": -500000, "flight_number": "VJ123" },
+        "2_normalization": { "valid": false, "rejected_reason": "Price <= 0" },
+        "3_validation": { "status": "QUARANTINED" },
+        "4_historical_cohort": { "bypassed": true },
+        "5_statistical_reference": { "bypassed": true },
+        "6_deal_score": { "score": 0 },
+        "7_confidence": { "confidence_percent": 0 },
+        "8_cost_assumptions": { "bypassed": true },
+        "9_route_risk": { "bypassed": true },
+        "10_action_signal": "SUPPRESSED",
+        "11_api_response": { "dropped": true },
+        "12_rendered_ui": "Never rendered to user; quarantined to error log"
+      },
+      "verification_proof": "scripts/provider-drift-and-killswitch.node-test.mjs"
+    }
+  ]
+}
