@@ -1,0 +1,57 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { reduceAuthorityState } from './authority-reducer.mjs';
+
+/**
+ * Work-Order Compiler (Section 36 & Section 37)
+ * Evaluates current observed state and generates the single next atomic work order.
+ */
+export function compileNextWorkOrder(projectRoot = process.cwd()) {
+  const flycheapDir = path.join(projectRoot, '.flycheap');
+  const authority = reduceAuthorityState(projectRoot);
+
+  if (authority.authority_state === 'LOCAL_EPHEMERAL_RUNTIME_VERIFIED') {
+    // The next environment transition is Remote Staging Resolution
+    const stagingFingerprintPath = path.join(flycheapDir, 'STAGING_ENVIRONMENT_FINGERPRINT.json');
+    if (!fs.existsSync(stagingFingerprintPath)) {
+      return {
+        work_order_id: 'WO-STAGING-01-RESOLVE-CAPACITY',
+        current_observed_state: 'LOCAL_EPHEMERAL_RUNTIME_VERIFIED',
+        target_delta: 'Awaiting clean Supabase project slot or human capacity authorization',
+        priority: 'P0',
+        prerequisites: ['LOCAL_EPHEMERAL_RUNTIME_VERIFIED'],
+        authority_class: 'HARD_EXTERNAL_AUTHORITY_REQUIRED',
+        environment: 'REMOTE_SUPABASE_API',
+        writable_paths: ['.flycheap/HUMAN_HANDOFF.json'],
+        forbidden_actions: [
+          'DO_NOT_PAUSE_UNKNOWN_PROJECTS',
+          'DO_NOT_UPGRADE_PAID_PLAN_AUTONOMOUSLY',
+          'DO_NOT_TOUCH_LEGACY_PROJECT_thprsgnpvtzkcvknqfwk'
+        ],
+        idempotency_key: 'IDEMP-WO-STAGING-CAPACITY-001',
+        expected_observable: 'Clean staging project ref provisioned or project slot unblocked',
+        proof_obligation: 'PO-CLEAN-STAGING-PROVISIONED',
+        timeout_seconds: 60,
+        retry_policy: 'BLOCKED_EXTERNAL_AWAITING_INPUT',
+        compensation_rollback: 'None required (read-only state check)',
+        cleanup_finalizers: [],
+        expected_state_effect: 'Transition to STAGING_PREPARE on unblock',
+        is_blocked_external: true,
+        blocking_action_ref: 'ACT-STAGING-01'
+      };
+    }
+  }
+
+  return {
+    work_order_id: 'WO-IDLE',
+    current_observed_state: authority.authority_state,
+    target_delta: 'None',
+    priority: 'LOW',
+    is_blocked_external: false
+  };
+}
+
+if (process.argv[1] && process.argv[1].endsWith('work-order-compiler.mjs')) {
+  const result = compileNextWorkOrder();
+  console.log(JSON.stringify(result, null, 2));
+}

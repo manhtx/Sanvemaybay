@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
+  "environments": {
+    "local_ephemeral": {
+      "environment_id": "ENV-LOCAL-EPHEMERAL",
+      "postgres_engine": "PostgreSQL 16.14 (Homebrew)",
+      "postgres_port": 5432,
+      "migration_head": "20260820000000_create_retention_policy.sql",
+      "migrations_count": 38,
+      "tables_count": 17,
+      "rls_enabled": true,
+      "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
+      "status": "VERIFIED_ACTIVE"
+    },
+    "remote_staging": {
+      "environment_id": "ENV-REMOTE-STAGING",
+      "status": "HELD_BEHIND_QUOTA",
+      "organization_id": "bpneawjmggrxqaoukxoz",
+      "blocker_ref": "ACT-STAGING-01"
+    },
+    "production": {
+      "environment_id": "ENV-PRODUCTION",
+      "status": "HELD_PENDING_STAGING_CLOSURE"
+    }
+  }
+}

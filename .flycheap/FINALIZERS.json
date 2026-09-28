@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
+  "active_finalizers": [],
+  "completed_finalizers": [
+    {
+      "finalizer_id": "FIN-EPHEMERAL-DB-CLEANUP",
+      "target": "flycheap_ephemeral_runtime",
+      "action": "DROP DATABASE IF EXISTS flycheap_ephemeral_runtime",
+      "status": "COMPLETED",
+      "completed_at": "2026-09-28T18:03:54+07:00"
+    }
+  ],
+  "pending_required_finalizers_count": 0
+}

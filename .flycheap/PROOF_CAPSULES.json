@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
+  "rc_id": "RC-V7.0-001",
+  "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
+  "proof_capsules": [
+    {
+      "proof_id": "CAP-01-DIFF-METAMORPHIC",
+      "claim_id": "CLM-DOMAIN-LOGIC",
+      "proof_type": "DIFFERENTIAL_AND_METAMORPHIC",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "VITEST_AUTOMATED",
+      "command": "npx vitest run src/app/domain/differentialAndMetamorphic.test.ts",
+      "result": "PASS (8/8 tests passed)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-02-MUTATION-SENSITIVITY",
+      "claim_id": "CLM-INVARIANT-FAULT-TOLERANCE",
+      "proof_type": "MUTATION_TESTING",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "NODE_SCRIPT",
+      "command": "node scripts/mutation-sensitivity.mjs",
+      "result": "PASS (7/7 mutants killed, 100% kill rate)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-03-EPHEMERAL-POSTGRES-DRILL",
+      "claim_id": "CLM-DB-ISOLATION-AND-RLS",
+      "proof_type": "EPHEMERAL_POSTGRES_MIGRATION",
+      "environment": "ENV-LOCAL-EPHEMERAL",
+      "verifier_class": "NODE_PG16_CLIENT",
+      "command": "node scripts/local-ephemeral-runtime.mjs",
+      "result": "PASS (38 migrations, 17 tables, RLS isolation verified, account deletion verified)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-04-SEALED-HOLDOUT",
+      "claim_id": "CLM-ZERO-TRUST-INTEGRITY",
+      "proof_type": "SEALED_ADVERSARIAL_VERIFICATION",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "SEPARATE_SUBAGENT (b1a62639-8101-4d97-9846-39719254b336)",
+      "command": "Independent Holdout Audit (21 probes)",
+      "result": "PASS (SUPPORTED, 21/21 passed)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-05-PLAYWRIGHT-BROWSER-E2E",
+      "claim_id": "CLM-FULLSTACK-UX-A11Y",
+      "proof_type": "BROWSER_E2E",
+      "environment": "ENV-LOCAL-PREVIEW",
+      "verifier_class": "PLAYWRIGHT_MULTI_BROWSER",
+      "command": "npm run test:e2e",
+      "result": "PASS (32/32 tests passed across Chromium and Mobile Pixel 5)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-06-CONTRADICTION-LINTER",
+      "claim_id": "CLM-EVIDENTIARY-CONSISTENCY",
+      "proof_type": "MECHANICAL_LINTER",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "NODE_SCRIPT",
+      "command": "node scripts/contradiction-linter.mjs",
+      "result": "PASS (0 contradictions detected)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-07-GOLDEN-CORPUS",
+      "claim_id": "CLM-DECISION-ACCURACY",
+      "proof_type": "GOLDEN_DATASET_REGRESSION",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "NODE_TEST_RUNNER",
+      "command": "node --test scripts/golden-corpus.node-test.mjs",
+      "result": "PASS (20/20 canonical cases verified)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-08-PROVIDER-DRIFT-KILLSWITCH",
+      "claim_id": "CLM-FAIL-CLOSED-INTEGRITY",
+      "proof_type": "CONTRACT_DRIFT_AND_KILLSWITCH",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "NODE_TEST_RUNNER",
+      "command": "node --test scripts/provider-drift-and-killswitch.node-test.mjs",
+      "result": "PASS (Corrupt fares quarantined, claims collapsed on signal loss)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-09-SECURITY-SMOKE",
+      "claim_id": "CLM-AUTH-SECURITY-BOUNDARIES",
+      "proof_type": "SECURITY_READ_SMOKE",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "NODE_TEST_RUNNER",
+      "command": "node --test scripts/security-smoke.node-test.mjs",
+      "result": "PASS (User-owned tables fail closed, anonymous reads denied)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-10-ACCOUNT-DELETION-CONTRACT",
+      "claim_id": "CLM-PRIVACY-COMPLIANCE",
+      "proof_type": "TRANSACTIONAL_DELETION",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "NODE_TEST_RUNNER",
+      "command": "node --test scripts/account-deletion-contract.node-test.mjs",
+      "result": "PASS (Transactional deletion, retry audit, denial after deletion verified)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-11-FRONTEND-BUILD-INTEGRITY",
+      "claim_id": "CLM-RELEASE-ARTIFACT-PROVENANCE",
+      "proof_type": "PRODUCTION_BUILD",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "VITE_COMPILER",
+      "command": "npm run build",
+      "result": "PASS (Built in 2.27s, bundle sizes within budget)",
+      "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-12-CERTIFICATION-INTEGRITY",
+      "claim_id": "CLM-CANONICAL-TRACEABILITY",
+      "proof_type": "TRACEABILITY_VERIFICATION",
+      "environment": "ENV-LOCAL",
+      "verifier_class": "NODE_SCRIPT",
+      "command": "node scripts/verify-certification-integrity.mjs",
+      "result": "PASS (34/34 requirements, 14 outcomes, 0 orphans, 0 contradictions)",
+      "freshness": "FRESH"
+    }
+  ]
+}

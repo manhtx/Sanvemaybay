@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
+  "active_deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
+  "proof_invalidation_rules": {
+    "deployable_surface_changed": "Invalidates all domain, unit, contract, and E2E proofs",
+    "migration_head_changed": "Invalidates database CI, schema parity, and ephemeral runtime proofs",
+    "edge_function_changed": "Invalidates function parity and edge function contract proofs",
+    "provider_contract_changed": "Invalidates provider drift, kill-switch, and booking url proofs"
+  },
+  "fresh_proof_status": {
+    "total_required_proofs": 12,
+    "fresh_proofs": 12,
+    "stale_proofs": 0,
+    "invalidation_detected": false
+  }
+}
