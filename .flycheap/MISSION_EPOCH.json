@@ -1,0 +1,12 @@
+{
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "started_at": "2026-09-28T13:41:45+07:00",
+  "starting_git_sha": "86974297df50afe6625f3def841f340d6b02b98d",
+  "starting_branch": "rc/v6.0-candidate",
+  "starting_remote_sha": "86974297df50afe6625f3def841f340d6b02b98d",
+  "starting_worktree_status": "CLEAN",
+  "starting_contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+  "starting_release_state": "LOCAL_FULLSTACK_VERIFIED",
+  "controller_version": "7.0.0-FRESHNESS-TRUTH",
+  "status": "IN_PROGRESS"
+}

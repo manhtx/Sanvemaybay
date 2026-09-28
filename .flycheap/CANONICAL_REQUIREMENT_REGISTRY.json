@@ -1,0 +1,528 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+  "requirements": [
+    {
+      "requirement_id": "FLY-DATA-001",
+      "canonical_title": "Flight data provider abstraction layer supporting multiple adapters (FastFlights, Amadeus, SerpApi) with consistent normalized output contract",
+      "canonical_description": "Flight data provider abstraction layer supporting multiple adapters (FastFlights, Amadeus, SerpApi) with consistent normalized output contract.",
+      "acceptance_criteria": [
+        "Provider interface defines search, refresh, and health-check capabilities.",
+        "Raw provider payloads are transformed into the internal normalized flight offer contract.",
+        "Missing optional provider fields have safe defaults without crashing normalization."
+      ],
+      "category": "data_provider",
+      "priority": "P0",
+      "semantic_hash": "7568d95e88bcfcb129d42a4556634029633bbe4d667fde7ad702981598038458",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-DATA-002",
+      "canonical_title": "Strict flight data validation and anomalous fare rejection",
+      "canonical_description": "Strict flight data validation and anomalous fare rejection.",
+      "acceptance_criteria": [
+        "Rejects fares with price <= 0 or non-finite values.",
+        "Rejects flights where arrival is earlier than departure or flight duration is <= 0.",
+        "Requires valid IATA/ICAO origin and destination codes.",
+        "Validates departure and return dates as legitimate future calendar dates."
+      ],
+      "category": "data_provider",
+      "priority": "P0",
+      "semantic_hash": "cf613838338d05129d5b335ec5d2dca378268e5b1e6d55865943a9dc9444ba86",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-DATA-003",
+      "canonical_title": "Immutable historical fare observation ingestion with idempotent deduplication",
+      "canonical_description": "Immutable historical fare observation ingestion with idempotent deduplication.",
+      "acceptance_criteria": [
+        "Stores each fare observation with route, dates, airline, price, currency, timestamp, and provider.",
+        "Deduplication key prevents identical offer re-insertion on repeated pipeline runs.",
+        "Raw observations are append-only to preserve statistical integrity."
+      ],
+      "category": "data_provider",
+      "priority": "P0",
+      "semantic_hash": "4ac0897204854057a1e775c39b844b8b47060a46cfcf1e6b2bfae6eabea0919e",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-DATA-004",
+      "canonical_title": "Adaptive query economics and scan scheduling preventing Cartesian explosion",
+      "canonical_description": "Adaptive query economics and scan scheduling preventing Cartesian explosion.",
+      "acceptance_criteria": [
+        "Scheduled worker scans prioritized route batches rather than global Cartesian product.",
+        "Configurable cache TTLs prevent redundant immediate re-queries.",
+        "Worker respects rate limits with backoff and jitter."
+      ],
+      "category": "data_provider",
+      "priority": "P1",
+      "semantic_hash": "ed4f29cc93f5ca637cec16c405e4e8b9b8ac7030684099325c20fe3057159903",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-DATA-005",
+      "canonical_title": "Offline provider fixture replay and regression suite",
+      "canonical_description": "Offline provider fixture replay and regression suite.",
+      "acceptance_criteria": [
+        "Representative JSON fixtures for all supported providers are maintained in test folders.",
+        "Parsers and normalizers execute cleanly against fixture data in automated CI."
+      ],
+      "category": "data_provider",
+      "priority": "P1",
+      "semantic_hash": "147ea191c37a6734fc9889b92b006cbd77cf035d11f2d7aeb7916037005946dd",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-001",
+      "canonical_title": "Fare comparison cohorts with hierarchical fallback",
+      "canonical_description": "Fare comparison cohorts with hierarchical fallback.",
+      "acceptance_criteria": [
+        "Cohorts group fares by route, trip type (one-way vs round-trip), and lead-time window.",
+        "When sample size in a granular cohort is below threshold, falls back to route-level baseline with reduced confidence.",
+        "Cohort quality explicitly influences deal confidence."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "db9122e591bc60fbfca6861d53b665e34eb6f5f3c4ec918b99765ecdf481f0b4",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-002",
+      "canonical_title": "Robust statistical pricing engine",
+      "canonical_description": "Robust statistical pricing engine.",
+      "acceptance_criteria": [
+        "Calculates median, 20th percentile, 80th percentile, and price volatility.",
+        "Identifies historical min and max observed within rolling time windows (7d, 30d, 90d, 180d).",
+        "Handles sparse cohorts safely without fabricating smooth curves across data voids."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "29676aa6f1cd58be0b147f8427c0e9a05f130308772e42c6ec97db01e46added",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-003",
+      "canonical_title": "Deterministic deal detection and Deal Score calculation",
+      "canonical_description": "Deterministic deal detection and Deal Score calculation.",
+      "acceptance_criteria": [
+        "Deal Score is a bounded metric (0-100) combining discount percentage, historical percentile rank, and rarity.",
+        "Formula is deterministic, reproducible, and explainable.",
+        "Zero or negative discount results in Deal Score = 0."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "aa5cfd84e56273eea2702142d63d94a62bc799d0b3ce65730fc0548237897fd1",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-004",
+      "canonical_title": "Strict separation of Deal Strength from Evidence Confidence",
+      "canonical_description": "Strict separation of Deal Strength from Evidence Confidence.",
+      "acceptance_criteria": [
+        "Confidence is calculated independently from Deal Score based on sample count, provider reliability, and observation age.",
+        "Fares with confidence < 50% are capped at modest labels (e.g. 'Giá đáng chú ý') regardless of high discount.",
+        "'Deal cực nóng' strictly requires confidence >= 75% and Deal Score >= 80.",
+        "'Deal rất ngon' strictly requires confidence >= 65% and Deal Score >= 70."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "1df9f1a3b57f8b25476d0d4659140df8aa338d8cd8a2b4f788833a194edf383b",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-005",
+      "canonical_title": "Suspicious data quarantine for anomaly containment",
+      "canonical_description": "Suspicious data quarantine for anomaly containment.",
+      "acceptance_criteria": [
+        "Offers with prices below estimated airport tax minimums are quarantined.",
+        "Extreme price drops (>75% discount) with sample size < 3 require secondary verification.",
+        "Quarantined offers are excluded from top deal feeds and alert triggers until verified."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "10b3195201ed066305528954f0191cb9847eb277ebbb6c5ded959c672d2a17a3",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-006",
+      "canonical_title": "True-cost travel calculation engine",
+      "canonical_description": "True-cost travel calculation engine.",
+      "acceptance_criteria": [
+        "Itemizes ticket fare, mandatory airport taxes, checked baggage, seat fees, payment surcharge, and airport transfer.",
+        "Classifies each cost component as KNOWN, ESTIMATED, OPTIONAL, or UNKNOWN.",
+        "Displays real total alongside advertised total with clear itemized breakdown."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "97ba12d1e9c123c2a7acc39e9a23f37e13e2ee3ceef453fe01c359bdf7c8d1b1",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-007",
+      "canonical_title": "Foundational route optimization and candidate journey ranking",
+      "canonical_description": "Foundational route optimization and candidate journey ranking.",
+      "acceptance_criteria": [
+        "Evaluates direct vs 1-stop vs alternative hub routes.",
+        "Penalizes excessive layover times (>8 hours) unless intentionally selected as stopover.",
+        "Ranks route options by a multi-objective score balancing true cost, total duration, and transfer count."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "c237fd939dcf9746fdf47958ee12bd56a1e75df438ce8ff19085e165f5e507d1",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-008",
+      "canonical_title": "Self-transfer and connection risk modeling",
+      "canonical_description": "Self-transfer and connection risk modeling.",
+      "acceptance_criteria": [
+        "Detects self-transfer / separate-ticket connections and flags them with explicit warnings.",
+        "Evaluates connection buffer: flags layovers under 180 min (international) or 90 min (domestic) as HIGH RISK.",
+        "Detects airport changes (e.g. HND to NRT) and requires minimum 5-hour transfer buffer.",
+        "Categorizes risk into low, medium, high with concrete factors."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "ee379aa99b669507d3e05492ab1dedd6f16c4536c1a632f3d1cdebc585a624b6",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-009",
+      "canonical_title": "Deterministic Buy / Monitor / Wait decision engine",
+      "canonical_description": "Deterministic Buy / Monitor / Wait decision engine.",
+      "acceptance_criteria": [
+        "Outputs decision categories: BUY_NOW, BUY_SOON, MONITOR, WAIT, or INSUFFICIENT_DATA.",
+        "Decision is strictly rule-grounded on price percentile, confidence score, lead time, and route volatility.",
+        "Does not claim guaranteed future prices when forecasting data is not statistically validated."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "b7d179519c6793c048f7132dcc67dad8eefee896ef701fbcef6935eb3b6600c1",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-INTEL-010",
+      "canonical_title": "Grounded AI explanation with deterministic fallback",
+      "canonical_description": "Grounded AI explanation with deterministic fallback.",
+      "acceptance_criteria": [
+        "AI explanation prompt receives only structured, deterministic flight facts, statistics, and risks.",
+        "AI output is schema-validated (reason, tags, risk, recommendation, savingScore).",
+        "If LLM service is unavailable, fails, or violates schema, system falls back to rule-based explanation without disruption."
+      ],
+      "category": "intelligence",
+      "priority": "P0",
+      "semantic_hash": "250fe1da35a5cd766ebb4da992be67078d992f3cb2419d06f7c243730a48ae22",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-UX-001",
+      "canonical_title": "Ranked opportunity feed on homepage",
+      "canonical_description": "Ranked opportunity feed on homepage.",
+      "acceptance_criteria": [
+        "Homepage displays ranked opportunities prioritized by deal score, confidence, and diversity.",
+        "Suppresses duplicate flight cards for the same route and date.",
+        "Features distinct curated sections (e.g. Hot Deals, Biggest Price Drops, Recommended For You)."
+      ],
+      "category": "user_experience",
+      "priority": "P0",
+      "semantic_hash": "e435d97677bae5a8982858e6863f4ae099e076aadc1ce852d338590a54776904",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-UX-002",
+      "canonical_title": "Comprehensive Deal Detail view",
+      "canonical_description": "Comprehensive Deal Detail view.",
+      "acceptance_criteria": [
+        "Displays itinerary schedule, airline, flight number, duration, and stops.",
+        "Renders true cost analyzer with editable optional add-ons.",
+        "Renders interactive historical price chart when observations exist, or explicit no-data state when empty.",
+        "Displays grounded AI/rule explanation with clear provenance distinction (Fact vs Inference).",
+        "Provides validated booking handoff button."
+      ],
+      "category": "user_experience",
+      "priority": "P0",
+      "semantic_hash": "293bc8a11265acea4a3388ed90630664e83cf9b6e9886c15d46148adfd2390d9",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-UX-003",
+      "canonical_title": "Flexible opportunity discovery",
+      "canonical_description": "Flexible opportunity discovery.",
+      "acceptance_criteria": [
+        "Explore and Search pages support open destination filtering.",
+        "Filters include origin airport, budget ceiling, region (Southeast Asia, East Asia, Europe, Domestic), and date flexibility.",
+        "Filter state persists in URL query params or session storage."
+      ],
+      "category": "user_experience",
+      "priority": "P0",
+      "semantic_hash": "f2a0d20020e628adb27ba119cbc81058ff6539e0bf542d75e92f4c567a48da8f",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-UX-004",
+      "canonical_title": "User travel preferences and personalized ranking",
+      "canonical_description": "User travel preferences and personalized ranking.",
+      "acceptance_criteria": [
+        "Preferences include home origin, max stops, preferred airlines, budget limit, and risk tolerance.",
+        "Guest preferences persist in local storage; authenticated users sync to Supabase database.",
+        "Feed ranking personalizes deal order based on user preferences."
+      ],
+      "category": "user_experience",
+      "priority": "P1",
+      "semantic_hash": "eb4d297cfab676be4e52c4e0d1f5b87584e0436248898304581cac50b69d7f4d",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-UX-005",
+      "canonical_title": "Saved deals with explicit lifecycle state tracking",
+      "canonical_description": "Saved deals with explicit lifecycle state tracking.",
+      "acceptance_criteria": [
+        "Users can toggle bookmark on any deal card or detail page.",
+        "Saved deals page lists bookmarks with current lifecycle status (ACTIVE, PRICE_CHANGED, STALE, EXPIRED).",
+        "Never displays an expired or changed deal as current live fare without clear notice."
+      ],
+      "category": "user_experience",
+      "priority": "P0",
+      "semantic_hash": "f5ad41693038ea2aa3ae81274fcfd51151867b49539a5decc64dab1241ecf5d5",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-UX-006",
+      "canonical_title": "Smart price alert creation with abuse protection",
+      "canonical_description": "Smart price alert creation with abuse protection.",
+      "acceptance_criteria": [
+        "Alert form supports origin, destination, max price, min discount, and date range.",
+        "Requires valid email or Telegram destination.",
+        "Protected by Cloudflare Turnstile verification and rate-limit budgets to prevent bot spam.",
+        "Requires confirmation token before alert activation."
+      ],
+      "category": "user_experience",
+      "priority": "P0",
+      "semantic_hash": "f62b81ae2cd7baecc822b512bc83da16d9989cb7c3d120307edb3b5f42a039f8",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-UX-007",
+      "canonical_title": "Effectively-once notification dispatch and deduplication",
+      "canonical_description": "Effectively-once notification dispatch and deduplication.",
+      "acceptance_criteria": [
+        "Alert processor matches published deals against active, confirmed user alerts.",
+        "Enforces 24-hour deduplication window per route/user to prevent spam.",
+        "Bounded retry policy (1m, 5m, 15m) for transient notification provider failures.",
+        "Provides one-click signed unsubscribe link in all notifications."
+      ],
+      "category": "user_experience",
+      "priority": "P0",
+      "semantic_hash": "2085f7c27c6c383e0e787a14646bc6ff2e391aa1ef82979f34653a94ab77bda3",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-UX-008",
+      "canonical_title": "Freshness lifecycle and transparent freshness indicators",
+      "canonical_description": "Freshness lifecycle and transparent freshness indicators.",
+      "acceptance_criteria": [
+        "Fares <= 120 minutes old are classified as HEALTHY.",
+        "Fares between 121 and 360 minutes old are classified as DEGRADED_FRESHNESS with warning badge.",
+        "Fares > 360 minutes old are classified as STALE_ONLY with prominent re-check prompt.",
+        "No endpoint or UI presents stale data as currently healthy."
+      ],
+      "category": "user_experience",
+      "priority": "P0",
+      "semantic_hash": "7047a8049936a12f8f545659b447e8a703123fe62f9b0c1a26f79928df63097f",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-UX-009",
+      "canonical_title": "Responsive UX and accessibility compliance (WCAG 2",
+      "canonical_description": "Responsive UX and accessibility compliance (WCAG 2.2 AA).",
+      "acceptance_criteria": [
+        "Touch targets for interactive elements meet or exceed 44x44px minimum.",
+        "Color contrast ratios meet WCAG 2.2 AA standards (minimum 4.5:1 for normal text).",
+        "Includes skip-to-content navigation link.",
+        "All icon-only buttons include accessible screen-reader labels.",
+        "Layout adapts cleanly between mobile viewport (375px) and desktop (1280px) without horizontal overflow."
+      ],
+      "category": "user_experience",
+      "priority": "P0",
+      "semantic_hash": "503bbeed4385bc71736ab7d1b16dda564c12493a13fd863f18ba3c4e91d01117",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-SEC-001",
+      "canonical_title": "Zero secret leakage and strict environment isolation",
+      "canonical_description": "Zero secret leakage and strict environment isolation.",
+      "acceptance_criteria": [
+        "Client bundle contains only VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.",
+        "All privileged database writes, worker triggers, and provider calls reside in secure server/edge environments.",
+        "Automated secret scanning and security smoke test pass cleanly."
+      ],
+      "category": "security_privacy",
+      "priority": "P0",
+      "semantic_hash": "62480a075582d1de85505115167706cd72f839de863555932eecf92d3d75373a",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-SEC-002",
+      "canonical_title": "Strict Row Level Security (RLS) and cross-user data isolation",
+      "canonical_description": "Strict Row Level Security (RLS) and cross-user data isolation.",
+      "acceptance_criteria": [
+        "RLS enabled on user_preferences, user_bookmarks, price_alerts, and notification_logs.",
+        "Anonymous reads deny access or return empty sets for protected tables.",
+        "User A cannot read or write records belonging to user B."
+      ],
+      "category": "security_privacy",
+      "priority": "P0",
+      "semantic_hash": "63ed8ce61b106780907c45b7bd0092a8d9ab13423ebdaf6cdbd548ba32b23ba3",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-SEC-003",
+      "canonical_title": "Safe booking link sanitization and fail-closed affiliate redirects",
+      "canonical_description": "Safe booking link sanitization and fail-closed affiliate redirects.",
+      "acceptance_criteria": [
+        "Booking URLs are sanitized against a strict HTTPS allowlist of approved booking hosts.",
+        "Rejects javascript:, data:, or untrusted hostnames.",
+        "deal-redirect function validates deal status and affiliate parameters before emitting 302."
+      ],
+      "category": "security_privacy",
+      "priority": "P0",
+      "semantic_hash": "af0ac45c5e11fb7f5dfd052e4bf2f60cbb8f80fa7de9fb1b31d9bd3e57acb0b9",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-SEC-004",
+      "canonical_title": "Transactional account deletion and data export rights (GDPR/Privacy)",
+      "canonical_description": "Transactional account deletion and data export rights (GDPR/Privacy).",
+      "acceptance_criteria": [
+        "Authenticated export endpoint returns user preferences, bookmarks, and alerts with tokens scrubbed.",
+        "Server-authoritative account deletion requires explicit 'DELETE_MY_ACCOUNT' confirmation.",
+        "Transactionally deletes application records across all tables and logs one-way hashed deletion audit.",
+        "Fails closed without partial deletion if any step errors."
+      ],
+      "category": "security_privacy",
+      "priority": "P0",
+      "semantic_hash": "fda6b55217f31891d8212646745c85b88d2f2c33e874df426ce231e2bb703898",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-SEC-005",
+      "canonical_title": "Automated data retention and hygiene cleanup",
+      "canonical_description": "Automated data retention and hygiene cleanup.",
+      "acceptance_criteria": [
+        "Retention policy defines lifetimes: 7d for search cache, 30d for telemetry events, 90d for inactive alerts.",
+        "retention-cleanup function executes bounded batch deletions under internal secret authentication.",
+        "Dry-run mode supported for safe verification."
+      ],
+      "category": "security_privacy",
+      "priority": "P1",
+      "semantic_hash": "e7747481c36c724cb51fcfcf1b172c4360fbe82b7f842413ac834a1b849ddcc9",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-OPS-001",
+      "canonical_title": "Provider health monitoring and circuit breaking",
+      "canonical_description": "Provider health monitoring and circuit breaking.",
+      "acceptance_criteria": [
+        "Monitors provider response codes, error rates, and empty responses in operational scan view.",
+        "Marks provider status (HEALTHY, DEGRADED, UNAVAILABLE).",
+        "Switches to cached/historical degraded mode when primary provider is unavailable."
+      ],
+      "category": "operations_resilience",
+      "priority": "P1",
+      "semantic_hash": "25d0501c162bd4647634802e4776ab735d30864a03f5ab235a1cfd4eb3ee959e",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-OPS-002",
+      "canonical_title": "High-throughput precomputed read models",
+      "canonical_description": "High-throughput precomputed read models.",
+      "acceptance_criteria": [
+        "Background refresh job precomputes ranked deal snapshots (refresh-observed-fares).",
+        "Public read endpoints query precomputed materialized read models with pagination and indexes.",
+        "Eliminates on-demand multi-table aggregate scanning on public user requests."
+      ],
+      "category": "operations_resilience",
+      "priority": "P0",
+      "semantic_hash": "3b8e16c3ac8251fbd9d4281341d75b2bdfb7d024e2b8880c79d16a473a0c7283",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-OPS-003",
+      "canonical_title": "Structured observability, correlation IDs, and privacy-safe client diagnostics",
+      "canonical_description": "Structured observability, correlation IDs, and privacy-safe client diagnostics.",
+      "acceptance_criteria": [
+        "All edge functions and API responses include x-request-id and x-release-sha headers.",
+        "Client error boundaries log bounded diagnostic error codes without leaking internal stack traces.",
+        "Client reports Core Web Vitals (LCP, INP, CLS) sampled at 25% without PII."
+      ],
+      "category": "operations_resilience",
+      "priority": "P1",
+      "semantic_hash": "802269d52ef06569f3580e4997bb86440de0473800f29bf7d0739f81d729add2",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-OPS-004",
+      "canonical_title": "Reproducible database migrations and deployment runbook",
+      "canonical_description": "Reproducible database migrations and deployment runbook.",
+      "acceptance_criteria": [
+        "All 38 SQL migrations replay in strict sequential timestamp order on clean PostgreSQL with 0 errors.",
+        "Automated CI validates migration chain integrity and linting.",
+        "Runbook provides unambiguous setup, test, migration, and verification instructions."
+      ],
+      "category": "operations_resilience",
+      "priority": "P0",
+      "semantic_hash": "c14ba0f77838a72c296a6aac01383a9bb172fd6e27d77bbe186d750958cd32fa",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    },
+    {
+      "requirement_id": "FLY-OPS-005",
+      "canonical_title": "Adversarial test suite and failure resilience verification",
+      "canonical_description": "Adversarial test suite and failure resilience verification.",
+      "acceptance_criteria": [
+        "Tests handle absurd prices ($0, negative, $1,000,000,000).",
+        "Tests handle timezone crossings and DST boundaries.",
+        "Tests handle provider timeouts, empty responses, and rate limit 429s.",
+        "Tests handle concurrent identical alert creation without duplicate notifications."
+      ],
+      "category": "operations_resilience",
+      "priority": "P0",
+      "semantic_hash": "ca58a40cf326dc541a847e648a22b389757e875b486b09bca568db8a8aade198",
+      "contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+      "last_valid_amendment_id": "AMD-2026-09-24-INITIAL-CANONICAL"
+    }
+  ]
+}

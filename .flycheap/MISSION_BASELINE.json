@@ -1,0 +1,91 @@
+{
+  "baseline_captured_at": "2026-09-28T06:42:13.594Z",
+  "current_git_sha": "86974297df50afe6625f3def841f340d6b02b98d",
+  "remote_sha": "86974297df50afe6625f3def841f340d6b02b98d",
+  "working_tree_cleanliness": "DIRTY",
+  "current_rc_identity": "RC-V6.0-001",
+  "current_contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+  "current_requirements": {
+    "total": 34,
+    "by_category": {
+      "data_provider": 5,
+      "intelligence": 10,
+      "user_experience": 9,
+      "security_privacy": 5,
+      "operations_resilience": 5
+    }
+  },
+  "current_product_outcomes": {
+    "total": 14,
+    "outcome_ids": [
+      "OUTCOME-A",
+      "OUTCOME-B",
+      "OUTCOME-C",
+      "OUTCOME-D",
+      "OUTCOME-E",
+      "OUTCOME-F",
+      "OUTCOME-G",
+      "OUTCOME-H",
+      "OUTCOME-I",
+      "OUTCOME-J",
+      "OUTCOME-K",
+      "OUTCOME-L",
+      "OUTCOME-M",
+      "OUTCOME-N"
+    ]
+  },
+  "current_release_gates": {
+    "total": 33,
+    "by_status": {
+      "SUPPORTED": 24,
+      "BLOCKED": 7,
+      "NOT_APPLICABLE": 2
+    }
+  },
+  "current_evidence_model": {
+    "maturity_levels_defined": [
+      "L0",
+      "L1",
+      "L2",
+      "L3",
+      "L4",
+      "L5",
+      "L6",
+      "L7",
+      "L8",
+      "L9"
+    ],
+    "current_strongest_level": "L5_local_fullstack"
+  },
+  "current_blockers": [
+    {
+      "blocker_id": "BLK-MIGR-01",
+      "severity": "CRITICAL_RUNTIME_BLOCKER",
+      "title": "Remote Supabase Migration Drift & Cross-Project Contamination"
+    },
+    {
+      "blocker_id": "BLK-PROV-01",
+      "severity": "HIGH_EXTERNAL_DEPENDENCY_BLOCKER",
+      "title": "Commercial Live Provider Partner Keys & Affiliate URLs"
+    },
+    {
+      "blocker_id": "BLK-DEP-01",
+      "severity": "HIGH_OPERATIONAL_BLOCKER",
+      "title": "Production Deployment Authorization & Main Branch Gate"
+    }
+  ],
+  "existing_proof_artifacts": [
+    ".flycheap/PROOF_MANIFEST.json",
+    ".flycheap/GOLDEN_DATASET_V1.json",
+    ".flycheap/MUTATION_LOG.jsonl",
+    ".flycheap/NEGATIVE_EVIDENCE.jsonl",
+    ".flycheap/RELEASE_ATTESTATION.json"
+  ],
+  "existing_semantic_traceability_state": {
+    "orphan_requirements": 0,
+    "orphan_features": 0,
+    "orphan_outcomes": 0
+  },
+  "current_staging_state": "HELD_BEHIND_BLK_MIGR_01",
+  "current_production_state": "HELD_BEHIND_BLK_DEP_01"
+}

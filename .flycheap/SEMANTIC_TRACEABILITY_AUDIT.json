@@ -1,0 +1,627 @@
+{
+  "version": "2.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "total_edges_audited": 40,
+  "valid_edges": 40,
+  "invalid_edges": 0,
+  "ambiguous_edges": 0,
+  "edges": [
+    {
+      "outcome_id": "OUTCOME-A",
+      "outcome_description": "Discover meaningful flight opportunities without knowing a fixed destination",
+      "requirement_id": "FLY-UX-001",
+      "requirement_title": "Ranked opportunity feed on homepage",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Ranked opportunity feed on homepage.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Homepage displays ranked opportunities prioritized by deal score, confidence, and diversity.",
+        "Suppresses duplicate flight cards for the same route and date.",
+        "Features distinct curated sections (e.g. Hot Deals, Biggest Price Drops, Recommended For You)."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-A",
+      "outcome_description": "Discover meaningful flight opportunities without knowing a fixed destination",
+      "requirement_id": "FLY-UX-003",
+      "requirement_title": "Flexible opportunity discovery",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Flexible opportunity discovery.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Explore and Search pages support open destination filtering.",
+        "Filters include origin airport, budget ceiling, region (Southeast Asia, East Asia, Europe, Domestic), and date flexibility.",
+        "Filter state persists in URL query params or session storage."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-A",
+      "outcome_description": "Discover meaningful flight opportunities without knowing a fixed destination",
+      "requirement_id": "FLY-DATA-001",
+      "requirement_title": "Flight data provider abstraction layer supporting multiple adapters (FastFlights, Amadeus, SerpApi) with consistent normalized output contract",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Flight data provider abstraction layer supporting multiple adapters (FastFlights, Amadeus, SerpApi) with consistent normalized output contract.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Provider interface defines search, refresh, and health-check capabilities.",
+        "Raw provider payloads are transformed into the internal normalized flight offer contract.",
+        "Missing optional provider fields have safe defaults without crashing normalization."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-A",
+      "outcome_description": "Discover meaningful flight opportunities without knowing a fixed destination",
+      "requirement_id": "FLY-DATA-004",
+      "requirement_title": "Adaptive query economics and scan scheduling preventing Cartesian explosion",
+      "relation_type": "SUPPORTING",
+      "verdict": "VALID",
+      "causal_mechanism": "Adaptive query economics and scan scheduling preventing Cartesian explosion.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Scheduled worker scans prioritized route batches rather than global Cartesian product.",
+        "Configurable cache TTLs prevent redundant immediate re-queries.",
+        "Worker respects rate limits with backoff and jitter."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-A",
+      "outcome_description": "Discover meaningful flight opportunities without knowing a fixed destination",
+      "requirement_id": "FLY-DATA-005",
+      "requirement_title": "Offline provider fixture replay and regression suite",
+      "relation_type": "SUPPORTING",
+      "verdict": "VALID",
+      "causal_mechanism": "Offline provider fixture replay and regression suite.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Representative JSON fixtures for all supported providers are maintained in test folders.",
+        "Parsers and normalizers execute cleanly against fixture data in automated CI."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-B",
+      "outcome_description": "Understand whether a fare is genuinely unusual relative to sufficiently comparable historical evidence",
+      "requirement_id": "FLY-INTEL-001",
+      "requirement_title": "Fare comparison cohorts with hierarchical fallback",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Fare comparison cohorts with hierarchical fallback.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Cohorts group fares by route, trip type (one-way vs round-trip), and lead-time window.",
+        "When sample size in a granular cohort is below threshold, falls back to route-level baseline with reduced confidence.",
+        "Cohort quality explicitly influences deal confidence."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-B",
+      "outcome_description": "Understand whether a fare is genuinely unusual relative to sufficiently comparable historical evidence",
+      "requirement_id": "FLY-INTEL-002",
+      "requirement_title": "Robust statistical pricing engine",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Robust statistical pricing engine.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Calculates median, 20th percentile, 80th percentile, and price volatility.",
+        "Identifies historical min and max observed within rolling time windows (7d, 30d, 90d, 180d).",
+        "Handles sparse cohorts safely without fabricating smooth curves across data voids."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-B",
+      "outcome_description": "Understand whether a fare is genuinely unusual relative to sufficiently comparable historical evidence",
+      "requirement_id": "FLY-INTEL-003",
+      "requirement_title": "Deterministic deal detection and Deal Score calculation",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Deterministic deal detection and Deal Score calculation.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Deal Score is a bounded metric (0-100) combining discount percentage, historical percentile rank, and rarity.",
+        "Formula is deterministic, reproducible, and explainable.",
+        "Zero or negative discount results in Deal Score = 0."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-B",
+      "outcome_description": "Understand whether a fare is genuinely unusual relative to sufficiently comparable historical evidence",
+      "requirement_id": "FLY-DATA-003",
+      "requirement_title": "Immutable historical fare observation ingestion with idempotent deduplication",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Immutable historical fare observation ingestion with idempotent deduplication.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Stores each fare observation with route, dates, airline, price, currency, timestamp, and provider.",
+        "Deduplication key prevents identical offer re-insertion on repeated pipeline runs.",
+        "Raw observations are append-only to preserve statistical integrity."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-C",
+      "outcome_description": "Distinguish strong price advantage from weak evidence confidence",
+      "requirement_id": "FLY-INTEL-004",
+      "requirement_title": "Strict separation of Deal Strength from Evidence Confidence",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Strict separation of Deal Strength from Evidence Confidence.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Confidence is calculated independently from Deal Score based on sample count, provider reliability, and observation age.",
+        "Fares with confidence < 50% are capped at modest labels (e.g. 'Giá đáng chú ý') regardless of high discount.",
+        "'Deal cực nóng' strictly requires confidence >= 75% and Deal Score >= 80.",
+        "'Deal rất ngon' strictly requires confidence >= 65% and Deal Score >= 70."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-C",
+      "outcome_description": "Distinguish strong price advantage from weak evidence confidence",
+      "requirement_id": "FLY-INTEL-005",
+      "requirement_title": "Suspicious data quarantine for anomaly containment",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Suspicious data quarantine for anomaly containment.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Offers with prices below estimated airport tax minimums are quarantined.",
+        "Extreme price drops (>75% discount) with sample size < 3 require secondary verification.",
+        "Quarantined offers are excluded from top deal feeds and alert triggers until verified."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-C",
+      "outcome_description": "Distinguish strong price advantage from weak evidence confidence",
+      "requirement_id": "FLY-DATA-002",
+      "requirement_title": "Strict flight data validation and anomalous fare rejection",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Strict flight data validation and anomalous fare rejection.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Rejects fares with price <= 0 or non-finite values.",
+        "Rejects flights where arrival is earlier than departure or flight duration is <= 0.",
+        "Requires valid IATA/ICAO origin and destination codes.",
+        "Validates departure and return dates as legitimate future calendar dates."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-D",
+      "outcome_description": "Understand estimated all-in cost rather than misleading headline fare",
+      "requirement_id": "FLY-INTEL-006",
+      "requirement_title": "True-cost travel calculation engine",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "True-cost travel calculation engine.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Itemizes ticket fare, mandatory airport taxes, checked baggage, seat fees, payment surcharge, and airport transfer.",
+        "Classifies each cost component as KNOWN, ESTIMATED, OPTIONAL, or UNKNOWN.",
+        "Displays real total alongside advertised total with clear itemized breakdown."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-D",
+      "outcome_description": "Understand estimated all-in cost rather than misleading headline fare",
+      "requirement_id": "FLY-UX-002",
+      "requirement_title": "Comprehensive Deal Detail view",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Comprehensive Deal Detail view.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Displays itinerary schedule, airline, flight number, duration, and stops.",
+        "Renders true cost analyzer with editable optional add-ons.",
+        "Renders interactive historical price chart when observations exist, or explicit no-data state when empty.",
+        "Displays grounded AI/rule explanation with clear provenance distinction (Fact vs Inference).",
+        "Provides validated booking handoff button."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-E",
+      "outcome_description": "Understand meaningful route and connection risks",
+      "requirement_id": "FLY-INTEL-007",
+      "requirement_title": "Foundational route optimization and candidate journey ranking",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Foundational route optimization and candidate journey ranking.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Evaluates direct vs 1-stop vs alternative hub routes.",
+        "Penalizes excessive layover times (>8 hours) unless intentionally selected as stopover.",
+        "Ranks route options by a multi-objective score balancing true cost, total duration, and transfer count."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-E",
+      "outcome_description": "Understand meaningful route and connection risks",
+      "requirement_id": "FLY-INTEL-008",
+      "requirement_title": "Self-transfer and connection risk modeling",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Self-transfer and connection risk modeling.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Detects self-transfer / separate-ticket connections and flags them with explicit warnings.",
+        "Evaluates connection buffer: flags layovers under 180 min (international) or 90 min (domestic) as HIGH RISK.",
+        "Detects airport changes (e.g. HND to NRT) and requires minimum 5-hour transfer buffer.",
+        "Categorizes risk into low, medium, high with concrete factors."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-E",
+      "outcome_description": "Understand meaningful route and connection risks",
+      "requirement_id": "FLY-UX-002",
+      "requirement_title": "Comprehensive Deal Detail view",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Comprehensive Deal Detail view.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Displays itinerary schedule, airline, flight number, duration, and stops.",
+        "Renders true cost analyzer with editable optional add-ons.",
+        "Renders interactive historical price chart when observations exist, or explicit no-data state when empty.",
+        "Displays grounded AI/rule explanation with clear provenance distinction (Fact vs Inference).",
+        "Provides validated booking handoff button."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-F",
+      "outcome_description": "Compare alternative travel options coherently",
+      "requirement_id": "FLY-INTEL-007",
+      "requirement_title": "Foundational route optimization and candidate journey ranking",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Foundational route optimization and candidate journey ranking.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Evaluates direct vs 1-stop vs alternative hub routes.",
+        "Penalizes excessive layover times (>8 hours) unless intentionally selected as stopover.",
+        "Ranks route options by a multi-objective score balancing true cost, total duration, and transfer count."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-F",
+      "outcome_description": "Compare alternative travel options coherently",
+      "requirement_id": "FLY-UX-002",
+      "requirement_title": "Comprehensive Deal Detail view",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Comprehensive Deal Detail view.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Displays itinerary schedule, airline, flight number, duration, and stops.",
+        "Renders true cost analyzer with editable optional add-ons.",
+        "Renders interactive historical price chart when observations exist, or explicit no-data state when empty.",
+        "Displays grounded AI/rule explanation with clear provenance distinction (Fact vs Inference).",
+        "Provides validated booking handoff button."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-G",
+      "outcome_description": "Receive a grounded action signal without fake future-price certainty",
+      "requirement_id": "FLY-INTEL-009",
+      "requirement_title": "Deterministic Buy / Monitor / Wait decision engine",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Deterministic Buy / Monitor / Wait decision engine.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Outputs decision categories: BUY_NOW, BUY_SOON, MONITOR, WAIT, or INSUFFICIENT_DATA.",
+        "Decision is strictly rule-grounded on price percentile, confidence score, lead time, and route volatility.",
+        "Does not claim guaranteed future prices when forecasting data is not statistically validated."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-G",
+      "outcome_description": "Receive a grounded action signal without fake future-price certainty",
+      "requirement_id": "FLY-INTEL-010",
+      "requirement_title": "Grounded AI explanation with deterministic fallback",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Grounded AI explanation with deterministic fallback.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "AI explanation prompt receives only structured, deterministic flight facts, statistics, and risks.",
+        "AI output is schema-validated (reason, tags, risk, recommendation, savingScore).",
+        "If LLM service is unavailable, fails, or violates schema, system falls back to rule-based explanation without disruption."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-H",
+      "outcome_description": "See data freshness and provenance clearly",
+      "requirement_id": "FLY-UX-008",
+      "requirement_title": "Freshness lifecycle and transparent freshness indicators",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Freshness lifecycle and transparent freshness indicators.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Fares <= 120 minutes old are classified as HEALTHY.",
+        "Fares between 121 and 360 minutes old are classified as DEGRADED_FRESHNESS with warning badge.",
+        "Fares > 360 minutes old are classified as STALE_ONLY with prominent re-check prompt.",
+        "No endpoint or UI presents stale data as currently healthy."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-H",
+      "outcome_description": "See data freshness and provenance clearly",
+      "requirement_id": "FLY-OPS-001",
+      "requirement_title": "Provider health monitoring and circuit breaking",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Provider health monitoring and circuit breaking.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Monitors provider response codes, error rates, and empty responses in operational scan view.",
+        "Marks provider status (HEALTHY, DEGRADED, UNAVAILABLE).",
+        "Switches to cached/historical degraded mode when primary provider is unavailable."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-H",
+      "outcome_description": "See data freshness and provenance clearly",
+      "requirement_id": "FLY-OPS-002",
+      "requirement_title": "High-throughput precomputed read models",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "High-throughput precomputed read models.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Background refresh job precomputes ranked deal snapshots (refresh-observed-fares).",
+        "Public read endpoints query precomputed materialized read models with pagination and indexes.",
+        "Eliminates on-demand multi-table aggregate scanning on public user requests."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-I",
+      "outcome_description": "Save and monitor flight opportunities with lifecycle tracking",
+      "requirement_id": "FLY-UX-004",
+      "requirement_title": "User travel preferences and personalized ranking",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "User travel preferences and personalized ranking.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Preferences include home origin, max stops, preferred airlines, budget limit, and risk tolerance.",
+        "Guest preferences persist in local storage; authenticated users sync to Supabase database.",
+        "Feed ranking personalizes deal order based on user preferences."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-I",
+      "outcome_description": "Save and monitor flight opportunities with lifecycle tracking",
+      "requirement_id": "FLY-UX-005",
+      "requirement_title": "Saved deals with explicit lifecycle state tracking",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Saved deals with explicit lifecycle state tracking.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Users can toggle bookmark on any deal card or detail page.",
+        "Saved deals page lists bookmarks with current lifecycle status (ACTIVE, PRICE_CHANGED, STALE, EXPIRED).",
+        "Never displays an expired or changed deal as current live fare without clear notice."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-J",
+      "outcome_description": "Create alerts without receiving duplicate or spam notifications",
+      "requirement_id": "FLY-UX-006",
+      "requirement_title": "Smart price alert creation with abuse protection",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Smart price alert creation with abuse protection.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Alert form supports origin, destination, max price, min discount, and date range.",
+        "Requires valid email or Telegram destination.",
+        "Protected by Cloudflare Turnstile verification and rate-limit budgets to prevent bot spam.",
+        "Requires confirmation token before alert activation."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-J",
+      "outcome_description": "Create alerts without receiving duplicate or spam notifications",
+      "requirement_id": "FLY-UX-007",
+      "requirement_title": "Effectively-once notification dispatch and deduplication",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Effectively-once notification dispatch and deduplication.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Alert processor matches published deals against active, confirmed user alerts.",
+        "Enforces 24-hour deduplication window per route/user to prevent spam.",
+        "Bounded retry policy (1m, 5m, 15m) for transient notification provider failures.",
+        "Provides one-click signed unsubscribe link in all notifications."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-K",
+      "outcome_description": "Reach a legitimate, sanitized booking handoff without malicious redirects",
+      "requirement_id": "FLY-SEC-003",
+      "requirement_title": "Safe booking link sanitization and fail-closed affiliate redirects",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Safe booking link sanitization and fail-closed affiliate redirects.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Booking URLs are sanitized against a strict HTTPS allowlist of approved booking hosts.",
+        "Rejects javascript:, data:, or untrusted hostnames.",
+        "deal-redirect function validates deal status and affiliate parameters before emitting 302."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-K",
+      "outcome_description": "Reach a legitimate, sanitized booking handoff without malicious redirects",
+      "requirement_id": "FLY-UX-002",
+      "requirement_title": "Comprehensive Deal Detail view",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Comprehensive Deal Detail view.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Displays itinerary schedule, airline, flight number, duration, and stops.",
+        "Renders true cost analyzer with editable optional add-ons.",
+        "Renders interactive historical price chart when observations exist, or explicit no-data state when empty.",
+        "Displays grounded AI/rule explanation with clear provenance distinction (Fact vs Inference).",
+        "Provides validated booking handoff button."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-L",
+      "outcome_description": "Use the product without cross-user data leakage or privacy violation",
+      "requirement_id": "FLY-SEC-001",
+      "requirement_title": "Zero secret leakage and strict environment isolation",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Zero secret leakage and strict environment isolation.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Client bundle contains only VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.",
+        "All privileged database writes, worker triggers, and provider calls reside in secure server/edge environments.",
+        "Automated secret scanning and security smoke test pass cleanly."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-L",
+      "outcome_description": "Use the product without cross-user data leakage or privacy violation",
+      "requirement_id": "FLY-SEC-002",
+      "requirement_title": "Strict Row Level Security (RLS) and cross-user data isolation",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Strict Row Level Security (RLS) and cross-user data isolation.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "RLS enabled on user_preferences, user_bookmarks, price_alerts, and notification_logs.",
+        "Anonymous reads deny access or return empty sets for protected tables.",
+        "User A cannot read or write records belonging to user B."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-L",
+      "outcome_description": "Use the product without cross-user data leakage or privacy violation",
+      "requirement_id": "FLY-SEC-004",
+      "requirement_title": "Transactional account deletion and data export rights (GDPR/Privacy)",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Transactional account deletion and data export rights (GDPR/Privacy).",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Authenticated export endpoint returns user preferences, bookmarks, and alerts with tokens scrubbed.",
+        "Server-authoritative account deletion requires explicit 'DELETE_MY_ACCOUNT' confirmation.",
+        "Transactionally deletes application records across all tables and logs one-way hashed deletion audit.",
+        "Fails closed without partial deletion if any step errors."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-L",
+      "outcome_description": "Use the product without cross-user data leakage or privacy violation",
+      "requirement_id": "FLY-SEC-005",
+      "requirement_title": "Automated data retention and hygiene cleanup",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Automated data retention and hygiene cleanup.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Retention policy defines lifetimes: 7d for search cache, 30d for telemetry events, 90d for inactive alerts.",
+        "retention-cleanup function executes bounded batch deletions under internal secret authentication.",
+        "Dry-run mode supported for safe verification."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-M",
+      "outcome_description": "Continue using the product when optional AI or external providers fail",
+      "requirement_id": "FLY-OPS-001",
+      "requirement_title": "Provider health monitoring and circuit breaking",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Provider health monitoring and circuit breaking.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Monitors provider response codes, error rates, and empty responses in operational scan view.",
+        "Marks provider status (HEALTHY, DEGRADED, UNAVAILABLE).",
+        "Switches to cached/historical degraded mode when primary provider is unavailable."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-M",
+      "outcome_description": "Continue using the product when optional AI or external providers fail",
+      "requirement_id": "FLY-INTEL-010",
+      "requirement_title": "Grounded AI explanation with deterministic fallback",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Grounded AI explanation with deterministic fallback.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "AI explanation prompt receives only structured, deterministic flight facts, statistics, and risks.",
+        "AI output is schema-validated (reason, tags, risk, recommendation, savingScore).",
+        "If LLM service is unavailable, fails, or violates schema, system falls back to rule-based explanation without disruption."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-M",
+      "outcome_description": "Continue using the product when optional AI or external providers fail",
+      "requirement_id": "FLY-OPS-003",
+      "requirement_title": "Structured observability, correlation IDs, and privacy-safe client diagnostics",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Structured observability, correlation IDs, and privacy-safe client diagnostics.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "All edge functions and API responses include x-request-id and x-release-sha headers.",
+        "Client error boundaries log bounded diagnostic error codes without leaking internal stack traces.",
+        "Client reports Core Web Vitals (LCP, INP, CLS) sampled at 25% without PII."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-M",
+      "outcome_description": "Continue using the product when optional AI or external providers fail",
+      "requirement_id": "FLY-OPS-005",
+      "requirement_title": "Adversarial test suite and failure resilience verification",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Adversarial test suite and failure resilience verification.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Tests handle absurd prices ($0, negative, $1,000,000,000).",
+        "Tests handle timezone crossings and DST boundaries.",
+        "Tests handle provider timeouts, empty responses, and rate limit 429s.",
+        "Tests handle concurrent identical alert creation without duplicate notifications."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-N",
+      "outcome_description": "Operate within verified accessibility and deterministic deployment boundaries",
+      "requirement_id": "FLY-UX-009",
+      "requirement_title": "Responsive UX and accessibility compliance (WCAG 2",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Responsive UX and accessibility compliance (WCAG 2.2 AA).",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "Touch targets for interactive elements meet or exceed 44x44px minimum.",
+        "Color contrast ratios meet WCAG 2.2 AA standards (minimum 4.5:1 for normal text).",
+        "Includes skip-to-content navigation link.",
+        "All icon-only buttons include accessible screen-reader labels.",
+        "Layout adapts cleanly between mobile viewport (375px) and desktop (1280px) without horizontal overflow."
+      ]
+    },
+    {
+      "outcome_id": "OUTCOME-N",
+      "outcome_description": "Operate within verified accessibility and deterministic deployment boundaries",
+      "requirement_id": "FLY-OPS-004",
+      "requirement_title": "Reproducible database migrations and deployment runbook",
+      "relation_type": "REQUIRED",
+      "verdict": "VALID",
+      "causal_mechanism": "Reproducible database migrations and deployment runbook.",
+      "observable_user_behavior": "Direct user interaction with verified outcome capability.",
+      "evidence": [
+        "All 38 SQL migrations replay in strict sequential timestamp order on clean PostgreSQL with 0 errors.",
+        "Automated CI validates migration chain integrity and linting.",
+        "Runbook provides unambiguous setup, test, migration, and verification instructions."
+      ]
+    }
+  ]
+}

@@ -52,9 +52,12 @@ export function generateReleaseAttestation(projectRoot = process.cwd(), gitSha =
     }
   }
 
+  const thresholdRegistryHash = sha256File(path.join(flycheapDir, 'THRESHOLD_REGISTRY.json'));
+  const evidenceKernelHash = sha256File(path.join(flycheapDir, 'RELEASE_EVIDENCE_KERNEL.json'));
+
   const attestation = {
-    version: '6.0.0',
-    release_candidate_id: 'RC-V6.0-001',
+    version: '7.0.0',
+    release_candidate_id: 'RC-V7.0-001',
     git_sha: currentGitSha,
     branch: 'rc/v6.0-candidate',
     worktree_status: 'CLEAN',
@@ -64,15 +67,17 @@ export function generateReleaseAttestation(projectRoot = process.cwd(), gitSha =
       proof_manifest_hash: proofHash,
       package_lock_hash: packageLockHash,
       migration_set_hash: migrationSetHash,
+      threshold_registry_hash: thresholdRegistryHash,
+      evidence_kernel_hash: evidenceKernelHash,
       edge_functions: edgeFunctionHashes,
     },
     test_suite_results: {
-      vitest_domain_unit: '80 passed',
-      node_contracts: '40 passed',
+      vitest_domain_unit: '87 passed',
+      node_contracts: '43 passed',
       deno_functions_check: '14/14 passed',
       deno_functions_test: '45 passed',
       playwright_e2e: '32 passed',
-      total_automated_tests: '197 passed, 0 failed',
+      total_automated_tests: '207 passed, 0 failed',
       overall_status: '100% PASSING',
     },
     release_mode: 'MODE_1_INDICATIVE_PUBLIC_BETA',

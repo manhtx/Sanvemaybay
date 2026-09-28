@@ -1,0 +1,252 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "nodes": [
+    {
+      "node_id": "SRC-DEAL-SCORING",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "src/app/domain/dealComparison.ts",
+        "src/app/domain/priceAnalytics.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "dependents": [
+        "PRF-DEAL-SCORING-UNIT",
+        "PRF-GOLDEN-CORPUS",
+        "LIN-DEAL-SCORE"
+      ]
+    },
+    {
+      "node_id": "SRC-DEAL-CLAIMS",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "src/app/domain/dealClaims.ts"
+      ],
+      "dependents": [
+        "PRF-DEAL-CLAIMS-UNIT",
+        "LIN-CONFIDENCE-CAP"
+      ]
+    },
+    {
+      "node_id": "SRC-FLIGHT-INTEL",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "src/app/domain/flightIntelligence.ts"
+      ],
+      "dependents": [
+        "PRF-FLIGHT-INTEL-UNIT",
+        "LIN-ALL-IN-COST"
+      ]
+    },
+    {
+      "node_id": "SRC-FRESHNESS-HEALTH",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "supabase/functions/_shared/feed-health.ts",
+        "src/app/domain/travelFeedSections.ts"
+      ],
+      "dependents": [
+        "PRF-FEED-HEALTH-UNIT",
+        "PRF-CLOCK-ADVERSARIAL",
+        "LIN-FRESHNESS"
+      ]
+    },
+    {
+      "node_id": "SRC-ALERTS",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/_shared/retry-policy.ts"
+      ],
+      "dependents": [
+        "PRF-ALERTS-UNIT",
+        "PRF-RETRY-POLICY-UNIT",
+        "LIN-ALERT-DEDUPE"
+      ]
+    },
+    {
+      "node_id": "SRC-URL-SAFETY",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "src/app/lib/bookingUrls.ts",
+        "supabase/functions/_shared/live-deal.ts"
+      ],
+      "dependents": [
+        "PRF-BOOKING-URL-UNIT",
+        "PRF-LIVE-DEAL-UNIT",
+        "LIN-URL-SANITIZATION"
+      ]
+    },
+    {
+      "node_id": "SRC-RLS-MIGRATIONS",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "supabase/migrations/"
+      ],
+      "dependents": [
+        "PRF-SECURITY-SMOKE",
+        "PRF-DB-CI-CONTRACT",
+        "PRF-MIGRATION-PARITY",
+        "LIN-RLS-ISOLATION"
+      ]
+    },
+    {
+      "node_id": "SRC-USER-DATA",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "supabase/functions/_shared/user-data.ts"
+      ],
+      "dependents": [
+        "PRF-ACCOUNT-DELETION-CONTRACT",
+        "LIN-ACCOUNT-DELETION"
+      ]
+    },
+    {
+      "node_id": "SRC-WEB-VITALS",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "src/app/lib/reportWebVitals.ts",
+        "supabase/functions/_shared/product-event.ts"
+      ],
+      "dependents": [
+        "PRF-WEB-VITALS-UNIT",
+        "PRF-PRODUCT-EVENT-UNIT"
+      ]
+    },
+    {
+      "node_id": "SRC-HOSTING-ROUTING",
+      "type": "SOURCE_IMPLEMENTATION",
+      "files": [
+        "public/robots.txt",
+        "scripts/generate-release-metadata.mjs",
+        "vercel.json"
+      ],
+      "dependents": [
+        "PRF-HOSTING-SECURITY-CONTRACT",
+        "LIN-STATIC-HOSTING"
+      ]
+    }
+  ],
+  "proofs": [
+    {
+      "proof_id": "PRF-DEAL-SCORING-UNIT",
+      "runner": "vitest run src/app/domain/dealComparison.test.ts",
+      "claims": [
+        "CLM-DEAL-SCORE"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-GOLDEN-CORPUS",
+      "runner": "node --test scripts/golden-corpus.node-test.mjs",
+      "claims": [
+        "CLM-DEAL-SCORE",
+        "CLM-CONFIDENCE-CAP"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-DEAL-CLAIMS-UNIT",
+      "runner": "vitest run src/app/domain/dealClaims.test.ts",
+      "claims": [
+        "CLM-CONFIDENCE-CAP"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-FLIGHT-INTEL-UNIT",
+      "runner": "vitest run src/app/domain/flightIntelligence.test.ts",
+      "claims": [
+        "CLM-ALL-IN-COST"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-FEED-HEALTH-UNIT",
+      "runner": "deno test supabase/functions/_shared/feed-health.test.ts",
+      "claims": [
+        "CLM-FRESHNESS-EXPIRATION",
+        "CLM-PROVIDER-RESILIENCE"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-CLOCK-ADVERSARIAL",
+      "runner": "node --test scripts/clock-timezone-adversarial.node-test.mjs",
+      "claims": [
+        "CLM-FRESHNESS-EXPIRATION"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-ALERTS-UNIT",
+      "runner": "deno test supabase/functions/_shared/alert-matching.test.ts",
+      "claims": [
+        "CLM-ALERT-DEDUPE"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-RETRY-POLICY-UNIT",
+      "runner": "deno test supabase/functions/_shared/retry-policy.test.ts",
+      "claims": [
+        "CLM-ALERT-DEDUPE"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-BOOKING-URL-UNIT",
+      "runner": "vitest run src/app/lib/bookingUrls.test.ts",
+      "claims": [
+        "CLM-URL-SANITIZATION"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-LIVE-DEAL-UNIT",
+      "runner": "deno test supabase/functions/_shared/live-deal.test.ts",
+      "claims": [
+        "CLM-URL-SANITIZATION"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-SECURITY-SMOKE",
+      "runner": "node scripts/security-smoke.mjs",
+      "claims": [
+        "CLM-RLS-ISOLATION"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-DB-CI-CONTRACT",
+      "runner": "node --test scripts/database-ci-contract.node-test.mjs",
+      "claims": [
+        "CLM-STAGING-MIGRATION-PARITY"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-ACCOUNT-DELETION-CONTRACT",
+      "runner": "node --test scripts/account-deletion.node-test.mjs",
+      "claims": [
+        "CLM-ACCOUNT-DELETION"
+      ],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-WEB-VITALS-UNIT",
+      "runner": "vitest run src/app/lib/reportWebVitals.test.ts",
+      "claims": [],
+      "status": "FRESH"
+    },
+    {
+      "proof_id": "PRF-HOSTING-SECURITY-CONTRACT",
+      "runner": "node --test scripts/hosting-security.node-test.mjs",
+      "claims": [
+        "CLM-STATIC-HOSTING"
+      ],
+      "status": "FRESH"
+    }
+  ]
+}

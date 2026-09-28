@@ -1,0 +1,129 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "obligations": [
+    {
+      "obligation_id": "PO-DEAL-SCORE",
+      "claim_id": "CLM-DEAL-SCORE",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Execution of real domain functions dealComparison.ts and observed-fares.ts against synthetic cohorts; verified deterministic Deal Score calculation.",
+      "forbidden_substitutions": [
+        "Parallel fake audit math validating itself",
+        "Client mock data bypassing scoring"
+      ],
+      "proof_expiration_rules": "Expires when domain calculation files change."
+    },
+    {
+      "obligation_id": "PO-CONFIDENCE-CAP",
+      "claim_id": "CLM-CONFIDENCE-CAP",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Automated assertion verifying sample size < 5 yields confidence = LOW regardless of discount size.",
+      "forbidden_substitutions": [
+        "Bypassing confidence check for test fixtures"
+      ],
+      "proof_expiration_rules": "Expires when dealClaims.ts changes."
+    },
+    {
+      "obligation_id": "PO-ALL-IN-COST",
+      "claim_id": "CLM-ALL-IN-COST",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Execution of flightIntelligence.ts calculating total estimated cost = base + fees + baggage.",
+      "forbidden_substitutions": [
+        "Using raw headline price as all-in total"
+      ],
+      "proof_expiration_rules": "Expires when flightIntelligence.ts changes."
+    },
+    {
+      "obligation_id": "PO-FRESHNESS",
+      "claim_id": "CLM-FRESHNESS-EXPIRATION",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Adversarial test verifying observations > 24 hours old are marked STALE and excluded from top feed.",
+      "forbidden_substitutions": [
+        "Static mock clocks that do not test boundaries"
+      ],
+      "proof_expiration_rules": "Expires when feed-health.ts or travelFeedSections.ts changes."
+    },
+    {
+      "obligation_id": "PO-ALERT-DEDUPE",
+      "claim_id": "CLM-ALERT-DEDUPE",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Deno shared tests for alert-matching.ts and retry-policy.ts demonstrating 1/5/15 minute backoff and deduplication key generation.",
+      "forbidden_substitutions": [
+        "Unchecked raw email dispatch"
+      ],
+      "proof_expiration_rules": "Expires when alert-matching.ts changes."
+    },
+    {
+      "obligation_id": "PO-URL-SANITIZATION",
+      "claim_id": "CLM-URL-SANITIZATION",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Allowlist verification in bookingUrls.ts and live-deal.ts rejecting http://, non-approved domains, and malformed hosts.",
+      "forbidden_substitutions": [
+        "Permissive domain regexes (*.com)"
+      ],
+      "proof_expiration_rules": "Expires when bookingUrls.ts changes."
+    },
+    {
+      "obligation_id": "PO-RLS-ISOLATION",
+      "claim_id": "CLM-RLS-ISOLATION",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Security smoke contract test confirming cross-user reads return empty sets under authenticated user tokens.",
+      "forbidden_substitutions": [
+        "Service role key reads masquerading as authenticated user reads",
+        "Mock DB without RLS"
+      ],
+      "proof_expiration_rules": "Expires when migrations change."
+    },
+    {
+      "obligation_id": "PO-ACCOUNT-DELETION",
+      "claim_id": "CLM-ACCOUNT-DELETION",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Transactional account deletion execution contract verifying cascading delete and hashed audit logging.",
+      "forbidden_substitutions": [
+        "Soft delete without audit pseudonymization"
+      ],
+      "proof_expiration_rules": "Expires when user-data.ts changes."
+    },
+    {
+      "obligation_id": "PO-PROVIDER-RESILIENCE",
+      "claim_id": "CLM-PROVIDER-RESILIENCE",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Feed health contract tests showing graceful degradation when provider returns error or empty payload.",
+      "forbidden_substitutions": [
+        "Crashing UI on empty inventory"
+      ],
+      "proof_expiration_rules": "Expires when feed-health.ts changes."
+    },
+    {
+      "obligation_id": "PO-STATIC-HOSTING",
+      "claim_id": "CLM-STATIC-HOSTING",
+      "required_environment": "LOCAL_OR_STAGING",
+      "required_evidence": "Direct verification that dist/robots.txt and dist/release.json exist as static files and resolve with plain text / JSON, not index.html.",
+      "forbidden_substitutions": [
+        "SPA fallback rewrite for static robots.txt"
+      ],
+      "proof_expiration_rules": "Expires when build or hosting configuration changes."
+    },
+    {
+      "obligation_id": "PO-MIGRATION-PARITY",
+      "claim_id": "CLM-STAGING-MIGRATION-PARITY",
+      "required_environment": "REMOTE_STAGING_ONLY",
+      "required_evidence": "npx supabase db push against dedicated clean staging Supabase project with 0 migration errors.",
+      "forbidden_substitutions": [
+        "Local SQL linting in place of remote execution",
+        "Pushing to contaminated shared database"
+      ],
+      "proof_expiration_rules": "Expires on new migration."
+    },
+    {
+      "obligation_id": "PO-REMOTE-SOURCE-PROVENANCE",
+      "claim_id": "CLM-REMOTE-SOURCE-PROVENANCE",
+      "required_environment": "REMOTE_ORIGIN_AND_CLEAN_DIR",
+      "required_evidence": "git clone from origin/rc/v6.0-candidate into fresh isolated directory followed by clean npm ci and test pass.",
+      "forbidden_substitutions": [
+        "Running checks only in dirty local worktree"
+      ],
+      "proof_expiration_rules": "Expires when remote branch is updated."
+    }
+  ]
+}

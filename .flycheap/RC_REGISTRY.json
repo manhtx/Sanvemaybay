@@ -1,0 +1,33 @@
+{
+  "registry_version": "1.0.0",
+  "audit_verdict": "AMBIGUOUS_HISTORICAL_RC_DETECTED",
+  "audit_finding": "RC-V6.0-001 was reused across commits 52bcee2, 8bfcc03, 82c4145, b7aa242, f540bf4, 6f2528d, 8ceffc4, c3a4039, and 8697429 with materially different files and test counts.",
+  "historical_records": [
+    {
+      "rc_id": "RC-V6.0-001",
+      "status": "AMBIGUOUS_HISTORICAL_RC",
+      "associated_git_shas": [
+        "52bcee2745aa6489bb4643c7b9a528659dcaefd5",
+        "8bfcc03feac709a5da06007033691f951587b23b",
+        "82c4145b23d9171f11c7daec06b515cf99075d94",
+        "b7aa2429f9dfca4e0a7df8bf5511b7bc84d16812",
+        "f540bf49dc0436d4057887309995c64c78fe2577",
+        "6f2528d2d6d0cb66580556277ffcb22b92cae697",
+        "8ceffc4b5e134cedf418a691fcde070d32627710",
+        "c3a403911a611eec90eae602ff59d2839e7ece6d",
+        "86974297df50afe6625f3def841f340d6b02b98d"
+      ],
+      "invalidation_reason": "Violated release candidate immutability by being reassigned across multiple iterative commits."
+    }
+  ],
+  "immutable_candidates": [
+    {
+      "rc_id": "RC-V7.0-001",
+      "status": "SEALED_LOCAL_RELEASE_CANDIDATE",
+      "baseline_git_sha": "86974297df50afe6625f3def841f340d6b02b98d",
+      "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+      "one_to_one_rule_enforced": true,
+      "sealed_git_sha": "c87c17f7fdabec9ef871b111fecdeb179050155d"
+    }
+  ]
+}

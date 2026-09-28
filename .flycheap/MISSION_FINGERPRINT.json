@@ -1,0 +1,44 @@
+{
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "mission_goal_hash": "a1b5c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1",
+  "goal_definition": "Force the FlyCheap agent out of stale V6.2 state and execute the latest release-truth mission against CURRENT repository reality.",
+  "required_control_artifacts": [
+    ".flycheap/MISSION_EPOCH.json",
+    ".flycheap/MISSION_BASELINE.json",
+    ".flycheap/MISSION_FRESHNESS.json",
+    ".flycheap/CANONICAL_REQUIREMENT_REGISTRY.json",
+    ".flycheap/SEMANTIC_TRACEABILITY_AUDIT.json",
+    ".flycheap/RELEASE_EVIDENCE_KERNEL.json",
+    ".flycheap/THRESHOLD_REGISTRY.json",
+    ".flycheap/PROOF_OBLIGATIONS.json",
+    ".flycheap/PROOF_DEPENDENCY_GRAPH.json",
+    ".flycheap/MISSION_DELTA.json",
+    ".flycheap/RC_REGISTRY.json"
+  ],
+  "required_proof_classes": [
+    "CANONICAL_REQUIREMENT_RECONSTRUCTION",
+    "SEMANTIC_TRACEABILITY_CAUSAL_AUDIT",
+    "PRODUCT_OUTCOME_COUNTEREXAMPLE_TEST",
+    "USER_VISIBLE_CLAIM_LINEAGE_EXECUTION",
+    "THRESHOLD_REGISTRY_AND_DUPLICATION_AUDIT",
+    "PROOF_OBLIGATION_EVALUATION",
+    "PROOF_DEPENDENCY_INVALIDATION",
+    "PROVIDER_CONTRACT_DRIFT_TEST",
+    "SOURCE_KILL_SWITCH_TEST",
+    "CLAIM_KILL_SWITCH_TEST",
+    "DIFFERENTIAL_VERIFICATION",
+    "METAMORPHIC_TESTING",
+    "REMOTE_ORIGIN_CLEAN_REPRODUCTION",
+    "SEALED_ADVERSARIAL_FALSIFICATION"
+  ],
+  "forbidden_shortcuts": [
+    "REUSING_STALE_V6_2_SUMMARY_AS_FINAL_ANSWER",
+    "MANUFACTURING_PAPERWORK_WITHOUT_EXECUTABLE_VALIDATION",
+    "CREATING_AUDIT_ORACLES_THAT_ONLY_REIMPLEMENT_AND_VALIDATE_THEMSELVES",
+    "LEAVING_OLD_PROOFS_GREEN_AFTER_DEPENDENCIES_CHANGE",
+    "MUTATING_SEALED_RELEASE_CANDIDATE_DURING_VERIFICATION",
+    "MUTATING_OR_PUSHING_TO_CONTAMINATED_SUPABASE_PROJECT_thprsgnpvtzkcvknqfwk",
+    "MERGING_TO_MAIN_WITHOUT_EXPLICIT_HUMAN_AUTHORIZATION"
+  ],
+  "stopping_condition": "All 14 fresh proof classes executed; local release truth locked; candidate frozen and proven from remote origin; sealed adversarial evaluation completed; read-only Supabase staging capacity inspected; and exactly one user action surfaced if capacity is constrained."
+}

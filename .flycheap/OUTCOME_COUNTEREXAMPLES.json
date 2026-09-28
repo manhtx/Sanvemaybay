@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "counterexamples": [
+    {
+      "outcome_id": "OUTCOME-J",
+      "requirement_id": "FLY-OPS-003",
+      "counterexample": "Structured logs can record that 10 duplicate emails were sent without preventing them. FLY-UX-007 prevents duplicates; FLY-OPS-003 merely logs them.",
+      "defect_class": "AMBIGUOUS_RELATION",
+      "action": "Reclassify edge as SUPPORTING audit trail rather than REQUIRED causal blocker for duplicate prevention."
+    },
+    {
+      "outcome_id": "OUTCOME-N",
+      "requirement_id": "FLY-UX-009",
+      "counterexample": "If WCAG accessibility passes 100%, an ungrounded Deal Score could still claim 99% certainty on a 1-flight sample. Accessibility does not constrain evidence certainty.",
+      "defect_class": "MAPPING_ERROR",
+      "action": "Reclassify edge as INVALID under OUTCOME-N; Accessibility requires dedicated outcome or explicit UX accessibility outcome mapping."
+    },
+    {
+      "outcome_id": "OUTCOME-N",
+      "requirement_id": "FLY-OPS-004",
+      "counterexample": "If SQL migrations apply cleanly from 0001 to 0038, the application could still display inflated deal confidence if confidence capping logic is flawed. Migrations do not constrain claim certainty.",
+      "defect_class": "MAPPING_ERROR",
+      "action": "Reclassify edge as INVALID under OUTCOME-N; Migrations belong under Operational Parity (Outcome-L/N ops)."
+    }
+  ]
+}
