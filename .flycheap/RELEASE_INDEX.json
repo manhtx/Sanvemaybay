@@ -1,10 +1,12 @@
 {
   "version": "1.0.0",
-  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V9-RUNTIME-FIRST",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
   "canonical_registry": {
     "constitution": ".flycheap/AUTONOMY_CONSTITUTION.md",
     "mission_state": ".flycheap/STATE.json",
     "task_dag": ".flycheap/TASK_DAG.json",
+    "event_history": ".flycheap/EVENT_HISTORY.jsonl",
+    "deployable_surface": ".flycheap/DEPLOYABLE_SURFACE.json",
     "evidence_ledger": ".flycheap/EVIDENCE_LEDGER.jsonl",
     "negative_evidence": ".flycheap/NEGATIVE_EVIDENCE.jsonl",
     "human_handoff": ".flycheap/HUMAN_HANDOFF.json",
@@ -27,6 +29,7 @@
     "environment_parity": ".flycheap/ENVIRONMENT_PARITY.json",
     "release_blockers": ".flycheap/RELEASE_BLOCKERS.json",
     "data_source_risk": ".flycheap/DATA_SOURCE_RISK_REVIEW.json",
-    "provider_measurement": ".flycheap/PROVIDER_MEASUREMENT.json"
+    "provider_measurement": ".flycheap/PROVIDER_MEASUREMENT.json",
+    "local_ephemeral_runtime": ".flycheap/LOCAL_EPHEMERAL_RUNTIME.json"
   }
 }

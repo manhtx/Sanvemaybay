@@ -1,66 +1,79 @@
 {
-  "schema_version": "1.0.0",
-  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "schema_version": "2.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
+  "controller_version": "12.0.0-RECONCILIATION-CONTROLLER",
   "release_candidate_id": "RC-V7.0-001",
   "candidate_git_sha": "50c6d98628eca005db4c171ec93abce406e08127",
   "sealing_git_sha": "0e97c326c83669768b5e25a39ff7bf15f9af7ef8",
+  "control_plane_sha": "8377a70254dec5602ddaaab2cc3ec6dc7b5bff13",
+  "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
+  "runtime_equivalent": true,
   "branch": "rc/v6.0-candidate",
   "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
-  "system_authority_state": "LOCAL_FULLSTACK_VERIFIED",
+  "system_authority_state": "LOCAL_EPHEMERAL_RUNTIME_VERIFIED",
   "adversarial_audit_verdict": "SUPPORTED",
-  "human_interruption_target": "ZERO_TOUCH_BATCHED",
+  "immediate_hard_blocker": "ACT-STAGING-01",
+  "human_interruption_target": "ZERO_TOUCH_MINIMAL",
   "batched_external_actions": [
     {
       "action_id": "ACT-STAGING-01",
       "category": "INFRASTRUCTURE_QUOTA",
-      "title": "Resolve Clean Dedicated Supabase Staging Environment",
-      "why_required": "Supabase account bpneawjmggrxqaoukxoz has 2 active projects out of 2 allowed on free plan. Project thprsgnpvtzkcvknqfwk contains 123k foreign Macro Platform rows and must remain FORENSIC_READ_ONLY. Project rclmpdygxhoaymajpmuf is currently INACTIVE (paused).",
-      "resolution_options": [
+      "is_hard_blocker_for_mode_1": true,
+      "title": "Resolve Clean Dedicated Supabase Staging Capacity",
+      "why_required": "Supabase account bpneawjmggrxqaoukxoz is at 2/2 active project quota on the Free plan. Creating a clean staging project or unpausing an existing one requires user authorization to either pause one active project or upgrade capacity.",
+      "discovered_projects": [
         {
-          "option": "UNPAUSE_EXISTING",
-          "instructions": "Log in to Supabase dashboard and unpause project rclmpdygxhoaymajpmuf (requires 1-click human owner action)."
+          "ref": "thprsgnpvtzkcvknqfwk",
+          "name": "Sanvemaybay",
+          "status": "ACTIVE_HEALTHY",
+          "region": "ap-southeast-1",
+          "known_purpose": "Legacy project containing 123,000+ foreign Macro Platform rows. Strictly FORENSIC_READ_ONLY.",
+          "activity_data_evidence": "Linked in CLI; active database with foreign schema and active telemetry.",
+          "confidence": "HIGH",
+          "risk_of_pausing": "UNKNOWN_EXTERNAL_IMPACT: May disrupt existing Macro Platform workflows if any systems rely on this database."
         },
         {
-          "option": "DEDICATED_NEW_PROJECT",
-          "instructions": "Provision a new clean Supabase project (or upgrade plan) and provide project ref: SUPABASE_PROJECT_REF=<ref>."
-        }
-      ],
-      "automated_execution_after_unblock": "npx supabase link --project-ref <clean-ref> && npx supabase db push && npx supabase functions deploy"
-    },
-    {
-      "action_id": "ACT-COMMERCIAL-01",
-      "category": "COMMERCIAL_KEYS",
-      "title": "Supply Commercial Booking Provider Credentials (Optional for Mode 2)",
-      "why_required": "Mode 1 (Indicative Public Beta) operates with FastFlights indicative scraping and direct airline search deep links. Direct partner booking integration requires commercial partner API keys.",
-      "resolution_options": [
-        {
-          "option": "REMAIN_MODE_1",
-          "instructions": "No action needed. Mode 1 is fully functional and release-verified."
+          "ref": "jxlggebfggscmhtdzgtn",
+          "name": "Macro OS",
+          "status": "ACTIVE_HEALTHY",
+          "region": "ap-south-1",
+          "known_purpose": "Macro OS active production/development project.",
+          "activity_data_evidence": "Active healthy database running PostgreSQL 17.",
+          "confidence": "HIGH",
+          "risk_of_pausing": "HIGH: User application Macro OS appears active."
         },
         {
-          "option": "UPGRADE_TO_MODE_2",
-          "instructions": "Set AMADEUS_CLIENT_ID, AMADEUS_CLIENT_SECRET, and SKYSCANNER_API_KEY in Supabase Vault."
+          "ref": "rclmpdygxhoaymajpmuf",
+          "name": "manhgiaythethao@gmail.com",
+          "status": "INACTIVE",
+          "region": "ap-northeast-2",
+          "known_purpose": "Paused Supabase project under same account.",
+          "activity_data_evidence": "Currently paused / inactive.",
+          "confidence": "MEDIUM",
+          "risk_of_pausing": "NONE (Already paused). However, cannot be unpaused while 2 other projects remain active on Free plan."
         }
       ],
-      "automated_execution_after_unblock": "npx supabase secrets set AMADEUS_CLIENT_ID=... AMADEUS_CLIENT_SECRET=..."
-    },
-    {
-      "action_id": "ACT-PROMOTION-01",
-      "category": "GOVERNANCE_AUTHORIZATION",
-      "title": "Human Authorization to Merge Verified Candidate to Main",
-      "why_required": "Zero-trust governance requires explicit human code review before mutating the production main branch.",
+      "single_minimal_question": "Which active project (if any) is safe to pause to free a slot for clean FlyCheap staging, or do you authorize upgrading/adding paid project capacity?",
       "resolution_options": [
         {
-          "option": "AUTHORIZE_PROMOTION",
-          "instructions": "Review Git diff between main and rc/v6.0-candidate (commit 0e97c32), then merge."
+          "option": "PAUSE_SANVEMAYBAY_PROJECT",
+          "instructions": "If 'Sanvemaybay' (thprsgnpvtzkcvknqfwk) is safe to pause in the Supabase dashboard, pause it to free a slot, allowing FlyCheap to create a clean dedicated staging project."
+        },
+        {
+          "option": "PAUSE_MACRO_OS_PROJECT",
+          "instructions": "If 'Macro OS' (jxlggebfggscmhtdzgtn) is safe to pause in the Supabase dashboard, pause it to free a slot."
+        },
+        {
+          "option": "AUTHORIZE_PAID_CAPACITY",
+          "instructions": "Upgrade Supabase account or provide a dedicated clean project ref via environment variable SUPABASE_STAGING_PROJECT_REF=<ref>."
         }
       ],
-      "automated_execution_after_unblock": "git checkout main && git merge --ff-only rc/v6.0-candidate && git push origin main"
+      "autonomous_action_after_unblock": "Autonomous reconciliation loop will automatically detect available slot, create/link clean project 'flycheap-staging', apply 38 migrations, deploy 14 Edge Functions, verify remote RLS, and proceed to production promotion."
     }
   ],
   "verification_metrics": {
-    "total_automated_tests": 207,
-    "vitest_domain_unit": 87,
+    "total_automated_tests": 208,
+    "vitest_domain_unit": 88,
     "node_contracts": 43,
     "deno_functions_check": 14,
     "deno_functions_test": 45,
@@ -73,7 +86,8 @@
     "orphan_nodes": 0,
     "differential_oracle_passing": true,
     "metamorphic_invariants_passing": true,
-    "migration_parity_deterministic": true
+    "migration_parity_deterministic": true,
+    "local_ephemeral_runtime_verified": true
   },
   "ten_pass_hostile_convergence": {
     "pass_1_product_semantics": "CONVERGED_PASS",

@@ -1,23 +1,17 @@
 {
-  "version": "1.0.0",
-  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V9-RUNTIME-FIRST",
+  "version": "2.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
+  "controller_version": "12.0.0-RECONCILIATION-CONTROLLER",
   "tasks": [
     {
       "task_id": "TASK-01-BOOTSTRAP-CONSTITUTION",
-      "goal": "Bootstrap durable autonomy constitution and release index",
+      "goal": "Bootstrap durable autonomy constitution V12 and release index",
       "dependencies": [],
       "priority": "P0",
       "risk_class": "CLASS_A",
       "environment": "LOCAL",
-      "idempotency_key": "IDEMP-BOOTSTRAP-V9-001",
-      "expected_observable": "AUTONOMY_CONSTITUTION.md and RELEASE_INDEX.json present on disk",
-      "proof_obligation": "PO-DURABLE-CONTROL-PLANE",
-      "rollback_or_compensation": "git checkout HEAD -- .flycheap",
-      "retry_budget": 1,
       "status": "VERIFIED",
-      "attempts": 1,
-      "blocker": null,
-      "next_action": "Completed"
+      "blocker": null
     },
     {
       "task_id": "TASK-02-INSPECT-DIFFERENTIAL-METAMORPHIC",
@@ -26,15 +20,8 @@
       "priority": "P0",
       "risk_class": "CLASS_A",
       "environment": "LOCAL",
-      "idempotency_key": "IDEMP-TEST-AUDIT-V9-001",
-      "expected_observable": "Tests invoke src/app/domain functions directly instead of synthetic mathematical formulas",
-      "proof_obligation": "PO-DIFF-ORACLE-PRODUCTION-PATH",
-      "rollback_or_compensation": "git checkout HEAD -- src/app/domain/differentialAndMetamorphic.test.ts",
-      "retry_budget": 2,
       "status": "VERIFIED",
-      "attempts": 1,
-      "blocker": null,
-      "next_action": "Completed"
+      "blocker": null
     },
     {
       "task_id": "TASK-03-BOUNDARY-AND-SECURITY-PROPERTIES",
@@ -43,15 +30,8 @@
       "priority": "P0",
       "risk_class": "CLASS_A",
       "environment": "LOCAL",
-      "idempotency_key": "IDEMP-BOUNDARY-SECURITY-001",
-      "expected_observable": "Explicit epsilon, NaN, Infinity, and malformed URL attacks evaluated against production booking sanitizers",
-      "proof_obligation": "PO-BOUNDARY-AND-URL-SECURITY",
-      "rollback_or_compensation": "Revert test additions if invalid",
-      "retry_budget": 2,
       "status": "VERIFIED",
-      "attempts": 1,
-      "blocker": null,
-      "next_action": "Completed"
+      "blocker": null
     },
     {
       "task_id": "TASK-04-SEALED-HOLDOUT-VERIFICATION",
@@ -60,49 +40,88 @@
       "priority": "P0",
       "risk_class": "CLASS_A",
       "environment": "LOCAL",
-      "idempotency_key": "IDEMP-SEALED-HOLDOUT-001",
-      "expected_observable": "Independent verifier subagent runs read-only holdout evaluation with zero code modifications",
-      "proof_obligation": "PO-SEALED-VERIFICATION",
-      "rollback_or_compensation": "None required (read-only verification)",
-      "retry_budget": 1,
       "status": "VERIFIED",
-      "attempts": 1,
-      "blocker": null,
-      "next_action": "Completed"
+      "blocker": null
     },
     {
-      "task_id": "TASK-05-INFRASTRUCTURE-CAPABILITY-AND-STAGING-RESOLVER",
-      "goal": "Discover live cloud capabilities, assess Supabase quota and Docker state, and attempt autonomous clean staging resolution",
+      "task_id": "TASK-05-INFRASTRUCTURE-CAPABILITY-AND-LOCAL-EPHEMERAL-RUNTIME",
+      "goal": "Discover live cloud capabilities, assess Supabase quota, and verify local ephemeral PostgreSQL 16 runtime",
       "dependencies": ["TASK-04-SEALED-HOLDOUT-VERIFICATION"],
-      "priority": "P1",
-      "risk_class": "CLASS_B",
+      "priority": "P0",
+      "risk_class": "CLASS_A",
       "environment": "LOCAL_AND_REMOTE_API",
-      "idempotency_key": "IDEMP-CAPABILITY-DISCOVERY-001",
-      "expected_observable": "Concrete classification of available infrastructure resources and local ephemeral PostgreSQL 16 verification",
-      "proof_obligation": "PO-INFRASTRUCTURE-DISCOVERY",
-      "rollback_or_compensation": "Drop local test database",
-      "retry_budget": 2,
       "status": "VERIFIED",
-      "attempts": 1,
-      "blocker": "BLK-MIGR-01 (Supabase 2/2 free project quota reached)",
-      "next_action": "Completed"
+      "blocker": null
     },
     {
-      "task_id": "TASK-06-CONSOLIDATED-HUMAN-HANDOFF-AND-CLOSURE",
-      "goal": "Synthesize empirical results, batched external actions, and final truthful release state",
-      "dependencies": ["TASK-05-INFRASTRUCTURE-CAPABILITY-AND-STAGING-RESOLVER"],
+      "task_id": "TASK-06-COMPUTE-DEPLOYABLE-SURFACE-HASH",
+      "goal": "Formalize canonical deployable surface and compute deterministic DEPLOYABLE_SURFACE_HASH",
+      "dependencies": ["TASK-01-BOOTSTRAP-CONSTITUTION"],
+      "priority": "P0",
+      "risk_class": "CLASS_A",
+      "environment": "LOCAL",
+      "status": "VERIFIED",
+      "blocker": null
+    },
+    {
+      "task_id": "TASK-07-CONTRADICTION-LINTER-EXECUTION",
+      "goal": "Execute mechanical contradiction linter across active control-plane artifacts",
+      "dependencies": ["TASK-06-COMPUTE-DEPLOYABLE-SURFACE-HASH"],
+      "priority": "P0",
+      "risk_class": "CLASS_A",
+      "environment": "LOCAL",
+      "status": "VERIFIED",
+      "blocker": null
+    },
+    {
+      "task_id": "TASK-08-MINIMAL-HUMAN-HANDOFF-PACKET",
+      "goal": "Synthesize minimal batched external action packet containing only immediate hard blocker (Section 51 & 52)",
+      "dependencies": ["TASK-05-INFRASTRUCTURE-CAPABILITY-AND-LOCAL-EPHEMERAL-RUNTIME", "TASK-07-CONTRADICTION-LINTER-EXECUTION"],
       "priority": "P1",
       "risk_class": "CLASS_A",
       "environment": "LOCAL",
-      "idempotency_key": "IDEMP-HUMAN-HANDOFF-V9-001",
-      "expected_observable": "Single batched handoff packet covering all currently foreseeable external dependencies",
-      "proof_obligation": "PO-HUMAN-HANDOFF-CONSOLIDATION",
-      "rollback_or_compensation": "None",
-      "retry_budget": 1,
       "status": "VERIFIED",
-      "attempts": 1,
-      "blocker": null,
-      "next_action": "Final mission closure"
+      "blocker": null
+    },
+    {
+      "task_id": "TASK-09-MONITOR-STAGING-CAPACITY-RESOLUTION",
+      "goal": "Monitor Supabase capacity for project unpause, pause of unneeded project, or paid slot authorization",
+      "dependencies": ["TASK-08-MINIMAL-HUMAN-HANDOFF-PACKET"],
+      "priority": "P0",
+      "risk_class": "CLASS_B",
+      "environment": "REMOTE_API",
+      "status": "BLOCKED_EXTERNAL",
+      "blocker": "ACT-STAGING-01 (Supabase 2/2 free project quota reached; requires user project selection or paid slot)"
+    },
+    {
+      "task_id": "TASK-10-STAGING-PREPARE-AND-DEPLOY",
+      "goal": "Link clean staging project, push 38 migrations, deploy 14 Edge Functions, and verify remote RLS",
+      "dependencies": ["TASK-09-MONITOR-STAGING-CAPACITY-RESOLUTION"],
+      "priority": "P0",
+      "risk_class": "CLASS_B",
+      "environment": "REMOTE_STAGING",
+      "status": "PENDING",
+      "blocker": "Waiting on TASK-09"
+    },
+    {
+      "task_id": "TASK-11-SEALED-STAGING-RUNTIME-VERIFICATION",
+      "goal": "Execute sealed adversarial holdout verification against remote staging environment",
+      "dependencies": ["TASK-10-STAGING-PREPARE-AND-DEPLOY"],
+      "priority": "P0",
+      "risk_class": "CLASS_A",
+      "environment": "REMOTE_STAGING",
+      "status": "PENDING",
+      "blocker": "Waiting on TASK-10"
+    },
+    {
+      "task_id": "TASK-12-PRODUCTION-PROMOTION-AND-CANARY",
+      "goal": "Promote verified candidate to production main, verify build provenance, canary smoke, and enable telemetry",
+      "dependencies": ["TASK-11-SEALED-STAGING-RUNTIME-VERIFICATION"],
+      "priority": "P0",
+      "risk_class": "CLASS_B",
+      "environment": "PRODUCTION",
+      "status": "PENDING",
+      "blocker": "Waiting on TASK-11"
     }
   ]
 }

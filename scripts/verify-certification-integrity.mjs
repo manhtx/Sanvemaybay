@@ -1,9 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { runContradictionLinter } from './contradiction-linter.mjs';
 
 export function verifyCertificationIntegrity(projectRoot = process.cwd()) {
   const flycheapDir = path.join(projectRoot, '.flycheap');
   const errors = [];
+
+  const linterResult = runContradictionLinter(projectRoot);
+  if (!linterResult.ok) {
+    for (const issue of linterResult.issues) {
+      errors.push(`Contradiction Linter: ${issue}`);
+    }
+  }
 
   const acceptancePath = path.join(flycheapDir, 'ACCEPTANCE_CONTRACT.json');
   const featurePath = path.join(flycheapDir, 'FEATURE_CONTRACT.json');

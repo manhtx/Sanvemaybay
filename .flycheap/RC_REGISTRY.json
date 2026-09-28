@@ -1,5 +1,5 @@
 {
-  "registry_version": "1.0.0",
+  "registry_version": "1.1.0",
   "audit_verdict": "AMBIGUOUS_HISTORICAL_RC_DETECTED",
   "audit_finding": "RC-V6.0-001 was reused across commits 52bcee2, 8bfcc03, 82c4145, b7aa242, f540bf4, 6f2528d, 8ceffc4, c3a4039, and 8697429 with materially different files and test counts.",
   "historical_records": [
@@ -23,9 +23,15 @@
   "immutable_candidates": [
     {
       "rc_id": "RC-V7.0-001",
-      "status": "SEALED_RELEASE_CANDIDATE",
+      "status": "ACTIVE",
       "candidate_git_sha": "50c6d98628eca005db4c171ec93abce406e08127",
-      "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+      "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
+      "contract_hash": "b5aa77be7bfbff7aeeac8001fa6e9f94f26b7cc9dc52c3910838c9d5dbf3cbe2",
+      "migration_hash": "6b7bff66ef0c283e111818f68f274739a12910669ddf2e385a0a9177d9b889a4",
+      "runtime_config_hash": "7d05dcfa2ca5126d23a84ad7859e99f5eac94e07c846f2c0738a60f26c717035",
+      "dependency_lock_hash": "43b749c8df014dab48e9af3db16ec4423c1d48bf4847dc2c02ec6554015bc28b",
+      "threshold_registry_hash": "ba063f7c386319bb4c8b41c0a0205009044a8e24c7572232f1e4ec53890804b0",
+      "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
       "one_to_one_rule_enforced": true,
       "sealed_at": "2026-09-28T07:05:26.801Z"
     }

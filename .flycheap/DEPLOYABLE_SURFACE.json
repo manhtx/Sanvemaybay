@@ -1,0 +1,950 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-28T11:09:12.730Z",
+  "total_files": 187,
+  "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
+  "category_summary": {
+    "root_config": 8,
+    "src_runtime": 108,
+    "public_assets": 1,
+    "migrations": 38,
+    "edge_functions": 32
+  },
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "b0de282d0371f53fce1e4e03ed9d6f30735504128b414641db8bd44f1c1f28a4",
+      "size_bytes": 432
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "43b749c8df014dab48e9af3db16ec4423c1d48bf4847dc2c02ec6554015bc28b",
+      "size_bytes": 273336
+    },
+    {
+      "path": "package.json",
+      "sha256": "c7542e4675375f98301d755e7e8836d8eff8d2aabd09bcde2c0c0faed1582378",
+      "size_bytes": 4594
+    },
+    {
+      "path": "public/robots.txt",
+      "sha256": "4a81a6288e9acffa0ecfc34d0931500015208a4a4e96d871bbd125e7a7a19a1e",
+      "size_bytes": 112
+    },
+    {
+      "path": "src/app/App.tsx",
+      "sha256": "b3e7e4fb8bdfff7992c476f64df30c6171c8c1351f966a01462a6341c70fa690",
+      "size_bytes": 162
+    },
+    {
+      "path": "src/app/components/AIInsightPanel.tsx",
+      "sha256": "dab368fab5050554907bcf5675643c880f6fc7ea033bdf4390fad95f7ed79106",
+      "size_bytes": 5100
+    },
+    {
+      "path": "src/app/components/DataRightsPanel.tsx",
+      "sha256": "5b096d4d52a67e7b8d4ae0dacc7a3c4050137345809ce20ef2d3cd9a2a9a0df5",
+      "size_bytes": 3514
+    },
+    {
+      "path": "src/app/components/DealCard.tsx",
+      "sha256": "c99ced720be92af4d33da7fda7a1aec93904d98a575eb92088eb2e901fc70552",
+      "size_bytes": 12856
+    },
+    {
+      "path": "src/app/components/HiddenCostAnalyzer.tsx",
+      "sha256": "246cc02053d91392d0c4bfc92cc23c6cca3fdb99c937a3050726151747629c00",
+      "size_bytes": 5843
+    },
+    {
+      "path": "src/app/components/Navbar.tsx",
+      "sha256": "d14018bd683c711f1431b4eeb61650bace99056e0263ba8e769cd650bc83134e",
+      "size_bytes": 5324
+    },
+    {
+      "path": "src/app/components/PriceHistoryChart.tsx",
+      "sha256": "612f865d58d943a4a35bb7bdd791f48586dc0b21a51c348ea36b760e064e9068",
+      "size_bytes": 7099
+    },
+    {
+      "path": "src/app/components/RouteMetadata.tsx",
+      "sha256": "bf2ddf118d35a001c0c4ddea8574378454dd256b41ca97381c2fdd9a619d25c3",
+      "size_bytes": 1796
+    },
+    {
+      "path": "src/app/components/TurnstileWidget.tsx",
+      "sha256": "841aa95203a2894a11e11f60fc5c428d589d67e761d385c7ba8d5a4ede00a719",
+      "size_bytes": 2731
+    },
+    {
+      "path": "src/app/components/figma/ImageWithFallback.tsx",
+      "sha256": "79caaf9d1736698c090823383f7b18a9496e9c1309a40f925c8aeb37e496bd8e",
+      "size_bytes": 1153
+    },
+    {
+      "path": "src/app/components/ui/accordion.tsx",
+      "sha256": "0ff6fadd3560c21aa67911d817f89d206188fd07bd57244ba59a117bd4ff9cb4",
+      "size_bytes": 2060
+    },
+    {
+      "path": "src/app/components/ui/alert-dialog.tsx",
+      "sha256": "16f0bf95de446a8579cba6e75557fd83eb4aa0dbbc77ee936fbb59451e9390e9",
+      "size_bytes": 3866
+    },
+    {
+      "path": "src/app/components/ui/alert.tsx",
+      "sha256": "19835c5f03b78e8915b5e8900a0681ddfb83e3bcc0c9930e62f31c01e4dfb129",
+      "size_bytes": 1621
+    },
+    {
+      "path": "src/app/components/ui/aspect-ratio.tsx",
+      "sha256": "7706745e217bebbc2d7bdf6697e9c6d484061146ae771755c9b6f240762c7217",
+      "size_bytes": 284
+    },
+    {
+      "path": "src/app/components/ui/avatar.tsx",
+      "sha256": "d40b1cbabe71c094c6bcf089ac5702ec77623dbc75c770ca9f86530e03d6fea1",
+      "size_bytes": 1104
+    },
+    {
+      "path": "src/app/components/ui/badge.tsx",
+      "sha256": "8329a0b50f818665f1aca05ab93c16b103178b463f2949234ee4416bbc7d3fe2",
+      "size_bytes": 1636
+    },
+    {
+      "path": "src/app/components/ui/breadcrumb.tsx",
+      "sha256": "c9fcf4df692c80c06ccc38c32f7045d1f389197c503edac32941cde64bada62e",
+      "size_bytes": 2368
+    },
+    {
+      "path": "src/app/components/ui/button.tsx",
+      "sha256": "a3f96150fdf0c929eec3759673cc34b2cf5538fc088b25a54c00e0a3ed1c3f60",
+      "size_bytes": 2106
+    },
+    {
+      "path": "src/app/components/ui/calendar.tsx",
+      "sha256": "280ba2b6416bb46259762fbb0068c61e93f186242516a10c2f319d484b09485d",
+      "size_bytes": 2913
+    },
+    {
+      "path": "src/app/components/ui/card.tsx",
+      "sha256": "afc99cfa090791e394e68766095a4a86f5f6140521546b32d4b298061d72473f",
+      "size_bytes": 1988
+    },
+    {
+      "path": "src/app/components/ui/carousel.tsx",
+      "sha256": "5ffdde6336f0ee479c11255f3b951b230a1771f0080323f4dd0def03d677f50c",
+      "size_bytes": 5606
+    },
+    {
+      "path": "src/app/components/ui/chart.tsx",
+      "sha256": "e3e14ac980ce857edda5414ceaf8d7e504b5be37a4d99c28ff67c4c2535f51ff",
+      "size_bytes": 9852
+    },
+    {
+      "path": "src/app/components/ui/checkbox.tsx",
+      "sha256": "894eb30992723a15e3ae75c46a3bf8808a526f5b3bff2c61c78f4d3e8d521cb8",
+      "size_bytes": 1244
+    },
+    {
+      "path": "src/app/components/ui/collapsible.tsx",
+      "sha256": "b763764ebced561c04e2e6ada9dc53375bb90b9f4bcb91b0f3d5de7381aaf0cb",
+      "size_bytes": 806
+    },
+    {
+      "path": "src/app/components/ui/command.tsx",
+      "sha256": "17ae21889928aeb0c042911153b7f0715bf537b190da31f16fc5798b9439aa2f",
+      "size_bytes": 4662
+    },
+    {
+      "path": "src/app/components/ui/context-menu.tsx",
+      "sha256": "e17a7028f18669ddd104e0f40fbb0110ebab0cfc89ad6910a43d2dc8539e7c22",
+      "size_bytes": 8251
+    },
+    {
+      "path": "src/app/components/ui/dialog.tsx",
+      "sha256": "f4adc0065a7f795b5d99b8afe095a443d2d03b523cf5f958bc36ee7fbe0d3e45",
+      "size_bytes": 3828
+    },
+    {
+      "path": "src/app/components/ui/drawer.tsx",
+      "sha256": "5a99d073185e0ef6d984436547dce1f99c333dde7c1d7f33a2155dce05216514",
+      "size_bytes": 4085
+    },
+    {
+      "path": "src/app/components/ui/dropdown-menu.tsx",
+      "sha256": "798b5337dc147d88c65de01f7221e0bfa04272968a1fce6acc1ec0bef7d9ddb9",
+      "size_bytes": 8313
+    },
+    {
+      "path": "src/app/components/ui/form.tsx",
+      "sha256": "b181a640358bd91b827f7e3ba610036f24a976994d4d88b480471a167770a508",
+      "size_bytes": 3785
+    },
+    {
+      "path": "src/app/components/ui/hover-card.tsx",
+      "sha256": "6ec1ef98aef3898ef3f8eb35e52c10add150d76cd041132d2520fe3016ecfe60",
+      "size_bytes": 1537
+    },
+    {
+      "path": "src/app/components/ui/input-otp.tsx",
+      "sha256": "b15b03f71841b176baa6e0294a0790eea1ffe9264c55003fbbc9039d8457057b",
+      "size_bytes": 2282
+    },
+    {
+      "path": "src/app/components/ui/input.tsx",
+      "sha256": "cb82ffcd1a9accdf9b07edc8e976f43ad1c9cf91968ffd7639df5df14b7ad407",
+      "size_bytes": 963
+    },
+    {
+      "path": "src/app/components/ui/label.tsx",
+      "sha256": "5ed157f039340cedaa59a888931db608667827170ae9538513a50ccf2ca65a9f",
+      "size_bytes": 614
+    },
+    {
+      "path": "src/app/components/ui/menubar.tsx",
+      "sha256": "1f0173397dac560a4748782bb595c956155a9360755667bee3d18c4a0f1179b1",
+      "size_bytes": 8426
+    },
+    {
+      "path": "src/app/components/ui/navigation-menu.tsx",
+      "sha256": "df9f6e0c1d3fb1b265f8561ef00c98412f24a360a00cb7935b7c6f9a0d7513e6",
+      "size_bytes": 6684
+    },
+    {
+      "path": "src/app/components/ui/pagination.tsx",
+      "sha256": "10bad2279ea5120ade645a1a834ed74f2471cde0fe7f3e9457fcb4918b7d0bc3",
+      "size_bytes": 2709
+    },
+    {
+      "path": "src/app/components/ui/popover.tsx",
+      "sha256": "f14e16bebcfb1b605f6336d52153e43b76456c419930faea216d0ce2e3b1d3b7",
+      "size_bytes": 1641
+    },
+    {
+      "path": "src/app/components/ui/progress.tsx",
+      "sha256": "956cf4b485bcf57684caac10df2aa2a72387d0736d8f4cd1315c49ebd2da4615",
+      "size_bytes": 743
+    },
+    {
+      "path": "src/app/components/ui/radio-group.tsx",
+      "sha256": "ecaeebb62d064893c23e7242b796ff5834e2b430676b3eecb1b3d4bc413283c8",
+      "size_bytes": 1471
+    },
+    {
+      "path": "src/app/components/ui/resizable.tsx",
+      "sha256": "7930ed39d1095de95193bb72ef046b8198647e1114d9a437aa1cd04c0975c5a8",
+      "size_bytes": 2036
+    },
+    {
+      "path": "src/app/components/ui/scroll-area.tsx",
+      "sha256": "5bd9bb1d6909467b431283e96d2a9c83003bca1aa043d149dcfed8e81de51986",
+      "size_bytes": 1649
+    },
+    {
+      "path": "src/app/components/ui/select.tsx",
+      "sha256": "6aaf2111952394fbb8c64a505af02d08da28cc25726d61a991daebe400772480",
+      "size_bytes": 6275
+    },
+    {
+      "path": "src/app/components/ui/separator.tsx",
+      "sha256": "54cc34fc3ef7e445948c5bccf7307efbb2c8f9e63db0fc68dd3fa8ee54dc9812",
+      "size_bytes": 707
+    },
+    {
+      "path": "src/app/components/ui/sheet.tsx",
+      "sha256": "8e1e064f92e2463bc7b8bb227a7c4d68d7464837c02d48ff75a87585d864c54c",
+      "size_bytes": 4105
+    },
+    {
+      "path": "src/app/components/ui/sidebar.tsx",
+      "sha256": "24e197a06698ac0606e99b3ab9e7c31e9544e759eb929d22f37ea15391cae1c1",
+      "size_bytes": 21663
+    },
+    {
+      "path": "src/app/components/ui/skeleton.tsx",
+      "sha256": "7fd5d7f3ea479c3c1ae7be79bdbaf84c87647333768f70d396cd84580535d485",
+      "size_bytes": 275
+    },
+    {
+      "path": "src/app/components/ui/slider.tsx",
+      "sha256": "19dd9d8b758f41fa61967d1a0540ea34ed989727258d23eef9a50cdebcab805b",
+      "size_bytes": 2006
+    },
+    {
+      "path": "src/app/components/ui/sonner.tsx",
+      "sha256": "c5853f16cc11cb69e0115bab13eeabe7be5dad16fafd77b35cdfe4dbc64f0256",
+      "size_bytes": 571
+    },
+    {
+      "path": "src/app/components/ui/switch.tsx",
+      "sha256": "d4c744131c6161300510909aafe2c2cb6d819f2c7a8c2aeb75d4317004c7eff7",
+      "size_bytes": 1182
+    },
+    {
+      "path": "src/app/components/ui/table.tsx",
+      "sha256": "e4ec7d3be042efd0fa363a57dd0e649a7831b86f975d4ec5192ebbfdd66e0f95",
+      "size_bytes": 2460
+    },
+    {
+      "path": "src/app/components/ui/tabs.tsx",
+      "sha256": "933b8f421bd84b21a22e3fd11cd62fbf4fd8b6fb7252f42ea706b9cd29255051",
+      "size_bytes": 1945
+    },
+    {
+      "path": "src/app/components/ui/textarea.tsx",
+      "sha256": "6c3127c28ba1dda0428ba286a9e291c52ad95bfc8acd10518b262b71e470f3e7",
+      "size_bytes": 767
+    },
+    {
+      "path": "src/app/components/ui/toggle-group.tsx",
+      "sha256": "43e56c5487ed93a2e0d418dcf944a646c716b8c8c55d050fcda1d5cd1248cce6",
+      "size_bytes": 1920
+    },
+    {
+      "path": "src/app/components/ui/toggle.tsx",
+      "sha256": "31f91bca26bed6bc884e3dbebe095046d4cf925b9d7676094721ac287d0b2135",
+      "size_bytes": 1565
+    },
+    {
+      "path": "src/app/components/ui/tooltip.tsx",
+      "sha256": "2f3a8720fb4b75c6911450be73d0407e2a84bb5ea1ded28ccdbf955be62a0155",
+      "size_bytes": 1897
+    },
+    {
+      "path": "src/app/components/ui/use-mobile.ts",
+      "sha256": "738d8e4520edeca7caa2ca56a4923839e30be14a00fc32b5a770f5d5b451a63e",
+      "size_bytes": 585
+    },
+    {
+      "path": "src/app/components/ui/utils.ts",
+      "sha256": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+      "size_bytes": 169
+    },
+    {
+      "path": "src/app/data/alertApi.ts",
+      "sha256": "6820bb3c9f7f99f498c0f973b36ae4895e8478bda148a5f2f29bae29008506b6",
+      "size_bytes": 2034
+    },
+    {
+      "path": "src/app/data/api.ts",
+      "sha256": "efae78a817bf775418dae66825f054f3e0505546967245d5da8366eaffb16ede",
+      "size_bytes": 19817
+    },
+    {
+      "path": "src/app/data/deals.ts",
+      "sha256": "039a63b30c991e5233c34f7f329443882ba55bf8e2399c04129d5c9253ae846e",
+      "size_bytes": 4290
+    },
+    {
+      "path": "src/app/data/origins.ts",
+      "sha256": "75a40efed44cd50b2b927f18b6510c80d7fb852cbd0f280b4533de117ffdae27",
+      "size_bytes": 418
+    },
+    {
+      "path": "src/app/data/routeApi.ts",
+      "sha256": "b7bf3002ac35f90472807508a03c2e32595bcb0415aa3c9e97bd0716f7fa6114",
+      "size_bytes": 1062
+    },
+    {
+      "path": "src/app/domain/authPolicy.ts",
+      "sha256": "441f70c743102adaab79198f6f8204da3f18d8710f3eb7644fd64cf08c33c102",
+      "size_bytes": 1059
+    },
+    {
+      "path": "src/app/domain/dealClaims.ts",
+      "sha256": "18b2a6dcbcbc588994779e8076d76f4ecacf2f7b6315d84fb31c99e9824cab61",
+      "size_bytes": 640
+    },
+    {
+      "path": "src/app/domain/dealComparison.ts",
+      "sha256": "f4b513b77f711022715112048ff384ef7d1ff280ddc7bee922fe92c7b9724b48",
+      "size_bytes": 933
+    },
+    {
+      "path": "src/app/domain/destinationInsights.ts",
+      "sha256": "9371cde1f3bcbcce7e44f0510ce55eb2f83a4fa816c7ee6ec1571eafe0ec4248",
+      "size_bytes": 1465
+    },
+    {
+      "path": "src/app/domain/flightIntelligence.ts",
+      "sha256": "8e6cff8aa0c74e3055393a2c7b45ded3dee1651dd8ffe5156ff86ab904a2a246",
+      "size_bytes": 3142
+    },
+    {
+      "path": "src/app/domain/priceAnalytics.ts",
+      "sha256": "ec22960a0b6e839937494eca6cd7df4a83357668d9393ce87da7be59c93186bc",
+      "size_bytes": 1859
+    },
+    {
+      "path": "src/app/domain/priceForecast.ts",
+      "sha256": "c2124e4ac49d52713bbf9016a3f1333b568ae2e321518e5011ead6b7718ad0d3",
+      "size_bytes": 1921
+    },
+    {
+      "path": "src/app/domain/priceHistoryWindows.ts",
+      "sha256": "aeaf350a1664023154f7cd056a4f31760b3434383ddc66b490e2e859788b57d0",
+      "size_bytes": 956
+    },
+    {
+      "path": "src/app/domain/promotionMatching.ts",
+      "sha256": "64ec77d2296b4818ab12154c8512a6c73520649abcec72cfe854382eb73ecb99",
+      "size_bytes": 2457
+    },
+    {
+      "path": "src/app/domain/routeOptimization.ts",
+      "sha256": "55256a722b68e3c9f9e5345d6c6f604568b1103d95a6c4bd3c0a81e70509cf0d",
+      "size_bytes": 4881
+    },
+    {
+      "path": "src/app/domain/travelFeed.ts",
+      "sha256": "c1be5cb7beed6dc73e96a9fb77c05aa7431f39df29438af3a67df4d4d2d256de",
+      "size_bytes": 2321
+    },
+    {
+      "path": "src/app/domain/travelFeedSections.ts",
+      "sha256": "07762fe662033127cc9fe7290f86051f4c3cb72d237a8ad118b843a694581fd0",
+      "size_bytes": 1416
+    },
+    {
+      "path": "src/app/domain/tripAdvisor.ts",
+      "sha256": "0e4feeeac9247d1f6e4cb087f35532e99dac759185862f0761de77dfebd63487",
+      "size_bytes": 1482
+    },
+    {
+      "path": "src/app/lib/analytics.ts",
+      "sha256": "b09d247c9ffb8c4e839d541c599bf15dda95fd7dadffec4db63c9b725b15366f",
+      "size_bytes": 2503
+    },
+    {
+      "path": "src/app/lib/bookingUrls.ts",
+      "sha256": "de6ff34e3b492d4e68f88dc258312606d812a9b4975da86824f2e7c7dae7104c",
+      "size_bytes": 4009
+    },
+    {
+      "path": "src/app/lib/bookmarks.ts",
+      "sha256": "0a8995624b4c9c8ea2b85e6ad5b7857ab9c0282010d3c9ddf2d37469b0097c80",
+      "size_bytes": 2534
+    },
+    {
+      "path": "src/app/lib/clientDiagnostics.ts",
+      "sha256": "5f538fb6825a6a61dfb32341d7299943b9e96236fa4410faf59cff0a04b4514f",
+      "size_bytes": 618
+    },
+    {
+      "path": "src/app/lib/feedCache.ts",
+      "sha256": "fa83effcebffbaf5b17a5c7c65c45109d98eb10c4102df801ed7c6473dc0ca96",
+      "size_bytes": 915
+    },
+    {
+      "path": "src/app/lib/preferences.ts",
+      "sha256": "87704933a43fe4eccae56e137f51c6b94aaa8d23b9cc33ff0d8085d604fc8c77",
+      "size_bytes": 5149
+    },
+    {
+      "path": "src/app/lib/reportWebVitals.ts",
+      "sha256": "acba37eb7b0147b5b5032b79df155db9fe305ebe96f2dbae80910623ef463f7a",
+      "size_bytes": 2203
+    },
+    {
+      "path": "src/app/lib/routeMetadata.ts",
+      "sha256": "230f29d7e63b8bd781183bd4556397ecfb56743aa110255e1ef52e94f388d4ac",
+      "size_bytes": 3105
+    },
+    {
+      "path": "src/app/lib/sharing.ts",
+      "sha256": "14f20be8c4dc260ad3ee74c8d32a18f262909f26d1c52df768c605def61c41a8",
+      "size_bytes": 688
+    },
+    {
+      "path": "src/app/lib/supabase.ts",
+      "sha256": "e1efa130ba3d195d2a8243501ec5eab7e877fae6154100332c5e1dbbc7983415",
+      "size_bytes": 902
+    },
+    {
+      "path": "src/app/pages/AlertActionPage.tsx",
+      "sha256": "851247748583794374ffd790994d7cc7c698ebe159624df9301b71fc0de9bb47",
+      "size_bytes": 2550
+    },
+    {
+      "path": "src/app/pages/AlertsPage.tsx",
+      "sha256": "2d91f00f535d5c326f986e331dbf4ea2c4aaba6f3ffc775fd3aefb0ecab9bd36",
+      "size_bytes": 26933
+    },
+    {
+      "path": "src/app/pages/AuthPage.tsx",
+      "sha256": "49528f5e6f1ed445648d42d3181cf5fe78d2d90a7583fb4229c318b73a5959bc",
+      "size_bytes": 4680
+    },
+    {
+      "path": "src/app/pages/DealDetailPage.tsx",
+      "sha256": "d77c25b6bc5c23edf562417083fece06918161d3eb4eb987f81f6bad66eaeb24",
+      "size_bytes": 24211
+    },
+    {
+      "path": "src/app/pages/DealsPage.tsx",
+      "sha256": "3a98796a2c2c0021365063863ab95e1eabf9725aaf64afff03740aab5b0c988d",
+      "size_bytes": 31358
+    },
+    {
+      "path": "src/app/pages/ExplorePage.tsx",
+      "sha256": "b7f33a2a2f8819fb240bd13b851ae44c3a7b2ee2a3cb68fbe6ab1fdbfc075dea",
+      "size_bytes": 7983
+    },
+    {
+      "path": "src/app/pages/HistoricalDealsPage.tsx",
+      "sha256": "669307527247b2590968cc4c5a9e6e0d1df818ace2bc8c03a8a45a7d4584bc62",
+      "size_bytes": 2397
+    },
+    {
+      "path": "src/app/pages/HomePage.tsx",
+      "sha256": "bd8b0376247a457e6b3dbed50e1f86eb9358cf4b29bb3ccdcaa4086be495dfc7",
+      "size_bytes": 25166
+    },
+    {
+      "path": "src/app/pages/NotFoundPage.tsx",
+      "sha256": "ebd779688d552d15faa006a8fd104d61c625e34638a21a8aa108ed41a1b92c61",
+      "size_bytes": 774
+    },
+    {
+      "path": "src/app/pages/PrivacyPage.tsx",
+      "sha256": "4dbbe229a787b6eb02adec3be7a03de51dd0b8eecef3e069c9d0a931b02e0148",
+      "size_bytes": 2987
+    },
+    {
+      "path": "src/app/pages/Root.tsx",
+      "sha256": "8c9108a8ead7b62b386f35ab4c02d05627f9219f50c07eb78bc51b24476262a7",
+      "size_bytes": 4674
+    },
+    {
+      "path": "src/app/pages/SavedDealsPage.tsx",
+      "sha256": "9fbca059fb59bb88caf6b50d7b70fdb60c7413ec9e5ffab5ce4c44b4f7102b23",
+      "size_bytes": 1965
+    },
+    {
+      "path": "src/app/pages/SearchPage.tsx",
+      "sha256": "fe7ea92906578902718c744a095838a38797eab0cfd525c7a4a949ecd65ff125",
+      "size_bytes": 19766
+    },
+    {
+      "path": "src/app/pages/TermsPage.tsx",
+      "sha256": "23a8165498d35e7efdd69a924229bdea17247b7bebeadf6baf8e09a685983f5b",
+      "size_bytes": 2678
+    },
+    {
+      "path": "src/app/pages/TripAdvisorPage.tsx",
+      "sha256": "e6f71f7fd57bb80e31b6cdf858ed09b726584f31277e90b681f9c115e2d08ea7",
+      "size_bytes": 4153
+    },
+    {
+      "path": "src/app/routes.tsx",
+      "sha256": "1c3c738a9fb63dd96f2230007a9f348c1697bf546aabbb129b81fa0f3d794819",
+      "size_bytes": 2680
+    },
+    {
+      "path": "src/imports/pasted_text/flycheap-ai-docs.md",
+      "sha256": "b5a1023e6611a07b485d1e533d331213570fc0258a26ca1b656b73a2bf53a339",
+      "size_bytes": 5488
+    },
+    {
+      "path": "src/main.tsx",
+      "sha256": "85b9e6ec232c91ec776cbfa005cba2675e45fc3f4d31a90827e4a8c63ead9b39",
+      "size_bytes": 249
+    },
+    {
+      "path": "src/styles/fonts.css",
+      "sha256": "89b8958cda05a7cff85664e90311ec6f4b986a9c777d96a7e2bf540c4a267f7c",
+      "size_bytes": 225
+    },
+    {
+      "path": "src/styles/index.css",
+      "sha256": "9cf0c73c5a7251c9e1f087665c7936fb39a0ee7641cae20cd4b18955a32ed099",
+      "size_bytes": 72
+    },
+    {
+      "path": "src/styles/tailwind.css",
+      "sha256": "c7dddb734b0c9e3cfaa6698cd725f018b8a5e41f847ae42fd9b0269d44ee9ff4",
+      "size_bytes": 98
+    },
+    {
+      "path": "src/styles/theme.css",
+      "sha256": "832adff164e58bc416cb5e552a31648d49e24d257b99d0cbddd3b836b1dc8711",
+      "size_bytes": 7614
+    },
+    {
+      "path": "supabase/config.toml",
+      "sha256": "7d05dcfa2ca5126d23a84ad7859e99f5eac94e07c846f2c0738a60f26c717035",
+      "size_bytes": 15616
+    },
+    {
+      "path": "supabase/functions/_shared/abuse-protection.ts",
+      "sha256": "c665174dfd933213edde1af41c50ba0b9a2f52addd35056216de9f8bcd2ba154",
+      "size_bytes": 1231
+    },
+    {
+      "path": "supabase/functions/_shared/alert-matching.ts",
+      "sha256": "2cba6ea6d945ee1e4fef75a486ac1ad957c242a6ccd01305011715bdb99cc696",
+      "size_bytes": 1993
+    },
+    {
+      "path": "supabase/functions/_shared/alert-validation.ts",
+      "sha256": "76b29078f79195c9250c3cfbc4c9ad8b169b2584996c748296247d730a151af0",
+      "size_bytes": 1547
+    },
+    {
+      "path": "supabase/functions/_shared/amadeus-provider.ts",
+      "sha256": "dbb0f259a7089f1489057605d4a037c73ad25d5ba6e03168dfe101063cc36f86",
+      "size_bytes": 2985
+    },
+    {
+      "path": "supabase/functions/_shared/buy-decision.ts",
+      "sha256": "8bb33bc57de5fa6e272727ac4eff3b6e3fb859fda758e7bcfe1d215fb190fed8",
+      "size_bytes": 420
+    },
+    {
+      "path": "supabase/functions/_shared/feed-health.ts",
+      "sha256": "d59bcb8e96835299fff7b216b7ea71cfc6a0d57a0e11b0b778bfcc487a472276",
+      "size_bytes": 1652
+    },
+    {
+      "path": "supabase/functions/_shared/feed-snapshot.ts",
+      "sha256": "05d7a87c07703bc4d5911925fc8066b7269dfe8112f7a28fec0aa83b0c3901a6",
+      "size_bytes": 357
+    },
+    {
+      "path": "supabase/functions/_shared/flight-normalization.ts",
+      "sha256": "8be93076d99a2d0286eafd3075052a36141ac7e0a7ff728cca618a7d75ff48ba",
+      "size_bytes": 3058
+    },
+    {
+      "path": "supabase/functions/_shared/flight-search.ts",
+      "sha256": "81265cdeead0ce28dadb74c0b9cf82f709ea20499d76484db857c54702305842",
+      "size_bytes": 2221
+    },
+    {
+      "path": "supabase/functions/_shared/internal-auth.ts",
+      "sha256": "626b1312a0cfa5ba4cd2e90bcc114a3d099fc2a9bb1a38a1a5ec408cd8127631",
+      "size_bytes": 451
+    },
+    {
+      "path": "supabase/functions/_shared/live-deal.ts",
+      "sha256": "7835292bc7797de4eb700e5fb8044dd58fd66f47f82221f74aa71c976a9cb461",
+      "size_bytes": 1412
+    },
+    {
+      "path": "supabase/functions/_shared/observability.ts",
+      "sha256": "85d9df8f2dd24b2e43771a47d50ddc5a723e30f6ef7687ccbffa880a009a2385",
+      "size_bytes": 1035
+    },
+    {
+      "path": "supabase/functions/_shared/observed-fares.ts",
+      "sha256": "604747318b08a03d71320a310002dd3d0693d523b7befe410d79c43959442a8d",
+      "size_bytes": 5677
+    },
+    {
+      "path": "supabase/functions/_shared/price-history.ts",
+      "sha256": "01feef8cc532beffc2411041b9e10ed98198b811dea6f7cf6c362e9e2ee3525b",
+      "size_bytes": 968
+    },
+    {
+      "path": "supabase/functions/_shared/product-event.ts",
+      "sha256": "efadb79b3f9f44f2dfb7d21510799d453ace8e441472d7b190d992c85ec15322",
+      "size_bytes": 2097
+    },
+    {
+      "path": "supabase/functions/_shared/retry-policy.ts",
+      "sha256": "b8e0c229b7bf01a830a19c4c7af96d4228e126e617b9fa6d7686967278648f67",
+      "size_bytes": 460
+    },
+    {
+      "path": "supabase/functions/_shared/turnstile.ts",
+      "sha256": "c2928428c8e6c9f6a2354f54f9d4ae7c4222564db0db96b3a466a71ae6a20658",
+      "size_bytes": 1093
+    },
+    {
+      "path": "supabase/functions/_shared/user-data.ts",
+      "sha256": "9faa59c903bd198f5fb075daa4655ca1731d032978354e261a9a1c43788ed662",
+      "size_bytes": 720
+    },
+    {
+      "path": "supabase/functions/ai-explainer/index.ts",
+      "sha256": "738347e11c79df9ac498be811e36b8e1c663c795b803f5d997014f1bbfce2213",
+      "size_bytes": 2280
+    },
+    {
+      "path": "supabase/functions/alert-processor/index.ts",
+      "sha256": "1c615841c135b6fc86217cef54d7b6aa9d536cc8ebf0d5b26344a096ba35d34d",
+      "size_bytes": 7937
+    },
+    {
+      "path": "supabase/functions/analyze-price/index.ts",
+      "sha256": "1f009e52aa167eb72ba3a1ca4396717a9509c3a7745cf4ec052c576f0e9f8e42",
+      "size_bytes": 11463
+    },
+    {
+      "path": "supabase/functions/deal-redirect/index.ts",
+      "sha256": "ab33f71f3d39a831a209f96dc0417fe6b062773c8c440c6ee2779c19ffa9f6da",
+      "size_bytes": 1935
+    },
+    {
+      "path": "supabase/functions/feed-snapshot/index.ts",
+      "sha256": "f519b155eb8830cf4bfa1f2388cf8f9e1bf39d6663b7bf13e804db673b657a75",
+      "size_bytes": 4701
+    },
+    {
+      "path": "supabase/functions/flight-ingest/index.ts",
+      "sha256": "7d87560483f226816accc98f4bf987ef5edb496b27f2fe1d98fb5489b32d8744",
+      "size_bytes": 5940
+    },
+    {
+      "path": "supabase/functions/flight-search/index.ts",
+      "sha256": "179a11b164ada40bafa4cb3964d6165114b4319f85e0259899f6320e2d5b0e31",
+      "size_bytes": 4346
+    },
+    {
+      "path": "supabase/functions/manage-alert/index.ts",
+      "sha256": "215eb5a2f3934d468c735293c787a8cdd2a54e2a48b3c911452ff37ab444cbbf",
+      "size_bytes": 4322
+    },
+    {
+      "path": "supabase/functions/manage-user-data/index.ts",
+      "sha256": "e976580783db08fa7850dc7be08705d559d97e1fef5e5e9f2e3c34596e284711",
+      "size_bytes": 5141
+    },
+    {
+      "path": "supabase/functions/observed-fares/index.ts",
+      "sha256": "b608f6966f56358b1b2e34509198c10ff8bb152c163a5f814fb59f9c755cafbd",
+      "size_bytes": 4762
+    },
+    {
+      "path": "supabase/functions/refresh-observed-fares/index.ts",
+      "sha256": "6a8344f6b976f15b6c9aa2ed2251cacd530e0126cda93bcf9adc4336c92f5c58",
+      "size_bytes": 4521
+    },
+    {
+      "path": "supabase/functions/retention-cleanup/index.ts",
+      "sha256": "e8d14cc5e4cb49e835f50313bbac7cf2d8f2747b3df799b895b57dbfe26ec4ec",
+      "size_bytes": 1892
+    },
+    {
+      "path": "supabase/functions/setup-alert/index.ts",
+      "sha256": "e6c8da24957e65070b0a3162143c0d75f25d68ce30e67ee8a6884fe6e15657ad",
+      "size_bytes": 9582
+    },
+    {
+      "path": "supabase/functions/track-event/index.ts",
+      "sha256": "d175e599614f77a1e7be94b351ef549481635fbabb6af2ac2a2af0c4a4427d5e",
+      "size_bytes": 1835
+    },
+    {
+      "path": "supabase/migrations/20260407000000_initial_schema.sql",
+      "sha256": "6a94e9cac6d2916512542823b746a516fe670ffd68de4f42f3ba7fe5f20b98e6",
+      "size_bytes": 2177
+    },
+    {
+      "path": "supabase/migrations/20260407000100_raw_data_schema.sql",
+      "sha256": "b187e32f83c5dd8d2856c982f1594ba9a5b92f0a0969090e411f6694d8ed95af",
+      "size_bytes": 1254
+    },
+    {
+      "path": "supabase/migrations/20260407000200_user_prefs.sql",
+      "sha256": "5dd6c06537186f3ee7c1008710406059d5bdfe02f22e9f3dd8991c74b10c9e31",
+      "size_bytes": 1377
+    },
+    {
+      "path": "supabase/migrations/20260407000300_add_booking_url.sql",
+      "sha256": "fe76f0e386b090ab66500274b86bfd97cc89dc0d05d2a586d3a6c7c5784c6fa7",
+      "size_bytes": 172
+    },
+    {
+      "path": "supabase/migrations/20260407000400_cron_schedule.sql",
+      "sha256": "71693b665eaf85cecce8a44e105dd5cdce80689f7e6b276a4786ab4dae83a223",
+      "size_bytes": 422
+    },
+    {
+      "path": "supabase/migrations/20260728000000_harden_data_pipeline.sql",
+      "sha256": "d0bf1951277b0029330f2a38fcd0b9243c3b5dd222e529ff0d46dcba3643b3df",
+      "size_bytes": 1261
+    },
+    {
+      "path": "supabase/migrations/20260728000100_complete_alerts.sql",
+      "sha256": "176d32f9c0fd8274420855c8d944580351e0a11ddb6496940a5d1e4f39889c85",
+      "size_bytes": 1760
+    },
+    {
+      "path": "supabase/migrations/20260728000200_route_operations.sql",
+      "sha256": "97fb8a16a121034bd8cd3087f52d0dbe3e27d2859a004dd2505cc682ed1ef587",
+      "size_bytes": 2037
+    },
+    {
+      "path": "supabase/migrations/20260728000300_alert_confirmation.sql",
+      "sha256": "da57e0e64ed43d9ec2a9e2ee864399806cdb835d3b8bfad91890bd310303ce11",
+      "size_bytes": 1285
+    },
+    {
+      "path": "supabase/migrations/20260728000400_expand_real_deal_coverage.sql",
+      "sha256": "08d234b9df40cbcb03cf631df8d265f75a0f54569b3b11781bfba3a04629acc7",
+      "size_bytes": 484
+    },
+    {
+      "path": "supabase/migrations/20260728000500_configure_launch_routes.sql",
+      "sha256": "b46e5d09ecc231f1f6638870fdd8c6af6cba34f712665b1d4c299b9aea3712b8",
+      "size_bytes": 2173
+    },
+    {
+      "path": "supabase/migrations/20260728000600_secure_market_stats_view.sql",
+      "sha256": "57b37b65a1fdcc82b9ae2302aa343c2e09ae61edfd87919e67bdf52d2c8ed071",
+      "size_bytes": 160
+    },
+    {
+      "path": "supabase/migrations/20260728000700_harden_database_functions.sql",
+      "sha256": "39bedffe4e19c336c4387a1c656fe4a782b7eaa99a160429c99fabdfe8e8336b",
+      "size_bytes": 344
+    },
+    {
+      "path": "supabase/migrations/20260731000100_alert_date_range.sql",
+      "sha256": "c3e9ae2f7bfa11663040971e949757349067344dffbb403934ba35fab8bc8749",
+      "size_bytes": 342
+    },
+    {
+      "path": "supabase/migrations/20260731000200_public_price_history_read.sql",
+      "sha256": "de844755f154ec3e02cc2ed2a69552539c2f15983da004c35e40fef262c31fce",
+      "size_bytes": 290
+    },
+    {
+      "path": "supabase/migrations/20260731000300_expand_user_preferences.sql",
+      "sha256": "92aacb962183d53135bca7fe894aeb68472bf6c10da1f2a3d07e9033ccb08c71",
+      "size_bytes": 929
+    },
+    {
+      "path": "supabase/migrations/20260731000400_user_bookmarks.sql",
+      "sha256": "a691c17943e66385581d3b38c9deffdec8a3ec77647f003c7a4ca4ca5c1b9a71",
+      "size_bytes": 598
+    },
+    {
+      "path": "supabase/migrations/20260731000500_notification_retry.sql",
+      "sha256": "0785acdd55dfa55b848bad350bbae98ae8c73bdd6a2db82e19afc4baec5e32bc",
+      "size_bytes": 385
+    },
+    {
+      "path": "supabase/migrations/20260731000600_user_preference_dates.sql",
+      "sha256": "a2c7ff3666a4139f1a437d7430611d0b30ba71deb382ff6805fd4feabe54a04e",
+      "size_bytes": 400
+    },
+    {
+      "path": "supabase/migrations/20260731000700_feed_snapshots.sql",
+      "sha256": "d80b5f1490e9244c71ec1ee9d05da0c7b32d09b7160da2fa2901787a06d58c8c",
+      "size_bytes": 446
+    },
+    {
+      "path": "supabase/migrations/20260731000800_product_events.sql",
+      "sha256": "d423e9154bf1cdcc4a28810a3932de2a4afcc4a0a4156531ddb7d64929ed221c",
+      "size_bytes": 747
+    },
+    {
+      "path": "supabase/migrations/20260731000900_refund_policy.sql",
+      "sha256": "0a4a247611812722b4cb61f856a4a5564d48181d1961dd001a73ff2ab4bc2a12",
+      "size_bytes": 89
+    },
+    {
+      "path": "supabase/migrations/20260804000100_expand_hot_deal_scan_windows.sql",
+      "sha256": "946e8f9ae91d6a9a2193f48b256cc0eeb95896a0e96ab56a3d5ca9a9eab6bbfb",
+      "size_bytes": 431
+    },
+    {
+      "path": "supabase/migrations/20260804000200_expand_launch_route_matrix.sql",
+      "sha256": "0c75ce6936bae4d111d406501d48f854efec9b41dca1d766caf9a696f90b0358",
+      "size_bytes": 4474
+    },
+    {
+      "path": "supabase/migrations/20260804000300_expand_long_horizon_scan_windows.sql",
+      "sha256": "caba778fb8c92a9a84e62b83ebafc708cfaeb460e0667d3dcd1e4df8483a497b",
+      "size_bytes": 586
+    },
+    {
+      "path": "supabase/migrations/20260804000400_expand_secondary_origin_matrix.sql",
+      "sha256": "c311c5aa4086dddd0120a6bf201183390d7d5cfc20eedb3647770a0fb172b139",
+      "size_bytes": 4519
+    },
+    {
+      "path": "supabase/migrations/20260805000100_deal_snapshots.sql",
+      "sha256": "dc34e8bc5f9bd6522d5f125c7b1b4917c12e2a14c94f34147967fc436d369eed",
+      "size_bytes": 1173
+    },
+    {
+      "path": "supabase/migrations/20260805000200_backfill_deal_snapshots.sql",
+      "sha256": "d7fd95f73f43297e637ad86420f9b3251f0bca07f0e5363a65e9706c52082631",
+      "size_bytes": 739
+    },
+    {
+      "path": "supabase/migrations/20260805000300_live_provider_affiliate_contract.sql",
+      "sha256": "9bc6c74668a3f4227bf2e398fd531f04aa8fd2f788e49bbec88b13ca565008d2",
+      "size_bytes": 1333
+    },
+    {
+      "path": "supabase/migrations/20260811000100_fail_closed_link_kind_defaults.sql",
+      "sha256": "29fcaccaaad0ddc4319be98807344873b4febd8bcb14deddee878a595da68d7d",
+      "size_bytes": 597
+    },
+    {
+      "path": "supabase/migrations/20260819000100_backfill_discovery_provenance.sql",
+      "sha256": "c8b8d651aff405288e8eb4567ed072fe6cabbb162c31a8095cc89b11b50d3c3c",
+      "size_bytes": 636
+    },
+    {
+      "path": "supabase/migrations/20260820000100_observed_fare_read_model.sql",
+      "sha256": "18aa04bb572eef986f290759a6f6a24a477118cea90b362d7ee2dc819a5ae3b3",
+      "size_bytes": 1947
+    },
+    {
+      "path": "supabase/migrations/20260820000200_request_rate_limits.sql",
+      "sha256": "e06631ce455352af8e532716e4485f9f34c3120fe8e337430bf19fa655c55127",
+      "size_bytes": 1834
+    },
+    {
+      "path": "supabase/migrations/20260820000300_operational_scan_health.sql",
+      "sha256": "f488c58f46c3e4bed5d2950a6b9831815444e943dbd5bdc8eb2234e2037cb836",
+      "size_bytes": 1574
+    },
+    {
+      "path": "supabase/migrations/20260820000400_secure_product_events.sql",
+      "sha256": "aa235fc81de11c7b2bd35190b49f2c9c508f0ff03b6d0d7d323daf3b6ab2b539",
+      "size_bytes": 707
+    },
+    {
+      "path": "supabase/migrations/20260820000500_retention_cleanup.sql",
+      "sha256": "8a74d9c4f52b24882210a3b78400c1ff9c198dd27dfd3f1a041a06253ff732bd",
+      "size_bytes": 2795
+    },
+    {
+      "path": "supabase/migrations/20260820000600_web_vitals_event.sql",
+      "sha256": "93bab72d45afd2f2b6030778866f339bb54db29f17576e3580d604d3b24bcb82",
+      "size_bytes": 272
+    },
+    {
+      "path": "supabase/migrations/20260820000700_idempotent_account_deletion.sql",
+      "sha256": "db518e6ae45f214c82e97d621617f5cf3871634da507b14cf79903a390d7f226",
+      "size_bytes": 4170
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "ff44975ddafbb07b883bec31f2be5892f1f3b1ecc0994a26289c2c789095aeb8",
+      "size_bytes": 589
+    },
+    {
+      "path": "tsconfig.node.json",
+      "sha256": "bb9fd8592a9e364641441219f10d84daae9ba2ca5cc85db798efad6913bb8257",
+      "size_bytes": 233
+    },
+    {
+      "path": "vercel.json",
+      "sha256": "c9283788a33e7bfde343a6c6423cb3cd9c0a1ea3d98d550d0538cf3bab9f8aff",
+      "size_bytes": 1155
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "ad7cded95b3718c446322688ff5e9297153915c8267dfc313ce30249846a22b4",
+      "size_bytes": 355
+    }
+  ]
+}

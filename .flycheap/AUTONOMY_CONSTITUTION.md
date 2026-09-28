@@ -1,7 +1,7 @@
 # FLYCHEAP AI — AUTONOMY CONSTITUTION
-**Version:** 9.0 — Runtime-First Controller  
+**Version:** 12.0 — Desired-State Release Reconciliation Controller  
 **Scope:** FlyCheap Core V1 (`manhtx/Sanvemaybay`)  
-**Mission Mode:** Zero-Touch Autonomous Release Certification  
+**Mission Mode:** Level-Triggered Zero-Touch Autonomous Release Reconciliation  
 
 ---
 
@@ -25,9 +25,10 @@ The agent is strictly forbidden from autonomously:
 
 ---
 
-## 3. Human Interruption Policy
+## 3. Human Interruption Policy & Minimal Handoff Law
 - **Target Interruption Count:** ZERO.
-- **Batched Handoff Law:** When external human action is unavoidable (e.g. cloud quota, commercial keys, final production sign-off), exhaust ALL independent local, ephemeral, and analytical tasks first, inspect the complete remaining release DAG, and batch all currently foreseeable required actions into ONE consolidated `.flycheap/HUMAN_HANDOFF.json` packet. Drip-feeding blockers is prohibited.
+- **Minimal Blocker Law (Sections 51 & 52):** When external human action is required, do NOT bundle optional commercial keys or routine production promotion into immediate blockers. The ONLY immediate hard blocker for Mode 1 staging progress is `ACT-STAGING-01` (Staging Capacity).
+- **Handoff Structure:** Present active projects with refs, names, known purpose, activity evidence, and risks of pausing. Ask only: "Which active project (if any) is safe to pause to free a slot, or do you authorize paid capacity?"
 
 ---
 
@@ -37,7 +38,7 @@ The agent is strictly forbidden from autonomously:
 
 ---
 
-## 5. Epistemic Truth Hierarchy
+## 5. Epistemic Truth Hierarchy & Contradiction Prohibition
 When evidence conflicts, the following precedence strictly governs:
 1. `REAL OBSERVED RUNTIME`
 2. `EXECUTED TEST ON EXACT RC`
@@ -47,49 +48,35 @@ When evidence conflicts, the following precedence strictly governs:
 6. `HISTORICAL REPORT`
 7. `AGENT ASSERTION`
 
-Runtime evidence always outranks written prose or test metrics.
+All control plane state must pass `scripts/contradiction-linter.mjs` with zero contradictions across epochs, RCs, authority states, and test metrics.
 
 ---
 
-## 6. Quad-Identity Source & Release Model
-To prevent cryptographic ambiguity, the following four identities must never be collapsed:
-1. `SOURCE_RC_SHA`: The exact immutable source tree, migrations, and config being certified.
-2. `CERTIFICATION_BUNDLE_SHA`: The evidence bundle generated *about* `SOURCE_RC_SHA`.
+## 6. Quad-Identity Source & Deployable Surface Model
+To prevent cryptographic ambiguity and observer-effect paradoxes:
+1. `SOURCE_RC_SHA`: The exact immutable source tree, migrations, and config being certified (`50c6d98628eca005db4c171ec93abce406e08127`).
+2. `CERTIFICATION_BUNDLE_SHA`: The evidence bundle generated *about* `SOURCE_RC_SHA` (`0e97c326c83669768b5e25a39ff7bf15f9af7ef8`).
 3. `CONTROL_PLANE_SHA`: The current repository management HEAD (`rc/v6.0-candidate`).
-4. `DEPLOYED_SHA`: The exact commit SHA deployed to a specific target environment.
+4. `DEPLOYED_SHA`: The exact commit SHA deployed to a specific target environment (`null` until staging deployment).
+5. `DEPLOYABLE_SURFACE_HASH`: Deterministic sha256 across all canonical deployment paths (`src/`, `public/`, `supabase/migrations/`, `supabase/functions/`, `package.json`, `vite.config.ts`, etc.). Advanced control-plane commits with identical `DEPLOYABLE_SURFACE_HASH` maintain `RUNTIME_EQUIVALENT = true`.
 
 ---
 
-## 7. Operational State Machine
-The mission progresses through the following sequential states:
+## 7. Desired-State Reconciliation Loop
+The controller executes level-triggered reconciliation:
 ```
-BOOTSTRAP 
-  → RECONCILE 
-  → LOCAL_REPAIR 
-  → LOCAL_VERIFICATION 
-  → SOURCE_RC_FROZEN 
-  → SEALED_LOCAL_VERIFICATION 
-  → LOCAL_RUNTIME_CLOSURE 
-  → STAGING_RESOLUTION 
-  → STAGING_PREPARE 
-  → STAGING_COMMIT 
-  → STAGING_RUNTIME_VERIFICATION 
-  → SEALED_STAGING_VERIFICATION 
-  → RELEASE_PREPARE 
-  → RELEASE_COMMIT 
-  → PRODUCTION_VERIFICATION 
-  → EMPIRICAL_MONITORING 
-  → EMPIRICAL_REVIEW
+OBSERVE → DERIVE → COMPARE → SELECT DELTA → PREPARE → EXECUTE → CAPTURE EVIDENCE → VALIDATE → RECORD → CLEANUP → RE-OBSERVE
 ```
-Terminal / Paused States: `BLOCKED_EXTERNAL`, `EMPIRICAL_PENDING`, `EMPIRICALLY_SUPPORTED`.
+- **Desired Terminal State:** `PRODUCTION_VERIFIED + EMPIRICAL_VALIDATION_PENDING`
+- **Fallback Terminal State:** `BLOCKED_EXTERNAL_AFTER_MAXIMUM_AUTONOMOUS_CLOSURE`
 
 ---
 
 ## 8. Proof & Falsification Rules
 1. **Production Path Rule:** Validators must execute real product and domain code paths. Proving isolated math without calling production functions is rejected as evidence.
 2. **Oracle Triangulation:** Deterministic logic compares canonical contract truth, production implementation, independent reference oracles, and metamorphic invariants. Disagreement triggers an investigation, never majority voting.
-3. **Sealed Verification:** Once `SOURCE_RC_SHA` is frozen, verifiers operate in strictly read-only mode against application code, contracts, thresholds, and expected results. Any defect rejects/supersedes the RC.
-4. **Mutant Adequacy:** Critical invariants must kill representative fault mutants (inverted comparisons, stale boundaries, dropped fees).
+3. **Sealed Verification:** Once `SOURCE_RC_SHA` is frozen, verifiers operate in strictly read-only mode against application code, contracts, thresholds, and expected results.
+4. **Mutant Adequacy:** Critical invariants must kill 100% of injected mutants.
 5. **Fail-Closed Kill Switches:** Strong claims must automatically collapse toward `INDICATIVE` or `INSUFFICIENT_EVIDENCE` when data freshness, sample size, or provider integrity degrades.
 
 ---

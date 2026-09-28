@@ -1,5 +1,5 @@
 {
-  "started_at": "2026-09-28T08:01:41.822Z",
+  "started_at": "2026-09-28T11:03:53.283Z",
   "postgres_version": "PostgreSQL 16.14 (Homebrew) on aarch64-apple-darwin24.6.0, compiled by Apple clang version 17.0.0 (clang-1700.6.4.2), 64-bit",
   "migrations_applied": 38,
   "tables_created": 17,
@@ -7,7 +7,7 @@
   "cross_user_isolation_verified": true,
   "account_deletion_transaction_verified": true,
   "backup_restore_verified": true,
-  "duration_ms": 1277,
+  "duration_ms": 1649,
   "status": "SUCCESS",
   "errors": [],
   "cross_user_isolation_counts": {
@@ -15,5 +15,5 @@
     "userAAlertCount": 1,
     "anonDealCount": 1
   },
-  "completed_at": "2026-09-28T08:01:43.100Z"
+  "completed_at": "2026-09-28T11:03:54.933Z"
 }
