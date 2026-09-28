@@ -32,3 +32,12 @@ test("production smoke rejects SPA fallbacks and unreviewed production scripts",
   assert.match(workflow, /payload\.get\('status'\) != 'healthy'/);
   assert.match(workflow, /observed feed has no freshness age/);
 });
+
+test("static public assets (/robots.txt and /release.json) resolve to static content and never to SPA index.html", async () => {
+  const robots = await readFile(new URL("../public/robots.txt", import.meta.url), "utf8");
+  assert.match(robots, /User-agent:\s*\*/);
+  assert.match(robots, /Disallow:\s*\/auth/);
+  assert.doesNotMatch(robots, /<!DOCTYPE html/i);
+  assert.doesNotMatch(robots, /<html/i);
+});
+

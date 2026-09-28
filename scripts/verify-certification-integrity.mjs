@@ -184,8 +184,8 @@ export function verifyCertificationIntegrity(projectRoot = process.cwd()) {
     }
   }
 
-  if (gateList.length !== 30) {
-    errors.push(`Expected 30 release gates (RG01-RG30), found ${gateList.length}`);
+  if (gateList.length !== 33) {
+    errors.push(`Expected 33 release gates (RG01-RG33), found ${gateList.length}`);
   }
 
   // Cross-validation: Outcome release gates must exist in RUNTIME_GATES

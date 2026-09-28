@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { validateProductEvent } from "./product-event.ts";
+import { isCurrentCoreWebVital, validateProductEvent } from "./product-event.ts";
 
 Deno.test("accepts a bounded allow-listed product event", () => {
   assertEquals(validateProductEvent({ event_type: "detail_view", entity_id: "deal-1", metadata: { route: "HAN-BKK" } }), {
@@ -15,10 +15,16 @@ Deno.test("rejects unknown types, metadata and oversized identifiers", () => {
   assertEquals(validateProductEvent({ event_type: "share", entity_id: "x".repeat(121) }), null);
 });
 
-Deno.test("accepts privacy-bounded web vital metrics", () => {
-  assertEquals(validateProductEvent({ event_type: "web_vital", entity_id: "/deals", metadata: { metric: "LCP", value: 2012, delta: 2012, rating: "good", navigation_type: "navigate" } }), {
+Deno.test("accepts privacy-bounded web vital metrics and distinguishes Core Web Vitals", () => {
+  assertEquals(validateProductEvent({ event_type: "web_vital", entity_id: "/deals", metadata: { metric: "INP", value: 120, delta: 120, rating: "good", navigation_type: "navigate" } }), {
     event_type: "web_vital",
     entity_id: "/deals",
-    metadata: { metric: "LCP", value: 2012, delta: 2012, rating: "good", navigation_type: "navigate" },
+    metadata: { metric: "INP", value: 120, delta: 120, rating: "good", navigation_type: "navigate" },
   });
+  assertEquals(isCurrentCoreWebVital("INP"), true);
+  assertEquals(isCurrentCoreWebVital("LCP"), true);
+  assertEquals(isCurrentCoreWebVital("CLS"), true);
+  assertEquals(isCurrentCoreWebVital("FID"), false);
+  assertEquals(isCurrentCoreWebVital("TTFB"), false);
 });
+

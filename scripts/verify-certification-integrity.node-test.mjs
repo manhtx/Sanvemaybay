@@ -8,7 +8,7 @@ test('certification integrity: all contracts, outcomes, requirements and gates a
   assert.equal(result.summary.total_requirements, 34);
   assert.equal(result.summary.total_features, 12);
   assert.equal(result.summary.total_outcomes, 14);
-  assert.equal(result.summary.total_gates, 30);
+  assert.equal(result.summary.total_gates, 33);
   assert.deepEqual(result.summary.category_breakdown, {
     DATA: 5,
     INTEL: 10,

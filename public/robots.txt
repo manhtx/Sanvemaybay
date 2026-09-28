@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /auth
+Disallow: /saved
+Disallow: /alerts/confirm
+Disallow: /alerts/unsubscribe

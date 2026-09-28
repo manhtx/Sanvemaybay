@@ -7,6 +7,14 @@ export const PRODUCT_EVENT_TYPES = [
   "web_vital",
 ] as const;
 
+export const CURRENT_CORE_WEB_VITALS = ["LCP", "INP", "CLS"] as const;
+export const DIAGNOSTIC_WEB_VITALS = ["TTFB"] as const;
+export const DEPRECATED_WEB_VITALS = ["FID"] as const;
+
+export function isCurrentCoreWebVital(metric: string): boolean {
+  return CURRENT_CORE_WEB_VITALS.includes(metric as (typeof CURRENT_CORE_WEB_VITALS)[number]);
+}
+
 const allowedMetadata = new Set(["route", "source", "channel", "bookmarked", "provider", "device", "metric", "value", "delta", "rating", "navigation_type"]);
 
 export interface ValidProductEvent {

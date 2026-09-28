@@ -68,9 +68,9 @@
     {
       "gate_id": "RG10",
       "name": "POPULATED_MIGRATION_VERIFIED",
-      "status": "SUPPORTED",
+      "status": "BLOCKED",
       "evidence_level": "L4",
-      "rationale": "Clean sequential replay of all 38 migrations verified locally; populated migration pipeline and isolated database test lifecycle contractually enforced via .github/workflows/ci.yml."
+      "rationale": "Clean sequential replay of all 38 migrations verified locally; populated migration pipeline is enforced in CI workflow (.github/workflows/ci.yml) but local runtime execution is BLOCKED due to absence of container runtime (Docker) on host."
     },
     {
       "gate_id": "RG11",
@@ -98,14 +98,14 @@
       "name": "TURNSTILE_RUNTIME_VERIFIED_OR_NONBLOCKING_BY_RELEASE_MODE",
       "status": "SUPPORTED",
       "evidence_level": "L4",
-      "rationale": "Turnstile server verification fails closed in turnstile.test.ts; non-blocking in Indicative Beta / Local mode."
+      "rationale": "Turnstile server token verification contract and fail-closed behavior verified locally (turnstile.test.ts); live runtime validation on remote staging is non-blocking in Mode 1 and held pending staging project."
     },
     {
       "gate_id": "RG15",
       "name": "LIVE_PROVIDER_VERIFIED_OR_EXPLICIT_INDICATIVE_MODE",
       "status": "SUPPORTED",
       "evidence_level": "L4",
-      "rationale": "Explicitly operating under INDICATIVE_PUBLIC_BETA mode: FastFlights scraping and Amadeus sandbox verified; commercial keys scoped out."
+      "rationale": "Explicitly operating under INDICATIVE_PUBLIC_BETA mode: FastFlights scraping and Amadeus sandbox verified; commercial partner keys scoped out under BLK-PROV-01."
     },
     {
       "gate_id": "RG16",
@@ -154,7 +154,7 @@
       "name": "OBSERVABILITY_QUERYABLE",
       "status": "SUPPORTED",
       "evidence_level": "L4",
-      "rationale": "x-request-id and x-release-sha headers, Core Web Vitals RUM reporting, and PII-safe error codes verified."
+      "rationale": "Structured telemetry, x-request-id correlation, Core Web Vitals RUM reporting (LCP, INP, CLS), and PII-safe error codes verified locally; remote operator log querying is held pending staging project."
     },
     {
       "gate_id": "RG23",
@@ -182,14 +182,14 @@
       "name": "ACCESSIBILITY_BASELINE_PASS",
       "status": "SUPPORTED",
       "evidence_level": "L5",
-      "rationale": "Skip link present, 44px tap targets, keyboard navigation, and WCAG 2.2 AA automated baseline verified across desktop and mobile."
+      "rationale": "Skip link present, 44px tap targets, keyboard navigation, and WCAG automated baseline verified across desktop and mobile; calibrated as baseline verified."
     },
     {
       "gate_id": "RG27",
       "name": "RECOVERY_PROCEDURE_VALIDATED",
       "status": "SUPPORTED",
       "evidence_level": "L4",
-      "rationale": "Rollback and recovery runbook documented in RUNBOOK.md; backup and restore procedures simulated."
+      "rationale": "Rollback and recovery runbook documented in RUNBOOK.md; backup and restore procedures simulated; live managed recovery unverified."
     },
     {
       "gate_id": "RG28",
@@ -211,6 +211,27 @@
       "status": "SUPPORTED",
       "evidence_level": "L5",
       "rationale": "Final fresh zero-trust verification confirmed that all local gates are supported and external blockers are accurately isolated."
+    },
+    {
+      "gate_id": "RG31",
+      "name": "REMOTE_SOURCE_PROVENANCE",
+      "status": "SUPPORTED",
+      "evidence_level": "L5",
+      "rationale": "Release candidate branch exists on remote origin (GitHub), is cloneable into an isolated clean directory from origin, and passes complete verification."
+    },
+    {
+      "gate_id": "RG32",
+      "name": "PROVIDER_COVERAGE_FIT",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Provider fitness assessed: FastFlights covers indicative domestic/regional LCC routes (VietJet, Vietnam Airlines); Amadeus Sandbox covers scheduled carriers; boundary is explicitly indicative opportunity discovery."
+    },
+    {
+      "gate_id": "RG33",
+      "name": "DATA_SOURCE_RELEASE_SUITABILITY_REVIEWED",
+      "status": "SUPPORTED",
+      "evidence_level": "L4",
+      "rationale": "Data source operational sustainability reviewed: reverse-engineered scraping categorized as experimental with graceful failover; commercial partner keys tracked under BLK-PROV-01."
     }
   ]
 }

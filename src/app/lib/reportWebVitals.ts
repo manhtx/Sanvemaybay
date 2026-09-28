@@ -1,5 +1,19 @@
 const SAMPLE_KEY = "flycheap.rum-sampled";
 
+export const CURRENT_CORE_WEB_VITALS = ["LCP", "INP", "CLS"] as const;
+export const DIAGNOSTIC_WEB_VITALS = ["TTFB"] as const;
+export const DEPRECATED_WEB_VITALS = ["FID"] as const;
+
+export type CurrentCoreWebVital = typeof CURRENT_CORE_WEB_VITALS[number];
+
+export function isCurrentCoreWebVital(metric: string): metric is CurrentCoreWebVital {
+  return CURRENT_CORE_WEB_VITALS.includes(metric as CurrentCoreWebVital);
+}
+
+export function isDeprecatedWebVital(metric: string): boolean {
+  return DEPRECATED_WEB_VITALS.includes(metric as (typeof DEPRECATED_WEB_VITALS)[number]);
+}
+
 export function shouldSampleWebVitals(
   sampleRate: number,
   storage: Storage | undefined = typeof window === "undefined" ? undefined : window.sessionStorage,

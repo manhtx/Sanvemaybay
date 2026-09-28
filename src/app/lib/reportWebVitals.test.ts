@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { shouldSampleWebVitals } from "./reportWebVitals";
+import {
+  CURRENT_CORE_WEB_VITALS,
+  DIAGNOSTIC_WEB_VITALS,
+  isCurrentCoreWebVital,
+  isDeprecatedWebVital,
+  shouldSampleWebVitals,
+} from "./reportWebVitals";
 
 function storage(): Storage {
   const values = new Map<string, string>();
@@ -18,3 +24,23 @@ describe("shouldSampleWebVitals", () => {
     expect(shouldSampleWebVitals(2, storage(), () => 0.999)).toBe(true);
   });
 });
+
+describe("Core Web Vitals metric standards", () => {
+  it("enforces LCP, INP, CLS as current Core Web Vitals", () => {
+    expect(CURRENT_CORE_WEB_VITALS).toEqual(["LCP", "INP", "CLS"]);
+    expect(isCurrentCoreWebVital("INP")).toBe(true);
+    expect(isCurrentCoreWebVital("LCP")).toBe(true);
+    expect(isCurrentCoreWebVital("CLS")).toBe(true);
+  });
+
+  it("ensures FID is recognized as deprecated and not a current Core Web Vital", () => {
+    expect(isCurrentCoreWebVital("FID")).toBe(false);
+    expect(isDeprecatedWebVital("FID")).toBe(true);
+  });
+
+  it("ensures TTFB is recognized as diagnostic and not a current Core Web Vital", () => {
+    expect(isCurrentCoreWebVital("TTFB")).toBe(false);
+    expect(DIAGNOSTIC_WEB_VITALS).toContain("TTFB");
+  });
+});
+
