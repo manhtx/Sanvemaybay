@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V9-RUNTIME-FIRST",
+  "canonical_registry": {
+    "constitution": ".flycheap/AUTONOMY_CONSTITUTION.md",
+    "mission_state": ".flycheap/STATE.json",
+    "task_dag": ".flycheap/TASK_DAG.json",
+    "evidence_ledger": ".flycheap/EVIDENCE_LEDGER.jsonl",
+    "negative_evidence": ".flycheap/NEGATIVE_EVIDENCE.jsonl",
+    "human_handoff": ".flycheap/HUMAN_HANDOFF.json",
+    "release_index": ".flycheap/RELEASE_INDEX.json",
+    "canonical_requirements": ".flycheap/CANONICAL_REQUIREMENT_REGISTRY.json",
+    "acceptance_contract": ".flycheap/ACCEPTANCE_CONTRACT.json",
+    "feature_contract": ".flycheap/FEATURE_CONTRACT.json",
+    "semantic_traceability": ".flycheap/SEMANTIC_TRACEABILITY_AUDIT.json",
+    "evidence_kernel": ".flycheap/RELEASE_EVIDENCE_KERNEL.json",
+    "evidence_vector": ".flycheap/EVIDENCE_VECTOR.json",
+    "proof_obligations": ".flycheap/PROOF_OBLIGATIONS.json",
+    "proof_dependencies": ".flycheap/PROOF_DEPENDENCIES.json",
+    "proof_dependency_graph": ".flycheap/PROOF_DEPENDENCY_GRAPH.json",
+    "claim_lineage": ".flycheap/CLAIM_LINEAGE.json",
+    "threshold_registry": ".flycheap/THRESHOLD_REGISTRY.json",
+    "rc_registry": ".flycheap/RC_REGISTRY.json",
+    "release_attestation": ".flycheap/RELEASE_ATTESTATION.json",
+    "release_provenance": ".flycheap/RELEASE_PROVENANCE_MANIFEST.json",
+    "runtime_gates": ".flycheap/RUNTIME_GATES.json",
+    "environment_parity": ".flycheap/ENVIRONMENT_PARITY.json",
+    "release_blockers": ".flycheap/RELEASE_BLOCKERS.json",
+    "data_source_risk": ".flycheap/DATA_SOURCE_RISK_REVIEW.json",
+    "provider_measurement": ".flycheap/PROVIDER_MEASUREMENT.json"
+  }
+}

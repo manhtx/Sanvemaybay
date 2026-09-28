@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V9-RUNTIME-FIRST",
+  "controller_version": "9.0.0-RUNTIME-FIRST-CONTROLLER",
+  "started_at": "2026-09-28T14:36:00+07:00",
+  "baseline_git_sha": "b3cd581e11a3269cf02861d93d543155e834cbf2",
+  "baseline_remote_sha": "b3cd581e11a3269cf02861d93d543155e834cbf2",
+  "baseline_branch": "rc/v6.0-candidate",
+  "baseline_worktree_state": "CLEAN",
+  "quad_identity": {
+    "source_rc_sha": "50c6d98628eca005db4c171ec93abce406e08127",
+    "certification_bundle_sha": "0e97c326c83669768b5e25a39ff7bf15f9af7ef8",
+    "control_plane_sha": "b3cd581e11a3269cf02861d93d543155e834cbf2",
+    "deployed_sha": null
+  },
+  "current_phase": "LOCAL_EPHEMERAL_RUNTIME_VERIFIED_AND_HANDOFF_BATCHED",
+  "current_source_rc": "RC-V7.0-001",
+  "current_task": "TASK-06-CONSOLIDATED-HUMAN-HANDOFF-AND-CLOSURE",
+  "last_progress_at": "2026-09-28T15:01:30+07:00",
+  "next_action": "Awaiting batched external action ACT-STAGING-01 (1-click unpause or clean staging ref)",
+  "system_state": "LOCAL_EPHEMERAL_RUNTIME_VERIFIED",
+  "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
+  "holdout_verification": {
+    "subagent_id": "b1a62639-8101-4d97-9846-39719254b336",
+    "verdict": "SUPPORTED",
+    "holdout_probes_passed": "21/21"
+  },
+  "local_ephemeral_runtime": {
+    "postgres_engine": "PostgreSQL 16.14 (Homebrew)",
+    "migrations_applied": 38,
+    "tables_created": 17,
+    "rls_verified": true,
+    "cross_user_isolation_verified": true,
+    "account_deletion_verified": true,
+    "backup_restore_verified": true,
+    "status": "SUCCESS"
+  }
+}

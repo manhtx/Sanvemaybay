@@ -1,38 +1,39 @@
 import { describe, it, expect } from 'vitest';
 import { evidenceGatedDealLabel } from './dealClaims';
+import { assessDeal, calculateTotalCost } from './flightIntelligence';
 import { isApprovedHttpsUrl, approvedBookingHosts } from '../../../supabase/functions/_shared/live-deal';
 
 /**
- * Independent Reference Oracle for Differential Testing (Section 25)
- * Written completely independently of the production implementation
- * to catch subtle boundary or boolean operator errors.
+ * Independent Reference Oracle for Differential Testing (Section 27 & 28)
+ * Derived strictly from Canonical Acceptance Criteria (FLY-INTEL-004)
+ * and Threshold Registry (THR-SCORE-HOT, THR-SCORE-VERY-GOOD, THR-SCORE-GOOD,
+ * THR-SCORE-NOTEWORTHY, THR-CONFIDENCE-CAP-FLOOR, THR-CONFIDENCE-HIGH, THR-CONFIDENCE-MEDIUM).
  */
 function referenceDealLabelOracle(score: number, confidence: number): string {
-  const s = Math.max(0, Math.min(100, Number(score) || 0));
-  const c = Math.max(0, Math.min(100, Number(confidence) || 0));
+  const boundedScore = Math.max(0, Math.min(100, Number(score) || 0));
+  const boundedConfidence = Math.max(0, Math.min(100, Number(confidence) || 0));
 
-  // Low confidence (< 50%) caps urgency strictly
-  if (c < 50) {
-    return s >= 60 ? "Giá đáng chú ý" : "Giá quan sát";
+  // Low confidence (< 50%) caps urgency strictly (FLY-INTEL-004)
+  if (boundedConfidence < 50) {
+    return boundedScore >= 60 ? 'Giá đáng chú ý' : 'Giá quan sát';
   }
-  if (s >= 90 && c >= 75) {
-    return "Deal cực nóng";
+  if (boundedScore >= 90 && boundedConfidence >= 75) {
+    return 'Deal cực nóng';
   }
-  if (s >= 80 && c >= 65) {
-    return "Deal rất ngon";
+  if (boundedScore >= 80 && boundedConfidence >= 65) {
+    return 'Deal rất ngon';
   }
-  if (s >= 70) {
-    return "Deal ngon";
+  if (boundedScore >= 70) {
+    return 'Deal ngon';
   }
-  if (s >= 60) {
-    return "Giá đáng chú ý";
+  if (boundedScore >= 60) {
+    return 'Giá đáng chú ý';
   }
-  return "Giá quan sát";
+  return 'Giá quan sát';
 }
 
-describe('Differential Verification (Section 25)', () => {
-  it('production evidenceGatedDealLabel matches reference oracle across exhaustive score and confidence matrix', () => {
-    // Test all integer combinations of score [0..100 step 5] and confidence [0..100 step 5]
+describe('Differential Verification & Boundary Testing (Section 27 & 28)', () => {
+  it('production evidenceGatedDealLabel matches reference oracle across exhaustive matrix', () => {
     for (let score = 0; score <= 100; score += 5) {
       for (let confidence = 0; confidence <= 100; confidence += 5) {
         const prod = evidenceGatedDealLabel(score, confidence);
@@ -42,19 +43,62 @@ describe('Differential Verification (Section 25)', () => {
     }
   });
 
-  it('handles negative, NaN, infinity, and floating point inputs identically in production and reference', () => {
-    const edgeCases = [
-      { s: -10, c: -5 },
-      { s: NaN, c: 50 },
-      { s: 80, c: NaN },
-      { s: Infinity, c: 80 },
-      { s: 95.5, c: 74.9 },
-      { s: 89.9, c: 75.1 },
-      { s: 79.9, c: 65.0 },
-      { s: 59.9, c: 100 },
+  it('boundary testing: validates exact threshold +/- epsilon transitions', () => {
+    const epsilon = 0.001;
+    const boundaryCases = [
+      // 90 / 75 boundary ("Deal cực nóng")
+      { s: 90 - epsilon, c: 75, expected: 'Deal rất ngon' },
+      { s: 90, c: 75, expected: 'Deal cực nóng' },
+      { s: 90 + epsilon, c: 75, expected: 'Deal cực nóng' },
+      { s: 90, c: 75 - epsilon, expected: 'Deal rất ngon' },
+
+      // 80 / 65 boundary ("Deal rất ngon")
+      { s: 80 - epsilon, c: 65, expected: 'Deal ngon' },
+      { s: 80, c: 65, expected: 'Deal rất ngon' },
+      { s: 80 + epsilon, c: 65, expected: 'Deal rất ngon' },
+      { s: 80, c: 65 - epsilon, expected: 'Deal ngon' },
+
+      // 70 boundary ("Deal ngon")
+      { s: 70 - epsilon, c: 50, expected: 'Giá đáng chú ý' },
+      { s: 70, c: 50, expected: 'Deal ngon' },
+      { s: 70 + epsilon, c: 50, expected: 'Deal ngon' },
+
+      // 60 boundary ("Giá đáng chú ý")
+      { s: 60 - epsilon, c: 50, expected: 'Giá quan sát' },
+      { s: 60, c: 50, expected: 'Giá đáng chú ý' },
+      { s: 60 + epsilon, c: 50, expected: 'Giá đáng chú ý' },
+
+      // 50 confidence cap boundary
+      { s: 95, c: 50 - epsilon, expected: 'Giá đáng chú ý' },
+      { s: 95, c: 50, expected: 'Deal ngon' },
+      { s: 55, c: 50 - epsilon, expected: 'Giá quan sát' },
+      { s: 55, c: 50, expected: 'Giá quan sát' },
     ];
 
-    for (const { s, c } of edgeCases) {
+    for (const { s, c, expected } of boundaryCases) {
+      const prod = evidenceGatedDealLabel(s, c);
+      const ref = referenceDealLabelOracle(s, c);
+      expect(prod).toBe(expected);
+      expect(prod).toBe(ref);
+    }
+  });
+
+  it('boundary testing: handles extreme, NaN, Infinity, negative, and out-of-range values safely', () => {
+    const extremeCases = [
+      { s: -100, c: -50 },
+      { s: 0, c: 0 },
+      { s: 100, c: 100 },
+      { s: 150, c: 200 },
+      { s: NaN, c: 75 },
+      { s: 85, c: NaN },
+      { s: NaN, c: NaN },
+      { s: Infinity, c: 80 },
+      { s: 90, c: Infinity },
+      { s: -Infinity, c: 50 },
+      { s: 90, c: -Infinity },
+    ];
+
+    for (const { s, c } of extremeCases) {
       const prod = evidenceGatedDealLabel(s, c);
       const ref = referenceDealLabelOracle(s, c);
       expect(prod).toBe(ref);
@@ -62,22 +106,34 @@ describe('Differential Verification (Section 25)', () => {
   });
 });
 
-describe('Metamorphic Testing (Section 26)', () => {
-  it('Metamorphic Invariant 1: Attractiveness Monotonicity under Price Reduction', () => {
-    // If baseline is fixed at 2,000,000 VND, lowering price from 1,600,000 to 1,200,000
-    // must strictly increase or maintain discount percentage
-    const baseline = 2_000_000;
-    const priceHigh = 1_600_000;
-    const priceLow = 1_200_000;
+describe('Metamorphic Invariants on Production Domain Engine (Section 29–33)', () => {
+  it('Metamorphic Invariant 1: Price Reduction Monotonicity on assessDeal', () => {
+    const baselinePrice = 2_000_000;
+    const higherPrice = 1_600_000;
+    const lowerPrice = 1_200_000;
 
-    const discountHigh = Math.round(((baseline - priceHigh) / baseline) * 100);
-    const discountLow = Math.round(((baseline - priceLow) / baseline) * 100);
+    // Execute real production domain scoring engine
+    const assessHigh = assessDeal({
+      currentPrice: higherPrice,
+      baselinePrice,
+      comparableSamples: 15,
+      historicalSamples: 15,
+    });
 
-    expect(discountLow).toBeGreaterThan(discountHigh);
+    const assessLow = assessDeal({
+      currentPrice: lowerPrice,
+      baselinePrice,
+      comparableSamples: 15,
+      historicalSamples: 15,
+    });
 
-    // Confidence fixed at 80% -> label for lower price must be at least as attractive
-    const labelHigh = evidenceGatedDealLabel(discountHigh * 2, 80);
-    const labelLow = evidenceGatedDealLabel(discountLow * 2, 80);
+    // Monotonic discount and score increase
+    expect(assessLow.discountPercent).toBeGreaterThan(assessHigh.discountPercent);
+    expect(assessLow.score).toBeGreaterThanOrEqual(assessHigh.score);
+
+    // Pipe through production label gating
+    const labelHigh = evidenceGatedDealLabel(assessHigh.score, Math.round(assessHigh.confidence * 100));
+    const labelLow = evidenceGatedDealLabel(assessLow.score, Math.round(assessLow.confidence * 100));
 
     const tierRank: Record<string, number> = {
       'Giá quan sát': 1,
@@ -90,21 +146,45 @@ describe('Metamorphic Testing (Section 26)', () => {
     expect(tierRank[labelLow]).toBeGreaterThanOrEqual(tierRank[labelHigh]);
   });
 
-  it('Metamorphic Invariant 2: Cost Additivity Monotonicity', () => {
-    // Adding optional baggage, seat selection, or card fees must never reduce total estimated cost
-    const baseFare = 1_500_000;
-    const feesMandatory = 450_000;
-    const totalWithoutBaggage = baseFare + feesMandatory;
+  it('Metamorphic Invariant 2: Cost Additivity Monotonicity on calculateTotalCost', () => {
+    const baseFare = 1_200_000;
+    const mandatoryTaxes = 350_000;
+    const optionalBaggage = 220_000;
 
-    const baggageFee = 250_000;
-    const totalWithBaggage = totalWithoutBaggage + baggageFee;
+    // Real production cost engine
+    const baseTotal = calculateTotalCost([baseFare]);
+    const withTaxes = calculateTotalCost([baseFare, mandatoryTaxes]);
+    const withBaggage = calculateTotalCost([baseFare, mandatoryTaxes, optionalBaggage]);
 
-    expect(totalWithBaggage).toBeGreaterThan(totalWithoutBaggage);
-    expect(totalWithoutBaggage).toBeGreaterThanOrEqual(baseFare);
+    expect(withTaxes).toBeGreaterThan(baseTotal);
+    expect(withBaggage).toBeGreaterThan(withTaxes);
+
+    // Non-negative and finite constraint validation
+    expect(() => calculateTotalCost([baseFare, -50_000])).toThrow('Cost components must be finite and non-negative.');
+    expect(() => calculateTotalCost([baseFare, NaN])).toThrow('Cost components must be finite and non-negative.');
+    expect(() => calculateTotalCost([baseFare, Infinity])).toThrow('Cost components must be finite and non-negative.');
   });
 
-  it('Metamorphic Invariant 3: Confidence Capping (Evidence Gating)', () => {
-    // For any score up to 100, if confidence is < 50%, label must NEVER be "Deal cực nóng" or "Deal rất ngon"
+  it('Metamorphic Invariant 3: Confidence Monotonicity under Sample Growth on assessDeal', () => {
+    const currentPrice = 1_400_000;
+    const baselinePrice = 2_000_000;
+
+    let previousConfidence = 0;
+    for (let samples = 1; samples <= 30; samples += 2) {
+      const assessment = assessDeal({
+        currentPrice,
+        baselinePrice,
+        comparableSamples: samples,
+        historicalSamples: samples,
+      });
+
+      expect(assessment.confidence).toBeGreaterThanOrEqual(previousConfidence);
+      previousConfidence = assessment.confidence;
+    }
+  });
+
+  it('Metamorphic Invariant 4: Confidence Capping (Evidence Gating)', () => {
+    // When confidence is strictly < 50%, labels can never breach modest tiers
     for (let s = 0; s <= 100; s += 1) {
       for (let c = 0; c < 50; c += 5) {
         const label = evidenceGatedDealLabel(s, c);
@@ -116,40 +196,45 @@ describe('Metamorphic Testing (Section 26)', () => {
     }
   });
 
-  it('Metamorphic Invariant 4: Confidence Monotonicity under Sample Growth', () => {
-    // As sample size grows from 1 to 12, confidence score must be monotonically non-decreasing
-    const confidenceScore = (sampleCount: number) => Math.round(Math.min(100, (sampleCount / 12) * 100));
-
-    let prev = -1;
-    for (let count = 1; count <= 15; count++) {
-      const current = confidenceScore(count);
-      expect(current).toBeGreaterThanOrEqual(prev);
-      prev = current;
-    }
-  });
-
-  it('Metamorphic Invariant 5: URL Allowlist Security Monotonicity', () => {
+  it('Metamorphic Invariant 5: URL Security & Adversarial Spoof Resistance', () => {
     const approved = approvedBookingHosts('vietjetair.com,vietnamairlines.com,bambooairways.com');
 
-    // An untrusted domain MUST remain rejected even when query parameters or credentials attempt to spoof trusted hosts
     const attacks = [
-      'https://evil.com',
-      'https://evil.com?ref=vietjetair.com',
-      'https://evil.com/vietnamairlines.com',
+      // Userinfo attack (attempting to trick parser with trusted host in userinfo)
+      'https://vietjetair.com@evil.com/checkout',
+      'https://vietjetair.com:password@evil.com',
+
+      // Prefix and suffix attack
+      'https://evil.com/vietjetair.com',
+      'https://evil.com?target=vietjetair.com',
       'https://evil.com#vietjetair.com',
-      'http://vietjetair.com', // non-https rejected
+      'https://vietjetair.com.attacker.com',
+      'https://fakevietjetair.com',
+      'https://notvietjetair.com/booking',
+
+      // Protocol attacks
+      'http://vietjetair.com', // Non-HTTPS must be rejected
       'javascript:alert(1)',
-      'https://subdomain.attacker.com',
-      'https://notvietjetair.com',
+      'data:text/html,evil',
+      '//vietjetair.com', // Scheme-relative URL
+
+      // Malformed / Non-URL input
+      '',
+      'vietjetair.com',
+      '   ',
+      'https://',
     ];
 
     for (const url of attacks) {
       expect(isApprovedHttpsUrl(url, approved)).toBe(false);
     }
 
-    // Legit domains and subdomains pass
-    expect(isApprovedHttpsUrl('https://vietjetair.com/vi/flights', approved)).toBe(true);
-    expect(isApprovedHttpsUrl('https://www.vietnamairlines.com/flights', approved)).toBe(true);
-    expect(isApprovedHttpsUrl('https://booking.bambooairways.com', approved)).toBe(true);
+    // Valid legitimate booking URLs pass
+    expect(isApprovedHttpsUrl('https://vietjetair.com', approved)).toBe(true);
+    expect(isApprovedHttpsUrl('https://vietjetair.com/vi/flights/select', approved)).toBe(true);
+    expect(isApprovedHttpsUrl('https://booking.vietjetair.com/flights', approved)).toBe(true);
+    expect(isApprovedHttpsUrl('https://www.vietnamairlines.com/vn/vi/', approved)).toBe(true);
+    expect(isApprovedHttpsUrl('https://bambooairways.com/booking', approved)).toBe(true);
+    expect(isApprovedHttpsUrl('https://VietJetAir.com/booking', approved)).toBe(true); // Case insensitive
   });
 });
