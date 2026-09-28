@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
+  "release_candidate_id": "RC-V7.0-001",
+  "candidate_git_sha": "50c6d98628eca005db4c171ec93abce406e08127",
+  "sealing_git_sha": "0e97c326c83669768b5e25a39ff7bf15f9af7ef8",
+  "branch": "rc/v6.0-candidate",
+  "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
+  "system_authority_state": "LOCAL_FULLSTACK_VERIFIED",
+  "adversarial_audit_verdict": "SUPPORTED",
+  "human_interruption_target": "ZERO_TOUCH_BATCHED",
+  "batched_external_actions": [
+    {
+      "action_id": "ACT-STAGING-01",
+      "category": "INFRASTRUCTURE_QUOTA",
+      "title": "Resolve Clean Dedicated Supabase Staging Environment",
+      "why_required": "Supabase account bpneawjmggrxqaoukxoz has 2 active projects out of 2 allowed on free plan. Project thprsgnpvtzkcvknqfwk contains 123k foreign Macro Platform rows and must remain FORENSIC_READ_ONLY. Project rclmpdygxhoaymajpmuf is currently INACTIVE (paused).",
+      "resolution_options": [
+        {
+          "option": "UNPAUSE_EXISTING",
+          "instructions": "Log in to Supabase dashboard and unpause project rclmpdygxhoaymajpmuf (requires 1-click human owner action)."
+        },
+        {
+          "option": "DEDICATED_NEW_PROJECT",
+          "instructions": "Provision a new clean Supabase project (or upgrade plan) and provide project ref: SUPABASE_PROJECT_REF=<ref>."
+        }
+      ],
+      "automated_execution_after_unblock": "npx supabase link --project-ref <clean-ref> && npx supabase db push && npx supabase functions deploy"
+    },
+    {
+      "action_id": "ACT-COMMERCIAL-01",
+      "category": "COMMERCIAL_KEYS",
+      "title": "Supply Commercial Booking Provider Credentials (Optional for Mode 2)",
+      "why_required": "Mode 1 (Indicative Public Beta) operates with FastFlights indicative scraping and direct airline search deep links. Direct partner booking integration requires commercial partner API keys.",
+      "resolution_options": [
+        {
+          "option": "REMAIN_MODE_1",
+          "instructions": "No action needed. Mode 1 is fully functional and release-verified."
+        },
+        {
+          "option": "UPGRADE_TO_MODE_2",
+          "instructions": "Set AMADEUS_CLIENT_ID, AMADEUS_CLIENT_SECRET, and SKYSCANNER_API_KEY in Supabase Vault."
+        }
+      ],
+      "automated_execution_after_unblock": "npx supabase secrets set AMADEUS_CLIENT_ID=... AMADEUS_CLIENT_SECRET=..."
+    },
+    {
+      "action_id": "ACT-PROMOTION-01",
+      "category": "GOVERNANCE_AUTHORIZATION",
+      "title": "Human Authorization to Merge Verified Candidate to Main",
+      "why_required": "Zero-trust governance requires explicit human code review before mutating the production main branch.",
+      "resolution_options": [
+        {
+          "option": "AUTHORIZE_PROMOTION",
+          "instructions": "Review Git diff between main and rc/v6.0-candidate (commit 0e97c32), then merge."
+        }
+      ],
+      "automated_execution_after_unblock": "git checkout main && git merge --ff-only rc/v6.0-candidate && git push origin main"
+    }
+  ],
+  "verification_metrics": {
+    "total_automated_tests": 207,
+    "vitest_domain_unit": 87,
+    "node_contracts": 43,
+    "deno_functions_check": 14,
+    "deno_functions_test": 45,
+    "playwright_browser_e2e": 32,
+    "failing_tests": 0,
+    "instability_rate": "0.0%",
+    "canonical_requirements": 34,
+    "product_outcomes": 14,
+    "traceability_valid_edges": 40,
+    "orphan_nodes": 0,
+    "differential_oracle_passing": true,
+    "metamorphic_invariants_passing": true,
+    "migration_parity_deterministic": true
+  },
+  "ten_pass_hostile_convergence": {
+    "pass_1_product_semantics": "CONVERGED_PASS",
+    "pass_2_data_integrity": "CONVERGED_PASS",
+    "pass_3_decision_logic": "CONVERGED_PASS",
+    "pass_4_security_and_auth": "CONVERGED_PASS",
+    "pass_5_provider_drift": "CONVERGED_PASS",
+    "pass_6_ux_and_a11y": "CONVERGED_PASS",
+    "pass_7_observability_and_recovery": "CONVERGED_PASS",
+    "pass_8_migration_provenance": "CONVERGED_PASS",
+    "pass_9_evidence_ceiling": "CONVERGED_PASS",
+    "pass_10_test_counterexamples": "CONVERGED_PASS"
+  }
+}
