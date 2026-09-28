@@ -11,7 +11,7 @@
   "quad_identity": {
     "source_rc_sha": "50c6d98628eca005db4c171ec93abce406e08127",
     "certification_bundle_sha": "0e97c326c83669768b5e25a39ff7bf15f9af7ef8",
-    "control_plane_sha": "0342da82555c37b8427591737b65126d5015ab4c",
+    "control_plane_sha": "4b68ecd21a5bb8a4de619a8e1b39a56b106e7bc9",
     "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
     "runtime_equivalent": true,
     "deployed_sha": null
