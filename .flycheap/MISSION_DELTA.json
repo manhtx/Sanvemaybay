@@ -76,5 +76,11 @@
     "differential_and_metamorphic_tests": "Provides mathematical proof that domain algorithms satisfy monotonicity invariants even for unknown edge cases.",
     "rc_registry": "Resolves the historical ambiguity where RC-V6.0-001 was reused across multiple commits, establishing 1-to-1 immutability.",
     "provider_and_killswitch_tests": "Proves system gracefully degrades when live flight providers drift or fail."
-  }
+  },
+  "final_candidate_git_sha": "50c6d98628eca005db4c171ec93abce406e08127",
+  "counterexamples_repaired": [
+    "Counterexample 1: Explicit candidate Git SHA recorded in attestation and RC registry",
+    "Counterexample 2: Complete alignment between THRESHOLD_REGISTRY.json (14 thresholds) and RELEASE_EVIDENCE_KERNEL.json with integrity cross-validation",
+    "Counterexample 3: FLY-INTEL-004 score thresholds aligned with code (90/80/70) and freshness boundaries aligned across healthy (120m), degraded (360m), and active retention (24h)"
+  ]
 }

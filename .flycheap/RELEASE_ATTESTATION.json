@@ -1,17 +1,17 @@
 {
   "version": "7.0.0",
   "release_candidate_id": "RC-V7.0-001",
-  "git_sha": "c87c17f7fdabec9ef871b111fecdeb179050155d",
+  "git_sha": "50c6d98628eca005db4c171ec93abce406e08127",
   "branch": "rc/v6.0-candidate",
   "worktree_status": "CLEAN",
   "hashes": {
-    "acceptance_contract_hash": "536f8ccd61ce46d1f7878cef759ea45457afe4d25747c6a7de7b06d5a8b60528",
+    "acceptance_contract_hash": "b5aa77be7bfbff7aeeac8001fa6e9f94f26b7cc9dc52c3910838c9d5dbf3cbe2",
     "feature_contract_hash": "4e03e57dc11f3014b882ed5bfec11c5ac47a3f8ef0658bae2a8031d7ff7eccf3",
     "proof_manifest_hash": "ac5e181ff8bed3a3939b2013e4f6980827d32d6ad7d1fd0919ec695d70367130",
     "package_lock_hash": "43b749c8df014dab48e9af3db16ec4423c1d48bf4847dc2c02ec6554015bc28b",
     "migration_set_hash": "ee3c084627b64b25d4995622dfcf732944f336331fbb6cd3cc66ae39497f48a8",
-    "threshold_registry_hash": "77a39202dc3b9c9eabe9c6bd6009f106c5a708f0a565c862685725b01fa486c1",
-    "evidence_kernel_hash": "0c24032c7f822516ce55906735bbfe18c4091f835fae180a4855fad6d21c09b3",
+    "threshold_registry_hash": "ba063f7c386319bb4c8b41c0a0205009044a8e24c7572232f1e4ec53890804b0",
+    "evidence_kernel_hash": "47d4f4097c1b5ac2e4022dd4ca1ed1ef44aa9596343efec2ab3fccc741f8e620",
     "edge_functions": {
       "ai-explainer": "738347e11c79df9ac498be811e36b8e1c663c795b803f5d997014f1bbfce2213",
       "alert-processor": "1c615841c135b6fc86217cef54d7b6aa9d536cc8ebf0d5b26344a096ba35d34d",
@@ -40,5 +40,5 @@
   },
   "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
   "system_authority_state": "LOCAL_FULLSTACK_VERIFIED",
-  "generated_at": "2026-09-28T06:52:35.449Z"
+  "generated_at": "2026-09-28T07:05:26.796Z"
 }

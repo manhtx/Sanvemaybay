@@ -54,13 +54,15 @@
   "fresh_findings": [
     "RC-V6.0-001 was historically ambiguous, having been reassigned across 9 commits with different codebases; quarantined and replaced by RC-V7.0-001 with 1-to-1 immutability.",
     "Previous V6.2 traceability matrix contained 2 invalid edges (Accessibility and Migrations mapped into Claim Certainty) and 1 ambiguous edge (Observability in Alerts). Re-architected into 40 causally grounded edges.",
-    "Supabase capacity check confirmed free plan has reached 2/2 active project quota limit; clean staging provisioning is strictly held behind user action."
+    "Supabase capacity check confirmed free plan has reached 2/2 active project quota limit; clean staging provisioning is strictly held behind user action.",
+    "Adversarial verifier falsified initial candidate on 3 counterexamples; all 3 repaired and verified."
   ],
   "fresh_repairs": [
     "Updated PRODUCT_TRACEABILITY.json with causally grounded outcome mappings (100% valid edges).",
     "Added differential verification and metamorphic testing suites verifying price monotonicity, cost additivity, and evidence gating.",
     "Added provider contract drift, source kill switch, and claim kill switch test contracts.",
-    "Updated RELEASE_ATTESTATION.json to RC-V7.0-001 with 207 automated tests."
+    "Updated RELEASE_ATTESTATION.json to RC-V7.0-001 with 207 automated tests.",
+    "Aligned threshold IDs, calibrated FLY-INTEL-004 criteria, and sealed candidate SHA 50c6d98."
   ],
   "fresh_verification_runs": [
     {

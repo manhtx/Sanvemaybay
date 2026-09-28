@@ -23,11 +23,11 @@
   "immutable_candidates": [
     {
       "rc_id": "RC-V7.0-001",
-      "status": "SEALED_LOCAL_RELEASE_CANDIDATE",
-      "baseline_git_sha": "86974297df50afe6625f3def841f340d6b02b98d",
+      "status": "SEALED_RELEASE_CANDIDATE",
+      "candidate_git_sha": "50c6d98628eca005db4c171ec93abce406e08127",
       "mission_epoch_id": "MISSION-EPOCH-2026-09-28-RELEASE-TRUTH-01",
       "one_to_one_rule_enforced": true,
-      "sealed_git_sha": "c87c17f7fdabec9ef871b111fecdeb179050155d"
+      "sealed_at": "2026-09-28T07:05:26.801Z"
     }
   ]
 }
