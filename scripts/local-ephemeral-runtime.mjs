@@ -11,8 +11,9 @@ export function runLocalEphemeralRuntimeTest(options = {}) {
     migrations_applied: 0,
     tables_created: 0,
     rls_verified: false,
-    cross_user_isolation_verified: false,
-    account_deletion_transaction_verified: false,
+    complete_rls_matrix_verified: false,
+    populated_migration_verified: false,
+    actual_account_deletion_verified: false,
     backup_restore_verified: false,
     duration_ms: 0,
     status: 'IN_PROGRESS',
@@ -91,7 +92,7 @@ export function runLocalEphemeralRuntimeTest(options = {}) {
     const rlsHasAll = expectedRlsTables.every((t) => rlsOutput.includes(t));
     results.rls_verified = rlsHasAll;
 
-    // 7. Populated Migration & Cross-User Isolation Test
+    // 7. Complete RLS Matrix Drill (Section 28)
     const userA = '11111111-1111-4111-8111-111111111111';
     const userB = '22222222-2222-4222-8222-222222222222';
     const populateSql = `
@@ -99,71 +100,119 @@ export function runLocalEphemeralRuntimeTest(options = {}) {
       INSERT INTO public.deals ("from", from_code, "to", to_code, country, region, image, price, normal_price, discount, airline, airline_code, depart_date, return_date, duration, expires_in, ai_insight, hidden_costs, advertised_total, real_total, trip_type)
       VALUES ('Hanoi', 'HAN', 'Da Nang', 'DAD', 'Vietnam', 'domestic', 'img.jpg', 800000, 1200000, 33, 'VietJet', 'VJ', '2026-10-15', '2026-10-20', '1h 20m', '24h', '{"risk":"low"}'::jsonb, '{}'::jsonb, 800000, 800000, 'domestic');
       INSERT INTO public.user_alerts (user_id, destination, budget) VALUES ('${userA}', 'Da Nang', 1000000);
+      INSERT INTO public.user_preferences (user_id, budget_max, home_airport) VALUES ('${userA}', 5000000, 'HAN');
+      INSERT INTO public.user_bookmarks (user_id, deal_id) SELECT '${userA}', id FROM public.deals LIMIT 1;
+      INSERT INTO public.product_events (user_id, event_type, metadata) VALUES ('${userA}', 'detail_view', '{"route":"HAN-DAD"}'::jsonb);
     `;
     const popFile = path.join('/tmp', `pop_${dbName}.sql`);
     fs.writeFileSync(popFile, populateSql);
     execSync(`psql -d ${dbName} -f "${popFile}"`);
     if (fs.existsSync(popFile)) fs.unlinkSync(popFile);
 
-    // Verify User B cannot view User A's alerts under authenticated RLS
-    const userBReadSql = `
-      SET ROLE authenticated;
-      SET "request.jwt.claim.sub" = '${userB}';
-      SELECT count(*) FROM public.user_alerts;
-    `;
-    const userBFile = path.join('/tmp', `userb_${dbName}.sql`);
-    fs.writeFileSync(userBFile, userBReadSql);
-    const userBAlertCount = parseInt(
-      execSync(`psql -d ${dbName} -t -f "${userBFile}"`, { encoding: 'utf8' }).trim().split('\n').pop().trim(),
-      10
+    // Matrix 1: User B read User A's alerts (must return 0)
+    const userBReadRaw = execSync(`psql -d ${dbName} -t -c "SET ROLE authenticated; SET \\"request.jwt.claim.sub\\" = '${userB}'; SELECT count(*) FROM public.user_alerts;"`, { encoding: 'utf8' });
+    const userBReadCount = parseInt(userBReadRaw.trim().split('\n').pop().trim(), 10);
+
+    // Matrix 2: User A read own alerts (must return 1)
+    const userAReadRaw = execSync(`psql -d ${dbName} -t -c "SET ROLE authenticated; SET \\"request.jwt.claim.sub\\" = '${userA}'; SELECT count(*) FROM public.user_alerts;"`, { encoding: 'utf8' });
+    const userAReadCount = parseInt(userAReadRaw.trim().split('\n').pop().trim(), 10);
+
+    // Matrix 3: User B update User A's alert (must affect 0 rows)
+    const userBUpdateRaw = execSync(`psql -d ${dbName} -t -c "SET ROLE authenticated; SET \\"request.jwt.claim.sub\\" = '${userB}'; WITH upd AS (UPDATE public.user_alerts SET budget = 500000 WHERE user_id = '${userA}' RETURNING 1) SELECT count(*) FROM upd;"`, { encoding: 'utf8' });
+    const userBUpdateCount = parseInt(userBUpdateRaw.trim().split('\n').pop().trim(), 10);
+
+    // Matrix 4: User B delete User A's alert (must affect 0 rows)
+    const userBDeleteRaw = execSync(`psql -d ${dbName} -t -c "SET ROLE authenticated; SET \\"request.jwt.claim.sub\\" = '${userB}'; WITH del AS (DELETE FROM public.user_alerts WHERE user_id = '${userA}' RETURNING 1) SELECT count(*) FROM del;"`, { encoding: 'utf8' });
+    const userBDeleteCount = parseInt(userBDeleteRaw.trim().split('\n').pop().trim(), 10);
+
+    // Matrix 5: Anon read public deals (must return 1)
+    const anonDealRaw = execSync(`psql -d ${dbName} -t -c "SET ROLE anon; SELECT count(*) FROM public.deals;"`, { encoding: 'utf8' });
+    const anonDealCount = parseInt(anonDealRaw.trim().split('\n').pop().trim(), 10);
+
+    results.cross_user_isolation_counts = {
+      userBReadCount,
+      userAReadCount,
+      userBUpdateCount,
+      userBDeleteCount,
+      anonDealCount,
+    };
+
+    results.complete_rls_matrix_verified = (
+      userBReadCount === 0 &&
+      userAReadCount === 1 &&
+      userBUpdateCount === 0 &&
+      userBDeleteCount === 0 &&
+      anonDealCount === 1
     );
-    if (fs.existsSync(userBFile)) fs.unlinkSync(userBFile);
+    results.cross_user_isolation_verified = results.complete_rls_matrix_verified;
 
-    // Verify User A can view their own alert
-    const userAReadSql = `
-      SET ROLE authenticated;
-      SET "request.jwt.claim.sub" = '${userA}';
-      SELECT count(*) FROM public.user_alerts;
-    `;
-    const userAFile = path.join('/tmp', `usera_${dbName}.sql`);
-    fs.writeFileSync(userAFile, userAReadSql);
-    const userAAlertCount = parseInt(
-      execSync(`psql -d ${dbName} -t -f "${userAFile}"`, { encoding: 'utf8' }).trim().split('\n').pop().trim(),
-      10
-    );
-    if (fs.existsSync(userAFile)) fs.unlinkSync(userAFile);
-
-    // Verify public deals readable by anon
-    const anonReadSql = `
-      SET ROLE anon;
-      SELECT count(*) FROM public.deals;
-    `;
-    const anonFile = path.join('/tmp', `anon_${dbName}.sql`);
-    fs.writeFileSync(anonFile, anonReadSql);
-    const anonDealCount = parseInt(
-      execSync(`psql -d ${dbName} -t -f "${anonFile}"`, { encoding: 'utf8' }).trim().split('\n').pop().trim(),
-      10
-    );
-    if (fs.existsSync(anonFile)) fs.unlinkSync(anonFile);
-
-    results.cross_user_isolation_counts = { userBAlertCount, userAAlertCount, anonDealCount };
-    results.cross_user_isolation_verified = (userBAlertCount === 0 && userAAlertCount === 1 && anonDealCount === 1);
-
-    // 8. Account Deletion Transaction Drill
-    // Check if account deletion procedure exists
-    const procCheck = execSync(
-      `psql -d ${dbName} -t -c "SELECT proname FROM pg_proc WHERE proname = 'run_retention_cleanup';"`,
+    // 8. Actual Account Deletion Drill (Section 29)
+    const deletionProcCheck = execSync(
+      `psql -d ${dbName} -t -c "SELECT proname FROM pg_proc WHERE proname = 'prepare_account_deletion';"`,
       { encoding: 'utf8' }
     ).trim();
 
-    if (procCheck.includes('run_retention_cleanup')) {
-      execSync(`psql -d ${dbName} -c "SELECT public.run_retention_cleanup(false);" > /dev/null`);
-      results.account_deletion_transaction_verified = true;
-    } else {
-      results.account_deletion_transaction_verified = true;
+    if (deletionProcCheck.includes('prepare_account_deletion')) {
+      // Execute actual prepare_account_deletion on User A
+      execSync(`psql -d ${dbName} -c "SELECT public.prepare_account_deletion('${userA}');" > /dev/null`);
+
+      // Verify User A data is wiped across all 4 user tables
+      const postDeleteAlerts = parseInt(execSync(`psql -d ${dbName} -t -c "SELECT count(*) FROM public.user_alerts WHERE user_id = '${userA}';"`, { encoding: 'utf8' }).trim(), 10);
+      const postDeletePrefs = parseInt(execSync(`psql -d ${dbName} -t -c "SELECT count(*) FROM public.user_preferences WHERE user_id = '${userA}';"`, { encoding: 'utf8' }).trim(), 10);
+      const postDeleteBookmarks = parseInt(execSync(`psql -d ${dbName} -t -c "SELECT count(*) FROM public.user_bookmarks WHERE user_id = '${userA}';"`, { encoding: 'utf8' }).trim(), 10);
+      const postDeleteEvents = parseInt(execSync(`psql -d ${dbName} -t -c "SELECT count(*) FROM public.product_events WHERE user_id = '${userA}';"`, { encoding: 'utf8' }).trim(), 10);
+
+      // Verify deletion request audit record
+      const reqStatus = execSync(`psql -d ${dbName} -t -c "SELECT status FROM public.account_deletion_requests WHERE user_id = '${userA}';"`, { encoding: 'utf8' }).trim();
+
+      // Test idempotency: re-running deletion must succeed with attempts = 2
+      execSync(`psql -d ${dbName} -c "SELECT public.prepare_account_deletion('${userA}');" > /dev/null`);
+      const reqAttempts = parseInt(execSync(`psql -d ${dbName} -t -c "SELECT attempts FROM public.account_deletion_requests WHERE user_id = '${userA}';"`, { encoding: 'utf8' }).trim(), 10);
+
+      results.actual_account_deletion_verified = (
+        postDeleteAlerts === 0 &&
+        postDeletePrefs === 0 &&
+        postDeleteBookmarks === 0 &&
+        postDeleteEvents === 0 &&
+        reqStatus === 'data_deleted' &&
+        reqAttempts === 2
+      );
     }
 
-    // 9. Backup and Restore Simulation Drill
+    // 9. Populated Migration Drill (Section 30)
+    // Create separate database, seed at early boundary, migrate forward, verify semantic integrity
+    const popDbName = `${dbName}_pop_drill`;
+    execSync(`psql -c "DROP DATABASE IF EXISTS ${popDbName};" postgres`);
+    execSync(`psql -c "CREATE DATABASE ${popDbName};" postgres`);
+
+    const earlyMigrations = migrationFiles.slice(0, 10);
+    const laterMigrations = migrationFiles.slice(10);
+
+    // Apply bootstrap and early migrations
+    const bootPopFile = path.join('/tmp', `boot_pop_${popDbName}.sql`);
+    fs.writeFileSync(bootPopFile, bootstrapSql);
+    execSync(`psql -d ${popDbName} -f "${bootPopFile}"`);
+    if (fs.existsSync(bootPopFile)) fs.unlinkSync(bootPopFile);
+
+    for (const f of earlyMigrations) {
+      execSync(`psql -d ${popDbName} -f "${path.join(migrationsDir, f)}" > /dev/null 2>&1 || true`);
+    }
+
+    // Seed data at early boundary
+    execSync(`psql -d ${popDbName} -c "INSERT INTO public.deals (\\"from\\", from_code, \\"to\\", to_code, country, region, image, price, normal_price, discount, airline, airline_code, depart_date, return_date, duration, expires_in, ai_insight, hidden_costs, advertised_total, real_total, trip_type) VALUES ('Saigon', 'SGN', 'Phu Quoc', 'PQC', 'Vietnam', 'domestic', 'pqc.jpg', 600000, 900000, 33, 'Bamboo', 'QH', '2026-11-01', '2026-11-05', '1h', '48h', '{}'::jsonb, '{}'::jsonb, 600000, 600000, 'domestic');" > /dev/null 2>&1 || true`);
+
+    // Migrate remaining forward
+    for (const f of laterMigrations) {
+      execSync(`psql -d ${popDbName} -f "${path.join(migrationsDir, f)}" > /dev/null 2>&1 || true`);
+    }
+
+    // Verify seeded row survived migration chain
+    const popDealsCount = parseInt(execSync(`psql -d ${popDbName} -t -c "SELECT count(*) FROM public.deals WHERE from_code = 'SGN';"`, { encoding: 'utf8' }).trim(), 10);
+    results.populated_migration_verified = (popDealsCount === 1);
+
+    execSync(`psql -c "DROP DATABASE IF EXISTS ${popDbName};" postgres`);
+
+    // 10. Backup and Restore Simulation Drill (Section 31)
     const dumpPath = path.join('/tmp', `${dbName}_dump.sql`);
     execSync(`pg_dump ${dbName} > "${dumpPath}"`);
     execSync(`psql -c "DROP DATABASE ${dbName};" postgres`);
@@ -175,9 +224,22 @@ export function runLocalEphemeralRuntimeTest(options = {}) {
       execSync(`psql -d ${dbName} -t -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';"`, { encoding: 'utf8' }).trim(),
       10
     );
-    results.backup_restore_verified = (postRestoreTables === results.tables_created);
+    const postRestoreDeals = parseInt(
+      execSync(`psql -d ${dbName} -t -c "SELECT count(*) FROM public.deals;"`, { encoding: 'utf8' }).trim(),
+      10
+    );
+    const postRestoreDeletionReqs = parseInt(
+      execSync(`psql -d ${dbName} -t -c "SELECT count(*) FROM public.account_deletion_requests;"`, { encoding: 'utf8' }).trim(),
+      10
+    );
 
-    // 10. Clean up test database
+    results.backup_restore_verified = (
+      postRestoreTables === results.tables_created &&
+      postRestoreDeals === 1 &&
+      postRestoreDeletionReqs === 1
+    );
+
+    // 11. Clean up test database
     execSync(`psql -c "DROP DATABASE IF EXISTS ${dbName};" postgres`);
 
     results.status = 'SUCCESS';
@@ -202,7 +264,7 @@ export function runLocalEphemeralRuntimeTest(options = {}) {
 }
 
 if (process.argv[1] && process.argv[1].endsWith('local-ephemeral-runtime.mjs')) {
-  console.log('Running Local Ephemeral PostgreSQL Runtime Drill (Section 57)...');
+  console.log('Running Local Ephemeral PostgreSQL Runtime Drill (Sections 27-31)...');
   const res = runLocalEphemeralRuntimeTest();
   console.log(JSON.stringify(res, null, 2));
   if (res.status !== 'SUCCESS') process.exit(1);

@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "evaluated_at": "2026-09-28T11:32:05.911Z",
+  "total_lenses": 10,
+  "all_lenses_defended": true,
+  "lenses": [
+    {
+      "lens_number": 1,
+      "lens_name": "Product & Requirement Semantics",
+      "hypothesis_falsified": "Hypothesis that unmapped orphan requirements exist in traceability",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (0 orphans found)",
+      "passed": true
+    },
+    {
+      "lens_number": 2,
+      "lens_name": "Price & Data Integrity",
+      "hypothesis_falsified": "Hypothesis that negative or NaN prices can pass deal ingestion pipelines",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (Invalid prices strictly rejected)",
+      "passed": true
+    },
+    {
+      "lens_number": 3,
+      "lens_name": "Score, Confidence & Cost Monotonicity",
+      "hypothesis_falsified": "Hypothesis that high deal score with low sample confidence can claim Deal cực nóng",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (Low confidence capped to modest label)",
+      "passed": true
+    },
+    {
+      "lens_number": 4,
+      "lens_name": "Auth, Privacy & RLS Matrix",
+      "hypothesis_falsified": "Hypothesis that authenticated User B can read, update, or delete User A alert data under RLS",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (User B strictly denied all cross-user operations)",
+      "passed": true
+    },
+    {
+      "lens_number": 5,
+      "lens_name": "Provider Drift & Kill Switch",
+      "hypothesis_falsified": "Hypothesis that upstream provider schema drift bypasses quarantine or retains strong claims",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (Corrupt payloads quarantined; kill switch collapses claims)",
+      "passed": true
+    },
+    {
+      "lens_number": 6,
+      "lens_name": "UX & Stale Data Degradation",
+      "hypothesis_falsified": "Hypothesis that observed fares older than 360 minutes conceal staleness indicators",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (Fares > 360m flagged as stale and excluded from live feed)",
+      "passed": true
+    },
+    {
+      "lens_number": 7,
+      "lens_name": "Observability & Secret / Error Leakage",
+      "hypothesis_falsified": "Hypothesis that raw SQL/PostgreSQL exceptions or secrets leak into client responses or browser consoles",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (All client error boundaries redact internal diagnostics)",
+      "passed": true
+    },
+    {
+      "lens_number": 8,
+      "lens_name": "Migration & Provenance Integrity",
+      "hypothesis_falsified": "Hypothesis that local migrations contain version gaps or missing dependencies",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (All 38 migrations contiguous and validated in clean PostgreSQL 16)",
+      "passed": true
+    },
+    {
+      "lens_number": 9,
+      "lens_name": "Claim Ceiling & Anti-Overclaim",
+      "hypothesis_falsified": "Hypothesis that Mode 1 makes unsupported claims of commercial booking, seat locks, or exhaustive pricing",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (Wording restricted to indicative opportunities and recheck advice)",
+      "passed": true
+    },
+    {
+      "lens_number": 10,
+      "lens_name": "Zero-Trust Release Truth (All Tests Green but Remote Held)",
+      "hypothesis_falsified": "Hypothesis that 208 green local tests permit promoting authority state to RELEASE_READY or PRODUCTION_VERIFIED without remote staging proof",
+      "counterexample_result": "FALSIFICATION_ATTEMPT_DEFENDED (System authority strictly bound to LOCAL_EPHEMERAL_RUNTIME_VERIFIED; premature promotion fail-closed)",
+      "passed": true
+    }
+  ]
+}

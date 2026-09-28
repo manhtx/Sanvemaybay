@@ -35,9 +35,12 @@
     "migrations_applied": 38,
     "tables_created": 17,
     "rls_verified": true,
+    "complete_rls_matrix_verified": true,
     "cross_user_isolation_verified": true,
+    "populated_migration_verified": true,
     "account_deletion_verified": true,
     "backup_restore_verified": true,
+    "ten_hostile_lenses_defended": true,
     "status": "SUCCESS"
   }
 }

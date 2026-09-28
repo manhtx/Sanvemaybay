@@ -35,6 +35,7 @@
     "release_blockers": ".flycheap/RELEASE_BLOCKERS.json",
     "data_source_risk": ".flycheap/DATA_SOURCE_RISK_REVIEW.json",
     "provider_measurement": ".flycheap/PROVIDER_MEASUREMENT.json",
-    "local_ephemeral_runtime": ".flycheap/LOCAL_EPHEMERAL_RUNTIME.json"
+    "local_ephemeral_runtime": ".flycheap/LOCAL_EPHEMERAL_RUNTIME.json",
+    "ten_hostile_lenses": ".flycheap/TEN_HOSTILE_LENSES.json"
   }
 }
