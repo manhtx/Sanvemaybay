@@ -34,12 +34,12 @@
       "title": "Production Deployment Authorization & Main Branch Gate",
       "affected_gates": ["RG28", "RG30"],
       "affected_requirements": ["FLY-OPS-004"],
-      "missing_input": "Explicit user authorization to merge reviewed dev commits to main and trigger production Vercel/Supabase deployment.",
-      "why_needed": "Production deployment runbook strictly mandates that production builds deploy only from main after human code review. Current working branch is dev.",
+      "missing_input": "Explicit user authorization to merge reviewed rc/v6.0-candidate commits to main and trigger production Vercel/Supabase deployment.",
+      "why_needed": "Production deployment runbook strictly mandates that production builds deploy only from main after human code review. Current release candidate branch is rc/v6.0-candidate.",
       "work_attempted": "Local build generates production-ready bundle with release.json, robots.txt, and sitemap.xml in 2.39s.",
-      "independent_work_completed": "Playwright 32/32 tests pass on built artifacts locally.",
-      "minimum_unblock_action": "Review changeset, merge dev to main, and run CI deployment pipeline with required production secrets.",
-      "next_command": "git checkout main && git merge dev && git push origin main"
+      "independent_work_completed": "Playwright 32/32 tests pass on built artifacts locally and clean clone from remote origin is fully verified.",
+      "minimum_unblock_action": "Review changeset, merge rc/v6.0-candidate to main, and run CI deployment pipeline with required production secrets.",
+      "next_command": "git checkout main && git merge rc/v6.0-candidate && git push origin main"
     }
   ],
   "summary": {
