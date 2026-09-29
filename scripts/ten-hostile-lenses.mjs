@@ -198,13 +198,15 @@ export function evaluateTenHostileLenses(projectRoot = process.cwd()) {
   try {
     const state = JSON.parse(fs.readFileSync(path.join(projectRoot, '.flycheap/STATE.json'), 'utf8'));
     const authority = state.system_state;
-    // Release truth law: authority must NOT claim PRODUCTION_VERIFIED or RELEASE_READY while remote staging is unverified
-    const truthful = authority === 'LOCAL_EPHEMERAL_RUNTIME_VERIFIED' && state.immediate_hard_blocker === 'BLK-STAGING-CAPACITY';
+    // Release truth law: authority must NOT claim PRODUCTION_VERIFIED or RELEASE_READY without real remote environment proof
+    const stagingProven = authority === 'REMOTE_STAGING_VERIFIED' && state.staging_environment?.status === 'VERIFIED';
+    const localHeld = authority === 'LOCAL_EPHEMERAL_RUNTIME_VERIFIED' && state.immediate_hard_blocker === 'BLK-STAGING-CAPACITY';
+    const truthful = stagingProven || localHeld;
     lenses.push({
       lens_number: 10,
       lens_name: 'Zero-Trust Release Truth (All Tests Green but Remote Held)',
-      hypothesis_falsified: 'Hypothesis that 208 green local tests permit promoting authority state to RELEASE_READY or PRODUCTION_VERIFIED without remote staging proof',
-      counterexample_result: truthful ? 'FALSIFICATION_ATTEMPT_DEFENDED (System authority strictly bound to LOCAL_EPHEMERAL_RUNTIME_VERIFIED; premature promotion fail-closed)' : 'FALSE_PROMOTION_DETECTED',
+      hypothesis_falsified: 'Hypothesis that green local tests permit promoting authority state without remote proof',
+      counterexample_result: truthful ? 'FALSIFICATION_ATTEMPT_DEFENDED (Authority strictly calibrated to proven runtime reality; premature promotion fail-closed)' : 'FALSE_PROMOTION_DETECTED',
       passed: truthful
     });
   } catch (e) {
