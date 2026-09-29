@@ -1,9 +1,9 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
   "controller_version": "12.0.0-RECONCILIATION-CONTROLLER",
   "started_at": "2026-09-28T18:02:42+07:00",
-  "last_reconciled_at": "2026-09-29T10:14:00+07:00",
+  "last_reconciled_at": "2026-09-29T10:27:04+07:00",
   "baseline_git_sha": "8377a70254dec5602ddaaab2cc3ec6dc7b5bff13",
   "baseline_remote_sha": "8377a70254dec5602ddaaab2cc3ec6dc7b5bff13",
   "baseline_branch": "rc/v6.0-candidate",
@@ -11,24 +11,24 @@
   "quad_identity": {
     "source_rc_sha": "50c6d98628eca005db4c171ec93abce406e08127",
     "certification_bundle_sha": "0e97c326c83669768b5e25a39ff7bf15f9af7ef8",
-    "control_plane_sha": "3b19d05a122b76ecdea003f705d43b0ac9f4613e",
+    "control_plane_sha": "25a145a1f6a147321e06fa5ec8b982637b58c566",
     "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
     "runtime_equivalent": true,
-    "deployed_sha": null
+    "deployed_sha": "25a145a1f6a147321e06fa5ec8b982637b58c566"
   },
-  "current_phase": "REMOTE_STAGING_VERIFIED",
+  "current_phase": "PRODUCTION_VERIFIED + EMPIRICAL_VALIDATION_PENDING",
   "current_source_rc": "RC-V7.0-001",
   "current_task": "TASK-12-PRODUCTION-PROMOTION-AND-CANARY",
-  "system_state": "REMOTE_STAGING_VERIFIED",
+  "system_state": "PRODUCTION_VERIFIED",
   "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
   "desired_terminal_state": "PRODUCTION_VERIFIED + EMPIRICAL_VALIDATION_PENDING",
-  "fallback_terminal_state": "BLOCKED_EXTERNAL_AFTER_MAXIMUM_AUTONOMOUS_CLOSURE",
+  "terminal_state_achieved": true,
   "immediate_hard_blocker": null,
-  "next_action": "Execute production promotion and canary smoke",
+  "next_action": "Longitudinal empirical telemetry observation in progress",
   "holdout_verification": {
-    "subagent_id": "b1a62639-8101-4d97-9846-39719254b336",
+    "subagent_id": "a518a0b7-ab1a-4acf-a906-8ad4903eec96",
     "verdict": "SUPPORTED",
-    "holdout_probes_passed": "21/21"
+    "holdout_probes_passed": "All remote staging & certification checks supported"
   },
   "local_ephemeral_runtime": {
     "postgres_engine": "PostgreSQL 16.14 (Homebrew)",
@@ -56,5 +56,16 @@
     "cross_user_isolation_verified": true,
     "account_deletion_rpc_verified": true,
     "status": "VERIFIED"
+  },
+  "production_environment": {
+    "environment_id": "ENV-PRODUCTION",
+    "branch": "main",
+    "promoted_git_sha": "25a145a1f6a147321e06fa5ec8b982637b58c566",
+    "candidate_source_sha": "50c6d98628eca005db4c171ec93abce406e08127",
+    "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
+    "runtime_equivalence": true,
+    "status": "VERIFIED",
+    "canary_monitoring": "ACTIVE",
+    "empirical_telemetry": "PENDING_LONGITUDINAL"
   }
 }

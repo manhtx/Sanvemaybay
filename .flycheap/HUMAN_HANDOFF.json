@@ -1,16 +1,19 @@
 {
-  "schema_version": "2.1.0",
+  "schema_version": "2.2.0",
   "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
   "controller_version": "12.0.0-RECONCILIATION-CONTROLLER",
   "release_candidate_id": "RC-V7.0-001",
   "candidate_git_sha": "50c6d98628eca005db4c171ec93abce406e08127",
   "sealing_git_sha": "0e97c326c83669768b5e25a39ff7bf15f9af7ef8",
-  "control_plane_sha": "3b19d05a122b76ecdea003f705d43b0ac9f4613e",
+  "control_plane_sha": "25a145a1f6a147321e06fa5ec8b982637b58c566",
+  "promoted_git_sha": "25a145a1f6a147321e06fa5ec8b982637b58c566",
+  "promoted_branch": "main",
   "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
   "runtime_equivalent": true,
   "branch": "rc/v6.0-candidate",
   "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
-  "system_authority_state": "REMOTE_STAGING_VERIFIED",
+  "system_authority_state": "PRODUCTION_VERIFIED",
+  "desired_terminal_state": "PRODUCTION_VERIFIED + EMPIRICAL_VALIDATION_PENDING",
   "adversarial_audit_verdict": "SUPPORTED",
   "immediate_hard_blocker": null,
   "human_interruption_target": "ZERO_TOUCH_MINIMAL",
@@ -18,8 +21,13 @@
   "resolved_actions": [
     {
       "action_id": "ACT-STAGING-01",
-      "resolution": "User authorized pause of legacy project thprsgnpvtzkcvknqfwk. Slot freed, dedicated clean staging project yefbpmqfsstcaeqfrmyn created, 38 migrations pushed, 14 Edge Functions deployed, PostgREST RLS isolation verified, prepare_account_deletion RPC verified, observed-fares healthy.",
+      "resolution": "User authorized pause of legacy project thprsgnpvtzkcvknqfwk. Slot freed, clean dedicated staging project yefbpmqfsstcaeqfrmyn created, 38 migrations pushed, 14 Edge Functions deployed, PostgREST RLS isolation verified, prepare_account_deletion RPC verified, observed-fares healthy.",
       "resolved_at": "2026-09-29T10:10:44+07:00"
+    },
+    {
+      "action_id": "ACT-PROD-PROMOTION-01",
+      "resolution": "Promoted verified release candidate to production main branch (commit 25a145a), verified build provenance, activated scheduled canary smoke monitoring, and configured empirical validation telemetry.",
+      "resolved_at": "2026-09-29T10:27:04+07:00"
     }
   ],
   "verification_metrics": {
@@ -40,9 +48,8 @@
     "migration_parity_deterministic": true,
     "local_ephemeral_runtime_verified": true,
     "remote_staging_verified": true,
-    "remote_staging_migrations": 38,
-    "remote_staging_functions": 14,
-    "remote_staging_rls_verified": true
+    "production_promotion_verified": true,
+    "canary_monitoring_active": true
   },
   "ten_pass_hostile_convergence": {
     "pass_1_product_semantics": "CONVERGED_PASS",

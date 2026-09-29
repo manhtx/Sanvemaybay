@@ -11,6 +11,7 @@
     "proof_freshness": ".flycheap/PROOF_FRESHNESS.json",
     "environment_fingerprints": ".flycheap/ENVIRONMENT_FINGERPRINTS.json",
     "staging_environment_fingerprint": ".flycheap/STAGING_ENVIRONMENT_FINGERPRINT.json",
+    "production_environment_fingerprint": ".flycheap/PRODUCTION_ENVIRONMENT_FINGERPRINT.json",
     "side_effect_journal": ".flycheap/SIDE_EFFECT_JOURNAL.jsonl",
     "finalizers": ".flycheap/FINALIZERS.json",
     "evidence_ledger": ".flycheap/EVIDENCE_LEDGER.jsonl",

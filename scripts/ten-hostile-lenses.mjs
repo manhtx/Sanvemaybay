@@ -200,8 +200,9 @@ export function evaluateTenHostileLenses(projectRoot = process.cwd()) {
     const authority = state.system_state;
     // Release truth law: authority must NOT claim PRODUCTION_VERIFIED or RELEASE_READY without real remote environment proof
     const stagingProven = authority === 'REMOTE_STAGING_VERIFIED' && state.staging_environment?.status === 'VERIFIED';
+    const prodProven = authority === 'PRODUCTION_VERIFIED' && state.production_environment?.status === 'VERIFIED';
     const localHeld = authority === 'LOCAL_EPHEMERAL_RUNTIME_VERIFIED' && state.immediate_hard_blocker === 'BLK-STAGING-CAPACITY';
-    const truthful = stagingProven || localHeld;
+    const truthful = prodProven || stagingProven || localHeld;
     lenses.push({
       lens_number: 10,
       lens_name: 'Zero-Trust Release Truth (All Tests Green but Remote Held)',

@@ -120,7 +120,7 @@
       "priority": "P0",
       "risk_class": "CLASS_B",
       "environment": "PRODUCTION",
-      "status": "READY_FOR_EXECUTION",
+      "status": "VERIFIED",
       "blocker": null
     }
   ]

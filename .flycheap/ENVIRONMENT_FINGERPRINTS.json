@@ -30,7 +30,14 @@
     },
     "production": {
       "environment_id": "ENV-PRODUCTION",
-      "status": "READY_FOR_PROMOTION"
+      "status": "VERIFIED",
+      "branch": "main",
+      "promoted_git_sha": "25a145a1f6a147321e06fa5ec8b982637b58c566",
+      "candidate_source_sha": "50c6d98628eca005db4c171ec93abce406e08127",
+      "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
+      "runtime_equivalence": true,
+      "canary_monitoring": "ACTIVE",
+      "empirical_telemetry": "PENDING_LONGITUDINAL"
     }
   }
 }

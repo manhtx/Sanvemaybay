@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "environment_id": "ENV-PRODUCTION",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
+  "release_candidate_id": "RC-V7.0-001",
+  "source_rc_sha": "50c6d98628eca005db4c171ec93abce406e08127",
+  "control_plane_sha": "25a145a1f6a147321e06fa5ec8b982637b58c566",
+  "promoted_git_sha": "25a145a1f6a147321e06fa5ec8b982637b58c566",
+  "promoted_branch": "main",
+  "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
+  "runtime_equivalence": true,
+  "status": "VERIFIED",
+  "promoted_at": "2026-09-29T10:27:04+07:00",
+  "canary_monitoring": {
+    "status": "ACTIVE_MONITORING",
+    "workflow": ".github/workflows/production-smoke.yml",
+    "schedule": "17 * * * *",
+    "feed_snapshot_check": "ACTIVE",
+    "search_boundary_check": "ACTIVE"
+  },
+  "empirical_telemetry": {
+    "status": "EMPIRICAL_VALIDATION_PENDING",
+    "web_vitals_telemetry": "ACTIVE",
+    "observed_fares_cache_telemetry": "ACTIVE",
+    "client_diagnostics_telemetry": "ACTIVE"
+  }
+}
