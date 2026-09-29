@@ -42,6 +42,33 @@ export function compileNextWorkOrder(projectRoot = process.cwd()) {
     }
   }
 
+  if (authority.authority_state === 'REMOTE_STAGING_VERIFIED') {
+    return {
+      work_order_id: 'WO-PROD-01-PROMOTION-AND-CANARY',
+      current_observed_state: 'REMOTE_STAGING_VERIFIED',
+      target_delta: 'Promote verified candidate to production main, verify provenance, canary smoke, and enable telemetry',
+      priority: 'P0',
+      prerequisites: ['REMOTE_STAGING_VERIFIED'],
+      authority_class: 'AUTONOMOUS_RECONCILIATION',
+      environment: 'PRODUCTION',
+      writable_paths: ['.flycheap/*', 'scripts/*'],
+      forbidden_actions: [
+        'DO_NOT_MUTATE_DEPLOYABLE_SURFACE',
+        'DO_NOT_REWRITE_HISTORY'
+      ],
+      idempotency_key: 'IDEMP-WO-PROD-PROMOTION-001',
+      expected_observable: 'Production verified with active canary and empirical telemetry operating',
+      proof_obligation: 'PO-PROD-PROMOTED',
+      timeout_seconds: 300,
+      retry_policy: 'EXPONENTIAL_BACKOFF',
+      compensation_rollback: 'Revert git promotion branch',
+      cleanup_finalizers: [],
+      expected_state_effect: 'Transition to PRODUCTION_VERIFIED',
+      is_blocked_external: false,
+      blocking_action_ref: null
+    };
+  }
+
   return {
     work_order_id: 'WO-IDLE',
     current_observed_state: authority.authority_state,

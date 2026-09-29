@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
   "canonical_registry": {
     "constitution": ".flycheap/AUTONOMY_CONSTITUTION.md",
@@ -10,6 +10,7 @@
     "proof_capsules": ".flycheap/PROOF_CAPSULES.json",
     "proof_freshness": ".flycheap/PROOF_FRESHNESS.json",
     "environment_fingerprints": ".flycheap/ENVIRONMENT_FINGERPRINTS.json",
+    "staging_environment_fingerprint": ".flycheap/STAGING_ENVIRONMENT_FINGERPRINT.json",
     "side_effect_journal": ".flycheap/SIDE_EFFECT_JOURNAL.jsonl",
     "finalizers": ".flycheap/FINALIZERS.json",
     "evidence_ledger": ".flycheap/EVIDENCE_LEDGER.jsonl",

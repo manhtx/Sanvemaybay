@@ -9,11 +9,14 @@ import path from 'node:path';
 export function reduceClaimCeiling(projectRoot = process.cwd()) {
   const flycheapDir = path.join(projectRoot, '.flycheap');
 
+  const stagingFp = path.join(flycheapDir, 'STAGING_ENVIRONMENT_FINGERPRINT.json');
+  const hasStaging = fs.existsSync(stagingFp) && JSON.parse(fs.readFileSync(stagingFp, 'utf8')).status === 'VERIFIED';
+
   // Dimension evaluations
   const dimensions = {
     domain_implementation: 'SUPPORTED', // 34/34 requirements implemented
     local_execution: 'SUPPORTED',        // 208/208 tests passing + local PG 16 drill
-    remote_staging: 'HELD_BEHIND_QUOTA', // No remote staging project linked
+    remote_staging: hasStaging ? 'SUPPORTED' : 'HELD_BEHIND_QUOTA',
     provider_coverage: 'PARTIAL_INDICATIVE', // Google Flights FastFlights scraping + direct deep links
     longitudinal_empirical: 'PENDING'    // Longitudinal production telemetry pending
   };

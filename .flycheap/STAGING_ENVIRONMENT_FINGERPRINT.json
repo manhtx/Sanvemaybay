@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "environment_id": "ENV-REMOTE-STAGING",
+  "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
+  "project_name": "flycheap-staging",
+  "project_ref": "yefbpmqfsstcaeqfrmyn",
+  "project_url": "https://yefbpmqfsstcaeqfrmyn.supabase.co",
+  "organization_id": "bpneawjmggrxqaoukxoz",
+  "region": "ap-southeast-1",
+  "postgres_engine": "PostgreSQL 17.6.1.166",
+  "database_host": "db.yefbpmqfsstcaeqfrmyn.supabase.co",
+  "migrations_applied": 38,
+  "functions_deployed": 14,
+  "tracked_routes_seeded": 88,
+  "status": "VERIFIED",
+  "rls_verified": true,
+  "cross_user_isolation_verified": true,
+  "account_deletion_rpc_verified": true,
+  "edge_function_smoke_verified": true,
+  "verified_at": "2026-09-29T03:10:44.000Z",
+  "verification_details": {
+    "anonymous_write_blocked": true,
+    "product_events_protected": true,
+    "user_preferences_isolated": true,
+    "tracked_routes_catalog_ready": true,
+    "observed_fares_edge_function_healthy": true
+  }
+}

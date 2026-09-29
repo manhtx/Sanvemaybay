@@ -90,8 +90,8 @@
       "priority": "P0",
       "risk_class": "CLASS_B",
       "environment": "REMOTE_API",
-      "status": "BLOCKED_EXTERNAL",
-      "blocker": "ACT-STAGING-01 (Supabase 2/2 free project quota reached; requires user project selection or paid slot)"
+      "status": "VERIFIED",
+      "blocker": null
     },
     {
       "task_id": "TASK-10-STAGING-PREPARE-AND-DEPLOY",
@@ -100,8 +100,8 @@
       "priority": "P0",
       "risk_class": "CLASS_B",
       "environment": "REMOTE_STAGING",
-      "status": "PENDING",
-      "blocker": "Waiting on TASK-09"
+      "status": "VERIFIED",
+      "blocker": null
     },
     {
       "task_id": "TASK-11-SEALED-STAGING-RUNTIME-VERIFICATION",
@@ -110,8 +110,8 @@
       "priority": "P0",
       "risk_class": "CLASS_A",
       "environment": "REMOTE_STAGING",
-      "status": "PENDING",
-      "blocker": "Waiting on TASK-10"
+      "status": "VERIFIED",
+      "blocker": null
     },
     {
       "task_id": "TASK-12-PRODUCTION-PROMOTION-AND-CANARY",
@@ -120,8 +120,8 @@
       "priority": "P0",
       "risk_class": "CLASS_B",
       "environment": "PRODUCTION",
-      "status": "PENDING",
-      "blocker": "Waiting on TASK-11"
+      "status": "READY_FOR_EXECUTION",
+      "blocker": null
     }
   ]
 }

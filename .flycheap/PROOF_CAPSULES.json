@@ -123,6 +123,16 @@
       "command": "node scripts/verify-certification-integrity.mjs",
       "result": "PASS (34/34 requirements, 14 outcomes, 0 orphans, 0 contradictions)",
       "freshness": "FRESH"
+    },
+    {
+      "proof_id": "CAP-13-REMOTE-STAGING-RUNTIME",
+      "claim_id": "CLM-REMOTE-STAGING-INTEGRITY",
+      "proof_type": "REMOTE_POSTGRES_AND_FUNCTIONS_VERIFICATION",
+      "environment": "ENV-REMOTE-STAGING",
+      "verifier_class": "NODE_SUPABASE_CLIENT",
+      "command": "node scripts/remote-staging-drill.mjs",
+      "result": "PASS (38 migrations pushed, 14 Edge Functions deployed, PostgREST RLS isolation verified, 88 tracked routes seeded, prepare_account_deletion RPC verified, observed-fares healthy)",
+      "freshness": "FRESH"
     }
   ]
 }

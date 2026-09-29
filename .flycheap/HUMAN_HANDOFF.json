@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.0.0",
+  "schema_version": "2.1.0",
   "mission_epoch_id": "MISSION-EPOCH-2026-09-28-V12-RECONCILIATION",
   "controller_version": "12.0.0-RECONCILIATION-CONTROLLER",
   "release_candidate_id": "RC-V7.0-001",
@@ -10,65 +10,16 @@
   "runtime_equivalent": true,
   "branch": "rc/v6.0-candidate",
   "release_mode": "MODE_1_INDICATIVE_PUBLIC_BETA",
-  "system_authority_state": "LOCAL_EPHEMERAL_RUNTIME_VERIFIED",
+  "system_authority_state": "REMOTE_STAGING_VERIFIED",
   "adversarial_audit_verdict": "SUPPORTED",
-  "immediate_hard_blocker": "ACT-STAGING-01",
+  "immediate_hard_blocker": null,
   "human_interruption_target": "ZERO_TOUCH_MINIMAL",
-  "batched_external_actions": [
+  "batched_external_actions": [],
+  "resolved_actions": [
     {
       "action_id": "ACT-STAGING-01",
-      "category": "INFRASTRUCTURE_QUOTA",
-      "is_hard_blocker_for_mode_1": true,
-      "title": "Resolve Clean Dedicated Supabase Staging Capacity",
-      "why_required": "Supabase account bpneawjmggrxqaoukxoz is at 2/2 active project quota on the Free plan. Creating a clean staging project or unpausing an existing one requires user authorization to either pause one active project or upgrade capacity.",
-      "discovered_projects": [
-        {
-          "ref": "thprsgnpvtzkcvknqfwk",
-          "name": "Sanvemaybay",
-          "status": "ACTIVE_HEALTHY",
-          "region": "ap-southeast-1",
-          "known_purpose": "Legacy project containing 123,000+ foreign Macro Platform rows. Strictly FORENSIC_READ_ONLY.",
-          "activity_data_evidence": "Linked in CLI; active database with foreign schema and active telemetry.",
-          "confidence": "HIGH",
-          "risk_of_pausing": "UNKNOWN_EXTERNAL_IMPACT: May disrupt existing Macro Platform workflows if any systems rely on this database."
-        },
-        {
-          "ref": "jxlggebfggscmhtdzgtn",
-          "name": "Macro OS",
-          "status": "ACTIVE_HEALTHY",
-          "region": "ap-south-1",
-          "known_purpose": "Macro OS active production/development project.",
-          "activity_data_evidence": "Active healthy database running PostgreSQL 17.",
-          "confidence": "HIGH",
-          "risk_of_pausing": "HIGH: User application Macro OS appears active."
-        },
-        {
-          "ref": "rclmpdygxhoaymajpmuf",
-          "name": "manhgiaythethao@gmail.com",
-          "status": "INACTIVE",
-          "region": "ap-northeast-2",
-          "known_purpose": "Paused Supabase project under same account.",
-          "activity_data_evidence": "Currently paused / inactive.",
-          "confidence": "MEDIUM",
-          "risk_of_pausing": "NONE (Already paused). However, cannot be unpaused while 2 other projects remain active on Free plan."
-        }
-      ],
-      "single_minimal_question": "Which active project (if any) is safe to pause to free a slot for clean FlyCheap staging, or do you authorize upgrading/adding paid project capacity?",
-      "resolution_options": [
-        {
-          "option": "PAUSE_SANVEMAYBAY_PROJECT",
-          "instructions": "If 'Sanvemaybay' (thprsgnpvtzkcvknqfwk) is safe to pause in the Supabase dashboard, pause it to free a slot, allowing FlyCheap to create a clean dedicated staging project."
-        },
-        {
-          "option": "PAUSE_MACRO_OS_PROJECT",
-          "instructions": "If 'Macro OS' (jxlggebfggscmhtdzgtn) is safe to pause in the Supabase dashboard, pause it to free a slot."
-        },
-        {
-          "option": "AUTHORIZE_PAID_CAPACITY",
-          "instructions": "Upgrade Supabase account or provide a dedicated clean project ref via environment variable SUPABASE_STAGING_PROJECT_REF=<ref>."
-        }
-      ],
-      "autonomous_action_after_unblock": "Autonomous reconciliation loop will automatically detect available slot, create/link clean project 'flycheap-staging', apply 38 migrations, deploy 14 Edge Functions, verify remote RLS, and proceed to production promotion."
+      "resolution": "User authorized pause of legacy project thprsgnpvtzkcvknqfwk. Slot freed, dedicated clean staging project yefbpmqfsstcaeqfrmyn created, 38 migrations pushed, 14 Edge Functions deployed, PostgREST RLS isolation verified, prepare_account_deletion RPC verified, observed-fares healthy.",
+      "resolved_at": "2026-09-29T10:10:44+07:00"
     }
   ],
   "verification_metrics": {
@@ -87,7 +38,11 @@
     "differential_oracle_passing": true,
     "metamorphic_invariants_passing": true,
     "migration_parity_deterministic": true,
-    "local_ephemeral_runtime_verified": true
+    "local_ephemeral_runtime_verified": true,
+    "remote_staging_verified": true,
+    "remote_staging_migrations": 38,
+    "remote_staging_functions": 14,
+    "remote_staging_rls_verified": true
   },
   "ten_pass_hostile_convergence": {
     "pass_1_product_semantics": "CONVERGED_PASS",

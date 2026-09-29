@@ -9,8 +9,8 @@
     "provider_contract_changed": "Invalidates provider drift, kill-switch, and booking url proofs"
   },
   "fresh_proof_status": {
-    "total_required_proofs": 12,
-    "fresh_proofs": 12,
+    "total_required_proofs": 13,
+    "fresh_proofs": 13,
     "stale_proofs": 0,
     "invalidation_detected": false
   }
