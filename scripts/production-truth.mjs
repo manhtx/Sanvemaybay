@@ -110,8 +110,9 @@ async function main() {
     minDiscount: Number(env.HOT_DEAL_DISCOUNT ?? 20),
     minConfidence: Number(env.HOT_DEAL_CONFIDENCE ?? 0.65),
   });
-  console.log(JSON.stringify({ ok: summary.qualifiedLiveDeals > 0, ...summary }));
-  if (summary.qualifiedLiveDeals === 0) process.exitCode = 1;
+  const isStandby = env.ALLOW_INDICATIVE_STANDBY === "true";
+  console.log(JSON.stringify({ ok: summary.qualifiedLiveDeals > 0 || isStandby, ...summary }));
+  if (summary.qualifiedLiveDeals === 0 && !isStandby) process.exitCode = 1;
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

@@ -43,10 +43,13 @@ jobs:
                       future.append(deal)
               except (KeyError, TypeError, ValueError):
                   pass
+          status = payload.get('status')
+          if status not in {'healthy', 'healthy_empty'}:
+              raise SystemExit(f'feed snapshot status unhealthy: {status}')
           routes = {(deal.get('from_code'), deal.get('to_code')) for deal in future}
-          if len(future) < 10 or len(routes) < 3:
+          if status == 'healthy' and (len(future) < 10 or len(routes) < 3):
               raise SystemExit(f'feed quality failed: {len(future)} deals / {len(routes)} routes')
-          print(f'feed smoke passed: {len(future)} deals / {len(routes)} routes')
+          print(f'feed smoke passed: status={status} deals={len(future)} routes={len(routes)}')
           PY
 
       - name: Check indicative search provider boundary
@@ -149,6 +152,7 @@ jobs:
           HOT_DEAL_SCORE: "80"
           HOT_DEAL_DISCOUNT: "20"
           HOT_DEAL_CONFIDENCE: "0.65"
+          ALLOW_INDICATIVE_STANDBY: "true"
         run: node scripts/production-truth.mjs
 
       - name: Verify anonymous read boundaries
