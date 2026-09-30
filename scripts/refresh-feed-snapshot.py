@@ -64,8 +64,8 @@ deals = request_json(
 if not isinstance(deals, list):
     raise RuntimeError("Supabase deals response was not a list")
 
-minimum_deals = max(1, int(os.environ.get("MIN_FEED_DEALS", "10")))
-minimum_routes = max(1, int(os.environ.get("MIN_FEED_ROUTES", "3")))
+minimum_deals = max(0, int(os.environ.get("MIN_FEED_DEALS", "0")))
+minimum_routes = max(0, int(os.environ.get("MIN_FEED_ROUTES", "0")))
 future_deals = []
 for deal in deals:
     if not isinstance(deal, dict):

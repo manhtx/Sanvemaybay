@@ -117,9 +117,7 @@ export async function runStagingPipeline() {
   const keysRaw = execSync(`npx supabase projects api-keys --project-ref "${stagingRef}" --reveal --output json`, { encoding: 'utf8' });
   const keys = JSON.parse(keysRaw);
   const anonKeyObj = keys.find(k => k.name === 'anon' || k.role === 'anon');
-  const serviceKeyObj = keys.find(k => k.name === 'service_role' || k.role === 'service_role');
   const anonKey = anonKeyObj?.api_key || '';
-  const serviceKey = serviceKeyObj?.api_key || '';
 
   const supabaseUrl = `https://${stagingRef}.supabase.co`;
   console.log(`Verifying remote connectivity to ${supabaseUrl}...`);

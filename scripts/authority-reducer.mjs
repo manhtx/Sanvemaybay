@@ -18,7 +18,6 @@ export function reduceAuthorityState(projectRoot = process.cwd()) {
   const rcRegistry = readJson('RC_REGISTRY.json');
   const surface = readJson('DEPLOYABLE_SURFACE.json');
   const ephemeralRuntime = readJson('LOCAL_EPHEMERAL_RUNTIME.json');
-  const handoff = readJson('HUMAN_HANDOFF.json');
 
   // Ground rules
   if (!acceptance || !rcRegistry || !surface) {

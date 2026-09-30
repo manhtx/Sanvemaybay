@@ -39,8 +39,7 @@ async function runStagingDrill() {
   console.log(`✓ Service role verified tracked_routes count: ${routeCount}`);
 
   // 4. Verify user data isolation
-  // Note: user_preferences has a foreign key to auth.users(id), so we query it via anon and service role
-  const { data: anonPrefs, error: anonPrefErr } = await anonClient.from('user_preferences').select('*');
+  const { data: anonPrefs } = await anonClient.from('user_preferences').select('*');
   if (anonPrefs && anonPrefs.length > 0) {
     throw new Error('FAIL: Anonymous client could read private user preference rows!');
   }
