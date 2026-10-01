@@ -212,41 +212,24 @@ export function DealCard({ deal }: DealCardProps) {
           )}
         </div>
 
-        {/* Intelligence Stats Bar */}
-        <div className="space-y-2 px-4 pb-5 sm:px-5">
-          {/* Saving Score */}
-          <div className="flex items-center gap-2">
-            <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Điểm cơ hội</span>
-            <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full"
-                style={{ width: `${deal.dealScore ?? deal.aiInsight.savingScore}%` }}
-              />
-            </div>
-            <span className="text-emerald-400 text-xs font-bold">
-              {deal.dealScore ?? deal.aiInsight.savingScore}/100
-            </span>
-          </div>
-          {deal.linkKind === "indicative" && (
-            <p className="text-right text-[10px] font-bold uppercase tracking-wide text-sky-300">
-              {deal.aiReasoning || "Giá quan sát"}
-            </p>
-          )}
-          
-          {deal.confidence != null && (
-            <div className="flex items-center gap-2">
-              <span className="text-slate-600 text-[10px] uppercase tracking-wider font-bold whitespace-nowrap">Độ tin cậy</span>
-              <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-sky-400 rounded-full opacity-60"
-                  style={{ width: `${deal.confidence * 100}%` }}
-                />
+        {/* True Cost & Intelligence Bar */}
+        <div className="border-t border-white/5 bg-white/[0.02] px-4 py-3 sm:px-5 flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            {hasHiddenCosts ? (
+              <div className="flex items-center gap-1.5 text-xs text-amber-300">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">Thực tế ước tính: <strong>{formatVND(deal.realTotal)}</strong></span>
               </div>
-              <span className="text-sky-300 text-[10px] font-bold">
-                {Math.round(deal.confidence * 100)}%
-              </span>
-            </div>
-          )}
+            ) : (
+              <div className="text-xs text-slate-400 truncate">
+                Đã bao gồm thuế & phí cơ bản
+              </div>
+            )}
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-sky-400 group-hover:text-sky-300">
+            {deal.linkKind === "indicative" ? "Kiểm tra giá" : "Xem chi tiết"}
+            <span aria-hidden="true">→</span>
+          </span>
         </div>
       </div>
       </Link>

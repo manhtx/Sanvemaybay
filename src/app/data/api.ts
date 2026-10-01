@@ -1,7 +1,7 @@
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import { Deal, normalizeAIInsight, PricePoint } from "./deals";
 import { rankTravelFeed } from "../domain/travelFeed";
-import { readFeedCache, writeFeedCache } from "../lib/feedCache";
+import { readFeedCache, writeFeedCache, readObservedFaresCache, writeObservedFaresCache } from "../lib/feedCache";
 import { evidenceGatedDealLabel } from "../domain/dealClaims";
 import { reportClientIssue } from "../lib/clientDiagnostics";
 export { createAlerts, manageAlert } from "./alertApi";
@@ -174,6 +174,16 @@ export function mapObservedFare(row: Record<string, any>): Deal {
   const discount = row.discount_percent == null ? 0 : Math.max(0, Number(row.discount_percent));
   const baseline = row.baseline_price == null ? Number(row.price) : Number(row.baseline_price);
   const safeLabel = evidenceGatedDealLabel(score, confidencePercent);
+  const isBudgetAirline = ["VJ", "AK", "FD", "TR", "5J", "SL"].includes(String(row.airline_code || "").toUpperCase());
+  const estimatedBaggage = isBudgetAirline ? (row.region === "domestic" ? 280000 : 550000) : 0;
+  const hiddenCosts = isBudgetAirline ? [{
+    label: "Hành lý ký gửi 20kg (ước tính)",
+    amount: estimatedBaggage,
+    note: "Hãng bay giá rẻ thường chưa bao gồm kiện ký gửi tiêu chuẩn",
+  }] : [];
+  const basePrice = Number(row.price);
+  const realTotal = basePrice + estimatedBaggage;
+
   return {
     id: `observed-${row.id}`,
     from: row.origin,
@@ -182,7 +192,7 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     toCode: row.destination_code,
     country: row.country,
     region: row.region,
-    price: Number(row.price),
+    price: basePrice,
     normalPrice: baseline,
     discount,
     currency: row.currency ?? "VND",
@@ -200,17 +210,17 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     aiInsight: {
       reason: row.discount_percent == null
         ? "Đang tích lũy thêm giá tương đương để tính mức chênh lệch."
-        : `Thấp hơn mặt bằng cùng nhóm ${discount.toFixed(1)}% từ ${sampleSize} quan sát.`,
-      tags: [safeLabel, `Tin cậy ${confidencePercent < 50 ? "thấp" : confidencePercent < 75 ? "vừa" : "cao"}`, `${sampleSize} mẫu so sánh`],
+        : `Thấp hơn mức giá thường gặp ${discount.toFixed(1)}% (từ ${sampleSize} quan sát so sánh).`,
+      tags: [safeLabel, `Tin cậy ${confidencePercent < 50 ? "thấp" : confidencePercent < 75 ? "vừa" : "cao"}`, `${sampleSize} mẫu đối sánh`],
       risk: sampleSize >= 8 ? "low" : "medium",
-      riskDetails: "Giá tham khảo có thể thay đổi khi kiểm tra lại trên nguồn.",
+      riskDetails: "Giá tham khảo từ nguồn; có thể thay đổi khi kiểm tra lại trực tiếp.",
       recommendation: "wait",
       recommendationNote: "Kiểm tra giá hiện tại trước khi quyết định.",
       savingScore: score,
     },
-    hiddenCosts: [],
-    advertisedTotal: Number(row.price),
-    realTotal: Number(row.price),
+    hiddenCosts,
+    advertisedTotal: basePrice,
+    realTotal,
     isTrending: score >= 70 && confidencePercent >= 50,
     isFlashDeal: discount >= 30 && confidencePercent >= 65,
     tripType: row.region === "domestic" ? "domestic" : "international",
@@ -224,25 +234,90 @@ export function mapObservedFare(row: Record<string, any>): Deal {
 }
 
 export async function getObservedFares(page = 1, pageSize = 60): Promise<ObservedFarePage> {
-  if (!isSupabaseConfigured) return { fares: [], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" };
-  const { data, error } = await supabase.functions.invoke("observed-fares", { body: { page, page_size: pageSize } });
-  if (error || !data || !Array.isArray(data.fares)) {
+  const storage = typeof window === "undefined" ? undefined : window.localStorage;
+  const cached = page === 1 ? readObservedFaresCache(storage) : undefined;
+
+  if (!isSupabaseConfigured) {
+    if (cached && cached.fares.length > 0) {
+      return {
+        fares: cached.fares,
+        total: cached.total,
+        nextPage: null,
+        retryable: true,
+        status: "degraded_freshness",
+        latestObservedAt: cached.latestObservedAt,
+        feedAgeMinutes: cached.feedAgeMinutes,
+      };
+    }
     return { fares: [], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" };
   }
-  const acceptedStatuses: ObservedFarePage["status"][] = ["healthy", "healthy_empty", "degraded_freshness", "stale_only", "provider_unavailable"];
-  const status: ObservedFarePage["status"] = acceptedStatuses.includes(data.status as ObservedFarePage["status"])
-    ? data.status as ObservedFarePage["status"]
-    : "provider_unavailable";
-  return {
-    fares: data.fares.map(mapObservedFare),
-    total: Math.max(0, Number(data.total) || 0),
-    nextPage: Number.isInteger(data.next_page) ? data.next_page : null,
-    generatedAt: typeof data.generated_at === "string" ? data.generated_at : undefined,
-    latestObservedAt: typeof data.latest_observed_at === "string" ? data.latest_observed_at : undefined,
-    feedAgeMinutes: Number.isFinite(Number(data.feed_age_minutes)) ? Math.max(0, Number(data.feed_age_minutes)) : undefined,
-    retryable: data.retryable === true,
-    status,
-  };
+
+  try {
+    const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
+      setTimeout(() => reject(new Error("Timeout")), 5000)
+    );
+    const invokePromise = supabase.functions.invoke("observed-fares", { body: { page, page_size: pageSize } });
+    const { data, error } = (await Promise.race([invokePromise, timeoutPromise])) as any;
+
+    if (error || !data || !Array.isArray(data.fares)) {
+      const stale = page === 1 ? readObservedFaresCache(storage, Date.now(), true) : undefined;
+      if (stale && stale.fares.length > 0) {
+        return {
+          fares: stale.fares,
+          total: stale.total,
+          nextPage: null,
+          retryable: true,
+          status: "degraded_freshness",
+          latestObservedAt: stale.latestObservedAt,
+          feedAgeMinutes: stale.feedAgeMinutes,
+        };
+      }
+      return { fares: [], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" };
+    }
+
+    const acceptedStatuses: ObservedFarePage["status"][] = ["healthy", "healthy_empty", "degraded_freshness", "stale_only", "provider_unavailable"];
+    const status: ObservedFarePage["status"] = acceptedStatuses.includes(data.status as ObservedFarePage["status"])
+      ? data.status as ObservedFarePage["status"]
+      : "provider_unavailable";
+
+    const mappedFares = data.fares.map(mapObservedFare);
+    const total = Math.max(0, Number(data.total) || 0);
+
+    if (page === 1 && mappedFares.length > 0) {
+      writeObservedFaresCache(storage, {
+        fares: mappedFares,
+        total,
+        status,
+        latestObservedAt: typeof data.latest_observed_at === "string" ? data.latest_observed_at : undefined,
+        feedAgeMinutes: Number.isFinite(Number(data.feed_age_minutes)) ? Math.max(0, Number(data.feed_age_minutes)) : undefined,
+      });
+    }
+
+    return {
+      fares: mappedFares,
+      total,
+      nextPage: Number.isInteger(data.next_page) ? data.next_page : null,
+      generatedAt: typeof data.generated_at === "string" ? data.generated_at : undefined,
+      latestObservedAt: typeof data.latest_observed_at === "string" ? data.latest_observed_at : undefined,
+      feedAgeMinutes: Number.isFinite(Number(data.feed_age_minutes)) ? Math.max(0, Number(data.feed_age_minutes)) : undefined,
+      retryable: data.retryable === true,
+      status,
+    };
+  } catch (_err) {
+    const stale = page === 1 ? readObservedFaresCache(storage, Date.now(), true) : undefined;
+    if (stale && stale.fares.length > 0) {
+      return {
+        fares: stale.fares,
+        total: stale.total,
+        nextPage: null,
+        retryable: true,
+        status: "degraded_freshness",
+        latestObservedAt: stale.latestObservedAt,
+        feedAgeMinutes: stale.feedAgeMinutes,
+      };
+    }
+    return { fares: [], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" };
+  }
 }
 
 export async function getHistoricalDeals(): Promise<Deal[]> {

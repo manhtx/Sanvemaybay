@@ -4,13 +4,13 @@ import { getRouteMetadata } from "./routeMetadata";
 describe("getRouteMetadata", () => {
   it("returns indexable metadata for public discovery routes", () => {
     const metadata = getRouteMetadata("/deals");
-    expect(metadata.title).toContain("Deal vé máy bay");
+    expect(metadata.title).toContain("Farely");
     expect(metadata.indexable).toBe(true);
   });
 
   it("uses generic detail metadata without exposing an untrusted identifier", () => {
     const metadata = getRouteMetadata("/deals/provider-secret-id");
-    expect(metadata.title).toBe("Chi tiết deal vé máy bay | FlyCheap AI");
+    expect(metadata.title).toBe("Chi tiết deal vé máy bay | Farely");
     expect(metadata.title).not.toContain("provider-secret-id");
   });
 

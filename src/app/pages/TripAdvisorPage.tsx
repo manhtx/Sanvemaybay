@@ -21,8 +21,8 @@ export function TripAdvisorPage() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
           <Compass className="mx-auto mb-4 h-12 w-12 text-pink-400" />
-          <h1 className="text-4xl font-black text-white">AI Trip Advisor</h1>
-          <p className="text-slate-500 mt-3">Gợi ý dựa trên deal đã quan sát và rule chi phí minh bạch — không tạo dữ liệu khi chưa có offer.</p>
+          <h1 className="text-4xl font-black text-white">Cố Vấn Hành Trình</h1>
+          <p className="text-slate-400 mt-3 text-sm">Gợi ý hành trình dựa trên mức giá quan sát thực tế và chi phí minh bạch — hỗ trợ bạn lên kế hoạch chuyến bay tối ưu.</p>
         </div>
         <form onSubmit={(event) => { event.preventDefault(); setSubmitted(true); }} className="mb-8 grid grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-[#171719] p-5 md:grid-cols-3">
           <label className="text-sm text-slate-300"><MapPin className="inline w-4 h-4 mr-2 text-sky-400" />Điểm khởi hành

@@ -159,6 +159,39 @@ export function DealsPage() {
         ? "Chưa có deal live còn hiệu lực"
         : `Hệ thống phát hiện ${deals.length} deal trên ${new Set(deals.map((d: Deal) => d.country)).size} quốc gia`;
 
+  const pageHeadline = useMemo(() => {
+    if (isLoading) return "Đang Kiểm Tra Cơ Hội Vé Máy Bay…";
+    if (mode === "observed") {
+      if (observedUnavailable && observedFares.length === 0) return "Đang Kết Nối Nguồn Dữ Liệu Chuyến Bay";
+      if (observedTotal === 0 && observedFares.length === 0) return "Chưa Có Tuyến Đạt Ngưỡng Giảm Giá";
+      if (observedHealth.status === "stale_only") return "Dữ Liệu Giá Vé Đã Ghi Nhận";
+      if (observedHealth.status === "degraded_freshness") return "Cơ Hội Vé Máy Bay Quan Sát Gần Nhất";
+      return "Giá Vé Máy Bay Đang Giảm Mạnh";
+    } else {
+      if (isDegraded && deals.length === 0) return "Nguồn Deal Đang Tạm Thời Gián Đoạn";
+      if (isHealthyEmpty || deals.length === 0) return "Hiện Chưa Có Deal Live Đạt Chuẩn";
+      return "Deal Vé Máy Bay Đã Được Xác Minh";
+    }
+  }, [isLoading, mode, observedUnavailable, observedTotal, observedFares.length, observedHealth.status, isDegraded, isHealthyEmpty, deals.length]);
+
+  const pageSubtitle = useMemo(() => {
+    if (isLoading) return "Hệ thống đang tải dữ liệu giá mới nhất từ các nguồn chuyến bay…";
+    if (mode === "observed") {
+      if (observedUnavailable && observedFares.length === 0) return "Hệ thống chưa thể lấy dữ liệu lúc này và sẽ tự động thử lại trong ít phút.";
+      if (observedTotal === 0 && observedFares.length === 0) return "Tất cả các tuyến bay đang theo dõi hiện giữ mức giá thông thường.";
+      const ageHours = observedHealth.feedAgeMinutes != null ? Math.max(1, Math.round(observedHealth.feedAgeMinutes / 60)) : null;
+      if (observedHealth.status === "stale_only") {
+        return `Đang lưu giữ ${observedTotal} mức giá tham khảo (${ageHours ? `${ageHours} giờ trước` : "đã cũ"}). Cần kiểm tra lại trước khi đặt vé.`;
+      }
+      if (observedHealth.status === "degraded_freshness") {
+        return `${observedTotal} mức giá quan sát (${ageHours ? `${ageHours} giờ trước` : "gần đây"}) — ưu tiên các chặng có mức tiết kiệm tốt nhất.`;
+      }
+      return `${observedTotal} mức giá quan sát — đối chiếu độc lập theo dữ liệu lịch sử thị trường.`;
+    } else {
+      return feedSummary;
+    }
+  }, [isLoading, mode, observedUnavailable, observedTotal, observedFares.length, observedHealth.feedAgeMinutes, observedHealth.status, feedSummary]);
+
   return (
     <main className="min-h-screen pb-16 pt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -166,8 +199,8 @@ export function DealsPage() {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-3">
             <div className="h-1.5 w-1.5 rounded-full bg-pink-400" />
-            <span className="text-xs font-bold tracking-[0.12em] text-pink-400">
-              DỮ LIỆU QUAN SÁT
+            <span className="text-xs font-bold tracking-[0.12em] text-pink-400 uppercase">
+              {mode === "observed" ? "Dữ Liệu Quan Sát Thị Trường" : "Deal Live Đã Xác Minh"}
             </span>
           </div>
           <div className="flex items-start justify-between flex-wrap gap-4">
@@ -176,13 +209,12 @@ export function DealsPage() {
                 className="mb-2 text-white"
                 style={{ fontSize: "clamp(1.75rem, 4vw, 2.25rem)", fontWeight: 800, letterSpacing: "-0.03em" }}
               >
-            {mode === "observed" ? "Giá Vé Máy Bay Đang Giảm Mạnh" : "Deal Vé Máy Bay Được Xác Minh"}
+                {pageHeadline}
               </h1>
               <p className="max-w-2xl text-sm leading-relaxed text-slate-400" aria-live="polite">
-                <span className={isDegraded ? "text-amber-300" : "text-sky-400"} style={{ fontWeight: 700 }}>
-                  {mode === "observed" ? `${observedTotal} giá quan sát — ưu tiên mức giảm lớn nhất` : feedSummary}
-                </span>{" "}
-                {!isLoading && mode === "live" && !isDegraded && "— chỉ hiển thị các mức giá đạt ngưỡng so với dữ liệu lịch sử"}
+                <span className={isDegraded ? "text-amber-300" : "text-sky-400"} style={{ fontWeight: 600 }}>
+                  {pageSubtitle}
+                </span>
               </p>
             </div>
             <button
@@ -198,10 +230,10 @@ export function DealsPage() {
         </div>
 
         <div className="mb-6 inline-flex rounded-xl border border-white/10 bg-white/[0.04] p-1" role="tablist" aria-label="Loại giá vé">
-          <button type="button" role="tab" aria-selected={mode === "observed"} onClick={() => setMode("observed")} className={`min-h-11 rounded-lg px-4 py-2 text-sm font-semibold ${mode === "observed" ? "bg-white text-slate-950" : "text-slate-400"}`}>
-            Giá đang giảm ({observedTotal})
+          <button type="button" role="tab" aria-selected={mode === "observed"} onClick={() => setMode("observed")} className={`min-h-11 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${mode === "observed" ? "bg-white text-slate-950 shadow-md" : "text-slate-400 hover:text-white"}`}>
+            Giá quan sát ({observedTotal})
           </button>
-          <button type="button" role="tab" aria-selected={mode === "live"} onClick={() => setMode("live")} className={`min-h-11 rounded-lg px-4 py-2 text-sm font-semibold ${mode === "live" ? "bg-white text-slate-950" : "text-slate-400"}`}>
+          <button type="button" role="tab" aria-selected={mode === "live"} onClick={() => setMode("live")} className={`min-h-11 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${mode === "live" ? "bg-white text-slate-950 shadow-md" : "text-slate-400 hover:text-white"}`}>
             Deal live ({deals.length})
           </button>
         </div>
@@ -262,30 +294,57 @@ export function DealsPage() {
           </section>
         )}
 
-        {!isLoading && mode === "observed" && observedUnavailable && (
+        {!isLoading && mode === "observed" && observedUnavailable && observedFares.length === 0 && (
           <section className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5" role="alert">
             <h2 className="font-bold text-white">Nguồn giá quan sát đang tạm gián đoạn</h2>
-            <p className="mt-1 text-sm text-slate-300">Hệ thống sẽ tự thử lại; dữ liệu archive không được dùng thay cho giá hiện tại.</p>
+            <p className="mt-1 text-sm text-slate-300">Hệ thống đang tự động kết nối lại. Dữ liệu giá archive không được dùng để thay thế giá trực tiếp.</p>
+            <div className="mt-3 flex gap-3">
+              <button
+                type="button"
+                onClick={() => void loadDeals()}
+                className="rounded-xl bg-white/[0.1] px-4 py-2 text-xs font-semibold text-white hover:bg-white/[0.15]"
+              >
+                Thử lại ngay
+              </button>
+              <Link
+                to="/alerts"
+                className="rounded-xl bg-sky-500 px-4 py-2 text-xs font-semibold text-white hover:bg-sky-400"
+              >
+                Cài đặt báo giá
+              </Link>
+            </div>
           </section>
         )}
-        {!isLoading && mode === "observed" && !observedUnavailable && (observedHealth.status === "degraded_freshness" || observedHealth.status === "stale_only") && (
-          <section className={`mb-6 rounded-2xl border p-5 ${observedHealth.status === "stale_only" ? "border-red-500/30 bg-red-500/10" : "border-amber-500/30 bg-amber-500/10"}`} role="alert">
-            <h2 className="font-bold text-white">
-              {observedHealth.status === "stale_only" ? "Dữ liệu giá đã quá cũ" : "Dữ liệu giá đang cập nhật chậm"}
-            </h2>
-            <p className="mt-1 text-sm text-slate-300">
-              Lần quan sát mới nhất cách đây {observedHealth.feedAgeMinutes == null ? "không xác định" : `${Math.max(1, Math.round(observedHealth.feedAgeMinutes / 60))} giờ`}.
-              Các mức giá vẫn là dữ liệu tham khảo và phải được kiểm tra lại trên nguồn trước khi quyết định.
-            </p>
-            {observedHealth.latestObservedAt && (
-              <p className="mt-2 text-xs text-slate-500">Quan sát mới nhất: {new Date(observedHealth.latestObservedAt).toLocaleString("vi-VN")}</p>
-            )}
-          </section>
+
+        {!isLoading && mode === "observed" && observedFares.length > 0 && observedHealth.status === "degraded_freshness" && (
+          <div className="mb-6 flex items-center gap-2.5 rounded-xl border border-sky-500/20 bg-sky-500/5 px-4 py-3 text-xs text-slate-300">
+            <Clock className="h-4 w-4 shrink-0 text-sky-400" />
+            <span>
+              Dữ liệu được quan sát {observedHealth.feedAgeMinutes != null ? `${Math.round(observedHealth.feedAgeMinutes / 60)} giờ trước` : "gần đây"}. Giá vé có thể biến động theo thời gian thực; luôn kiểm tra lại trên hãng trước khi đặt.
+            </span>
+          </div>
         )}
-        {!isLoading && mode === "observed" && !observedUnavailable && observedTotal === 0 && (
-          <section className="mb-6 rounded-2xl border border-sky-500/25 bg-sky-500/10 p-5" role="status">
-            <h2 className="font-bold text-white">Đang chờ lượt quét giá đầu tiên</h2>
-            <p className="mt-1 text-sm text-slate-300">Pipeline chạy nền mỗi giờ; giá hợp lệ sẽ tự xuất hiện và được xếp theo mức giảm.</p>
+
+        {!isLoading && mode === "observed" && observedFares.length > 0 && observedHealth.status === "stale_only" && (
+          <div className="mb-6 flex items-center gap-2.5 rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-xs text-amber-200">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400" />
+            <span>
+              Dữ liệu giá đã được quan sát hơn 6 giờ trước và đang chờ lượt quét mới. Vui lòng kiểm tra lại giá chính xác tại thời điểm đặt vé.
+            </span>
+          </div>
+        )}
+
+        {!isLoading && mode === "observed" && !observedUnavailable && observedTotal === 0 && observedFares.length === 0 && (
+          <section className="mb-6 rounded-2xl border border-sky-500/25 bg-sky-500/10 p-5 text-center sm:text-left" role="status">
+            <h2 className="font-bold text-white">Chưa có chuyến bay nào đạt ngưỡng giảm giá</h2>
+            <p className="mt-1 text-sm text-slate-300">Mặt bằng giá thị trường hiện tại đang ở mức thông thường. Bạn có thể cài đặt báo giá để nhận thông báo ngay khi giá giảm.</p>
+            <Link
+              to="/alerts"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-sky-500 px-4 py-2.5 text-xs font-bold text-white hover:bg-sky-400"
+            >
+              <Bell className="h-4 w-4" />
+              Cài đặt báo giá ngay
+            </Link>
           </section>
         )}
 
@@ -566,25 +625,24 @@ export function DealsPage() {
           </div>
 
           {/* Alert CTA */}
-          <div className="bg-gradient-to-r from-sky-500/10 to-violet-500/10 border border-sky-500/20 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-4">
+          <div className="bg-gradient-to-r from-sky-500/10 via-violet-500/10 to-pink-500/10 border border-sky-500/20 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-4">
             <div className="w-12 h-12 bg-sky-500/20 rounded-xl flex items-center justify-center shrink-0">
               <TrendingDown className="w-6 h-6 text-sky-400" />
             </div>
-            <div className="flex-1 text-center sm:text-left">
+            <div className="flex-1 text-center sm:text-left min-w-0">
               <div className="text-white text-sm mb-1" style={{ fontWeight: 700 }}>
-                Muốn nhận thông báo khi có deal mới đến điểm đến bạn muốn?
+                Muốn nhận thông báo khi có vé giá tốt đến điểm bạn cần?
               </div>
-              <p className="text-slate-500 text-sm">
-                Đặt alert để hệ thống thông báo qua Telegram hoặc Email cho các tuyến đang được theo dõi.
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Cài đặt báo giá để Farely gửi thông báo qua Telegram hoặc Email ngay khi hệ thống phát hiện mức giá giảm sâu.
               </p>
             </div>
             <Link
               to="/alerts"
-              className="flex items-center gap-2 px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl text-sm shrink-0 transition-colors"
-              style={{ fontWeight: 600 }}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-pink-500 hover:opacity-95 text-white rounded-xl text-sm shrink-0 transition-all font-bold w-full sm:w-auto shadow-lg shadow-pink-500/20"
             >
               <Zap className="w-4 h-4" />
-              Đặt Alert Miễn Phí
+              Tạo Báo Giá Miễn Phí
             </Link>
           </div>
         </div>

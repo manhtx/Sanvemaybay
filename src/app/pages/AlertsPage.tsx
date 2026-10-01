@@ -475,11 +475,11 @@ export function AlertsPage() {
 
               <div className="bg-slate-800 rounded-xl p-4 border border-white/8">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-xs" style={{ fontWeight: 800 }}>FC</span>
+                  <div className="w-8 h-8 bg-gradient-to-br from-orange-400 via-pink-500 to-violet-600 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xs" style={{ fontWeight: 800 }}>FL</span>
                   </div>
                   <div>
-                    <div className="text-white text-xs" style={{ fontWeight: 700 }}>FlyCheap AI</div>
+                    <div className="text-white text-xs" style={{ fontWeight: 700 }}>Farely Alert</div>
                     <div className="text-slate-500 text-xs">vừa xong</div>
                   </div>
                 </div>

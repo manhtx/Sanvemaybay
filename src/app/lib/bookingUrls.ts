@@ -1,5 +1,5 @@
 /**
- * Booking URL Generator — FlyCheap AI
+ * Booking URL Generator — Farely
  * 
  * RULES:
  * - Traveloka: KHÔNG dùng deep link vì họ dùng internal airport codes riêng

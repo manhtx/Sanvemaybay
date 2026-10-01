@@ -53,7 +53,7 @@ export function AuthPage() {
   return (
     <main className="min-h-screen bg-slate-950 pt-28 pb-20 px-4">
       <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-[#171719] p-6 sm:p-8">
-        <h1 className="text-3xl font-black text-white mb-2">Tài khoản FlyCheap AI</h1>
+        <h1 className="text-3xl font-black text-white mb-2">Tài khoản Farely</h1>
         <p className="text-slate-400 text-sm mb-8">Đồng bộ preferences và deal đã lưu trên các thiết bị.</p>
         {signedIn ? (
           <div className="space-y-4">

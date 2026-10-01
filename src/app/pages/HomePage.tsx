@@ -378,7 +378,7 @@ export function HomePage() {
           </motion.h1>
 
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed text-lg">
-            FlyCheap AI theo dõi các tuyến bay đang được hỗ trợ — phát hiện cơ hội giá thấp, <span className="text-slate-300">giải thích dựa trên lịch sử</span>, và đưa ra <span className="text-slate-300">mức độ tin cậy rõ ràng</span>.
+            Farely theo dõi các tuyến bay phổ biến — phát hiện cơ hội giá tốt, <span className="text-slate-300">đối chiếu với mức giá thường gặp</span>, và minh bạch <span className="text-slate-300">tổng chi phí thực tế</span>.
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.38 }} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
