@@ -27,6 +27,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Synchronize deployed commit secret
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          DEPLOYED_COMMIT: ${{ github.sha }}
+        run: |
+          if [ -n "$SUPABASE_ACCESS_TOKEN" ] && [ -n "$SUPABASE_PROJECT_REF" ]; then
+            curl -s -f -X POST "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/secrets" \
+              -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "[{\"name\":\"DEPLOYED_COMMIT\",\"value\":\"$DEPLOYED_COMMIT\"}]" || echo "Warning: Could not sync DEPLOYED_COMMIT secret"
+          fi
       - name: Install fast-flights worker
         run: python -m pip install --disable-pip-version-check fast-flights typing_extensions
       - name: Discover and ingest indicative observations
