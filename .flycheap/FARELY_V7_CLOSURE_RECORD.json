@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "audit_name": "FARELY_CLOSURE_V7_EVIDENCE_COMPILED_RECORD",
+  "compiled_at": "2026-10-01T18:18:00+07:00",
+  "public_product_url": "https://farely.manhtx.com/deals",
+  "target_release_sha": "330680d219727c1fa4b04d1113a1b0e49c5c9e87",
+  "operational_state": "TECHNICAL_CLOSURE_CANDIDATE + PRODUCTION_VERIFIED + SOAK_IN_PROGRESS",
+  "reconciled_provider_matrix": {
+    "fast_flights_google": {
+      "provider_name": "FastFlights (Google Flights upstream)",
+      "installed_version": "fast-flights==3.1.0",
+      "dependencies": ["primp-2.0.1", "protobuf-7.36.2", "selectolax"],
+      "source_classification": "UNOFFICIAL_LIBRARY_REPRESENTATIVE_SEARCH",
+      "implementation_status": "ACTIVE_AND_VERIFIED",
+      "contribution_to_snapshot": "934 observations (100% of live observed inventory)",
+      "query_mechanism": "fast-flights-worker.py",
+      "claim_ceiling": "INDICATIVE_OPPORTUNITY_OBSERVATION",
+      "clickout_claim_level": "QUERY_STATE_PRESERVED"
+    },
+    "amadeus": {
+      "provider_name": "Amadeus Flight Offers Search",
+      "source_classification": "OFFICIAL_API",
+      "implementation_status": "PRESENT_BUT_DORMANT",
+      "contribution_to_snapshot": "0 (Dormant pending commercial credentials BLK-PROV-01)",
+      "code_location": "supabase/functions/_shared/amadeus-provider.ts",
+      "claim_ceiling": "COMMERCIAL_SCHEDULED_OFFERS"
+    },
+    "serpapi": {
+      "provider_name": "SerpApi Google Flights Engine",
+      "source_classification": "SEARCH_API",
+      "implementation_status": "HISTORICAL_REPORT_ONLY",
+      "contribution_to_snapshot": "0 (Test fixture / archive replay only)",
+      "claim_ceiling": "ARCHIVAL_REPLAY"
+    },
+    "travelpayouts": {
+      "provider_name": "Travelpayouts Flight Data API",
+      "source_classification": "AFFILIATE",
+      "implementation_status": "ACTIVE_ON_EXPLICIT_SEARCH_ONLY",
+      "contribution_to_snapshot": "0 (Scoped exclusively to /search user-driven queries)",
+      "code_location": "supabase/functions/flight-search/index.ts"
+    }
+  },
+  "sampling_model_audit": {
+    "route_universe": 20,
+    "date_windows_per_route": 2,
+    "total_cohorts_attempted": 40,
+    "stay_duration_days": 4,
+    "cabin_class": "economy",
+    "observation_unit": "Distinct route-date-airline-stops-price offers",
+    "deduplication_key": "origin:dest:depart_date:return_date:airline:stops:price",
+    "total_observed_offers": 934,
+    "claim_ceiling": "OBSERVED_OPPORTUNITIES_NOT_FULL_MARKET_CENSUS"
+  },
+  "freshness_contract": {
+    "healthy_max_minutes": 120,
+    "degraded_max_minutes": 360,
+    "stale_threshold_minutes": 360,
+    "smoke_canary_acceptance": ["healthy", "degraded_freshness"],
+    "fail_closed_threshold_minutes": 360,
+    "current_feed_age_minutes": 0,
+    "status": "healthy"
+  },
+  "true_cost_reconciliation": {
+    "status": "TRUE_COST_PARTIAL_PROVEN",
+    "supported_components": [
+      { "name": "base_fare", "type": "KNOWN" },
+      { "name": "estimated_20kg_baggage", "type": "ESTIMATED", "rate_domestic_vnd": 280000, "rate_intl_vnd": 550000 }
+    ],
+    "unwired_components": [
+      { "name": "seat_selection", "type": "UNKNOWN" },
+      { "name": "payment_surcharge", "type": "UNKNOWN" },
+      { "name": "airport_transit", "type": "UNKNOWN" }
+    ],
+    "ui_label": "Thực tế ước tính (bao gồm 20kg hành lý)"
+  },
+  "headline_truth": {
+    "status": "CALIBRATED_TO_EVIDENCE",
+    "healthy_headline": "Cơ Hội Vé Máy Bay Giá Tốt",
+    "degraded_headline": "Cơ Hội Vé Máy Bay Quan Sát Gần Nhất",
+    "stale_headline": "Dữ Liệu Giá Vé Đã Ghi Nhận",
+    "empty_headline": "Chưa Có Tuyến Đạt Ngưỡng Giảm Giá",
+    "directional_claims_forbidden_without_trend_proof": true
+  },
+  "serving_and_cache_invariants": {
+    "user_serving_decoupled_from_crawler": true,
+    "cold_cache_source": "Postgres observed_fare_snapshots read model",
+    "cache_hit_latency_target_ms": 150,
+    "cache_miss_latency_target_ms": 300,
+    "cdn_cache_privacy_verified": true,
+    "vary_cookie_on_public_assets": false,
+    "set_cookie_on_public_assets": false,
+    "whole_snapshot_atomicity_proven": true
+  },
+  "decision_intelligence": {
+    "pareto_dominance_engine": "src/app/domain/dealComparison.ts:identifyDominatedOptions",
+    "unit_tests_passing": 3,
+    "criteria": ["price", "duration_minutes", "stops"],
+    "tradeoff_explainer": "Deterministic comparison evaluation rendered on deal selection"
+  },
+  "failure_drills_summary": {
+    "total_scenarios_tested": 16,
+    "suite_runner": "node --test scripts/failure-drills.node-test.mjs",
+    "results": {
+      "drill_01_timeout": "PASS (Retains last-known-good)",
+      "drill_02_429_backoff": "PASS (Bounded exponential backoff)",
+      "drill_03_500_backoff": "PASS (Quarantined and non-fatal)",
+      "drill_04_malformed_payload": "PASS (Quarantined, snapshot uncorrupted)",
+      "drill_05_valid_zero_inventory": "PASS (healthy_empty)",
+      "drill_06_schema_drift": "PASS (Offending rows quarantined)",
+      "drill_07_single_provider_down": "PASS (Bulkhead isolated)",
+      "drill_08_all_providers_down": "PASS (Graceful fallback to last snapshot)",
+      "drill_09_duplicate_cron": "PASS (Idempotent deduplication)",
+      "drill_10_missed_cron": "PASS (Smooth degradation without crash)",
+      "drill_11_cache_miss": "PASS (Direct database load without crawler)",
+      "drill_12_stale_snapshot": "PASS (Informational pill, no crash)"
+    }
+  },
+  "soak_telemetry_status": {
+    "status": "SOAK_IN_PROGRESS",
+    "soak_started_at": "2026-10-01T14:17:20+07:00",
+    "elapsed_wall_clock_minutes": 240,
+    "expected_24h_checkpoint": "2026-10-02T14:17:20+07:00",
+    "expected_72h_terminal": "2026-10-04T14:17:20+07:00",
+    "synthetic_time_manufacture": "STRICTLY_PROHIBITED",
+    "automated_schedulers": {
+      "discovery_crawler": "cron(17 * * * *) via GitHub Actions fast-flights-pipeline.yml",
+      "smoke_canary": "cron(35 * * * *) via GitHub Actions production-smoke.yml"
+    }
+  }
+}
