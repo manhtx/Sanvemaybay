@@ -13,6 +13,9 @@ on:
         default: "2"
   schedule:
     - cron: "17 * * * *"
+  push:
+    branches:
+      - main
 
 concurrency:
   group: flycheap-fast-flights-pipeline

@@ -5,7 +5,7 @@
   "release_candidate_id": "RC-V7.0-001",
   "source_rc_sha": "50c6d98628eca005db4c171ec93abce406e08127",
   "control_plane_sha": "25a145a1f6a147321e06fa5ec8b982637b58c566",
-  "promoted_git_sha": "cbc9a32f389e036e48278658c0a4d4c5bcb2fabf",
+  "promoted_git_sha": "e3df18b526877f680a7e5346d1d24613fa66dcd5",
   "promoted_branch": "main",
   "deployable_surface_hash": "3da645185186e0f9ba7914ac28df62fed8a818fd79bc94e43568f6a1e252ade5",
   "runtime_equivalence": true,
@@ -15,7 +15,7 @@
     "status": "ACTIVE_MONITORING",
     "workflow": ".github/workflows/production-smoke.yml",
     "schedule": "35 * * * *",
-    "latest_run_id": "36850822349",
+    "latest_run_id": "36853358090",
     "latest_run_status": "PASS",
     "feed_snapshot_check": "ACTIVE",
     "search_boundary_check": "ACTIVE"
