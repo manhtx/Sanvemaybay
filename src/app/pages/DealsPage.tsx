@@ -18,7 +18,7 @@ import {
 import { DealCard } from "../components/DealCard";
 import { Deal } from "../data/deals";
 import { formatVND } from "../data/deals";
-import { compareDeals } from "../domain/dealComparison";
+import { compareDeals, explainTradeoff } from "../domain/dealComparison";
 import { Link } from "react-router";
 import { getDealsResult, getObservedFares } from "../data/api";
 import type { DealFeedResult, ObservedFarePage } from "../data/api";
@@ -186,7 +186,7 @@ export function DealsPage() {
       if (observedHealth.status === "degraded_freshness") {
         return `${observedTotal} mức giá quan sát (${ageHours ? `${ageHours} giờ trước` : "gần đây"}) — ưu tiên các chặng có mức tiết kiệm tốt nhất.`;
       }
-      return `${observedTotal} mức giá quan sát — đối chiếu độc lập theo dữ liệu lịch sử thị trường.`;
+      return `${observedTotal} mức giá quan sát — đối chiếu với mức giá thường gặp trên thị trường.`;
     } else {
       return feedSummary;
     }
@@ -503,6 +503,16 @@ export function DealsPage() {
                 </tbody>
               </table>
             </div>
+            {comparisonRows.length >= 2 && (() => {
+              const sortedByCost = [...comparisonRows].sort((a, b) => a.totalCost - b.totalCost);
+              const explanation = explainTradeoff(sortedByCost[0], sortedByCost[sortedByCost.length - 1]);
+              return (
+                <div className="mt-4 rounded-xl border border-sky-500/30 bg-sky-500/10 p-3.5 text-xs text-sky-200 flex items-start gap-2.5">
+                  <span className="font-bold text-sky-300 shrink-0">💡 Đánh giá so sánh:</span>
+                  <span className="leading-relaxed">{explanation}</span>
+                </div>
+              );
+            })()}
           </section>
         )}
 

@@ -70,7 +70,7 @@ function Footer() {
                 <span className="text-emerald-400 text-xs" style={{ fontWeight: 700 }}>BETA TRỰC TUYẾN</span>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed">
-                Miễn phí cho người dùng. Dữ liệu đối chiếu độc lập và được cập nhật liên tục từ các nguồn chuyến bay.
+                Miễn phí cho người dùng. Dữ liệu đối chiếu theo lịch sử và được cập nhật liên tục từ các nguồn chuyến bay.
               </p>
             </div>
           </div>

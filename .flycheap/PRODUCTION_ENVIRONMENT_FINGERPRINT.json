@@ -14,7 +14,7 @@
   "canary_monitoring": {
     "status": "ACTIVE_MONITORING",
     "workflow": ".github/workflows/production-smoke.yml",
-    "schedule": "17 * * * *",
+    "schedule": "35 * * * *",
     "feed_snapshot_check": "ACTIVE",
     "search_boundary_check": "ACTIVE"
   },

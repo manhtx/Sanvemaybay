@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compareDeals } from "./dealComparison";
+import { compareDeals, explainTradeoff } from "./dealComparison";
 
 describe("deal comparison", () => {
   it("compares total cost and parses duration without inventing missing values", () => {
@@ -13,4 +13,33 @@ describe("deal comparison", () => {
     expect(rows[0]).toMatchObject({ route: "HAN → BKK", ticketPrice: 2_000_000, totalCost: 2_200_000, durationMinutes: 150, stops: 1, risk: "low" });
     expect(rows[0].refundPolicy).toBeUndefined();
   });
+
+  it("explains trade-offs between cheaper option with stops/longer time and direct faster option", () => {
+    const cheaper = {
+      id: "cheap",
+      route: "HAN → BKK",
+      ticketPrice: 1_500_000,
+      totalCost: 1_500_000,
+      durationMinutes: 480, // 8h
+      stops: 1,
+      refundPolicy: undefined,
+      risk: "medium" as const,
+    };
+    const direct = {
+      id: "direct",
+      route: "HAN → BKK",
+      ticketPrice: 2_400_000,
+      totalCost: 2_400_000,
+      durationMinutes: 120, // 2h
+      stops: 0,
+      refundPolicy: undefined,
+      risk: "low" as const,
+    };
+
+    const explanation = explainTradeoff(cheaper, direct);
+    expect(explanation).toContain("Rẻ hơn khoảng 900k");
+    expect(explanation).toContain("mất thêm 6 giờ");
+    expect(explanation).toContain("thêm 1 điểm dừng");
+  });
 });
+

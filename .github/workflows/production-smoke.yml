@@ -3,7 +3,7 @@ name: FlyCheap production smoke
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 * * * *"
+    - cron: "35 * * * *"
 
 concurrency:
   group: flycheap-production-smoke
