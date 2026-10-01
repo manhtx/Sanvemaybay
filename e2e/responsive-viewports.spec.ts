@@ -71,7 +71,7 @@ test.describe("Responsive viewport & overflow verification", () => {
       await page.goto("/deals");
 
       // Verify page loaded
-      await expect(page.getByRole("heading", { name: "Giá Vé Máy Bay Đang Giảm Mạnh" })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Cơ Hội Vé Máy Bay Giá Tốt" })).toBeVisible();
 
       // Verify no horizontal overflow
       const overflow = await page.evaluate(() => {

@@ -101,7 +101,7 @@ test("observed fares render the largest discount first with color-coded percenta
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ status: "healthy", fares: [fare("red", 2_000_000, 35, 92), fare("yellow", 3_000_000, 20, 75), fare("green", 3_600_000, 10, 62)], total: 3, next_page: null, generated_at: "2099-01-01T00:00:00Z" }) });
   });
   await page.goto("/deals");
-  await expect(page.getByRole("heading", { name: "Giá Vé Máy Bay Đang Giảm Mạnh" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Cơ Hội Vé Máy Bay Giá Tốt" })).toBeVisible();
   const badges = page.locator("text=/↓ (35|20|10)\\.0%/");
   await expect(badges).toHaveCount(3);
   await expect(page.getByText("↓ 35.0%")).toHaveClass(/bg-red-500/);

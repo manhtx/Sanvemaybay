@@ -64,3 +64,20 @@ export function explainTradeoff(cheaper: DealComparisonRow, costlier: DealCompar
   return `Rẻ hơn khoảng ${formatMoney(priceDiff)} với hành trình tương đương.`;
 }
 
+export function identifyDominatedOptions(rows: DealComparisonRow[]): Set<string> {
+  const dominatedIds = new Set<string>();
+  for (const a of rows) {
+    for (const b of rows) {
+      if (a.id === b.id) continue;
+      const durationA = a.durationMinutes ?? Infinity;
+      const durationB = b.durationMinutes ?? Infinity;
+      const noWorse = a.totalCost <= b.totalCost && durationA <= durationB && a.stops <= b.stops;
+      const strictlyBetter = a.totalCost < b.totalCost || durationA < durationB || a.stops < b.stops;
+      if (noWorse && strictlyBetter) {
+        dominatedIds.add(b.id);
+      }
+    }
+  }
+  return dominatedIds;
+}
+

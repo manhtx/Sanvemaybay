@@ -166,7 +166,7 @@ export function DealsPage() {
       if (observedTotal === 0 && observedFares.length === 0) return "Chưa Có Tuyến Đạt Ngưỡng Giảm Giá";
       if (observedHealth.status === "stale_only") return "Dữ Liệu Giá Vé Đã Ghi Nhận";
       if (observedHealth.status === "degraded_freshness") return "Cơ Hội Vé Máy Bay Quan Sát Gần Nhất";
-      return "Giá Vé Máy Bay Đang Giảm Mạnh";
+      return "Cơ Hội Vé Máy Bay Giá Tốt";
     } else {
       if (isDegraded && deals.length === 0) return "Nguồn Deal Đang Tạm Thời Gián Đoạn";
       if (isHealthyEmpty || deals.length === 0) return "Hiện Chưa Có Deal Live Đạt Chuẩn";

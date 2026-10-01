@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-function serveDeals(context, providerFn) {
+function serveDeals(context) {
   // NORMAL /deals REQUEST MUST NOT WAIT FOR LIVE PROVIDER
   // It reads from verified snapshot or cached last-known-good
   if (context.lastKnownGoodSnapshot) {

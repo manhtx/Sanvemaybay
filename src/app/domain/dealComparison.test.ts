@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compareDeals, explainTradeoff } from "./dealComparison";
+import { compareDeals, explainTradeoff, identifyDominatedOptions } from "./dealComparison";
 
 describe("deal comparison", () => {
   it("compares total cost and parses duration without inventing missing values", () => {
@@ -40,6 +40,44 @@ describe("deal comparison", () => {
     expect(explanation).toContain("Rẻ hơn khoảng 900k");
     expect(explanation).toContain("mất thêm 6 giờ");
     expect(explanation).toContain("thêm 1 điểm dừng");
+  });
+
+  it("identifies Pareto-dominated options where an alternative is cheaper, faster, and fewer stops", () => {
+    const superior = {
+      id: "opt-superior",
+      route: "HAN → SIN",
+      ticketPrice: 2_000_000,
+      totalCost: 2_000_000,
+      durationMinutes: 180,
+      stops: 0,
+      refundPolicy: undefined,
+      risk: "low" as const,
+    };
+    const dominated = {
+      id: "opt-dominated",
+      route: "HAN → SIN",
+      ticketPrice: 2_500_000, // more expensive
+      totalCost: 2_500_000,
+      durationMinutes: 360, // slower
+      stops: 1, // more stops
+      refundPolicy: undefined,
+      risk: "medium" as const,
+    };
+    const tradeOff = {
+      id: "opt-cheapest-slow",
+      route: "HAN → SIN",
+      ticketPrice: 1_200_000, // cheaper
+      totalCost: 1_200_000,
+      durationMinutes: 480, // but slower
+      stops: 1,
+      refundPolicy: undefined,
+      risk: "medium" as const,
+    };
+
+    const dominatedSet = identifyDominatedOptions([superior, dominated, tradeOff]);
+    expect(dominatedSet.has("opt-dominated")).toBe(true);
+    expect(dominatedSet.has("opt-superior")).toBe(false);
+    expect(dominatedSet.has("opt-cheapest-slow")).toBe(false);
   });
 });
 
