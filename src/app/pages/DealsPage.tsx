@@ -52,6 +52,7 @@ export function DealsPage() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [observedFares, setObservedFares] = useState<Deal[]>([]);
   const [observedTotal, setObservedTotal] = useState(0);
+  const [observedRegionCounts, setObservedRegionCounts] = useState<Record<string, number> | undefined>(undefined);
   const [nextObservedPage, setNextObservedPage] = useState<number | null>(null);
   const [observedUnavailable, setObservedUnavailable] = useState(false);
   const [observedHealth, setObservedHealth] = useState<Pick<ObservedFarePage, "status" | "feedAgeMinutes" | "latestObservedAt" | "retryable">>({ status: "provider_unavailable", retryable: true });
@@ -61,9 +62,17 @@ export function DealsPage() {
   const [region, setRegion] = useState<RegionType>("all");
   const [sort, setSort] = useState<SortType>("discount");
 
-  const loadDeals = useCallback(async () => {
+  const loadDeals = useCallback(async (selectedRegion = region, selectedSort = sort) => {
     setIsLoading(true);
-    const [result, observed] = await Promise.all([getDealsResult(), getObservedFares()]);
+    const [result, observed] = await Promise.all([
+      getDealsResult(),
+      getObservedFares({
+        region: selectedRegion === "all" ? undefined : selectedRegion,
+        sort: selectedSort,
+        page: 1,
+        pageSize: 60,
+      }),
+    ]);
     setDeals(result.deals);
     setFeed(result);
     setObservedFares(observed.fares);
@@ -71,8 +80,11 @@ export function DealsPage() {
     setNextObservedPage(observed.nextPage);
     setObservedUnavailable(observed.status === "provider_unavailable");
     setObservedHealth({ status: observed.status, feedAgeMinutes: observed.feedAgeMinutes, latestObservedAt: observed.latestObservedAt, retryable: observed.retryable });
+    if (observed.regionCounts) {
+      setObservedRegionCounts(observed.regionCounts);
+    }
     setIsLoading(false);
-  }, []);
+  }, [region, sort]);
 
   useEffect(() => {
     void loadDeals();
@@ -130,15 +142,22 @@ export function DealsPage() {
 
   // Count by region — memoised so it doesn't recompute on every render
   const regionCounts = useMemo(
-    () =>
-      allRegions.reduce((acc, r) => {
+    () => {
+      if (mode === "observed" && observedRegionCounts) {
+        return {
+          all: observedTotal,
+          ...observedRegionCounts,
+        };
+      }
+      return allRegions.reduce((acc, r) => {
         acc[r.value] =
           r.value === "all"
-            ? displayDeals.length
+            ? (mode === "observed" && observedTotal > 0 ? observedTotal : displayDeals.length)
             : displayDeals.filter((d: Deal) => d.region === r.value).length;
         return acc;
-      }, {} as Record<string, number>),
-    [displayDeals]
+      }, {} as Record<string, number>);
+    },
+    [mode, observedRegionCounts, observedTotal, displayDeals]
   );
   const comparisonDeals = useMemo(
     () => filtered.filter((deal) => comparisonIds.includes(deal.id)),
@@ -382,7 +401,12 @@ export function DealsPage() {
               .map((r) => (
                 <button
                   key={r.value}
-                  onClick={() => setRegion(r.value)}
+                  onClick={() => {
+                    setRegion(r.value);
+                    if (mode === "observed") {
+                      void loadDeals(r.value, sort);
+                    }
+                  }}
                   className={`flex min-h-11 items-center gap-1.5 px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all shrink-0 ${
                     region === r.value
                         ? "bg-white text-slate-950 shadow-lg shadow-black/20"
@@ -443,7 +467,13 @@ export function DealsPage() {
                 <select
                   aria-label="Sắp xếp deal"
                   value={sort}
-                  onChange={(e) => setSort(e.target.value as SortType)}
+                  onChange={(e) => {
+                    const nextSort = e.target.value as SortType;
+                    setSort(nextSort);
+                    if (mode === "observed") {
+                      void loadDeals(region, nextSort);
+                    }
+                  }}
                   className="bg-slate-800 border border-white/10 text-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-500/40 cursor-pointer"
                   style={{ fontWeight: 500 }}
                 >
@@ -604,7 +634,12 @@ export function DealsPage() {
             <button
               type="button"
               onClick={async () => {
-                const next = await getObservedFares(nextObservedPage);
+                const next = await getObservedFares({
+                  page: nextObservedPage,
+                  pageSize: 60,
+                  region: region === "all" ? undefined : region,
+                  sort,
+                });
                 setObservedFares((current) => [...current, ...next.fares.filter((fare) => !current.some((existing) => existing.id === fare.id))]);
                 setNextObservedPage(next.nextPage);
               }}

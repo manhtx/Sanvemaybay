@@ -217,7 +217,7 @@ def search_route(route: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str,
         for result in results:
             try:
                 row = normalize(result, route, outbound, returned, observed_at)
-            except (TypeError, ValueError, KeyError):
+            except (TypeError, ValueError, KeyError, IndexError):
                 row = None
             if row:
                 observations[row["itinerary_key"]] = row

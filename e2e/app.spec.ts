@@ -107,7 +107,7 @@ test("observed fares render the largest discount first with color-coded percenta
   await expect(page.getByText("↓ 35.0%")).toHaveClass(/bg-red-500/);
   await expect(page.getByText("↓ 20.0%")).toHaveClass(/bg-amber-400/);
   await expect(page.getByText("↓ 10.0%")).toHaveClass(/bg-emerald-500/);
-  const cards = page.locator("a[href*='google.com/travel/flights']");
+  const cards = page.locator("a[href*='/deals/']");
   await expect(cards.first()).toContainText("2.000.000");
 });
 

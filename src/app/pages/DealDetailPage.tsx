@@ -324,7 +324,9 @@ export function DealDetailPage() {
                    <span className="text-xs uppercase opacity-80 tracking-widest">
                      {getRecommendationLabel(deal.aiInsight.recommendation)}
                    </span>
-                   <span className="text-lg">Kiểm tra giá trên trang đặt vé</span>
+                   <span className="text-lg">
+                     {deal.linkKind === "indicative" ? "Kiểm tra giá hiện tại trên Google Flights" : "Kiểm tra giá trên trang đặt vé"}
+                   </span>
                 </button>
               </div>
 

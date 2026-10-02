@@ -30,27 +30,40 @@ export function clearBookmarkedDeals(storage: Storage | undefined = typeof windo
 }
 
 export async function loadRemoteBookmarkedDealIds(): Promise<string[] | undefined> {
-  if (!isSupabaseConfigured) return undefined;
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return undefined;
-  const { data, error } = await supabase.from("user_bookmarks").select("deal_id").eq("user_id", user.id);
-  if (error) return undefined;
-  const remoteIds = (data ?? []).map((row) => row.deal_id).filter((id): id is string => typeof id === "string");
   const localIds = getBookmarkedDealIds();
-  const missingRemote = localIds.filter((id) => !remoteIds.includes(id));
-  if (missingRemote.length > 0) {
-    await supabase.from("user_bookmarks").upsert(missingRemote.map((deal_id) => ({ user_id: user.id, deal_id })));
+  if (!isSupabaseConfigured) return localIds;
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return localIds;
+    const { data, error } = await supabase.from("user_bookmarks").select("deal_id").eq("user_id", user.id);
+    if (error) return localIds;
+    const remoteIds = (data ?? []).map((row) => row.deal_id).filter((id): id is string => typeof id === "string");
+    const missingRemote = localIds.filter((id) => !remoteIds.includes(id) && !id.startsWith("observed-") && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id));
+    if (missingRemote.length > 0) {
+      await supabase.from("user_bookmarks").upsert(missingRemote.map((deal_id) => ({ user_id: user.id, deal_id })));
+    }
+    return [...new Set([...remoteIds, ...localIds])];
+  } catch {
+    return localIds;
   }
-  return [...new Set([...remoteIds, ...localIds])];
 }
 
 export async function saveRemoteBookmark(dealId: string, bookmarked: boolean): Promise<boolean> {
   if (!isSupabaseConfigured) return false;
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return false;
-  const result = bookmarked
-    ? await supabase.from("user_bookmarks").upsert({ user_id: user.id, deal_id: dealId })
-    : await supabase.from("user_bookmarks").delete().eq("user_id", user.id).eq("deal_id", dealId);
-  return !result.error;
+  // If dealId is an observed opportunity (not in public.deals), remote database foreign key will reject it.
+  // Local storage remains the authoritative cross-type bookmark storage.
+  if (dealId.startsWith("observed-") || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(dealId)) {
+    return true;
+  }
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return false;
+    const result = bookmarked
+      ? await supabase.from("user_bookmarks").upsert({ user_id: user.id, deal_id: dealId })
+      : await supabase.from("user_bookmarks").delete().eq("user_id", user.id).eq("deal_id", dealId);
+    return !result.error;
+  } catch {
+    return false;
+  }
 }
 import { isSupabaseConfigured, supabase } from "./supabase";

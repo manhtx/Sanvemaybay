@@ -25,6 +25,22 @@ export interface DealFeedResult {
   message: string;
 }
 
+export interface ObservedFareQuery {
+  page?: number;
+  pageSize?: number;
+  origin?: string;
+  destination?: string;
+  region?: string;
+  directOnly?: boolean;
+  sort?: string;
+  month?: string;
+  budget?: number;
+  maxStops?: number;
+  departDateFrom?: string;
+  departDateTo?: string;
+  id?: string;
+}
+
 export interface ObservedFarePage {
   fares: Deal[];
   total: number;
@@ -34,6 +50,7 @@ export interface ObservedFarePage {
   feedAgeMinutes?: number;
   retryable: boolean;
   status: "healthy" | "healthy_empty" | "degraded_freshness" | "stale_only" | "provider_unavailable";
+  regionCounts?: Record<string, number>;
 }
 
 const feedStatuses = new Set<FeedStatus>([
@@ -233,9 +250,16 @@ export function mapObservedFare(row: Record<string, any>): Deal {
   };
 }
 
-export async function getObservedFares(page = 1, pageSize = 60): Promise<ObservedFarePage> {
+export async function getObservedFares(pageOrQuery: number | ObservedFareQuery = 1, pageSize = 60): Promise<ObservedFarePage> {
+  const queryObj: ObservedFareQuery = typeof pageOrQuery === "number"
+    ? { page: pageOrQuery, pageSize }
+    : { page: 1, pageSize: 60, ...pageOrQuery };
+  const page = Math.max(1, queryObj.page ?? 1);
+  const size = Math.max(1, queryObj.pageSize ?? pageSize);
+  const isDefaultFeedQuery = page === 1 && !queryObj.origin && !queryObj.destination && (!queryObj.region || queryObj.region === "all") && (!queryObj.sort || queryObj.sort === "discount") && !queryObj.id && queryObj.budget == null && !queryObj.month;
+
   const storage = typeof window === "undefined" ? undefined : window.localStorage;
-  const cached = page === 1 ? readObservedFaresCache(storage) : undefined;
+  const cached = isDefaultFeedQuery ? readObservedFaresCache(storage) : undefined;
 
   if (!isSupabaseConfigured) {
     if (cached && cached.fares.length > 0) {
@@ -254,13 +278,26 @@ export async function getObservedFares(page = 1, pageSize = 60): Promise<Observe
 
   try {
     const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
-      setTimeout(() => reject(new Error("Timeout")), 5000)
+      setTimeout(() => reject(new Error("Timeout")), 8000)
     );
-    const invokePromise = supabase.functions.invoke("observed-fares", { body: { page, page_size: pageSize } });
+    const body: Record<string, unknown> = { page, page_size: size };
+    if (queryObj.origin) body.origin = queryObj.origin;
+    if (queryObj.destination) body.destination = queryObj.destination;
+    if (queryObj.region && queryObj.region !== "all") body.region = queryObj.region;
+    if (queryObj.directOnly === true) body.direct_only = true;
+    if (queryObj.sort) body.sort = queryObj.sort;
+    if (queryObj.month && queryObj.month !== "all") body.month = queryObj.month;
+    if (queryObj.budget != null) body.budget = queryObj.budget;
+    if (queryObj.maxStops != null) body.max_stops = queryObj.maxStops;
+    if (queryObj.departDateFrom) body.depart_date_from = queryObj.departDateFrom;
+    if (queryObj.departDateTo) body.depart_date_to = queryObj.departDateTo;
+    if (queryObj.id) body.id = queryObj.id;
+
+    const invokePromise = supabase.functions.invoke("observed-fares", { body });
     const { data, error } = (await Promise.race([invokePromise, timeoutPromise])) as any;
 
     if (error || !data || !Array.isArray(data.fares)) {
-      const stale = page === 1 ? readObservedFaresCache(storage, Date.now(), true) : undefined;
+      const stale = isDefaultFeedQuery ? readObservedFaresCache(storage, Date.now(), true) : undefined;
       if (stale && stale.fares.length > 0) {
         return {
           fares: stale.fares,
@@ -283,7 +320,7 @@ export async function getObservedFares(page = 1, pageSize = 60): Promise<Observe
     const mappedFares = data.fares.map(mapObservedFare);
     const total = Math.max(0, Number(data.total) || 0);
 
-    if (page === 1 && mappedFares.length > 0) {
+    if (isDefaultFeedQuery && mappedFares.length > 0) {
       writeObservedFaresCache(storage, {
         fares: mappedFares,
         total,
@@ -302,9 +339,10 @@ export async function getObservedFares(page = 1, pageSize = 60): Promise<Observe
       feedAgeMinutes: Number.isFinite(Number(data.feed_age_minutes)) ? Math.max(0, Number(data.feed_age_minutes)) : undefined,
       retryable: data.retryable === true,
       status,
+      regionCounts: data.region_counts && typeof data.region_counts === "object" ? data.region_counts : undefined,
     };
   } catch (_err) {
-    const stale = page === 1 ? readObservedFaresCache(storage, Date.now(), true) : undefined;
+    const stale = isDefaultFeedQuery ? readObservedFaresCache(storage, Date.now(), true) : undefined;
     if (stale && stale.fares.length > 0) {
       return {
         fares: stale.fares,
@@ -397,41 +435,105 @@ export function isActiveFeedDeal(deal: Deal, now = new Date()): boolean {
  * Fetch a single deal by ID.
  */
 export async function getDealById(id: string): Promise<Deal | undefined> {
+  const cleanId = id.trim();
+  const rawId = cleanId.replace(/^observed-/, "");
+  const storage = typeof window === "undefined" ? undefined : window.localStorage;
+
+  // 1. Check local cache first for instant zero-latency loading
+  const cachedObserved = readObservedFaresCache(storage)?.fares ?? [];
+  const foundObserved = cachedObserved.find(
+    (d) => d.id === cleanId || d.id === `observed-${cleanId}` || d.id === rawId || d.id === `observed-${rawId}`
+  );
+  if (foundObserved) return foundObserved;
+
+  const cachedDeals = readFeedCache(storage)?.deals ?? [];
+  const foundFeed = cachedDeals.find((d) => d.id === cleanId);
+  if (foundFeed && isActiveFeedDeal(foundFeed)) return foundFeed;
+
   if (!isSupabaseConfigured) return undefined;
 
+  // 2. Query observed-fares if it is an observed fare ID or UUID
+  const isObservedCandidate = cleanId.startsWith("observed-") || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanId);
+  if (isObservedCandidate) {
+    try {
+      const page = await getObservedFares({ id: rawId, pageSize: 60 });
+      const matching = page.fares.find((f) => f.id === cleanId || f.id === `observed-${rawId}` || f.id === rawId);
+      if (matching) return matching;
+      if (page.fares.length > 0 && page.total === 1) return page.fares[0];
+    } catch {
+      // Fall through to database queries
+    }
+  }
+
+  // 3. Try deals table
   try {
     const { data, error } = await supabase
       .from('deals')
       .select('*')
-      .eq('id', id)
+      .eq('id', cleanId)
       .gte("depart_date", new Date().toISOString().slice(0, 10))
       .gt("valid_until", new Date().toISOString())
       .single();
 
-    if (error) throw error;
-    
-    const deal = mapDealRow(data);
-    return isActiveFeedDeal(deal) ? deal : undefined;
+    if (!error && data) {
+      const deal = mapDealRow(data);
+      if (isActiveFeedDeal(deal)) return deal;
+    }
   } catch {
-    reportClientIssue("deal_detail_unavailable");
-    return undefined;
+    // Continue
   }
+
+  // 4. Fallback: check initial observed fares batch
+  try {
+    const fallbackPage = await getObservedFares(1, 120);
+    const foundFallback = fallbackPage.fares.find(
+      (f) => f.id === cleanId || f.id === `observed-${rawId}` || f.id === rawId
+    );
+    if (foundFallback) return foundFallback;
+  } catch {
+    // Continue
+  }
+
+  reportClientIssue("deal_detail_unavailable");
+  return undefined;
 }
 
 export async function getPriceHistory(fromCode: string, toCode: string): Promise<PricePoint[]> {
   if (!isSupabaseConfigured) return [];
-  const { data, error } = await supabase
-    .from("price_history")
-    .select("date, price")
-    .eq("from_code", fromCode)
-    .eq("to_code", toCode)
-    .order("date", { ascending: true })
-    .limit(180);
-  if (error) {
+  try {
+    const { data, error } = await supabase
+      .from("price_history")
+      .select("date, price")
+      .eq("from_code", fromCode)
+      .eq("to_code", toCode)
+      .order("date", { ascending: true })
+      .limit(180);
+    if (!error && data && data.length > 0) {
+      const mapped = mapPriceHistoryRows(data);
+      if (mapped.length > 0) return mapped;
+    }
+  } catch {
     reportClientIssue("price_history_unavailable");
-    return [];
   }
-  return mapPriceHistoryRows(data ?? []);
+
+  // Resilient fallback: derive historical price points from observed fares for this route
+  const storage = typeof window === "undefined" ? undefined : window.localStorage;
+  const cachedFares = (readObservedFaresCache(storage)?.fares ?? []).filter(
+    (f) => f.fromCode === fromCode && f.toCode === toCode
+  );
+  if (cachedFares.length > 0) {
+    const pointsMap = new Map<string, number>();
+    for (const f of cachedFares) {
+      const dateKey = f.observedAt ? f.observedAt.slice(0, 10) : f.departDate;
+      if (!pointsMap.has(dateKey) || f.price < pointsMap.get(dateKey)!) {
+        pointsMap.set(dateKey, f.price);
+      }
+    }
+    const points: PricePoint[] = Array.from(pointsMap.entries()).map(([date, price]) => ({ date, price }));
+    return points.sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  return [];
 }
 
 export function mapPriceHistoryRows(rows: Array<{ date?: unknown; price?: unknown }>): PricePoint[] {
@@ -450,9 +552,35 @@ export async function searchDeals(params: {
   departureTo?: string;
   maxFlightTimeMinutes?: number;
 }): Promise<Deal[]> {
-  const all = await getDeals();
-  const live = await searchLiveDeals(params);
-  return filterDeals([...live, ...all], params);
+  const destinationCode = params.destination && /^[A-Z]{3}$/i.test(params.destination.trim())
+    ? params.destination.trim().toUpperCase()
+    : undefined;
+
+  const [observedResult, allFeedDeals, liveDeals] = await Promise.all([
+    getObservedFares({
+      origin: params.from,
+      destination: destinationCode,
+      budget: params.budget,
+      maxStops: params.maxStops,
+      departDateFrom: params.departureFrom,
+      departDateTo: params.departureTo,
+      pageSize: 120,
+    }).catch(() => ({ fares: [] as Deal[] })),
+    getDeals().catch(() => [] as Deal[]),
+    searchLiveDeals(params).catch(() => [] as Deal[]),
+  ]);
+
+  const candidatePool = [...liveDeals, ...observedResult.fares, ...allFeedDeals];
+  const seenIds = new Set<string>();
+  const uniquePool: Deal[] = [];
+  for (const deal of candidatePool) {
+    if (!seenIds.has(deal.id)) {
+      seenIds.add(deal.id);
+      uniquePool.push(deal);
+    }
+  }
+
+  return filterDeals(uniquePool, params);
 }
 
 async function searchLiveDeals(params: {

@@ -33,11 +33,11 @@ export function DealCard({ deal }: DealCardProps) {
     : deal.discount >= 15
       ? "bg-amber-400 text-slate-950"
       : "bg-emerald-500/95 text-white";
-  const cardTarget = deal.linkKind === "indicative" && deal.bookingUrl ? deal.bookingUrl : `/deals/${deal.id}`;
+  const cardTarget = `/deals/${deal.id}`;
 
   return (
     <div className="relative group">
-      <Link aria-label={`${deal.linkKind === "indicative" ? "Kiểm tra giá" : "Xem deal"} ${deal.fromCode} đến ${deal.toCode}, ${formatVND(deal.price)}, ${deal.aiReasoning || deal.aiInsight.reason}`} to={cardTarget} target={deal.linkKind === "indicative" ? "_blank" : undefined} rel={deal.linkKind === "indicative" ? "noopener noreferrer" : undefined} className="block">
+      <Link aria-label={`${deal.linkKind === "indicative" ? "Chi tiết cơ hội" : "Xem deal"} ${deal.fromCode} đến ${deal.toCode}, ${formatVND(deal.price)}, ${deal.aiReasoning || deal.aiInsight.reason}`} to={cardTarget} className="block">
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#171719] transition-all duration-300 hover:border-pink-500/35 hover:bg-[#1b1b1e] hover:shadow-xl hover:shadow-black/20">
         {/* Image */}
         <div className="relative aspect-[16/10] overflow-hidden">
@@ -227,7 +227,7 @@ export function DealCard({ deal }: DealCardProps) {
             )}
           </div>
           <span className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-sky-400 group-hover:text-sky-300">
-            {deal.linkKind === "indicative" ? "Kiểm tra giá" : "Xem chi tiết"}
+            {deal.linkKind === "indicative" ? "Chi tiết cơ hội" : "Xem chi tiết"}
             <span aria-hidden="true">→</span>
           </span>
         </div>

@@ -40,16 +40,61 @@ Deno.serve(async (request) => {
     let query = service.from("observed_fare_snapshots")
       .select("dedupe_key,observation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at", { count: "exact" })
       .gte("depart_date", new Date().toISOString().slice(0, 10));
+
+    const targetId = typeof body.id === "string" && body.id ? body.id : typeof body.observation_id === "string" ? body.observation_id : undefined;
+    if (targetId) {
+      query = query.eq("observation_id", targetId.replace(/^observed-/, ""));
+    }
     if (typeof body.origin === "string" && body.origin) query = query.eq("origin_code", body.origin.toUpperCase());
     if (typeof body.destination === "string" && body.destination) query = query.eq("destination_code", body.destination.toUpperCase());
     if (typeof body.region === "string" && body.region !== "all") query = query.eq("region", body.region);
     if (body.direct_only === true) query = query.eq("stops", 0);
-    query = query
-      .order("discount_percent", { ascending: false, nullsFirst: false })
-      .order("deal_score", { ascending: false })
-      .order("observed_at", { ascending: false })
-      .order("price", { ascending: true })
-      .range(start, start + pageSize - 1);
+    const maxStops = Number(body.max_stops);
+    if (Number.isInteger(maxStops) && maxStops >= 0) query = query.lte("stops", maxStops);
+    const maxPrice = Number(body.max_price ?? body.budget);
+    if (Number.isFinite(maxPrice) && maxPrice > 0) query = query.lte("price", maxPrice);
+    if (typeof body.depart_date_from === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.depart_date_from)) {
+      query = query.gte("depart_date", body.depart_date_from);
+    }
+    if (typeof body.depart_date_to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.depart_date_to)) {
+      query = query.lte("depart_date", body.depart_date_to);
+    }
+    if (typeof body.month === "string" && body.month !== "all") {
+      const slashMatch = body.month.match(/^(\d{1,2})\/(\d{4})$/);
+      if (slashMatch) {
+        const m = slashMatch[1].padStart(2, "0");
+        const y = slashMatch[2];
+        const nextM = Number(m) === 12 ? "01" : String(Number(m) + 1).padStart(2, "0");
+        const nextY = Number(m) === 12 ? String(Number(y) + 1) : y;
+        query = query.gte("depart_date", `${y}-${m}-01`).lt("depart_date", `${nextY}-${nextM}-01`);
+      } else if (/^\d{4}-\d{2}$/.test(body.month)) {
+        const [y, m] = body.month.split("-");
+        const nextM = Number(m) === 12 ? "01" : String(Number(m) + 1).padStart(2, "0");
+        const nextY = Number(m) === 12 ? String(Number(y) + 1) : y;
+        query = query.gte("depart_date", `${y}-${m}-01`).lt("depart_date", `${nextY}-${nextM}-01`);
+      }
+    }
+
+    const sort = typeof body.sort === "string" ? body.sort : "discount";
+    if (sort === "price_asc") {
+      query = query.order("price", { ascending: true }).order("discount_percent", { ascending: false, nullsFirst: false });
+    } else if (sort === "price_desc") {
+      query = query.order("price", { ascending: false }).order("discount_percent", { ascending: false, nullsFirst: false });
+    } else if (sort === "score") {
+      query = query.order("deal_score", { ascending: false }).order("discount_percent", { ascending: false, nullsFirst: false });
+    } else if (sort === "date_near") {
+      query = query.order("depart_date", { ascending: true }).order("price", { ascending: true });
+    } else if (sort === "date_far") {
+      query = query.order("depart_date", { ascending: false }).order("price", { ascending: true });
+    } else {
+      query = query
+        .order("discount_percent", { ascending: false, nullsFirst: false })
+        .order("deal_score", { ascending: false })
+        .order("observed_at", { ascending: false })
+        .order("price", { ascending: true });
+    }
+
+    query = query.range(start, start + pageSize - 1);
     const [{ data, error, count }, latestResult] = await Promise.all([
       query,
       service.from("observed_fare_snapshots").select("observed_at").order("observed_at", { ascending: false }).limit(1).maybeSingle(),

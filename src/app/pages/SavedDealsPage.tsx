@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Bookmark } from "lucide-react";
 import { Deal } from "../data/deals";
-import { getDeals } from "../data/api";
+import { getDeals, getObservedFares, getDealById } from "../data/api";
 import { getBookmarkedDealIds, loadRemoteBookmarkedDealIds } from "../lib/bookmarks";
 import { DealCard } from "../components/DealCard";
 
@@ -11,11 +11,41 @@ export function SavedDealsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getDeals(), loadRemoteBookmarkedDealIds()]).then(([allDeals, remoteIds]) => {
-      const saved = new Set(remoteIds ?? getBookmarkedDealIds());
-      setDeals(allDeals.filter((deal) => saved.has(deal.id)));
+    async function loadSavedDeals() {
+      const remoteIds = await loadRemoteBookmarkedDealIds();
+      const savedIds = Array.from(new Set(remoteIds ?? getBookmarkedDealIds()));
+      if (savedIds.length === 0) {
+        setDeals([]);
+        setLoading(false);
+        return;
+      }
+      const [allFeedDeals, observedPage] = await Promise.all([
+        getDeals().catch(() => [] as Deal[]),
+        getObservedFares(1, 120).catch(() => ({ fares: [] as Deal[] })),
+      ]);
+      const knownDeals = new Map<string, Deal>();
+      for (const d of allFeedDeals) knownDeals.set(d.id, d);
+      for (const d of observedPage.fares) {
+        knownDeals.set(d.id, d);
+        if (d.id.startsWith("observed-")) {
+          knownDeals.set(d.id.slice("observed-".length), d);
+        }
+      }
+
+      const resolved: Deal[] = [];
+      for (const id of savedIds) {
+        const found = knownDeals.get(id) || knownDeals.get(`observed-${id}`);
+        if (found) {
+          resolved.push(found);
+        } else {
+          const fetched = await getDealById(id);
+          if (fetched) resolved.push(fetched);
+        }
+      }
+      setDeals(resolved);
       setLoading(false);
-    });
+    }
+    void loadSavedDeals();
   }, []);
 
   return (
