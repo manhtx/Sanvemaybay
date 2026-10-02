@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { dealLabel, OBSERVED_FARE_ALGORITHM_VERSION, observedFareDedupeKey, scoreObservedFares } from "./observed-fares.ts";
+import { buildOpportunityId, dealLabel, OBSERVED_FARE_ALGORITHM_VERSION, observedFareDedupeKey, scoreObservedFares } from "./observed-fares.ts";
 
 const base = { origin_code: "HAN", destination_code: "SGN", date: "2026-09-02", return_date: "2026-09-06", stops: 0, airline_code: "VN", timestamp: "2026-08-19T10:00:00Z" };
 
@@ -14,12 +14,14 @@ Deno.test("scores and sorts the largest discount first", () => {
   assertEquals(scored[0].confidence_level, "low");
   assertEquals(scored[0].deal_label, "Giá đáng chú ý");
   assertEquals(scored[0].algorithm_version, OBSERVED_FARE_ALGORITHM_VERSION);
+  assertEquals(scored[0].opportunity_id, "HAN:SGN:2026-09-02:2026-09-06:V1:0");
 });
 
 Deno.test("shows valid fares immediately when a baseline is not ready", () => {
   const [scored] = scoreObservedFares([{ ...base, id: "only", price: 2_000_000 }], new Date("2026-08-19T10:30:00Z"));
   assertEquals(scored.discount_percent, null);
   assertEquals(scored.deal_label, "Giá quan sát");
+  assertEquals(scored.opportunity_id, "HAN:SGN:2026-09-02:2026-09-06:VN:0");
 });
 
 Deno.test("uses the approved score labels", () => {
@@ -38,4 +40,11 @@ Deno.test("builds a stable snapshot dedupe key independent of raw observation id
     observedFareDedupeKey({ ...base, id: "first", price: 2_000_000 }),
     observedFareDedupeKey({ ...base, id: "second", price: 2_000_000 }),
   );
+});
+
+Deno.test("builds stable opportunity identity decoupled from price points", () => {
+  const opp1 = buildOpportunityId({ ...base, id: "first", price: 1_500_000 });
+  const opp2 = buildOpportunityId({ ...base, id: "second", price: 3_200_000 });
+  assertEquals(opp1, "HAN:SGN:2026-09-02:2026-09-06:VN:0");
+  assertEquals(opp1, opp2);
 });

@@ -39,6 +39,8 @@ export interface ObservedFareQuery {
   departDateFrom?: string;
   departDateTo?: string;
   id?: string;
+  opportunityId?: string;
+  observationId?: string;
 }
 
 export interface ObservedFarePage {
@@ -200,9 +202,19 @@ export function mapObservedFare(row: Record<string, any>): Deal {
   }] : [];
   const basePrice = Number(row.price);
   const realTotal = basePrice + estimatedBaggage;
+  const opportunityId = String(row.opportunity_id || [
+    row.origin_code,
+    row.destination_code,
+    row.date || row.depart_date,
+    row.return_date || "",
+    row.airline_code,
+    row.stops ?? 0,
+  ].join(":"));
 
   return {
     id: `observed-${row.id}`,
+    opportunityId,
+    observationId: String(row.observation_id || row.id || "").replace(/^observed-/, ""),
     from: row.origin,
     fromCode: row.origin_code,
     to: row.destination,
@@ -292,6 +304,8 @@ export async function getObservedFares(pageOrQuery: number | ObservedFareQuery =
     if (queryObj.departDateFrom) body.depart_date_from = queryObj.departDateFrom;
     if (queryObj.departDateTo) body.depart_date_to = queryObj.departDateTo;
     if (queryObj.id) body.id = queryObj.id;
+    if (queryObj.opportunityId) body.opportunity_id = queryObj.opportunityId;
+    if (queryObj.observationId) body.observation_id = queryObj.observationId;
 
     const invokePromise = supabase.functions.invoke("observed-fares", { body });
     const { data, error } = (await Promise.race([invokePromise, timeoutPromise])) as any;
@@ -442,22 +456,42 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
   // 1. Check local cache first for instant zero-latency loading
   const cachedObserved = readObservedFaresCache(storage)?.fares ?? [];
   const foundObserved = cachedObserved.find(
-    (d) => d.id === cleanId || d.id === `observed-${cleanId}` || d.id === rawId || d.id === `observed-${rawId}`
+    (d) =>
+      d.id === cleanId ||
+      d.id === `observed-${cleanId}` ||
+      d.id === rawId ||
+      d.id === `observed-${rawId}` ||
+      d.opportunityId === cleanId ||
+      d.opportunityId === rawId ||
+      d.observationId === rawId ||
+      (d as any).dedupe_key === rawId
   );
   if (foundObserved) return foundObserved;
 
   const cachedDeals = readFeedCache(storage)?.deals ?? [];
-  const foundFeed = cachedDeals.find((d) => d.id === cleanId);
+  const foundFeed = cachedDeals.find((d) => d.id === cleanId || d.opportunityId === cleanId);
   if (foundFeed && isActiveFeedDeal(foundFeed)) return foundFeed;
 
   if (!isSupabaseConfigured) return undefined;
 
-  // 2. Query observed-fares if it is an observed fare ID or UUID
-  const isObservedCandidate = cleanId.startsWith("observed-") || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanId);
+  // 2. Query observed-fares if it is an observed fare ID, UUID, dedupe_key, or opportunity_id
+  const isObservedCandidate =
+    cleanId.startsWith("observed-") ||
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanId) ||
+    cleanId.includes(":");
   if (isObservedCandidate) {
     try {
       const page = await getObservedFares({ id: rawId, pageSize: 60 });
-      const matching = page.fares.find((f) => f.id === cleanId || f.id === `observed-${rawId}` || f.id === rawId);
+      const matching = page.fares.find(
+        (f) =>
+          f.id === cleanId ||
+          f.id === `observed-${rawId}` ||
+          f.id === rawId ||
+          f.opportunityId === cleanId ||
+          f.opportunityId === rawId ||
+          f.observationId === rawId ||
+          (f as any).dedupe_key === rawId
+      );
       if (matching) return matching;
       if (page.fares.length > 0 && page.total === 1) return page.fares[0];
     } catch {
@@ -487,7 +521,14 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
   try {
     const fallbackPage = await getObservedFares(1, 120);
     const foundFallback = fallbackPage.fares.find(
-      (f) => f.id === cleanId || f.id === `observed-${rawId}` || f.id === rawId
+      (f) =>
+        f.id === cleanId ||
+        f.id === `observed-${rawId}` ||
+        f.id === rawId ||
+        f.opportunityId === cleanId ||
+        f.opportunityId === rawId ||
+        f.observationId === rawId ||
+        (f as any).dedupe_key === rawId
     );
     if (foundFallback) return foundFallback;
   } catch {

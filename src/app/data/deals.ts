@@ -1,5 +1,7 @@
 export interface Deal {
   id: string;
+  opportunityId?: string;
+  observationId?: string;
   from: string;
   fromCode: string;
   to: string;

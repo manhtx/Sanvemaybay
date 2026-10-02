@@ -1,6 +1,7 @@
 export type ObservedFareRow = Record<string, unknown>;
 
 export interface ScoredObservedFare extends ObservedFareRow {
+  opportunity_id?: string;
   discount_percent: number | null;
   baseline_price: number | null;
   sample_size: number;
@@ -31,6 +32,16 @@ function detailedKey(row: ObservedFareRow): string {
 
 function fallbackKey(row: ObservedFareRow): string {
   return [row.origin_code, row.destination_code, row.date].join(":");
+}
+
+export function buildOpportunityId(row: ObservedFareRow): string {
+  const origin = String(row.origin_code ?? row.from_code ?? "").toUpperCase();
+  const dest = String(row.destination_code ?? row.to_code ?? "").toUpperCase();
+  const depart = String(row.date ?? row.depart_date ?? "");
+  const ret = String(row.return_date ?? "");
+  const airline = String(row.airline_code ?? "").toUpperCase();
+  const stops = Number(row.stops ?? 0);
+  return [origin, dest, depart, ret, airline, stops].join(":");
 }
 
 export function observedFareDedupeKey(row: ObservedFareRow): string {
@@ -108,6 +119,7 @@ export function scoreObservedFares(rows: ObservedFareRow[], now = new Date()): S
     );
     return {
       ...row,
+      opportunity_id: buildOpportunityId(row),
       discount_percent: discount,
       baseline_price: baseline == null ? null : Math.round(baseline),
       sample_size: comparison.length,

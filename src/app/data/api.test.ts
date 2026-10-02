@@ -188,3 +188,37 @@ describe("mapPriceHistoryRows", () => {
     ])).toEqual([{ date: "2026-08-01", price: 2200000 }]);
   });
 });
+
+describe("mapObservedFare", () => {
+  it("maps observed fare with stable opportunityId and backward-compatible id", () => {
+    const raw = {
+      id: "97b21622-aa50-4f7d-b6bf-2d32d3edb3ac",
+      origin: "Hà Nội",
+      origin_code: "HAN",
+      destination: "Kuala Lumpur",
+      destination_code: "KUL",
+      country: "Malaysia",
+      region: "asia",
+      price: 5212362,
+      currency: "VND",
+      date: "2026-10-16",
+      return_date: "2026-10-20",
+      airline: "Sun PhuQuoc Airways",
+      airline_code: "9G",
+      stops: 0,
+      duration: "3h 40m",
+      booking_url: "https://www.google.com/travel/flights?q=HAN-KUL",
+      deal_score: 93,
+      discount_percent: 84.2,
+      sample_size: 6,
+      confidence_percent: 50,
+      freshness_minutes: 45,
+    };
+
+    const deal = mapObservedFare(raw);
+    expect(deal.id).toBe("observed-97b21622-aa50-4f7d-b6bf-2d32d3edb3ac");
+    expect(deal.observationId).toBe("97b21622-aa50-4f7d-b6bf-2d32d3edb3ac");
+    expect(deal.opportunityId).toBe("HAN:KUL:2026-10-16:2026-10-20:9G:0");
+    expect(deal.price).toBe(5212362);
+  });
+});

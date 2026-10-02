@@ -41,9 +41,31 @@ Deno.serve(async (request) => {
       .select("dedupe_key,observation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at", { count: "exact" })
       .gte("depart_date", new Date().toISOString().slice(0, 10));
 
-    const targetId = typeof body.id === "string" && body.id ? body.id : typeof body.observation_id === "string" ? body.observation_id : undefined;
+    const targetId = typeof body.id === "string" && body.id
+      ? body.id
+      : typeof body.observation_id === "string"
+        ? body.observation_id
+        : typeof body.opportunity_id === "string"
+          ? body.opportunity_id
+          : undefined;
     if (targetId) {
-      query = query.eq("observation_id", targetId.replace(/^observed-/, ""));
+      const raw = targetId.replace(/^observed-/, "").trim();
+      if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(raw)) {
+        query = query.eq("observation_id", raw);
+      } else if (raw.split(":").length >= 7) {
+        query = query.eq("dedupe_key", raw);
+      } else if (raw.split(":").length === 6) {
+        const [orig, dest, depart, ret, airline, stops] = raw.split(":");
+        query = query
+          .eq("origin_code", orig.toUpperCase())
+          .eq("destination_code", dest.toUpperCase())
+          .eq("depart_date", depart);
+        if (ret) query = query.eq("return_date", ret);
+        if (airline) query = query.eq("airline_code", airline.toUpperCase());
+        if (stops !== "") query = query.eq("stops", Number(stops));
+      } else {
+        query = query.eq("dedupe_key", raw);
+      }
     }
     if (typeof body.origin === "string" && body.origin) query = query.eq("origin_code", body.origin.toUpperCase());
     if (typeof body.destination === "string" && body.destination) query = query.eq("destination_code", body.destination.toUpperCase());
@@ -106,6 +128,7 @@ Deno.serve(async (request) => {
     const fares = (data ?? []).map((row) => ({
       ...row,
       id: row.observation_id,
+      opportunity_id: [row.origin_code, row.destination_code, row.depart_date, row.return_date ?? "", row.airline_code, row.stops].join(":"),
       date: row.depart_date,
       timestamp: row.observed_at,
       freshness_minutes: Math.max(0, Math.round((Date.now() - Date.parse(row.observed_at)) / 60_000)),

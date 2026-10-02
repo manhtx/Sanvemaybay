@@ -29,17 +29,27 @@ Deno.serve(async (request) => {
   const today = now.toISOString().slice(0, 10);
 
   try {
-    const { data, error } = await service.from("flights")
-      .select("id,origin,origin_code,destination,destination_code,country,region,price,currency,date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,timestamp")
-      .eq("link_kind", "indicative")
-      .gte("timestamp", cutoff)
-      .gte("date", today)
-      .order("timestamp", { ascending: false })
-      .limit(5_000);
-    if (error) throw error;
+    const rawFlights: Record<string, unknown>[] = [];
+    const batchSize = 1000;
+    let offset = 0;
+    while (true) {
+      const { data, error } = await service.from("flights")
+        .select("id,origin,origin_code,destination,destination_code,country,region,price,currency,date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,timestamp")
+        .eq("link_kind", "indicative")
+        .gte("timestamp", cutoff)
+        .gte("date", today)
+        .order("timestamp", { ascending: false })
+        .range(offset, offset + batchSize - 1);
+      if (error) throw error;
+      if (!data || data.length === 0) break;
+      rawFlights.push(...data);
+      if (data.length < batchSize) break;
+      offset += batchSize;
+      if (offset >= 20_000) break;
+    }
 
-    const valid = (data ?? []).filter((row) =>
-      Number(row.price) > 0 && String(row.duration ?? "").trim() && isApprovedHttpsUrl(row.booking_url, hosts)
+    const valid = rawFlights.filter((row) =>
+      Number(row.price) > 0 && String(row.duration ?? "").trim() && isApprovedHttpsUrl(String(row.booking_url ?? ""), hosts)
     );
     const scored = scoreObservedFares(valid, now);
     const refreshedAt = now.toISOString();
@@ -91,7 +101,7 @@ Deno.serve(async (request) => {
 
     return response({
       status: "completed",
-      raw_rows: data?.length ?? 0,
+      raw_rows: rawFlights.length,
       valid_rows: valid.length,
       snapshot_rows: snapshots.length,
       algorithm_version: snapshots[0]?.algorithm_version ?? null,

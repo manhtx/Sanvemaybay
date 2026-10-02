@@ -24,11 +24,23 @@ export function SavedDealsPage() {
         getObservedFares(1, 120).catch(() => ({ fares: [] as Deal[] })),
       ]);
       const knownDeals = new Map<string, Deal>();
-      for (const d of allFeedDeals) knownDeals.set(d.id, d);
+      for (const d of allFeedDeals) {
+        knownDeals.set(d.id, d);
+        if (d.opportunityId) knownDeals.set(d.opportunityId, d);
+        if (d.observationId) knownDeals.set(d.observationId, d);
+      }
       for (const d of observedPage.fares) {
         knownDeals.set(d.id, d);
         if (d.id.startsWith("observed-")) {
           knownDeals.set(d.id.slice("observed-".length), d);
+        }
+        if (d.opportunityId) {
+          knownDeals.set(d.opportunityId, d);
+          knownDeals.set(`observed-${d.opportunityId}`, d);
+        }
+        if (d.observationId) {
+          knownDeals.set(d.observationId, d);
+          knownDeals.set(`observed-${d.observationId}`, d);
         }
       }
 
