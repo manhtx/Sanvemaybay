@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { evaluateMigrationParity, remoteMigrationVersions } from "./migration-parity.mjs";
+import { evaluateMigrationParity, remoteMigrationVersions, parseMigrationText } from "./migration-parity.mjs";
 
 const local = ["20260101000000", "20260102000000", "20260103000000"];
 
@@ -30,4 +30,16 @@ test("migration list parser ignores local-only and malformed entries", () => {
     { remote: "not-a-version" },
   ] });
   assert.deepEqual(versions, ["20260102000000"]);
+});
+
+test("migration list text parser parses ASCII table correctly", () => {
+  const table = `
+   Local            | Remote           | Time (UTC)            
+--------------------+------------------+-----------------------
+   20260101000000   | 20260101000000   | 2026-01-01 00:00:00   
+   20260102000000   | 20260102000000   | 2026-01-02 00:00:00   
+   20260103000000   |                  |                       
+`;
+  const parsed = parseMigrationText(table);
+  assert.deepEqual(parsed, ["20260101000000", "20260102000000"]);
 });

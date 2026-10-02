@@ -55,9 +55,9 @@ jobs:
         run: |
           test -n "$SUPABASE_ACCESS_TOKEN"
           test -n "$SUPABASE_PROJECT_REF"
-          supabase migration list --project-ref "$SUPABASE_PROJECT_REF" > remote-migrations.json
+          supabase migration list --project-ref "$SUPABASE_PROJECT_REF" --output-format json > remote-migrations.json 2>/dev/null || supabase migration list --project-ref "$SUPABASE_PROJECT_REF" > remote-migrations.json
           node scripts/migration-parity.mjs remote-migrations.json
-          supabase functions list --project-ref "$SUPABASE_PROJECT_REF" > remote-functions.json
+          supabase functions list --project-ref "$SUPABASE_PROJECT_REF" --output-format json > remote-functions.json 2>/dev/null || supabase functions list --project-ref "$SUPABASE_PROJECT_REF" > remote-functions.json
           node scripts/function-parity.mjs remote-functions.json
       - name: Configure project secrets
         env:

@@ -10,11 +10,51 @@ export function localMigrationVersions(directory = "supabase/migrations") {
 }
 
 export function remoteMigrationVersions(payload) {
-  if (!payload || !Array.isArray(payload.migrations)) return [];
-  return payload.migrations
-    .map((entry) => typeof entry?.remote === "string" ? entry.remote : "")
-    .filter((version) => /^\d{14}$/.test(version))
-    .sort();
+  if (!payload) return [];
+  if (Array.isArray(payload)) {
+    return payload
+      .map((entry) => {
+        if (typeof entry === "string") return entry;
+        return typeof entry?.remote === "string" ? entry.remote : (typeof entry?.version === "string" ? entry.version : "");
+      })
+      .filter((version) => /^\d{14}$/.test(version))
+      .sort();
+  }
+  if (Array.isArray(payload.migrations)) {
+    return payload.migrations
+      .map((entry) => typeof entry?.remote === "string" ? entry.remote : "")
+      .filter((version) => /^\d{14}$/.test(version))
+      .sort();
+  }
+  return [];
+}
+
+export function parseMigrationText(content) {
+  if (typeof content !== "string") return [];
+  const trimmed = content.trim();
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      return remoteMigrationVersions(parsed);
+    } catch {
+      // ignore and try table parsing
+    }
+  }
+  const lines = trimmed.split("\n");
+  const versions = [];
+  for (const line of lines) {
+    if (!line.includes("|")) continue;
+    if (line.includes("Local") && line.includes("Remote")) continue;
+    if (line.includes("---+---") || line.includes("---|---")) continue;
+    const cols = line.split("|").map((c) => c.trim());
+    if (cols.length >= 2) {
+      const remote = cols[1];
+      if (/^\d{14}$/.test(remote)) {
+        versions.push(remote);
+      }
+    }
+  }
+  return [...new Set(versions)].sort();
 }
 
 export function evaluateMigrationParity(localVersions, remoteVersions) {
@@ -44,8 +84,9 @@ export function evaluateMigrationParity(localVersions, remoteVersions) {
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const input = process.argv[2];
   if (!input) throw new Error("Usage: node scripts/migration-parity.mjs <supabase-migration-list.json>");
-  const payload = JSON.parse(readFileSync(input, "utf8"));
-  const result = evaluateMigrationParity(localMigrationVersions(), remoteMigrationVersions(payload));
+  const content = readFileSync(input, "utf8");
+  const remoteVersions = parseMigrationText(content);
+  const result = evaluateMigrationParity(localMigrationVersions(), remoteVersions);
   console.log(JSON.stringify(result, null, 2));
   if (!result.ok) process.exitCode = 1;
 }
