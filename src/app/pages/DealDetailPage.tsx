@@ -396,9 +396,11 @@ export function DealDetailPage() {
                   <div className="space-y-2 mb-4">
                     <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider mb-3">Chọn nơi đặt vé:</p>
                     {bookingOptions.map((opt) => (
-                  <button
+                      <a
                         key={opt.label}
-                        onClick={() => window.open(opt.url, '_blank', 'noopener,noreferrer')}
+                        href={opt.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="w-full flex items-center justify-between px-4 py-3 bg-slate-800/60 hover:bg-slate-700/60 border border-white/8 hover:border-sky-500/30 rounded-xl transition-all group"
                       >
                         <div className="flex items-center gap-3">
@@ -409,31 +411,36 @@ export function DealDetailPage() {
                           </div>
                         </div>
                         <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-sky-400 transition-colors" />
-                      </button>
+                      </a>
                     ))}
                   </div>
                 );
               })()}
 
-              <button 
-                onClick={() => {
-                  const fallbackUrl = getBestBookingUrl({
-                      fromCode: deal.fromCode,
-                      toCode: deal.toCode,
-                      departDate: deal.departDate,
-                      returnDate: deal.returnDate,
-                      airline: deal.airline,
-                      airlineCode: deal.airlineCode,
-                      tripType: deal.tripType,
-                      price: deal.price,
-                    });
-                  const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
-                  window.open(bookingUrl, '_blank', 'noopener,noreferrer');
-                }}
-                className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 py-5 text-xl font-black text-white shadow-lg shadow-pink-500/20 transition-all hover:opacity-90 active:scale-[0.98]">
-                ✈️ SĂN VÉ NGAY
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-              </button>
+              {(() => {
+                const fallbackUrl = getBestBookingUrl({
+                  fromCode: deal.fromCode,
+                  toCode: deal.toCode,
+                  departDate: deal.departDate,
+                  returnDate: deal.returnDate,
+                  airline: deal.airline,
+                  airlineCode: deal.airlineCode,
+                  tripType: deal.tripType,
+                  price: deal.price,
+                });
+                const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
+                return (
+                  <a 
+                    href={bookingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 py-5 text-xl font-black text-white shadow-lg shadow-pink-500/20 transition-all hover:opacity-90 active:scale-[0.98]"
+                  >
+                    {deal.linkKind === "indicative" ? "Kiểm tra giá hiện tại trên Google Flights" : "✈️ Đặt vé ngay"}
+                    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                );
+              })()}
             </div>
 
             {/* Risk Warning (Module 3.3) */}

@@ -341,7 +341,7 @@ export async function getObservedFares(pageOrQuery: number | ObservedFareQuery =
       status,
       regionCounts: data.region_counts && typeof data.region_counts === "object" ? data.region_counts : undefined,
     };
-  } catch (_err) {
+  } catch {
     const stale = isDefaultFeedQuery ? readObservedFaresCache(storage, Date.now(), true) : undefined;
     if (stale && stale.fares.length > 0) {
       return {
