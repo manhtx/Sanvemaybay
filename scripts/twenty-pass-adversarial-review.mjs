@@ -1,4 +1,4 @@
-/* global console, process */
+/* global console */
 import { chromium } from "@playwright/test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
