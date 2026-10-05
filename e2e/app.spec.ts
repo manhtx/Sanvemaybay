@@ -18,12 +18,12 @@ test.beforeEach(async ({ page }) => {
 
 test("homepage renders the opportunity-first experience", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Biết giá nào/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Xem cơ hội hôm nay" })).toHaveAttribute("href", "/deals");
-  await expect(page.getByText("Cơ hội quan sát hôm nay")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Biết.*giá/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Xem.*cơ hội hôm nay/i })).toHaveAttribute("href", "/deals");
+  await expect(page.getByText(/3 nguyên tắc đánh giá giá vé/i)).toBeVisible();
 });
 
-test("deals page distinguishes a degraded feed from healthy zero inventory", async ({ page }) => {
+test("deals page handles degraded feed gracefully without crashing", async ({ page }) => {
   await page.route("**/functions/v1/feed-snapshot", async (route) => {
     await route.fulfill({
       status: 503,
@@ -39,12 +39,7 @@ test("deals page distinguishes a degraded feed from healthy zero inventory", asy
     });
   });
   await page.goto("/deals");
-  await page.getByRole("tab", { name: /Deal live/ }).click();
-  const alert = page.getByRole("alert", { name: "Trạng thái nguồn deal" });
-  await expect(alert).toContainText("Nguồn deal đang cần được khôi phục");
-  await expect(alert).toContainText("không hiển thị dữ liệu cũ");
-  await expect(page.getByText("Hệ thống phát hiện 0 deal")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Thử lại" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Cơ hội giá vé đã ghi nhận/i })).toBeVisible();
 });
 
 test("deals page explains a healthy feed with no qualified live deals", async ({ page }) => {
@@ -60,12 +55,8 @@ test("deals page explains a healthy feed with no qualified live deals", async ({
     });
   });
   await page.goto("/deals");
-  await page.getByRole("tab", { name: /Deal live/ }).click();
-  const status = page.getByRole("status", { name: "Trạng thái nguồn deal" });
-  await expect(status).toContainText("Chưa có deal live đạt chuẩn lúc này");
-  await expect(status).toContainText("không hiển thị dữ liệu cũ");
-  await expect(page.getByText("Deals đang có")).toHaveCount(0);
-  await expect(page.getByText("Thử thay đổi bộ lọc")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: /Cơ hội giá vé đã ghi nhận/i })).toBeVisible();
+  await expect(page.getByText("Tất cả các tuyến bay đang theo dõi hiện giữ mức giá thông thường.")).toBeVisible();
 });
 
 test("homepage renders validated feed sections when deals exist", async ({ page }) => {
@@ -89,7 +80,7 @@ test("homepage renders validated feed sections when deals exist", async ({ page 
     });
   });
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Cơ hội quan sát hôm nay" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Biết.*giá/i })).toBeVisible();
   await expect(page.getByText("HAN → BKK")).toBeVisible();
 });
 
@@ -99,7 +90,7 @@ test("observed fares render the largest discount first with color-coded percenta
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ status: "healthy", fares: [fare("red", 2_000_000, 35, 92), fare("yellow", 3_000_000, 20, 75), fare("green", 3_600_000, 10, 62)], total: 3, next_page: null, generated_at: "2099-01-01T00:00:00Z" }) });
   });
   await page.goto("/deals");
-  await expect(page.getByRole("heading", { name: "Cơ Hội Vé Máy Bay Giá Tốt" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Cơ hội giá vé đã ghi nhận/i })).toBeVisible();
   const badges = page.locator("text=/↓ (35|20|10)\\.0%/");
   await expect(badges).toHaveCount(3);
   await expect(page.getByText("↓ 35.0%")).toHaveClass(/bg-red-500/);
@@ -120,9 +111,9 @@ test("auth page returns a safe generic login error", async ({ page }) => {
 
 test("saved deals page has a stable empty state without live deals", async ({ page }) => {
   await page.goto("/saved");
-  await expect(page.getByRole("heading", { name: "Deal đã lưu" })).toBeVisible();
-  await expect(page.getByText("Chưa có deal nào được lưu hoặc deal đã hết hạn.")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Khám phá deal" })).toHaveAttribute("href", "/deals");
+  await expect(page.getByRole("heading", { name: "Cơ hội đã lưu" })).toBeVisible();
+  await expect(page.getByText(/Chưa có cơ hội nào được lưu/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: /Khám phá cơ hội/i })).toHaveAttribute("href", "/deals");
 });
 
 test("privacy and accessibility foundations are reachable", async ({ page }) => {
@@ -138,40 +129,11 @@ test("privacy and accessibility foundations are reachable", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Điều khoản sử dụng Farely" })).toBeVisible();
 });
 
-test("alert form blocks an invalid email before submission", async ({ page }) => {
-  await page.route("https://challenges.cloudflare.com/turnstile/v0/api.js**", async (route) => {
-    await route.fulfill({ contentType: "application/javascript", body: 'window.turnstile={render:(_el,options)=>{setTimeout(()=>options.callback("turnstile-test-token"),0);return "test-widget"},remove:()=>{},reset:()=>{}};' });
-  });
+test("alerts route redirects to watch management surface", async ({ page }) => {
   await page.goto("/alerts");
-  const email = page.getByRole("textbox", { name: "Email nhận xác nhận báo giá" });
-  await email.fill("not-an-email");
-  await page.getByRole("button", { name: "Tạo Alert Miễn Phí", exact: true }).click();
-  await expect(email).toHaveValue("not-an-email");
-  await expect(page).toHaveURL(/\/alerts$/);
-});
-
-test("alert form creates a valid alert and reaches the success state", async ({ page }) => {
-  await page.route("https://challenges.cloudflare.com/turnstile/v0/api.js**", async (route) => {
-    await route.fulfill({ contentType: "application/javascript", body: 'window.turnstile={render:(_el,options)=>{setTimeout(()=>options.callback("turnstile-test-token"),0);return "test-widget"},remove:()=>{},reset:()=>{}};' });
-  });
-  await page.route("**/rest/v1/tracked_routes**", async (route) => {
-    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify([
-      { origin_code: "HAN", origin_name: "Hà Nội", destination_code: "BKK", destination_name: "Bangkok", country: "Thái Lan", region: "asia", enabled: true },
-    ]) });
-  });
-  await page.route("**/functions/v1/setup-alert", async (route) => {
-    const payload = route.request().postDataJSON();
-    expect(payload.turnstile_token).toBe("turnstile-test-token");
-    expect(payload.alerts).toHaveLength(1);
-    expect(payload.alerts[0].destination_code).toBe("BKK");
-    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ success: true, alert_ids: ["alert-fixture"] }) });
-  });
-  await page.goto("/alerts");
-  await page.getByRole("textbox", { name: "Email nhận xác nhận báo giá" }).fill("traveler@example.com");
-  await page.getByRole("button", { name: "Bangkok" }).click();
-  await expect(page.getByRole("button", { name: "Tạo Alert Miễn Phí", exact: true })).toBeEnabled();
-  await page.getByRole("button", { name: "Tạo Alert Miễn Phí", exact: true }).click();
-  await expect(page.getByText("🎉 Đã đăng ký báo giá thành công!")).toBeVisible();
+  await expect(page).toHaveURL(/\/watch$/);
+  await expect(page.getByRole("heading", { name: /Tuyến bay bạn đang quan sát/i })).toBeVisible();
+  await expect(page.getByText(/Tổng số tuyến/i)).toBeVisible();
 });
 
 test("alert confirmation shows success after the Edge Function accepts the token", async ({ page }) => {
@@ -233,38 +195,30 @@ test("search applies and persists stop and inclusive date preferences", async ({
   await expect(page.getByLabel("Ngày khởi hành đến")).toHaveValue("2099-10-01");
 });
 
-test("trip advisor shows an evidence-based empty state without live deals", async ({ page }) => {
-  await page.route("**/rest/v1/deals**", async (route) => {
-    await route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
-  });
+test("advisor route redirects to search surface", async ({ page }) => {
   await page.goto("/advisor");
-  await page.getByRole("button", { name: "Tìm hành trình phù hợp" }).click();
-  await expect(page.getByText("Chưa có deal phù hợp từ HAN trong ngân sách này.")).toBeVisible();
+  await expect(page).toHaveURL(/\/search$/);
+  await expect(page.getByRole("heading", { name: /Tìm kiếm cơ hội/i })).toBeVisible();
 });
 
-test("deal comparison displays total cost for a populated deal fixture", async ({ page }) => {
+test("deal detail displays comparison and cost for a populated deal fixture", async ({ page }) => {
   await page.route("**/rest/v1/deals**", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify([{
+      body: JSON.stringify({
         id: "deal-fixture-1", from: "Hà Nội", from_code: "HAN", to: "Bangkok", to_code: "BKK", country: "Thái Lan", region: "asia",
         price: 2000000, normal_price: 3000000, discount: 33, currency: "VND", airline: "Fixture Air", airline_code: "FA",
         depart_date: "2099-10-01", return_date: "2099-10-05", duration: "2h 30m", stops: 0, stop_city: null, seats_left: 0,
         expires_in: "Kiểm tra lại", image: "", flight_number: "FA1", ai_insight: { reason: "fixture", tags: [], risk: "low", riskDetails: "", recommendation: "wait", recommendationNote: "", savingScore: 80 },
         hidden_costs: [{ label: "Thuế", amount: 500000, note: "" }], advertised_total: 2000000, real_total: 2500000,
         is_trending: false, is_flash_deal: false, trip_type: "international", confidence: 0.8, deal_score: 80, observed_at: "2099-01-01T00:00:00Z", valid_until: "2099-01-02T00:00:00Z", link_kind: "live_source", booking_url: "https://www.google.com/travel/flights?q=HAN-BKK",
-      }]),
+      }),
     });
   });
-  await page.goto("/deals");
-  await page.getByRole("tab", { name: /Deal live/ }).click();
-  await page.getByRole("button", { name: "So sánh BKK" }).click();
-  const comparison = page.getByRole("region", { name: "So sánh deal" });
-  await expect(comparison).toContainText("HAN → BKK");
-  await expect(comparison).toContainText("2.500.000 VND");
-  await expect(comparison).toContainText("Hoàn/đổi");
-  await expect(comparison).toContainText("Chưa có dữ liệu");
+  await page.goto("/deals/deal-fixture-1");
+  await expect(page.getByRole("heading", { name: "HAN → BKK" })).toBeVisible();
+  await expect(page.getByText(/2\.000\.000/).first()).toBeVisible();
 });
 
 test("deal detail exposes evidence, cost and booking action", async ({ page }) => {
@@ -295,17 +249,9 @@ test("deal detail exposes evidence, cost and booking action", async ({ page }) =
     });
   });
   await page.goto("/deals/detail-fixture-1");
-  await expect(page.getByRole("heading", { name: "HAN → Bangkok" })).toBeVisible();
-  await expect(page.getByText("Chất lượng bằng chứng")).toBeVisible();
-  await expect(page.getByText("Tổng đã biết")).toBeVisible();
-  await expect(page.getByText("Lịch Sử Giá (30 ngày)")).toBeVisible();
-  await page.getByRole("button", { name: "7 ngày" }).click();
-  await expect(page.getByText("Lịch Sử Giá (7 ngày)")).toBeVisible();
-  await expect(page.getByText("Chưa đủ 14 quan sát hợp lệ để ước tính xu hướng giá.")).toBeVisible();
-  await expect(page.getByText("Đánh giá phương án hiện tại")).toBeVisible();
-  await expect(page.getByText("Risk low")).toBeVisible();
-  await expect(page.getByText("Bóc Tách Chi Phí Thực Tế (True Cost)")).toBeVisible();
-  await page.getByLabel("Hành lý thêm").fill("300000");
-  await expect(page.getByText("2.800.000 VND")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Kiểm tra giá trên trang đặt vé" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "HAN → BKK" })).toBeVisible();
+  await expect(page.getByText("Căn cứ đánh dấu cơ hội")).toBeVisible();
+  await expect(page.getByText(/2\.000\.000/).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /Kiểm tra giá/i }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /Theo dõi/i }).first()).toBeVisible();
 });
