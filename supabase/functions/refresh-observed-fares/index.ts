@@ -131,10 +131,13 @@ Deno.serve(async (request) => {
 
       if (!genError) {
         // Clean up prior generations asynchronously
-        await service.from("observed_fare_snapshots")
-          .delete()
-          .neq("generation_id", candidateGenerationId)
-          .catch(() => {});
+        try {
+          await service.from("observed_fare_snapshots")
+            .delete()
+            .neq("generation_id", candidateGenerationId);
+        } catch {
+          // Ignore cleanup errors
+        }
       }
     }
 
