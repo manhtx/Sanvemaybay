@@ -9,8 +9,6 @@ import {
   Zap,
   TrendingDown,
   UserRound,
-  Compass,
-  History,
   Bookmark,
 } from "lucide-react";
 

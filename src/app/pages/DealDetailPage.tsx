@@ -7,7 +7,6 @@ import {
 } from "lucide-react";
 import { getDealById, getPriceHistory } from "../data/api";
 import { Deal, formatVND, getRecommendationColor, getRecommendationLabel } from "../data/deals";
-import { motion } from "motion/react";
 import { getBestBookingUrl, getAllBookingOptions, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "../lib/bookmarks";
 import { shareOrCopy } from "../lib/sharing";
@@ -58,7 +57,6 @@ export function DealDetailPage() {
   );
 
   const aiReasoning = deal.aiReasoning || deal.aiInsight.reason;
-  const confidence = deal.confidence == null ? null : Math.round(deal.confidence * 100);
   const durationMinutes = (() => {
     const match = deal.duration.match(/(?:(\d+)h)?\s*(?:(\d+)m)?/i);
     return match && (Number(match[1] ?? 0) * 60 + Number(match[2] ?? 0)) > 0
