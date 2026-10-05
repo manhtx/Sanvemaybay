@@ -31,21 +31,40 @@ Deno.serve(async (request) => {
   try {
     const rawFlights: Record<string, unknown>[] = [];
     const batchSize = 1000;
-    let offset = 0;
+    const hardSafetyLimit = 50_000;
+    let isPartialDegraded = false;
+    let lastTimestamp: string | null = null;
+    let lastId: string | null = null;
+
+    // 1. Stable cutoff + keyset pagination on (timestamp, id)
     while (true) {
-      const { data, error } = await service.from("flights")
+      let query = service.from("flights")
         .select("id,origin,origin_code,destination,destination_code,country,region,price,currency,date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,timestamp")
         .eq("link_kind", "indicative")
         .gte("timestamp", cutoff)
         .gte("date", today)
         .order("timestamp", { ascending: false })
-        .range(offset, offset + batchSize - 1);
+        .order("id", { ascending: false })
+        .limit(batchSize);
+
+      if (lastTimestamp && lastId) {
+        query = query.or(`timestamp.lt.${lastTimestamp},and(timestamp.eq.${lastTimestamp},id.lt.${lastId})`);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       if (!data || data.length === 0) break;
+
       rawFlights.push(...data);
+      const lastRow = data[data.length - 1];
+      lastTimestamp = String(lastRow.timestamp);
+      lastId = String(lastRow.id);
+
       if (data.length < batchSize) break;
-      offset += batchSize;
-      if (offset >= 20_000) break;
+      if (rawFlights.length >= hardSafetyLimit) {
+        isPartialDegraded = true;
+        break;
+      }
     }
 
     const valid = rawFlights.filter((row) =>
@@ -53,40 +72,47 @@ Deno.serve(async (request) => {
     );
     const scored = scoreObservedFares(valid, now);
     const refreshedAt = now.toISOString();
-    const snapshots = scored.map((row) => ({
-      dedupe_key: observedFareDedupeKey(row),
-      observation_id: row.id,
-      origin: row.origin,
-      origin_code: row.origin_code,
-      destination: row.destination,
-      destination_code: row.destination_code,
-      country: row.country,
-      region: row.region,
-      price: row.price,
-      currency: row.currency,
-      depart_date: row.date,
-      return_date: row.return_date,
-      airline: row.airline,
-      airline_code: row.airline_code,
-      flight_number: row.flight_number,
-      stops: row.stops,
-      duration: row.duration,
-      booking_url: row.booking_url,
-      source: row.source,
-      link_kind: "indicative",
-      observed_at: row.timestamp,
-      baseline_price: row.baseline_price,
-      discount_percent: row.discount_percent,
-      sample_size: row.sample_size,
-      percentile: row.percentile,
-      deal_score: row.deal_score,
-      deal_label: row.deal_label,
-      confidence_percent: row.confidence_percent,
-      confidence_level: row.confidence_level,
-      discount_strength: row.discount_strength,
-      algorithm_version: row.algorithm_version,
-      refreshed_at: refreshedAt,
-    }));
+
+    // 2. Atomic generation semantics: write candidate generation
+    const candidateGenerationId = crypto.randomUUID();
+    const snapshots = scored.map((row) => {
+      const rowKey = observedFareDedupeKey(row);
+      return {
+        dedupe_key: `${candidateGenerationId}:${rowKey}`,
+        generation_id: candidateGenerationId,
+        observation_id: row.id,
+        origin: row.origin,
+        origin_code: row.origin_code,
+        destination: row.destination,
+        destination_code: row.destination_code,
+        country: row.country,
+        region: row.region,
+        price: row.price,
+        currency: row.currency,
+        depart_date: row.date,
+        return_date: row.return_date,
+        airline: row.airline,
+        airline_code: row.airline_code,
+        flight_number: row.flight_number,
+        stops: row.stops,
+        duration: row.duration,
+        booking_url: row.booking_url,
+        source: row.source,
+        link_kind: "indicative",
+        observed_at: row.timestamp,
+        baseline_price: row.baseline_price,
+        discount_percent: row.discount_percent,
+        sample_size: row.sample_size,
+        percentile: row.percentile,
+        deal_score: row.deal_score,
+        deal_label: row.deal_label,
+        confidence_percent: row.confidence_percent,
+        confidence_level: row.confidence_level,
+        discount_strength: row.discount_strength,
+        algorithm_version: row.algorithm_version,
+        refreshed_at: refreshedAt,
+      };
+    });
 
     for (let index = 0; index < snapshots.length; index += 500) {
       const { error: upsertError } = await service.from("observed_fare_snapshots")
@@ -94,16 +120,31 @@ Deno.serve(async (request) => {
       if (upsertError) throw upsertError;
     }
 
-    const { error: oldError } = await service.from("observed_fare_snapshots").delete().lt("observed_at", cutoff);
-    if (oldError) throw oldError;
-    const { error: departedError } = await service.from("observed_fare_snapshots").delete().lt("depart_date", today);
-    if (departedError) throw departedError;
+    // 3. Transactionally switch active generation if candidate generation is complete and valid
+    if (snapshots.length > 0) {
+      const { error: genError } = await service.from("active_observed_generation").upsert({
+        id: 1,
+        active_generation_id: candidateGenerationId,
+        row_count: snapshots.length,
+        published_at: refreshedAt,
+      });
+
+      if (!genError) {
+        // Clean up prior generations asynchronously
+        await service.from("observed_fare_snapshots")
+          .delete()
+          .neq("generation_id", candidateGenerationId)
+          .catch(() => {});
+      }
+    }
 
     return response({
-      status: "completed",
-      raw_rows: rawFlights.length,
+      status: isPartialDegraded ? "partial_degraded" : "completed",
+      raw_rows_consumed: rawFlights.length,
       valid_rows: valid.length,
+      deduped_rows: scored.length,
       snapshot_rows: snapshots.length,
+      generation_id: candidateGenerationId,
       algorithm_version: snapshots[0]?.algorithm_version ?? null,
       refreshed_at: refreshedAt,
     }, id);

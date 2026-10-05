@@ -30,9 +30,17 @@ Deno.serve(async (request) => {
   if (unauthorized) return unauthorized;
 
   let beforeTimestamp = "";
+  let cursorId = "";
+  let maxObservations = 5000;
   try {
     const body = await request.json();
-    beforeTimestamp = typeof body?.before_timestamp === "string" ? body.before_timestamp : "";
+    beforeTimestamp = typeof body?.cursor_timestamp === "string"
+      ? body.cursor_timestamp
+      : (typeof body?.before_timestamp === "string" ? body.before_timestamp : "");
+    cursorId = typeof body?.cursor_id === "string" ? body.cursor_id : "";
+    if (typeof body?.max_observations === "number" && body.max_observations > 0) {
+      maxObservations = Math.min(10000, body.max_observations);
+    }
   } catch {
     // Empty request bodies retain the default newest-flight page.
   }
@@ -44,25 +52,60 @@ Deno.serve(async (request) => {
 
   try {
     const [
-      { data: flights, error: flightError },
       { data: routes, error: routeError },
       { data: routeStats, error: routeStatsError },
     ] = await Promise.all([
-      (() => {
-        let query = supabase
-          .from("flights")
-          .select("*")
-          .gte("date", new Date().toISOString().slice(0, 10))
-          .order("timestamp", { ascending: false })
-          .limit(ANALYZE_FLIGHT_LIMIT);
-        return beforeTimestamp ? query.lt("timestamp", beforeTimestamp) : query;
-      })(),
       supabase.from("tracked_routes").select("id, deal_threshold_percent"),
       supabase.from("route_market_stats").select("*"),
     ]);
-    if (flightError) throw flightError;
     if (routeError) throw routeError;
     if (routeStatsError) throw routeStatsError;
+
+    const flights: any[] = [];
+    let curTimestamp = beforeTimestamp;
+    let curId = cursorId;
+    let hasMore = true;
+    let isPartial = false;
+
+    while (hasMore && flights.length < maxObservations) {
+      const batchLimit = Math.min(ANALYZE_FLIGHT_LIMIT, maxObservations - flights.length);
+      let query = supabase
+        .from("flights")
+        .select("*")
+        .gte("date", new Date().toISOString().slice(0, 10))
+        .order("timestamp", { ascending: false })
+        .order("id", { ascending: false })
+        .limit(batchLimit);
+
+      if (curTimestamp && curId) {
+        query = query.or(`timestamp.lt.${curTimestamp},and(timestamp.eq.${curTimestamp},id.lt.${curId})`);
+      } else if (curTimestamp) {
+        query = query.lt("timestamp", curTimestamp);
+      }
+
+      const { data: batch, error: flightError } = await query;
+      if (flightError) throw flightError;
+
+      if (!batch || batch.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      flights.push(...batch);
+
+      const last = batch[batch.length - 1];
+      curTimestamp = last.timestamp;
+      curId = last.id;
+
+      if (batch.length < batchLimit) {
+        hasMore = false;
+        break;
+      }
+    }
+
+    if (hasMore && flights.length >= maxObservations) {
+      isPartial = true;
+    }
 
     const published: string[] = [];
     const aiFailures: Array<{ itinerary: string; reason: string }> = [];
@@ -264,6 +307,9 @@ Deno.serve(async (request) => {
 
     return json({
       success: true,
+      partial: isPartial,
+      has_more: hasMore,
+      continuation: hasMore ? { cursor_timestamp: curTimestamp, cursor_id: curId } : null,
       observations_processed: flights?.length ?? 0,
       price_history_saved: priceHistoryRows.length,
       deals_published: published.length,

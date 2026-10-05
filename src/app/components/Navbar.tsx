@@ -15,7 +15,7 @@ import {
 const navLinks = [
   { label: "Cơ hội", href: "/deals", icon: TrendingDown },
   { label: "Tìm kiếm", href: "/search", icon: Search },
-  { label: "Theo dõi", href: "/alerts", icon: Bell },
+  { label: "Theo dõi", href: "/watch", icon: Bell },
   { label: "Đã lưu", href: "/saved", icon: Bookmark },
 ];
 
@@ -68,7 +68,7 @@ export function Navbar() {
         {/* Desktop Right Actions */}
         <div className="hidden lg:flex items-center gap-3">
           <Link
-            to="/alerts"
+            to="/watch"
             className="flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all"
           >
             <Zap className="h-4 w-4" />
@@ -86,7 +86,7 @@ export function Navbar() {
         {/* Mobile Hamburger Button */}
         <div className="flex items-center gap-2 lg:hidden">
           <Link
-            to="/alerts"
+            to="/watch"
             className="flex items-center gap-1.5 rounded-lg bg-blue-600/20 border border-blue-500/30 px-2.5 py-1.5 text-xs font-semibold text-blue-300"
           >
             <Zap className="h-3.5 w-3.5" />

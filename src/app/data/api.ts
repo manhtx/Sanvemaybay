@@ -4,6 +4,7 @@ import { rankTravelFeed } from "../domain/travelFeed";
 import { readFeedCache, writeFeedCache, readObservedFaresCache, writeObservedFaresCache } from "../lib/feedCache";
 import { evidenceGatedDealLabel } from "../domain/dealClaims";
 import { reportClientIssue } from "../lib/clientDiagnostics";
+import { resolveCanonicalAirportOrCity } from "../domain/travelEntities";
 export { createAlerts, manageAlert } from "./alertApi";
 export type { CreateAlertInput } from "./alertApi";
 export { getTrackedRoutes } from "./routeApi";
@@ -593,13 +594,16 @@ export async function searchDeals(params: {
   departureTo?: string;
   maxFlightTimeMinutes?: number;
 }): Promise<Deal[]> {
-  const destinationCode = params.destination && /^[A-Z]{3}$/i.test(params.destination.trim())
+  const canonicalDest = resolveCanonicalAirportOrCity(params.destination);
+  const destinationCode = canonicalDest?.code || (params.destination && /^[A-Z]{3}$/i.test(params.destination.trim())
     ? params.destination.trim().toUpperCase()
-    : undefined;
+    : undefined);
+  const canonicalFrom = resolveCanonicalAirportOrCity(params.from);
+  const fromCode = canonicalFrom?.code || params.from;
 
   const [observedResult, allFeedDeals, liveDeals] = await Promise.all([
     getObservedFares({
-      origin: params.from,
+      origin: fromCode,
       destination: destinationCode,
       budget: params.budget,
       maxStops: params.maxStops,
@@ -608,7 +612,7 @@ export async function searchDeals(params: {
       pageSize: 120,
     }).catch(() => ({ fares: [] as Deal[] })),
     getDeals().catch(() => [] as Deal[]),
-    searchLiveDeals(params).catch(() => [] as Deal[]),
+    searchLiveDeals({ ...params, from: fromCode, destination: destinationCode || params.destination }).catch(() => [] as Deal[]),
   ]);
 
   const candidatePool = [...liveDeals, ...observedResult.fares, ...allFeedDeals];
@@ -710,7 +714,9 @@ export function filterDeals(deals: Deal[], params: {
   const fromDate = params.departureFrom && /^\d{4}-\d{2}-\d{2}$/.test(params.departureFrom) ? params.departureFrom : undefined;
   const toDate = params.departureTo && /^\d{4}-\d{2}-\d{2}$/.test(params.departureTo) ? params.departureTo : undefined;
   if (fromDate && toDate && fromDate > toDate) return [];
+  const canonicalDest = resolveCanonicalAirportOrCity(params.destination);
   const destination = params.destination?.trim().toLocaleLowerCase("vi");
+  const canonicalFrom = resolveCanonicalAirportOrCity(params.from);
   const maxFlightTime = params.maxFlightTimeMinutes && Number.isFinite(params.maxFlightTimeMinutes) && params.maxFlightTimeMinutes > 0
     ? params.maxFlightTimeMinutes
     : undefined;
@@ -722,8 +728,12 @@ export function filterDeals(deals: Deal[], params: {
   };
   return deals.filter((d) => {
     if (params.budget && d.price > params.budget) return false;
-    if (params.from && d.fromCode !== params.from) return false;
-    if (destination && !`${d.to} ${d.toCode} ${d.country}`.toLocaleLowerCase("vi").includes(destination)) return false;
+    if (params.from && d.fromCode !== params.from && (!canonicalFrom || d.fromCode !== canonicalFrom.code)) return false;
+    if (canonicalDest) {
+      if (d.toCode !== canonicalDest.code) return false;
+    } else if (destination && !`${d.to} ${d.toCode} ${d.country}`.toLocaleLowerCase("vi").includes(destination)) {
+      return false;
+    }
     if (params.maxStops != null && d.stops > params.maxStops) return false;
     if (fromDate && d.departDate < fromDate) return false;
     if (toDate && d.departDate > toDate) return false;

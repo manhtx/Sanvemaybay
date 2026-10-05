@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Plane, Clock, AlertTriangle, Calendar, Bookmark, ShieldCheck } from "lucide-react";
+import { Clock, AlertTriangle, Calendar, Bookmark, ShieldCheck } from "lucide-react";
 import { Deal, formatVND, regionFlag } from "../data/deals";
 import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "../lib/bookmarks";
 import { useState } from "react";
@@ -12,16 +12,6 @@ interface DealCardProps {
 function formatDepartDate(dateStr: string) {
   const date = new Date(dateStr);
   return date.toLocaleDateString("vi-VN");
-}
-
-function formatObservedAt(dateStr?: string) {
-  if (!dateStr) return null;
-  const date = new Date(dateStr);
-  if (Number.isNaN(date.getTime())) return null;
-  return date.toLocaleString("vi-VN", {
-    dateStyle: "short",
-    timeStyle: "short",
-  });
 }
 
 export function DealCard({ deal }: DealCardProps) {

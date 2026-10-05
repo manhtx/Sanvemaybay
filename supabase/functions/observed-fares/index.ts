@@ -37,9 +37,19 @@ Deno.serve(async (request) => {
     const page = Math.max(1, Math.floor(Number(body.page) || 1));
     const pageSize = Math.min(120, Math.max(1, Math.floor(Number(body.page_size) || 60)));
     const start = (page - 1) * pageSize;
+    const { data: activeGen } = await service
+      .from("active_observed_generation")
+      .select("generation_id")
+      .eq("id", 1)
+      .maybeSingle();
+
     let query = service.from("observed_fare_snapshots")
       .select("dedupe_key,observation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at", { count: "exact" })
       .gte("depart_date", new Date().toISOString().slice(0, 10));
+
+    if (activeGen?.generation_id) {
+      query = query.eq("generation_id", activeGen.generation_id);
+    }
 
     const targetId = typeof body.id === "string" && body.id
       ? body.id
@@ -67,8 +77,19 @@ Deno.serve(async (request) => {
         query = query.eq("dedupe_key", raw);
       }
     }
-    if (typeof body.origin === "string" && body.origin) query = query.eq("origin_code", body.origin.toUpperCase());
-    if (typeof body.destination === "string" && body.destination) query = query.eq("destination_code", body.destination.toUpperCase());
+    if (typeof body.origin === "string" && body.origin) query = query.eq("origin_code", body.origin.trim().toUpperCase());
+    if (typeof body.destination === "string" && body.destination.trim()) {
+      const dest = body.destination.trim();
+      if (/^[A-Za-z]{3}$/.test(dest)) {
+        query = query.eq("destination_code", dest.toUpperCase());
+      } else {
+        query = query.or(`destination_code.ilike.%${dest}%,destination.ilike.%${dest}%,country.ilike.%${dest}%`);
+      }
+    }
+    if (typeof body.search_text === "string" && body.search_text.trim()) {
+      const term = body.search_text.trim();
+      query = query.or(`destination_code.ilike.%${term}%,destination.ilike.%${term}%,country.ilike.%${term}%,origin_code.ilike.%${term}%,origin.ilike.%${term}%`);
+    }
     if (typeof body.region === "string" && body.region !== "all") query = query.eq("region", body.region);
     if (body.direct_only === true) query = query.eq("stops", 0);
     const maxStops = Number(body.max_stops);

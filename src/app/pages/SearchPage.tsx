@@ -10,12 +10,12 @@ import {
   Bell,
   CheckCircle2,
 } from "lucide-react";
-import { Link } from "react-router";
 import { formatVND, Deal } from "../data/deals";
 import { getTrackedRoutes, searchDeals } from "../data/api";
 import { uniqueOrigins } from "../data/origins";
 import { DealCard } from "../components/DealCard";
 import { getUserPreferences, loadRemoteUserPreferences, saveRemoteUserPreferences, saveUserPreferences } from "../lib/preferences";
+import { WatchModal } from "../components/WatchModal";
 
 const defaultDepartureCities = [
   { code: "HAN", name: "Hà Nội" },
@@ -34,6 +34,7 @@ export function SearchPage() {
   const [maxFlightTimeMinutes, setMaxFlightTimeMinutes] = useState(() => getUserPreferences().maxFlightTimeMinutes);
   const [results, setResults] = useState<Deal[]>([]);
   const [isScanning, setIsScanning] = useState(false);
+  const [watchOpen, setWatchOpen] = useState(false);
 
   useEffect(() => {
     getTrackedRoutes().then((routes) => {
@@ -380,14 +381,15 @@ export function SearchPage() {
               {results.length > 0 && (
                 <div className="rounded-xl border border-white/[0.08] bg-[#121620] p-6 text-center">
                   <p className="text-slate-300 text-sm mb-3">Bạn muốn nhận thông báo khi có thêm mức giá giảm sâu hơn?</p>
-                  <Link 
-                    to="/alerts" 
-                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-semibold transition-colors"
+                  <button 
+                    type="button"
+                    onClick={() => setWatchOpen(true)}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
                   >
                     <Bell className="w-4 h-4" />
-                    Cài đặt theo dõi tuyến này
+                    Theo dõi chặng này
                     <ChevronRight className="w-4 h-4" />
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
@@ -395,6 +397,15 @@ export function SearchPage() {
           </div>
         </div>
       </div>
+
+      <WatchModal
+        isOpen={watchOpen}
+        onClose={() => setWatchOpen(false)}
+        initialOrigin={fromCity}
+        initialDestination={destination.trim() ? destination.trim().toUpperCase() : undefined}
+        targetPrice={stats.bestPrice > 0 ? stats.bestPrice : undefined}
+        sourceContext="search"
+      />
     </main>
   );
 }

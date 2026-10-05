@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import { Root } from "./pages/Root";
 
 function PageLoader() {
@@ -31,11 +31,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "historical-deals",
-        lazy: async () => ({ Component: (await import("./pages/HistoricalDealsPage")).HistoricalDealsPage }),
+        Component: () => <Navigate to="/deals" replace />,
       },
       {
         path: "explore",
-        lazy: async () => ({ Component: (await import("./pages/ExplorePage")).ExplorePage }),
+        Component: () => <Navigate to="/deals" replace />,
       },
       {
         path: "search",
@@ -43,11 +43,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "alerts",
-        lazy: async () => ({ Component: (await import("./pages/AlertsPage")).AlertsPage }),
+        Component: () => <Navigate to="/watch" replace />,
       },
       {
         path: "watch",
-        lazy: async () => ({ Component: (await import("./pages/AlertsPage")).AlertsPage }),
+        lazy: async () => ({ Component: (await import("./pages/WatchPage")).WatchPage }),
       },
       {
         path: "saved",
@@ -59,7 +59,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "advisor",
-        lazy: async () => ({ Component: (await import("./pages/TripAdvisorPage")).TripAdvisorPage }),
+        Component: () => <Navigate to="/search" replace />,
       },
       {
         path: "privacy",

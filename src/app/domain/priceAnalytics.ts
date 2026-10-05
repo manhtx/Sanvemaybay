@@ -28,9 +28,18 @@ export function buildPriceAnalytics(points: PricePoint[], currentPrice?: number)
     bucket.count += 1;
     weekdayTotals.set(weekday, bucket);
   });
-  const cheapestWeekday = [...weekdayTotals.entries()].sort((a, b) =>
-    a[1].sum / a[1].count - b[1].sum / b[1].count,
-  )[0]?.[0];
+  // Defensible sample rule: require at least 14 observations across at least 4 weekdays with >= 2 observations per weekday.
+  // Otherwise, return undefined to prevent false weekday claims (Negative Control C).
+  let cheapestWeekday: number | undefined = undefined;
+  if (valid.length >= 14 && weekdayTotals.size >= 4) {
+    const qualified = [...weekdayTotals.entries()].filter(([_, b]) => b.count >= 2);
+    if (qualified.length >= 4) {
+      cheapestWeekday = qualified.sort((a, b) =>
+        a[1].sum / a[1].count - b[1].sum / b[1].count,
+      )[0]?.[0];
+    }
+  }
+
   const currentPercentile = currentPrice == null || !Number.isFinite(currentPrice)
     ? undefined
     : Math.round(values.filter((value) => value <= currentPrice).length / values.length * 100);

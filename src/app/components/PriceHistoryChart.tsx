@@ -45,16 +45,26 @@ export function PriceHistoryChart({ data, currentPrice, normalPrice }: PriceHist
   const visibleData = useMemo(() => filterPriceHistoryByDays(data, windowDays), [data, windowDays]);
   const analytics = buildPriceAnalytics(visibleData, currentPrice);
   const forecast = forecastPrice(visibleData);
+  const hasSufficientData = visibleData.length >= 5;
+
   return (
     <div className="bg-slate-900 border border-white/8 rounded-2xl p-5">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-white" style={{ fontWeight: 600 }}>Lịch Sử Giá ({windowDays} ngày)</h3>
-          <p className="text-slate-500 text-sm mt-0.5">Theo dõi biến động để biết thời điểm mua tốt nhất</p>
+          <h3 className="text-white font-semibold">Mặt Bằng Giá Quan Sát ({windowDays} ngày)</h3>
+          <p className="text-slate-400 text-xs mt-0.5">Dữ liệu tham chiếu toàn tuyến; không phải lịch sử riêng của một giờ bay cố định</p>
         </div>
         <div className="text-right">
-          <div className="text-emerald-400 text-xs" style={{ fontWeight: 600 }}>ĐANG Ở MỨC THẤP NHẤT</div>
-          <div className="text-white" style={{ fontWeight: 700 }}>
+          {!hasSufficientData ? (
+            <div className="text-slate-400 text-xs font-medium">Chưa đủ mẫu đối sánh</div>
+          ) : analytics && currentPrice <= analytics.lowest ? (
+            <div className="text-emerald-400 text-xs font-semibold">
+              Đang ở mức thấp nhất ({visibleData.length} quan sát)
+            </div>
+          ) : analytics ? (
+            <div className="text-slate-400 text-xs font-medium">Đáy kỳ: {formatMillion(analytics.lowest)}₫</div>
+          ) : null}
+          <div className="text-white font-bold tabular-nums">
             {formatMillion(currentPrice)}₫
           </div>
         </div>
@@ -103,7 +113,7 @@ export function PriceHistoryChart({ data, currentPrice, normalPrice }: PriceHist
               stroke="#ef4444"
               strokeDasharray="4 4"
               strokeOpacity={0.5}
-              label={{ value: "Giá gốc", fill: "#ef4444", fontSize: 10, position: "right" }}
+              label={{ value: "Median tham chiếu", fill: "#ef4444", fontSize: 10, position: "right" }}
             />
             <Area
               type="monotone"
@@ -119,30 +129,35 @@ export function PriceHistoryChart({ data, currentPrice, normalPrice }: PriceHist
       </div>
 
       <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/5">
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 text-xs text-slate-400">
           <div className="w-6 h-0.5 bg-sky-500 rounded" />
-          <span>Giá thực tế</span>
+          <span>Giá quan sát</span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 text-xs text-slate-400">
           <div className="w-6 h-0.5 bg-red-500 rounded border-dashed" style={{ borderTop: "2px dashed #ef4444", height: 0 }} />
-          <span>Giá gốc thông thường</span>
+          <span>Mặt bằng tham chiếu</span>
         </div>
       </div>
       {analytics && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-white/5" aria-label="Tóm tắt phân tích giá">
-          <div><p className="text-slate-500 text-[11px]">Median</p><p className="text-white text-sm font-semibold">{formatMillion(analytics.median)}₫</p></div>
-          <div><p className="text-slate-500 text-[11px]">Biến động</p><p className="text-white text-sm font-semibold">{analytics.volatilityPercent.toFixed(1)}%</p></div>
-          <div><p className="text-slate-500 text-[11px]">Percentile hiện tại</p><p className="text-white text-sm font-semibold">{analytics.currentPercentile ?? "—"}%</p></div>
-          <div><p className="text-slate-500 text-[11px]">Ngày rẻ nhất</p><p className="text-white text-sm font-semibold">{analytics.cheapestWeekday == null ? "—" : ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][analytics.cheapestWeekday]}</p></div>
+          <div><p className="text-slate-500 text-[11px]">Median tuyến</p><p className="text-white text-sm font-semibold tabular-nums">{formatMillion(analytics.median)}₫</p></div>
+          <div><p className="text-slate-500 text-[11px]">Biến động giá</p><p className="text-white text-sm font-semibold tabular-nums">{analytics.volatilityPercent.toFixed(1)}%</p></div>
+          <div><p className="text-slate-500 text-[11px]">Vị thế percentile</p><p className="text-white text-sm font-semibold tabular-nums">{analytics.currentPercentile ?? "—"}%</p></div>
+          <div><p className="text-slate-500 text-[11px]">Mẫu quan sát</p><p className="text-white text-sm font-semibold tabular-nums">{visibleData.length} điểm giá</p></div>
         </div>
       )}
       <div className="mt-4 pt-4 border-t border-white/5" aria-label="Dự báo xu hướng giá">
         {forecast ? (
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div><p className="text-slate-500 text-[11px]">Xu hướng {forecast.horizonDays} ngày tới</p><p className="text-white text-sm font-semibold">{forecast.direction === "up" ? "Có xu hướng tăng" : forecast.direction === "down" ? "Có xu hướng giảm" : "Tương đối ổn định"} · xác suất {Math.round(forecast.probability * 100)}%</p></div>
+            <div>
+              <p className="text-slate-500 text-[11px]">Mô tả biến động gần đây ({forecast.horizonDays} ngày)</p>
+              <p className="text-white text-sm font-semibold">
+                {forecast.direction === "up" ? "Quan sát gần đây có xu hướng tăng" : forecast.direction === "down" ? "Quan sát gần đây có xu hướng giảm" : "Quan sát gần đây giữ mức tương đối ổn định"}
+              </p>
+            </div>
             <p className="text-slate-500 text-[11px] max-w-sm">{forecast.limitation}</p>
           </div>
-        ) : <p className="text-slate-500 text-xs">Chưa đủ 14 quan sát hợp lệ để ước tính xu hướng giá.</p>}
+        ) : <p className="text-slate-500 text-xs">Chưa đủ 14 quan sát hợp lệ để xác định xu hướng biến động.</p>}
       </div>
     </div>
   );

@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { 
-  Plane, Calendar, AlertTriangle,
-  ChevronLeft, Share2, Bell, Zap, TrendingDown, 
-  CheckCircle2, Globe, ArrowRight, ExternalLink, Bookmark
+  Plane, Calendar,
+  ChevronLeft, Share2, Bell, TrendingDown, 
+  ExternalLink, Bookmark, ShieldCheck, Clock
 } from "lucide-react";
 import { getDealById, getPriceHistory } from "../data/api";
-import { Deal, formatVND, getRecommendationColor, getRecommendationLabel } from "../data/deals";
-import { getBestBookingUrl, getAllBookingOptions, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
+import { Deal, formatVND } from "../data/deals";
+import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "../lib/bookmarks";
 import { shareOrCopy } from "../lib/sharing";
 import { HiddenCostAnalyzer } from "../components/HiddenCostAnalyzer";
-import { assessRoute } from "../domain/routeOptimization";
 import { trackProductEvent } from "../lib/analytics";
 import { reportClientIssue } from "../lib/clientDiagnostics";
+import { WatchModal } from "../components/WatchModal";
+import { buildComparableCohort } from "../domain/opportunityCohort";
 
 const PriceHistoryChart = React.lazy(async () => ({
   default: (await import("../components/PriceHistoryChart")).PriceHistoryChart,
@@ -24,6 +25,7 @@ export function DealDetailPage() {
   const [deal, setDeal] = useState<Deal | null>(null);
   const [loading, setLoading] = useState(true);
   const [bookmarked, setBookmarked] = useState(false);
+  const [watchOpen, setWatchOpen] = useState(false);
   const [priceHistory, setPriceHistory] = useState<Awaited<ReturnType<typeof getPriceHistory>>>([]);
 
   useEffect(() => {
@@ -32,467 +34,362 @@ export function DealDetailPage() {
       const data = await getDealById(id);
       if (data) {
         setDeal(data);
-        void trackProductEvent({ eventType: "detail_view", entityId: data.id, metadata: { route: `${data.fromCode}-${data.toCode}`, source: "deal_detail" } });
+        void trackProductEvent({
+          eventType: "opportunity_open",
+          entityId: data.id,
+          metadata: {
+            opportunity_id: data.id,
+            route: `${data.fromCode}-${data.toCode}`,
+            source: "deal_detail",
+          },
+        });
         setBookmarked(isBookmarkedDeal(data.id));
-        setPriceHistory(await getPriceHistory(data.fromCode, data.toCode));
+        const history = await getPriceHistory(data.fromCode, data.toCode);
+        setPriceHistory(history);
       }
       setLoading(false);
     }
     loadDeal();
   }, [id]);
 
-  if (loading) return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-500"></div>
-    </div>
-  );
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-sky-500" />
+      </div>
+    );
+  }
 
-  if (!deal) return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-      <h2 className="text-2xl font-bold text-white mb-4">Không tìm thấy deal này</h2>
-      <Link to="/deals" className="text-sky-400 flex items-center gap-2 hover:underline">
-        <ChevronLeft className="w-4 h-4" /> Quay lại danh sách
-      </Link>
-    </div>
-  );
+  if (!deal) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+        <h2 className="text-xl font-bold text-white mb-4">Không tìm thấy cơ hội này</h2>
+        <Link to="/deals" className="text-sky-400 flex items-center gap-2 hover:underline">
+          <ChevronLeft className="w-4 h-4" /> Quay lại danh sách cơ hội
+        </Link>
+      </div>
+    );
+  }
 
-  const aiReasoning = deal.aiReasoning || deal.aiInsight.reason;
-  const durationMinutes = (() => {
-    const match = deal.duration.match(/(?:(\d+)h)?\s*(?:(\d+)m)?/i);
-    return match && (Number(match[1] ?? 0) * 60 + Number(match[2] ?? 0)) > 0
-      ? Number(match[1] ?? 0) * 60 + Number(match[2] ?? 0)
-      : 1;
-  })();
-  const routeAssessment = assessRoute({
-    type: "DIRECT",
-    legs: [{
-      origin: deal.fromCode,
-      destination: deal.toCode,
-      price: deal.price,
-      extraCost: Math.max(0, deal.realTotal - deal.price),
-      durationMinutes,
-      departureAt: `${deal.departDate}T00:00:00Z`,
-      arrivalAt: `${deal.departDate}T00:00:00Z`,
-      baggageIncluded: deal.hiddenCosts.every((cost) => !/hành lý|baggage/i.test(cost.label) || cost.amount === 0),
-    }],
-    dataFresh: deal.validUntil ? new Date(deal.validUntil).getTime() > Date.now() : undefined,
-  });
   const shareDeal = async () => {
     const shareData = {
-      title: `${deal.fromCode} → ${deal.toCode}`,
+      title: `${deal.fromCode} → ${deal.toCode} | Farely`,
       text: `${deal.from} → ${deal.to}: ${formatVND(deal.price)}`,
       url: window.location.href,
     };
     try {
       await shareOrCopy(shareData, navigator);
-      await trackProductEvent({ eventType: "share", entityId: deal.id, metadata: { route: `${deal.fromCode}-${deal.toCode}` } });
+      await trackProductEvent({
+        eventType: "share",
+        entityId: deal.id,
+        metadata: { route: `${deal.fromCode}-${deal.toCode}` },
+      });
     } catch {
       reportClientIssue("deal_share_failed");
     }
   };
 
+  const handleVerifyClick = () => {
+    const fallbackUrl = getBestBookingUrl({
+      fromCode: deal.fromCode,
+      toCode: deal.toCode,
+      departDate: deal.departDate,
+      returnDate: deal.returnDate,
+      airline: deal.airline,
+      airlineCode: deal.airlineCode,
+      tripType: deal.tripType,
+      price: deal.price,
+    });
+    const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
+    window.open(bookingUrl, "_blank", "noopener,noreferrer");
+    void trackProductEvent({
+      eventType: "verify_click",
+      entityId: deal.id,
+      metadata: {
+        opportunity_id: deal.id,
+        route: `${deal.fromCode}-${deal.toCode}`,
+        provider: deal.affiliateNetwork ?? deal.linkKind ?? "booking_link",
+      },
+    });
+  };
+
+  // Build Comparable Cohort & Evidence
+  const cohort = buildComparableCohort(
+    {
+      id: deal.id,
+      originCode: deal.fromCode,
+      destinationCode: deal.toCode,
+      departDate: deal.departDate,
+      returnDate: deal.returnDate,
+      price: deal.price,
+      stops: deal.stops,
+      airlineCode: deal.airlineCode,
+      observedAt: deal.observedAt || new Date().toISOString(),
+    },
+    priceHistory.map((ph, idx) => ({
+      id: `ph-${idx}`,
+      originCode: deal.fromCode,
+      destinationCode: deal.toCode,
+      departDate: ph.date,
+      price: ph.price,
+      stops: deal.stops,
+      airlineCode: deal.airlineCode,
+      observedAt: ph.date,
+    }))
+  );
+
+  const formattedDepartTime = new Date(deal.departDate).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const formattedReturnTime = deal.returnDate
+    ? new Date(deal.returnDate).toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : null;
+
+  const freshnessLabel = deal.observedAt
+    ? `Ghi nhận lúc ${new Date(deal.observedAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })} · ${new Date(deal.observedAt).toLocaleDateString("vi-VN")}`
+    : "Quan sát gần đây";
+
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-200">
+    <main className="min-h-screen bg-slate-950 text-slate-100 pb-24 lg:pb-12">
       {/* ── TOP NAV ── */}
-      <nav className="sticky top-0 z-40 border-b border-white/10 bg-[#0d0d0f]/90 px-4 py-3 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link to="/deals" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-            <ChevronLeft className="w-5 h-5" />
-            <span className="hidden sm:inline font-medium">Danh sách deal</span>
+      <nav className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/90 px-4 py-3 backdrop-blur-xl">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <Link
+            to="/deals"
+            className="flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span>Cơ hội theo dõi</span>
           </Link>
-          <div className="flex gap-3">
+
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => void shareDeal()}
-              aria-label="Chia sẻ deal"
-              className="p-2 hover:bg-white/5 rounded-full text-slate-400 transition-colors"
+              aria-label="Chia sẻ cơ hội"
+              className="p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
             >
-              <Share2 className="w-5 h-5" />
+              <Share2 className="w-4 h-4" />
             </button>
             <button
               type="button"
-              aria-label={bookmarked ? "Bỏ lưu deal" : "Lưu deal"}
+              aria-label={bookmarked ? "Bỏ lưu cơ hội" : "Lưu cơ hội"}
               aria-pressed={bookmarked}
               onClick={() => {
-                if (!deal) return;
                 const next = toggleBookmarkedDeal(deal.id);
                 setBookmarked(next);
                 void saveRemoteBookmark(deal.id, next);
-                void trackProductEvent({ eventType: "bookmark", entityId: deal.id, metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}` } });
+                void trackProductEvent({
+                  eventType: "bookmark",
+                  entityId: deal.id,
+                  metadata: {
+                    opportunity_id: deal.id,
+                    bookmarked: next,
+                    route: `${deal.fromCode}-${deal.toCode}`,
+                  },
+                });
               }}
-              className="p-2 hover:bg-white/5 rounded-full text-slate-400 transition-colors"
+              className="p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
             >
-              <Bookmark className={`w-5 h-5 ${bookmarked ? "fill-sky-400 text-sky-400" : ""}`} />
+              <Bookmark className={`w-4 h-4 ${bookmarked ? "fill-sky-400 text-sky-400" : ""}`} />
             </button>
-            <Link
-              to={`/alerts?destination=${encodeURIComponent(deal.toCode)}&origin=${encodeURIComponent(deal.fromCode)}`}
-              className="flex items-center gap-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors"
+            <button
+              type="button"
+              onClick={() => setWatchOpen(true)}
+              className="flex items-center gap-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 px-3 py-1.5 text-xs font-semibold text-white border border-white/10 transition-colors cursor-pointer"
             >
-              <Bell className="w-3.5 h-3.5" />
-              Theo dõi giá
-            </Link>
+              <Bell className="w-3.5 h-3.5 text-sky-400" />
+              <span>Theo dõi</span>
+            </button>
           </div>
         </div>
       </nav>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* ── LEFT COLUMN: IMAGES & CORE INFO ── */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Hero Image */}
-            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-2xl sm:aspect-[16/9]">
-              {deal.image ? (
-                <img src={deal.image} alt={deal.to} className="w-full h-full object-cover" />
-              ) : (
-                <div className="h-full w-full bg-gradient-to-br from-slate-800 via-[#171719] to-violet-950" />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
-              <div className="absolute bottom-8 left-8 right-8">
-                <div className="flex flex-wrap gap-3 mb-4">
-                  {deal.isFlashDeal && (
-                    <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-black flex items-center gap-1 shadow-lg shadow-orange-500/20">
-                      <Zap className="w-3 h-3" /> FLASH DEAL
-                    </span>
-                  )}
-                  <span className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg shadow-emerald-500/20">
-                    GIẢM {deal.discount}%
+      <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8 space-y-6">
+        {/* ── SECTION 40: ABOVE-THE-FOLD DECISION HERO ── */}
+        <section className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-sm">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div className="space-y-3">
+              {/* Route Lockup */}
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                <span>{deal.from}</span>
+                <span className="text-sky-400">→</span>
+                <span>{deal.to}</span>
+                <span className="text-slate-600">·</span>
+                <span className="text-slate-300">{deal.country}</span>
+              </div>
+
+              <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+                {deal.fromCode} <span className="text-sky-400 font-light">→</span> {deal.toCode}
+              </h1>
+
+              {/* Flight Characteristics */}
+              <div className="flex flex-wrap items-center gap-3 text-sm text-slate-300">
+                <span className="inline-flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-md text-xs font-semibold text-slate-200 border border-white/5">
+                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                  {formattedDepartTime}
+                  {formattedReturnTime && ` – ${formattedReturnTime}`}
+                </span>
+
+                <span className="inline-flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-md text-xs font-semibold text-slate-200 border border-white/5">
+                  <Plane className="w-3.5 h-3.5 text-slate-400" />
+                  {deal.airline} · {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
+                </span>
+
+                {deal.duration && (
+                  <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                    <Clock className="w-3 h-3 text-slate-500" />
+                    {deal.duration}
                   </span>
-                </div>
-                <h1 className="mb-2 text-3xl font-black leading-tight text-white sm:text-6xl">
-                  {deal.fromCode} <span className="text-sky-400 px-2">→</span> {deal.to}
-                </h1>
-                <p className="text-slate-300 text-lg flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-sky-400" /> {deal.country}
-                </p>
+                )}
               </div>
             </div>
 
-            {/* Flight Timeline Card */}
-            <section className="rounded-2xl border border-white/10 bg-[#171719] p-5 sm:p-8">
-              <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <Plane className="w-5 h-5 text-sky-400" />
-                Chi tiết chuyến bay
-              </h3>
-              
-              <div className="flex flex-col sm:flex-row items-center gap-8 justify-between relative">
-                {/* Connection Line (Desktop) */}
-                <div className="hidden sm:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3 h-[1px] bg-slate-800 border-t border-dashed border-slate-600" />
-                
-                <div className="text-center sm:text-left z-10">
-                  <div className="text-3xl font-black text-white mb-1 uppercase tracking-tighter">{deal.fromCode}</div>
-                  <div className="text-slate-400 text-sm font-medium">{deal.from}</div>
-                </div>
-
-                <div className="flex flex-col items-center gap-2 z-10">
-                  <div className="px-4 py-1.5 bg-slate-800 rounded-full text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                    {deal.duration}
-                  </div>
-                  <Plane className="w-6 h-6 text-sky-400 rotate-90 sm:rotate-0" />
-                  <div className="text-[10px] font-bold text-slate-500">
-                    {deal.stops === 0 ? "BAY THẲNG" : `${deal.stops} ĐIỂM DỪNG`}
-                  </div>
-                </div>
-
-                <div className="text-center sm:text-right z-10">
-                  <div className="text-3xl font-black text-white mb-1 uppercase tracking-tighter">{deal.toCode}</div>
-                  <div className="text-slate-400 text-sm font-medium">{deal.to}</div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10 p-5 bg-slate-950/50 rounded-2xl border border-white/5">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center text-xs font-bold text-slate-400">
-                    {deal.airlineCode}
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">Hãng bay</div>
-                    <div className="text-white font-bold">{deal.airline}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center">
-                    <Calendar className="w-5 h-5 text-sky-400" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">Thời gian đi - về</div>
-                    <div className="text-white font-bold">
-                      {new Date(deal.departDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
-                      {deal.returnDate && ` - ${new Date(deal.returnDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Data-backed explanation */}
-            {priceHistory.length > 0 ? (
-              <React.Suspense fallback={(
-                <section className="rounded-2xl border border-white/10 bg-[#171719] p-6" aria-busy="true">
-                  <h3 className="text-white font-bold">Lịch sử giá</h3>
-                  <p className="mt-2 text-sm text-slate-500">Đang tải biểu đồ lịch sử…</p>
-                </section>
-              )}>
-                <PriceHistoryChart data={priceHistory} currentPrice={deal.price} normalPrice={deal.normalPrice} />
-              </React.Suspense>
-            ) : (
-              <section className="rounded-2xl border border-white/10 bg-[#171719] p-6">
-                <h3 className="text-white font-bold">Lịch sử giá</h3>
-                <p className="text-slate-500 text-sm mt-2">Chưa có đủ quan sát lịch sử cho tuyến {deal.fromCode} → {deal.toCode}. Hệ thống không suy đoán biểu đồ khi thiếu dữ liệu.</p>
-              </section>
-            )}
-
-            <section className="rounded-2xl border border-white/10 bg-[#171719] p-6">
-              <div className="flex items-center justify-between gap-4 mb-3">
-                <div>
-                  <h3 className="text-white font-bold">Đánh giá phương án hiện tại</h3>
-                  <p className="text-slate-500 text-xs mt-1">Tính trên itinerary được nhà cung cấp trả về; chưa suy đoán phương án thay thế.</p>
-                </div>
-                <span className={`text-xs font-black uppercase ${routeAssessment.riskLevel === "low" ? "text-emerald-400" : routeAssessment.riskLevel === "medium" ? "text-amber-400" : "text-red-400"}`}>
-                  Risk {routeAssessment.riskLevel}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-4 text-sm text-slate-300">
-                <span>Tổng cost: <strong className="text-emerald-400">{formatVND(routeAssessment.totalCost)}</strong></span>
-                <span>Thời lượng: <strong className="text-white">{routeAssessment.totalDurationMinutes} phút</strong></span>
-              </div>
-              {routeAssessment.riskReasons.length > 0 && <p className="text-amber-300 text-xs mt-3">{routeAssessment.riskReasons.join(" ")}</p>}
-            </section>
-
-            <HiddenCostAnalyzer deal={deal} />
-
-            {/* Data-backed explanation */}
-            <section className="relative overflow-hidden rounded-2xl border border-sky-500/15 bg-sky-500/[0.06] p-6 sm:p-8">
-               <div className="absolute -top-10 -right-10 w-40 h-40 bg-sky-500/10 blur-3xl rounded-full" />
-               <div className="relative z-10">
-                 <div className="flex items-center gap-3 mb-4">
-                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500 shadow-lg shadow-sky-500/30">
-                     <span className="text-white font-black text-sm">DATA</span>
-                   </div>
-                   <h3 className="text-xl font-black text-sky-300">Căn cứ đánh dấu cơ hội</h3>
-                 </div>
-                 <p className="text-slate-300 leading-relaxed text-lg">
-                    {aiReasoning}
-                 </p>
-                 <div className="mt-6 flex flex-wrap gap-4">
-                    <div className="flex items-center gap-2 text-sky-400 bg-sky-400/10 px-4 py-2 rounded-xl text-sm font-bold">
-                       <CheckCircle2 className="w-4 h-4" /> Mức độ đáng chú ý {deal.dealScore ?? deal.aiInsight.savingScore}/100
-                    </div>
-                    <div className="flex items-center gap-2 text-emerald-400 bg-emerald-400/10 px-4 py-2 rounded-xl text-sm font-bold">
-                       <TrendingDown className="w-4 h-4" /> Thấp hơn mức trung vị thường gặp {deal.discount}%
-                    </div>
-                 </div>
-               </div>
-            </section>
-          </div>
-
-          {/* ── RIGHT COLUMN: PRICING & RECOMMENDATION ── */}
-          <div className="space-y-6">
-            {/* Purchase Card */}
-            <div className="sticky top-24 rounded-2xl border border-white/10 bg-[#171719] p-6 shadow-2xl shadow-black/20">
-              <div className="mb-6 pb-6 border-b border-white/5">
-                <div className="text-slate-500 text-sm line-through mb-1">{formatVND(deal.normalPrice)}</div>
-                <div className="text-5xl font-black text-emerald-400 tracking-tighter mb-2">
+            {/* Price & Primary CTAs */}
+            <div className="flex flex-col md:items-end justify-between gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-white/5">
+              <div>
+                <div className="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">
                   {formatVND(deal.price)}
                 </div>
-                <p className="mb-4 text-xs text-slate-500">
-                  {deal.observedAt
-                    ? `Quan sát lúc ${new Date(deal.observedAt).toLocaleString("vi-VN")}`
-                    : "Giá tham khảo — kiểm tra lại trên trang đặt vé"}
-                </p>
-                
-                <button 
-                  onClick={() => {
-                    const fallbackUrl = getBestBookingUrl({
-                        fromCode: deal.fromCode,
-                        toCode: deal.toCode,
-                        departDate: deal.departDate,
-                        returnDate: deal.returnDate,
-                        airline: deal.airline,
-                        airlineCode: deal.airlineCode,
-                        tripType: deal.tripType,
-                        price: deal.price,
-                      });
-                    const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
-                    window.open(bookingUrl, '_blank', 'noopener,noreferrer');
-                    void trackProductEvent({ eventType: "booking_click", entityId: deal.id, metadata: { provider: deal.affiliateNetwork ?? deal.linkKind ?? "booking_link", route: `${deal.fromCode}-${deal.toCode}` } });
-                  }}
-                  className={`w-full py-4 rounded-2xl text-center font-black tracking-tight flex flex-col gap-1 ${getRecommendationColor(deal.aiInsight.recommendation)} cursor-pointer hover:opacity-90 active:scale-[0.98] transition-all shadow-lg`}
+                {cohort.isDiscounted && (
+                  <div className="flex items-center md:justify-end gap-1.5 text-xs font-bold text-emerald-400 mt-1">
+                    <TrendingDown className="w-3.5 h-3.5" />
+                    <span>{cohort.comparisonExplanation}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop CTAs */}
+              <div className="hidden sm:flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setWatchOpen(true)}
+                  className="px-4 py-2.5 rounded-xl border border-white/10 bg-slate-800 hover:bg-slate-700 text-sm font-bold text-white transition-colors cursor-pointer flex items-center gap-2"
                 >
-                   <span className="text-xs uppercase opacity-80 tracking-widest">
-                     {getRecommendationLabel(deal.aiInsight.recommendation)}
-                   </span>
-                   <span className="text-lg">
-                     {deal.linkKind === "indicative" ? "Kiểm tra giá hiện tại trên Google Flights" : "Kiểm tra giá trên trang đặt vé"}
-                   </span>
+                  <Bell className="w-4 h-4 text-sky-400" />
+                  Theo dõi chặng này
+                </button>
+                <button
+                  type="button"
+                  onClick={handleVerifyClick}
+                  className="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-sm font-bold text-slate-950 transition-colors cursor-pointer flex items-center gap-2 shadow-lg shadow-sky-500/20"
+                >
+                  <span>Kiểm tra giá hiện tại</span>
+                  <ExternalLink className="w-4 h-4" />
                 </button>
               </div>
-
-              {/* Evidence Profile */}
-              <div className="mb-8 rounded-xl border border-white/5 bg-slate-900/50 p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-bold text-slate-300">Chất lượng bằng chứng</span>
-                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${(deal.confidence ?? 0) >= 0.8 ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" : (deal.confidence ?? 0) >= 0.5 ? "text-sky-400 bg-sky-500/10 border-sky-500/20" : "text-slate-400 bg-slate-500/10 border-slate-500/20"}`}>
-                    {(deal.confidence ?? 0) >= 0.8 ? "Độ tin cậy cao" : (deal.confidence ?? 0) >= 0.5 ? "Độ tin cậy vừa" : "Đang tích luỹ dữ liệu"}
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Đối chiếu từ nhiều lần quan sát giá độc lập. Không suy đoán khi chưa đủ chu kỳ ghi nhận.
-                </p>
-              </div>
-
-              {/* Price breakdown: known vs unverified */}
-              <div className="space-y-4 mb-8">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Chi phí đã biết (Known)</h4>
-                  <span className="text-[10px] text-emerald-400 font-medium">Đã gồm thuế sân bay</span>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Giá vé cơ bản</span>
-                    <span className="text-white font-medium">{formatVND(deal.price)}</span>
-                  </div>
-                  {deal.hiddenCosts.map((cost) => (
-                    <div key={cost.label} className="flex justify-between text-sm">
-                      <span className="text-slate-400">{cost.label}</span>
-                      <span className="text-white font-medium">{formatVND(cost.amount)}</span>
-                    </div>
-                  ))}
-
-                  <div className="h-[1px] bg-white/5 my-2" />
-                  <div className="flex justify-between items-end text-lg">
-                    <div>
-                      <span className="text-slate-200 font-bold">Tổng đã biết</span>
-                      <p className="text-[10px] text-slate-500 font-medium leading-tight max-w-[200px] mt-1">
-                        Hành lý, chỗ ngồi và phí thanh toán có thể chưa được nhà cung cấp trả về.
-                      </p>
-                    </div>
-                    <span className="text-emerald-400 font-black">
-                      {formatVND(deal.realTotal)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Booking Options Panel */}
-              {(() => {
-                const bookingOptions = getAllBookingOptions({
-                  fromCode: deal.fromCode,
-                  toCode: deal.toCode,
-                  departDate: deal.departDate,
-                  returnDate: deal.returnDate,
-                  airline: deal.airline,
-                  airlineCode: deal.airlineCode,
-                  tripType: deal.tripType,
-                  price: deal.price,
-                });
-                return (
-                  <div className="space-y-2 mb-4">
-                    <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider mb-3">Chọn nơi đặt vé:</p>
-                    {bookingOptions.map((opt) => (
-                      <a
-                        key={opt.label}
-                        href={opt.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full flex items-center justify-between px-4 py-3 bg-slate-800/60 hover:bg-slate-700/60 border border-white/8 hover:border-sky-500/30 rounded-xl transition-all group"
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="text-lg">{opt.icon}</span>
-                          <div className="text-left">
-                            <div className="text-white text-sm font-bold">{opt.label}</div>
-                            <div className="text-slate-500 text-xs">{opt.note}</div>
-                          </div>
-                        </div>
-                        <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-sky-400 transition-colors" />
-                      </a>
-                    ))}
-                  </div>
-                );
-              })()}
-
-              {(() => {
-                const fallbackUrl = getBestBookingUrl({
-                  fromCode: deal.fromCode,
-                  toCode: deal.toCode,
-                  departDate: deal.departDate,
-                  returnDate: deal.returnDate,
-                  airline: deal.airline,
-                  airlineCode: deal.airlineCode,
-                  tripType: deal.tripType,
-                  price: deal.price,
-                });
-                const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
-                return (
-                  <a 
-                    href={bookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 py-4 text-base font-bold text-white shadow-sm transition-all active:scale-[0.98]"
-                  >
-                    {deal.linkKind === "indicative" ? "Kiểm tra giá hiện tại trên Google Flights" : "✈️ Đặt vé ngay"}
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </a>
-                );
-              })()}
-            </div>
-
-            {/* Risk Warning (Module 3.3) */}
-            <div className="bg-white/[0.02] border border-white/[0.08] rounded-xl p-5 flex gap-4">
-              <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
-              <div>
-                <div className="text-white font-semibold text-xs uppercase tracking-wider">Lưu ý rủi ro biến động giá</div>
-                <p className="text-slate-400 text-xs mt-1 leading-relaxed">
-                  Giá vé có thể thay đổi nhanh chóng tùy thuộc vào số lượng chỗ trống thực tế của hãng. Bạn nên kiểm tra lại trước khi lên lịch trình.
-                </p>
-              </div>
             </div>
           </div>
 
+          {/* Evidence Spine Banner */}
+          <div className="mt-6 pt-5 border-t border-white/5 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
+                cohort.evidence.tier === "STRONG"
+                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                  : cohort.evidence.tier === "MODERATE"
+                  ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
+                  : "bg-slate-800 text-slate-300 border-white/10"
+              }`}>
+                {cohort.evidence.label}
+              </span>
+              <span>{cohort.evidence.summaryText}</span>
+            </div>
+
+            <div className="text-slate-500 text-[11px]">
+              {freshnessLabel}
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECTION 14 & 40: TRUE COST ANALYSIS ── */}
+        <HiddenCostAnalyzer deal={deal} />
+
+        {/* ── SECTION 11 & 40: DEFENSIBLE PRICE HISTORY & COHORT CONTEXT ── */}
+        {priceHistory.length > 0 ? (
+          <React.Suspense
+            fallback={
+              <section className="rounded-2xl border border-white/10 bg-[#171719] p-6" aria-busy="true">
+                <h3 className="text-white font-bold text-sm">Lịch sử quan sát</h3>
+                <p className="mt-2 text-xs text-slate-500">Đang tải lịch sử giá…</p>
+              </section>
+            }
+          >
+            <PriceHistoryChart
+              data={priceHistory}
+              currentPrice={deal.price}
+              normalPrice={cohort.cohortMedian || deal.normalPrice}
+            />
+          </React.Suspense>
+        ) : (
+          <section className="rounded-2xl border border-white/10 bg-[#171719] p-6">
+            <h3 className="text-white font-bold text-sm">Lịch sử quan sát</h3>
+            <p className="text-slate-400 text-xs mt-2 leading-relaxed">
+              Chưa có đủ chu kỳ quan sát độc lập cho chặng {deal.fromCode} → {deal.toCode}. Hệ thống ghi nhận trung thực và không ngoại suy dữ liệu khi chưa đủ số mẫu.
+            </p>
+          </section>
+        )}
+
+        {/* ── METHODOLOGY & DECISION EVIDENCE DETAILS ── */}
+        <section className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 space-y-4">
+          <div className="flex items-center gap-2 text-slate-300">
+            <ShieldCheck className="w-5 h-5 text-sky-400" />
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Căn cứ đánh dấu cơ hội</h3>
+          </div>
+          <p className="text-slate-300 text-sm leading-relaxed">
+            {deal.aiReasoning || deal.aiInsight?.reason || cohort.comparisonExplanation}
+          </p>
+          <div className="text-xs text-slate-500 border-t border-white/5 pt-3 leading-relaxed">
+            Nguyên tắc Farely: Giá vé máy bay biến động theo từng đợt mở bán của hãng hàng không. Bấm &quot;Kiểm tra giá hiện tại&quot; để xác minh tình trạng chỗ và giá thực tế trực tiếp với đơn vị bán trước khi tiến hành thanh toán.
+          </div>
+        </section>
+      </div>
+
+      {/* ── SECTION 41: MOBILE STICKY BOTTOM ACTION BAR (Viewport < sm) ── */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 border-t border-white/10 px-4 py-3 backdrop-blur-xl flex items-center justify-between gap-3">
+        <div>
+          <div className="text-lg font-black text-emerald-400 leading-tight">
+            {formatVND(deal.price)}
+          </div>
+          <div className="text-[10px] text-slate-400 font-medium">
+            {cohort.isDiscounted ? `↓${cohort.deltaPercent}% so với median` : "Giá hiện tại"}
+          </div>
         </div>
-      </main>
 
-      {/* ── MOBILE STICKY BOTTOM ACTION BAR ── */}
-      <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0b0e14]/95 border-t border-white/[0.08] backdrop-blur-md p-3">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <div className="text-xs text-slate-400">Giá quan sát:</div>
-            <div className="text-lg font-black text-white tabular-nums">{formatVND(deal.price)}</div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              to={`/alerts?destination=${encodeURIComponent(deal.toCode)}&origin=${encodeURIComponent(deal.fromCode)}`}
-              className="p-2.5 rounded-lg border border-white/10 bg-white/[0.05] text-slate-300"
-              aria-label="Theo dõi tuyến này"
-            >
-              <Bell className="w-4 h-4" />
-            </Link>
-            {(() => {
-              const fallbackUrl = getBestBookingUrl({
-                fromCode: deal.fromCode,
-                toCode: deal.toCode,
-                departDate: deal.departDate,
-                returnDate: deal.returnDate,
-                airline: deal.airline,
-                airlineCode: deal.airlineCode,
-                tripType: deal.tripType,
-                price: deal.price,
-              });
-              const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
-              return (
-                <a
-                  href={bookingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs"
-                >
-                  Kiểm tra giá
-                </a>
-              );
-            })()}
-          </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setWatchOpen(true)}
+            className="p-2.5 rounded-xl border border-white/10 bg-slate-800 text-white text-xs font-bold"
+            aria-label="Theo dõi"
+          >
+            <Bell className="w-4 h-4 text-sky-400" />
+          </button>
+          <button
+            type="button"
+            onClick={handleVerifyClick}
+            className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-lg shadow-sky-500/20"
+          >
+            <span>Kiểm tra giá</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
+
+      <WatchModal
+        isOpen={watchOpen}
+        onClose={() => setWatchOpen(false)}
+        initialOrigin={deal.fromCode}
+        initialDestination={deal.toCode}
+        currentPrice={deal.price}
+        sourceContext="deal_detail"
+      />
     </main>
   );
 }
