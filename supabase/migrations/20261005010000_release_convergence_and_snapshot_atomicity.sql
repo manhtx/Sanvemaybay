@@ -89,9 +89,17 @@ BEGIN
   );
 
   UPDATE public.account_deletion_requests
-  SET snapshot = result,
-      status = 'records_deleted',
-      updated_at = now()
+  SET status = 'data_deleted',
+      data_deleted_at = COALESCE(data_deleted_at, now()),
+      updated_at = now(),
+      deletion_counts = jsonb_build_object(
+        'product_events', COALESCE((deletion_counts->>'product_events')::INTEGER, 0) + event_count,
+        'alerts', COALESCE((deletion_counts->>'alerts')::INTEGER, 0) + alert_count,
+        'bookmarks', COALESCE((deletion_counts->>'bookmarks')::INTEGER, 0) + bookmark_count,
+        'saved_opportunities', COALESCE((deletion_counts->>'saved_opportunities')::INTEGER, 0) + saved_count,
+        'preferences', COALESCE((deletion_counts->>'preferences')::INTEGER, 0) + preference_count
+      ),
+      last_error_code = NULL
   WHERE user_id = p_user_id;
 
   RETURN result;
