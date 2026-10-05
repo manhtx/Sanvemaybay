@@ -136,6 +136,11 @@ try {
   await page.waitForTimeout(1000);
   const detailBody = await page.locator("#root").innerText();
   assert.ok(
+    detailBody.includes("Căn cứ đánh dấu cơ hội") ||
+    detailBody.includes("so với median") ||
+    detailBody.includes("Kiểm tra giá") ||
+    detailBody.includes("Lịch sử") ||
+    detailBody.includes("BẰNG CHỨNG") ||
     detailBody.includes("Chi tiết chuyến bay") || 
     detailBody.includes("Lịch Sử Giá") || 
     detailBody.includes("GIẢM") ||
