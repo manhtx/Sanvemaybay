@@ -71,8 +71,8 @@ export function AuthPage() {
             {mode === "sign-up" && <p className="text-xs text-slate-500">Dùng ít nhất {SIGN_UP_PASSWORD_MIN_LENGTH} ký tự và không tái sử dụng mật khẩu ở dịch vụ khác.</p>}
             {error && <p role="alert" className="text-red-300 text-sm">{error}</p>}
             {message && <p role="status" className="text-emerald-300 text-sm">{message}</p>}
-            <button type="submit" className="w-full rounded-xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 py-3 font-bold text-white transition-opacity hover:opacity-90">{mode === "sign-in" ? "Đăng nhập" : "Tạo tài khoản"}</button>
-            <button type="button" onClick={() => { setMode(mode === "sign-in" ? "sign-up" : "sign-in"); setError(""); setMessage(""); }} className="w-full text-sm text-pink-300">{mode === "sign-in" ? "Chưa có tài khoản? Đăng ký" : "Đã có tài khoản? Đăng nhập"}</button>
+            <button type="submit" className="w-full rounded-xl bg-blue-600 hover:bg-blue-500 py-3 font-semibold text-white transition-colors">{mode === "sign-in" ? "Đăng nhập" : "Tạo tài khoản"}</button>
+            <button type="button" onClick={() => { setMode(mode === "sign-in" ? "sign-up" : "sign-in"); setError(""); setMessage(""); }} className="w-full text-sm text-blue-400 hover:text-blue-300">{mode === "sign-in" ? "Chưa có tài khoản? Đăng ký" : "Đã có tài khoản? Đăng nhập"}</button>
           </form>
         )}
         <Link to="/deals" className="block text-center text-slate-500 text-sm mt-6 hover:text-white">Tiếp tục không cần tài khoản</Link>

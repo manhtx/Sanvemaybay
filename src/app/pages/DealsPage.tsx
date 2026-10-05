@@ -14,6 +14,8 @@ import {
   RefreshCw,
   LoaderCircle,
   CircleCheckBig,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import { DealCard } from "../components/DealCard";
 import { Deal } from "../data/deals";
@@ -57,6 +59,7 @@ export function DealsPage() {
   const [observedUnavailable, setObservedUnavailable] = useState(false);
   const [observedHealth, setObservedHealth] = useState<Pick<ObservedFarePage, "status" | "feedAgeMinutes" | "latestObservedAt" | "retryable">>({ status: "provider_unavailable", retryable: true });
   const [mode, setMode] = useState<"observed" | "live">("observed");
+  const [viewMode, setViewMode] = useState<"cards" | "board">("cards");
   const [feed, setFeed] = useState<DealFeedResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [region, setRegion] = useState<RegionType>("all");
@@ -217,29 +220,25 @@ export function DealsPage() {
         {/* Page header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-3">
-            <div className="h-1.5 w-1.5 rounded-full bg-pink-400" />
-            <span className="text-xs font-bold tracking-[0.12em] text-pink-400 uppercase">
+            <div className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+            <span className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
               {mode === "observed" ? "Dữ Liệu Quan Sát Thị Trường" : "Deal Live Đã Xác Minh"}
             </span>
           </div>
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
-              <h1
-                className="mb-2 text-white"
-                style={{ fontSize: "clamp(1.75rem, 4vw, 2.25rem)", fontWeight: 800, letterSpacing: "-0.03em" }}
-              >
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
                 {pageHeadline}
               </h1>
               <p className="max-w-2xl text-sm leading-relaxed text-slate-400" aria-live="polite">
-                <span className={isDegraded ? "text-amber-300" : "text-sky-400"} style={{ fontWeight: 600 }}>
+                <span className={isDegraded ? "text-amber-300" : "text-slate-300"} style={{ fontWeight: 500 }}>
                   {pageSubtitle}
                 </span>
               </p>
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex min-h-11 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-sm text-slate-300 transition-colors hover:bg-white/[0.1] sm:hidden"
-              style={{ fontWeight: 600 }}
+              className="flex min-h-11 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-sm text-slate-300 transition-colors hover:bg-white/[0.1] sm:hidden font-medium"
             >
               <SlidersHorizontal className="w-4 h-4" />
               Bộ lọc
@@ -248,13 +247,58 @@ export function DealsPage() {
           </div>
         </div>
 
-        <div className="mb-6 inline-flex rounded-xl border border-white/10 bg-white/[0.04] p-1" role="tablist" aria-label="Loại giá vé">
-          <button type="button" role="tab" aria-selected={mode === "observed"} onClick={() => setMode("observed")} className={`min-h-11 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${mode === "observed" ? "bg-white text-slate-950 shadow-md" : "text-slate-400 hover:text-white"}`}>
-            Giá quan sát ({observedTotal})
-          </button>
-          <button type="button" role="tab" aria-selected={mode === "live"} onClick={() => setMode("live")} className={`min-h-11 rounded-lg px-4 py-2 text-sm font-semibold transition-all ${mode === "live" ? "bg-white text-slate-950 shadow-md" : "text-slate-400 hover:text-white"}`}>
-            Deal live ({deals.length})
-          </button>
+        {/* Controls Row: Mode Tabs & View Switcher */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="inline-flex rounded-lg border border-white/10 bg-white/[0.04] p-1" role="tablist" aria-label="Loại giá vé">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "observed"}
+              onClick={() => setMode("observed")}
+              className={`min-h-9 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                mode === "observed" ? "bg-white text-slate-950 shadow-sm" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Giá quan sát ({observedTotal})
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "live"}
+              onClick={() => setMode("live")}
+              className={`min-h-9 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                mode === "live" ? "bg-white text-slate-950 shadow-sm" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Deal live ({deals.length})
+            </button>
+          </div>
+
+          {/* Desktop View Switcher */}
+          <div className="hidden sm:inline-flex rounded-lg border border-white/10 bg-white/[0.04] p-1">
+            <button
+              type="button"
+              onClick={() => setViewMode("cards")}
+              aria-label="Chế độ xem thẻ"
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-all ${
+                viewMode === "cards" ? "bg-white/[0.12] text-white" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Dạng thẻ</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("board")}
+              aria-label="Chế độ xem bảng cước"
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-all ${
+                viewMode === "board" ? "bg-white/[0.12] text-white" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <List className="w-3.5 h-3.5" />
+              <span>Bảng cước (Fare Board)</span>
+            </button>
+          </div>
         </div>
 
         {!isSupabaseConfigured && (
@@ -583,35 +627,108 @@ export function DealsPage() {
           </div>
         )}
 
-        {/* ── DEALS GRID ── */}
+        {/* ── DEALS FEED: CARDS OR FARE BOARD ── */}
         {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map((deal: Deal) => (
-              <div key={deal.id} className="relative">
-                <DealCard deal={deal} />
-                <button
-                  type="button"
-                  aria-label={comparisonIds.includes(deal.id) ? `Bỏ ${deal.toCode} khỏi so sánh` : `So sánh ${deal.toCode}`}
-                  aria-pressed={comparisonIds.includes(deal.id)}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    setComparisonIds((current) => current.includes(deal.id)
-                      ? current.filter((id) => id !== deal.id)
-                      : current.length < 3 ? [...current, deal.id] : current);
-                  }}
-                  className={`absolute left-3 top-3 z-20 min-h-11 rounded-full border px-3 py-2 text-[10px] font-bold ${comparisonIds.includes(deal.id) ? "bg-sky-500 border-sky-400 text-white" : "bg-slate-950/80 border-white/20 text-slate-300"}`}
-                >
-                  {comparisonIds.includes(deal.id) ? "Đã chọn" : "So sánh"}
-                </button>
-              </div>
-            ))}
-          </div>
+          viewMode === "board" ? (
+            <div className="overflow-x-auto rounded-xl border border-white/[0.08] bg-[#121620]">
+              <table className="w-full text-left text-sm text-slate-300">
+                <thead className="border-b border-white/[0.08] bg-black/40 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <tr>
+                    <th className="py-3 px-4">Chặng bay</th>
+                    <th className="py-3 px-4">Hãng</th>
+                    <th className="py-3 px-4">Ngày bay</th>
+                    <th className="py-3 px-4">Thời lượng</th>
+                    <th className="py-3 px-4 text-right">Giá quan sát</th>
+                    <th className="py-3 px-4 text-right">Mức trung vị</th>
+                    <th className="py-3 px-4 text-center">Mức giảm</th>
+                    <th className="py-3 px-4 text-center">Bằng chứng</th>
+                    <th className="py-3 px-4 text-right">Chi tiết</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.04]">
+                  {filtered.map((deal: Deal) => (
+                    <tr key={deal.id} className="hover:bg-white/[0.03] transition-colors">
+                      <td className="py-3 px-4 whitespace-nowrap">
+                        <Link to={`/deals/${deal.id}`} className="hover:text-blue-400 flex items-center gap-1.5 font-bold text-white">
+                          <span>{deal.fromCode}</span>
+                          <span className="text-slate-500 font-normal">→</span>
+                          <span>{deal.toCode}</span>
+                          <span className="text-xs font-normal text-slate-400">({deal.to})</span>
+                        </Link>
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap text-xs text-slate-300">
+                        {deal.airline} {deal.airlineCode ? `(${deal.airlineCode})` : ""}
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap text-xs text-slate-400 tabular-nums">
+                        {new Date(deal.departDate).toLocaleDateString("vi-VN")}
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap text-xs text-slate-400">
+                        {deal.duration} · {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} stop`}
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap text-right font-extrabold text-white tabular-nums">
+                        {formatVND(deal.price)}
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap text-right text-xs text-slate-400 line-through tabular-nums">
+                        {formatVND(deal.normalPrice)}
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap text-center">
+                        <span className="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold tabular-nums">
+                          ↓{deal.discount}%
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap text-center text-xs">
+                        <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
+                          (deal.confidence ?? 0) >= 0.8 ? "text-emerald-300 bg-emerald-500/10" : "text-slate-300 bg-white/[0.04]"
+                        }`}>
+                          {(deal.confidence ?? 0) >= 0.8 ? "Cao" : (deal.confidence ?? 0) >= 0.5 ? "Vừa" : "Đang tích luỹ"}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap text-right">
+                        <Link
+                          to={`/deals/${deal.id}`}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-blue-400 hover:text-blue-300"
+                        >
+                          Xem →
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {filtered.map((deal: Deal) => (
+                <div key={deal.id} className="relative">
+                  <DealCard deal={deal} />
+                  <button
+                    type="button"
+                    aria-label={comparisonIds.includes(deal.id) ? `Bỏ ${deal.toCode} khỏi so sánh` : `So sánh ${deal.toCode}`}
+                    aria-pressed={comparisonIds.includes(deal.id)}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      setComparisonIds((current) => current.includes(deal.id)
+                        ? current.filter((id) => id !== deal.id)
+                        : current.length < 3 ? [...current, deal.id] : current);
+                    }}
+                    className={`absolute left-3 top-3 z-20 min-h-8 rounded-md border px-2.5 py-1 text-[10px] font-bold ${
+                      comparisonIds.includes(deal.id)
+                        ? "bg-blue-600 border-blue-500 text-white"
+                        : "bg-slate-900/90 border-white/20 text-slate-300 hover:bg-slate-800"
+                    }`}
+                  >
+                    {comparisonIds.includes(deal.id) ? "Đã chọn" : "So sánh"}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )
         ) : !isLoading && !isDegraded && !isStaleOnly && !isHealthyEmpty ? (
           <div className="text-center py-20">
             <SlidersHorizontal className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-            <p className="text-slate-500" style={{ fontWeight: 600 }}>Không có deal nào phù hợp</p>
-            <p className="text-slate-600 text-sm mt-1">
+            <p className="text-slate-400 font-semibold">Không có deal nào phù hợp</p>
+            <p className="text-slate-500 text-sm mt-1">
               {selectedWatchDest
                 ? `Chưa có deal đến ${selectedWatchDest} — hãy đặt alert để được thông báo ngay khi có!`
                 : "Thử thay đổi bộ lọc"}
@@ -619,8 +736,7 @@ export function DealsPage() {
             {selectedWatchDest && (
               <Link
                 to={`/alerts?destination=${encodeURIComponent(selectedWatchDest)}`}
-                className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl text-sm transition-colors"
-                style={{ fontWeight: 600 }}
+                className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm transition-colors font-semibold"
               >
                 <Bell className="w-4 h-4" />
                 Đặt Alert cho {selectedWatchDest}
@@ -643,7 +759,7 @@ export function DealsPage() {
                 setObservedFares((current) => [...current, ...next.fares.filter((fare) => !current.some((existing) => existing.id === fare.id))]);
                 setNextObservedPage(next.nextPage);
               }}
-              className="rounded-xl bg-sky-500 px-6 py-3 text-sm font-bold text-white hover:bg-sky-400"
+              className="rounded-xl bg-blue-600 hover:bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition-colors"
             >
               Xem thêm giá vé
             </button>
@@ -653,38 +769,38 @@ export function DealsPage() {
         {/* ── DISCLAIMER + ALERT CTA ── */}
         <div className="mt-12 space-y-4">
           {/* No date restriction note */}
-          <div className="flex items-start gap-3 p-4 bg-slate-900/60 border border-white/8 rounded-2xl">
-            <div className="w-8 h-8 bg-sky-500/10 rounded-lg flex items-center justify-center shrink-0">
-              <Clock className="w-4 h-4 text-sky-400" />
+          <div className="flex items-start gap-3 p-4 bg-white/[0.02] border border-white/[0.08] rounded-xl">
+            <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center shrink-0">
+              <Clock className="w-4 h-4 text-blue-400" />
             </div>
             <div>
-              <p className="text-white text-sm" style={{ fontWeight: 600 }}>
+              <p className="text-white text-sm font-semibold">
                 Không giới hạn thời điểm bay
               </p>
-              <p className="text-slate-500 text-sm">
+              <p className="text-slate-400 text-xs sm:text-sm mt-0.5">
                 {mode === "observed"
-                  ? "Giá được quét nền mỗi giờ và xếp theo mức chênh lệch so với nhóm tương đương. Luôn kiểm tra lại giá hiện tại trên nguồn."
+                  ? "Giá được quét nền định kỳ và xếp theo mức chênh lệch so với nhóm tương đương. Luôn kiểm tra lại giá hiện tại trên nguồn."
                   : "Chỉ các chuyến bay tương lai còn trong thời hạn xác minh mới được hiển thị. Giá có thể thay đổi khi bạn chuyển sang trang đặt vé."}
               </p>
             </div>
           </div>
 
           {/* Alert CTA */}
-          <div className="bg-gradient-to-r from-sky-500/10 via-violet-500/10 to-pink-500/10 border border-sky-500/20 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-4">
-            <div className="w-12 h-12 bg-sky-500/20 rounded-xl flex items-center justify-center shrink-0">
-              <TrendingDown className="w-6 h-6 text-sky-400" />
+          <div className="border border-white/[0.08] bg-[#121620] rounded-xl p-6 flex flex-col sm:flex-row items-center gap-4">
+            <div className="w-10 h-10 bg-blue-500/15 rounded-xl flex items-center justify-center shrink-0">
+              <TrendingDown className="w-5 h-5 text-blue-400" />
             </div>
             <div className="flex-1 text-center sm:text-left min-w-0">
-              <div className="text-white text-sm mb-1" style={{ fontWeight: 700 }}>
+              <div className="text-white text-sm mb-1 font-bold">
                 Muốn nhận thông báo khi có vé giá tốt đến điểm bạn cần?
               </div>
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
                 Cài đặt báo giá để Farely gửi thông báo qua Telegram hoặc Email ngay khi hệ thống phát hiện mức giá giảm sâu.
               </p>
             </div>
             <Link
               to="/alerts"
-              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-pink-500 hover:opacity-95 text-white rounded-xl text-sm shrink-0 transition-all font-bold w-full sm:w-auto shadow-lg shadow-pink-500/20"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm shrink-0 transition-colors font-semibold w-full sm:w-auto"
             >
               <Zap className="w-4 h-4" />
               Tạo Báo Giá Miễn Phí

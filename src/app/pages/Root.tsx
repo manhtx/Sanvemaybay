@@ -12,10 +12,10 @@ function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-orange-400 via-pink-500 to-violet-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Plane className="w-4 h-4 text-white" strokeWidth={2.5} />
               </div>
-              <span className="text-white" style={{ fontWeight: 800, fontSize: "1.15rem" }}>
+              <span className="text-white font-bold text-lg">
                 Farely
               </span>
             </div>

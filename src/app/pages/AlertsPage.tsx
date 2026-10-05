@@ -181,14 +181,14 @@ export function AlertsPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 via-pink-500 to-violet-600 shadow-lg shadow-pink-500/20">
-            <Bell className="w-7 h-7 text-white" />
+          <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/15 border border-blue-500/30">
+            <Bell className="w-6 h-6 text-blue-400" />
           </div>
-          <h1 className="text-white mb-3" style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-3">
             Theo Dõi Giá Vé (Price Watch)
           </h1>
           <p className="text-slate-400 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-            Farely sẽ tự động theo dõi và gửi thông báo qua email khi phát hiện cơ hội phù hợp trong các lần quét tiếp theo.
+            Farely quét giá liên tục nhiều lần mỗi ngày và gửi email thông báo khi phát hiện chuyến bay giảm sâu hơn ngưỡng bạn chọn.
           </p>
         </div>
 
@@ -197,10 +197,10 @@ export function AlertsPage() {
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Step 1: Channel */}
-              <div className="rounded-2xl border border-white/10 bg-[#171719] p-6">
+              <div className="rounded-xl border border-white/[0.08] bg-[#121620] p-6">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">1</div>
-                  <h2 className="text-white" style={{ fontWeight: 700 }}>Kênh nhận thông báo</h2>
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">1</div>
+                  <h2 className="text-white font-bold text-base">Kênh nhận thông báo</h2>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 mb-4">
@@ -211,16 +211,16 @@ export function AlertsPage() {
                         key={ch.value}
                         type="button"
                         onClick={() => setChannel(ch.value)}
-                        className={`flex items-center gap-3 p-4 rounded-xl border transition-all text-left ${
+                        className={`flex items-center gap-3 p-3.5 rounded-lg border transition-all text-left ${
                           channel === ch.value
-                            ? "bg-pink-500/15 border-pink-500/40 text-white"
-                            : "bg-slate-800/50 border-white/10 text-slate-400 hover:border-white/20"
+                            ? "bg-blue-600/15 border-blue-500/40 text-white"
+                            : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:border-white/20"
                         }`}
                       >
-                        <Icon className={`w-5 h-5 ${channel === ch.value ? "text-sky-400" : "text-slate-500"}`} />
+                        <Icon className={`w-5 h-5 ${channel === ch.value ? "text-blue-400" : "text-slate-500"}`} />
                         <div>
-                          <div className="text-sm" style={{ fontWeight: 700 }}>{ch.label}</div>
-                          <div className="text-xs opacity-70 mt-0.5">{ch.description}</div>
+                          <div className="text-sm font-semibold">{ch.label}</div>
+                          <div className="text-xs text-slate-400 mt-0.5">{ch.description}</div>
                         </div>
                       </button>
                     );
@@ -264,10 +264,10 @@ export function AlertsPage() {
               </div>
 
               {/* Step 2: Departure */}
-              <div className="rounded-2xl border border-white/10 bg-[#171719] p-6">
+              <div className="rounded-xl border border-white/[0.08] bg-[#121620] p-6">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">2</div>
-                  <h2 className="text-white" style={{ fontWeight: 700 }}>Sân bay khởi hành</h2>
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">2</div>
+                  <h2 className="text-white font-bold text-base">Sân bay khởi hành</h2>
                 </div>
                 <div className="flex gap-3 flex-wrap">
                   {departureCities.map((city) => (
@@ -279,12 +279,11 @@ export function AlertsPage() {
                         saveUserPreferences({ homeAirport: city.code });
                         void saveRemoteUserPreferences({ ...getUserPreferences(), homeAirport: city.code });
                       }}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm ${
+                      className={`flex items-center gap-2 px-3.5 py-2 rounded-lg border transition-all text-xs font-semibold ${
                         fromCity === city.code
-                          ? "bg-sky-500/15 border-sky-500/40 text-sky-400"
-                          : "bg-slate-800/50 border-white/10 text-slate-400 hover:border-white/20"
+                          ? "bg-blue-600/15 border-blue-500/40 text-blue-300"
+                          : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:border-white/20"
                       }`}
-                      style={{ fontWeight: 600 }}
                     >
                       {city.name} ({city.code})
                     </button>
@@ -293,10 +292,10 @@ export function AlertsPage() {
               </div>
 
               {/* Step 3: Destinations */}
-              <div className="rounded-2xl border border-white/10 bg-[#171719] p-6">
+              <div className="rounded-xl border border-white/[0.08] bg-[#121620] p-6">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">3</div>
-                  <h2 className="text-white" style={{ fontWeight: 700 }}>Điểm đến quan tâm</h2>
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">3</div>
+                  <h2 className="text-white font-bold text-base">Điểm đến quan tâm</h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {destinations.map((dest) => {
@@ -306,14 +305,14 @@ export function AlertsPage() {
                         key={dest.code}
                         type="button"
                         onClick={() => toggleDest(dest.code)}
-                        className={`flex items-center gap-2.5 p-3 rounded-xl border transition-all ${
+                        className={`flex items-center gap-2.5 p-3 rounded-lg border transition-all ${
                           selected
-                            ? "bg-sky-500/15 border-sky-500/40 text-white"
-                            : "bg-slate-800/50 border-white/10 text-slate-400 hover:border-white/20"
+                            ? "bg-blue-600/15 border-blue-500/40 text-white"
+                            : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:border-white/20"
                         }`}
                       >
-                        <span className="text-sm" style={{ fontWeight: 600 }}>{dest.name}</span>
-                        {selected && <CheckCircle className="w-4 h-4 text-sky-400 ml-auto" />}
+                        <span className="text-sm font-semibold">{dest.name}</span>
+                        {selected && <CheckCircle className="w-4 h-4 text-blue-400 ml-auto" />}
                       </button>
                     );
                   })}
@@ -326,24 +325,23 @@ export function AlertsPage() {
               </div>
 
               {/* Step 4: Discount threshold */}
-              <div className="rounded-2xl border border-white/10 bg-[#171719] p-6">
+              <div className="rounded-xl border border-white/[0.08] bg-[#121620] p-6">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">4</div>
-                  <h2 className="text-white" style={{ fontWeight: 700 }}>Ngưỡng giảm giá</h2>
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">4</div>
+                  <h2 className="text-white font-bold text-base">Ngưỡng giảm giá</h2>
                 </div>
-                <p className="text-slate-500 text-sm mb-4">Chỉ nhận thông báo khi giá giảm ít nhất bao nhiêu?</p>
-                <div className="flex gap-3 flex-wrap">
+                <p className="text-slate-400 text-xs mb-4">Chỉ nhận thông báo khi giá giảm ít nhất bao nhiêu?</p>
+                <div className="flex gap-2.5 flex-wrap">
                   {discountLevels.map((level) => (
                     <button
                       key={level.value}
                       type="button"
                       onClick={() => setDiscount(level.value)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm ${
+                      className={`flex items-center gap-2 px-3.5 py-2 rounded-lg border transition-all text-xs font-semibold ${
                         discount === level.value
                           ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400"
-                          : "bg-slate-800/50 border-white/10 text-slate-400 hover:border-white/20"
+                          : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:border-white/20"
                       }`}
-                      style={{ fontWeight: 600 }}
                     >
                       <TrendingDown className="w-3.5 h-3.5" />
                       {level.label}
@@ -353,20 +351,20 @@ export function AlertsPage() {
               </div>
 
               {/* Step 5: Advanced Personalization (Module 6.2) */}
-              <div className="space-y-8 rounded-2xl border border-white/10 bg-[#171719] p-6">
+              <div className="space-y-6 rounded-xl border border-white/[0.08] bg-[#121620] p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs font-extrabold text-white">5</div>
-                    <h2 className="text-white" style={{ fontWeight: 700 }}>Tùy chỉnh cá nhân</h2>
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">5</div>
+                    <h2 className="text-white font-bold text-base">Tùy chỉnh cá nhân</h2>
                   </div>
-                  <span className="text-[10px] bg-sky-500/10 text-sky-400 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Bộ lọc dữ liệu</span>
+                  <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Bộ lọc dữ liệu</span>
                 </div>
 
                 {/* Budget Max */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-slate-400 text-sm font-bold uppercase tracking-wider">Ngân sách tối đa</label>
-                    <span className="text-sky-400 font-black">{formatVND(budgetMax)}</span>
+                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider">Ngân sách tối đa</label>
+                    <span className="text-emerald-400 font-bold tabular-nums">{formatVND(budgetMax)}</span>
                   </div>
                   <input aria-label="Ngưỡng giảm giá tối thiểu"
                     type="range" 
@@ -380,35 +378,35 @@ export function AlertsPage() {
                       saveUserPreferences({ budget: nextBudget });
                       void saveRemoteUserPreferences({ ...getUserPreferences(), budget: nextBudget });
                     }}
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
+                    className="w-full"
                   />
-                  <div className="flex justify-between text-[10px] text-slate-600 font-bold">
+                  <div className="flex justify-between text-[10px] text-slate-500 font-medium">
                     <span>1.0M</span>
                     <span>50.0M</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-white/5">
-                  <div className="sm:col-span-2 space-y-3">
-                    <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest block">Khoảng ngày khởi hành (tuỳ chọn)</label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <input aria-label="Ngày đi từ" type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm" />
-                      <input aria-label="Ngày đi đến" type="date" value={dateTo} min={dateFrom || undefined} onChange={(e) => setDateTo(e.target.value)} className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-white/[0.06]">
+                  <div className="sm:col-span-2 space-y-2">
+                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">Khoảng ngày khởi hành (tuỳ chọn)</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <input aria-label="Ngày đi từ" type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-full bg-black/40 border border-white/[0.1] text-white rounded-lg px-3 py-2 text-xs" />
+                      <input aria-label="Ngày đi đến" type="date" value={dateTo} min={dateFrom || undefined} onChange={(e) => setDateTo(e.target.value)} className="w-full bg-black/40 border border-white/[0.1] text-white rounded-lg px-3 py-2 text-xs" />
                     </div>
                   </div>
                   {/* Regions */}
-                  <div className="space-y-3">
-                    <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest block">Khu vực ưa thích</label>
+                  <div className="space-y-2">
+                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">Khu vực ưa thích</label>
                     <div className="flex gap-2">
                       {["Domestic", "International"].map(r => (
                         <button
                           key={r}
                           type="button"
                           onClick={() => setPreferredRegions(prev => prev.includes(r) ? prev.filter(x => x !== r) : [...prev, r])}
-                          className={`flex-1 py-2 text-xs font-bold rounded-xl border transition-all ${
+                          className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${
                             preferredRegions.includes(r) 
-                              ? "bg-sky-500/20 border-sky-500/40 text-sky-400" 
-                              : "bg-slate-800/50 border-white/5 text-slate-500"
+                              ? "bg-blue-600/20 border-blue-500/40 text-blue-300" 
+                              : "bg-white/[0.02] border-white/[0.06] text-slate-400"
                           }`}
                         >
                           {r === "Domestic" ? "🇻🇳 Nội địa" : "🌏 Quốc tế"}
@@ -418,18 +416,18 @@ export function AlertsPage() {
                   </div>
 
                   {/* Frequency */}
-                  <div className="space-y-3">
-                    <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest block">Tần suất báo</label>
+                  <div className="space-y-2">
+                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">Tần suất báo</label>
                     <div className="flex gap-2">
                       {["instant", "daily"].map(f => (
                         <button
                           key={f}
                           type="button"
                           onClick={() => setFrequency(f)}
-                          className={`flex-1 py-2 text-xs font-bold rounded-xl border transition-all ${
+                          className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${
                             frequency === f
-                              ? "bg-violet-500/20 border-violet-500/40 text-violet-400" 
-                              : "bg-slate-800/50 border-white/5 text-slate-500"
+                              ? "bg-blue-600/20 border-blue-500/40 text-blue-300" 
+                              : "bg-white/[0.02] border-white/[0.06] text-slate-400"
                           }`}
                         >
                           {f === "instant" ? "Tức thì" : "Mỗi ngày"}
@@ -452,14 +450,13 @@ export function AlertsPage() {
               <button
                 type="submit"
                 disabled={isSubmitting || !turnstileSiteKey || !turnstileToken}
-                className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 py-4 text-white transition-all hover:opacity-90 disabled:opacity-50"
-                style={{ fontWeight: 700, fontSize: "1rem" }}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 py-3.5 text-white font-semibold text-sm transition-all disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
                 ) : (
                   <>
-                    <Zap className="w-5 h-5" />
+                    <Zap className="w-4 h-4" />
                     Tạo Alert Miễn Phí
                   </>
                 )}
@@ -470,20 +467,20 @@ export function AlertsPage() {
           {/* Right sidebar */}
           <div className="space-y-6">
             {/* Preview */}
-            <div className="bg-slate-900 border border-sky-500/20 rounded-2xl p-5">
+            <div className="bg-[#121620] border border-white/[0.08] rounded-xl p-5">
               <div className="flex items-center gap-2 mb-4">
-                <Bell className="w-4 h-4 text-sky-400" />
-                <span className="text-white text-sm" style={{ fontWeight: 700 }}>Preview thông báo</span>
+                <Bell className="w-4 h-4 text-blue-400" />
+                <span className="text-white text-sm font-bold">Xem trước thông báo mẫu</span>
               </div>
 
-              <div className="bg-slate-800 rounded-xl p-4 border border-white/8">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-orange-400 via-pink-500 to-violet-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-xs" style={{ fontWeight: 800 }}>FA</span>
+              <div className="bg-black/30 rounded-lg p-4 border border-white/[0.06]">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="w-7 h-7 bg-blue-600 rounded-md flex items-center justify-center">
+                    <span className="text-white text-[10px] font-black">FA</span>
                   </div>
                   <div>
-                    <div className="text-white text-xs" style={{ fontWeight: 700 }}>Farely Alert</div>
-                    <div className="text-slate-500 text-xs">vừa xong</div>
+                    <div className="text-white text-xs font-bold">Farely Alert</div>
+                    <div className="text-slate-500 text-[10px]">vừa xong</div>
                   </div>
                 </div>
                 <p className="text-slate-300 text-sm leading-relaxed">

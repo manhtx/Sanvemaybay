@@ -126,9 +126,9 @@ export function DealDetailPage() {
             </button>
             <Link
               to={`/alerts?destination=${encodeURIComponent(deal.toCode)}&origin=${encodeURIComponent(deal.fromCode)}`}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90"
+              className="flex items-center gap-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors"
             >
-              <Bell className="w-4 h-4" />
+              <Bell className="w-3.5 h-3.5" />
               Theo dõi giá
             </Link>
           </div>
@@ -428,22 +428,22 @@ export function DealDetailPage() {
                     href={bookingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 py-5 text-xl font-black text-white shadow-lg shadow-pink-500/20 transition-all hover:opacity-90 active:scale-[0.98]"
+                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 py-4 text-base font-bold text-white shadow-sm transition-all active:scale-[0.98]"
                   >
                     {deal.linkKind === "indicative" ? "Kiểm tra giá hiện tại trên Google Flights" : "✈️ Đặt vé ngay"}
-                    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </a>
                 );
               })()}
             </div>
 
             {/* Risk Warning (Module 3.3) */}
-            <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5 flex gap-4">
-              <AlertTriangle className="w-6 h-6 text-amber-500 shrink-0" />
+            <div className="bg-white/[0.02] border border-white/[0.08] rounded-xl p-5 flex gap-4">
+              <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
               <div>
-                <div className="text-amber-500 font-bold text-sm uppercase tracking-wide">Lưu ý rủi ro</div>
+                <div className="text-white font-semibold text-xs uppercase tracking-wider">Lưu ý rủi ro biến động giá</div>
                 <p className="text-slate-400 text-xs mt-1 leading-relaxed">
-                  Giá vé có thể thay đổi nhanh chóng tùy thuộc vào hãng hàng không. Hãy đặt vé ngay khi có thể để giữ giá tốt nhất.
+                  Giá vé có thể thay đổi nhanh chóng tùy thuộc vào số lượng chỗ trống thực tế của hãng. Bạn nên kiểm tra lại trước khi lên lịch trình.
                 </p>
               </div>
             </div>
@@ -451,6 +451,48 @@ export function DealDetailPage() {
 
         </div>
       </main>
+
+      {/* ── MOBILE STICKY BOTTOM ACTION BAR ── */}
+      <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0b0e14]/95 border-t border-white/[0.08] backdrop-blur-md p-3">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-xs text-slate-400">Giá quan sát:</div>
+            <div className="text-lg font-black text-white tabular-nums">{formatVND(deal.price)}</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link
+              to={`/alerts?destination=${encodeURIComponent(deal.toCode)}&origin=${encodeURIComponent(deal.fromCode)}`}
+              className="p-2.5 rounded-lg border border-white/10 bg-white/[0.05] text-slate-300"
+              aria-label="Theo dõi tuyến này"
+            >
+              <Bell className="w-4 h-4" />
+            </Link>
+            {(() => {
+              const fallbackUrl = getBestBookingUrl({
+                fromCode: deal.fromCode,
+                toCode: deal.toCode,
+                departDate: deal.departDate,
+                returnDate: deal.returnDate,
+                airline: deal.airline,
+                airlineCode: deal.airlineCode,
+                tripType: deal.tripType,
+                price: deal.price,
+              });
+              const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
+              return (
+                <a
+                  href={bookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs"
+                >
+                  Kiểm tra giá
+                </a>
+              );
+            })()}
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
