@@ -29,11 +29,10 @@ function Footer() {
             <h4 className="text-white text-sm mb-3" style={{ fontWeight: 600 }}>Sản phẩm</h4>
             <ul className="space-y-2">
               {[
-                { label: "Deal Nóng", href: "/deals" },
-                { label: "Tìm Vé Thông Minh", href: "/search" },
-                { label: "Cài Báo Giá", href: "/alerts" },
-                { label: "Cố Vấn Hành Trình", href: "/advisor" },
-                { label: "Deal đã lưu", href: "/saved" },
+                { label: "Cơ hội tốt", href: "/deals" },
+                { label: "Tìm kiếm cơ hội", href: "/search" },
+                { label: "Theo dõi chuyến", href: "/alerts" },
+                { label: "Cơ hội đã lưu", href: "/saved" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link to={item.href} className="text-slate-500 hover:text-slate-300 text-sm transition-colors">
@@ -51,7 +50,7 @@ function Footer() {
               {[
                 "Theo dõi lịch sử giá",
                 "Minh bạch tổng chi phí thực tế",
-                "Cảnh báo Email & Telegram",
+                "Cảnh báo Email tự động",
                 "Đánh giá rủi ro & điểm dừng",
               ].map((item) => (
                 <li key={item}>
@@ -63,14 +62,14 @@ function Footer() {
 
           {/* Phase */}
           <div>
-            <h4 className="text-white text-sm mb-3" style={{ fontWeight: 600 }}>Giai đoạn</h4>
+            <h4 className="text-white text-sm mb-3" style={{ fontWeight: 600 }}>Trạng thái</h4>
             <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                <span className="text-emerald-400 text-xs" style={{ fontWeight: 700 }}>BETA TRỰC TUYẾN</span>
+                <span className="text-emerald-400 text-xs" style={{ fontWeight: 700 }}>HỆ THỐNG TRỰC TUYẾN</span>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed">
-                Miễn phí cho người dùng. Dữ liệu đối chiếu theo lịch sử và được cập nhật liên tục từ các nguồn chuyến bay.
+                Theo dõi 2.800+ mức giá thời gian thực trên 88 tuyến bay. Dữ liệu độc lập, minh bạch và cập nhật liên tục.
               </p>
             </div>
           </div>
@@ -83,6 +82,7 @@ function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
             <Link to="/privacy" className="min-h-11 py-3 text-slate-500 hover:text-slate-300">Quyền riêng tư</Link>
             <Link to="/terms" className="min-h-11 py-3 text-slate-500 hover:text-slate-300">Điều khoản</Link>
+            <a href="mailto:support@farely.manhtx.com" className="min-h-11 py-3 text-sky-400 hover:text-sky-300">Hỗ trợ (support@farely.manhtx.com)</a>
             <p className="text-slate-600">Giá mang tính tham khảo tại thời điểm quan sát. Luôn kiểm tra lại trước khi đặt vé.</p>
           </div>
         </div>

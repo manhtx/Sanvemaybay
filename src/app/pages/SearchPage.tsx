@@ -98,13 +98,13 @@ export function SearchPage() {
             >
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-3 py-1">
                 <Search className="w-3.5 h-3.5 text-sky-400" />
-                <span className="text-[10px] font-bold uppercase tracking-wider text-pink-400">Tìm dữ liệu quan sát + provider live</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-pink-400">Dữ liệu quan sát đa nguồn</span>
               </div>
               <h1 className="mb-4 text-4xl font-extrabold leading-tight tracking-tight text-white">
-                Quét Deal <span className="text-pink-400">Thông Minh</span>
+                Tìm Kiếm <span className="text-pink-400">Cơ Hội Vé</span>
               </h1>
               <p className="text-slate-400 text-lg max-w-md">
-                Lọc các mức giá đã được hệ thống ghi nhận theo <span className="text-white font-medium">điểm khởi hành</span> và <span className="text-white font-medium">ngân sách</span>.
+                Lọc các mức giá quan sát thực tế theo điểm khởi hành, điểm đến và mức ngân sách dự kiến của bạn.
               </p>
             </motion.div>
 
@@ -140,7 +140,7 @@ export function SearchPage() {
                 Điểm đến (tuỳ chọn)
               </label>
               <input id="search-destination" value={destination} onChange={(event) => setDestination(event.target.value)}
-                placeholder="Ví dụ: BKK, Bangkok, Thái Lan" className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500/40" />
+                placeholder="Ví dụ: BKK, Bangkok, Đà Nẵng, Phú Quốc" className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500/40" />
               <p className="text-slate-500 text-xs mt-2">Tìm theo mã sân bay, tên thành phố hoặc quốc gia.</p>
             </div>
 
@@ -157,21 +157,46 @@ export function SearchPage() {
               <p className="text-slate-500 text-xs mt-2">Bao gồm cả ngày bắt đầu và ngày kết thúc.</p>
             </div>
 
-            {/* Budget Slider */}
+            {/* Budget Slider & Presets */}
             <div className="rounded-2xl border border-white/10 bg-[#171719] p-5">
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-4">
                 <label className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest">
                   <SlidersHorizontal className="w-4 h-4 text-emerald-500" />
                   Ngân sách tối đa
                 </label>
                 <span className="text-emerald-400 text-lg font-black">{formatVND(budget)}</span>
               </div>
+              
+              {/* Presets */}
+              <div className="flex gap-2 flex-wrap mb-4">
+                {[
+                  { label: "< 1.5M", val: 1500000 },
+                  { label: "3M", val: 3000000 },
+                  { label: "5M", val: 5000000 },
+                  { label: "10M", val: 10000000 },
+                  { label: "Tất cả", val: 50000000 },
+                ].map(({ label, val }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => {
+                      setBudget(val);
+                      saveUserPreferences({ budget: val });
+                      void saveRemoteUserPreferences({ ...getUserPreferences(), budget: val });
+                    }}
+                    className={`px-2.5 py-1 text-xs rounded-lg border font-semibold transition-colors ${budget === val ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300" : "bg-slate-800 border-white/5 text-slate-400 hover:text-white"}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
               <input
                 aria-label="Ngân sách tối đa"
                 type="range"
-                min={2000000}
+                min={1500000}
                 max={50000000}
-                step={1000000}
+                step={500000}
                 value={budget}
                 onChange={(e) => {
                   const nextBudget = Number(e.target.value);
@@ -182,7 +207,7 @@ export function SearchPage() {
                 className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
               <div className="flex justify-between mt-3 text-[10px] font-bold text-slate-600 uppercase">
-                <span>2M</span>
+                <span>1.5M</span>
                 <span>25M</span>
                 <span>50M</span>
               </div>
@@ -233,15 +258,15 @@ export function SearchPage() {
             {/* CTA Refresh */}
             <button
               onClick={() => runSearch(true)}
-              className="group flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 text-lg font-black text-white shadow-lg shadow-pink-500/15 transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+              className="group flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-violet-600 text-lg font-bold text-white shadow-lg shadow-pink-500/15 transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={isScanning}
             >
               {isScanning ? (
-                <RefreshCw className="w-6 h-6 animate-spin" />
+                <RefreshCw className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  <Search className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  QUÉT DEAL NGAY
+                  <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Tìm cơ hội
                 </>
               )}
             </button>

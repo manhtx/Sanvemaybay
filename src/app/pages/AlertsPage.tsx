@@ -185,10 +185,10 @@ export function AlertsPage() {
             <Bell className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-white mb-3" style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 800, letterSpacing: "-0.03em" }}>
-            Cài Báo Giá Thông Minh
+            Theo Dõi Giá Vé (Price Watch)
           </h1>
-          <p className="text-slate-500 max-w-lg mx-auto">
-            Nhận thông báo khi hệ thống phát hiện deal đạt điều kiện — qua Telegram hoặc Email trong giai đoạn Beta.
+          <p className="text-slate-400 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
+            Farely sẽ tự động theo dõi và gửi thông báo qua email khi phát hiện cơ hội phù hợp trong các lần quét tiếp theo.
           </p>
         </div>
 
@@ -230,7 +230,7 @@ export function AlertsPage() {
                 {/* Email always shown */}
                 <div>
                   <label className="text-slate-500 text-xs mb-2 block" style={{ fontWeight: 600 }}>
-                    📧 Địa chỉ Email <span className="text-sky-400">(để nhận xác nhận)</span>
+                    📧 Địa chỉ Email nhận thông báo
                   </label>
                   <input
                     aria-label="Email nhận xác nhận báo giá"
@@ -241,13 +241,16 @@ export function AlertsPage() {
                     required
                     className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm placeholder-slate-600 focus:outline-none focus:border-sky-500/40"
                   />
+                  <p className="text-[11px] text-slate-500 mt-2">
+                    Farely bảo mật email của bạn và chỉ gửi thông báo khi có mức giá đạt tiêu chí.
+                  </p>
                 </div>
                 
-                {/* Telegram Chat ID — only shown when Telegram channel selected */}
+                {/* Telegram Chat ID — optional when Telegram channel selected */}
                 {channel === "telegram" && (
                   <div className="mt-3">
                     <label className="text-slate-500 text-xs mb-2 block" style={{ fontWeight: 600 }}>
-                      ✈️ Telegram Chat ID
+                      ✈️ Telegram Chat ID (tuỳ chọn)
                     </label>
                     <input
                       type="text"
@@ -476,7 +479,7 @@ export function AlertsPage() {
               <div className="bg-slate-800 rounded-xl p-4 border border-white/8">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-orange-400 via-pink-500 to-violet-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-xs" style={{ fontWeight: 800 }}>FL</span>
+                    <span className="text-white text-xs" style={{ fontWeight: 800 }}>FA</span>
                   </div>
                   <div>
                     <div className="text-white text-xs" style={{ fontWeight: 700 }}>Farely Alert</div>

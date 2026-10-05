@@ -271,17 +271,17 @@ export function DealDetailPage() {
                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500 shadow-lg shadow-sky-500/30">
                      <span className="text-white font-black text-sm">DATA</span>
                    </div>
-                   <h3 className="text-xl font-black text-sky-300">Vì sao hệ thống đánh dấu là deal?</h3>
+                   <h3 className="text-xl font-black text-sky-300">Căn cứ đánh dấu cơ hội</h3>
                  </div>
                  <p className="text-slate-300 leading-relaxed text-lg">
                     {aiReasoning}
                  </p>
                  <div className="mt-6 flex flex-wrap gap-4">
                     <div className="flex items-center gap-2 text-sky-400 bg-sky-400/10 px-4 py-2 rounded-xl text-sm font-bold">
-                       <CheckCircle2 className="w-4 h-4" /> Điểm deal {deal.dealScore ?? deal.aiInsight.savingScore}/100
+                       <CheckCircle2 className="w-4 h-4" /> Mức độ đáng chú ý {deal.dealScore ?? deal.aiInsight.savingScore}/100
                     </div>
                     <div className="flex items-center gap-2 text-emerald-400 bg-emerald-400/10 px-4 py-2 rounded-xl text-sm font-bold">
-                       <TrendingDown className="w-4 h-4" /> Thấp hơn mức tham chiếu {deal.discount}%
+                       <TrendingDown className="w-4 h-4" /> Thấp hơn mức trung vị thường gặp {deal.discount}%
                     </div>
                  </div>
                </div>
@@ -330,29 +330,25 @@ export function DealDetailPage() {
                 </button>
               </div>
 
-              {/* Confidence Meter */}
-              {confidence != null && (
-                <div className="mb-8">
-                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-bold text-slate-400">Độ tin cậy của dữ liệu</span>
-                    <span className="text-sky-400 font-black">{confidence}%</span>
-                 </div>
-                 <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <motion.div 
-                       initial={{ width: 0 }}
-                       animate={{ width: `${confidence}%` }}
-                       className="h-full bg-gradient-to-r from-pink-500 to-violet-500"
-                    />
-                 </div>
-                 <p className="text-[11px] text-slate-500 mt-2 leading-tight">
-                    Phân tích dựa trên các lần quan sát giá trong 30 ngày gần nhất.
-                 </p>
+              {/* Evidence Profile */}
+              <div className="mb-8 rounded-xl border border-white/5 bg-slate-900/50 p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-bold text-slate-300">Chất lượng bằng chứng</span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${(deal.confidence ?? 0) >= 0.8 ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" : (deal.confidence ?? 0) >= 0.5 ? "text-sky-400 bg-sky-500/10 border-sky-500/20" : "text-slate-400 bg-slate-500/10 border-slate-500/20"}`}>
+                    {(deal.confidence ?? 0) >= 0.8 ? "Độ tin cậy cao" : (deal.confidence ?? 0) >= 0.5 ? "Độ tin cậy vừa" : "Đang tích luỹ dữ liệu"}
+                  </span>
                 </div>
-              )}
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Đối chiếu từ nhiều lần quan sát giá độc lập. Không suy đoán khi chưa đủ chu kỳ ghi nhận.
+                </p>
+              </div>
 
-              {/* Price breakdown: only display costs supplied by the provider. */}
+              {/* Price breakdown: known vs unverified */}
               <div className="space-y-4 mb-8">
-                <h4 className="text-sm font-black text-slate-500 uppercase tracking-widest">Chi phí đã biết</h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Chi phí đã biết (Known)</h4>
+                  <span className="text-[10px] text-emerald-400 font-medium">Đã gồm thuế sân bay</span>
+                </div>
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Giá vé cơ bản</span>

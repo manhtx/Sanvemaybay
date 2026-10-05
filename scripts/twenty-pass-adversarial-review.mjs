@@ -532,7 +532,7 @@ try {
     const page = await ctx.newPage();
     
     await page.goto(`${PRODUCTION_URL}/deals`, { waitUntil: "networkidle" });
-    await page.waitForTimeout(500);
+    await page.waitForSelector("a[href^='/deals/observed-']", { timeout: 10000 });
 
     // Check no horizontal scroll overflow on body
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);

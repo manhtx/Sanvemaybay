@@ -127,7 +127,7 @@ export function DealCard({ deal }: DealCardProps) {
           <div className="mb-3 flex items-end justify-between gap-3">
             <div>
               {deal.normalPrice > deal.price && (
-                <div className="text-slate-500 text-xs line-through">Mặt bằng {formatVND(deal.normalPrice)}</div>
+                <div className="text-slate-500 text-xs line-through">Thường gặp {formatVND(deal.normalPrice)}</div>
               )}
               <div className="text-2xl font-extrabold tracking-tight text-emerald-300">
                 {formatVND(deal.price)}
@@ -200,10 +200,16 @@ export function DealCard({ deal }: DealCardProps) {
               <Clock className="w-3 h-3" />
               <span style={{ fontWeight: 600 }}>{deal.expiresIn}</span>
             </div>
-            <div className="flex items-center gap-1 text-slate-500 text-xs">
-              <Users className="w-3 h-3" />
-              <span>{deal.seatsLeft > 0 ? `Còn ${deal.seatsLeft} ghế` : "Chưa có dữ liệu ghế"}</span>
-            </div>
+            {deal.seatsLeft > 0 ? (
+              <div className="flex items-center gap-1 text-slate-500 text-xs">
+                <Users className="w-3 h-3" />
+                <span>Còn {deal.seatsLeft} ghế</span>
+              </div>
+            ) : (
+              <div className="text-slate-500 text-[10px]">
+                {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
+              </div>
+            )}
           </div>
           {formatObservedAt(deal.observedAt) && (
             <p className="text-slate-600 text-[10px] mt-2">

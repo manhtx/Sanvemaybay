@@ -15,12 +15,10 @@ import {
 } from "lucide-react";
 
 const navLinks = [
-  { label: "Deal Nóng", href: "/deals", icon: TrendingDown },
-  { label: "Lịch Sử Giá", href: "/historical-deals", icon: History },
-  { label: "Tìm Vé Thông Minh", href: "/search", icon: Search },
-  { label: "Cài Báo Giá", href: "/alerts", icon: Bell },
-  { label: "Cố Vấn Hành Trình", href: "/advisor", icon: Compass },
-  { label: "Đã Lưu", href: "/saved", icon: Bookmark },
+  { label: "Cơ hội", href: "/deals", icon: TrendingDown },
+  { label: "Tìm kiếm", href: "/search", icon: Search },
+  { label: "Theo dõi", href: "/alerts", icon: Bell },
+  { label: "Đã lưu", href: "/saved", icon: Bookmark },
 ];
 
 function Brand() {
@@ -76,7 +74,7 @@ export function Navbar() {
             className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-pink-500/20 transition-all hover:opacity-95 hover:shadow-pink-500/30"
           >
             <Zap className="h-4 w-4" />
-            <span>Tạo Báo Giá</span>
+            <span>Theo dõi chuyến</span>
           </Link>
           <Link
             to="/auth"
@@ -94,7 +92,7 @@ export function Navbar() {
             className="flex items-center gap-1.5 rounded-lg bg-pink-500/20 border border-pink-500/30 px-2.5 py-1.5 text-xs font-semibold text-pink-300"
           >
             <Zap className="h-3.5 w-3.5" />
-            <span>Báo giá</span>
+            <span>Theo dõi</span>
           </Link>
           <button
             type="button"
@@ -134,7 +132,7 @@ export function Navbar() {
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-pink-500/20"
           >
             <Zap className="h-4 w-4" />
-            <span>Đặt Báo Giá Miễn Phí</span>
+            <span>Theo dõi chuyến</span>
           </Link>
           <Link
             to="/auth"
