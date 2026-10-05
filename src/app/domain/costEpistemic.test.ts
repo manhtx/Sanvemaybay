@@ -44,4 +44,17 @@ describe("evaluateTrueCost - Negative Controls & Epistemic Correctness", () => {
     expect(result.hasUnknownMandatory).toBe(true);
     expect(result.totalLabel).toBe("Tổng ước tính");
   });
+
+  it("Negative Control: carrier identity alone (e.g. VN/SQ) does NOT mark baggage as KNOWN", () => {
+    const result = evaluateTrueCost({
+      basePrice: 2000000,
+      airlineCode: "VN",
+    });
+
+    expect(result.isBaggageIncluded).toBe(false);
+    expect(result.baggageState).toBe("UNKNOWN");
+    const baggageComponent = result.components.find((c) => c.category === "checked_baggage");
+    expect(baggageComponent?.state).toBe("UNKNOWN");
+    expect(baggageComponent?.amount).toBeNull();
+  });
 });

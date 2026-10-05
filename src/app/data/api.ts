@@ -728,9 +728,17 @@ export function filterDeals(deals: Deal[], params: {
   };
   return deals.filter((d) => {
     if (params.budget && d.price > params.budget) return false;
-    if (params.from && d.fromCode !== params.from && (!canonicalFrom || d.fromCode !== canonicalFrom.code)) return false;
+    if (params.from) {
+      const allowedFrom = canonicalFrom?.servedAirports && canonicalFrom.servedAirports.length > 0
+        ? canonicalFrom.servedAirports
+        : [params.from, canonicalFrom?.code].filter(Boolean);
+      if (!allowedFrom.includes(d.fromCode)) return false;
+    }
     if (canonicalDest) {
-      if (d.toCode !== canonicalDest.code) return false;
+      const allowedDest = canonicalDest.servedAirports && canonicalDest.servedAirports.length > 0
+        ? canonicalDest.servedAirports
+        : [canonicalDest.code];
+      if (!allowedDest.includes(d.toCode)) return false;
     } else if (destination && !`${d.to} ${d.toCode} ${d.country}`.toLocaleLowerCase("vi").includes(destination)) {
       return false;
     }

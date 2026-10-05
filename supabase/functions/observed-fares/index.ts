@@ -39,16 +39,16 @@ Deno.serve(async (request) => {
     const start = (page - 1) * pageSize;
     const { data: activeGen } = await service
       .from("active_observed_generation")
-      .select("generation_id")
+      .select("active_generation_id")
       .eq("id", 1)
       .maybeSingle();
 
     let query = service.from("observed_fare_snapshots")
-      .select("dedupe_key,observation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at", { count: "exact" })
+      .select("dedupe_key,observation_id,generation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at", { count: "exact" })
       .gte("depart_date", new Date().toISOString().slice(0, 10));
 
-    if (activeGen?.generation_id) {
-      query = query.eq("generation_id", activeGen.generation_id);
+    if (activeGen?.active_generation_id) {
+      query = query.eq("generation_id", activeGen.active_generation_id);
     }
 
     const targetId = typeof body.id === "string" && body.id
@@ -138,9 +138,13 @@ Deno.serve(async (request) => {
     }
 
     query = query.range(start, start + pageSize - 1);
+    let latestQuery = service.from("observed_fare_snapshots").select("observed_at").order("observed_at", { ascending: false }).limit(1);
+    if (activeGen?.active_generation_id) {
+      latestQuery = latestQuery.eq("generation_id", activeGen.active_generation_id);
+    }
     const [{ data, error, count }, latestResult] = await Promise.all([
       query,
-      service.from("observed_fare_snapshots").select("observed_at").order("observed_at", { ascending: false }).limit(1).maybeSingle(),
+      latestQuery.maybeSingle(),
     ]);
     if (error) throw error;
     if (latestResult.error) throw latestResult.error;
@@ -149,7 +153,7 @@ Deno.serve(async (request) => {
     const fares = (data ?? []).map((row) => ({
       ...row,
       id: row.observation_id,
-      opportunity_id: [row.origin_code, row.destination_code, row.depart_date, row.return_date ?? "", row.airline_code, row.stops].join(":"),
+      opportunity_id: [row.origin_code, row.destination_code, row.depart_date, row.return_date ?? "", row.airline_code, row.flight_number ?? "", row.stops ?? 0].join(":"),
       date: row.depart_date,
       timestamp: row.observed_at,
       freshness_minutes: Math.max(0, Math.round((Date.now() - Date.parse(row.observed_at)) / 60_000)),
@@ -161,6 +165,7 @@ Deno.serve(async (request) => {
       page,
       page_size: pageSize,
       next_page: start + pageSize < total ? page + 1 : null,
+      active_generation_id: activeGen?.active_generation_id ?? null,
       generated_at: new Date().toISOString(),
       latest_observed_at: health.latestObservedAt,
       feed_age_minutes: health.ageMinutes,

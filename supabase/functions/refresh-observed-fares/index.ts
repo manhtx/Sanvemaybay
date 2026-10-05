@@ -122,15 +122,22 @@ Deno.serve(async (request) => {
 
     // 3. Transactionally switch active generation if candidate generation is complete and valid
     if (snapshots.length > 0) {
-      const { error: genError } = await service.from("active_observed_generation").upsert({
-        id: 1,
-        active_generation_id: candidateGenerationId,
-        row_count: snapshots.length,
-        published_at: refreshedAt,
+      const { error: rpcError } = await service.rpc("publish_observed_generation", {
+        p_generation_id: candidateGenerationId,
+        p_row_count: snapshots.length,
+        p_published_at: refreshedAt,
       });
 
-      if (!genError) {
-        // Clean up prior generations asynchronously
+      if (rpcError) {
+        // Fallback to direct upsert if RPC is not yet applied
+        const { error: genError } = await service.from("active_observed_generation").upsert({
+          id: 1,
+          active_generation_id: candidateGenerationId,
+          row_count: snapshots.length,
+          published_at: refreshedAt,
+        });
+        if (genError) throw genError;
+
         try {
           await service.from("observed_fare_snapshots")
             .delete()

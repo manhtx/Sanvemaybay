@@ -11,6 +11,7 @@ export interface CanonicalTravelEntity {
   region: "domestic" | "asia" | "europe" | "americas" | "oceania" | "middle_east" | "africa";
   airportName?: string;
   aliases: string[];
+  servedAirports?: string[];
 }
 
 export const CANONICAL_TRAVEL_ENTITIES: CanonicalTravelEntity[] = [
@@ -146,12 +147,31 @@ export const CANONICAL_TRAVEL_ENTITIES: CanonicalTravelEntity[] = [
 
   // Asia International
   {
+    code: "BKK_ALL",
+    name: "Bangkok (Tất cả sân bay)",
+    country: "Thái Lan",
+    region: "asia",
+    airportName: "Khu vực đô thị Bangkok (BKK & DMK)",
+    aliases: ["bangkok", "thai lan", "thailand", "bkk all"],
+    servedAirports: ["BKK", "DMK"],
+  },
+  {
     code: "BKK",
-    name: "Bangkok",
+    name: "Bangkok (Suvarnabhumi)",
     country: "Thái Lan",
     region: "asia",
     airportName: "Suvarnabhumi Airport",
-    aliases: ["bangkok", "thai lan", "thailand", "suvarnabhumi", "don mueang", "bkk"],
+    aliases: ["suvarnabhumi", "bkk", "bangkok suvarnabhumi"],
+    servedAirports: ["BKK"],
+  },
+  {
+    code: "DMK",
+    name: "Bangkok (Don Mueang)",
+    country: "Thái Lan",
+    region: "asia",
+    airportName: "Don Mueang International Airport",
+    aliases: ["don mueang", "don muang", "dmk", "bangkok don mueang"],
+    servedAirports: ["DMK"],
   },
   {
     code: "SIN",
@@ -194,12 +214,31 @@ export const CANONICAL_TRAVEL_ENTITIES: CanonicalTravelEntity[] = [
     aliases: ["hong kong", "hongkong", "hkg", "chek lap kok"],
   },
   {
+    code: "TYO_ALL",
+    name: "Tokyo (Tất cả sân bay)",
+    country: "Nhật Bản",
+    region: "asia",
+    airportName: "Khu vực đô thị Tokyo (NRT & HND)",
+    aliases: ["tokyo", "nhat ban", "japan", "tyo all", "tyo"],
+    servedAirports: ["NRT", "HND"],
+  },
+  {
     code: "NRT",
-    name: "Tokyo",
+    name: "Tokyo (Narita)",
     country: "Nhật Bản",
     region: "asia",
     airportName: "Narita International Airport",
-    aliases: ["tokyo", "nhat ban", "japan", "narita", "haneda", "nrt", "hnd"],
+    aliases: ["narita", "nrt", "tokyo narita"],
+    servedAirports: ["NRT"],
+  },
+  {
+    code: "HND",
+    name: "Tokyo (Haneda)",
+    country: "Nhật Bản",
+    region: "asia",
+    airportName: "Tokyo Haneda Airport",
+    aliases: ["haneda", "hnd", "tokyo haneda", "tokyo international airport"],
+    servedAirports: ["HND"],
   },
   {
     code: "KIX",
@@ -208,14 +247,6 @@ export const CANONICAL_TRAVEL_ENTITIES: CanonicalTravelEntity[] = [
     region: "asia",
     airportName: "Kansai International Airport",
     aliases: ["osaka", "kansai", "kix"],
-  },
-  {
-    code: "DMK",
-    name: "Bangkok (Don Mueang)",
-    country: "Thái Lan",
-    region: "asia",
-    airportName: "Don Mueang International Airport",
-    aliases: ["don mueang", "don muang", "dmk"],
   },
   {
     code: "HKT",

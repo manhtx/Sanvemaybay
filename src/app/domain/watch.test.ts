@@ -130,4 +130,33 @@ describe("Watch Domain", () => {
     const matches = evaluateWatchMatch(watch, observedCandidate);
     expect(matches).toBe(true);
   });
+
+  it("Negative Control: target-only Watch matches regardless of discount percentage", () => {
+    const watch = {
+      originCode: "HAN",
+      destinationCode: "BKK",
+      targetPrice: 4500000,
+      status: "monitoring" as const,
+    };
+
+    const candidate = {
+      originCode: "HAN",
+      destinationCode: "BKK",
+      price: 4200000, // Meets <= 4.5M target
+    };
+
+    expect(evaluateWatchMatch(watch, candidate)).toBe(true);
+  });
+
+  it("Negative Control: degrades status when last check was > 24 hours ago", () => {
+    const staleCheck = new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString();
+    const status = computeWatchStatus({
+      status: "active",
+      lastCheckedAt: staleCheck,
+      targetPrice: 5000000,
+      latestPrice: 6000000,
+    });
+    expect(status).toBe("degraded");
+    expect(formatWatchStatusLabel(status).label).toBe("THEO DÕI CHẬM");
+  });
 });

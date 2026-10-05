@@ -40,17 +40,18 @@ Deno.serve(async (request: Request) => {
   try {
     const body = await request.json().catch(() => ({})) as Record<string, unknown>;
     if (body.action === "export") {
-      const [preferences, bookmarks, alerts, events] = await Promise.all([
+      const [preferences, bookmarks, savedOpportunities, alerts, events] = await Promise.all([
         service.from("user_preferences").select("budget_max,preferred_regions,alert_frequency,excluded_airlines,home_airport,max_stops,preferred_airlines,cabin_class,max_flight_time_minutes,allow_self_transfer,updated_at").eq("user_id", user.id),
         service.from("user_bookmarks").select("deal_id,created_at").eq("user_id", user.id),
-        service.from("user_alerts").select("id,destination,budget,notify_telegram,telegram_id,notify_email,created_at,email,origin_code,destination_code,discount_threshold,preferred_regions,frequency,status,updated_at,date_from,date_to,confirmed_at").eq("user_id", user.id),
+        service.from("user_saved_opportunities").select("opportunity_id,snapshot_data,saved_at").eq("user_id", user.id),
+        service.from("user_alerts").select("id,destination,budget,target_price,latest_price,max_stops,last_checked_at,last_match_at,notify_telegram,telegram_id,notify_email,created_at,email,origin_code,destination_code,discount_threshold,preferred_regions,frequency,status,updated_at,date_from,date_to,confirmed_at").eq("user_id", user.id),
         service.from("product_events").select("event_type,entity_id,metadata,created_at").eq("user_id", user.id),
       ]);
-      const firstError = [preferences.error, bookmarks.error, alerts.error, events.error].find(Boolean);
+      const firstError = [preferences.error, bookmarks.error, savedOpportunities.error, alerts.error, events.error].find(Boolean);
       if (firstError) throw firstError;
       const alertIds = (alerts.data ?? []).map((alert) => alert.id);
       const deliveries = alertIds.length
-        ? await service.from("notification_deliveries").select("alert_id,deal_id,channel,status,created_at").in("alert_id", alertIds)
+        ? await service.from("notification_deliveries").select("alert_id,deal_id,opportunity_id,channel,status,created_at").in("alert_id", alertIds)
         : { data: [], error: null };
       if (deliveries.error) throw deliveries.error;
       return json({
@@ -59,6 +60,7 @@ Deno.serve(async (request: Request) => {
           account: { id: user.id, email: user.email ?? null, created_at: user.created_at },
           preferences: preferences.data ?? [],
           bookmarks: bookmarks.data ?? [],
+          saved_opportunities: savedOpportunities.data ?? [],
           alerts: alerts.data ?? [],
           notification_deliveries: deliveries.data ?? [],
           product_events: events.data ?? [],

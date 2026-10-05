@@ -67,15 +67,16 @@ export function evaluateTrueCost(input: {
       note: "Hãng bay giá rẻ thường chưa bao gồm kiện ký gửi tiêu chuẩn",
     });
   } else if (isLegacy) {
-    baggageState = "KNOWN";
-    baggageAmount = 0;
-    isBaggageIncluded = true;
+    // Carrier identity alone is insufficient to mark baggage KNOWN (e.g. Economy Super Lite fares)
+    baggageState = "UNKNOWN";
+    baggageAmount = null;
+    isBaggageIncluded = false;
     components.push({
       category: "checked_baggage",
       label: "Hành lý ký gửi",
-      amount: 0,
-      state: "KNOWN",
-      note: "Hãng truyền thống tiêu chuẩn đã bao gồm kiện ký gửi",
+      amount: null,
+      state: "UNKNOWN",
+      note: "Tùy hạng vé của hãng (hạng Tiết kiệm/Lite có thể chưa bao gồm kiện ký gửi)",
     });
   } else {
     // Negative control: No baggage info -> UNKNOWN -> NEVER "included"

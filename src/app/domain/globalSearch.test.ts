@@ -46,10 +46,10 @@ function makeDummyDeal(index: number, origin: string, destination: string, destN
 }
 
 describe("Global Canonical Search - Negative Controls & Deep Pagination", () => {
-  it("resolves canonical entity 'Bangkok' to BKK and 'Hà Nội' to HAN", () => {
+  it("resolves canonical entity 'Bangkok' to BKK_ALL (serving BKK and DMK) and 'Hà Nội' to HAN", () => {
     const dest = resolveCanonicalAirportOrCity("Bangkok");
-    expect(dest?.code).toBe("BKK");
-    expect(dest?.name).toBe("Bangkok");
+    expect(dest?.code).toBe("BKK_ALL");
+    expect(dest?.servedAirports).toEqual(["BKK", "DMK"]);
 
     const orig = resolveCanonicalAirportOrCity("Hà Nội");
     expect(orig?.code).toBe("HAN");

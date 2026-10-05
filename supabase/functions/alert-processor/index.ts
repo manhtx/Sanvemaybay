@@ -93,6 +93,23 @@ Deno.serve(async (request) => {
   );
 
   try {
+    const { data: activeGen } = await supabase
+      .from("active_observed_generation")
+      .select("active_generation_id")
+      .eq("id", 1)
+      .maybeSingle();
+
+    let observedQuery = supabase
+      .from("observed_fare_snapshots")
+      .select("*")
+      .gte("depart_date", new Date().toISOString().slice(0, 10))
+      .order("deal_score", { ascending: false })
+      .limit(5000);
+
+    if (activeGen?.active_generation_id) {
+      observedQuery = observedQuery.eq("generation_id", activeGen.active_generation_id);
+    }
+
     const [
       { data: alerts, error: alertError },
       { data: deals, error: dealError },
@@ -105,13 +122,7 @@ Deno.serve(async (request) => {
         .gte("depart_date", new Date().toISOString().slice(0, 10))
         .gt("valid_until", new Date().toISOString())
         .gte("observed_at", new Date(Date.now() - 13 * 60 * 60 * 1000).toISOString()),
-      supabase
-        .from("observed_fare_snapshots")
-        .select("*")
-        .gte("depart_date", new Date().toISOString().slice(0, 10))
-        .gte("observed_at", new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString())
-        .order("deal_score", { ascending: false })
-        .limit(500),
+      observedQuery,
     ]);
     if (alertError) throw alertError;
     if (dealError) throw dealError;
@@ -129,25 +140,38 @@ Deno.serve(async (request) => {
       opportunity_id: deal.id,
     }));
 
-    const activeObserved = (observedSnapshots ?? []).map((row) => ({
-      id: row.dedupe_key,
-      opportunity_id: row.dedupe_key,
-      is_observed: true,
-      from: row.origin,
-      from_code: row.origin_code,
-      to: row.destination,
-      to_code: row.destination_code,
-      price: Number(row.price),
-      discount: Number(row.discount_percent ?? 0),
-      trip_type: row.region === "domestic" ? "domestic" : "international",
-      deal_score: Number(row.deal_score ?? 0),
-      depart_date: row.depart_date,
-      booking_url: row.booking_url,
-      observed_at: row.observed_at,
-      airline: row.airline,
-      airline_code: row.airline_code,
-      stops: row.stops,
-    }));
+    const activeObserved = (observedSnapshots ?? []).map((row) => {
+      const stableOppId = [
+        row.origin_code,
+        row.destination_code,
+        row.depart_date,
+        row.return_date ?? "",
+        row.airline_code,
+        row.flight_number ?? "",
+        row.stops ?? 0,
+      ].join(":");
+      return {
+        id: row.observation_id,
+        opportunity_id: stableOppId,
+        is_observed: true,
+        from: row.origin,
+        from_code: row.origin_code,
+        to: row.destination,
+        to_code: row.destination_code,
+        price: Number(row.price),
+        discount: Number(row.discount_percent ?? 0),
+        trip_type: row.region === "domestic" ? "domestic" : "international",
+        deal_score: Number(row.deal_score ?? 0),
+        depart_date: row.depart_date,
+        return_date: row.return_date,
+        booking_url: row.booking_url,
+        observed_at: row.observed_at,
+        airline: row.airline,
+        airline_code: row.airline_code,
+        flight_number: row.flight_number,
+        stops: row.stops,
+      };
+    });
 
     const allCandidates = [...activeDeals, ...activeObserved];
 
@@ -191,7 +215,12 @@ Deno.serve(async (request) => {
         matchingDeals = selectDailyDeal(matchingDeals);
       }
 
-      for (const deal of matchingDeals) {
+      // Anti-spam signal policy: Send ONLY the single best match per alert per cycle
+      const candidateBatch = matchingDeals.length > 0
+        ? [[...matchingDeals].sort((a, b) => Number(a.price) - Number(b.price))[0]]
+        : [];
+
+      for (const deal of candidateBatch) {
         const channels = [
           alert.notify_email && { name: "email", send: () => sendEmail(alert, deal) },
           alert.notify_telegram && { name: "telegram", send: () => sendTelegram(alert, deal) },

@@ -71,8 +71,11 @@ describe("evaluateCohortComparison - Comparable Cohort Intelligence", () => {
 
     const result = evaluateCohortComparison(currentObs, sparseCohort);
     expect(result.sampleSize).toBe(2);
+    expect(result.cohortMedian).toBeNull();
+    expect(result.deltaPercent).toBeNull();
+    expect(result.isSufficient).toBe(false);
     expect(result.isDiscounted).toBe(false);
-    expect(result.comparisonExplanation).toContain("Đang tích lũy bằng chứng");
+    expect(result.comparisonExplanation).toContain("Chưa đủ dữ liệu đối sánh");
     expect(result.evidence.tier).toBe("ACCUMULATING");
     expect(result.evidence.label).toBe("ĐANG TÍCH LŨY BẰNG CHỨNG");
   });

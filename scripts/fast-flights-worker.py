@@ -228,6 +228,23 @@ def search_route(route: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str,
     return list(observations.values()), metrics
 
 
+def classify_failure(error_msg: str) -> str:
+    msg = error_msg.lower()
+    if "429" in msg or "rate limit" in msg:
+        return "RATE_LIMIT"
+    if "timeout" in msg or "connection" in msg or "network" in msg or "urlerror" in msg:
+        return "NETWORK_ERROR"
+    if "json" in msg or "parse" in msg or "syntax" in msg:
+        return "PARSER_ERROR"
+    if "500" in msg or "502" in msg or "503" in msg or "504" in msg or "provider" in msg:
+        return "PROVIDER_ERROR"
+    if "unsupported" in msg:
+        return "UNSUPPORTED"
+    if "no flights" in msg or "zero" in msg or "empty" in msg:
+        return "VALID_ZERO"
+    return "UNKNOWN"
+
+
 def direct_ingest(
     routes: list[dict[str, Any]],
     observations: list[dict[str, Any]],
@@ -244,12 +261,41 @@ def direct_ingest(
         grouped.setdefault(f"{observation['origin_code']}:{observation['destination_code']}", []).append(observation)
     saved = 0
     failures: list[dict[str, str]] = []
+    now_iso = datetime.now(timezone.utc).isoformat()
     for route in routes:
         key = f"{route['origin_code']}:{route['destination_code']}"
         rows = grouped.get(key, [])
         metrics = route_metrics.get(key, {})
-        observed_at = max((row["timestamp"] for row in rows), default=datetime.now(timezone.utc).isoformat())
+        observed_at = max((row["timestamp"] for row in rows), default=now_iso)
         scan_status = "completed" if int(metrics.get("windows_succeeded", 0)) > 0 else "failed"
+        failure_class = None if scan_status == "completed" else classify_failure(str(metrics.get("last_error", "All route windows failed")))
+
+        # Update route operational scheduling state
+        route_update = {
+            "last_attempt_at": now_iso,
+            "updated_at": now_iso,
+        }
+        if scan_status == "completed":
+            route_update["last_success_at"] = now_iso
+            route_update["consecutive_failures"] = 0
+            route_update["failure_class"] = None
+        else:
+            route_update["last_failure_at"] = now_iso
+            route_update["consecutive_failures"] = int(route.get("consecutive_failures") or 0) + 1
+            route_update["failure_class"] = failure_class
+
+        try:
+            update_req = urllib.request.Request(
+                f"{BASE_URL}/rest/v1/tracked_routes?id=eq.{route['id']}",
+                headers=service_headers,
+                data=json.dumps(route_update).encode("utf-8"),
+                method="PATCH",
+            )
+            with urllib.request.urlopen(update_req, timeout=15):
+                pass
+        except Exception:
+            pass  # Do not block scan if status tracking patch fails
+
         scan_body = json.dumps({
             "route_id": route["id"],
             "provider": "fast_flights_google",
@@ -263,6 +309,7 @@ def direct_ingest(
                 "source": "github-actions",
                 "run_id": RUN_ID,
                 "release_sha": WORKER_RELEASE_SHA,
+                "failure_class": failure_class,
                 **metrics,
             },
         }).encode("utf-8")
@@ -307,7 +354,7 @@ def direct_ingest(
 def main() -> int:
     started = time.monotonic()
     public_headers = {"apikey": ANON_KEY, "Authorization": f"Bearer {ANON_KEY}"}
-    routes_url = f"{BASE_URL}/rest/v1/tracked_routes?select=*&enabled=eq.true&limit={ROUTE_LIMIT}"
+    routes_url = f"{BASE_URL}/rest/v1/tracked_routes?select=*&enabled=eq.true&order=last_attempt_at.asc.nullsfirst,id.asc&limit={ROUTE_LIMIT}"
     routes = request_json(routes_url, public_headers)
     if not isinstance(routes, list) or not routes:
         raise RuntimeError("No enabled tracked routes were returned")

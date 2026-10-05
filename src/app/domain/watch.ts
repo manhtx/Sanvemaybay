@@ -2,6 +2,8 @@ export type WatchStatus =
   | "monitoring"
   | "matched"
   | "paused"
+  | "degraded"
+  | "sync_failed"
   | "needs_attention"
   | "expired";
 
@@ -40,7 +42,7 @@ export function evaluateWatchMatch(
   watch: Pick<WatchIntent, "originCode" | "destinationCode" | "targetPrice" | "dateFrom" | "dateTo" | "maxStops" | "status">,
   candidate: WatchEvaluationInput,
 ): boolean {
-  if (watch.status === "paused" || watch.status === "expired") {
+  if (watch.status === "paused" || watch.status === "expired" || watch.status === "sync_failed") {
     return false;
   }
   if (watch.originCode && watch.originCode !== candidate.originCode) {
@@ -72,6 +74,9 @@ export function computeWatchStatus(watch: {
   targetPrice?: number | null;
   latestPrice?: number | null;
 }): WatchStatus {
+  if (watch.status === "sync_failed") {
+    return "sync_failed";
+  }
   if (watch.status === "paused" || watch.status === "unsubscribed") {
     return "paused";
   }
@@ -101,6 +106,15 @@ export function computeWatchStatus(watch: {
     }
   }
 
+  // Check if check is degraded (> 24h since last check)
+  if (watch.lastCheckedAt) {
+    const hoursSinceCheck =
+      (Date.now() - new Date(watch.lastCheckedAt).getTime()) / (1000 * 60 * 60);
+    if (hoursSinceCheck > 24) {
+      return "degraded";
+    }
+  }
+
   return "monitoring";
 }
 
@@ -120,13 +134,25 @@ export function formatWatchStatusLabel(status: WatchStatus): {
       return {
         label: "ĐANG THEO DÕI",
         colorClass: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-        description: "Farely sẽ thông báo khi một lần quét phát hiện cơ hội phù hợp.",
+        description: "Farely đang theo dõi các đợt quét để thông báo ngay khi có giá tốt.",
+      };
+    case "degraded":
+      return {
+        label: "THEO DÕI CHẬM",
+        colorClass: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+        description: "Lần kiểm tra gần nhất hơn 24 giờ trước — hệ thống đang lập lại lịch quét.",
+      };
+    case "sync_failed":
+      return {
+        label: "ĐỒNG BỘ THẤT BẠI",
+        colorClass: "bg-rose-500/10 text-rose-400 border-rose-500/30",
+        description: "Chưa thể lưu theo dõi lên máy chủ — vui lòng thử lại.",
       };
     case "paused":
       return {
         label: "TẠM DỪNG",
-        colorClass: "bg-amber-500/10 text-amber-400 border-amber-500/30",
-        description: "Cảnh báo tạm ngưng nhận thông báo.",
+        colorClass: "bg-slate-500/10 text-slate-400 border-slate-500/30",
+        description: "Theo dõi đang tạm ngưng.",
       };
     case "needs_attention":
       return {

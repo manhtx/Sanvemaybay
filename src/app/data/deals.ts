@@ -45,10 +45,17 @@ export interface Deal {
   affiliateUrl?: string;
   affiliateNetwork?: string;
   linkKind?: "live_affiliate" | "live_source" | "indicative" | "historical" | "stale";
+  comparator?: {
+    cohortMedian?: number | null;
+    discountPercentage?: number;
+    isSufficient?: boolean;
+  };
   refundPolicy?: string;
   observedAt?: string;
   validUntil?: string;
 }
+
+
 
 export interface PricePoint {
   date: string;

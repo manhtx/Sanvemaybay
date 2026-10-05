@@ -8,7 +8,7 @@ import {
 import { getDealById, getPriceHistory } from "../data/api";
 import { Deal, formatVND } from "../data/deals";
 import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
-import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "../lib/bookmarks";
+import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal, createOpportunitySnapshot } from "../lib/bookmarks";
 import { shareOrCopy } from "../lib/sharing";
 import { HiddenCostAnalyzer } from "../components/HiddenCostAnalyzer";
 import { trackProductEvent } from "../lib/analytics";
@@ -43,9 +43,11 @@ export function DealDetailPage() {
             source: "deal_detail",
           },
         });
-        setBookmarked(isBookmarkedDeal(data.id));
+        const targetId = data.opportunityId || data.id;
+        setBookmarked(isBookmarkedDeal(targetId) || isBookmarkedDeal(data.id));
         const history = await getPriceHistory(data.fromCode, data.toCode);
         setPriceHistory(history);
+
       }
       setLoading(false);
     }
@@ -182,14 +184,16 @@ export function DealDetailPage() {
               aria-label={bookmarked ? "Bỏ lưu cơ hội" : "Lưu cơ hội"}
               aria-pressed={bookmarked}
               onClick={() => {
-                const next = toggleBookmarkedDeal(deal.id);
+                const targetId = deal.opportunityId || deal.id;
+                const snapshot = createOpportunitySnapshot(deal);
+                const next = toggleBookmarkedDeal(targetId, undefined, snapshot);
                 setBookmarked(next);
-                void saveRemoteBookmark(deal.id, next);
+                void saveRemoteBookmark(targetId, next, snapshot);
                 void trackProductEvent({
                   eventType: "bookmark",
-                  entityId: deal.id,
+                  entityId: targetId,
                   metadata: {
-                    opportunity_id: deal.id,
+                    opportunity_id: targetId,
                     bookmarked: next,
                     route: `${deal.fromCode}-${deal.toCode}`,
                   },
@@ -199,6 +203,7 @@ export function DealDetailPage() {
             >
               <Bookmark className={`w-4 h-4 ${bookmarked ? "fill-sky-400 text-sky-400" : ""}`} />
             </button>
+
             <button
               type="button"
               onClick={() => setWatchOpen(true)}

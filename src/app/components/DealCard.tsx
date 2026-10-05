@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { Clock, AlertTriangle, Calendar, Bookmark, ShieldCheck } from "lucide-react";
 import { Deal, formatVND, regionFlag } from "../data/deals";
-import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "../lib/bookmarks";
+import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal, createOpportunitySnapshot } from "../lib/bookmarks";
 import { useState } from "react";
 import { trackProductEvent } from "../lib/analytics";
 
@@ -15,7 +15,8 @@ function formatDepartDate(dateStr: string) {
 }
 
 export function DealCard({ deal }: DealCardProps) {
-  const [bookmarked, setBookmarked] = useState(() => isBookmarkedDeal(deal.id));
+  const targetId = deal.opportunityId || deal.id;
+  const [bookmarked, setBookmarked] = useState(() => isBookmarkedDeal(targetId) || isBookmarkedDeal(deal.id));
   const cardTarget = `/deals/${deal.id}`;
   const priceDiff = deal.realTotal - deal.advertisedTotal;
   const hasHiddenCosts = priceDiff > 0;
@@ -136,12 +137,13 @@ export function DealCard({ deal }: DealCardProps) {
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
-          const next = toggleBookmarkedDeal(deal.id);
+          const snapshot = createOpportunitySnapshot(deal);
+          const next = toggleBookmarkedDeal(targetId, undefined, snapshot);
           setBookmarked(next);
-          void saveRemoteBookmark(deal.id, next);
+          void saveRemoteBookmark(targetId, next, snapshot);
           void trackProductEvent({
             eventType: "bookmark",
-            entityId: deal.id,
+            entityId: targetId,
             metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}`, source: "deal_card" },
           });
         }}
@@ -152,3 +154,4 @@ export function DealCard({ deal }: DealCardProps) {
     </div>
   );
 }
+

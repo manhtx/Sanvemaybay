@@ -40,10 +40,11 @@ export interface EvidenceProfile {
 export interface CohortComparison {
   cohortKey: string;
   sampleSize: number;
-  cohortMedian: number;
+  cohortMedian: number | null;
   currentPrice: number;
-  deltaPercent: number; // positive = cheaper than median
+  deltaPercent: number | null; // positive = cheaper than median, null when insufficient
   isDiscounted: boolean;
+  isSufficient: boolean;
   comparisonExplanation: string; // e.g. "22% thấp hơn median của 14 mức giá tương đương Farely đã quan sát."
   evidence: EvidenceProfile;
 }
@@ -161,11 +162,12 @@ export function evaluateCohortComparison(
     return {
       cohortKey,
       sampleSize,
-      cohortMedian: currentPrice,
+      cohortMedian: null,
       currentPrice,
-      deltaPercent: 0,
+      deltaPercent: null,
       isDiscounted: false,
-      comparisonExplanation: `Đang tích lũy bằng chứng (${sampleSize} quan sát, cần tối thiểu 5 mẫu tương đương để đối chiếu).`,
+      isSufficient: false,
+      comparisonExplanation: `Chưa đủ dữ liệu đối sánh (Farely cần tối thiểu 5 quan sát tương đương để tính mức giá tham chiếu, hiện có ${sampleSize}).`,
       evidence,
     };
   }
@@ -190,6 +192,7 @@ export function evaluateCohortComparison(
     currentPrice,
     deltaPercent: delta,
     isDiscounted: delta >= 15,
+    isSufficient: true,
     comparisonExplanation,
     evidence,
   };

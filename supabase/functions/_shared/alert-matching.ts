@@ -32,7 +32,8 @@ export function matchesAlert(alert: AlertMatchInput, deal: AlertDealInput): bool
     : alert.destination === deal.to;
   const originMatches = !alert.origin_code || alert.origin_code === deal.from_code;
   const budgetMatches = !alert.budget || Number(deal.price) <= Number(alert.budget);
-  const discountMatches = Number(deal.discount) >= Number(alert.discount_threshold ?? 0);
+  const hasExplicitDiscount = alert.discount_threshold != null && Number(alert.discount_threshold) > 0;
+  const discountMatches = !hasExplicitDiscount || Number(deal.discount ?? 0) >= Number(alert.discount_threshold);
   const regionMatches =
     !alert.preferred_regions?.length ||
     (deal.trip_type === "domestic"

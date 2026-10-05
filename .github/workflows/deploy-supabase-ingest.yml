@@ -81,26 +81,35 @@ jobs:
           test -n "$SUPABASE_ACCESS_TOKEN"
           test -n "$SUPABASE_PROJECT_REF"
           test -n "$INTERNAL_FUNCTION_SECRET"
-          test -n "$APPROVED_BOOKING_HOSTS"
-          test -n "$PUBLIC_SITE_URL"
-          test -n "$ALERT_FROM_EMAIL"
-          test -n "$RESEND_API_KEY"
-          test -n "$TELEGRAM_BOT_TOKEN"
-          test -n "$UNSUBSCRIBE_SECRET"
-          test -n "$RATE_LIMIT_SALT"
-          test -n "$TURNSTILE_SECRET_KEY"
-          test -n "$TURNSTILE_ALLOWED_HOSTNAMES"
           supabase secrets set INTERNAL_FUNCTION_SECRET="$INTERNAL_FUNCTION_SECRET" --project-ref "$SUPABASE_PROJECT_REF"
-          supabase secrets set APPROVED_BOOKING_HOSTS="$APPROVED_BOOKING_HOSTS" --project-ref "$SUPABASE_PROJECT_REF"
           supabase secrets set DEPLOYED_COMMIT="$DEPLOYED_COMMIT" --project-ref "$SUPABASE_PROJECT_REF"
-          supabase secrets set RATE_LIMIT_SALT="$RATE_LIMIT_SALT" --project-ref "$SUPABASE_PROJECT_REF"
-          supabase secrets set TURNSTILE_SECRET_KEY="$TURNSTILE_SECRET_KEY" --project-ref "$SUPABASE_PROJECT_REF"
-          supabase secrets set TURNSTILE_ALLOWED_HOSTNAMES="$TURNSTILE_ALLOWED_HOSTNAMES" --project-ref "$SUPABASE_PROJECT_REF"
-          supabase secrets set PUBLIC_SITE_URL="$PUBLIC_SITE_URL" --project-ref "$SUPABASE_PROJECT_REF"
-          supabase secrets set ALERT_FROM_EMAIL="$ALERT_FROM_EMAIL" --project-ref "$SUPABASE_PROJECT_REF"
-          supabase secrets set RESEND_API_KEY="$RESEND_API_KEY" --project-ref "$SUPABASE_PROJECT_REF"
-          supabase secrets set TELEGRAM_BOT_TOKEN="$TELEGRAM_BOT_TOKEN" --project-ref "$SUPABASE_PROJECT_REF"
-          supabase secrets set UNSUBSCRIBE_SECRET="$UNSUBSCRIBE_SECRET" --project-ref "$SUPABASE_PROJECT_REF"
+          if test -n "$APPROVED_BOOKING_HOSTS"; then
+            supabase secrets set APPROVED_BOOKING_HOSTS="$APPROVED_BOOKING_HOSTS" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
+          if test -n "$PUBLIC_SITE_URL"; then
+            supabase secrets set PUBLIC_SITE_URL="$PUBLIC_SITE_URL" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
+          if test -n "$ALERT_FROM_EMAIL"; then
+            supabase secrets set ALERT_FROM_EMAIL="$ALERT_FROM_EMAIL" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
+          if test -n "$RATE_LIMIT_SALT"; then
+            supabase secrets set RATE_LIMIT_SALT="$RATE_LIMIT_SALT" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
+          if test -n "$TURNSTILE_SECRET_KEY"; then
+            supabase secrets set TURNSTILE_SECRET_KEY="$TURNSTILE_SECRET_KEY" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
+          if test -n "$TURNSTILE_ALLOWED_HOSTNAMES"; then
+            supabase secrets set TURNSTILE_ALLOWED_HOSTNAMES="$TURNSTILE_ALLOWED_HOSTNAMES" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
+          if test -n "$RESEND_API_KEY"; then
+            supabase secrets set RESEND_API_KEY="$RESEND_API_KEY" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
+          if test -n "$TELEGRAM_BOT_TOKEN"; then
+            supabase secrets set TELEGRAM_BOT_TOKEN="$TELEGRAM_BOT_TOKEN" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
+          if test -n "$UNSUBSCRIBE_SECRET"; then
+            supabase secrets set UNSUBSCRIBE_SECRET="$UNSUBSCRIBE_SECRET" --project-ref "$SUPABASE_PROJECT_REF"
+          fi
           supabase secrets set AI_EXPLANATION_BATCH_LIMIT="${AI_EXPLANATION_BATCH_LIMIT:-20}" --project-ref "$SUPABASE_PROJECT_REF"
           supabase secrets set ANALYZE_FLIGHT_LIMIT="${ANALYZE_FLIGHT_LIMIT:-300}" --project-ref "$SUPABASE_PROJECT_REF"
           if test -n "$TRAVELPAYOUTS_TOKEN"; then

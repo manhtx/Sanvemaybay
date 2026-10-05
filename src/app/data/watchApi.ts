@@ -110,7 +110,7 @@ export async function getWatches(): Promise<WatchIntent[]> {
 
 export async function createWatch(
   input: CreateWatchInput,
-): Promise<{ success: boolean; watchId: string }> {
+): Promise<{ success: boolean; watchId: string; error?: string }> {
   const watchId = crypto.randomUUID();
   const now = new Date().toISOString();
 
@@ -130,7 +130,7 @@ export async function createWatch(
     email: input.email,
     channel: input.channel || "email",
     telegramId: input.telegramId || null,
-    lastCheckedAt: now,
+    lastCheckedAt: null, // Critical: NULL on creation! First evaluation sets it
     lastMatchAt: null,
     createdAt: now,
     updatedAt: now,
@@ -155,18 +155,23 @@ export async function createWatch(
           max_stops: input.maxStops ?? null,
           date_from: input.dateFrom || null,
           date_to: input.dateTo || null,
-          email: input.email,
+          email: input.email || user.email,
           notify_email: true,
           notify_telegram: input.channel === "telegram",
           telegram_id: input.telegramId || null,
           frequency: input.frequency || "instant",
           status: "active",
-          last_checked_at: now,
+          last_checked_at: null, // Real monitoring will set this!
         });
 
-        if (!error) {
-          newWatch.userId = user.id;
+        if (error) {
+          reportClientIssue("watch_activation_failed");
+          newWatch.status = "sync_failed";
+          const locals = getLocalWatches();
+          saveLocalWatches([newWatch, ...locals.filter((w) => w.id !== newWatch.id)]);
+          return { success: false, watchId: newWatch.id, error: "Không thể kích hoạt theo dõi trên máy chủ." };
         }
+        newWatch.userId = user.id;
       } else if (input.turnstileToken) {
         // Unauthenticated alert setup via Edge Function
         const { data, error } = await supabase.functions.invoke("setup-alert", {
@@ -178,7 +183,7 @@ export async function createWatch(
                 destination: input.destinationName,
                 destination_code: input.destinationCode,
                 budget: input.targetPrice,
-                discount_threshold: 20,
+                discount_threshold: null, // Do not secretly inject 20% discount!
                 email: input.email,
                 notify_email: true,
                 notify_telegram: input.channel === "telegram",
@@ -191,18 +196,33 @@ export async function createWatch(
             ],
           },
         });
-        if (!error && data?.success) {
-          if (Array.isArray(data.alert_ids) && data.alert_ids[0]) {
-            newWatch.id = data.alert_ids[0];
-          }
+        if (error || !data?.success) {
+          reportClientIssue("watch_anonymous_activation_failed");
+          newWatch.status = "sync_failed";
+          const locals = getLocalWatches();
+          saveLocalWatches([newWatch, ...locals.filter((w) => w.id !== newWatch.id)]);
+          return { success: false, watchId: newWatch.id, error: "Xác thực bảo vệ không thành công." };
         }
+        if (Array.isArray(data.alert_ids) && data.alert_ids[0]) {
+          newWatch.id = data.alert_ids[0];
+        }
+      } else {
+        // Anonymous without turnstile cannot claim active server monitoring
+        newWatch.status = "sync_failed";
+        const locals = getLocalWatches();
+        saveLocalWatches([newWatch, ...locals.filter((w) => w.id !== newWatch.id)]);
+        return { success: false, watchId: newWatch.id, error: "Vui lòng đăng nhập để bắt đầu theo dõi tự động." };
       }
     } catch {
-      // Fall through to local persistence
+      reportClientIssue("watch_creation_exception");
+      newWatch.status = "sync_failed";
+      const locals = getLocalWatches();
+      saveLocalWatches([newWatch, ...locals.filter((w) => w.id !== newWatch.id)]);
+      return { success: false, watchId: newWatch.id, error: "Lỗi kết nối khi tạo theo dõi." };
     }
   }
 
-  // Always save to local store as durable offline / client backup
+  // Save to local store as durable offline / client backup
   const locals = getLocalWatches();
   saveLocalWatches([newWatch, ...locals.filter((w) => w.id !== newWatch.id)]);
 
