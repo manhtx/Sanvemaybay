@@ -18,9 +18,9 @@ test.beforeEach(async ({ page }) => {
 
 test("homepage renders the opportunity-first experience", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Không cần biết đi đâu. Chỉ cần biết khi nào rẻ." })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Xem Deal Ngay" })).toHaveAttribute("href", "/deals");
-  await expect(page.getByText("Deal Nóng Hôm Nay")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Biết giá nào/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Xem cơ hội hôm nay" })).toHaveAttribute("href", "/deals");
+  await expect(page.getByText("Cơ hội quan sát hôm nay")).toBeVisible();
 });
 
 test("deals page distinguishes a degraded feed from healthy zero inventory", async ({ page }) => {
@@ -89,10 +89,8 @@ test("homepage renders validated feed sections when deals exist", async ({ page 
     });
   });
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Mới phát hiện" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Giảm giá lớn nhất" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Đề xuất theo preference" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Điểm đến đang nổi bật" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Cơ hội quan sát hôm nay" })).toBeVisible();
+  await expect(page.getByText("HAN → BKK")).toBeVisible();
 });
 
 test("observed fares render the largest discount first with color-coded percentages", async ({ page }) => {
@@ -132,12 +130,12 @@ test("privacy and accessibility foundations are reachable", async ({ page }) => 
   const skip = page.getByRole("link", { name: "Bỏ qua điều hướng" });
   await expect(skip).toHaveAttribute("href", "#main-content");
   await page.goto("/privacy");
-  await expect(page.getByRole("heading", { name: "Dữ liệu FlyCheap sử dụng" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Chính sách bảo mật Farely" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Xuất hoặc xóa dữ liệu tài khoản" })).toBeVisible();
   await expect(page.getByText("Đăng nhập tại trang Tài khoản để xuất dữ liệu hoặc yêu cầu xóa tài khoản.")).toBeVisible();
   await expect(page.getByRole("link", { name: "Xem điều khoản sử dụng" })).toHaveAttribute("href", "/terms");
   await page.goto("/terms");
-  await expect(page.getByRole("heading", { name: "Điều khoản sử dụng FlyCheap" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Điều khoản sử dụng Farely" })).toBeVisible();
 });
 
 test("alert form blocks an invalid email before submission", async ({ page }) => {
@@ -298,7 +296,7 @@ test("deal detail exposes evidence, cost and booking action", async ({ page }) =
   });
   await page.goto("/deals/detail-fixture-1");
   await expect(page.getByRole("heading", { name: "HAN → Bangkok" })).toBeVisible();
-  await expect(page.getByText("Độ tin cậy của dữ liệu")).toBeVisible();
+  await expect(page.getByText("Chất lượng bằng chứng")).toBeVisible();
   await expect(page.getByText("Tổng đã biết")).toBeVisible();
   await expect(page.getByText("Lịch Sử Giá (30 ngày)")).toBeVisible();
   await page.getByRole("button", { name: "7 ngày" }).click();
@@ -306,7 +304,7 @@ test("deal detail exposes evidence, cost and booking action", async ({ page }) =
   await expect(page.getByText("Chưa đủ 14 quan sát hợp lệ để ước tính xu hướng giá.")).toBeVisible();
   await expect(page.getByText("Đánh giá phương án hiện tại")).toBeVisible();
   await expect(page.getByText("Risk low")).toBeVisible();
-  await expect(page.getByText("Phân Tích Chi Phí Ẩn")).toBeVisible();
+  await expect(page.getByText("Bóc Tách Chi Phí Thực Tế (True Cost)")).toBeVisible();
   await page.getByLabel("Hành lý thêm").fill("300000");
   await expect(page.getByText("2.800.000 VND")).toBeVisible();
   await expect(page.getByRole("button", { name: "Kiểm tra giá trên trang đặt vé" })).toBeVisible();

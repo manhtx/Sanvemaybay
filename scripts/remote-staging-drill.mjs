@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const url = 'https://yefbpmqfsstcaeqfrmyn.supabase.co';
 const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllZmJwbXFmc3N0Y2FlcWZybXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2Mzk2MjQsImV4cCI6MjEwNjIxNTYyNH0.FxYMbfcX9Rg9Jj0L_D2VkX-Apzb6Iy5GqAeKlNpTRpc';
-const serviceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllZmJwbXFmc3N0Y2FlcWZybXluIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDYzOTYyNCwiZXhwIjoyMTA2MjE1NjI0fQ.8yDZ22mZtEkY5rLBINPh80tyo1D3HHn6b6Pz59B15Yk';
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || '';
 
 async function runStagingDrill() {
   console.log('=== REMOTE STAGING RLS & INTEGRITY DRILL ===');

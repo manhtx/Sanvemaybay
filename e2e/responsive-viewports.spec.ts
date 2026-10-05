@@ -91,7 +91,7 @@ test.describe("Responsive viewport & overflow verification", () => {
 
       // If desktop, verify desktop nav is present; if mobile, verify mobile menu button
       if (vp.width >= 1024) {
-        await expect(page.locator("header").getByRole("link", { name: "Deal Nóng" })).toBeVisible();
+        await expect(page.locator("header").getByRole("link", { name: "Cơ hội" })).toBeVisible();
       } else {
         await expect(page.locator("header").getByRole("button", { name: /Mở menu/ })).toBeVisible();
       }
