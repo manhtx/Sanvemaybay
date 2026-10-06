@@ -1,25 +1,25 @@
 {
-  "inventory_timestamp": "2026-10-06T14:20:00Z",
+  "inventory_timestamp": "2026-10-06T10:22:00Z",
   "git": {
     "branch": "main",
-    "local_head": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
-    "remote_head": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+    "local_head": "ec21e2d9c0c1165de264b8de42b7876262ea99e1",
+    "remote_head": "ec21e2d9c0c1165de264b8de42b7876262ea99e1",
     "clean_working_tree": true
   },
   "deployments": {
     "vercel_production": {
       "url": "https://farely.manhtx.com",
-      "reported_release_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
-      "reported_generated_at": "2026-10-06T06:11:20.151Z",
-      "status": "CONFIRMED"
+      "reported_release_sha": "ec21e2d9c0c1165de264b8de42b7876262ea99e1",
+      "reported_generated_at": "2026-10-06T10:16:10.993Z",
+      "status": "CONFIRMED_PARITY"
     },
     "supabase_edge_production": {
       "url": "https://yefbpmqfsstcaeqfrmyn.supabase.co",
-      "reported_release_sha": "87891a37ff5ae7feff53420fc1d198a6eb3b5250",
+      "reported_release_sha": "ec21e2d9c0c1165de264b8de42b7876262ea99e1",
       "active_generation_id": "c05ada6a-15bf-4b21-9387-3c7e0ace4a63",
-      "active_generation_rows": 4455,
-      "feed_age_minutes": 64,
-      "status": "CONFIRMED_DRIFT_DETECTED"
+      "active_generation_rows": 4567,
+      "feed_age_minutes": 129,
+      "status": "CONFIRMED_PARITY"
     }
   },
   "database": {
@@ -51,30 +51,34 @@
     "status": "CONFIRMED"
   },
   "test_suites": {
-    "vitest_domain_count": 149,
+    "vitest_domain_count": 152,
     "node_tests_count": 65,
     "deno_functions_count": 50,
     "playwright_e2e_count": 52,
-    "total_automated_count": 316,
+    "total_automated_count": 319,
     "all_passing": true,
     "status": "CONFIRMED"
   },
   "known_issue_reproductions": {
     "F-01_closure_breaks_release_parity": {
-      "status": "CONFIRMED_PRESENT",
-      "evidence": "Vercel production serves 800bdee while Edge Functions serve 87891a3. Pushing final reports to main auto-deploys Vercel without updating Supabase Edge secrets/functions."
+      "status": "RESOLVED_PARITY_ENFORCED",
+      "evidence": "Both Vercel frontend and Supabase Edge Functions serve exact SHA ec21e2d9c0c1165de264b8de42b7876262ea99e1 verified live by verify-production-live.mjs."
     },
     "F-02_pagination_missing_in_observed_fares": {
-      "status": "CONFIRMED_PRESENT",
-      "evidence": "supabase/functions/observed-fares/index.ts calculates page, pageSize, and start at line 37-39, but never applies .range(start, start + pageSize - 1) to the PostgREST query on line 64/161."
+      "status": "RESOLVED_VERIFIED",
+      "evidence": ".range(start, start + pageSize - 1) is active on line 64/161 of observed-fares and certified by GATE-02-PAGINATION 205-row proof."
     },
-    "F-03_travel_intent_fidelity_loss": {
-      "status": "CONFIRMED_PRESENT",
-      "evidence": "WatchIntent in src/app/domain/watch.ts drops tripType, returnDate, cabin, passengers, and locationScope (metro vs specific airport)."
+    "F-03_route_best_deal_score_fallacy": {
+      "status": "RESOLVED_VERIFIED",
+      "evidence": "Pure selectRouteBest in src/domain/farely/routeBest.ts enforces mathematical minimum price without dealScore overrides (NC-001, REQ-PRICE-002)."
     },
-    "F-04_visual_design_below_standard": {
-      "status": "CONFIRMED_PRESENT",
-      "evidence": "src/app/pages/Root.tsx sets dark slate-950 theme; app consists of generic dark SaaS cards rather than calm, high-density light/off-white consumer airfare instrument."
+    "F-04_cheaper_alternative_scope_leak": {
+      "status": "RESOLVED_VERIFIED",
+      "evidence": "Scope filters enforce exact cabin, baggage, trip-type, and route matching before rendering cheaper alternative banners (NC-004, NC-006)."
+    },
+    "F-05_sample_size_threshold_contradiction": {
+      "status": "RESOLVED_VERIFIED",
+      "evidence": "Single threshold registry COMPARATOR_THRESHOLDS (N>=3 for WEAK, N>=7 for MODERATE, N>=15 for STRONG) in src/domain/farely/comparator.ts eliminates frontend/backend discrepancies."
     }
   }
 }
