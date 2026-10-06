@@ -159,4 +159,69 @@ describe("Watch Domain", () => {
     expect(status).toBe("degraded");
     expect(formatWatchStatusLabel(status).label).toBe("THEO DÕI CHẬM");
   });
+
+  it("evaluates metro location scopes: BKK_ALL matches BKK & DMK, exact BKK rejects DMK", () => {
+    const metroWatch = {
+      originCode: "HAN",
+      destinationCode: "BKK_ALL",
+      targetPrice: 5000000,
+    };
+    expect(evaluateWatchMatch(metroWatch, { originCode: "HAN", destinationCode: "BKK", price: 3000000 })).toBe(true);
+    expect(evaluateWatchMatch(metroWatch, { originCode: "HAN", destinationCode: "DMK", price: 3000000 })).toBe(true);
+    expect(evaluateWatchMatch(metroWatch, { originCode: "HAN", destinationCode: "SIN", price: 3000000 })).toBe(false);
+
+    const exactWatch = {
+      originCode: "HAN",
+      destinationCode: "BKK",
+      targetPrice: 5000000,
+    };
+    expect(evaluateWatchMatch(exactWatch, { originCode: "HAN", destinationCode: "BKK", price: 3000000 })).toBe(true);
+    expect(evaluateWatchMatch(exactWatch, { originCode: "HAN", destinationCode: "DMK", price: 3000000 })).toBe(false);
+  });
+
+  it("evaluates TravelIntent roundtrip, return date, and cabin constraints", () => {
+    const roundtripWatch = {
+      originCode: "HAN",
+      destinationCode: "SIN",
+      tripType: "roundtrip" as const,
+      returnDate: "2026-11-20",
+      cabin: "economy" as const,
+      targetPrice: 6000000,
+    };
+    // Exact match
+    expect(evaluateWatchMatch(roundtripWatch, {
+      originCode: "HAN", destinationCode: "SIN", price: 5000000, returnDate: "2026-11-20", cabin: "economy",
+    })).toBe(true);
+
+    // Mismatched return date
+    expect(evaluateWatchMatch(roundtripWatch, {
+      originCode: "HAN", destinationCode: "SIN", price: 5000000, returnDate: "2026-11-25", cabin: "economy",
+    })).toBe(false);
+
+    // Mismatched cabin
+    expect(evaluateWatchMatch(roundtripWatch, {
+      originCode: "HAN", destinationCode: "SIN", price: 5000000, returnDate: "2026-11-20", cabin: "business",
+    })).toBe(false);
+
+    // Missing return date on roundtrip
+    expect(evaluateWatchMatch(roundtripWatch, {
+      originCode: "HAN", destinationCode: "SIN", price: 5000000, returnDate: null, cabin: "economy",
+    })).toBe(false);
+  });
+
+  it("Negative Control: condition episode exits to monitoring when price rises above target (no sticky stale match)", () => {
+    const now = Date.now();
+    const recentMatchTime = new Date(now - 30 * 60 * 1000).toISOString(); // 30 mins ago
+
+    // Price has risen above target price -> MUST return monitoring, not matched!
+    const statusAfterPriceRise = computeWatchStatus({
+      status: "active",
+      lastMatchAt: recentMatchTime,
+      targetPrice: 4000000,
+      latestPrice: 4800000, // Rose above 4M
+    });
+
+    expect(statusAfterPriceRise).toBe("monitoring");
+  });
 });
+

@@ -26,7 +26,7 @@ function formatLastChecked(dateString?: string | null): { text: string; isDegrad
   }
   const ms = Date.now() - new Date(dateString).getTime();
   const minutes = Math.floor(ms / (1000 * 60));
-  const isDegraded = minutes > 6 * 60; // Over 6 hours since last check is degraded
+  const isDegraded = minutes > 6 * 60;
 
   let text = "Vừa xong";
   if (minutes >= 1 && minutes < 60) text = `${minutes} phút trước`;
@@ -73,27 +73,25 @@ export function WatchPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-200 pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[var(--canvas-bg)] text-stone-900 pt-24 pb-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-6">
-        
-        {/* Header (No vanity KPI cards) */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-stone-200 pb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight">
               Tuyến bay bạn đang quan sát
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl">
-              Hợp đồng giám sát định kỳ. Farely đối chiếu mỗi chu kỳ quét dữ liệu với mục tiêu của bạn và chỉ báo động khi có biến động giá thực tế.
+            <p className="text-xs sm:text-sm text-stone-600 mt-1 max-w-xl">
+              Hợp đồng giám sát định kỳ. Farely đối chiếu mỗi chu kỳ quét dữ liệu với mục tiêu của bạn và chỉ thông báo khi có biến động giá thực tế.
             </p>
-            <div className="text-xs text-slate-400 mt-1">Tổng số tuyến: {watches.length}</div>
+            <div className="text-xs text-stone-500 mt-1">Tổng số tuyến: {watches.length}</div>
           </div>
-
 
           <div>
             <button
               type="button"
               onClick={() => setIsCreateOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-xs font-bold text-slate-950 transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white transition shadow-sm cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Tạo theo dõi mới</span>
@@ -103,20 +101,20 @@ export function WatchPage() {
 
         {/* Monitoring Ledger List */}
         {loading ? (
-          <div className="text-center py-16 text-slate-500 text-xs font-mono">Đang tải sổ theo dõi…</div>
+          <div className="text-center py-16 text-stone-500 text-xs font-mono">Đang tải sổ theo dõi…</div>
         ) : watches.length === 0 ? (
-          <div className="text-center py-16 px-4 rounded-xl border border-dashed border-white/10 bg-slate-900/20 space-y-3">
-            <Bell className="w-8 h-8 text-slate-600 mx-auto" />
+          <div className="text-center py-16 px-4 rounded-xl border border-dashed border-stone-300 bg-white space-y-3 shadow-sm">
+            <Bell className="w-8 h-8 text-stone-400 mx-auto" />
             <div>
-              <h2 className="text-base font-bold text-white">Chưa có tuyến bay nào trong sổ theo dõi</h2>
-              <p className="text-xs text-slate-400 max-w-md mx-auto mt-1">
+              <h2 className="text-base font-bold text-stone-900">Chưa có tuyến bay nào trong sổ theo dõi</h2>
+              <p className="text-xs text-stone-500 max-w-md mx-auto mt-1">
                 Khi xem một cơ hội trên Farely, bấm [Theo dõi] để nhận cảnh báo khi giá chạm mục tiêu mong muốn.
               </p>
             </div>
             <div className="pt-2">
               <Link
                 to="/deals"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-xs font-bold text-slate-950 transition"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white transition shadow-sm"
               >
                 Khám phá cơ hội hôm nay
               </Link>
@@ -132,36 +130,35 @@ export function WatchPage() {
               return (
                 <div
                   key={watch.id}
-                  className={`p-4 rounded-xl border transition-colors ${
+                  className={`p-4 rounded-xl border transition-colors bg-white shadow-sm ${
                     isDegraded
-                      ? "border-amber-500/30 bg-amber-500/[0.03]"
-                      : "border-white/10 bg-slate-900/40 hover:border-white/20"
+                      ? "border-amber-300 bg-amber-50/50"
+                      : "border-stone-200 hover:border-stone-300"
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    
                     {/* Route & Intent Header */}
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-base font-bold text-white">
-                          {watch.originCode} <span className="text-sky-400 font-light">→</span> {watch.destinationCode}
+                        <span className="font-mono text-base font-bold text-stone-900">
+                          {watch.originCode} <span className="text-blue-600 font-light">→</span> {watch.destinationCode}
                         </span>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-stone-500">
                           ({watch.originName || watch.originCode} - {watch.destinationName || watch.destinationCode})
                         </span>
-                        
+
                         <span
                           className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded border ${
                             isDegraded
-                              ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                              : meta.colorClass
+                              ? "bg-amber-100 text-amber-800 border-amber-300"
+                              : "bg-stone-100 text-stone-700 border-stone-200"
                           }`}
                         >
                           {isDegraded ? "MONITORING DEGRADED" : meta.label}
                         </span>
                       </div>
 
-                      <div className="text-xs text-slate-400 flex flex-wrap items-center gap-3">
+                      <div className="text-xs text-stone-600 flex flex-wrap items-center gap-3">
                         <span>
                           {watch.dateFrom
                             ? `Ngày: ${watch.dateFrom}${watch.dateTo ? ` đến ${watch.dateTo}` : ""}`
@@ -180,16 +177,16 @@ export function WatchPage() {
                         type="button"
                         onClick={() => handleTogglePause(watch)}
                         title={watch.status === "paused" ? "Tiếp tục theo dõi" : "Tạm dừng"}
-                        className="px-2.5 py-1 rounded border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition text-xs flex items-center gap-1 cursor-pointer"
+                        className="px-2.5 py-1 rounded-lg border border-stone-300 text-stone-700 hover:text-stone-900 hover:bg-stone-50 transition text-xs flex items-center gap-1 cursor-pointer"
                       >
                         {watch.status === "paused" ? (
                           <>
-                            <Play className="w-3 h-3 text-emerald-400" />
+                            <Play className="w-3 h-3 text-emerald-600" />
                             <span>Tiếp tục</span>
                           </>
                         ) : (
                           <>
-                            <Pause className="w-3 h-3 text-amber-400" />
+                            <Pause className="w-3 h-3 text-amber-600" />
                             <span>Tạm dừng</span>
                           </>
                         )}
@@ -198,7 +195,7 @@ export function WatchPage() {
                       <Link
                         to={`/deals?destination=${watch.destinationCode}`}
                         title="Xem các cơ hội hiện có"
-                        className="px-2.5 py-1 rounded border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition text-xs flex items-center gap-1"
+                        className="px-2.5 py-1 rounded-lg border border-stone-300 text-stone-700 hover:text-stone-900 hover:bg-stone-50 transition text-xs flex items-center gap-1"
                       >
                         <ExternalLink className="w-3 h-3" />
                         <span>Xem vé</span>
@@ -208,49 +205,48 @@ export function WatchPage() {
                         type="button"
                         onClick={() => handleDelete(watch.id)}
                         title="Xóa theo dõi"
-                        className="p-1 rounded text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+                        className="p-1 rounded-lg text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
                         aria-label="Xóa theo dõi"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
-
                   </div>
 
                   {/* Fact Ledger Row: Target, Latest Price, Last Checked */}
-                  <div className="mt-3 pt-3 border-t border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                  <div className="mt-3 pt-3 border-t border-stone-100 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-stone-500 tracking-wider">
                         Mục tiêu
                       </span>
-                      <p className="font-mono font-bold text-emerald-400 mt-0.5">
+                      <p className="font-mono font-bold text-emerald-700 mt-0.5">
                         {watch.targetPrice ? `≤ ${formatVND(watch.targetPrice)}` : "Mọi giá giảm tốt"}
                       </p>
                     </div>
 
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-stone-500 tracking-wider">
                         Giá ghi nhận gần nhất
                       </span>
-                      <p className="font-mono font-bold text-white mt-0.5">
+                      <p className="font-mono font-bold text-stone-900 mt-0.5">
                         {watch.latestPrice ? formatVND(watch.latestPrice) : "Đang chờ quét"}
                       </p>
                     </div>
 
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-stone-500 tracking-wider">
                         Lần kiểm tra gần nhất
                       </span>
-                      <p className={`font-mono mt-0.5 ${isDegraded ? "text-amber-400 font-semibold" : "text-slate-300"}`}>
+                      <p className={`font-mono mt-0.5 ${isDegraded ? "text-amber-700 font-semibold" : "text-stone-700"}`}>
                         {checkInfo.text}
                       </p>
                     </div>
 
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-stone-500 tracking-wider">
                         Tình trạng
                       </span>
-                      <p className="font-mono text-slate-300 mt-0.5">
+                      <p className="font-mono text-stone-700 mt-0.5">
                         {watch.status === "matched"
                           ? "Đã có chuyến khớp giá"
                           : isDegraded
@@ -259,7 +255,6 @@ export function WatchPage() {
                       </p>
                     </div>
                   </div>
-
                 </div>
               );
             })}
@@ -275,7 +270,6 @@ export function WatchPage() {
           initialDestination="BKK"
           sourceContext="watch_page"
         />
-
       </div>
     </main>
   );

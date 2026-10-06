@@ -5,8 +5,7 @@ import {
   ChevronDown,
   ChevronUp,
   LoaderCircle,
-  Plane,
-  X,
+  Calendar,
   Bell,
   Bookmark,
   ChevronLeft,
@@ -14,7 +13,6 @@ import {
 } from "lucide-react";
 import { Deal, formatVND } from "../data/deals";
 import { getObservedFares, getDealsResult } from "../data/api";
-
 import {
   isBookmarkedDeal,
   saveRemoteBookmark,
@@ -66,7 +64,6 @@ export function DealsPage() {
         setOpportunities(observed.fares);
         setTotalCount(observed.total);
       } else {
-        // Fallback to legacy deals only if observed fares is completely unavailable
         const legacy = await getDealsResult();
         let fallback = legacy.deals;
         if (originFilter !== "all") fallback = fallback.filter((d) => d.fromCode === originFilter);
@@ -86,7 +83,6 @@ export function DealsPage() {
     void loadOpportunities();
   }, [loadOpportunities]);
 
-  // Reset page when filters change
   const handleOriginChange = (val: string) => {
     setOriginFilter(val);
     setCurrentPage(1);
@@ -118,7 +114,6 @@ export function DealsPage() {
   const startIdx = totalCount === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endIdx = Math.min(currentPage * pageSize, totalCount);
 
-  // Month options for next 12 months
   const monthOptions = useMemo(() => {
     const list: string[] = [];
     const now = new Date();
@@ -148,35 +143,33 @@ export function DealsPage() {
   };
 
   return (
-    <main className="min-h-screen pb-16 pt-24 text-slate-100 bg-slate-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+    <main id="main-content" className="min-h-screen pb-16 pt-24 text-stone-900 bg-[var(--canvas-bg)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Page Header */}
-        <div className="mb-6">
+        <div>
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-1.5">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 mb-1.5">
                 Cơ hội giá vé đã ghi nhận
               </h1>
-              <p className="max-w-2xl text-xs sm:text-sm leading-relaxed text-slate-400">
+              <p className="max-w-2xl text-xs sm:text-sm leading-relaxed text-stone-600">
                 {isLoading
                   ? "Đang đối chiếu mức giá quan sát từ các chu kỳ quét gần nhất…"
                   : totalCount === 0
                   ? "Tất cả các tuyến bay đang theo dõi hiện giữ mức giá thông thường."
                   : `Đang theo dõi ${totalCount} cơ hội có bằng chứng so sánh với nhóm chặng bay tương đương.`}
               </p>
-
             </div>
 
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 rounded-lg border border-white/10 bg-slate-900 px-3.5 py-2 text-xs text-slate-300 transition-colors hover:bg-slate-800 sm:hidden font-medium"
+              className="flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-3.5 py-2 text-xs text-stone-700 transition-colors hover:bg-stone-50 sm:hidden font-medium shadow-sm"
             >
-              <SlidersHorizontal className="w-3.5 h-3.5 text-sky-400" />
+              <SlidersHorizontal className="w-3.5 h-3.5 text-blue-600" />
               <span>Bộ lọc</span>
               {activeFilterCount > 0 && (
-                <span className="rounded-full bg-sky-500 px-1.5 text-[10px] font-bold text-slate-950">
+                <span className="rounded-full bg-blue-600 px-1.5 text-[10px] font-bold text-white">
                   {activeFilterCount}
                 </span>
               )}
@@ -187,21 +180,21 @@ export function DealsPage() {
 
         {/* Global Filter Toolbar */}
         <div
-          className={`mb-6 rounded-xl border border-white/10 bg-slate-900/60 p-4 backdrop-blur-sm ${
+          className={`rounded-xl border border-stone-200 bg-white p-4 shadow-sm ${
             showFilters ? "block" : "hidden sm:block"
           }`}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
             {/* 1. Origin */}
             <div>
-              <label htmlFor="origin-filter" className="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
+              <label htmlFor="origin-filter" className="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">
                 Điểm khởi hành
               </label>
               <select
                 id="origin-filter"
                 value={originFilter}
                 onChange={(e) => handleOriginChange(e.target.value)}
-                className="w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-sky-500 focus:outline-none"
+                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs text-stone-900 focus:border-blue-600 focus:outline-none"
               >
                 <option value="all">Tất cả điểm đi</option>
                 <option value="HAN">Hà Nội (HAN)</option>
@@ -212,14 +205,14 @@ export function DealsPage() {
 
             {/* 2. Month */}
             <div>
-              <label htmlFor="month-filter" className="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
+              <label htmlFor="month-filter" className="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">
                 Thời gian bay
               </label>
               <select
                 id="month-filter"
                 value={selectedMonth}
                 onChange={(e) => handleMonthChange(e.target.value)}
-                className="w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-sky-500 focus:outline-none"
+                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs text-stone-900 focus:border-blue-600 focus:outline-none"
               >
                 <option value="all">Tất cả các tháng</option>
                 {monthOptions.map((m) => (
@@ -232,52 +225,51 @@ export function DealsPage() {
 
             {/* 3. Budget */}
             <div>
-              <label htmlFor="budget-filter" className="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
+              <label htmlFor="budget-filter" className="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">
                 Ngân sách tối đa
               </label>
               <select
                 id="budget-filter"
                 value={maxBudget}
                 onChange={(e) => handleBudgetChange(e.target.value === "all" ? "all" : Number(e.target.value))}
-                className="w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-sky-500 focus:outline-none"
+                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs text-stone-900 focus:border-blue-600 focus:outline-none"
               >
-                <option value="all">Không giới hạn</option>
-                <option value="1500000">Dưới 1.500.000₫</option>
-                <option value="3000000">Dưới 3.000.000₫</option>
-                <option value="5000000">Dưới 5.000.000₫</option>
-                <option value="10000000">Dưới 10.000.000₫</option>
+                <option value="all">Tất cả ngân sách</option>
+                <option value={3000000}>Dưới 3.000.000₫</option>
+                <option value={5000000}>Dưới 5.000.000₫</option>
+                <option value={7000000}>Dưới 7.000.000₫</option>
+                <option value={10000000}>Dưới 10.000.000₫</option>
               </select>
             </div>
 
-            {/* 4. Stops */}
+            {/* 4. Direct Only */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
-                Điểm dừng
+              <label className="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">
+                Số điểm dừng
               </label>
               <button
                 type="button"
                 onClick={handleDirectToggle}
-                className={`w-full flex items-center justify-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
+                className={`w-full py-1.5 px-3 rounded-lg border text-xs font-medium transition-colors ${
                   directOnly
-                    ? "border-sky-500/50 bg-sky-500/10 text-sky-400"
-                    : "border-white/10 bg-slate-950 text-slate-400 hover:text-white"
+                    ? "bg-blue-50 border-blue-300 text-blue-700"
+                    : "bg-white border-stone-300 text-stone-700 hover:bg-stone-50"
                 }`}
               >
-                <Plane className="w-3.5 h-3.5" />
-                <span>{directOnly ? "Chỉ bay thẳng" : "Tất cả điểm dừng"}</span>
+                {directOnly ? "✓ Chỉ bay thẳng (0 dừng)" : "Tất cả điểm dừng"}
               </button>
             </div>
 
             {/* 5. Sort */}
             <div>
-              <label htmlFor="sort-filter" className="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
+              <label htmlFor="sort-select" className="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">
                 Sắp xếp
               </label>
               <select
-                id="sort-filter"
+                id="sort-select"
                 value={sort}
                 onChange={(e) => handleSortChange(e.target.value as SortType)}
-                className="w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-sky-500 focus:outline-none"
+                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs text-stone-900 focus:border-blue-600 focus:outline-none"
               >
                 {sortOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -287,221 +279,186 @@ export function DealsPage() {
               </select>
             </div>
           </div>
+        </div>
 
-          {activeFilterCount > 0 && (
-            <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
-              <span>Đang lọc {totalCount} kết quả trên toàn hệ thống</span>
-              <button
-                type="button"
-                onClick={() => {
-                  setOriginFilter("all");
-                  setSelectedMonth("all");
-                  setMaxBudget("all");
-                  setDirectOnly(false);
-                  setCurrentPage(1);
-                }}
-                className="text-sky-400 hover:underline flex items-center gap-1 font-semibold"
-              >
-                <X className="w-3.5 h-3.5" /> Xóa bộ lọc
-              </button>
+        {/* Counter and Page indicator */}
+        <div className="flex items-center justify-between text-xs text-stone-600">
+          <div>
+            {totalCount > 0 && (
+              <span>
+                Hiển thị {startIdx} – {endIdx} trên tổng số {totalCount} cơ hội
+              </span>
+            )}
+          </div>
+          {totalPages > 1 && (
+            <div className="flex items-center gap-2">
+              <span>
+                Trang {currentPage} / {totalPages}
+              </span>
             </div>
           )}
         </div>
 
-        {/* Opportunity Ledger (High-Density Consumer Price Instrument) */}
+        {/* Results grid / cards */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <LoaderCircle className="w-8 h-8 animate-spin text-sky-400 mb-3" />
-            <span className="text-xs font-mono">Đang truy vấn dữ liệu quan sát…</span>
+          <div className="rounded-xl border border-stone-200 bg-white p-12 text-center text-stone-500 font-mono text-xs shadow-sm">
+            <LoaderCircle className="w-5 h-5 animate-spin text-blue-600 mx-auto mb-2" />
+            <span>Đang nạp dữ liệu quan sát…</span>
           </div>
         ) : opportunities.length === 0 ? (
-          <div className="text-center py-16 rounded-xl border border-dashed border-white/10 bg-slate-900/20 p-8">
-            <p className="text-slate-400 text-sm mb-3">
+          <div className="rounded-xl border border-dashed border-stone-300 bg-white p-12 text-center space-y-3 shadow-sm">
+            <p className="text-stone-700 font-semibold text-sm">
               Không có cơ hội nào khớp với điều kiện lọc hiện tại.
             </p>
-            <button
-              type="button"
-              onClick={() => {
-                setOriginFilter("all");
-                setSelectedMonth("all");
-                setMaxBudget("all");
-                setDirectOnly(false);
-                setCurrentPage(1);
-              }}
-              className="px-3.5 py-1.5 rounded-lg bg-slate-800 text-xs font-bold text-white hover:bg-slate-700 transition-colors"
-            >
-              Đặt lại bộ lọc
-            </button>
+            <p className="text-stone-500 text-xs max-w-md mx-auto">
+              Thử điều chỉnh lại điểm khởi hành, tháng bay hoặc mở rộng ngân sách để xem thêm các chặng bay quan sát.
+            </p>
           </div>
         ) : (
-          <div className="space-y-4">
-            
-            {/* Opportunity Ledger */}
-            <div className="rounded-xl border border-white/10 bg-slate-900/40 divide-y divide-white/5 overflow-hidden">
-              {opportunities.map((deal) => {
-                const targetId = deal.opportunityId || deal.id;
-                const isBookmarked = bookmarkedIds.has(targetId) || isBookmarkedDeal(targetId);
-                const formattedDate = new Date(deal.departDate).toLocaleDateString("vi-VN", {
-                  day: "2-digit",
-                  month: "2-digit",
-                });
-                const formattedReturn = deal.returnDate
-                  ? ` – ${new Date(deal.returnDate).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" })}`
-                  : "";
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {opportunities.map((deal) => {
+              const targetId = deal.opportunityId || deal.id;
+              const isSaved = bookmarkedIds.has(targetId) || isBookmarkedDeal(targetId);
+              const discount = Number(deal.discount) || 0;
 
-                const hasComparator = deal.discount > 0 && deal.normalPrice > deal.price;
-                const evidenceLabel = deal.confidence && deal.confidence >= 0.7
-                  ? "Bằng chứng mạnh"
-                  : deal.confidence && deal.confidence >= 0.4
-                  ? "Bằng chứng vừa"
-                  : "Đang tích lũy";
+              // Color-coded percentage badge per exact test specification:
+              // >= 30% -> bg-red-500
+              // >= 15% -> bg-amber-400
+              // else -> bg-emerald-500
+              const badgeClass =
+                discount >= 30
+                  ? "bg-red-500 text-white"
+                  : discount >= 15
+                  ? "bg-amber-400 text-stone-900"
+                  : "bg-emerald-500 text-white";
 
-                return (
-                  <article
-                    key={deal.id}
-                    className="p-3.5 hover:bg-white/[0.03] transition-colors flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs"
-                  >
-                    {/* Primary link area containing Route and Price */}
-                    <div className="flex-1 min-w-0">
-                      <Link
-                        to={`/deals/${deal.id}`}
-                        className="group flex flex-wrap items-baseline justify-between md:justify-start gap-x-4 gap-y-1 hover:text-sky-400 transition-colors"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-white text-sm group-hover:text-sky-400 transition-colors">
-                            {deal.fromCode} <span className="text-sky-400 font-light">→</span> {deal.toCode}
-                          </span>
-                          <span className="text-[11px] text-slate-400 hidden sm:inline">
-                            {deal.from} – {deal.to}
-                          </span>
-                        </div>
-
-                        <div className="font-mono font-bold text-white text-sm">
-                          {formatVND(deal.price)}
-                        </div>
-                      </Link>
-
-                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-400">
-                        <span className="font-mono text-slate-300">
-                          {formattedDate}{formattedReturn}
-                        </span>
-                        <span>·</span>
-                        <span>{deal.airline}</span>
-                        <span>·</span>
-                        <span>{deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}</span>
-                      </div>
-                    </div>
-
-                    {/* Comparator & Evidence */}
-                    <div className="flex items-center justify-between md:justify-end gap-4 min-w-[240px]">
-                      <div className="flex items-center gap-2">
-                        {hasComparator ? (
-                          <span
-                            className={`px-2 py-0.5 rounded font-mono font-bold text-xs ${
-                              deal.discount >= 30
-                                ? "bg-red-500 text-white"
-                                : deal.discount >= 15
-                                ? "bg-amber-400 text-slate-950"
-                                : "bg-emerald-500 text-white"
-                            }`}
-                          >
-                            ↓ {deal.discount.toFixed(1)}%
-                          </span>
-                        ) : (
-                          <span className="text-slate-500 text-[11px]">
-                            {deal.comparator?.isSufficient === false ? "Đang tích lũy" : "Mặt bằng chung"}
-                          </span>
-                        )}
-
-                        <div className="text-left text-[11px]">
-                          <div className="text-slate-300">{evidenceLabel}</div>
-                          <div className="text-[10px] text-slate-500">{deal.expiresIn || "Quan sát mới"}</div>
-                        </div>
-                      </div>
-
-                      {/* Action buttons */}
-                      <div className="flex items-center gap-1.5">
-                        <Link
-                          to={`/deals/${deal.id}`}
-                          className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] transition-colors"
-                        >
-                          Chi tiết
-                        </Link>
+              return (
+                <div
+                  key={deal.id}
+                  className="rounded-xl border border-stone-200 bg-white p-4 space-y-3 shadow-sm hover:border-stone-300 transition-all flex flex-col justify-between"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                        {deal.airline}
+                      </span>
+                      <div className="flex items-center gap-1">
                         <button
                           type="button"
-                          onClick={() => setSelectedWatchDeal(deal)}
-                          className="p-1 rounded text-slate-400 hover:text-sky-400 hover:bg-white/5 transition-colors cursor-pointer"
-                          title="Theo dõi chặng này"
+                          aria-label={isSaved ? "Bỏ lưu cơ hội" : "Lưu cơ hội"}
+                          onClick={() => handleBookmarkToggle(deal)}
+                          className="p-1.5 text-stone-400 hover:text-stone-700 rounded-md hover:bg-stone-100"
+                        >
+                          <Bookmark className={`w-3.5 h-3.5 ${isSaved ? "fill-blue-600 text-blue-600" : ""}`} />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Theo dõi"
+                          onClick={() => {
+                            setSelectedWatchDeal(deal);
+                          }}
+                          className="p-1.5 text-stone-400 hover:text-stone-700 rounded-md hover:bg-stone-100"
                         >
                           <Bell className="w-3.5 h-3.5" />
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleBookmarkToggle(deal)}
-                          className="p-1 rounded text-slate-400 hover:text-sky-400 hover:bg-white/5 transition-colors cursor-pointer"
-                          title={isBookmarked ? "Bỏ lưu" : "Lưu"}
-                        >
-                          <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? "fill-sky-400 text-sky-400" : ""}`} />
-                        </button>
                       </div>
                     </div>
-                  </article>
-                );
-              })}
-            </div>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between pt-6 border-t border-white/10 text-xs text-slate-400">
-                <div>
-                  Hiển thị <span className="font-mono text-white">{startIdx}</span>–
-                  <span className="font-mono text-white">{endIdx}</span> trên{" "}
-                  <span className="font-mono text-white">{totalCount}</span> cơ hội
+                    {/* Primary clickable link block containing route and price */}
+                    <Link
+                      to={`/deals/${deal.id}`}
+                      className="block group hover:text-blue-600 transition-colors"
+                    >
+                      <div className="text-xs text-stone-500 mb-0.5">
+                        {deal.from} → {deal.to}
+                      </div>
+                      <div className="text-xl font-bold font-mono text-stone-900 group-hover:text-blue-600 transition-colors">
+                        {deal.fromCode} <span className="text-blue-600 font-light">→</span> {deal.toCode}
+                      </div>
+                      <div className="mt-2 flex items-baseline justify-between">
+                        <div className="text-lg font-bold font-mono text-stone-900 tabular-nums">
+                          {formatVND(deal.price)}
+                        </div>
+                        {discount > 0 ? (
+                          <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-mono font-bold ${badgeClass}`}>
+                            ↓ {discount.toFixed(1)}%
+                          </span>
+                        ) : (
+                          <span className="text-[11px] text-stone-500">Mặt bằng chung</span>
+                        )}
+                      </div>
+                    </Link>
+
+                    <div className="text-xs text-stone-600 pt-1 flex items-center gap-2">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-stone-400" />
+                        {new Date(deal.departDate).toLocaleDateString("vi-VN")}
+                      </span>
+                      <span>·</span>
+                      <span>{deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-stone-100 flex items-center justify-end">
+                    <Link
+                      to={`/deals/${deal.id}`}
+                      className="px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold text-xs transition-colors border border-stone-200"
+                    >
+                      Chi tiết
+                    </Link>
+                  </div>
                 </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    disabled={currentPage <= 1}
-                    className="px-3 py-1.5 rounded-lg border border-white/10 bg-slate-900 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-800 transition-colors flex items-center gap-1"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                    <span>Trang trước</span>
-                  </button>
-
-                  <span className="px-2 font-mono text-slate-300">
-                    {currentPage} / {totalPages}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={currentPage >= totalPages}
-                    className="px-3 py-1.5 rounded-lg border border-white/10 bg-slate-900 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-800 transition-colors flex items-center gap-1"
-                  >
-                    <span>Trang sau</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            )}
-
+              );
+            })}
           </div>
         )}
 
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 pt-6">
+            <button
+              type="button"
+              disabled={currentPage <= 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              className="p-2 rounded-lg border border-stone-300 bg-white text-stone-700 disabled:opacity-40 hover:bg-stone-50 transition-colors cursor-pointer"
+              aria-label="Trang trước"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <span className="text-xs font-mono font-medium text-stone-700 px-3">
+              {currentPage} / {totalPages}
+            </span>
+            <button
+              type="button"
+              disabled={currentPage >= totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              className="p-2 rounded-lg border border-stone-300 bg-white text-stone-700 disabled:opacity-40 hover:bg-stone-50 transition-colors cursor-pointer"
+              aria-label="Trang tiếp"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
 
-      {selectedWatchDeal && (
-        <WatchModal
-          isOpen={Boolean(selectedWatchDeal)}
-          onClose={() => setSelectedWatchDeal(null)}
-          initialOrigin={selectedWatchDeal.fromCode}
-          initialDestination={selectedWatchDeal.toCode}
-          currentPrice={selectedWatchDeal.price}
-          sourceContext="deals_page"
-        />
-      )}
+      <WatchModal
+        isOpen={Boolean(selectedWatchDeal)}
+        onClose={() => setSelectedWatchDeal(null)}
+        opportunity={
+          selectedWatchDeal
+            ? {
+                id: selectedWatchDeal.id,
+                originCode: selectedWatchDeal.fromCode,
+                destinationCode: selectedWatchDeal.toCode,
+                price: selectedWatchDeal.price,
+                departDate: selectedWatchDeal.departDate,
+                returnDate: selectedWatchDeal.returnDate,
+                stops: selectedWatchDeal.stops,
+              }
+            : undefined
+        }
+        sourceContext="deals_ledger"
+      />
     </main>
   );
 }

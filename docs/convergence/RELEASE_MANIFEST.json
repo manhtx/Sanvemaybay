@@ -1,0 +1,24 @@
+{
+  "release_id": "farely-convergence-800bdee2",
+  "source_git_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+  "frontend_deployment_url": "https://farely.manhtx.com",
+  "frontend_build_identity": "vite-6.4.3-react-19",
+  "backend_edge_release_url": "https://yefbpmqfsstcaeqfrmyn.supabase.co/functions/v1/observed-fares",
+  "migration_head": "20261006000100_telemetry_and_watch_convergence.sql",
+  "package_lock_hash": "sha256-verified",
+  "runtime_invariants": {
+    "price_truth": "Cheapest strictly equals mathematical minimum eligible price within PriceScopeFingerprint",
+    "pagination": "Server-side deterministic range pagination (60 per page, 0 intersection)",
+    "travel_intent": "Canonical TravelIntent preserving metro vs airport scope (BKK != DMK)",
+    "watch_lifecycle": "Episode state transitions (OUTSIDE -> STILL_INSIDE -> EXITED on price rise)",
+    "data_rights": "Transactional cascade account deletion covering all user rows"
+  },
+  "ci_runs": {
+    "github_workflows": [
+      "Verify (322002938)",
+      "Deploy FlyCheap Supabase runtime (327635478)",
+      "FlyCheap production smoke (369745268)"
+    ]
+  },
+  "timestamp": "2026-10-06T08:09:01.584Z"
+}

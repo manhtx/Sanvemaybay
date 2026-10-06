@@ -134,21 +134,37 @@ Deno.serve(async (request) => {
 
     const sort = typeof body.sort === "string" ? body.sort : "discount";
     if (sort === "price_asc") {
-      query = query.order("price", { ascending: true }).order("discount_percent", { ascending: false, nullsFirst: false });
+      query = query
+        .order("price", { ascending: true })
+        .order("discount_percent", { ascending: false, nullsFirst: false })
+        .order("dedupe_key", { ascending: true });
     } else if (sort === "price_desc") {
-      query = query.order("price", { ascending: false }).order("discount_percent", { ascending: false, nullsFirst: false });
+      query = query
+        .order("price", { ascending: false })
+        .order("discount_percent", { ascending: false, nullsFirst: false })
+        .order("dedupe_key", { ascending: true });
     } else if (sort === "score") {
-      query = query.order("deal_score", { ascending: false }).order("discount_percent", { ascending: false, nullsFirst: false });
+      query = query
+        .order("deal_score", { ascending: false })
+        .order("discount_percent", { ascending: false, nullsFirst: false })
+        .order("dedupe_key", { ascending: true });
     } else if (sort === "date_near") {
-      query = query.order("depart_date", { ascending: true }).order("price", { ascending: true });
+      query = query
+        .order("depart_date", { ascending: true })
+        .order("price", { ascending: true })
+        .order("dedupe_key", { ascending: true });
     } else if (sort === "date_far") {
-      query = query.order("depart_date", { ascending: false }).order("price", { ascending: true });
+      query = query
+        .order("depart_date", { ascending: false })
+        .order("price", { ascending: true })
+        .order("dedupe_key", { ascending: true });
     } else {
       query = query
         .order("discount_percent", { ascending: false, nullsFirst: false })
         .order("deal_score", { ascending: false })
         .order("observed_at", { ascending: false })
-        .order("price", { ascending: true });
+        .order("price", { ascending: true })
+        .order("dedupe_key", { ascending: true });
     }
 
     const latestQuery = service
@@ -157,8 +173,9 @@ Deno.serve(async (request) => {
       .eq("generation_id", activeGen.active_generation_id)
       .order("observed_at", { ascending: false })
       .limit(1);
+    const paginatedQuery = query.range(start, start + pageSize - 1);
     const [{ data, error, count }, latestResult] = await Promise.all([
-      query,
+      paginatedQuery,
       latestQuery.maybeSingle(),
     ]);
     if (error) throw error;

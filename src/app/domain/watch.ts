@@ -7,6 +7,27 @@ export type WatchStatus =
   | "needs_attention"
   | "expired";
 
+export const METRO_AIRPORT_MAP: Record<string, string[]> = {
+  BKK_ALL: ["BKK", "DMK"],
+  TYO_ALL: ["NRT", "HND"],
+  LON_ALL: ["LHR", "LGW", "STN"],
+  PAR_ALL: ["CDG", "ORY"],
+  NYC_ALL: ["JFK", "EWR", "LGA"],
+};
+
+export function matchLocationScope(targetCode: string | null | undefined, candidateCode: string | null | undefined, scope?: string | null): boolean {
+  if (!targetCode) return true;
+  if (!candidateCode) return false;
+  const targetUpper = targetCode.trim().toUpperCase();
+  const candUpper = candidateCode.trim().toUpperCase();
+  if (targetUpper === candUpper) return true;
+  if (scope === "metro" || targetUpper.endsWith("_ALL")) {
+    const served = METRO_AIRPORT_MAP[targetUpper];
+    if (served && served.includes(candUpper)) return true;
+  }
+  return false;
+}
+
 export interface WatchIntent {
   id: string;
   userId?: string;
@@ -16,6 +37,12 @@ export interface WatchIntent {
   destinationName: string;
   dateFrom?: string | null;
   dateTo?: string | null;
+  returnDate?: string | null;
+  tripType?: "oneway" | "roundtrip" | null;
+  cabin?: "economy" | "premium_economy" | "business" | "first" | null;
+  passengers?: number | null;
+  currency?: string | null;
+  locationScope?: "exact" | "metro" | "nearby" | null;
   targetPrice?: number | null;
   latestPrice?: number | null;
   maxStops?: number | null;
@@ -35,23 +62,26 @@ export interface WatchEvaluationInput {
   destinationCode: string;
   price: number;
   departDate?: string | null;
+  returnDate?: string | null;
   stops?: number;
+  cabin?: string;
+  currency?: string;
 }
 
 export function evaluateWatchMatch(
-  watch: Pick<WatchIntent, "originCode" | "destinationCode" | "targetPrice" | "dateFrom" | "dateTo" | "maxStops" | "status">,
+  watch: Partial<WatchIntent> & Pick<WatchIntent, "originCode" | "destinationCode">,
   candidate: WatchEvaluationInput,
 ): boolean {
   if (watch.status === "paused" || watch.status === "expired" || watch.status === "sync_failed") {
     return false;
   }
-  if (watch.originCode && watch.originCode !== candidate.originCode) {
+  if (!matchLocationScope(watch.originCode, candidate.originCode, watch.locationScope)) {
     return false;
   }
-  if (watch.destinationCode && watch.destinationCode !== candidate.destinationCode) {
+  if (!matchLocationScope(watch.destinationCode, candidate.destinationCode, watch.locationScope)) {
     return false;
   }
-  if (watch.targetPrice && candidate.price > watch.targetPrice) {
+  if (watch.targetPrice != null && candidate.price > watch.targetPrice) {
     return false;
   }
   if (typeof watch.maxStops === "number" && typeof candidate.stops === "number") {
@@ -61,6 +91,21 @@ export function evaluateWatchMatch(
     return false;
   }
   if (watch.dateTo && candidate.departDate && candidate.departDate > watch.dateTo) {
+    return false;
+  }
+  if (watch.returnDate && candidate.returnDate && candidate.returnDate !== watch.returnDate) {
+    return false;
+  }
+  if (watch.tripType === "roundtrip" && !candidate.returnDate) {
+    return false;
+  }
+  if (watch.tripType === "oneway" && candidate.returnDate) {
+    return false;
+  }
+  if (watch.cabin && candidate.cabin && candidate.cabin !== watch.cabin) {
+    return false;
+  }
+  if (watch.currency && candidate.currency && candidate.currency !== watch.currency) {
     return false;
   }
   return true;
@@ -89,16 +134,17 @@ export function computeWatchStatus(watch: {
     }
   }
 
-  // Check if matched
+  // Check if actively matched by latest price
   if (
-    watch.targetPrice &&
-    watch.latestPrice &&
+    watch.targetPrice != null &&
+    watch.latestPrice != null &&
     watch.latestPrice <= watch.targetPrice
   ) {
     return "matched";
   }
 
-  if (watch.lastMatchAt) {
+  // Check recent match within 48h only if price is not known to have risen above target
+  if (watch.lastMatchAt && (!watch.latestPrice || (watch.targetPrice && watch.latestPrice <= watch.targetPrice))) {
     const hoursSinceMatch =
       (Date.now() - new Date(watch.lastMatchAt).getTime()) / (1000 * 60 * 60);
     if (hoursSinceMatch <= 48) {
@@ -127,43 +173,43 @@ export function formatWatchStatusLabel(status: WatchStatus): {
     case "matched":
       return {
         label: "ĐÃ CÓ MỨC GIÁ MỤC TIÊU",
-        colorClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+        colorClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
         description: "Phát hiện giá bằng hoặc thấp hơn mục tiêu bạn đặt.",
       };
     case "monitoring":
       return {
         label: "ĐANG THEO DÕI",
-        colorClass: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+        colorClass: "bg-blue-50 text-blue-700 border-blue-200",
         description: "Farely đang theo dõi các đợt quét để thông báo ngay khi có giá tốt.",
       };
     case "degraded":
       return {
         label: "THEO DÕI CHẬM",
-        colorClass: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+        colorClass: "bg-amber-50 text-amber-700 border-amber-200",
         description: "Lần kiểm tra gần nhất hơn 24 giờ trước — hệ thống đang lập lại lịch quét.",
       };
     case "sync_failed":
       return {
         label: "ĐỒNG BỘ THẤT BẠI",
-        colorClass: "bg-rose-500/10 text-rose-400 border-rose-500/30",
+        colorClass: "bg-rose-50 text-rose-700 border-rose-200",
         description: "Chưa thể lưu theo dõi lên máy chủ — vui lòng thử lại.",
       };
     case "paused":
       return {
         label: "TẠM DỪNG",
-        colorClass: "bg-slate-500/10 text-slate-400 border-slate-500/30",
+        colorClass: "bg-stone-100 text-stone-600 border-stone-200",
         description: "Theo dõi đang tạm ngưng.",
       };
     case "needs_attention":
       return {
         label: "CẦN CẬP NHẬT",
-        colorClass: "bg-rose-500/10 text-rose-400 border-rose-500/30",
+        colorClass: "bg-rose-50 text-rose-700 border-rose-200",
         description: "Email chưa xác nhận hoặc tuyến bay cần điều chỉnh.",
       };
     case "expired":
       return {
         label: "ĐÃ HẾT HẠN",
-        colorClass: "bg-slate-500/10 text-slate-400 border-slate-500/30",
+        colorClass: "bg-stone-100 text-stone-600 border-stone-200",
         description: "Khoảng thời gian bay dự kiến đã qua.",
       };
   }

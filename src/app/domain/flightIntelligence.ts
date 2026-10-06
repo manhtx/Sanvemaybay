@@ -98,3 +98,199 @@ export function decideBuyAction(input: BuyDecisionInput): BuyAction {
   if (input.pricePercentile != null && input.pricePercentile <= 25) return "MONITOR";
   return "WAIT";
 }
+
+export type CellFreshness = "fresh_observed" | "observed" | "stale" | "unavailable";
+
+export interface FlexibleMatrixCell {
+  departDate: string;
+  returnDate?: string;
+  price?: number;
+  freshness: CellFreshness;
+  isGuaranteedLive: false; // Crucial invariant: never present indicative observed data as guaranteed live availability
+  observedAt?: string;
+  carrier?: string;
+}
+
+export interface ObservedOfferForMatrix {
+  departDate: string;
+  returnDate?: string;
+  price: number;
+  observedAt: string;
+  carrier?: string;
+}
+
+/**
+ * Builds a flexible depart x return matrix where each cell truthfully marks
+ * freshness (fresh_observed < 1h, observed < 24h, stale > 24h) and guarantees
+ * isGuaranteedLive is false (epistemic integrity).
+ */
+export function buildFlexibleFareMatrix(
+  departDates: string[],
+  returnDates: (string | undefined)[],
+  offers: ObservedOfferForMatrix[],
+  nowTimestamp: string = new Date().toISOString(),
+): FlexibleMatrixCell[] {
+  const nowMs = new Date(nowTimestamp).getTime();
+  const ONE_HOUR = 60 * 60 * 1000;
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+
+  const cells: FlexibleMatrixCell[] = [];
+
+  for (const dep of departDates) {
+    for (const ret of returnDates) {
+      // Find matching offers
+      const matching = offers.filter(
+        (o) => o.departDate === dep && (ret === undefined ? !o.returnDate : o.returnDate === ret),
+      );
+
+      if (matching.length === 0) {
+        cells.push({
+          departDate: dep,
+          returnDate: ret,
+          freshness: "unavailable",
+          isGuaranteedLive: false,
+        });
+        continue;
+      }
+
+      // Select lowest price offer
+      const best = matching.reduce((min, cur) => (cur.price < min.price ? cur : min));
+      const ageMs = Math.max(0, nowMs - new Date(best.observedAt).getTime());
+
+      let freshness: CellFreshness = "stale";
+      if (ageMs <= ONE_HOUR) {
+        freshness = "fresh_observed";
+      } else if (ageMs <= ONE_DAY) {
+        freshness = "observed";
+      }
+
+      cells.push({
+        departDate: dep,
+        returnDate: ret,
+        price: best.price,
+        freshness,
+        isGuaranteedLive: false,
+        observedAt: best.observedAt,
+        carrier: best.carrier,
+      });
+    }
+  }
+
+  return cells;
+}
+
+export type VerificationAccuracyStatus =
+  | "EXACT_MATCH"
+  | "PRICE_INCREASED"
+  | "PRICE_DROPPED"
+  | "PROVIDER_UNAVAILABLE"
+  | "SEATS_EXHAUSTED";
+
+export interface VerificationResult {
+  observedPrice: number;
+  verifiedPrice?: number;
+  absoluteDelta?: number;
+  percentageDelta?: number;
+  accuracyStatus: VerificationAccuracyStatus;
+  provider: string;
+  verifiedAt: string;
+  success: boolean;
+}
+
+/**
+ * Verification Layer: checks observed price against real-time live provider response.
+ * Accurately calculates discrepancy deltas without fabricating success.
+ */
+export function verifyOfferPrice(
+  observedPrice: number,
+  liveResult: {
+    status: "SUCCESS" | "UNAVAILABLE" | "SOLD_OUT";
+    livePrice?: number;
+    provider: string;
+    timestamp?: string;
+  },
+): VerificationResult {
+  const verifiedAt = liveResult.timestamp || new Date().toISOString();
+
+  if (liveResult.status === "UNAVAILABLE") {
+    return {
+      observedPrice,
+      accuracyStatus: "PROVIDER_UNAVAILABLE",
+      provider: liveResult.provider,
+      verifiedAt,
+      success: false,
+    };
+  }
+
+  if (liveResult.status === "SOLD_OUT" || liveResult.livePrice === undefined) {
+    return {
+      observedPrice,
+      accuracyStatus: "SEATS_EXHAUSTED",
+      provider: liveResult.provider,
+      verifiedAt,
+      success: false,
+    };
+  }
+
+  const verifiedPrice = liveResult.livePrice;
+  const absoluteDelta = verifiedPrice - observedPrice;
+  const percentageDelta = Number(((absoluteDelta / observedPrice) * 100).toFixed(2));
+
+  let accuracyStatus: VerificationAccuracyStatus = "EXACT_MATCH";
+  if (absoluteDelta > 0) accuracyStatus = "PRICE_INCREASED";
+  else if (absoluteDelta < 0) accuracyStatus = "PRICE_DROPPED";
+
+  return {
+    observedPrice,
+    verifiedPrice,
+    absoluteDelta,
+    percentageDelta,
+    accuracyStatus,
+    provider: liveResult.provider,
+    verifiedAt,
+    success: true,
+  };
+}
+
+export interface MetroAirportComparison {
+  originMetro: string;
+  destinationMetro: string;
+  options: {
+    originAirport: string;
+    destinationAirport: string;
+    bestPrice: number;
+    groundTransferNote?: string;
+  }[];
+  priceDifference: number;
+  cheaperOptionAirport: string;
+}
+
+export function compareMetroAirports(
+  metro: { origin: string; destination: string },
+  airportPairs: {
+    originAirport: string;
+    destinationAirport: string;
+    price: number;
+    groundTransferNote?: string;
+  }[],
+): MetroAirportComparison | null {
+  if (airportPairs.length < 2) return null;
+
+  const sorted = [...airportPairs].sort((a, b) => a.price - b.price);
+  const cheapest = sorted[0];
+  const second = sorted[1];
+
+  return {
+    originMetro: metro.origin,
+    destinationMetro: metro.destination,
+    options: sorted.map((p) => ({
+      originAirport: p.originAirport,
+      destinationAirport: p.destinationAirport,
+      bestPrice: p.price,
+      groundTransferNote: p.groundTransferNote,
+    })),
+    priceDifference: second.price - cheapest.price,
+    cheaperOptionAirport: `${cheapest.originAirport} → ${cheapest.destinationAirport}`,
+  };
+}
+

@@ -1,0 +1,74 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-10-06T08:09:01.584Z",
+  "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+  "summary": {
+    "vitest_unit_domain_tests": 135,
+    "node_domain_security_tests": 63,
+    "deno_edge_functions_tests": 50,
+    "playwright_e2e_tests": 52,
+    "total_tests": 300,
+    "pass_rate": "100%"
+  },
+  "layers": [
+    {
+      "layer": "domain_and_property",
+      "runner": "vitest run",
+      "files": [
+        "src/app/domain/*.test.ts",
+        "src/app/data/*.test.ts",
+        "src/app/lib/*.test.ts"
+      ],
+      "test_count": 135,
+      "verdict": "PASS"
+    },
+    {
+      "layer": "node_truth_and_security",
+      "runner": "node --test scripts/*.node-test.mjs",
+      "files": [
+        "scripts/acceptance-anti-shrinkage.node-test.mjs",
+        "scripts/pagination-truth.node-test.mjs",
+        "scripts/deal-scorer-truth.node-test.mjs",
+        "scripts/drills.node-test.mjs",
+        "scripts/edge-function-safety.node-test.mjs",
+        "scripts/security-smoke.node-test.mjs",
+        "scripts/account-deletion-safety.node-test.mjs",
+        "scripts/performance-budget.node-test.mjs"
+      ],
+      "test_count": 63,
+      "verdict": "PASS"
+    },
+    {
+      "layer": "deno_edge_functions",
+      "runner": "npm run test:functions (npx --yes deno test --allow-env supabase/functions/_shared)",
+      "files": [
+        "supabase/functions/_shared/*.test.ts"
+      ],
+      "test_count": 50,
+      "verdict": "PASS"
+    },
+    {
+      "layer": "real_browser_e2e_and_viewports",
+      "runner": "playwright test",
+      "files": [
+        "e2e/app.spec.ts",
+        "e2e/responsive-viewports.spec.ts"
+      ],
+      "test_count": 52,
+      "viewports_tested": [
+        320,
+        360,
+        390,
+        430,
+        768,
+        1024,
+        1207,
+        1280,
+        1366,
+        1440,
+        1920
+      ],
+      "verdict": "PASS"
+    }
+  ]
+}

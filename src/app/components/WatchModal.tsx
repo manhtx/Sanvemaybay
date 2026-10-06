@@ -127,9 +127,9 @@ export function WatchModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in duration-150">
       <div
-        className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#12151c] p-6 shadow-2xl"
+        className="relative w-full max-w-lg rounded-xl border border-stone-200 bg-white p-6 shadow-2xl text-stone-900"
         role="dialog"
         aria-modal="true"
         aria-labelledby="watch-modal-title"
@@ -137,7 +137,7 @@ export function WatchModal({
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/5 transition"
+          className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 p-1 rounded-lg hover:bg-stone-100 transition"
           aria-label="Đóng"
         >
           <X className="w-5 h-5" />
@@ -145,50 +145,50 @@ export function WatchModal({
 
         {isSuccess ? (
           <div className="text-center py-8 space-y-3">
-            <div className="mx-auto w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <div className="mx-auto w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
               <Check className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white">Đã bắt đầu theo dõi</h3>
-            <p className="text-sm text-slate-400">
-              Farely sẽ thông báo tới <strong className="text-white">{email}</strong> ngay khi có lượt quét phát hiện mức giá ≤ {formatVND(targetPrice)}.
+            <h3 className="text-xl font-bold text-stone-900">Đã bắt đầu theo dõi</h3>
+            <p className="text-sm text-stone-600">
+              Farely sẽ thông báo tới <strong className="text-stone-900">{email}</strong> ngay khi có lượt quét phát hiện mức giá ≤ {formatVND(targetPrice)}.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <div className="flex items-center gap-2 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-2 text-blue-600 text-xs font-semibold uppercase tracking-wider mb-1">
                 <Bell className="w-4 h-4" />
                 <span>Theo dõi cơ hội bay</span>
               </div>
-              <h2 id="watch-modal-title" className="text-xl font-bold text-white">
+              <h2 id="watch-modal-title" className="text-xl font-bold text-stone-900">
                 {opportunity?.originName || effectiveOrigin} ({effectiveOrigin}) → {opportunity?.destinationName || effectiveDestination} ({effectiveDestination})
               </h2>
               {opportunity?.departDate && (
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-stone-500 mt-1">
                   Ngày bay: {opportunity.departDate} {opportunity.returnDate ? `— ${opportunity.returnDate}` : "(Một chiều)"}
                 </p>
               )}
             </div>
 
             {/* Price context block */}
-            <div className="p-3.5 rounded-xl border border-white/[0.08] bg-white/[0.02] flex items-center justify-between">
+            <div className="p-3.5 rounded-xl border border-stone-200 bg-stone-50 flex items-center justify-between">
               <div>
-                <span className="text-xs text-slate-400">Mức giá ghi nhận gần nhất</span>
-                <p className="text-lg font-bold text-white tracking-tight">{formatVND(effectiveCurrentPrice)}</p>
+                <span className="text-xs text-stone-500">Mức giá ghi nhận gần nhất</span>
+                <p className="text-lg font-bold text-stone-900 tracking-tight font-mono">{formatVND(effectiveCurrentPrice)}</p>
               </div>
               <div className="text-right">
-                <span className="text-xs text-slate-500">Mục tiêu bạn muốn</span>
-                <p className="text-sm font-semibold text-blue-400">≤ {formatVND(targetPrice)}</p>
+                <span className="text-xs text-stone-500">Mục tiêu bạn muốn</span>
+                <p className="text-sm font-bold text-blue-600 font-mono">≤ {formatVND(targetPrice)}</p>
               </div>
             </div>
 
-            {/* Target Price Slider / Input */}
+            {/* Target Price Slider */}
             <div className="space-y-2">
               <div className="flex justify-between items-center text-xs">
-                <label htmlFor="target-price-input" className="text-slate-300 font-medium">
+                <label htmlFor="target-price-input" className="text-stone-700 font-medium">
                   Báo cho tôi khi giá bằng hoặc thấp hơn:
                 </label>
-                <span className="font-mono text-emerald-400 font-semibold">{formatVND(targetPrice)}</span>
+                <span className="font-mono text-emerald-700 font-bold">{formatVND(targetPrice)}</span>
               </div>
               <input
                 id="target-price-input"
@@ -198,9 +198,9 @@ export function WatchModal({
                 step={50000}
                 value={targetPrice}
                 onChange={(e) => setTargetPrice(Number(e.target.value))}
-                className="w-full accent-blue-500 cursor-pointer"
+                className="w-full accent-blue-600 cursor-pointer"
               />
-              <div className="flex justify-between text-[11px] text-slate-500">
+              <div className="flex justify-between text-[11px] text-stone-500 font-mono">
                 <span>{formatVND(Math.max(500000, Math.floor(effectiveCurrentPrice * 0.4)))}</span>
                 <span>Hiện tại: {formatVND(effectiveCurrentPrice)}</span>
               </div>
@@ -208,11 +208,11 @@ export function WatchModal({
 
             {/* Email input */}
             <div className="space-y-1.5">
-              <label htmlFor="watch-email" className="block text-xs font-medium text-slate-300">
+              <label htmlFor="watch-email" className="block text-xs font-medium text-stone-700">
                 Email nhận cảnh báo
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 w-4 h-4 text-slate-500" />
+                <Mail className="absolute left-3 top-3 w-4 h-4 text-stone-400" />
                 <input
                   id="watch-email"
                   type="email"
@@ -220,7 +220,7 @@ export function WatchModal({
                   placeholder="traveler@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/10 bg-slate-900 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-stone-300 bg-white text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-blue-600"
                 />
               </div>
             </div>
@@ -230,24 +230,24 @@ export function WatchModal({
               <button
                 type="button"
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition"
+                className="flex items-center gap-1.5 text-xs text-stone-600 hover:text-stone-900 transition"
               >
                 <span>Tùy chọn nâng cao</span>
                 {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
               </button>
 
               {showAdvanced && (
-                <div className="mt-3 p-3.5 rounded-xl border border-white/[0.06] bg-black/20 space-y-3 animate-in fade-in duration-100">
+                <div className="mt-3 p-3.5 rounded-xl border border-stone-200 bg-stone-50 space-y-3 animate-in fade-in duration-100">
                   <div className="space-y-1">
-                    <label className="block text-xs text-slate-400">Tần suất gửi tin</label>
+                    <label className="block text-xs text-stone-600 font-medium">Tần suất gửi tin</label>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <button
                         type="button"
                         onClick={() => setFrequency("instant")}
                         className={`p-2 rounded-lg border text-center transition ${
                           frequency === "instant"
-                            ? "border-blue-500 bg-blue-500/10 text-white font-medium"
-                            : "border-white/10 text-slate-400 hover:bg-white/5"
+                            ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
+                            : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                         }`}
                       >
                         Khi có lượt quét phù hợp
@@ -257,8 +257,8 @@ export function WatchModal({
                         onClick={() => setFrequency("daily")}
                         className={`p-2 rounded-lg border text-center transition ${
                           frequency === "daily"
-                            ? "border-blue-500 bg-blue-500/10 text-white font-medium"
-                            : "border-white/10 text-slate-400 hover:bg-white/5"
+                            ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
+                            : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                         }`}
                       >
                         Tổng hợp 1 lần/ngày
@@ -267,11 +267,11 @@ export function WatchModal({
                   </div>
 
                   <div className="space-y-1">
-                    <label className="block text-xs text-slate-400">Số điểm dừng tối đa</label>
+                    <label className="block text-xs text-stone-600 font-medium">Số điểm dừng tối đa</label>
                     <select
                       value={maxStops ?? ""}
                       onChange={(e) => setMaxStops(e.target.value === "" ? undefined : Number(e.target.value))}
-                      className="w-full py-2 px-3 rounded-lg border border-white/10 bg-slate-900 text-xs text-white"
+                      className="w-full py-2 px-3 rounded-lg border border-stone-300 bg-white text-xs text-stone-900 focus:border-blue-600"
                     >
                       <option value="">Bất kỳ số điểm dừng</option>
                       <option value="0">Bay thẳng (0 điểm dừng)</option>
@@ -283,20 +283,20 @@ export function WatchModal({
             </div>
 
             {error && (
-              <p className="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 p-2.5 rounded-lg" role="alert">
+              <p className="text-xs text-rose-700 bg-rose-50 border border-rose-200 p-2.5 rounded-lg" role="alert">
                 {error}
               </p>
             )}
 
-            <div className="pt-2 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
+            <div className="pt-2 flex items-center justify-between gap-3 border-t border-stone-100">
+              <div className="flex items-center gap-1.5 text-[11px] text-stone-500">
+                <ShieldCheck className="w-3.5 h-3.5 text-stone-400" />
                 <span>Không spam · Hủy bất kỳ lúc nào</span>
               </div>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-sm font-semibold text-white transition shadow-sm"
+                className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-xs font-bold text-white transition shadow-sm cursor-pointer"
               >
                 {submitting ? "Đang lưu..." : "Bắt đầu theo dõi"}
               </button>

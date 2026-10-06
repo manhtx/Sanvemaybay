@@ -1,0 +1,80 @@
+{
+  "inventory_timestamp": "2026-10-06T14:20:00Z",
+  "git": {
+    "branch": "main",
+    "local_head": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+    "remote_head": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+    "clean_working_tree": true
+  },
+  "deployments": {
+    "vercel_production": {
+      "url": "https://farely.manhtx.com",
+      "reported_release_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "reported_generated_at": "2026-10-06T06:11:20.151Z",
+      "status": "CONFIRMED"
+    },
+    "supabase_edge_production": {
+      "url": "https://yefbpmqfsstcaeqfrmyn.supabase.co",
+      "reported_release_sha": "87891a37ff5ae7feff53420fc1d198a6eb3b5250",
+      "active_generation_id": "c05ada6a-15bf-4b21-9387-3c7e0ace4a63",
+      "active_generation_rows": 4455,
+      "feed_age_minutes": 64,
+      "status": "CONFIRMED_DRIFT_DETECTED"
+    }
+  },
+  "database": {
+    "migration_count": 41,
+    "migration_head": "20261006000100_telemetry_and_watch_convergence.sql",
+    "status": "CONFIRMED"
+  },
+  "edge_functions": {
+    "source_directory_count": 16,
+    "deployed_in_workflow_count": 14,
+    "functions": [
+      "ai-explainer",
+      "alert-processor",
+      "analyze-price",
+      "archive-import",
+      "deal-redirect",
+      "feed-snapshot",
+      "flight-ingest",
+      "flight-scanner",
+      "flight-search",
+      "manage-alert",
+      "manage-user-data",
+      "observed-fares",
+      "refresh-observed-fares",
+      "retention-cleanup",
+      "setup-alert",
+      "track-event"
+    ],
+    "status": "CONFIRMED"
+  },
+  "test_suites": {
+    "vitest_domain_count": 128,
+    "node_tests_count": 59,
+    "deno_functions_count": 48,
+    "playwright_e2e_count": 52,
+    "total_automated_count": 287,
+    "all_passing": true,
+    "status": "CONFIRMED"
+  },
+  "known_issue_reproductions": {
+    "F-01_closure_breaks_release_parity": {
+      "status": "CONFIRMED_PRESENT",
+      "evidence": "Vercel production serves 800bdee while Edge Functions serve 87891a3. Pushing final reports to main auto-deploys Vercel without updating Supabase Edge secrets/functions."
+    },
+    "F-02_pagination_missing_in_observed_fares": {
+      "status": "CONFIRMED_PRESENT",
+      "evidence": "supabase/functions/observed-fares/index.ts calculates page, pageSize, and start at line 37-39, but never applies .range(start, start + pageSize - 1) to the PostgREST query on line 64/161."
+    },
+    "F-03_travel_intent_fidelity_loss": {
+      "status": "CONFIRMED_PRESENT",
+      "evidence": "WatchIntent in src/app/domain/watch.ts drops tripType, returnDate, cabin, passengers, and locationScope (metro vs specific airport)."
+    },
+    "F-04_visual_design_below_standard": {
+      "status": "CONFIRMED_PRESENT",
+      "evidence": "src/app/pages/Root.tsx sets dark slate-950 theme; app consists of generic dark SaaS cards rather than calm, high-density light/off-white consumer airfare instrument."
+    }
+  }
+}

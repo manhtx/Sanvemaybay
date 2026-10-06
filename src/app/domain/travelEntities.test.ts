@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveCanonicalAirportOrCity } from "./travelEntities";
+import { getServedAirports, resolveCanonicalAirportOrCity } from "./travelEntities";
 
 describe("resolveCanonicalAirportOrCity", () => {
   it("resolves exact 3-letter IATA codes", () => {
@@ -52,4 +52,14 @@ describe("resolveCanonicalAirportOrCity", () => {
     expect(resolveCanonicalAirportOrCity("")).toBeUndefined();
     expect(resolveCanonicalAirportOrCity("xyz999")).toBeUndefined();
   });
+
+  it("resolves served airports for metro areas and individual airports", () => {
+    expect(getServedAirports("BKK_ALL")).toEqual(["BKK", "DMK"]);
+    expect(getServedAirports("BKK")).toEqual(["BKK"]);
+    expect(getServedAirports("DMK")).toEqual(["DMK"]);
+    expect(getServedAirports("TYO_ALL")).toEqual(["NRT", "HND"]);
+    expect(getServedAirports("NRT")).toEqual(["NRT"]);
+    expect(getServedAirports("HAN")).toEqual(["HAN"]);
+  });
 });
+

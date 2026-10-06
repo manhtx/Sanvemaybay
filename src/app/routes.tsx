@@ -3,7 +3,7 @@ import { Root } from "./pages/Root";
 
 function PageLoader() {
   return (
-    <div className="min-h-screen bg-slate-950 pt-32 text-center text-slate-400">
+    <div className="min-h-screen bg-stone-50 pt-32 text-center text-stone-500">
       Đang tải…
     </div>
   );
@@ -25,6 +25,12 @@ export const router = createBrowserRouter([
       },
       {
         path: "deals/:id",
+        lazy: async () => ({
+          Component: (await import("./pages/DealDetailPage")).DealDetailPage,
+        }),
+      },
+      {
+        path: "deal/:id",
         lazy: async () => ({
           Component: (await import("./pages/DealDetailPage")).DealDetailPage,
         }),

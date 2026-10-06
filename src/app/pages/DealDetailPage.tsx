@@ -1,14 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
-import { 
-  Plane, Calendar,
-  ChevronLeft, ChevronRight, Share2, Bell, TrendingDown, 
-  ExternalLink, Bookmark, ShieldCheck, Clock
+import {
+  Plane,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Share2,
+  Bell,
+  TrendingDown,
+  ExternalLink,
+  Bookmark,
+  ShieldCheck,
+  Clock,
 } from "lucide-react";
 import { getDealById, getPriceHistory, getObservedFares } from "../data/api";
 import { Deal, formatVND } from "../data/deals";
 import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
-import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal, createOpportunitySnapshot } from "../lib/bookmarks";
+import {
+  isBookmarkedDeal,
+  saveRemoteBookmark,
+  toggleBookmarkedDeal,
+  createOpportunitySnapshot,
+} from "../lib/bookmarks";
 import { shareOrCopy } from "../lib/sharing";
 import { HiddenCostAnalyzer } from "../components/HiddenCostAnalyzer";
 import { trackProductEvent } from "../lib/analytics";
@@ -54,7 +67,7 @@ export function DealDetailPage() {
         const history = await getPriceHistory(data.fromCode, data.toCode);
         setPriceHistory(history);
 
-        // Section 25 & 16: Check if a cheaper eligible option exists for this travel intent
+        // Check if a cheaper eligible option exists for this travel intent
         try {
           const candidatesPage = await getObservedFares({
             origin: data.fromCode,
@@ -96,17 +109,17 @@ export function DealDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-sky-500" />
+      <div className="min-h-screen bg-[var(--canvas-bg)] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600" />
       </div>
     );
   }
 
   if (!deal) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-        <h2 className="text-xl font-bold text-white mb-4">Không tìm thấy cơ hội này</h2>
-        <Link to="/deals" className="text-sky-400 flex items-center gap-2 hover:underline">
+      <div className="min-h-screen bg-[var(--canvas-bg)] flex flex-col items-center justify-center p-4">
+        <h2 className="text-xl font-bold text-stone-900 mb-4">Không tìm thấy cơ hội này</h2>
+        <Link to="/deals" className="text-blue-600 flex items-center gap-2 hover:underline font-medium">
           <ChevronLeft className="w-4 h-4" /> Quay lại danh sách cơ hội
         </Link>
       </div>
@@ -198,13 +211,13 @@ export function DealDetailPage() {
     : "Quan sát gần đây";
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 pb-24 lg:pb-12">
+    <main className="min-h-screen bg-[var(--canvas-bg)] text-stone-900 pb-24 lg:pb-12">
       {/* ── TOP NAV ── */}
-      <nav className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/90 px-4 py-3 backdrop-blur-xl">
+      <nav className="sticky top-0 z-40 border-b border-stone-200 bg-white/90 px-4 py-3 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <Link
             to="/deals"
-            className="flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Cơ hội theo dõi</span>
@@ -215,7 +228,7 @@ export function DealDetailPage() {
               type="button"
               onClick={() => void shareDeal()}
               aria-label="Chia sẻ cơ hội"
-              className="p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
+              className="p-2 hover:bg-stone-100 rounded-lg text-stone-600 hover:text-stone-900 transition-colors"
             >
               <Share2 className="w-4 h-4" />
             </button>
@@ -239,17 +252,17 @@ export function DealDetailPage() {
                   },
                 });
               }}
-              className="p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
+              className="p-2 hover:bg-stone-100 rounded-lg text-stone-600 hover:text-stone-900 transition-colors"
             >
-              <Bookmark className={`w-4 h-4 ${bookmarked ? "fill-sky-400 text-sky-400" : ""}`} />
+              <Bookmark className={`w-4 h-4 ${bookmarked ? "fill-blue-600 text-blue-600" : ""}`} />
             </button>
 
             <button
               type="button"
               onClick={() => setWatchOpen(true)}
-              className="flex items-center gap-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 px-3 py-1.5 text-xs font-semibold text-white border border-white/10 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 px-3 py-1.5 text-xs font-semibold text-stone-800 border border-stone-300 transition-colors cursor-pointer"
             >
-              <Bell className="w-3.5 h-3.5 text-sky-400" />
+              <Bell className="w-3.5 h-3.5 text-blue-600" />
               <span>Theo dõi</span>
             </button>
           </div>
@@ -257,27 +270,27 @@ export function DealDetailPage() {
       </nav>
 
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8 space-y-6">
-        {/* ── SECTION 25 & 16: CHEAPER ELIGIBLE ALTERNATIVE BANNER ── */}
+        {/* ── CHEAPER ELIGIBLE ALTERNATIVE BANNER ── */}
         {cheaperAlternative && (
-          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-amber-200 shadow-lg shadow-amber-950/20">
+          <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-amber-950 shadow-sm">
             <div className="flex items-start sm:items-center gap-3">
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-400 mt-1 sm:mt-0 animate-pulse shrink-0" />
+              <div className="w-2.5 h-2.5 rounded-full bg-amber-600 mt-1 sm:mt-0 animate-pulse shrink-0" />
               <div>
-                <div className="text-sm font-bold text-white flex items-center gap-2">
+                <div className="text-sm font-bold text-amber-950 flex items-center gap-2">
                   <span>Đang có lựa chọn rẻ hơn cho chặng bay này</span>
                 </div>
-                <p className="text-xs text-amber-200/90 mt-0.5">
+                <p className="text-xs text-amber-800 mt-0.5">
                   <span>{cheaperAlternative.airline} ({cheaperAlternative.stops === 0 ? "Bay thẳng" : `${cheaperAlternative.stops} điểm dừng`})</span>
                   {" · "}
-                  <span className="font-bold text-amber-300 tabular-nums">{formatVND(cheaperAlternative.price)}</span>
+                  <span className="font-bold tabular-nums">{formatVND(cheaperAlternative.price)}</span>
                   {" · "}
-                  <span className="text-amber-400/80">Thấp hơn {formatVND(deal.price - cheaperAlternative.price)} so với chuyến đang xem</span>
+                  <span>Thấp hơn {formatVND(deal.price - cheaperAlternative.price)} so với chuyến đang xem</span>
                 </p>
               </div>
             </div>
             <Link
-              to={`/deal/${cheaperAlternative.id}`}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition-colors shrink-0 shadow-md shadow-amber-500/20 cursor-pointer"
+              to={`/deals/${cheaperAlternative.id}`}
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs transition-colors shrink-0 shadow-sm cursor-pointer"
             >
               <span>Xem lựa chọn {formatVND(cheaperAlternative.price)}</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -285,39 +298,39 @@ export function DealDetailPage() {
           </div>
         )}
 
-        {/* ── SECTION 40: ABOVE-THE-FOLD DECISION HERO ── */}
-        <section className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-sm">
+        {/* ── SECTION 58: FLAGSHIP SCREEN DECISION HERO ── */}
+        <section className="rounded-xl border border-stone-200 bg-white p-6 sm:p-8 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
             <div className="space-y-3">
               {/* Route Lockup */}
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-stone-500">
                 <span>{deal.from}</span>
-                <span className="text-sky-400">→</span>
+                <span className="text-blue-600">→</span>
                 <span>{deal.to}</span>
-                <span className="text-slate-600">·</span>
-                <span className="text-slate-300">{deal.country}</span>
+                <span className="text-stone-300">·</span>
+                <span className="text-stone-700">{deal.country}</span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-                {deal.fromCode} <span className="text-sky-400 font-light">→</span> {deal.toCode}
+              <h1 className="text-3xl sm:text-5xl font-extrabold text-stone-900 tracking-tight">
+                {deal.fromCode} <span className="text-blue-600 font-light">→</span> {deal.toCode}
               </h1>
 
               {/* Flight Characteristics */}
-              <div className="flex flex-wrap items-center gap-3 text-sm text-slate-300">
-                <span className="inline-flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-md text-xs font-semibold text-slate-200 border border-white/5">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
+              <div className="flex flex-wrap items-center gap-2.5 text-xs text-stone-700">
+                <span className="inline-flex items-center gap-1.5 bg-stone-100 px-2.5 py-1 rounded-md font-medium text-stone-800 border border-stone-200">
+                  <Calendar className="w-3.5 h-3.5 text-stone-500" />
                   {formattedDepartTime}
                   {formattedReturnTime && ` – ${formattedReturnTime}`}
                 </span>
 
-                <span className="inline-flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-md text-xs font-semibold text-slate-200 border border-white/5">
-                  <Plane className="w-3.5 h-3.5 text-slate-400" />
+                <span className="inline-flex items-center gap-1.5 bg-stone-100 px-2.5 py-1 rounded-md font-medium text-stone-800 border border-stone-200">
+                  <Plane className="w-3.5 h-3.5 text-stone-500" />
                   {deal.airline} · {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
                 </span>
 
                 {deal.duration && (
-                  <span className="inline-flex items-center gap-1 text-xs text-slate-400">
-                    <Clock className="w-3 h-3 text-slate-500" />
+                  <span className="inline-flex items-center gap-1 text-stone-500">
+                    <Clock className="w-3 h-3 text-stone-400" />
                     {deal.duration}
                   </span>
                 )}
@@ -325,13 +338,13 @@ export function DealDetailPage() {
             </div>
 
             {/* Price & Primary CTAs */}
-            <div className="flex flex-col md:items-end justify-between gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-white/5">
+            <div className="flex flex-col md:items-end justify-between gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-stone-100">
               <div>
-                <div className="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight tabular-nums font-mono">
+                <div className="text-3xl sm:text-4xl font-extrabold text-emerald-700 tracking-tight tabular-nums font-mono">
                   {formatVND(deal.price)}
                 </div>
                 {cohort.isDiscounted && (
-                  <div className="flex items-center md:justify-end gap-1.5 text-xs font-bold text-emerald-400 mt-1">
+                  <div className="flex items-center md:justify-end gap-1.5 text-xs font-bold text-emerald-700 mt-1">
                     <TrendingDown className="w-3.5 h-3.5" />
                     <span>{cohort.comparisonExplanation}</span>
                   </div>
@@ -343,15 +356,15 @@ export function DealDetailPage() {
                 <button
                   type="button"
                   onClick={() => setWatchOpen(true)}
-                  className="px-4 py-2.5 rounded-xl border border-white/10 bg-slate-800 hover:bg-slate-700 text-sm font-bold text-white transition-colors cursor-pointer flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-lg border border-stone-300 bg-white hover:bg-stone-50 text-xs font-bold text-stone-800 transition-colors cursor-pointer flex items-center gap-2 shadow-sm"
                 >
-                  <Bell className="w-4 h-4 text-sky-400" />
+                  <Bell className="w-4 h-4 text-blue-600" />
                   Theo dõi chặng này
                 </button>
                 <button
                   type="button"
                   onClick={handleVerifyClick}
-                  className="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-sm font-bold text-slate-950 transition-colors cursor-pointer flex items-center gap-2 shadow-lg shadow-sky-500/20"
+                  className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white transition-colors cursor-pointer flex items-center gap-2 shadow-sm"
                 >
                   <span>
                     {deal.linkKind === "live_affiliate"
@@ -365,36 +378,36 @@ export function DealDetailPage() {
           </div>
 
           {/* Evidence Spine Banner */}
-          <div className="mt-6 pt-5 border-t border-white/5 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
+          <div className="mt-6 pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-4 text-xs text-stone-600">
             <div className="flex items-center gap-2">
               <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
                 cohort.evidence.tier === "STRONG"
-                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                  ? "bg-emerald-50 text-emerald-800 border-emerald-200"
                   : cohort.evidence.tier === "MODERATE"
-                  ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
-                  : "bg-slate-800 text-slate-300 border-white/10"
+                  ? "bg-blue-50 text-blue-800 border-blue-200"
+                  : "bg-stone-100 text-stone-700 border-stone-200"
               }`}>
                 {cohort.evidence.label}
               </span>
               <span>{cohort.evidence.summaryText}</span>
             </div>
 
-            <div className="text-slate-500 text-[11px]">
+            <div className="text-stone-500 text-[11px]">
               {freshnessLabel}
             </div>
           </div>
         </section>
 
-        {/* ── SECTION 14 & 40: TRUE COST ANALYSIS ── */}
+        {/* ── TRUE COST ANALYSIS ── */}
         <HiddenCostAnalyzer deal={deal} />
 
-        {/* ── SECTION 11 & 40: DEFENSIBLE PRICE HISTORY & COHORT CONTEXT ── */}
+        {/* ── PRICE HISTORY & COHORT CONTEXT ── */}
         {priceHistory.length > 0 ? (
           <React.Suspense
             fallback={
-              <section className="rounded-2xl border border-white/10 bg-[#171719] p-6" aria-busy="true">
-                <h3 className="text-white font-bold text-sm">Lịch sử quan sát</h3>
-                <p className="mt-2 text-xs text-slate-500">Đang tải lịch sử giá…</p>
+              <section className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm" aria-busy="true">
+                <h3 className="text-stone-900 font-bold text-sm">Lịch sử quan sát</h3>
+                <p className="mt-2 text-xs text-stone-500">Đang tải lịch sử giá…</p>
               </section>
             }
           >
@@ -405,37 +418,37 @@ export function DealDetailPage() {
             />
           </React.Suspense>
         ) : (
-          <section className="rounded-2xl border border-white/10 bg-[#171719] p-6">
-            <h3 className="text-white font-bold text-sm">Lịch sử quan sát</h3>
-            <p className="text-slate-400 text-xs mt-2 leading-relaxed">
+          <section className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+            <h3 className="text-stone-900 font-bold text-sm">Lịch sử quan sát</h3>
+            <p className="text-stone-600 text-xs mt-2 leading-relaxed">
               Chưa có đủ chu kỳ quan sát độc lập cho chặng {deal.fromCode} → {deal.toCode}. Hệ thống ghi nhận trung thực và không ngoại suy dữ liệu khi chưa đủ số mẫu.
             </p>
           </section>
         )}
 
         {/* ── METHODOLOGY & DECISION EVIDENCE DETAILS ── */}
-        <section className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 space-y-4">
-          <div className="flex items-center gap-2 text-slate-300">
-            <ShieldCheck className="w-5 h-5 text-sky-400" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Căn cứ đánh dấu cơ hội</h3>
+        <section className="rounded-xl border border-stone-200 bg-white p-6 space-y-4 shadow-sm">
+          <div className="flex items-center gap-2 text-stone-800">
+            <ShieldCheck className="w-5 h-5 text-blue-600" />
+            <h3 className="text-sm font-bold uppercase tracking-wider text-stone-900">Căn cứ đánh dấu cơ hội</h3>
           </div>
-          <p className="text-slate-300 text-sm leading-relaxed">
+          <p className="text-stone-700 text-sm leading-relaxed">
             {deal.aiReasoning || deal.aiInsight?.reason || cohort.comparisonExplanation}
           </p>
-          <div className="text-xs text-slate-500 border-t border-white/5 pt-3 leading-relaxed">
+          <div className="text-xs text-stone-500 border-t border-stone-100 pt-3 leading-relaxed">
             Nguyên tắc Farely: Giá vé máy bay biến động theo từng đợt mở bán của hãng hàng không. Bấm &quot;Kiểm tra giá hiện tại&quot; để xác minh tình trạng chỗ và giá thực tế trực tiếp với đơn vị bán trước khi tiến hành thanh toán.
           </div>
         </section>
       </div>
 
-      {/* ── SECTION 41: MOBILE STICKY BOTTOM ACTION BAR (Viewport < sm) ── */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 border-t border-white/10 px-4 py-3 backdrop-blur-xl flex items-center justify-between gap-3">
+      {/* ── MOBILE STICKY BOTTOM ACTION BAR (Viewport < sm) ── */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-stone-200 px-4 py-3 backdrop-blur-xl flex items-center justify-between gap-3 shadow-lg">
         <div>
-          <div className="text-lg font-black text-emerald-400 leading-tight tabular-nums font-mono">
+          <div className="text-lg font-bold text-emerald-700 leading-tight tabular-nums font-mono">
             {formatVND(deal.price)}
           </div>
-          <div className="text-[10px] text-slate-400 font-medium">
-            {cohort.isDiscounted ? `↓${cohort.deltaPercent}% so với median` : "Giá hiện tại"}
+          <div className="text-[10px] text-stone-500 font-medium">
+            {cohort.isDiscounted ? `↓${cohort.deltaPercent}% so với median` : "Giá quan sát"}
           </div>
         </div>
 
@@ -443,15 +456,15 @@ export function DealDetailPage() {
           <button
             type="button"
             onClick={() => setWatchOpen(true)}
-            className="p-2.5 rounded-xl border border-white/10 bg-slate-800 text-white text-xs font-bold"
+            className="p-2.5 rounded-lg border border-stone-300 bg-stone-100 text-stone-800 text-xs font-bold"
             aria-label="Theo dõi"
           >
-            <Bell className="w-4 h-4 text-sky-400" />
+            <Bell className="w-4 h-4 text-blue-600" />
           </button>
           <button
             type="button"
             onClick={handleVerifyClick}
-            className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-lg shadow-sky-500/20"
+            className="px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm"
           >
             <span>
               {deal.linkKind === "live_affiliate" ? "Kiểm tra giá chuyến này" : "Kiểm tra giá"}

@@ -40,7 +40,6 @@ export function SavedDealsPage() {
   async function loadSavedData() {
     setLoading(true);
     try {
-      // 1. Load remote saved opportunities and local bookmarks
       const [remoteRes, localIds, observedRes] = await Promise.all([
         loadRemoteSavedOpportunities().catch(() => ({ entries: [] as SavedOpportunityRecord[] })),
         Promise.resolve(getBookmarkedDealIds()),
@@ -57,13 +56,11 @@ export function SavedDealsPage() {
           if (localRecord) {
             recordsMap.set(id, localRecord);
           } else {
-            // Minimal entry if only ID is known
             recordsMap.set(id, { opportunityId: id, savedAt: new Date().toISOString() });
           }
         }
       }
 
-      // 2. Index active observed fares by opportunityId and route
       const activeByOppId = new Map<string, Deal>();
       const activeByRouteDate = new Map<string, Deal>();
       for (const fare of observedRes.fares) {
@@ -78,7 +75,6 @@ export function SavedDealsPage() {
         }
       }
 
-      // 3. Construct display items
       const displayItems: DisplaySavedItem[] = [];
       for (const [oppId, record] of recordsMap.entries()) {
         const snap = record.snapshotData;
@@ -131,7 +127,6 @@ export function SavedDealsPage() {
         });
       }
 
-      // Sort newest saved first
       displayItems.sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime());
       setItems(displayItems);
     } finally {
@@ -150,24 +145,23 @@ export function SavedDealsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-200 pt-24 pb-20">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+    <main className="min-h-screen bg-[var(--canvas-bg)] text-stone-900 pt-24 pb-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between pb-6 mb-8 border-b border-white/10">
+        <div className="flex items-center justify-between pb-6 border-b border-stone-200">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Cơ hội đã lưu</h1>
-            <p className="text-slate-400 text-xs sm:text-sm mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight">Cơ hội đã lưu</h1>
+            <p className="text-stone-600 text-xs sm:text-sm mt-1">
               Ghi nhớ mức giá theo thời gian. So sánh biến động giữa thời điểm lưu và quan sát mới nhất.
             </p>
           </div>
-          <span className="text-xs font-mono text-slate-500">
+          <span className="text-xs font-mono text-stone-500">
             {items.length} cơ hội
           </span>
         </div>
 
         {loading ? (
-          <div className="text-slate-400 text-sm py-16 text-center font-mono">Đang nạp dữ liệu lưu trữ…</div>
+          <div className="text-stone-500 text-sm py-16 text-center font-mono">Đang nạp dữ liệu lưu trữ…</div>
         ) : items.length > 0 ? (
           <div className="space-y-4">
             {items.map((item) => {
@@ -182,62 +176,61 @@ export function SavedDealsPage() {
               return (
                 <div
                   key={item.opportunityId}
-                  className="rounded-xl border border-white/10 bg-slate-900/50 p-5 hover:border-white/20 transition-colors"
+                  className="rounded-xl border border-stone-200 bg-white p-5 hover:border-stone-300 transition-colors shadow-sm"
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    
                     {/* Route & Flight Metadata */}
                     <div className="space-y-1.5 min-w-[240px]">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-white font-mono">
-                          {item.fromCode} <span className="text-sky-400">→</span> {item.toCode}
+                        <span className="text-lg font-bold text-stone-900 font-mono">
+                          {item.fromCode} <span className="text-blue-600 font-light">→</span> {item.toCode}
                         </span>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-stone-500">
                           ({item.fromCity} - {item.toCity})
                         </span>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-stone-600">
                         <span className="inline-flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                          <Calendar className="w-3.5 h-3.5 text-stone-400" />
                           {formattedDate}
                         </span>
                         {item.airline && (
                           <span className="inline-flex items-center gap-1">
-                            <Plane className="w-3.5 h-3.5 text-slate-500" />
+                            <Plane className="w-3.5 h-3.5 text-stone-400" />
                             {item.airline} · {item.stops === 0 ? "Bay thẳng" : `${item.stops} điểm dừng`}
                           </span>
                         )}
-                        <span className="text-slate-500 font-mono text-[11px]">
+                        <span className="text-stone-500 font-mono text-[11px]">
                           Lưu ngày {formattedSavedAt}
                         </span>
                       </div>
                     </div>
 
-                    {/* Longitudinal Price Comparison: SAVED vs CURRENT */}
-                    <div className="grid grid-cols-2 gap-6 bg-slate-950/60 rounded-lg p-3 border border-white/5 md:min-w-[300px]">
+                    {/* Price Comparison: SAVED vs CURRENT */}
+                    <div className="grid grid-cols-2 gap-6 bg-stone-50 rounded-lg p-3 border border-stone-200 md:min-w-[300px]">
                       <div>
-                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-stone-500">
                           Giá lúc lưu
                         </div>
-                        <div className="text-base font-bold text-slate-300 font-mono mt-0.5">
+                        <div className="text-base font-bold text-stone-800 font-mono mt-0.5">
                           {item.savedPrice > 0 ? formatVND(item.savedPrice) : "---"}
                         </div>
                       </div>
 
                       <div>
-                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-500">
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-stone-500">
                           Giá hiện tại
                         </div>
                         {item.currentPrice !== null ? (
                           <div>
-                            <div className="text-base font-bold text-white font-mono mt-0.5">
+                            <div className="text-base font-bold text-stone-900 font-mono mt-0.5">
                               {formatVND(item.currentPrice)}
                             </div>
                             {item.priceDiff !== null && item.priceDiff !== 0 && (
                               <div
                                 className={`text-[11px] font-mono font-semibold ${
-                                  item.priceDiff < 0 ? "text-emerald-400" : "text-amber-400"
+                                  item.priceDiff < 0 ? "text-emerald-700" : "text-amber-700"
                                 }`}
                               >
                                 {item.priceDiff < 0 ? "↓ " : "↑ "}
@@ -246,19 +239,19 @@ export function SavedDealsPage() {
                             )}
                           </div>
                         ) : (
-                          <div className="text-xs text-slate-500 italic mt-1">
+                          <div className="text-xs text-stone-500 italic mt-1">
                             Chưa có giá mới
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* Actions: Xem mới nhất, Theo dõi, Bỏ lưu */}
-                    <div className="flex items-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-white/5">
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-stone-100">
                       {item.activeDealId ? (
                         <Link
                           to={`/deals/${item.activeDealId}`}
-                          className="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition-colors flex items-center gap-1"
+                          className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors flex items-center gap-1 shadow-sm"
                         >
                           <span>Xem chi tiết</span>
                           <ExternalLink className="w-3 h-3" />
@@ -266,7 +259,7 @@ export function SavedDealsPage() {
                       ) : (
                         <Link
                           to={`/search?from=${item.fromCode}&destination=${item.toCode}&departureFrom=${item.departDate}`}
-                          className="px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5 text-slate-300 font-semibold text-xs transition-colors flex items-center gap-1"
+                          className="px-3 py-1.5 rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 font-semibold text-xs transition-colors flex items-center gap-1"
                         >
                           <span>Tìm chuyến mới</span>
                           <ArrowRight className="w-3 h-3" />
@@ -276,36 +269,35 @@ export function SavedDealsPage() {
                       <button
                         type="button"
                         onClick={() => setSelectedWatchItem(item)}
-                        className="px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5 text-slate-300 font-semibold text-xs transition-colors flex items-center gap-1 cursor-pointer"
+                        className="px-3 py-1.5 rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 font-semibold text-xs transition-colors flex items-center gap-1 cursor-pointer"
                         title="Theo dõi chặng này"
                       >
-                        <Bell className="w-3.5 h-3.5 text-sky-400" />
+                        <Bell className="w-3.5 h-3.5 text-blue-600" />
                         <span>Theo dõi</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => handleRemove(item.opportunityId)}
-                        className="p-2 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                        className="p-2 rounded-lg text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                         title="Bỏ lưu cơ hội"
                         aria-label="Bỏ lưu cơ hội"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-
                   </div>
                 </div>
               );
             })}
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-white/10 bg-slate-900/20 p-12 text-center">
-            <Bookmark className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-            <p className="text-slate-400 text-sm mb-4">Chưa có cơ hội nào được lưu vào danh sách theo dõi.</p>
+          <div className="rounded-xl border border-dashed border-stone-300 bg-white p-12 text-center shadow-sm">
+            <Bookmark className="w-8 h-8 text-stone-400 mx-auto mb-3" />
+            <p className="text-stone-600 text-sm mb-4">Chưa có cơ hội nào được lưu vào danh sách theo dõi.</p>
             <Link
               to="/deals"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-sm"
             >
               Khám phá cơ hội hôm nay
             </Link>

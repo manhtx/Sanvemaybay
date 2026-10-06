@@ -1,0 +1,813 @@
+{
+  "version": "1.0.0",
+  "created_at": "2026-10-06T14:25:00Z",
+  "total_gates": 27,
+  "gates": [
+    {
+      "gate_id": "GATE-01-RELEASE-PARITY",
+      "title": "Release Coherence and Parity (F-01)",
+      "category": "RELEASE_ENGINEERING",
+      "priority": "P0",
+      "requirement": "Release components (frontend Vercel, backend Supabase Edge, DB migrations, worker) must be strictly coherent on exact release fingerprint. Committing final attestation must not invalidate the deployed release.",
+      "acceptance_criteria": "Deployed Vercel release.json, Supabase Edge Functions release_sha, and git commit SHA match identically. No self-invalidating report commits.",
+      "negative_controls": [
+        "Vercel deployed SHA != Edge Function deployed SHA fails check",
+        "Uncommitted source diff fails check"
+      ],
+      "required_evidence_level": "E7",
+      "status": "IN_PROGRESS",
+      "implementation_paths": [
+        ".github/workflows/deploy-supabase-ingest.yml",
+        "scripts/generate-release-metadata.mjs"
+      ],
+      "test_paths": [
+        "scripts/production-truth.mjs"
+      ],
+      "runtime_probes": [
+        "curl https://farely.manhtx.com/release.json",
+        "curl observed-fares release_sha"
+      ],
+      "tested_sha": null,
+      "deployed_release": null,
+      "evidence_ids": [],
+      "blocker": null,
+      "verified_at": null
+    },
+    {
+      "gate_id": "GATE-02-PAGINATION",
+      "title": "Server-Side Deterministic Pagination (F-02)",
+      "category": "DATA_INTEGRITY",
+      "priority": "P0",
+      "requirement": "observed-fares must implement genuine server-side .range(start, start + pageSize - 1) pagination with global filtering and sorting applied prior to paging.",
+      "acceptance_criteria": "Dataset >= 205 records: Page 1 (60), Page 2 (60), Page 3 (60), Page 4 (25), Page 5 (0). Zero ID intersection between pages; union equals exactly 205 records. Total = 205 and next_page calculated correctly.",
+      "negative_controls": [
+        "Querying page 2 returns duplicates of page 1",
+        "Total count != actual matching eligible records",
+        "Client receives > pageSize records"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts"
+      ],
+      "test_paths": [
+        "supabase/functions/_shared/observed-fares.test.ts",
+        "src/app/domain/pagination.test.ts"
+      ],
+      "runtime_probes": [
+        "curl observed-fares?page=1&page_size=60",
+        "curl observed-fares?page=2&page_size=60"
+      ],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-02-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-03-TRAVEL-INTENT",
+      "title": "Canonical Travel Intent & Location Scope (F-03)",
+      "category": "DOMAIN_INTEGRITY",
+      "priority": "P0",
+      "requirement": "TravelIntent represents originScope, destinationScope, tripType, outbound exact/window, return exact/window/length, passengers, cabin, stops, currency. LocationScope preserves EXACT_AIRPORT vs METRO vs NEARBY.",
+      "acceptance_criteria": "TravelIntent round-trips losslessly across UI, API, DB, Watch, Saved, and Analytics. Bangkok BKK != DMK; BKK_METRO encompasses both.",
+      "negative_controls": [
+        "BKK converted to DMK without metro flag",
+        "Round-trip return date conflated with departure window end",
+        "Cabin / passengers dropped when creating Watch"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/domain/travelEntities.ts",
+        "src/app/domain/watch.ts",
+        "supabase/functions/_shared/alert-matching.ts"
+      ],
+      "test_paths": [
+        "src/app/domain/travelEntities.test.ts",
+        "src/app/domain/watch.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-03-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-04-STABLE-IDENTITIES",
+      "title": "Decoupled Stable Identities",
+      "category": "DOMAIN_INTEGRITY",
+      "priority": "P0",
+      "requirement": "Decouple TravelIntentId, OfferVariantId, ObservationId, ComparableCohortId, OpportunityId, WatchId, GenerationId. OfferVariant is based on itinerary facts, not price.",
+      "acceptance_criteria": "Price change creates new ObservationId but preserves OfferVariantId and OpportunityId. Transient GenerationIds never become business identities.",
+      "negative_controls": [
+        "Price change creates new OfferVariantId",
+        "GenerationId stored as OpportunityId"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/domain/opportunityIdentity.ts",
+        "supabase/functions/_shared/observed-fares.ts"
+      ],
+      "test_paths": [
+        "src/app/domain/opportunityIdentity.test.ts",
+        "supabase/functions/_shared/observed-fares.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-04-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-05-PRICE-TRUTH",
+      "title": "Authoritative Route-Best Price Truth",
+      "category": "PRICE_TRUTH",
+      "priority": "P0",
+      "requirement": "Cheapest strictly means mathematical minimum eligible price within matching PriceScopeFingerprint. Deal Score never overrides cheaper eligible price when labeled cheapest.",
+      "acceptance_criteria": "4.265M compatible fare beats 3.2M-3.8M cheaper incompatible fares (wrong cabin, return date, airport, stops). 50 shuffle order runs produce identical minimum.",
+      "negative_controls": [
+        "Expensive 95-score fare beats cheaper 70-score fare",
+        "Input ordering alters chosen cheapest fare"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/domain/routeOptimization.ts",
+        "scripts/deal-scorer-truth.node-test.mjs"
+      ],
+      "test_paths": [
+        "scripts/deal-scorer-truth.node-test.mjs",
+        "src/app/domain/routeOptimization.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-05-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-06-CHEAPER-ALTERNATIVE",
+      "title": "Global Universe Cheaper Alternative",
+      "category": "PRICE_TRUTH",
+      "priority": "P0",
+      "requirement": "Cheaper alternative must be selected from the global compatible result universe, not an arbitrary first 30 rows in the client. Canonical URL must work and navigate correctly.",
+      "acceptance_criteria": "Cheaper alternative satisfies identical TravelIntent and PriceScopeFingerprint. User clicking alternative navigates to valid canonical route.",
+      "negative_controls": [
+        "Candidate beyond row 30 is missed",
+        "Alternative has mismatched cabin or stops constraint"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/pages/DealDetailPage.tsx",
+        "src/app/data/api.ts"
+      ],
+      "test_paths": [
+        "e2e/app.spec.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-06-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-07-COMPARATOR-HONESTY",
+      "title": "Comparator Engine & Historical Semantics",
+      "category": "PRICE_TRUTH",
+      "priority": "P0",
+      "requirement": "One unified Comparator Engine with strict minimum sample gating (N >= threshold). Observation timestamp must never be conflated with departure date. Insufficient data displayed as 'Chưa đủ dữ liệu', never fake median or 0%.",
+      "acceptance_criteria": "Price history X-axis reflects observed_at, not depart_date. Cohorts with insufficient samples display explicit accumulating evidence state.",
+      "negative_controls": [
+        "October observation timestamp rendered as October travel date for December flight",
+        "N < threshold cohort displays 0% discount"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/domain/opportunityCohort.ts",
+        "supabase/functions/_shared/price-history.ts"
+      ],
+      "test_paths": [
+        "src/app/domain/opportunityCohort.test.ts",
+        "supabase/functions/_shared/price-history.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-07-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-08-TRUE-COST",
+      "title": "True Cost Epistemic Breakdown",
+      "category": "PRICE_TRUTH",
+      "priority": "P0",
+      "requirement": "Explicit epistemic states: KNOWN, ESTIMATED, OPTIONAL, UNKNOWN. Unknown != 0. evaluateTrueCost actually consumes provided inputs. Missing baggage is not labeled free.",
+      "acceptance_criteria": "Cost summary separates known minimum, estimated extras, and unknown extras. No fixed heuristic presented as guaranteed checkout total.",
+      "negative_controls": [
+        "Missing baggage fee rendered as 0₫ free",
+        "providedHiddenCosts parameter ignored"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/domain/costEpistemic.ts"
+      ],
+      "test_paths": [
+        "src/app/domain/costEpistemic.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-08-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-09-SNAPSHOT-ATOMICITY",
+      "title": "Observed Snapshot Generation Atomicity",
+      "category": "DATA_INTEGRITY",
+      "priority": "P0",
+      "requirement": "Generations are immutable to readers. Promotion occurs only after source exhaustion/completeness. Incomplete/safety-capped builds quarantined and deleted. Reader fails closed if active pointer missing.",
+      "acceptance_criteria": "Missing active pointer returns status: degraded_schema. Readers query only active generation rows. Partial builds never become active.",
+      "negative_controls": [
+        "Safety limit hit still promotes generation",
+        "Missing active_generation_id queries across all generations"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ],
+      "test_paths": [
+        "src/app/domain/snapshotAtomicity.test.ts",
+        "supabase/functions/_shared/observed-fares.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-09-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-10-PROVIDER-TAXONOMY",
+      "title": "Provider Result Taxonomy & Route Health",
+      "category": "DATA_INTEGRITY",
+      "priority": "P0",
+      "requirement": "Provider calls return structured taxonomy (11 distinct states). Parser exceptions must never collapse to []. 0/N windows = route failure.",
+      "acceptance_criteria": "Parser failure or network timeout returns specific error class. Route health accurately reflects window failure rate without swallowing.",
+      "negative_controls": [
+        "Exception in parser returns empty array and logs healthy",
+        "0/N windows succeed marked pipeline healthy"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/functions/_shared/flight-normalization.ts",
+        "supabase/functions/_shared/feed-health.ts"
+      ],
+      "test_paths": [
+        "supabase/functions/_shared/flight-normalization.test.ts",
+        "supabase/functions/_shared/feed-health.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-10-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-11-SEARCH-ERROR-DISCRIMINATION",
+      "title": "Search Error vs Empty Discrimination",
+      "category": "PRODUCT_CORE",
+      "priority": "P0",
+      "requirement": "Search distinguishes between valid empty inventory and provider 503 / network errors. UI displays truthful error recovery card with retry CTA.",
+      "acceptance_criteria": "Search 503 triggers retryable error state. 0 results on healthy feed displays empty state with suggestion to adjust filters.",
+      "negative_controls": [
+        "Provider 503 displays 'Không tìm thấy chuyến bay nào'",
+        "Network error collapses to empty array"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/data/api.ts",
+        "src/app/pages/SearchPage.tsx"
+      ],
+      "test_paths": [
+        "e2e/app.spec.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-11-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-12-WATCH-MONITORING-CONTRACT",
+      "title": "Watch Monitoring Contract & Exhaustive Scan",
+      "category": "PRODUCT_CORE",
+      "priority": "P0",
+      "requirement": "Watch preserves canonical TravelIntent. No hidden 20% discount threshold. Alert processor performs exhaustive keyset pagination over entire active generation without 5000-score cutoff.",
+      "acceptance_criteria": "Target price <= 5M with 5% discount matches. Eligible candidate at row 6000 is evaluated and matched.",
+      "negative_controls": [
+        "Target price match suppressed by discount < 20%",
+        "Candidate beyond row 5000 ignored"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/functions/setup-alert/index.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/functions/_shared/alert-matching.ts"
+      ],
+      "test_paths": [
+        "supabase/functions/_shared/alert-matching.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-12-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-13-WATCH-SCHEDULER-LIVENESS",
+      "title": "Watch Scheduler Heartbeat & Concurrency Safety",
+      "category": "PRODUCT_CORE",
+      "priority": "P0",
+      "requirement": "Prove a real recurring evaluator exists with structured heartbeat tracking (scheduled_at, evaluated, matches, errors). Evaluator is safe against generation changes mid-scan.",
+      "acceptance_criteria": "Heartbeat record updated in operational monitoring. Concurrency test proves evaluation locks or pins active generation during execution.",
+      "negative_controls": [
+        "Evaluator operates on deleted generation mid-scan",
+        "Execution silently terminates without recording heartbeat"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/functions/alert-processor/index.ts",
+        ".github/workflows/fast-flights-pipeline.yml"
+      ],
+      "test_paths": [
+        "supabase/functions/_shared/alert-matching.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-13-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-14-WATCH-LIFECYCLE-EPISODES",
+      "title": "Watch Lifecycle & Condition Episodes",
+      "category": "PRODUCT_CORE",
+      "priority": "P0",
+      "requirement": "Durable backend lifecycle (monitoring, matched, paused, degraded, sync_failed, expired). Model episodes (OUTSIDE, ENTERED, STILL_INSIDE, MATERIAL_IMPROVEMENT, EXITED, REENTERED). Prevent sticky stale matched state.",
+      "acceptance_criteria": "Price rising above target transitions from STILL_INSIDE to EXITED. Mutations (pause/resume/delete) are remote-authoritative with rollback on failure.",
+      "negative_controls": [
+        "Price above target remains marked matched forever",
+        "Local mutation succeeds while server returns 500"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/domain/watch.ts",
+        "src/app/pages/WatchPage.tsx",
+        "supabase/functions/alert-processor/index.ts"
+      ],
+      "test_paths": [
+        "src/app/domain/watch.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-14-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-15-NOTIFICATION-OUTBOX",
+      "title": "Transactional Notification Outbox & Re-Alert",
+      "category": "PRODUCT_CORE",
+      "priority": "P0",
+      "requirement": "Transactional outbox for notification intents. Idempotent delivery worker with retry backoff. Do not permanently suppress future meaningful price drops for same opportunity. Respect chosen channels.",
+      "acceptance_criteria": "Delivery attempts tracked with provider IDs and idempotency keys. Material price improvement triggers re-alert. User selecting Telegram does not receive unwanted email.",
+      "negative_controls": [
+        "Duplicate invocation sends duplicate email",
+        "Later 30% price drop suppressed by earlier 10% alert"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/functions/_shared/retry-policy.ts"
+      ],
+      "test_paths": [
+        "supabase/functions/_shared/retry-policy.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-15-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-16-SAVED-SERVER-AUTHORITY",
+      "title": "Server-Authoritative Saved Opportunities",
+      "category": "PRODUCT_CORE",
+      "priority": "P0",
+      "requirement": "For authenticated users, remote database is authoritative. Optimistic updates with rollback on network/server error. Persist rich snapshot context (TravelIntent, saved price, evidence).",
+      "acceptance_criteria": "Cross-device sync verifies state is restored from server. Remote error rolls back optimistic UI state.",
+      "negative_controls": [
+        "Remote delete failure leaves local item permanently deleted",
+        "Saved item lacks original TravelIntent context"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/pages/SavedDealsPage.tsx",
+        "src/app/data/api.ts"
+      ],
+      "test_paths": [
+        "e2e/app.spec.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-16-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-17-RLS-AUTHORIZATION",
+      "title": "Database Row-Level Security Matrix Proof",
+      "category": "SECURITY",
+      "priority": "P0",
+      "requirement": "Actual database tests across anon, User A, User B, and service role across SELECT, INSERT, UPDATE, DELETE on all tables.",
+      "acceptance_criteria": "User A cannot read, update, or delete User B records. Anon cannot read internal flights, scan_runs, snapshots, or events. Service role has server-only access.",
+      "negative_controls": [
+        "User A reads User B alert",
+        "Anon executes INSERT on observed_fare_snapshots"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/migrations/20260407000000_initial_schema.sql",
+        "scripts/security-smoke.mjs"
+      ],
+      "test_paths": [
+        "scripts/security-smoke.mjs"
+      ],
+      "runtime_probes": [
+        "node scripts/security-smoke.mjs"
+      ],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-17-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-18-DATA-RIGHTS-PRIVACY",
+      "title": "Complete User Data Export & Deletion",
+      "category": "PRIVACY",
+      "priority": "P0",
+      "requirement": "Schema-driven export includes all user-owned fields (departure_from, departure_to, preferences, watches, saved). Deletion RPC cascades across all user tables.",
+      "acceptance_criteria": "Export JSON contains complete preference fields. Account deletion removes user rows from user_alerts, user_preferences, user_bookmarks, and notifications.",
+      "negative_controls": [
+        "Export omits departure_from/to",
+        "Account deletion leaves orphan active alerts"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/functions/manage-user-data/index.ts",
+        "supabase/functions/_shared/user-data.ts"
+      ],
+      "test_paths": [
+        "supabase/functions/_shared/user-data.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-18-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-19-AUTH-FLOW",
+      "title": "Authentication & Session Integrity",
+      "category": "SECURITY",
+      "priority": "P1",
+      "requirement": "Integrated auth flows (sign in, session restore, logout, recovery) verified using Supabase auth events rather than brittle URL-only parsing.",
+      "acceptance_criteria": "Session restores reliably across page reload. Logout cleans private state.",
+      "negative_controls": [
+        "Session restore fails on refresh",
+        "Old password remains valid after reset"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/pages/AuthPage.tsx",
+        "src/app/domain/authPolicy.ts"
+      ],
+      "test_paths": [
+        "src/app/domain/authPolicy.test.ts",
+        "e2e/app.spec.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-19-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-20-SECURITY-HARDENING",
+      "title": "Application Security & Threat Model",
+      "category": "SECURITY",
+      "priority": "P1",
+      "requirement": "CSP headers, XSS prevention, open redirect prevention, booking URL validation, Turnstile abuse prevention, HMAC unsubscribe.",
+      "acceptance_criteria": "HTTP response contains strict CSP, frame-ancestors: none, nosniff. Booking URLs restricted to approved airline/OTA domains.",
+      "negative_controls": [
+        "Unapproved booking URL hostname accepted",
+        "Turnstile verification bypassed"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "vercel.json"
+      ],
+      "test_paths": [
+        "supabase/functions/_shared/turnstile.test.ts",
+        "supabase/functions/_shared/live-deal.test.ts"
+      ],
+      "runtime_probes": [
+        "curl -I https://farely.manhtx.com"
+      ],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-20-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-21-TELEMETRY-TAXONOMY",
+      "title": "Canonical Telemetry Registry & Synthetic Exclusion",
+      "category": "ANALYTICS",
+      "priority": "P1",
+      "requirement": "Canonical event registry shared across frontend, edge function, and DB. Synthetic test activity explicitly tagged and excluded from organic metrics. Savings taxonomy strictly defined.",
+      "acceptance_criteria": "track-event accepts canonical events and metadata. Synthetic events marked with synthetic: true. Outbound click is not labeled Confirmed Saving.",
+      "negative_controls": [
+        "Synthetic E2E event recorded as organic conversion",
+        "Unknown event type accepted without validation"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "supabase/functions/_shared/product-event.ts",
+        "src/app/lib/analytics.ts"
+      ],
+      "test_paths": [
+        "supabase/functions/_shared/product-event.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-21-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-22-PERFORMANCE-BUDGETS",
+      "title": "Measured Performance Budgets & Web Vitals",
+      "category": "PERFORMANCE",
+      "priority": "P1",
+      "requirement": "Measured lab budgets and Web Vitals instrumentation (LCP <= 2.5s, INP <= 200ms, CLS <= 0.1). If sample size insufficient, report FIELD_DATA_INSUFFICIENT honestly.",
+      "acceptance_criteria": "Bundle size within limits (< 300KB initial chunk). Real Web Vitals reporting active in browser.",
+      "negative_controls": [
+        "Static PASS artifact substituted for actual measurement",
+        "Empty sample size reported as 100% compliant"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/lib/analytics.ts",
+        "vite.config.ts"
+      ],
+      "test_paths": [
+        "e2e/app.spec.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-22-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-23-ACCESSIBILITY-WCAG",
+      "title": "WCAG 2.2 AA Accessibility & Responsive Reflow",
+      "category": "ACCESSIBILITY",
+      "priority": "P1",
+      "requirement": "WCAG 2.2 AA compliance for core journeys: keyboard navigation, visible focus states, dialog focus trap, form labels, color contrast, and 320px reflow without horizontal overflow.",
+      "acceptance_criteria": "All 10 tested viewports render cleanly without horizontal scrollbars. Skip-to-content functional.",
+      "negative_controls": [
+        "Horizontal overflow detected at 320px or 390px",
+        "Modal focus fails to trap or return"
+      ],
+      "required_evidence_level": "E4",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/pages/Root.tsx",
+        "src/app/components/Navbar.tsx"
+      ],
+      "test_paths": [
+        "e2e/app.spec.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-23-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-24-UX-RECONSTRUCTION",
+      "title": "Calm Analytical Instrument UX & Visual Evidence",
+      "category": "EXPERIENCE",
+      "priority": "P0",
+      "requirement": "Reconstruct visual design and information architecture: light/off-white canvas, high information density, tabular numerals, clean navigation, no generic dark SaaS card soup. Actual screenshots captured across 6 viewports and independently critiqued.",
+      "acceptance_criteria": "Screenshots for 320, 390, 768, 1207x861, 1440, 1920 viewports demonstrate clear hierarchy, calm aesthetic, readable typography, and discernible actions.",
+      "negative_controls": [
+        "App remains generic dark slate-950 card soup",
+        "Primary action clipped or hidden on mobile"
+      ],
+      "required_evidence_level": "E5",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/pages/Root.tsx",
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/SearchPage.tsx",
+        "src/app/pages/DealDetailPage.tsx",
+        "src/app/pages/WatchPage.tsx",
+        "src/app/components/Navbar.tsx"
+      ],
+      "test_paths": [
+        "e2e/app.spec.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-24-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-25-PRODUCT-DIFFERENTIATION",
+      "title": "Flexible Dates, Nearby Airports & Verification Layer",
+      "category": "DIFFERENTIATION",
+      "priority": "P1",
+      "requirement": "Flexible date matrix intelligence, metro scope airport comparison, explore by budget, and observed vs verified discrepancy tracking.",
+      "acceptance_criteria": "Flexible calendar marks cells as observed/fresh/stale without false availability guarantee. Verification action tracks observed-to-verified price delta.",
+      "negative_controls": [
+        "Calendar displays indicative price as guaranteed live",
+        "ObservedRouteBest conflated with VerifiedRouteBest"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/pages/ExplorePage.tsx",
+        "src/app/domain/flightIntelligence.ts"
+      ],
+      "test_paths": [
+        "src/app/domain/flightIntelligence.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-25-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-26-OBSERVABILITY-HEALTH",
+      "title": "Multi-Dimensional Health & Observability Model",
+      "category": "OBSERVABILITY",
+      "priority": "P1",
+      "requirement": "Separate Platform, Discovery, Snapshot, Live Verification, Watch Processor, and Notification health. Never expose one vague HEALTHY boolean.",
+      "acceptance_criteria": "Health query returns distinct status for each subsystem. Structured run logs record coverage, duration, and error codes without PII.",
+      "negative_controls": [
+        "Subsystem down masked by overall 'HEALTHY' badge",
+        "Raw secrets or PII logged in error traces"
+      ],
+      "required_evidence_level": "E3",
+      "status": "PASS",
+      "implementation_paths": [
+        "src/app/domain/productionHealth.ts",
+        "supabase/functions/_shared/observability.ts"
+      ],
+      "test_paths": [
+        "src/app/domain/productionHealth.test.ts",
+        "supabase/functions/_shared/observability.test.ts"
+      ],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-26-01"
+      ],
+      "blocker": null,
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    },
+    {
+      "gate_id": "GATE-27-E9-MARKET-OUTCOMES",
+      "title": "Longitudinal Real-User Market Evidence",
+      "category": "MARKET_EVIDENCE",
+      "priority": "P2",
+      "requirement": "Real-world organic activation, multi-month retention, confirmed booking savings, and willingness to pay. Must remain truthfully UNVERIFIED until real longitudinal evidence exists.",
+      "acceptance_criteria": "Status remains UNVERIFIED honestly without synthetic fabrication. Zero fake claims of PMF or booking outcome.",
+      "negative_controls": [
+        "Synthetic E2E activity claimed as real user retention",
+        "Outbound click claimed as confirmed savings"
+      ],
+      "required_evidence_level": "E9",
+      "status": "UNVERIFIED",
+      "implementation_paths": [],
+      "test_paths": [],
+      "runtime_probes": [],
+      "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+      "deployed_release": null,
+      "evidence_ids": [
+        "EVID-GATE-27-01"
+      ],
+      "blocker": "Requires longitudinal real-world user accumulation over weeks/months",
+      "verified_at": "2026-10-06T08:04:58.100Z"
+    }
+  ],
+  "finalized_at": "2026-10-06T08:09:01.584Z"
+}

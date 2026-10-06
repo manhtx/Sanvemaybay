@@ -60,3 +60,29 @@ Deno.test("explicit regression: target price <= 5,000,000 with 5% discount match
     discount: 5,
   }));
 });
+
+Deno.test("location scope: BKK_ALL matches BKK and DMK; exact BKK rejects DMK", () => {
+  const metroAlert = { destination_code: "BKK_ALL" };
+  assert(matchesAlert(metroAlert, { to_code: "BKK", price: 2000000 }));
+  assert(matchesAlert(metroAlert, { to_code: "DMK", price: 2000000 }));
+  assert(!matchesAlert(metroAlert, { to_code: "SIN", price: 2000000 }));
+
+  const exactAlert = { destination_code: "BKK" };
+  assert(matchesAlert(exactAlert, { to_code: "BKK", price: 2000000 }));
+  assert(!matchesAlert(exactAlert, { to_code: "DMK", price: 2000000 }));
+});
+
+Deno.test("stops and trip-type constraints in alert matching", () => {
+  const directAlert = { destination_code: "SIN", max_stops: 0 };
+  assert(matchesAlert(directAlert, { to_code: "SIN", stops: 0 }));
+  assert(!matchesAlert(directAlert, { to_code: "SIN", stops: 1 }));
+
+  const roundtripAlert = { destination_code: "SIN", trip_type: "roundtrip" as const };
+  assert(matchesAlert(roundtripAlert, { to_code: "SIN", depart_date: "2026-11-01", return_date: "2026-11-05" }));
+  assert(!matchesAlert(roundtripAlert, { to_code: "SIN", depart_date: "2026-11-01", return_date: null }));
+
+  const onewayAlert = { destination_code: "SIN", trip_type: "oneway" as const };
+  assert(matchesAlert(onewayAlert, { to_code: "SIN", depart_date: "2026-11-01" }));
+  assert(!matchesAlert(onewayAlert, { to_code: "SIN", depart_date: "2026-11-01", return_date: "2026-11-05" }));
+});
+

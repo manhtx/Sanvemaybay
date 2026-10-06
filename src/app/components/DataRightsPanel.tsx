@@ -50,21 +50,40 @@ export function DataRightsPanel() {
   }
 
   return (
-    <section className="mt-8 rounded-2xl border border-white/10 bg-slate-950/60 p-5" aria-labelledby="data-rights-heading">
-      <h2 id="data-rights-heading" className="text-lg font-bold text-white">Xuất hoặc xóa dữ liệu tài khoản</h2>
+    <section className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-5" aria-labelledby="data-rights-heading">
+      <h2 id="data-rights-heading" className="text-base font-bold text-stone-900">Xuất hoặc xóa dữ liệu tài khoản</h2>
       {!signedIn ? (
-        <p className="mt-2 text-sm text-slate-400">Đăng nhập tại trang Tài khoản để xuất dữ liệu hoặc yêu cầu xóa tài khoản.</p>
+        <p className="mt-2 text-sm text-stone-600">Đăng nhập tại trang Tài khoản để xuất dữ liệu hoặc yêu cầu xóa tài khoản.</p>
       ) : (
         <div className="mt-4 space-y-5">
-          <button type="button" disabled={busy} onClick={() => void exportData()} className="min-h-11 rounded-xl border border-sky-500/30 px-4 font-semibold text-sky-300 disabled:opacity-50">Tải dữ liệu của tôi</button>
-          <div className="border-t border-white/10 pt-5">
-            <p className="text-sm text-slate-400">Xóa tài khoản là vĩnh viễn. Nhập <code className="text-red-200">DELETE_MY_ACCOUNT</code> để xác nhận.</p>
-            <input aria-label="Xác nhận xóa tài khoản" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} className="mt-3 w-full rounded-xl border border-white/10 bg-slate-900 px-4 py-3 text-white" />
-            <button type="button" disabled={busy || confirmation !== "DELETE_MY_ACCOUNT"} onClick={() => void deleteAccount()} className="mt-3 min-h-11 rounded-xl border border-red-500/40 bg-red-500/10 px-4 font-semibold text-red-200 disabled:opacity-40">Xóa vĩnh viễn tài khoản</button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => void exportData()}
+            className="min-h-11 rounded-lg border border-blue-600 bg-blue-50 px-4 font-semibold text-xs text-blue-700 hover:bg-blue-100 disabled:opacity-50 transition"
+          >
+            Tải dữ liệu của tôi
+          </button>
+          <div className="border-t border-stone-200 pt-5">
+            <p className="text-xs text-stone-600">Xóa tài khoản là vĩnh viễn. Nhập <code className="text-red-700 font-mono font-bold">DELETE_MY_ACCOUNT</code> để xác nhận.</p>
+            <input
+              aria-label="Xác nhận xóa tài khoản"
+              value={confirmation}
+              onChange={(event) => setConfirmation(event.target.value)}
+              className="mt-3 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-red-600 focus:outline-none"
+            />
+            <button
+              type="button"
+              disabled={busy || confirmation !== "DELETE_MY_ACCOUNT"}
+              onClick={() => void deleteAccount()}
+              className="mt-3 min-h-11 rounded-lg border border-red-300 bg-red-50 px-4 font-semibold text-xs text-red-700 hover:bg-red-100 disabled:opacity-40 transition"
+            >
+              Xóa vĩnh viễn tài khoản
+            </button>
           </div>
         </div>
       )}
-      {status && <p role="status" className="mt-4 text-sm text-slate-300">{status}</p>}
+      {status && <p role="status" className="mt-4 text-xs text-stone-700">{status}</p>}
     </section>
   );
 }

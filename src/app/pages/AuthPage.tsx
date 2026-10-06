@@ -105,18 +105,18 @@ export function AuthPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 pt-28 pb-20 px-4 text-slate-100">
-      <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-[#171719] p-6 sm:p-8">
-        <h1 className="text-2xl sm:text-3xl font-black text-white mb-2">Tài khoản Farely</h1>
-        <p className="text-slate-400 text-xs sm:text-sm mb-6">
+    <main className="min-h-screen bg-[var(--canvas-bg)] pt-28 pb-20 px-4 text-stone-900">
+      <div className="mx-auto max-w-md rounded-xl border border-stone-200 bg-white p-6 sm:p-8 shadow-sm">
+        <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-2">Tài khoản Farely</h1>
+        <p className="text-stone-600 text-xs sm:text-sm mb-6">
           Đồng bộ danh sách theo dõi (Watch) và cơ hội đã lưu (Saved) an toàn trên các thiết bị.
         </p>
 
         {signedIn ? (
           <div className="space-y-5">
-            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4">
-              <span className="text-xs text-slate-400 block mb-1">Đang đăng nhập với email:</span>
-              <p className="text-emerald-300 font-bold text-sm" role="status">
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+              <span className="text-xs text-stone-600 block mb-1">Đang đăng nhập với email:</span>
+              <p className="text-emerald-800 font-bold text-sm" role="status">
                 {userEmail || "Tài khoản người dùng"}
               </p>
             </div>
@@ -124,13 +124,13 @@ export function AuthPage() {
             <div className="flex gap-2">
               <Link
                 to="/watch"
-                className="flex-1 text-center rounded-xl bg-slate-800 hover:bg-slate-700 py-2.5 text-xs font-bold text-white transition"
+                className="flex-1 text-center rounded-lg bg-stone-100 hover:bg-stone-200 py-2.5 text-xs font-bold text-stone-800 transition border border-stone-200"
               >
                 Quản lý theo dõi
               </Link>
               <Link
                 to="/saved"
-                className="flex-1 text-center rounded-xl bg-slate-800 hover:bg-slate-700 py-2.5 text-xs font-bold text-white transition"
+                className="flex-1 text-center rounded-lg bg-stone-100 hover:bg-stone-200 py-2.5 text-xs font-bold text-stone-800 transition border border-stone-200"
               >
                 Cơ hội đã lưu
               </Link>
@@ -139,19 +139,19 @@ export function AuthPage() {
             <button
               type="button"
               onClick={() => void signOut()}
-              className="w-full rounded-xl bg-white/[0.08] py-2.5 text-xs font-bold text-white transition hover:bg-white/[0.13]"
+              className="w-full rounded-lg bg-stone-100 hover:bg-stone-200 py-2.5 text-xs font-bold text-stone-800 transition border border-stone-200 cursor-pointer"
             >
               Đăng xuất
             </button>
 
-            {/* Section 26: Account Deletion and Data Export */}
+            {/* Account Deletion and Data Export */}
             <DataRightsPanel />
           </div>
         ) : (
           <form onSubmit={(event) => void submit(event)} className="space-y-4">
             {mode === "reset-password" ? (
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
                   Mật khẩu mới
                 </label>
                 <input
@@ -164,12 +164,12 @@ export function AuthPage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder={`Ít nhất ${SIGN_UP_PASSWORD_MIN_LENGTH} ký tự`}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500"
+                  className="w-full bg-white border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-blue-600"
                 />
               </div>
             ) : mode === "forgot-password" ? (
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
                   Email tài khoản
                 </label>
                 <input
@@ -181,19 +181,20 @@ export function AuthPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your-email@example.com"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500"
+                  className="w-full bg-white border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-blue-600"
                 />
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-xs text-stone-500 mt-2">
                   Chúng tôi sẽ gửi đường dẫn đặt lại mật khẩu đến email này.
                 </p>
               </div>
             ) : (
               <>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                  <label htmlFor="auth-email-input" className="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">
                     Email
                   </label>
                   <input
+                    id="auth-email-input"
                     aria-label="Email"
                     type="email"
                     autoComplete="email"
@@ -202,13 +203,13 @@ export function AuthPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your-email@example.com"
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500"
+                    className="w-full bg-white border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <label htmlFor="auth-password-input" className="block text-xs font-bold uppercase tracking-wider text-stone-600">
                       Mật khẩu
                     </label>
                     {mode === "sign-in" && (
@@ -219,13 +220,14 @@ export function AuthPage() {
                           setError("");
                           setMessage("");
                         }}
-                        className="text-xs text-sky-400 hover:underline"
+                        className="text-xs text-blue-600 hover:underline"
                       >
                         Quên mật khẩu?
                       </button>
                     )}
                   </div>
                   <input
+                    id="auth-password-input"
                     aria-label="Mật khẩu"
                     type="password"
                     autoComplete={mode === "sign-up" ? "new-password" : "current-password"}
@@ -234,24 +236,32 @@ export function AuthPage() {
                     maxLength={PASSWORD_MAX_LENGTH}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500"
+                    className="w-full bg-white border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
 
                 {mode === "sign-up" && (
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-stone-500">
                     Mật khẩu yêu cầu ít nhất {SIGN_UP_PASSWORD_MIN_LENGTH} ký tự.
                   </p>
                 )}
               </>
             )}
 
-            {error && <p role="alert" className="text-red-300 text-xs">{error}</p>}
-            {message && <p role="status" className="text-emerald-300 text-xs">{message}</p>}
+            {error && (
+              <p role="alert" className="text-red-700 bg-red-50 border border-red-200 p-2.5 rounded-lg text-xs font-medium">
+                {error}
+              </p>
+            )}
+            {message && (
+              <p role="status" className="text-emerald-800 bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg text-xs font-medium">
+                {message}
+              </p>
+            )}
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-sky-500 hover:bg-sky-400 py-3 text-xs sm:text-sm font-bold text-slate-950 transition-colors cursor-pointer"
+              className="w-full rounded-lg bg-blue-600 hover:bg-blue-700 py-2.5 text-xs sm:text-sm font-bold text-white transition-colors cursor-pointer shadow-sm"
             >
               {mode === "sign-in"
                 ? "Đăng nhập"
@@ -271,7 +281,7 @@ export function AuthPage() {
                     setError("");
                     setMessage("");
                   }}
-                  className="text-xs text-sky-400 hover:text-sky-300"
+                  className="text-xs text-blue-600 hover:underline"
                 >
                   Chưa có tài khoản? Đăng ký
                 </button>
@@ -285,7 +295,7 @@ export function AuthPage() {
                     setError("");
                     setMessage("");
                   }}
-                  className="text-xs text-sky-400 hover:text-sky-300"
+                  className="text-xs text-blue-600 hover:underline"
                 >
                   Đã có tài khoản? Đăng nhập
                 </button>
@@ -299,7 +309,7 @@ export function AuthPage() {
                     setError("");
                     setMessage("");
                   }}
-                  className="text-xs text-slate-400 hover:text-white"
+                  className="text-xs text-stone-600 hover:text-stone-900"
                 >
                   Quay lại đăng nhập
                 </button>
@@ -310,7 +320,7 @@ export function AuthPage() {
 
         <Link
           to="/deals"
-          className="block text-center text-slate-500 text-xs mt-6 hover:text-slate-300"
+          className="block text-center text-stone-500 text-xs mt-6 hover:text-stone-700"
         >
           Tiếp tục xem cơ hội mà không cần đăng nhập
         </Link>
