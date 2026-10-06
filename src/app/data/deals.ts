@@ -110,10 +110,8 @@ export function getRiskBg(risk: Deal["aiInsight"]["risk"]): string {
 }
 
 export function formatVND(amount: number): string {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(amount).replace("₫", "VND");
+  if (!Number.isFinite(amount)) return "0₫";
+  return `${Math.round(amount).toLocaleString("vi-VN")}₫`;
 }
 
 export function getRecommendationColor(

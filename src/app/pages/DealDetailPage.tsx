@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { 
   Plane, Calendar,
-  ChevronLeft, Share2, Bell, TrendingDown, 
+  ChevronLeft, ChevronRight, Share2, Bell, TrendingDown, 
   ExternalLink, Bookmark, ShieldCheck, Clock
 } from "lucide-react";
-import { getDealById, getPriceHistory } from "../data/api";
+import { getDealById, getPriceHistory, getObservedFares } from "../data/api";
 import { Deal, formatVND } from "../data/deals";
 import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal, createOpportunitySnapshot } from "../lib/bookmarks";
@@ -27,6 +27,12 @@ export function DealDetailPage() {
   const [bookmarked, setBookmarked] = useState(false);
   const [watchOpen, setWatchOpen] = useState(false);
   const [priceHistory, setPriceHistory] = useState<Awaited<ReturnType<typeof getPriceHistory>>>([]);
+  const [cheaperAlternative, setCheaperAlternative] = useState<{
+    airline: string;
+    price: number;
+    id: string;
+    stops: number;
+  } | null>(null);
 
   useEffect(() => {
     async function loadDeal() {
@@ -48,6 +54,40 @@ export function DealDetailPage() {
         const history = await getPriceHistory(data.fromCode, data.toCode);
         setPriceHistory(history);
 
+        // Section 25 & 16: Check if a cheaper eligible option exists for this travel intent
+        try {
+          const candidatesPage = await getObservedFares({
+            origin: data.fromCode,
+            destination: data.toCode,
+            departDateFrom: data.departDate,
+            departDateTo: data.departDate,
+            pageSize: 30,
+          });
+          const eligibleCandidates = (candidatesPage?.fares || []).filter(
+            (f) =>
+              f.id !== data.id &&
+              f.opportunityId !== data.opportunityId &&
+              f.fromCode.toUpperCase() === data.fromCode.toUpperCase() &&
+              f.toCode.toUpperCase() === data.toCode.toUpperCase() &&
+              f.departDate === data.departDate &&
+              f.price < data.price &&
+              (data.stops === 0 ? f.stops === 0 : true)
+          );
+          if (eligibleCandidates.length > 0) {
+            eligibleCandidates.sort((a, b) => a.price - b.price);
+            const bestCheaper = eligibleCandidates[0];
+            setCheaperAlternative({
+              airline: bestCheaper.airline,
+              price: bestCheaper.price,
+              id: bestCheaper.id,
+              stops: bestCheaper.stops,
+            });
+          } else {
+            setCheaperAlternative(null);
+          }
+        } catch {
+          // Gracefully omit banner if query fails
+        }
       }
       setLoading(false);
     }
@@ -217,6 +257,34 @@ export function DealDetailPage() {
       </nav>
 
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8 space-y-6">
+        {/* ── SECTION 25 & 16: CHEAPER ELIGIBLE ALTERNATIVE BANNER ── */}
+        {cheaperAlternative && (
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-amber-200 shadow-lg shadow-amber-950/20">
+            <div className="flex items-start sm:items-center gap-3">
+              <div className="w-2.5 h-2.5 rounded-full bg-amber-400 mt-1 sm:mt-0 animate-pulse shrink-0" />
+              <div>
+                <div className="text-sm font-bold text-white flex items-center gap-2">
+                  <span>Đang có lựa chọn rẻ hơn cho chặng bay này</span>
+                </div>
+                <p className="text-xs text-amber-200/90 mt-0.5">
+                  <span>{cheaperAlternative.airline} ({cheaperAlternative.stops === 0 ? "Bay thẳng" : `${cheaperAlternative.stops} điểm dừng`})</span>
+                  {" · "}
+                  <span className="font-bold text-amber-300 tabular-nums">{formatVND(cheaperAlternative.price)}</span>
+                  {" · "}
+                  <span className="text-amber-400/80">Thấp hơn {formatVND(deal.price - cheaperAlternative.price)} so với chuyến đang xem</span>
+                </p>
+              </div>
+            </div>
+            <Link
+              to={`/deal/${cheaperAlternative.id}`}
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition-colors shrink-0 shadow-md shadow-amber-500/20 cursor-pointer"
+            >
+              <span>Xem lựa chọn {formatVND(cheaperAlternative.price)}</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )}
+
         {/* ── SECTION 40: ABOVE-THE-FOLD DECISION HERO ── */}
         <section className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-sm">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
@@ -259,7 +327,7 @@ export function DealDetailPage() {
             {/* Price & Primary CTAs */}
             <div className="flex flex-col md:items-end justify-between gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-white/5">
               <div>
-                <div className="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">
+                <div className="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight tabular-nums font-mono">
                   {formatVND(deal.price)}
                 </div>
                 {cohort.isDiscounted && (
@@ -285,7 +353,11 @@ export function DealDetailPage() {
                   onClick={handleVerifyClick}
                   className="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-sm font-bold text-slate-950 transition-colors cursor-pointer flex items-center gap-2 shadow-lg shadow-sky-500/20"
                 >
-                  <span>Kiểm tra giá hiện tại</span>
+                  <span>
+                    {deal.linkKind === "live_affiliate"
+                      ? "Kiểm tra giá chuyến này"
+                      : "Kiểm tra giá trên Google Flights"}
+                  </span>
                   <ExternalLink className="w-4 h-4" />
                 </button>
               </div>
@@ -359,7 +431,7 @@ export function DealDetailPage() {
       {/* ── SECTION 41: MOBILE STICKY BOTTOM ACTION BAR (Viewport < sm) ── */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 border-t border-white/10 px-4 py-3 backdrop-blur-xl flex items-center justify-between gap-3">
         <div>
-          <div className="text-lg font-black text-emerald-400 leading-tight">
+          <div className="text-lg font-black text-emerald-400 leading-tight tabular-nums font-mono">
             {formatVND(deal.price)}
           </div>
           <div className="text-[10px] text-slate-400 font-medium">
@@ -381,7 +453,9 @@ export function DealDetailPage() {
             onClick={handleVerifyClick}
             className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-lg shadow-sky-500/20"
           >
-            <span>Kiểm tra giá</span>
+            <span>
+              {deal.linkKind === "live_affiliate" ? "Kiểm tra giá chuyến này" : "Kiểm tra giá"}
+            </span>
             <ExternalLink className="w-3.5 h-3.5" />
           </button>
         </div>

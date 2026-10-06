@@ -41,18 +41,18 @@ export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
       </div>
 
       <div className="space-y-4 mb-4">
-        {/* 1. ĐÃ BIẾT (KNOWN) */}
+        {/* 1. GIÁ ĐÃ BIẾT */}
         <div className="space-y-2">
           <div className="text-slate-400 text-xs font-bold uppercase tracking-wider flex items-center justify-between">
-            <span>1. Đã biết (Known)</span>
-            <span className="text-[10px] text-emerald-400">Đã gồm thuế sân bay bắt buộc</span>
+            <span>1. Giá đã biết</span>
+            <span className="text-[10px] text-emerald-400">Đã gồm thuế & phí sân bay bắt buộc</span>
           </div>
           <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl">
             <div className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-emerald-400" />
               <span className="text-white text-sm">Giá vé cơ bản quan sát</span>
             </div>
-            <span className="text-emerald-400 text-sm font-bold">
+            <span className="text-emerald-400 text-sm font-bold tabular-nums">
               {formatVND(deal.advertisedTotal)}
             </span>
           </div>
@@ -70,18 +70,18 @@ export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
                     )}
                   </div>
                 </div>
-                <span className="text-sm text-emerald-500 font-semibold">
+                <span className="text-sm text-emerald-500 font-semibold tabular-nums">
                   {cost.amount === 0 ? "Bao gồm" : `+${formatVND(cost.amount ?? 0)}`}
                 </span>
               </div>
             ))}
         </div>
 
-        {/* 2. ƯỚC TÍNH THÊM (ESTIMATED) */}
+        {/* 2. CÓ THỂ PHÁT SINH */}
         <div className="pt-3 border-t border-white/5 space-y-2">
           <div className="text-slate-400 text-xs font-bold uppercase tracking-wider flex items-center justify-between">
-            <span>2. Ước tính thêm (Estimated)</span>
-            <span className="text-[10px] text-amber-400">Dự kiến theo loại vé</span>
+            <span>2. Có thể phát sinh</span>
+            <span className="text-[10px] text-amber-400">Dự kiến theo hãng và hạng vé</span>
           </div>
 
           {trueCost.components
@@ -92,7 +92,7 @@ export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
                   <span className="text-slate-200 text-sm">{cost.label}</span>
                   {cost.note && <p className="text-[11px] text-slate-400">{cost.note}</p>}
                 </div>
-                <span className="text-sm text-amber-400 font-semibold">
+                <span className="text-sm text-amber-400 font-semibold tabular-nums">
                   +{formatVND(cost.amount ?? 0)}
                 </span>
               </div>
@@ -111,18 +111,18 @@ export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
                   value={userCosts[key] || ""}
                   onChange={(event) => setUserCosts((current) => ({ ...current, [key]: Math.max(0, Number(event.target.value) || 0) }))}
                   placeholder="0"
-                  className="w-32 bg-slate-800 border border-white/10 text-white rounded-lg px-2 py-1.5 text-right"
+                  className="w-32 bg-slate-800 border border-white/10 text-white rounded-lg px-2 py-1.5 text-right tabular-nums font-mono text-xs"
                 />
               </label>
             ))}
           </div>
         </div>
 
-        {/* 3. TÙY CHỌN & CHƯA BIẾT (UNKNOWN != 0) */}
+        {/* 3. CHƯA XÁC ĐỊNH */}
         <div className="pt-3 border-t border-white/5 space-y-2">
           <div className="text-slate-400 text-xs font-bold uppercase tracking-wider flex items-center justify-between">
-            <span>3. Tùy chọn & Chưa thể xác định (Unknown ≠ 0)</span>
-            <span className="text-[10px] text-slate-400">Tại trang đặt vé</span>
+            <span>3. Chưa xác định</span>
+            <span className="text-[10px] text-slate-400">Cần đối chiếu tại bước thanh toán</span>
           </div>
 
           <div className="rounded-xl border border-white/5 bg-slate-800/30 p-3 text-xs text-slate-400 leading-relaxed space-y-1.5">

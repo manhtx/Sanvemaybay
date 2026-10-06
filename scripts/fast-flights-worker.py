@@ -22,6 +22,9 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from fast_flights import FlightQuery, Passengers, create_query, get_flights
+from fast_flights.fetcher import fetch_flights_html
+from fast_flights.parser import _parse_time, Airport, SimpleDatetime, SingleFlight, CarbonEmission, Flights
+from selectolax.lexbor import LexborHTMLParser
 
 
 def env(name: str, required: bool = True) -> str:
@@ -105,6 +108,70 @@ def google_source_url(origin: str, destination: str, outbound: str, returned: st
     return f"https://www.google.com/travel/flights?{params}"
 
 
+def fetch_all_flights(query: Any) -> list[Any]:
+    """Fetch flight results across all Google Flights sections (Best flights and Other flights).
+
+    fast_flights.get_flights only iterates payload[3][0] (Best flights), completely missing
+    LCC carriers (e.g. AirAsia, Vietjet) placed in payload[2][0] (Other flights).
+    This function parses all flight candidate sections so no eligible fares are lost.
+    """
+    try:
+        html = fetch_flights_html(query)
+        parser = LexborHTMLParser(html)
+        script = parser.css_first(r"script.ds\:1")
+        if not script:
+            return list(get_flights(query))
+        text = script.text()
+        if "data:" not in text:
+            return list(get_flights(query))
+        data = text.split("data:", 1)[1].rsplit(",", 1)[0]
+        if data.endswith("errorHasStatus: true"):
+            return []
+        payload = json.loads(data)
+
+        flights = []
+        candidate_sections = []
+        # payload[3][0]: "Best flights" section
+        if len(payload) > 3 and isinstance(payload[3], list) and len(payload[3]) > 0 and isinstance(payload[3][0], list):
+            candidate_sections.append(payload[3][0])
+        # payload[2][0]: "Other flights" section (crucial for full market coverage)
+        if len(payload) > 2 and isinstance(payload[2], list) and len(payload[2]) > 0 and isinstance(payload[2][0], list):
+            candidate_sections.append(payload[2][0])
+
+        for section in candidate_sections:
+            for k in section:
+                if not isinstance(k, list) or len(k) < 2 or not isinstance(k[0], list):
+                    continue
+                flight_data = k[0]
+                price_data = k[1]
+                price = price_data[0][1] if price_data and isinstance(price_data, list) and len(price_data) > 0 and len(price_data[0]) > 1 else None
+                if price is None or price <= 0:
+                    continue
+                typ = flight_data[0] if len(flight_data) > 0 else ""
+                airlines = flight_data[1] if len(flight_data) > 1 and isinstance(flight_data[1], list) else []
+                segments_raw = flight_data[2] if len(flight_data) > 2 and isinstance(flight_data[2], list) else []
+                sg_flights = []
+                for sf in segments_raw:
+                    if not isinstance(sf, list) or len(sf) < 22:
+                        continue
+                    from_airport = Airport(code=sf[3], name=sf[4])
+                    to_airport = Airport(code=sf[6], name=sf[5])
+                    dep_time = _parse_time(sf[8])
+                    dep_date = tuple(sf[20])
+                    dep = SimpleDatetime(date=dep_date, time=dep_time)
+                    arr_time = _parse_time(sf[10])
+                    arr_date = tuple(sf[21])
+                    arr = SimpleDatetime(date=arr_date, time=arr_time)
+                    plane_type = sf[17]
+                    duration = sf[11]
+                    sg_flights.append(SingleFlight(from_airport=from_airport, to_airport=to_airport, departure=dep, arrival=arr, duration=duration, plane_type=plane_type))
+                if sg_flights:
+                    flights.append(Flights(type=typ, price=price, airlines=airlines, flights=sg_flights, carbon=CarbonEmission(typical_on_route=0, emission=0)))
+        return flights if flights else list(get_flights(query))
+    except Exception:
+        return list(get_flights(query))
+
+
 def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, observed_at: str) -> dict[str, Any] | None:
     segments = value(result, "flights", []) or []
     if not segments:
@@ -125,9 +192,9 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
     arrival_date, arrival_time = date_time(value(first, "arrival", {}))
     if not depart_date or not depart_time or not arrival_date or not arrival_time:
         return None
-    # Round-trip results normally contain outbound and inbound legs. Unknown
-    # segment structure is preserved as a conservative stop count, never guessed.
-    stops = max(0, len(segments) - 2)
+    # Google Flights initial search segments represent outbound itinerary legs:
+    # 1 leg = direct flight (0 stops). 2 legs = 1 transit stop.
+    stops = max(0, len(segments) - 1)
     itinerary_key = ":".join([
         origin_code,
         destination_code,
@@ -135,7 +202,8 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
         returned,
         airline_code,
         depart_time,
-        str(price),
+        str(stops),
+        str(round(price)),
     ])
     source_url = google_source_url(origin_code, destination_code, outbound, returned)
     return {
@@ -195,7 +263,7 @@ def search_route(route: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str,
                 currency="VND",
                 language="vi",
             )
-            results = get_flights(query)
+            results = fetch_all_flights(query)
         except (IndexError, KeyError, TypeError, ValueError) as error:
             # Google occasionally returns an incomplete result page for one
             # date window. Keep the route alive and let later windows run.
