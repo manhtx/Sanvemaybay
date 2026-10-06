@@ -5,7 +5,7 @@ import path from 'node:path';
 import { evidenceGatedDealLabel, sanitizeBookingUrl, runGoldenCorpus } from './golden-corpus-runner.mjs';
 
 test('golden truth corpus: exercises full decision pipeline across 20 canonical cases', () => {
-  const corpusPath = path.join(process.cwd(), '.flycheap', 'GOLDEN_DATASET_V1.json');
+  const corpusPath = path.join(process.cwd(), 'docs', 'convergence', 'GOLDEN_DATASET_V1.json');
   assert.equal(fs.existsSync(corpusPath), true, 'GOLDEN_DATASET_V1.json must exist');
 
   const corpus = JSON.parse(fs.readFileSync(corpusPath, 'utf8'));

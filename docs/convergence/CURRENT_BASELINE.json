@@ -23,8 +23,8 @@
     }
   },
   "database": {
-    "migration_count": 41,
-    "migration_head": "20261006000100_telemetry_and_watch_convergence.sql",
+    "migration_count": 42,
+    "migration_head": "20261006000200_canonical_travel_intents_and_watch.sql",
     "status": "CONFIRMED"
   },
   "edge_functions": {
@@ -51,11 +51,11 @@
     "status": "CONFIRMED"
   },
   "test_suites": {
-    "vitest_domain_count": 128,
-    "node_tests_count": 59,
-    "deno_functions_count": 48,
+    "vitest_domain_count": 149,
+    "node_tests_count": 65,
+    "deno_functions_count": 50,
     "playwright_e2e_count": 52,
-    "total_automated_count": 287,
+    "total_automated_count": 316,
     "all_passing": true,
     "status": "CONFIRMED"
   },

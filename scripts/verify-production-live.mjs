@@ -133,7 +133,7 @@ try {
   assert.ok(detailUrl.includes("/deals/observed-"), "Must be on opportunity detail URL");
 
   // Wait for detail view to hydrate
-  await page.waitForTimeout(1000);
+  await page.waitForSelector("h1", { timeout: 10000 });
   const detailBody = await page.locator("#root").innerText();
   assert.ok(
     detailBody.includes("Căn cứ đánh dấu cơ hội") ||

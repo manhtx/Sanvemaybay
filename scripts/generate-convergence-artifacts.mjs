@@ -1,11 +1,9 @@
 import fs from "node:fs";
-import path from "node:path";
 
-const targetSha = "800bdee22fd870c2c8b4efb07a0207b76a72fb7a";
+const targetSha = "49a3dc0b28294bf408d5652d7a5fac618d820174";
 const now = new Date().toISOString();
 
 const reg = JSON.parse(fs.readFileSync("docs/convergence/IMMUTABLE_ACCEPTANCE_REGISTRY.json", "utf8"));
-const ledger = JSON.parse(fs.readFileSync("docs/convergence/EVIDENCE_LEDGER.json", "utf8"));
 
 // 1. ACCEPTANCE_REGISTRY_FINAL.json
 fs.writeFileSync(

@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 test('database backup and restore drill: procedures are documented, simulated and recoverable', async () => {
-  const runbookPath = join(process.cwd(), '.flycheap', 'RUNBOOK.md');
+  const runbookPath = join(process.cwd(), 'docs', 'convergence', 'RUNBOOK.md');
   const runbook = await readFile(runbookPath, 'utf8');
 
   // Verify backup commands are formally documented
@@ -19,6 +19,10 @@ test('database backup and restore drill: procedures are documented, simulated an
     'request_rate_limits',
     'account_deletion_requests',
     'operational_scan_health',
+    'travel_intents',
+    'watch_condition_episodes',
+    'notification_outbox',
+    'observed_fare_generations',
   ];
 
   // Verify that all core tables have valid DDL definitions in migrations

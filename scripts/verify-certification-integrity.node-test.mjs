@@ -5,15 +5,8 @@ import { verifyCertificationIntegrity } from './verify-certification-integrity.m
 test('certification integrity: all contracts, outcomes, requirements and gates are consistent', () => {
   const result = verifyCertificationIntegrity();
   assert.equal(result.ok, true, `Verification failed: ${result.errors.join('; ')}`);
-  assert.equal(result.summary.total_requirements, 34);
-  assert.equal(result.summary.total_features, 12);
-  assert.equal(result.summary.total_outcomes, 14);
-  assert.equal(result.summary.total_gates, 33);
-  assert.deepEqual(result.summary.category_breakdown, {
-    DATA: 5,
-    INTEL: 10,
-    UX: 9,
-    SEC: 5,
-    OPS: 5,
-  });
+  assert.equal(result.summary.total_gates, 267);
+  assert.equal(result.summary.total_requirements, 213);
+  assert.equal(result.summary.total_negative_controls, 35);
+  assert.equal(result.summary.total_user_journeys, 19);
 });

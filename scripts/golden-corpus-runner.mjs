@@ -179,7 +179,7 @@ export function evaluateCase(caseId, data) {
   };
 }
 
-export function runGoldenCorpus(corpusPath = path.join(process.cwd(), '.flycheap', 'GOLDEN_DATASET_V1.json')) {
+export function runGoldenCorpus(corpusPath = path.join(process.cwd(), 'docs', 'convergence', 'GOLDEN_DATASET_V1.json')) {
   if (!fs.existsSync(corpusPath)) {
     throw new Error(`Corpus file not found: ${corpusPath}`);
   }

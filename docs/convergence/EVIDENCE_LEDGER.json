@@ -1,7 +1,21 @@
 {
-  "updated_at": "2026-10-06T08:04:58.100Z",
-  "tested_sha": "800bdee22fd870c2c8b4efb07a0207b76a72fb7a",
+  "updated_at": "2026-10-06T08:14:44.394Z",
+  "tested_sha": "49a3dc0b28294bf408d5652d7a5fac618d820174",
   "records": [
+    {
+      "evidence_id": "EVID-GATE-01-01",
+      "gate_id": "GATE-01-RELEASE-PARITY",
+      "evidence_level": "E7",
+      "artifact_path": "scripts/verify-production-live.mjs",
+      "command_probe": "node scripts/verify-production-live.mjs",
+      "expected_result": "Vercel release.json and Supabase Edge Functions release_sha match git commit SHA identically. Browser audit passes on live production.",
+      "actual_result": "PASS. Vercel release_sha: 49a3dc0b28294bf408d5652d7a5fac618d820174, Supabase release_sha: 49a3dc0b28294bf408d5652d7a5fac618d820174. 4,567 snapshots, feed age 3 mins. Headless browser verified Deals, Opportunity Detail, Search, and Saved on live production.",
+      "tested_sha": "49a3dc0b28294bf408d5652d7a5fac618d820174",
+      "environment": "live-production-e7",
+      "timestamp": "2026-10-06T08:14:44.394Z",
+      "verdict": "PASS",
+      "limitations": null
+    },
     {
       "evidence_id": "EVID-GATE-02-01",
       "gate_id": "GATE-02-PAGINATION",

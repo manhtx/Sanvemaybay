@@ -15,7 +15,7 @@
         "Uncommitted source diff fails check"
       ],
       "required_evidence_level": "E7",
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "implementation_paths": [
         ".github/workflows/deploy-supabase-ingest.yml",
         "scripts/generate-release-metadata.mjs"
@@ -27,11 +27,13 @@
         "curl https://farely.manhtx.com/release.json",
         "curl observed-fares release_sha"
       ],
-      "tested_sha": null,
-      "deployed_release": null,
-      "evidence_ids": [],
+      "tested_sha": "49a3dc0b28294bf408d5652d7a5fac618d820174",
+      "deployed_release": "49a3dc0b28294bf408d5652d7a5fac618d820174",
+      "evidence_ids": [
+        "EVID-GATE-01-01"
+      ],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-06T08:14:44.394Z"
     },
     {
       "gate_id": "GATE-02-PAGINATION",
