@@ -20,9 +20,9 @@ Deno.serve(async (request: Request) => {
     const event = validateProductEvent(await request.json());
     if (!event) return json({ error: "Invalid event" }, 400);
 
-    const salt = Deno.env.get("RATE_LIMIT_SALT") ?? "";
-    const address = clientAddress(request);
-    if (salt.length < 16 || !address) return json({ error: "Analytics unavailable" }, 503);
+    const salt = Deno.env.get("RATE_LIMIT_SALT") || Deno.env.get("INTERNAL_FUNCTION_SECRET") || "";
+    const address = clientAddress(request) || "direct-client";
+    if (salt.length < 16) return json({ error: "Analytics unavailable" }, 503);
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
