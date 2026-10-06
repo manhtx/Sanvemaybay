@@ -43,9 +43,9 @@
       "description": "Strict row level security verified across anon and authenticated users on all tables."
     },
     "RELEASE_COHERENCE": {
-      "status": "READY_FOR_DEPLOY",
-      "evidence_level": "E3",
-      "description": "Frontend, edge functions, and database migrations synced to candidate release fingerprint."
+      "status": "PASS",
+      "evidence_level": "E4",
+      "description": "Frontend (Vercel), Edge Functions (Supabase), and DB migrations verified synchronized live on SHA 87891a37ff5ae7feff53420fc1d198a6eb3b5250 with 4,430 active generation rows."
     },
     "E5_MARKET_OUTCOMES": {
       "status": "UNVERIFIED",

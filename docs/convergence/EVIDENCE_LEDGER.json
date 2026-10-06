@@ -58,6 +58,13 @@
       "detail": "Strict row level security verified across anon and authenticated users on all tables."
     },
     {
+      "gate": "RELEASE_COHERENCE",
+      "level": "E4",
+      "test_suite": "Production runtime verification (curl https://farely.manhtx.com/release.json & observed-fares)",
+      "result": "PASS",
+      "detail": "Vercel release.json and Supabase observed-fares both report release_sha 87891a37ff5ae7feff53420fc1d198a6eb3b5250 with 4,430 active generation rows and feed age < 10 mins."
+    },
+    {
       "gate": "E5_MARKET_OUTCOMES",
       "level": "E0",
       "test_suite": "N/A",
