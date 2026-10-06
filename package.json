@@ -114,5 +114,9 @@
     "overrides": {
       "vite": "6.3.5"
     }
+  },
+  "overrides": {
+    "source-map-js": "^1.2.2",
+    "tinypool": "^2.2.0"
   }
 }
