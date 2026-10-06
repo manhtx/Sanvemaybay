@@ -99,21 +99,9 @@ Deno.serve(async (request) => {
       .eq("id", 1)
       .maybeSingle();
 
-    let observedQuery = supabase
-      .from("observed_fare_snapshots")
-      .select("*")
-      .gte("depart_date", new Date().toISOString().slice(0, 10))
-      .order("deal_score", { ascending: false })
-      .limit(5000);
-
-    if (activeGen?.active_generation_id) {
-      observedQuery = observedQuery.eq("generation_id", activeGen.active_generation_id);
-    }
-
     const [
       { data: alerts, error: alertError },
       { data: deals, error: dealError },
-      { data: observedSnapshots, error: observedError },
     ] = await Promise.all([
       supabase.from("user_alerts").select("*").eq("status", "active"),
       supabase
@@ -122,12 +110,33 @@ Deno.serve(async (request) => {
         .gte("depart_date", new Date().toISOString().slice(0, 10))
         .gt("valid_until", new Date().toISOString())
         .gte("observed_at", new Date(Date.now() - 13 * 60 * 60 * 1000).toISOString()),
-      observedQuery,
     ]);
     if (alertError) throw alertError;
     if (dealError) throw dealError;
-    if (observedError) {
-      console.warn("Notice: observed_fare_snapshots query returned:", observedError.message);
+
+    const observedSnapshots: Array<Record<string, unknown>> = [];
+    if (activeGen?.active_generation_id) {
+      let pageOffset = 0;
+      const pageSize = 1000;
+      const today = new Date().toISOString().slice(0, 10);
+      while (true) {
+        const { data: pageData, error: observedError } = await supabase
+          .from("observed_fare_snapshots")
+          .select("*")
+          .eq("generation_id", activeGen.active_generation_id)
+          .gte("depart_date", today)
+          .range(pageOffset, pageOffset + pageSize - 1);
+        if (observedError) {
+          console.warn("Notice: observed_fare_snapshots query returned:", observedError.message);
+          break;
+        }
+        if (!pageData || pageData.length === 0) break;
+        observedSnapshots.push(...(pageData as Array<Record<string, unknown>>));
+        if (pageData.length < pageSize) break;
+        pageOffset += pageSize;
+      }
+    } else {
+      console.warn("Notice: No active generation pointer, failing closed for observed snapshots in alert evaluation");
     }
 
     let sent = 0;

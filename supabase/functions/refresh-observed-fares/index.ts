@@ -120,8 +120,8 @@ Deno.serve(async (request) => {
       if (upsertError) throw upsertError;
     }
 
-    // 3. Transactionally switch active generation if candidate generation is complete and valid
-    if (snapshots.length > 0) {
+    // 3. Transactionally switch active generation ONLY if candidate generation is complete, non-degraded, and valid
+    if (!isPartialDegraded && snapshots.length > 0) {
       const { error: rpcError } = await service.rpc("publish_observed_generation", {
         p_generation_id: candidateGenerationId,
         p_row_count: snapshots.length,
@@ -145,6 +145,15 @@ Deno.serve(async (request) => {
         } catch {
           // Ignore cleanup errors
         }
+      }
+    } else if (isPartialDegraded) {
+      // Quarantine incomplete candidate snapshots: remove them so unproven data is never served
+      try {
+        await service.from("observed_fare_snapshots")
+          .delete()
+          .eq("generation_id", candidateGenerationId);
+      } catch {
+        // Ignore cleanup errors
       }
     }
 

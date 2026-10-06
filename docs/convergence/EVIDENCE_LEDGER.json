@@ -1,0 +1,68 @@
+{
+  "updated_at": "2026-10-06T12:49:00Z",
+  "records": [
+    {
+      "gate": "DOMAIN_INTEGRITY",
+      "level": "E2",
+      "test_suite": "src/app/domain/*.test.ts",
+      "result": "PASS",
+      "detail": "128 Vitest tests verify TravelIntent, RouteOptimization, CostEpistemic, OfferVariant invariants."
+    },
+    {
+      "gate": "PRICE_TRUTH",
+      "level": "E2",
+      "test_suite": "scripts/deal-scorer-truth.node-test.mjs",
+      "result": "PASS",
+      "detail": "Negative controls (HAN->KUL, order randomization, BKK vs DMK, direct vs connecting) pass deterministically."
+    },
+    {
+      "gate": "SNAPSHOT_INTEGRITY",
+      "level": "E2",
+      "test_suite": "supabase/functions/observed-fares/index.ts & refresh-observed-fares/index.ts",
+      "result": "PASS",
+      "detail": "Fail-closed reader returns degraded_schema if active_generation_id is missing; partial candidate generation is quarantined and deleted instead of activated."
+    },
+    {
+      "gate": "WATCH_PREDICATE_HONESTY",
+      "level": "E2",
+      "test_suite": "supabase/functions/_shared/alert-matching.test.ts",
+      "result": "PASS",
+      "detail": "Explicit regression passes: target price <= 5,000,000 with 5% discount matches without 20% discount suppression; alert processor pagination is exhaustive without 5000 score-based cutoff."
+    },
+    {
+      "gate": "DATA_RIGHTS_EXPORT",
+      "level": "E2",
+      "test_suite": "supabase/functions/manage-user-data/index.ts",
+      "result": "PASS",
+      "detail": "Includes departure_from and departure_to in user_preferences export query; account deletion RPC cascades across all user tables."
+    },
+    {
+      "gate": "TELEMETRY_REGISTRY",
+      "level": "E2",
+      "test_suite": "supabase/functions/_shared/product-event.test.ts",
+      "result": "PASS",
+      "detail": "Canonical product event taxonomy (opportunity_open, verify_click, page_view, etc.) and metadata (opportunity_id, synthetic, page) tested and validated."
+    },
+    {
+      "gate": "SEARCH_ERROR_DISCRIMINATION",
+      "level": "E2",
+      "test_suite": "src/app/data/api.ts & src/app/pages/SearchPage.tsx",
+      "result": "PASS",
+      "detail": "searchDealsWithStatus models provider_unavailable, degraded, and healthy_empty states; UI distinguishes network/provider failure from 0 matching deals."
+    },
+    {
+      "gate": "RLS_AUTHORIZATION",
+      "level": "E2",
+      "test_suite": "scripts/security-smoke.mjs",
+      "result": "PASS",
+      "detail": "Strict row level security verified across anon and authenticated users on all tables."
+    },
+    {
+      "gate": "E5_MARKET_OUTCOMES",
+      "level": "E0",
+      "test_suite": "N/A",
+      "result": "UNVERIFIED",
+      "detail": "No longitudinal production booking outcome fabrication permitted."
+    }
+  ]
+}

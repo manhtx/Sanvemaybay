@@ -113,7 +113,11 @@
         "npm:vite@^6.4.3",
         "npm:vitest@^3.2.6",
         "npm:web-vitals@6.1.1"
-      ]
+      ],
+      "overrides": {
+        "source-map-js": "^1.2.2",
+        "tinypool": "^2.2.0"
+      }
     }
   }
 }

@@ -134,7 +134,9 @@ Deno.serve(async (req: Request) => {
           destination_code: candidate.destination_code,
           origin_code: candidate.origin_code,
           budget: Number.isFinite(Number(candidate.budget)) ? Number(candidate.budget) : null,
-          discount_threshold: Number.isFinite(Number(candidate.discount_threshold)) ? Number(candidate.discount_threshold) : 20,
+          discount_threshold: (candidate.discount_threshold != null && Number.isFinite(Number(candidate.discount_threshold)) && Number(candidate.discount_threshold) > 0)
+            ? Number(candidate.discount_threshold)
+            : null,
           preferred_regions: Array.isArray(candidate.preferred_regions) ? candidate.preferred_regions : [],
           frequency: candidate.frequency === "daily" ? "daily" : "instant",
           date_from: candidate.date_from || null,

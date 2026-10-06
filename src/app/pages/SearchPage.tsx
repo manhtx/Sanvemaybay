@@ -7,7 +7,7 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import { formatVND, Deal } from "../data/deals";
-import { getTrackedRoutes, searchDeals } from "../data/api";
+import { getTrackedRoutes, searchDealsWithStatus, SearchStatus } from "../data/api";
 import { uniqueOrigins } from "../data/origins";
 import {
   getUserPreferences,
@@ -59,6 +59,7 @@ export function SearchPage() {
   const [departureFrom, setDepartureFrom] = useState(() => getUserPreferences().departureFrom ?? "");
   const [departureTo, setDepartureTo] = useState(() => getUserPreferences().departureTo ?? "");
   const [results, setResults] = useState<Deal[]>([]);
+  const [searchStatus, setSearchStatus] = useState<SearchStatus>("healthy");
   const [isScanning, setIsScanning] = useState(false);
   const [watchOpen, setWatchOpen] = useState(false);
   const [selectedWatchDeal, setSelectedWatchDeal] = useState<Deal | null>(null);
@@ -87,7 +88,7 @@ export function SearchPage() {
     async (isManual = false) => {
       if (isManual) setIsScanning(true);
       try {
-        const found = await searchDeals({
+        const outcome = await searchDealsWithStatus({
           budget,
           from: fromCity,
           destination: destination || undefined,
@@ -96,7 +97,11 @@ export function SearchPage() {
           departureTo: departureTo || undefined,
           maxFlightTimeMinutes,
         });
-        setResults(found);
+        setResults(outcome.deals);
+        setSearchStatus(outcome.status);
+      } catch {
+        setResults([]);
+        setSearchStatus("provider_unavailable");
       } finally {
         setIsScanning(false);
       }
@@ -351,16 +356,39 @@ export function SearchPage() {
             <span className="text-xs font-mono">Đang quét các cơ hội phù hợp…</span>
           </div>
         ) : results.length === 0 ? (
-          <div className="text-center py-16 rounded-xl border border-dashed border-white/10 bg-slate-900/20 p-8 space-y-3">
-            <p className="text-slate-400 text-sm">
-              Không tìm thấy chuyến bay nào khớp với tiêu chí tìm kiếm.
-            </p>
-            <p className="text-slate-500 text-xs max-w-md mx-auto">
-              Bạn có thể mở rộng ngân sách hoặc bấm [Theo dõi tìm kiếm này] ở trên để Farely thông báo ngay khi có mức giá phù hợp.
-            </p>
-          </div>
+          searchStatus === "provider_unavailable" ? (
+            <div className="text-center py-16 rounded-xl border border-dashed border-red-500/20 bg-red-950/20 p-8 space-y-3">
+              <p className="text-red-400 text-sm font-medium">
+                Dữ liệu quan sát hoặc nhà cung cấp tạm thời không phản hồi.
+              </p>
+              <p className="text-slate-400 text-xs max-w-md mx-auto">
+                Hệ thống chưa thể lấy dữ liệu chuyến bay cho chặng này lúc này. Vui lòng thử lại sau ít phút hoặc bấm [Tìm kiếm lại].
+              </p>
+              <button
+                type="button"
+                onClick={() => void runSearch(true)}
+                className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-semibold transition-colors"
+              >
+                Tìm kiếm lại
+              </button>
+            </div>
+          ) : (
+            <div className="text-center py-16 rounded-xl border border-dashed border-white/10 bg-slate-900/20 p-8 space-y-3">
+              <p className="text-slate-400 text-sm">
+                Không tìm thấy chuyến bay nào khớp với tiêu chí tìm kiếm.
+              </p>
+              <p className="text-slate-500 text-xs max-w-md mx-auto">
+                Bạn có thể mở rộng ngân sách hoặc bấm [Theo dõi tìm kiếm này] ở trên để Farely thông báo ngay khi có mức giá phù hợp.
+              </p>
+            </div>
+          )
         ) : (
           <div className="space-y-4">
+            {searchStatus === "degraded" && (
+              <div className="px-4 py-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-center justify-between">
+                <span>Một số nguồn dữ liệu đang gián đoạn; đang hiển thị các cơ hội quan sát khả dụng.</span>
+              </div>
+            )}
             
             {/* Desktop Ledger Table */}
             <div className="hidden md:block rounded-xl border border-white/10 bg-slate-900/40 overflow-hidden">

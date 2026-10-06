@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-10-06T12:49:00Z",
+  "acceptance_gates": {
+    "DOMAIN_INTEGRITY": {
+      "status": "PASS",
+      "evidence_level": "E2",
+      "description": "Unified TravelIntent, LocationScope, OfferVariant identity, and price scope fingerprint invariants."
+    },
+    "PRICE_TRUTH": {
+      "status": "PASS",
+      "evidence_level": "E2",
+      "description": "Cheapest price strictly means mathematical minimum eligible price. Deal Score never overrides cheaper price."
+    },
+    "SNAPSHOT_INTEGRITY": {
+      "status": "PASS",
+      "evidence_level": "E2",
+      "description": "Generations fail closed if active pointer missing; partial/incomplete generations are quarantined."
+    },
+    "WATCH_PREDICATE_HONESTY": {
+      "status": "PASS",
+      "evidence_level": "E2",
+      "description": "Target price watch matches without unrequested 20% discount threshold; no dataset truncation in alert processor."
+    },
+    "DATA_RIGHTS_EXPORT": {
+      "status": "PASS",
+      "evidence_level": "E2",
+      "description": "User data export includes all preferences (departure_from/departure_to) and complete deletion cascade."
+    },
+    "TELEMETRY_REGISTRY": {
+      "status": "PASS",
+      "evidence_level": "E2",
+      "description": "Edge function and frontend share unified product event types and metadata registry."
+    },
+    "SEARCH_ERROR_DISCRIMINATION": {
+      "status": "PASS",
+      "evidence_level": "E2",
+      "description": "Search distinguishes between valid empty inventory and provider/network 503 failures with explicit retry CTA."
+    },
+    "RLS_AUTHORIZATION": {
+      "status": "PASS",
+      "evidence_level": "E2",
+      "description": "Strict row level security verified across anon and authenticated users on all tables."
+    },
+    "RELEASE_COHERENCE": {
+      "status": "READY_FOR_DEPLOY",
+      "evidence_level": "E3",
+      "description": "Frontend, edge functions, and database migrations synced to candidate release fingerprint."
+    },
+    "E5_MARKET_OUTCOMES": {
+      "status": "UNVERIFIED",
+      "evidence_level": "E0",
+      "description": "Longitudinal real-world user booking savings and retention remain unverified honestly."
+    }
+  }
+}

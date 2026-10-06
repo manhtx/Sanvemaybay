@@ -44,3 +44,19 @@ Deno.test("date range matching accepts only deals inside the inclusive window", 
   assert(matchesAlert(alert, { to_code: "BKK", discount: 0, depart_date: "2026-08-10" }));
   assert(!matchesAlert(alert, { to_code: "BKK", discount: 0, depart_date: "2026-08-11" }));
 });
+
+Deno.test("explicit regression: target price <= 5,000,000 with 5% discount matches without hidden 20% suppression", () => {
+  // Alert with budget 5M and null discount_threshold
+  const alert = {
+    destination_code: "BKK",
+    origin_code: "HAN",
+    budget: 5000000,
+    discount_threshold: null,
+  };
+  assert(matchesAlert(alert, {
+    to_code: "BKK",
+    from_code: "HAN",
+    price: 4800000,
+    discount: 5,
+  }));
+});

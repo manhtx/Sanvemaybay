@@ -5,6 +5,15 @@ export const PRODUCT_EVENT_TYPES = [
   "booking_click",
   "alert_created",
   "web_vital",
+  "opportunity_impression",
+  "opportunity_open",
+  "evidence_engagement",
+  "watch_created",
+  "watch_matched",
+  "verify_click",
+  "verify_result",
+  "alert_delivered",
+  "page_view",
 ] as const;
 
 export const CURRENT_CORE_WEB_VITALS = ["LCP", "INP", "CLS"] as const;
@@ -15,7 +24,27 @@ export function isCurrentCoreWebVital(metric: string): boolean {
   return CURRENT_CORE_WEB_VITALS.includes(metric as (typeof CURRENT_CORE_WEB_VITALS)[number]);
 }
 
-const allowedMetadata = new Set(["route", "source", "channel", "bookmarked", "provider", "device", "metric", "value", "delta", "rating", "navigation_type"]);
+const allowedMetadata = new Set([
+  "route",
+  "source",
+  "channel",
+  "bookmarked",
+  "provider",
+  "device",
+  "metric",
+  "value",
+  "delta",
+  "rating",
+  "navigation_type",
+  "opportunity_id",
+  "watch_id",
+  "environment",
+  "release",
+  "synthetic",
+  "verification_run_id",
+  "target_price",
+  "page",
+]);
 
 export interface ValidProductEvent {
   event_type: typeof PRODUCT_EVENT_TYPES[number];

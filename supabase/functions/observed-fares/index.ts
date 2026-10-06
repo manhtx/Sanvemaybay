@@ -43,13 +43,27 @@ Deno.serve(async (request) => {
       .eq("id", 1)
       .maybeSingle();
 
+    if (!activeGen?.active_generation_id) {
+      return json({
+        status: "degraded_schema",
+        fares: [],
+        total: 0,
+        page,
+        page_size: pageSize,
+        next_page: null,
+        active_generation_id: null,
+        generated_at: new Date().toISOString(),
+        latest_observed_at: null,
+        feed_age_minutes: null,
+        retryable: true,
+        source: "fast_flights_google",
+      }, id);
+    }
+
     let query = service.from("observed_fare_snapshots")
       .select("dedupe_key,observation_id,generation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at", { count: "exact" })
-      .gte("depart_date", new Date().toISOString().slice(0, 10));
-
-    if (activeGen?.active_generation_id) {
-      query = query.eq("generation_id", activeGen.active_generation_id);
-    }
+      .gte("depart_date", new Date().toISOString().slice(0, 10))
+      .eq("generation_id", activeGen.active_generation_id);
 
     const targetId = typeof body.id === "string" && body.id
       ? body.id
@@ -137,11 +151,12 @@ Deno.serve(async (request) => {
         .order("price", { ascending: true });
     }
 
-    query = query.range(start, start + pageSize - 1);
-    let latestQuery = service.from("observed_fare_snapshots").select("observed_at").order("observed_at", { ascending: false }).limit(1);
-    if (activeGen?.active_generation_id) {
-      latestQuery = latestQuery.eq("generation_id", activeGen.active_generation_id);
-    }
+    const latestQuery = service
+      .from("observed_fare_snapshots")
+      .select("observed_at")
+      .eq("generation_id", activeGen.active_generation_id)
+      .order("observed_at", { ascending: false })
+      .limit(1);
     const [{ data, error, count }, latestResult] = await Promise.all([
       query,
       latestQuery.maybeSingle(),

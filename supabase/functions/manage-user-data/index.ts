@@ -41,7 +41,7 @@ Deno.serve(async (request: Request) => {
     const body = await request.json().catch(() => ({})) as Record<string, unknown>;
     if (body.action === "export") {
       const [preferences, bookmarks, savedOpportunities, alerts, events] = await Promise.all([
-        service.from("user_preferences").select("budget_max,preferred_regions,alert_frequency,excluded_airlines,home_airport,max_stops,preferred_airlines,cabin_class,max_flight_time_minutes,allow_self_transfer,updated_at").eq("user_id", user.id),
+        service.from("user_preferences").select("budget_max,preferred_regions,alert_frequency,excluded_airlines,home_airport,max_stops,preferred_airlines,cabin_class,max_flight_time_minutes,allow_self_transfer,departure_from,departure_to,updated_at").eq("user_id", user.id),
         service.from("user_bookmarks").select("deal_id,created_at").eq("user_id", user.id),
         service.from("user_saved_opportunities").select("opportunity_id,snapshot_data,saved_at").eq("user_id", user.id),
         service.from("user_alerts").select("id,destination,budget,target_price,latest_price,max_stops,last_checked_at,last_match_at,notify_telegram,telegram_id,notify_email,created_at,email,origin_code,destination_code,discount_threshold,preferred_regions,frequency,status,updated_at,date_from,date_to,confirmed_at").eq("user_id", user.id),

@@ -584,8 +584,15 @@ export function mapPriceHistoryRows(rows: Array<{ date?: unknown; price?: unknow
     .filter((point) => point.date && Number.isFinite(point.price) && point.price > 0);
 }
 
-/** Filter observed deals only by fields returned by the data pipeline. */
-export async function searchDeals(params: {
+export type SearchStatus = "healthy" | "healthy_empty" | "degraded" | "provider_unavailable";
+
+export interface SearchDealsResult {
+  deals: Deal[];
+  status: SearchStatus;
+  retryable: boolean;
+}
+
+export async function searchDealsWithStatus(params: {
   budget?: number;
   from?: string;
   destination?: string;
@@ -593,13 +600,17 @@ export async function searchDeals(params: {
   departureFrom?: string;
   departureTo?: string;
   maxFlightTimeMinutes?: number;
-}): Promise<Deal[]> {
+}): Promise<SearchDealsResult> {
   const canonicalDest = resolveCanonicalAirportOrCity(params.destination);
   const destinationCode = canonicalDest?.code || (params.destination && /^[A-Z]{3}$/i.test(params.destination.trim())
     ? params.destination.trim().toUpperCase()
     : undefined);
   const canonicalFrom = resolveCanonicalAirportOrCity(params.from);
   const fromCode = canonicalFrom?.code || params.from;
+
+  let observedFailed = false;
+  let feedFailed = false;
+  let liveFailed = false;
 
   const [observedResult, allFeedDeals, liveDeals] = await Promise.all([
     getObservedFares({
@@ -610,10 +621,23 @@ export async function searchDeals(params: {
       departDateFrom: params.departureFrom,
       departDateTo: params.departureTo,
       pageSize: 120,
-    }).catch(() => ({ fares: [] as Deal[] })),
-    getDeals().catch(() => [] as Deal[]),
-    searchLiveDeals({ ...params, from: fromCode, destination: destinationCode || params.destination }).catch(() => [] as Deal[]),
+    }).catch(() => {
+      observedFailed = true;
+      return { fares: [] as Deal[], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" as const };
+    }),
+    getDeals().catch(() => {
+      feedFailed = true;
+      return [] as Deal[];
+    }),
+    searchLiveDeals({ ...params, from: fromCode, destination: destinationCode || params.destination }).catch(() => {
+      liveFailed = true;
+      return [] as Deal[];
+    }),
   ]);
+
+  if (observedResult.status === "provider_unavailable" || observedResult.status === "stale_only") {
+    observedFailed = true;
+  }
 
   const candidatePool = [...liveDeals, ...observedResult.fares, ...allFeedDeals];
   const seenIds = new Set<string>();
@@ -625,7 +649,40 @@ export async function searchDeals(params: {
     }
   }
 
-  return filterDeals(uniquePool, params);
+  const filtered = filterDeals(uniquePool, params);
+
+  let status: SearchStatus = "healthy";
+  if (filtered.length === 0) {
+    if (observedFailed && (feedFailed || liveFailed)) {
+      status = "provider_unavailable";
+    } else if (observedFailed) {
+      status = "degraded";
+    } else {
+      status = "healthy_empty";
+    }
+  } else if (observedFailed || feedFailed) {
+    status = "degraded";
+  }
+
+  return {
+    deals: filtered,
+    status,
+    retryable: status === "provider_unavailable" || status === "degraded",
+  };
+}
+
+/** Filter observed deals only by fields returned by the data pipeline. */
+export async function searchDeals(params: {
+  budget?: number;
+  from?: string;
+  destination?: string;
+  maxStops?: number;
+  departureFrom?: string;
+  departureTo?: string;
+  maxFlightTimeMinutes?: number;
+}): Promise<Deal[]> {
+  const result = await searchDealsWithStatus(params);
+  return result.deals;
 }
 
 async function searchLiveDeals(params: {

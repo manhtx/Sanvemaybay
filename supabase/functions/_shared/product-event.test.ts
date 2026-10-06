@@ -7,6 +7,15 @@ Deno.test("accepts a bounded allow-listed product event", () => {
     entity_id: "deal-1",
     metadata: { route: "HAN-BKK" },
   });
+  assertEquals(validateProductEvent({
+    event_type: "opportunity_open",
+    entity_id: "opp-123",
+    metadata: { opportunity_id: "HAN:BKK:2026-10-10", synthetic: true, page: "search" },
+  }), {
+    event_type: "opportunity_open",
+    entity_id: "opp-123",
+    metadata: { opportunity_id: "HAN:BKK:2026-10-10", synthetic: true, page: "search" },
+  });
 });
 
 Deno.test("rejects unknown types, metadata and oversized identifiers", () => {
