@@ -2,9 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { execSync } from 'node:child_process';
 
 test('performance budgets: all defined budgets meet release criteria based on measured build output', () => {
   const distAssetsDir = join(process.cwd(), 'dist', 'assets');
+  if (!existsSync(distAssetsDir)) {
+    execSync('npx vite build', { stdio: 'pipe' });
+  }
   assert.equal(existsSync(distAssetsDir), true, 'dist/assets directory must exist (build output required)');
 
   const files = readdirSync(distAssetsDir);
