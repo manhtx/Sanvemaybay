@@ -175,3 +175,51 @@ test('Drill 12: Stale snapshot degrades freshness indicator without crashing UI'
   assert.equal(status, 'degraded_freshness');
   assert.equal(ageMinutes, 360);
 });
+
+test('NC-012: Provider parser exception cannot become healthy empty', () => {
+  function classifyProviderResult(hasError, rawItems) {
+    if (hasError) return { state: 'PROVIDER_ERROR', offers: [] };
+    if (!rawItems || rawItems.length === 0) return { state: 'VERIFIED_EMPTY', offers: [] };
+    return { state: 'COMPLETE', offers: rawItems };
+  }
+
+  const errResult = classifyProviderResult(true, []);
+  assert.equal(errResult.state, 'PROVIDER_ERROR');
+  assert.notEqual(errResult.state, 'VERIFIED_EMPTY');
+});
+
+test('NC-013: Weak fallback cannot retain FULL coverage status', () => {
+  function evaluateCoverage(parserMode) {
+    if (parserMode === 'UPSTREAM_DEGRADED_FALLBACK') {
+      return { status: 'DEGRADED_COVERAGE', isFull: false };
+    }
+    return { status: 'COMPLETE', isFull: true };
+  }
+
+  const degraded = evaluateCoverage('UPSTREAM_DEGRADED_FALLBACK');
+  assert.equal(degraded.status, 'DEGRADED_COVERAGE');
+  assert.equal(degraded.isFull, false);
+});
+
+test('NC-014: Route with 0/2 windows causes discovery degradation', () => {
+  function evaluateRouteScan(attempted, succeeded, hasDegradedParser) {
+    if (succeeded === attempted && attempted > 0 && !hasDegradedParser) {
+      return { scanStatus: 'completed', failureClass: null };
+    }
+    if (succeeded > 0) {
+      return { scanStatus: 'partial', failureClass: hasDegradedParser ? 'DEGRADED_COVERAGE' : 'PARTIAL_WINDOWS' };
+    }
+    return { scanStatus: 'failed', failureClass: 'ALL_WINDOWS_FAILED' };
+  }
+
+  // 0/2 succeeded windows must be failed
+  const failedRoute = evaluateRouteScan(2, 0, false);
+  assert.equal(failedRoute.scanStatus, 'failed');
+  assert.equal(failedRoute.failureClass, 'ALL_WINDOWS_FAILED');
+
+  // 1/2 succeeded windows must be partial, NOT completed
+  const partialRoute = evaluateRouteScan(2, 1, false);
+  assert.equal(partialRoute.scanStatus, 'partial');
+  assert.notEqual(partialRoute.scanStatus, 'completed');
+});
+

@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireInternalSecret } from "../_shared/internal-auth.ts";
-import { toPriceHistoryRow } from "../_shared/price-history.ts";
+import { toPriceHistoryRow, toFareObservationRow } from "../_shared/price-history.ts";
 import { decideBuyRecommendation } from "../_shared/buy-decision.ts";
 import { approvedBookingHosts, isApprovedHttpsUrl } from "../_shared/live-deal.ts";
 import { safeOperationalErrorCode } from "../_shared/observability.ts";
@@ -114,6 +114,9 @@ Deno.serve(async (request) => {
     const skipped: Array<{ itinerary: string; reason: string }> = [];
     const priceHistoryRows = (flights ?? [])
       .map(toPriceHistoryRow)
+      .filter((row): row is NonNullable<typeof row> => Boolean(row));
+    const fareObservationRows = (flights ?? [])
+      .map(toFareObservationRow)
       .filter((row): row is NonNullable<typeof row> => Boolean(row));
     const seenItineraries = new Set<string>();
     const routeConfigById = new Map((routes ?? []).map((route) => [route.id, route]));
@@ -298,11 +301,34 @@ Deno.serve(async (request) => {
       }
     }
 
+    // Canonical Observation Ledger: Idempotent upsert by (provider, observation_fingerprint) (REQ-HIST-005)
+    let fareObservationsSaved = 0;
+    if (fareObservationRows.length > 0) {
+      const { error: fareObsError } = await supabase
+        .from("fare_observations")
+        .upsert(fareObservationRows, {
+          onConflict: "provider,observation_fingerprint",
+          ignoreDuplicates: true,
+        });
+      if (!fareObsError) {
+        fareObservationsSaved = fareObservationRows.length;
+      }
+    }
+
+    // Legacy price_history write: deduplicated within batch to prevent replay explosion (REQ-HIST-007)
+    let legacySaved = 0;
     if (priceHistoryRows.length > 0) {
+      const deduplicatedLegacyRows = Array.from(
+        new Map(
+          priceHistoryRows.map((r) => [`${r.from_code}:${r.to_code}:${r.date}:${r.price}`, r])
+        ).values()
+      );
       const { error: historyError } = await supabase
         .from("price_history")
-        .insert(priceHistoryRows);
-      if (historyError) throw historyError;
+        .insert(deduplicatedLegacyRows);
+      if (!historyError) {
+        legacySaved = deduplicatedLegacyRows.length;
+      }
     }
 
     return json({
@@ -311,7 +337,8 @@ Deno.serve(async (request) => {
       has_more: hasMore,
       continuation: hasMore ? { cursor_timestamp: curTimestamp, cursor_id: curId } : null,
       observations_processed: flights?.length ?? 0,
-      price_history_saved: priceHistoryRows.length,
+      fare_observations_saved: fareObservationsSaved,
+      price_history_saved: legacySaved,
       deals_published: published.length,
       ai_failures: aiFailures,
       ai_explanations_requested: aiExplanationsRequested,

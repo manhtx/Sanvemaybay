@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "created_at": "2026-10-06T09:53:32.140Z",
+  "created_at": "2026-10-07T02:52:14.050Z",
   "total_requirements": 213,
   "total_negative_controls": 35,
   "total_user_journeys": 19,
@@ -14,7 +14,7 @@
       "requirement": "Create docs/convergence/CURRENT_BASELINE.json generated from real inspection classifying each claim as CONFIRMED, FALSIFIED, UNVERIFIED, or INACCESSIBLE.",
       "acceptance_criteria": "CURRENT_BASELINE.json records git branch, head SHA, remote SHA, test counts, migration head, active generation, and provider health.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "docs/convergence/CURRENT_BASELINE.json"
       ],
@@ -23,7 +23,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E2",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-CONTROL-002",
@@ -33,7 +42,7 @@
       "requirement": "Eliminate split-brain certification. Active control plane must be docs/convergence/. Legacy .flycheap files must not remain active authority.",
       "acceptance_criteria": "All active scripts and tests read from docs/convergence/ rather than .flycheap/. No dual authority.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "docs/convergence/"
       ],
@@ -42,7 +51,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E2",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-CONTROL-003",
@@ -52,7 +70,7 @@
       "requirement": "Eliminate hard-coded target SHA, test counts, migration counts, prewritten PASS outcomes, and score=10 by construction.",
       "acceptance_criteria": "Certification artifacts are generated from actual command and test execution rather than literal constants.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/generate-convergence-artifacts.mjs"
       ],
@@ -61,7 +79,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E2",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-CONTROL-004",
@@ -71,7 +98,7 @@
       "requirement": "Fix lint failure in scripts/generate-convergence-artifacts.mjs and rewrite the generator to derive values dynamically.",
       "acceptance_criteria": "generate-convergence-artifacts.mjs runs cleanly with 0 lint errors and computes counts dynamically.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/generate-convergence-artifacts.mjs"
       ],
@@ -80,7 +107,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E2",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-CONTROL-005",
@@ -90,7 +126,7 @@
       "requirement": "Test counts must come from actual test runner outputs (Vitest, Node --test, Deno test, Playwright).",
       "acceptance_criteria": "No hard-coded test totals in certification artifacts.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/generate-convergence-artifacts.mjs"
       ],
@@ -99,7 +135,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E2",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-CONTROL-006",
@@ -109,7 +154,7 @@
       "requirement": "Migration count and head must be computed dynamically by inspecting supabase/migrations/.",
       "acceptance_criteria": "Actual file count and latest migration file name are dynamically detected.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/generate-convergence-artifacts.mjs"
       ],
@@ -118,7 +163,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E2",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-CONTROL-007",
@@ -128,7 +182,7 @@
       "requirement": "Current Git SHA must come dynamically from git rev-parse HEAD.",
       "acceptance_criteria": "Release manifest and certification artifacts reflect actual git HEAD.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/generate-convergence-artifacts.mjs"
       ],
@@ -137,7 +191,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E2",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-CONTROL-008",
@@ -147,7 +210,7 @@
       "requirement": "Deployment identity must come from deployed runtime/metadata endpoints.",
       "acceptance_criteria": "Probe queries https://farely.manhtx.com/release.json and observed-fares release_sha live.",
       "required_evidence_level": "E6",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/verify-production-live.mjs"
       ],
@@ -156,7 +219,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E6",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-CONTROL-009",
@@ -1896,7 +1968,7 @@
       "requirement": "Separate lastAttemptAt, lastSuccessfulCheckAt, lastMatchedAt.",
       "acceptance_criteria": "Watch record maintains all three distinct timestamps.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -1905,7 +1977,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-014",
@@ -1915,7 +1996,7 @@
       "requirement": "Separate latestObservedPrice, latestEligiblePrice, lastMatchedPrice.",
       "acceptance_criteria": "Non-matching observed price does not overwrite lastMatchedPrice.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/watch.ts"
       ],
@@ -1924,7 +2005,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-015",
@@ -1934,7 +2024,7 @@
       "requirement": "Model condition episodes: OUTSIDE, ENTERED, STILL_INSIDE, MATERIAL_IMPROVEMENT, EXITED, REENTERED.",
       "acceptance_criteria": "Watch episode state machine handles price movements across boundary.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/watch.ts"
       ],
@@ -1943,7 +2033,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-016",
@@ -1953,7 +2052,7 @@
       "requirement": "Price leaves target -> episode transitions to EXITED (no sticky stale match).",
       "acceptance_criteria": "NC-017 passes: price rising above target closes condition episode.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/watch.ts"
       ],
@@ -1962,7 +2061,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-017",
@@ -1972,7 +2080,7 @@
       "requirement": "Price re-entering target opens new eligible condition episode.",
       "acceptance_criteria": "NC-018 passes: price dropping back below target triggers REENTERED.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/watch.ts"
       ],
@@ -1981,7 +2089,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-018",
@@ -1991,7 +2108,7 @@
       "requirement": "Material additional price decrease inside condition is eligible for re-alert policy.",
       "acceptance_criteria": "NC-019 passes: 10%+ further price drop inside episode emits new alert.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/watch.ts"
       ],
@@ -2000,7 +2117,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-019",
@@ -2067,7 +2193,7 @@
       "requirement": "Implement transactional outbox architecture for notifications.",
       "acceptance_criteria": "Notification records written to outbox table inside business transaction.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -2076,7 +2202,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-NOTIF-002",
@@ -2086,7 +2221,7 @@
       "requirement": "Watch evaluation transaction writes notification intent before third-party external side effect.",
       "acceptance_criteria": "Zero network side effects executed inside evaluation database transaction.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/alert-processor/index.ts"
       ],
@@ -2095,7 +2230,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-NOTIF-003",
@@ -2105,7 +2249,7 @@
       "requirement": "Delivery worker processes pending outbox entries asynchronously.",
       "acceptance_criteria": "Worker queries status=PENDING, delivers, and updates status=SENT.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/alert-processor/index.ts"
       ],
@@ -2114,7 +2258,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-NOTIF-004",
@@ -2124,7 +2277,7 @@
       "requirement": "Retry transient delivery failures with bounded exponential backoff (1m, 5m, 15m).",
       "acceptance_criteria": "Retry policy calculates exact backoff schedule and caps at maximum attempts.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/retry-policy.ts"
       ],
@@ -2133,7 +2286,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-NOTIF-005",
@@ -2143,7 +2305,7 @@
       "requirement": "Unique dedupe_key corresponds to notification event, not permanent opportunity.",
       "acceptance_criteria": "NC-020 passes: duplicate scheduler invocation produces identical dedupe_key and sends once.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/retry-policy.ts"
       ],
@@ -2152,7 +2314,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-NOTIF-006",
@@ -2162,7 +2333,7 @@
       "requirement": "Same opportunity can re-alert under new condition episode or material price drop.",
       "acceptance_criteria": "Evaluator checks episode status and price delta before deduplicating.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/alert-matching.ts"
       ],
@@ -2171,7 +2342,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-NOTIF-007",
@@ -2238,7 +2418,7 @@
       "requirement": "Authenticated Saved opportunities are server-authoritative via Supabase DB.",
       "acceptance_criteria": "Bookmarks for authenticated users sync directly to user_saved_opportunities.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/lib/bookmarks.ts"
       ],
@@ -2247,7 +2427,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SAVED-002",
@@ -2257,7 +2446,7 @@
       "requirement": "Anonymous Saved allows local browser storage.",
       "acceptance_criteria": "Unauthenticated user saves items to localStorage without requiring login.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/lib/bookmarks.ts"
       ],
@@ -2266,7 +2455,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SAVED-003",
@@ -2276,7 +2474,7 @@
       "requirement": "On login, provide explicit merge/import flow; do not permanent-union local + remote blindly.",
       "acceptance_criteria": "Remote server state takes precedence on login with selective import.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/lib/bookmarks.ts"
       ],
@@ -2285,7 +2483,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SAVED-004",
@@ -2295,7 +2502,7 @@
       "requirement": "Remote failure rolls back optimistic UI state or marks pending_sync.",
       "acceptance_criteria": "NC-015 passes: failed remote delete restores bookmark in UI.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/lib/bookmarks.ts"
       ],
@@ -2304,7 +2511,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SAVED-005",
@@ -2314,7 +2530,7 @@
       "requirement": "Persist canonical TravelIntent and opportunity snapshot with saved item.",
       "acceptance_criteria": "Saved record contains origin, destination, dates, cabin, saved price.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/lib/bookmarks.ts"
       ],
@@ -2323,7 +2539,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SAVED-006",
@@ -2371,7 +2596,7 @@
       "requirement": "Create pure FareProvider interface specifying id, capabilities, search, verify, health.",
       "acceptance_criteria": "Provider adapter contract defined in domain kernel.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/providerAdapter.ts"
       ],
@@ -2380,7 +2605,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E2",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PROV-002",
@@ -2390,7 +2624,7 @@
       "requirement": "ProviderResult is typed: SUCCESS_NONEMPTY, VERIFIED_EMPTY, PARTIAL_RESULTS, DEGRADED_COVERAGE, NETWORK_ERROR, TIMEOUT, RATE_LIMITED, etc.",
       "acceptance_criteria": "Discriminated union covers all provider response states.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/providerResult.ts"
       ],
@@ -2399,7 +2633,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E2",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PROV-003",
@@ -2409,7 +2652,7 @@
       "requirement": "Provider errors must never return generic [] masquerading as zero flights.",
       "acceptance_criteria": "Parser failure returns PARSER_SCHEMA_DRIFT or PROVIDER_ERROR.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/feed-health.ts"
       ],
@@ -2418,7 +2661,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PROV-004",
@@ -2675,7 +2927,7 @@
       "requirement": "Real Supabase/Postgres RLS tests across ANON, USER_A, USER_B for SELECT, INSERT, UPDATE, DELETE.",
       "acceptance_criteria": "All private user tables tested for tenant isolation.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/security-smoke.mjs"
       ],
@@ -2684,7 +2936,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-002",
@@ -2694,7 +2955,7 @@
       "requirement": "NC-013 & NC-014: User A cannot read, update, or delete User B Watch or Saved records.",
       "acceptance_criteria": "PostgREST queries across tenant boundaries return empty sets or 403.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/security-smoke.mjs"
       ],
@@ -2703,7 +2964,16 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-003",
@@ -4062,12 +4332,21 @@
       "requirement": "Negative control enforcing Deal score cannot override lower price for cheapest",
       "acceptance_criteria": "Automated test verifying Deal score cannot override lower price for cheapest passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-002",
@@ -4077,12 +4356,21 @@
       "requirement": "Negative control enforcing DMK cannot satisfy exact BKK",
       "acceptance_criteria": "Automated test verifying DMK cannot satisfy exact BKK passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-003",
@@ -4092,12 +4380,21 @@
       "requirement": "Negative control enforcing DMK can satisfy Bangkok Metro",
       "acceptance_criteria": "Automated test verifying DMK can satisfy Bangkok Metro passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-004",
@@ -4227,12 +4524,21 @@
       "requirement": "Negative control enforcing Known-weaker fallback cannot retain FULL_COVERAGE health",
       "acceptance_criteria": "Automated test verifying Known-weaker fallback cannot retain FULL_COVERAGE health passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-013",
@@ -4242,12 +4548,21 @@
       "requirement": "Negative control enforcing User A cannot read User B Watch",
       "acceptance_criteria": "Automated test verifying User A cannot read User B Watch passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-014",
@@ -4257,12 +4572,21 @@
       "requirement": "Negative control enforcing User A cannot update User B Saved record",
       "acceptance_criteria": "Automated test verifying User A cannot update User B Saved record passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-015",
@@ -4317,12 +4641,21 @@
       "requirement": "Negative control enforcing Price re-enters -> new eligible episode opens",
       "acceptance_criteria": "Automated test verifying Price re-enters -> new eligible episode opens passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-019",
@@ -4332,12 +4665,21 @@
       "requirement": "Negative control enforcing Later material price drop not permanently suppressed",
       "acceptance_criteria": "Automated test verifying Later material price drop not permanently suppressed passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-020",
@@ -4347,12 +4689,21 @@
       "requirement": "Negative control enforcing Duplicate notification worker invocation sends once",
       "acceptance_criteria": "Automated test verifying Duplicate notification worker invocation sends once passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-021",
@@ -4362,12 +4713,21 @@
       "requirement": "Negative control enforcing Visible cabin control must change downstream semantics",
       "acceptance_criteria": "Automated test verifying Visible cabin control must change downstream semantics passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-022",
@@ -4377,12 +4737,21 @@
       "requirement": "Negative control enforcing Visible passenger control must change downstream semantics",
       "acceptance_criteria": "Automated test verifying Visible passenger control must change downstream semantics passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-023",
@@ -4392,12 +4761,21 @@
       "requirement": "Negative control enforcing Static PASS JSON cannot satisfy performance",
       "acceptance_criteria": "Automated test verifying Static PASS JSON cannot satisfy performance passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-024",
@@ -4407,12 +4785,21 @@
       "requirement": "Negative control enforcing Screenshot existence cannot satisfy accessibility",
       "acceptance_criteria": "Automated test verifying Screenshot existence cannot satisfy accessibility passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-025",
@@ -4422,12 +4809,21 @@
       "requirement": "Negative control enforcing HTTP 200 cannot certify complete journey",
       "acceptance_criteria": "Automated test verifying HTTP 200 cannot certify complete journey passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-026",
@@ -4437,12 +4833,21 @@
       "requirement": "Negative control enforcing HTTP 503 handled correctly cannot certify healthy provider",
       "acceptance_criteria": "Automated test verifying HTTP 503 handled correctly cannot certify healthy provider passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-027",
@@ -4452,12 +4857,21 @@
       "requirement": "Negative control enforcing Unreachable helper/page cannot satisfy feature gate",
       "acceptance_criteria": "Automated test verifying Unreachable helper/page cannot satisfy feature gate passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-028",
@@ -4467,12 +4881,21 @@
       "requirement": "Negative control enforcing Failed required Verify SHA cannot become certified production release",
       "acceptance_criteria": "Automated test verifying Failed required Verify SHA cannot become certified production release passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-029",
@@ -4482,12 +4905,21 @@
       "requirement": "Negative control enforcing Uncertified push cannot mutate production fare data",
       "acceptance_criteria": "Automated test verifying Uncertified push cannot mutate production fare data passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-030",
@@ -4497,12 +4929,21 @@
       "requirement": "Negative control enforcing Final report cannot create release drift",
       "acceptance_criteria": "Automated test verifying Final report cannot create release drift passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-031",
@@ -4587,14 +5028,23 @@
       "requirement": "End-to-end user journey verifying Home Search -> real results",
       "acceptance_criteria": "Playwright or integration test exercises Home Search -> real results successfully.",
       "required_evidence_level": "E5",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [
         "e2e/app.spec.ts"
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E5",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "JOURNEY-002",
@@ -4604,14 +5054,23 @@
       "requirement": "End-to-end user journey verifying Search -> Detail",
       "acceptance_criteria": "Playwright or integration test exercises Search -> Detail successfully.",
       "required_evidence_level": "E5",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [
         "e2e/app.spec.ts"
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E5",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "JOURNEY-003",
@@ -4621,14 +5080,23 @@
       "requirement": "End-to-end user journey verifying Non-best detail -> cheaper compatible alternative",
       "acceptance_criteria": "Playwright or integration test exercises Non-best detail -> cheaper compatible alternative successfully.",
       "required_evidence_level": "E5",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [
         "e2e/app.spec.ts"
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E5",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "JOURNEY-004",
@@ -4638,14 +5106,23 @@
       "requirement": "End-to-end user journey verifying Detail -> verification",
       "acceptance_criteria": "Playwright or integration test exercises Detail -> verification successfully.",
       "required_evidence_level": "E5",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [
         "e2e/app.spec.ts"
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E5",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "JOURNEY-005",
@@ -4655,14 +5132,23 @@
       "requirement": "End-to-end user journey verifying Search -> Watch preserves TravelIntent",
       "acceptance_criteria": "Playwright or integration test exercises Search -> Watch preserves TravelIntent successfully.",
       "required_evidence_level": "E5",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [
         "e2e/app.spec.ts"
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": "2026-10-07T03:22:56.106Z",
+      "evidence": [
+        {
+          "level": "E5",
+          "type": "automated_regression_test",
+          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+          "timestamp": "2026-10-07T03:22:56.106Z",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "JOURNEY-006",
@@ -4902,5 +5388,6 @@
       "blocker": null,
       "verified_at": null
     }
-  ]
+  ],
+  "updated_at": "2026-10-07T03:22:56.106Z"
 }

@@ -1,24 +1,22 @@
 {
-  "release_id": "farely-convergence-49a3dc0b",
-  "source_git_sha": "49a3dc0b28294bf408d5652d7a5fac618d820174",
+  "release_id": "farely-convergence-e71de720",
+  "source_git_sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
+  "remote_git_sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
   "frontend_deployment_url": "https://farely.manhtx.com",
   "frontend_build_identity": "vite-6.4.3-react-19",
   "backend_edge_release_url": "https://yefbpmqfsstcaeqfrmyn.supabase.co/functions/v1/observed-fares",
-  "migration_head": "20261006000100_telemetry_and_watch_convergence.sql",
-  "package_lock_hash": "sha256-verified",
+  "migration_head": "20261007000100_canonical_fare_observations.sql",
+  "package_lock_hash": "f3c2f808e3ec000cfb06893c4f103f5881d3187a7730f2cb173962ee03ced3fd",
+  "observation_schema_version": 1,
+  "identity_schema_version": 1,
   "runtime_invariants": {
     "price_truth": "Cheapest strictly equals mathematical minimum eligible price within PriceScopeFingerprint",
-    "pagination": "Server-side deterministic range pagination (60 per page, 0 intersection)",
-    "travel_intent": "Canonical TravelIntent preserving metro vs airport scope (BKK != DMK)",
-    "watch_lifecycle": "Episode state transitions (OUTSIDE -> STILL_INSIDE -> EXITED on price rise)",
-    "data_rights": "Transactional cascade account deletion covering all user rows"
+    "historical_evidence": "fare_observations table with UNIQUE (provider, observation_fingerprint) enforces observation idempotency",
+    "identity_stability": "SHA-256 canonical serialization providing 128-bit collision resistance for OfferVariant, Observation, Opportunity, Intent",
+    "watch_lifecycle": "Watch condition episodes with durable transitions: ENTERED -> STILL_INSIDE -> MATERIAL_IMPROVEMENT -> EXITED -> REENTERED",
+    "notification_outbox": "Transactional notification_outbox decoupled from dispatcher execution with event-based deduplication",
+    "saved_authority": "Server is canonical authority for authenticated users with automatic rollback on remote failure (NC-030)",
+    "security_rls": "Multi-tenant RLS tenant isolation verified via pgTAP and node tests (User A cannot access User B)"
   },
-  "ci_runs": {
-    "github_workflows": [
-      "Verify (322002938)",
-      "Deploy FlyCheap Supabase runtime (327635478)",
-      "FlyCheap production smoke (369745268)"
-    ]
-  },
-  "timestamp": "2026-10-06T10:21:46.350Z"
+  "timestamp": "2026-10-07T03:22:56.106Z"
 }

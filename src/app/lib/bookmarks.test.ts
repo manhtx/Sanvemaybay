@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { clearBookmarkedDeals, getBookmarkedDealIds, getLocalSavedRecord, isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal } from "./bookmarks";
+import {
+  clearBookmarkedDeals,
+  getBookmarkedDealIds,
+  getLocalSavedRecord,
+  isBookmarkedDeal,
+  mutateBookmarkOptimistic,
+  saveRemoteBookmark,
+  toggleBookmarkedDeal,
+} from "./bookmarks";
 
 function storage(): Storage {
   const values = new Map<string, string>();
@@ -58,6 +66,56 @@ describe("deal bookmarks", () => {
     expect(typeof result).toBe("boolean");
     // Default in test environment without auth session is false (fail closed)
     expect(result).toBe(false);
+  });
+
+  it("NC-030: rolls back optimistic bookmark when remote mutation fails", async () => {
+    const store = storage();
+    let rollbackTriggered = false;
+    let rollbackPrevState: boolean | null = null;
+
+    // Initially not bookmarked
+    expect(isBookmarkedDeal("opp-fail", store)).toBe(false);
+
+    // Mock remote failure (e.g. network error / 500)
+    const result = await mutateBookmarkOptimistic(
+      "opp-fail",
+      true,
+      { savedPrice: 1200000 },
+      store,
+      {
+        mockRemoteSaver: async () => false,
+        onRollback: (prev, _err) => {
+          rollbackTriggered = true;
+          rollbackPrevState = prev;
+        },
+      }
+    );
+
+    expect(result.success).toBe(false);
+    expect(result.rolledBack).toBe(true);
+    expect(rollbackTriggered).toBe(true);
+    expect(rollbackPrevState).toBe(false);
+    // Local storage was rolled back to false!
+    expect(isBookmarkedDeal("opp-fail", store)).toBe(false);
+    expect(getLocalSavedRecord("opp-fail", store)).toBeUndefined();
+  });
+
+  it("NC-030: commits state when remote mutation succeeds", async () => {
+    const store = storage();
+    const result = await mutateBookmarkOptimistic(
+      "opp-ok",
+      true,
+      { savedPrice: 1500000 },
+      store,
+      {
+        mockRemoteSaver: async () => true,
+      }
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.rolledBack).toBeUndefined();
+    expect(isBookmarkedDeal("opp-ok", store)).toBe(true);
+    expect(getLocalSavedRecord("opp-ok", store)?.snapshotData?.savedPrice).toBe(1500000);
   });
 });
 

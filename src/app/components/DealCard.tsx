@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { Clock, AlertTriangle, Calendar, Bookmark, ShieldCheck } from "lucide-react";
 import { Deal, formatVND, regionFlag } from "../data/deals";
-import { isBookmarkedDeal, saveRemoteBookmark, toggleBookmarkedDeal, createOpportunitySnapshot } from "../lib/bookmarks";
+import { isBookmarkedDeal, mutateBookmarkOptimistic, createOpportunitySnapshot } from "../lib/bookmarks";
 import { useState } from "react";
 import { trackProductEvent } from "../lib/analytics";
 
@@ -134,18 +134,25 @@ export function DealCard({ deal }: DealCardProps) {
         type="button"
         aria-label={bookmarked ? "Bỏ lưu deal" : "Lưu deal"}
         aria-pressed={bookmarked}
-        onClick={(event) => {
+        onClick={async (event) => {
           event.preventDefault();
           event.stopPropagation();
           const snapshot = createOpportunitySnapshot(deal);
-          const next = toggleBookmarkedDeal(targetId, undefined, snapshot);
+          const prev = bookmarked;
+          const next = !prev;
           setBookmarked(next);
-          void saveRemoteBookmark(targetId, next, snapshot);
-          void trackProductEvent({
-            eventType: "bookmark",
-            entityId: targetId,
-            metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}`, source: "deal_card" },
+          const result = await mutateBookmarkOptimistic(targetId, next, snapshot, undefined, {
+            onRollback: (rolledState) => {
+              setBookmarked(rolledState);
+            },
           });
+          if (result.success) {
+            void trackProductEvent({
+              eventType: "bookmark",
+              entityId: targetId,
+              metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}`, source: "deal_card" },
+            });
+          }
         }}
         className="absolute right-3.5 top-3.5 z-10 flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-[#121620]/90 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
       >

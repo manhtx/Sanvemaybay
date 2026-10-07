@@ -120,13 +120,13 @@ def fetch_all_flights(query: Any) -> list[Any]:
         parser = LexborHTMLParser(html)
         script = parser.css_first(r"script.ds\:1")
         if not script:
-            return list(get_flights(query))
+            return (list(get_flights(query)), "UPSTREAM_DEGRADED_FALLBACK")
         text = script.text()
         if "data:" not in text:
-            return list(get_flights(query))
+            return (list(get_flights(query)), "UPSTREAM_DEGRADED_FALLBACK")
         data = text.split("data:", 1)[1].rsplit(",", 1)[0]
         if data.endswith("errorHasStatus: true"):
-            return []
+            return ([], "VALID_EMPTY")
         payload = json.loads(data)
 
         flights = []
@@ -167,9 +167,9 @@ def fetch_all_flights(query: Any) -> list[Any]:
                     sg_flights.append(SingleFlight(from_airport=from_airport, to_airport=to_airport, departure=dep, arrival=arr, duration=duration, plane_type=plane_type))
                 if sg_flights:
                     flights.append(Flights(type=typ, price=price, airlines=airlines, flights=sg_flights, carbon=CarbonEmission(typical_on_route=0, emission=0)))
-        return flights if flights else list(get_flights(query))
+        return (flights, "CUSTOM_FULL") if flights else (list(get_flights(query)), "UPSTREAM_DEGRADED_FALLBACK")
     except Exception:
-        return list(get_flights(query))
+        return (list(get_flights(query)), "UPSTREAM_DEGRADED_FALLBACK")
 
 
 def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, observed_at: str) -> dict[str, Any] | None:
@@ -263,7 +263,10 @@ def search_route(route: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str,
                 currency="VND",
                 language="vi",
             )
-            results = fetch_all_flights(query)
+            results, parser_mode = fetch_all_flights(query)
+            if parser_mode == "UPSTREAM_DEGRADED_FALLBACK":
+                metrics["has_degraded_parser"] = True
+            metrics.setdefault("parser_modes", []).append(parser_mode)
         except (IndexError, KeyError, TypeError, ValueError) as error:
             # Google occasionally returns an incomplete result page for one
             # date window. Keep the route alive and let later windows run.
@@ -335,8 +338,19 @@ def direct_ingest(
         rows = grouped.get(key, [])
         metrics = route_metrics.get(key, {})
         observed_at = max((row["timestamp"] for row in rows), default=now_iso)
-        scan_status = "completed" if int(metrics.get("windows_succeeded", 0)) > 0 else "failed"
-        failure_class = None if scan_status == "completed" else classify_failure(str(metrics.get("last_error", "All route windows failed")))
+        attempted = int(metrics.get("windows_attempted", 0))
+        succeeded = int(metrics.get("windows_succeeded", 0))
+        has_degraded = bool(metrics.get("has_degraded_parser", False))
+
+        if succeeded == attempted and attempted > 0 and not has_degraded:
+            scan_status = "completed"
+            failure_class = None
+        elif succeeded > 0:
+            scan_status = "partial"
+            failure_class = "DEGRADED_COVERAGE" if has_degraded else "PARTIAL_WINDOWS"
+        else:
+            scan_status = "failed"
+            failure_class = classify_failure(str(metrics.get("last_error", "All route windows failed")))
 
         # Update route operational scheduling state
         route_update = {
@@ -347,6 +361,9 @@ def direct_ingest(
             route_update["last_success_at"] = now_iso
             route_update["consecutive_failures"] = 0
             route_update["failure_class"] = None
+        elif scan_status == "partial":
+            route_update["last_success_at"] = now_iso
+            route_update["failure_class"] = failure_class
         else:
             route_update["last_failure_at"] = now_iso
             route_update["consecutive_failures"] = int(route.get("consecutive_failures") or 0) + 1

@@ -17,6 +17,7 @@ import {
   deserializeTravelIntent,
   buildOfferVariantId,
   buildObservationId,
+  resolveLegacyIdentity,
   buildPriceScopeFingerprintFromIntent,
   selectRouteBest,
   RouteOffer,
@@ -145,6 +146,10 @@ describe('Farely Pure Domain Kernel — Identity (REQ-DOM-011, REQ-DOM-012)', ()
     const ov1 = buildOfferVariantId(offerParams);
     const ov2 = buildOfferVariantId(offerParams);
 
+    // REQ-ID-001: 128-bit SHA-256 collision resistance with versioned prefix
+    expect(ov1.startsWith('ov:v1:')).toBe(true);
+    expect(ov1.length).toBe(6 + 32); // 'ov:v1:' (6) + 32 hex chars (128 bits)
+
     // Exact same OfferVariantId regardless of price change
     expect(ov1).toBe(ov2);
 
@@ -164,6 +169,24 @@ describe('Farely Pure Domain Kernel — Identity (REQ-DOM-011, REQ-DOM-012)', ()
     });
 
     expect(obsToday).not.toBe(obsTomorrow);
+    expect(obsToday.startsWith('obs:v1:')).toBe(true);
+  });
+
+  it('REQ-ID-006: Resolves legacy identities without breaking old URLs or storage', () => {
+    // Canonical v1 identities
+    const v1 = resolveLegacyIdentity('ov:v1:0dbfc6a473f077e9948d42b95e0d703f');
+    expect(v1.version).toBe('v1');
+    expect(v1.type).toBe('offer_variant');
+
+    // Legacy FNV-1a IDs
+    const legOv = resolveLegacyIdentity('ov_811c9dc5');
+    expect(legOv.version).toBe('legacy');
+    expect(legOv.type).toBe('offer_variant');
+
+    // Legacy opportunity string
+    const legOpp = resolveLegacyIdentity('observed-HAN:BKK:2026-11-10:2026-11-15:VJ:VJ901:0');
+    expect(legOpp.version).toBe('legacy');
+    expect(legOpp.type).toBe('opportunity');
   });
 });
 

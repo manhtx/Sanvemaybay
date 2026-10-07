@@ -4,11 +4,8 @@ import { Bookmark, Bell, Trash2, ArrowRight, ExternalLink, Calendar, Plane } fro
 import { Deal, formatVND } from "../data/deals";
 import { getObservedFares } from "../data/api";
 import {
-  loadRemoteSavedOpportunities,
-  getBookmarkedDealIds,
-  getLocalSavedRecord,
-  saveRemoteBookmark,
-  toggleBookmarkedDeal,
+  syncSavedWithRemote,
+  mutateBookmarkOptimistic,
   SavedOpportunityRecord,
 } from "../lib/bookmarks";
 import { WatchModal } from "../components/WatchModal";
@@ -40,25 +37,14 @@ export function SavedDealsPage() {
   async function loadSavedData() {
     setLoading(true);
     try {
-      const [remoteRes, localIds, observedRes] = await Promise.all([
-        loadRemoteSavedOpportunities().catch(() => ({ entries: [] as SavedOpportunityRecord[] })),
-        Promise.resolve(getBookmarkedDealIds()),
+      const [syncRes, observedRes] = await Promise.all([
+        syncSavedWithRemote().catch(() => ({ entries: [] as SavedOpportunityRecord[], authenticated: false })),
         getObservedFares({ page: 1, pageSize: 120 }).catch(() => ({ fares: [] as Deal[] })),
       ]);
 
       const recordsMap = new Map<string, SavedOpportunityRecord>();
-      for (const entry of remoteRes.entries) {
+      for (const entry of syncRes.entries) {
         recordsMap.set(entry.opportunityId, entry);
-      }
-      for (const id of localIds) {
-        if (!recordsMap.has(id)) {
-          const localRecord = getLocalSavedRecord(id);
-          if (localRecord) {
-            recordsMap.set(id, localRecord);
-          } else {
-            recordsMap.set(id, { opportunityId: id, savedAt: new Date().toISOString() });
-          }
-        }
       }
 
       const activeByOppId = new Map<string, Deal>();
@@ -138,10 +124,17 @@ export function SavedDealsPage() {
     void loadSavedData();
   }, []);
 
-  const handleRemove = (opportunityId: string) => {
-    toggleBookmarkedDeal(opportunityId);
-    void saveRemoteBookmark(opportunityId, false);
+  const handleRemove = async (opportunityId: string) => {
+    const previousItems = items;
     setItems((prev) => prev.filter((item) => item.opportunityId !== opportunityId));
+    const result = await mutateBookmarkOptimistic(opportunityId, false, undefined, undefined, {
+      onRollback: () => {
+        setItems(previousItems);
+      },
+    });
+    if (!result.success) {
+      setItems(previousItems);
+    }
   };
 
   return (

@@ -15,8 +15,7 @@ import { Deal, formatVND } from "../data/deals";
 import { getObservedFares, getDealsResult } from "../data/api";
 import {
   isBookmarkedDeal,
-  saveRemoteBookmark,
-  toggleBookmarkedDeal,
+  mutateBookmarkOptimistic,
   createOpportunitySnapshot,
 } from "../lib/bookmarks";
 import { WatchModal } from "../components/WatchModal";
@@ -124,22 +123,37 @@ export function DealsPage() {
     return list;
   }, []);
 
-  const handleBookmarkToggle = (deal: Deal) => {
+  const handleBookmarkToggle = async (deal: Deal) => {
     const targetId = deal.opportunityId || deal.id;
     const snapshot = createOpportunitySnapshot(deal);
-    const next = toggleBookmarkedDeal(targetId, undefined, snapshot);
+    const wasBookmarked = bookmarkedIds.has(targetId);
+    const next = !wasBookmarked;
+
     setBookmarkedIds((prev) => {
       const updated = new Set(prev);
       if (next) updated.add(targetId);
       else updated.delete(targetId);
       return updated;
     });
-    void saveRemoteBookmark(targetId, next, snapshot);
-    void trackProductEvent({
-      eventType: "bookmark",
-      entityId: targetId,
-      metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}`, source: "deals_ledger" },
+
+    const result = await mutateBookmarkOptimistic(targetId, next, snapshot, undefined, {
+      onRollback: (rolledState) => {
+        setBookmarkedIds((prev) => {
+          const updated = new Set(prev);
+          if (rolledState) updated.add(targetId);
+          else updated.delete(targetId);
+          return updated;
+        });
+      },
     });
+
+    if (result.success) {
+      void trackProductEvent({
+        eventType: "bookmark",
+        entityId: targetId,
+        metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}`, source: "deals_ledger" },
+      });
+    }
   };
 
   return (

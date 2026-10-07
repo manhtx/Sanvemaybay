@@ -13,13 +13,12 @@ import {
   ShieldCheck,
   Clock,
 } from "lucide-react";
-import { getDealById, getPriceHistory, getObservedFares } from "../data/api";
+import { getDealById, getPriceHistory, getObservedFares, getFareObservations } from "../data/api";
 import { Deal, formatVND } from "../data/deals";
 import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import {
   isBookmarkedDeal,
-  saveRemoteBookmark,
-  toggleBookmarkedDeal,
+  mutateBookmarkOptimistic,
   createOpportunitySnapshot,
 } from "../lib/bookmarks";
 import { shareOrCopy } from "../lib/sharing";
@@ -40,6 +39,7 @@ export function DealDetailPage() {
   const [bookmarked, setBookmarked] = useState(false);
   const [watchOpen, setWatchOpen] = useState(false);
   const [priceHistory, setPriceHistory] = useState<Awaited<ReturnType<typeof getPriceHistory>>>([]);
+  const [fareObservations, setFareObservations] = useState<Awaited<ReturnType<typeof getFareObservations>>>([]);
   const [cheaperAlternative, setCheaperAlternative] = useState<{
     airline: string;
     price: number;
@@ -64,8 +64,12 @@ export function DealDetailPage() {
         });
         const targetId = data.opportunityId || data.id;
         setBookmarked(isBookmarkedDeal(targetId) || isBookmarkedDeal(data.id));
-        const history = await getPriceHistory(data.fromCode, data.toCode);
+        const [history, observations] = await Promise.all([
+          getPriceHistory(data.fromCode, data.toCode),
+          getFareObservations(data.fromCode, data.toCode),
+        ]);
         setPriceHistory(history);
+        setFareObservations(observations);
 
         // Check if a cheaper eligible option exists for this travel intent
         try {
@@ -168,7 +172,20 @@ export function DealDetailPage() {
     });
   };
 
-  // Build Comparable Cohort & Evidence
+  // Build Comparable Cohort & Evidence using canonical observations where available (REQ-HIST-008, REQ-STATS-001)
+  const rawCohortObservations = fareObservations.length > 0
+    ? fareObservations
+    : priceHistory.map((ph, idx) => ({
+        id: `ph-${idx}`,
+        originCode: deal.fromCode,
+        destinationCode: deal.toCode,
+        departDate: ph.date,
+        price: ph.price,
+        stops: deal.stops,
+        airlineCode: deal.airlineCode,
+        observedAt: ph.date,
+      }));
+
   const cohort = buildComparableCohort(
     {
       id: deal.id,
@@ -181,16 +198,7 @@ export function DealDetailPage() {
       airlineCode: deal.airlineCode,
       observedAt: deal.observedAt || new Date().toISOString(),
     },
-    priceHistory.map((ph, idx) => ({
-      id: `ph-${idx}`,
-      originCode: deal.fromCode,
-      destinationCode: deal.toCode,
-      departDate: ph.date,
-      price: ph.price,
-      stops: deal.stops,
-      airlineCode: deal.airlineCode,
-      observedAt: ph.date,
-    }))
+    rawCohortObservations
   );
 
   const formattedDepartTime = new Date(deal.departDate).toLocaleDateString("vi-VN", {
@@ -236,21 +244,28 @@ export function DealDetailPage() {
               type="button"
               aria-label={bookmarked ? "Bỏ lưu cơ hội" : "Lưu cơ hội"}
               aria-pressed={bookmarked}
-              onClick={() => {
+              onClick={async () => {
                 const targetId = deal.opportunityId || deal.id;
                 const snapshot = createOpportunitySnapshot(deal);
-                const next = toggleBookmarkedDeal(targetId, undefined, snapshot);
+                const prev = bookmarked;
+                const next = !prev;
                 setBookmarked(next);
-                void saveRemoteBookmark(targetId, next, snapshot);
-                void trackProductEvent({
-                  eventType: "bookmark",
-                  entityId: targetId,
-                  metadata: {
-                    opportunity_id: targetId,
-                    bookmarked: next,
-                    route: `${deal.fromCode}-${deal.toCode}`,
+                const result = await mutateBookmarkOptimistic(targetId, next, snapshot, undefined, {
+                  onRollback: (rolledState) => {
+                    setBookmarked(rolledState);
                   },
                 });
+                if (result.success) {
+                  void trackProductEvent({
+                    eventType: "bookmark",
+                    entityId: targetId,
+                    metadata: {
+                      opportunity_id: targetId,
+                      bookmarked: next,
+                      route: `${deal.fromCode}-${deal.toCode}`,
+                    },
+                  });
+                }
               }}
               className="p-2 hover:bg-stone-100 rounded-lg text-stone-600 hover:text-stone-900 transition-colors"
             >

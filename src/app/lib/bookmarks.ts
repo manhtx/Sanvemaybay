@@ -110,14 +110,25 @@ export function clearBookmarkedDeals(storage: Storage | undefined = typeof windo
   storage?.removeItem(SNAPSHOT_STORAGE_KEY);
 }
 
+export async function getSavedSessionUser(): Promise<any | null> {
+  if (!isSupabaseConfigured) return null;
+  try {
+    const { data } = await supabase.auth.getSession();
+    return data?.session?.user ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function loadRemoteSavedOpportunities(): Promise<{
   entries: SavedOpportunityRecord[];
+  authenticated: boolean;
   error?: string;
 }> {
-  if (!isSupabaseConfigured) return { entries: [] };
+  if (!isSupabaseConfigured) return { entries: [], authenticated: false };
   try {
     const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
-    if (sessionErr || !sessionData?.session?.user) return { entries: [] };
+    if (sessionErr || !sessionData?.session?.user) return { entries: [], authenticated: false };
     const user = sessionData.session.user;
 
     const { data, error } = await supabase
@@ -128,7 +139,7 @@ export async function loadRemoteSavedOpportunities(): Promise<{
 
     if (error) {
       console.error("loadRemoteSavedOpportunities query error:", error);
-      return { entries: [], error: error.message };
+      return { entries: [], authenticated: true, error: error.message };
     }
 
     return {
@@ -137,24 +148,72 @@ export async function loadRemoteSavedOpportunities(): Promise<{
         snapshotData: row.snapshot_data,
         savedAt: row.saved_at,
       })),
+      authenticated: true,
     };
   } catch (err: any) {
-    return { entries: [], error: err?.message || "Lỗi nạp danh sách đã lưu" };
+    return { entries: [], authenticated: false, error: err?.message || "Lỗi nạp danh sách đã lưu" };
   }
 }
 
-export async function loadRemoteBookmarkedDealIds(): Promise<string[] | undefined> {
-  const localIds = getBookmarkedDealIds();
-  if (!isSupabaseConfigured) return localIds;
-  try {
-    const { entries, error } = await loadRemoteSavedOpportunities();
-    if (error) return localIds;
-
-    const remoteIds = entries.map((e) => e.opportunityId);
-    return Array.from(new Set([...remoteIds, ...localIds]));
-  } catch {
-    return localIds;
+/**
+ * REQ-SAVED-001: Server is canonical authority for authenticated users.
+ * Remote load replaces authenticated local cache (no stale union).
+ * For anonymous users, local storage remains the local authority.
+ */
+export async function syncSavedWithRemote(
+  storage: Storage | undefined = typeof window === "undefined" ? undefined : window.localStorage
+): Promise<{
+  entries: SavedOpportunityRecord[];
+  authenticated: boolean;
+}> {
+  const remote = await loadRemoteSavedOpportunities();
+  if (remote.authenticated && !remote.error) {
+    // Server authority: replace local cache with remote state
+    const ids = remote.entries.map((e) => e.opportunityId);
+    storage?.setItem(STORAGE_KEY, JSON.stringify(ids));
+    const snapshots: Record<string, { snapshotData: any; savedAt: string }> = {};
+    for (const e of remote.entries) {
+      if (e.snapshotData) {
+        snapshots[e.opportunityId] = { snapshotData: e.snapshotData, savedAt: e.savedAt };
+      }
+    }
+    storage?.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(snapshots));
+    return { entries: remote.entries, authenticated: true };
   }
+
+  // Anonymous user: local is authority
+  const localIds = readIds(storage);
+  const localSnaps = readLocalSnapshots(storage);
+  const entries: SavedOpportunityRecord[] = localIds.map((id) => ({
+    opportunityId: id,
+    snapshotData: localSnaps[id]?.snapshotData ?? null,
+    savedAt: localSnaps[id]?.savedAt ?? new Date().toISOString(),
+  }));
+  return { entries, authenticated: false };
+}
+
+export async function loadRemoteBookmarkedDealIds(
+  storage: Storage | undefined = typeof window === "undefined" ? undefined : window.localStorage
+): Promise<string[]> {
+  const sync = await syncSavedWithRemote(storage);
+  return sync.entries.map((e) => e.opportunityId);
+}
+
+export async function mergeLocalBookmarksIntoServer(
+  storage: Storage | undefined = typeof window === "undefined" ? undefined : window.localStorage
+): Promise<boolean> {
+  if (!isSupabaseConfigured) return false;
+  const user = await getSavedSessionUser();
+  if (!user) return false;
+  const localIds = readIds(storage);
+  const localSnaps = readLocalSnapshots(storage);
+  if (localIds.length === 0) return true;
+
+  for (const id of localIds) {
+    await saveRemoteBookmark(id, true, localSnaps[id]?.snapshotData);
+  }
+  await syncSavedWithRemote(storage);
+  return true;
 }
 
 export async function saveRemoteBookmark(
@@ -169,7 +228,6 @@ export async function saveRemoteBookmark(
     const user = sessionData.session.user;
 
     if (bookmarked) {
-      // Fails closed on Supabase returned error
       const { error } = await supabase.from("user_saved_opportunities").upsert({
         user_id: user.id,
         opportunity_id: opportunityId,
@@ -197,5 +255,83 @@ export async function saveRemoteBookmark(
     console.error("saveRemoteBookmark exception:", err);
     return false;
   }
+}
+
+export interface BookmarkMutationResult {
+  success: boolean;
+  bookmarked: boolean;
+  rolledBack?: boolean;
+  error?: string;
+}
+
+/**
+ * REQ-SAVED-002, NC-030: Optimistic mutation with automatic rollback on remote failure.
+ * UI update -> remote -> success = commit -> failure = rollback.
+ * Does not swallow remote failure.
+ */
+export async function mutateBookmarkOptimistic(
+  id: string,
+  targetState?: boolean,
+  snapshotData?: Record<string, any>,
+  storage: Storage | undefined = typeof window === "undefined" ? undefined : window.localStorage,
+  options?: {
+    onRollback?: (previousState: boolean, error: string) => void;
+    mockRemoteSaver?: (id: string, bookmarked: boolean, snap?: any) => Promise<boolean>;
+  }
+): Promise<BookmarkMutationResult> {
+  const currentIds = readIds(storage);
+  const wasBookmarked = currentIds.includes(id);
+  const nextState = targetState !== undefined ? targetState : !wasBookmarked;
+
+  if (nextState === wasBookmarked) {
+    return { success: true, bookmarked: wasBookmarked };
+  }
+
+  // Optimistic local update
+  const previousLocalSnaps = readLocalSnapshots(storage);
+  const previousSnap = previousLocalSnaps[id];
+
+  if (nextState) {
+    storage?.setItem(STORAGE_KEY, JSON.stringify([...currentIds.filter((x) => x !== id), id]));
+    if (snapshotData) {
+      previousLocalSnaps[id] = { snapshotData, savedAt: new Date().toISOString() };
+      storage?.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(previousLocalSnaps));
+    }
+  } else {
+    storage?.setItem(STORAGE_KEY, JSON.stringify(currentIds.filter((x) => x !== id)));
+    delete previousLocalSnaps[id];
+    storage?.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(previousLocalSnaps));
+  }
+
+  const user = await getSavedSessionUser();
+  const remoteSaver = options?.mockRemoteSaver ?? saveRemoteBookmark;
+
+  if (user || options?.mockRemoteSaver) {
+    const remoteSuccess = await remoteSaver(id, nextState, snapshotData);
+    if (!remoteSuccess) {
+      // Rollback to prior state!
+      if (wasBookmarked) {
+        storage?.setItem(STORAGE_KEY, JSON.stringify([...currentIds.filter((x) => x !== id), id]));
+        if (previousSnap) {
+          previousLocalSnaps[id] = previousSnap;
+          storage?.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(previousLocalSnaps));
+        }
+      } else {
+        storage?.setItem(STORAGE_KEY, JSON.stringify(currentIds.filter((x) => x !== id)));
+        delete previousLocalSnaps[id];
+        storage?.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(previousLocalSnaps));
+      }
+      const err = "Lưu thất bại trên máy chủ (Remote mutation rejected)";
+      options?.onRollback?.(wasBookmarked, err);
+      return {
+        success: false,
+        bookmarked: wasBookmarked,
+        rolledBack: true,
+        error: err,
+      };
+    }
+  }
+
+  return { success: true, bookmarked: nextState };
 }
 

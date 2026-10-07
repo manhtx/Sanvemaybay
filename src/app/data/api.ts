@@ -5,6 +5,7 @@ import { readFeedCache, writeFeedCache, readObservedFaresCache, writeObservedFar
 import { evidenceGatedDealLabel } from "../domain/dealClaims";
 import { reportClientIssue } from "../lib/clientDiagnostics";
 import { resolveCanonicalAirportOrCity } from "../domain/travelEntities";
+import type { ObservationData } from "../domain/opportunityCohort";
 export { createAlerts, manageAlert } from "./alertApi";
 export type { CreateAlertInput } from "./alertApi";
 export { getTrackedRoutes } from "./routeApi";
@@ -540,9 +541,60 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
   return undefined;
 }
 
+export async function getFareObservations(fromCode: string, toCode: string): Promise<ObservationData[]> {
+  if (!isSupabaseConfigured) return [];
+  try {
+    const { data, error } = await supabase
+      .from("fare_observations")
+      .select("id, origin_airport, destination_airport, depart_local_date, return_local_date, price, stops, airline_code, observed_at, scan_run_id")
+      .eq("origin_airport", fromCode)
+      .eq("destination_airport", toCode)
+      .order("observed_at", { ascending: false })
+      .limit(100);
+
+    if (!error && data && data.length > 0) {
+      return data.map((d: any) => ({
+        id: String(d.id),
+        originCode: String(d.origin_airport),
+        destinationCode: String(d.destination_airport),
+        departDate: String(d.depart_local_date),
+        returnDate: d.return_local_date ? String(d.return_local_date) : null,
+        price: Number(d.price),
+        stops: Number(d.stops ?? 0),
+        airlineCode: d.airline_code ? String(d.airline_code) : undefined,
+        observedAt: String(d.observed_at),
+        scanRunId: d.scan_run_id ? String(d.scan_run_id) : undefined,
+      }));
+    }
+  } catch {
+    // Non-fatal
+  }
+  return [];
+}
+
 export async function getPriceHistory(fromCode: string, toCode: string): Promise<PricePoint[]> {
   if (!isSupabaseConfigured) return [];
   try {
+    // 1. Query canonical fare_observations first (REQ-HIST-008)
+    const { data: canonicalData, error: canonicalError } = await supabase
+      .from("fare_observations")
+      .select("observed_at, price, depart_local_date")
+      .eq("origin_airport", fromCode)
+      .eq("destination_airport", toCode)
+      .order("observed_at", { ascending: true })
+      .limit(180);
+
+    if (!canonicalError && canonicalData && canonicalData.length > 0) {
+      const points = canonicalData
+        .map((d: any) => ({
+          date: d.observed_at ? String(d.observed_at).slice(0, 10) : String(d.depart_local_date),
+          price: Number(d.price),
+        }))
+        .filter((p: PricePoint) => p.date && Number.isFinite(p.price) && p.price > 0);
+      if (points.length > 0) return points;
+    }
+
+    // 2. Fallback to legacy price_history with deduplication
     const { data, error } = await supabase
       .from("price_history")
       .select("date, price")

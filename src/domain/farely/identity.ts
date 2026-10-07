@@ -1,25 +1,89 @@
 /**
  * Farely Pure Domain Kernel — Identifiers & Invariants
- * REQ-DOM-010, REQ-DOM-011, REQ-DOM-012, REQ-DOM-013
+ * REQ-DOM-010, REQ-DOM-011, REQ-DOM-012, REQ-DOM-013, REQ-ID-001..006
  */
 
 import { TravelIntent } from './travelIntent';
 
 /**
- * Generates deterministic 32-bit FNV-1a hash formatted as hex string.
+ * Pure SHA-256 Hex Digest Implementation
+ * Synchronous and universal across Node, Deno, and Browser environments.
  */
-function fnv1a(str: string): string {
-  let hash = 0x811c9dc5;
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i);
-    hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+export function sha256Hex(ascii: string): string {
+  function rightRotate(value: number, amount: number): number {
+    return (value >>> amount) | (value << (32 - amount));
   }
-  return (hash >>> 0).toString(16).padStart(8, '0');
+  const mathPow = Math.pow;
+  const maxWord = mathPow(2, 32);
+  let i: number, j: number;
+  let result = '';
+  const words: number[] = [];
+  const asciiBitLength = ascii.length * 8;
+  const hash: number[] = [];
+  const k: number[] = [];
+  let primeCounter = 0;
+  const isComposite: Record<number, number> = {};
+  for (let candidate = 2; primeCounter < 64; candidate++) {
+    if (!isComposite[candidate]) {
+      for (i = 0; i < 313; i += candidate) {
+        isComposite[i] = candidate;
+      }
+      hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+      k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+    }
+  }
+  ascii += '\x80';
+  while (ascii.length % 64 - 56) ascii += '\x00';
+  for (i = 0; i < ascii.length; i++) {
+    j = ascii.charCodeAt(i);
+    words[i >> 2] |= j << ((3 - i) % 4) * 8;
+  }
+  words[words.length] = ((asciiBitLength / maxWord) | 0);
+  words[words.length] = asciiBitLength | 0;
+  for (j = 0; j < words.length;) {
+    const w = words.slice(j, (j += 16));
+    const oldHash = hash.slice(0);
+    for (i = 0; i < 64; i++) {
+      const w15 = w[i - 15], w2 = w[i - 2];
+      const a = hash[0], e = hash[4];
+      const temp1 = hash[7] +
+        (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) +
+        ((e & hash[5]) ^ (~e & hash[6])) +
+        k[i] +
+        (w[i] = (i < 16)
+          ? w[i]
+          : (w[i - 16] +
+            (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) +
+            w[i - 7] +
+            (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+      const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) +
+        ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+      hash[7] = hash[6];
+      hash[6] = hash[5];
+      hash[5] = hash[4];
+      hash[4] = (hash[3] + temp1) | 0;
+      hash[3] = hash[2];
+      hash[2] = hash[1];
+      hash[1] = a;
+      hash[0] = (temp1 + temp2) | 0;
+    }
+    for (i = 0; i < 8; i++) {
+      hash[i] = (hash[i] + oldHash[i]) | 0;
+    }
+  }
+  for (i = 0; i < 8; i++) {
+    for (j = 3; j + 1; j--) {
+      const b = (hash[i] >> (j * 8)) & 255;
+      result += (b < 16 ? '0' : '') + b.toString(16);
+    }
+  }
+  return result;
 }
 
 /**
- * OfferVariantId MUST NOT contain price (REQ-DOM-011).
+ * OfferVariantId MUST NOT contain price (REQ-DOM-011, REQ-ID-002).
  * Same itinerary at 3.2m today and 2.8m tomorrow has the SAME OfferVariantId.
+ * Format: ov:v1:<128-bit sha256 hex> (REQ-ID-001)
  */
 export function buildOfferVariantId(params: {
   origin: string;
@@ -41,11 +105,12 @@ export function buildOfferVariantId(params: {
     (params.cabin || 'ECONOMY').trim().toUpperCase(),
     String(params.stops ?? 0)
   ];
-  return `ov_${fnv1a(parts.join('|'))}`;
+  return `ov:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;
 }
 
 /**
- * ObservationId represents a provider observation event (REQ-DOM-012).
+ * ObservationId represents a provider observation event (REQ-DOM-012, REQ-ID-001).
+ * Format: obs:v1:<128-bit sha256 hex>
  */
 export function buildObservationId(params: {
   offerVariantId: string;
@@ -59,11 +124,12 @@ export function buildObservationId(params: {
     params.observedAt.trim(),
     String(params.price)
   ];
-  return `obs_${fnv1a(parts.join('|'))}`;
+  return `obs:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;
 }
 
 /**
- * OpportunityId represents decision aggregate semantics (REQ-DOM-013).
+ * OpportunityId represents decision aggregate semantics (REQ-DOM-013, REQ-ID-005).
+ * Format: opp:v1:<128-bit sha256 hex>
  */
 export function buildOpportunityId(params: {
   origin: string;
@@ -81,11 +147,12 @@ export function buildOpportunityId(params: {
     params.journeyType.trim().toUpperCase(),
     (params.cabin || 'ECONOMY').trim().toUpperCase()
   ];
-  return `opp_${fnv1a(parts.join('|'))}`;
+  return `opp:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;
 }
 
 /**
- * TravelIntentId: unique deterministic id for a canonical TravelIntent.
+ * TravelIntentId: unique deterministic id for a canonical TravelIntent (REQ-ID-001).
+ * Format: intent:v1:<128-bit sha256 hex>
  */
 export function buildTravelIntentId(intent: TravelIntent): string {
   const parts = [
@@ -100,7 +167,7 @@ export function buildTravelIntentId(intent: TravelIntent): string {
     String(intent.passengers.infants),
     intent.currency
   ];
-  return `ti_${fnv1a(parts.join('|'))}`;
+  return `intent:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;
 }
 
 /**
@@ -108,4 +175,45 @@ export function buildTravelIntentId(intent: TravelIntent): string {
  */
 export function buildConditionEpisodeId(watchId: string, episodeIndex: number): string {
   return `ep_${watchId}_${episodeIndex}`;
+}
+
+/**
+ * Legacy Identity Resolution & Migration (REQ-ID-006).
+ * Ensures old Saved/Watch URLs and bookmark references do not break silently.
+ */
+export function resolveLegacyIdentity(rawId: string): {
+  canonicalId: string;
+  version: 'v1' | 'legacy';
+  type: 'offer_variant' | 'opportunity' | 'observation' | 'travel_intent' | 'unknown';
+} {
+  const trimmed = rawId.trim();
+
+  if (trimmed.startsWith('ov:v1:')) {
+    return { canonicalId: trimmed, version: 'v1', type: 'offer_variant' };
+  }
+  if (trimmed.startsWith('obs:v1:')) {
+    return { canonicalId: trimmed, version: 'v1', type: 'observation' };
+  }
+  if (trimmed.startsWith('opp:v1:')) {
+    return { canonicalId: trimmed, version: 'v1', type: 'opportunity' };
+  }
+  if (trimmed.startsWith('intent:v1:')) {
+    return { canonicalId: trimmed, version: 'v1', type: 'travel_intent' };
+  }
+
+  // Legacy mappings
+  if (trimmed.startsWith('ov_')) {
+    return { canonicalId: trimmed, version: 'legacy', type: 'offer_variant' };
+  }
+  if (trimmed.startsWith('obs_')) {
+    return { canonicalId: trimmed, version: 'legacy', type: 'observation' };
+  }
+  if (trimmed.startsWith('opp_') || trimmed.startsWith('observed-') || trimmed.includes(':')) {
+    return { canonicalId: trimmed, version: 'legacy', type: 'opportunity' };
+  }
+  if (trimmed.startsWith('ti_')) {
+    return { canonicalId: trimmed, version: 'legacy', type: 'travel_intent' };
+  }
+
+  return { canonicalId: trimmed, version: 'legacy', type: 'unknown' };
 }
