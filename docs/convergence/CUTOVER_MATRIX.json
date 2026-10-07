@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "updated_at": "2026-10-07T15:10:00Z",
+  "version": "2.0.0",
+  "updated_at": "2026-10-07T16:30:00Z",
   "subsystems": [
     {
       "subsystem": "Observation Ledger",
@@ -31,6 +31,16 @@
       "migration_status": "MIGRATED_20261006000200",
       "cutover_status": "OUTBOX_PATTERN_ACTIVE",
       "retirement_status": "DIRECT_ALERTING_RETIRED"
+    },
+    {
+      "subsystem": "Atomic Watch Evaluation & SKIP LOCKED Outbox Claim",
+      "new_authority": "apply_watch_evaluation() RPC & claim_notification_outbox() FOR UPDATE SKIP LOCKED",
+      "legacy_authority": "multi-statement non-transactional JS updates & unlocked queue SELECT",
+      "writers": ["supabase/functions/alert-processor/index.ts"],
+      "readers": ["supabase/functions/alert-processor/index.ts"],
+      "migration_status": "MIGRATED_20261007000300",
+      "cutover_status": "TRANSACTIONAL_RPC_AND_SKIP_LOCKED_ACTIVE",
+      "retirement_status": "NON_ATOMIC_UPDATES_RETIRED"
     },
     {
       "subsystem": "Saved Opportunities",

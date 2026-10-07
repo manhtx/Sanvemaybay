@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "updated_at": "2026-10-07T15:14:00Z",
+  "version": "2.0.0",
+  "updated_at": "2026-10-07T16:30:00Z",
   "programs": [
     {
       "program_id": "P0",
@@ -70,13 +70,13 @@
         {
           "id": "PIPE-01",
           "type": "CHANGE",
-          "target": "scripts/fast-flights-worker.py, supabase/migrations/20261007000200_scan_runs_health_status.sql",
+          "target": "scripts/fast-flights-worker.py, supabase/migrations/20261007000200_pipeline_lifecycle_and_scan_health.sql",
           "problem": "Worker persisted scan_runs.status = 'partial' violating scan_runs_status_check constraint.",
           "rootCause": "Conflation of execution lifecycle with result quality.",
           "selectedSolution": "status in ('running', 'completed', 'failed'); separate health_status in ('healthy', 'partial', 'degraded', 'failed', 'unknown').",
           "dependencies": [],
           "status": "COMPLETED",
-          "evidenceRefs": ["scripts/fast-flights-worker.py", "supabase/migrations/20261007000200_scan_runs_health_status.sql"]
+          "evidenceRefs": ["scripts/fast-flights-worker.py", "supabase/migrations/20261007000200_pipeline_lifecycle_and_scan_health.sql"]
         },
         {
           "id": "PIPE-02",
@@ -119,8 +119,142 @@
           "rootCause": "Failure A (constraint violation) and Failure B (worker resource limit).",
           "selectedSolution": "Deploy migrations and edge functions, then trigger and verify discovery pipeline in production.",
           "dependencies": ["PIPE-01", "PIPE-02", "PIPE-03", "PIPE-04"],
-          "status": "IN_PROGRESS",
-          "evidenceRefs": []
+          "status": "COMPLETED",
+          "evidenceRefs": ["gh run view 37595009986"]
+        }
+      ]
+    },
+    {
+      "program_id": "P2",
+      "title": "Truth Kernel V2 & Domain Precision",
+      "nodes": [
+        {
+          "id": "TK-01",
+          "type": "CHANGE",
+          "target": "src/domain/farely/travelIntent.ts",
+          "problem": "TravelIntent lacked structured schema, passenger mix, and cabin constraints.",
+          "rootCause": "Ad-hoc parameter passing across UI layers.",
+          "selectedSolution": "Canonical TravelIntent V2 with immutable hashing and parameter preservation.",
+          "dependencies": [],
+          "status": "COMPLETED",
+          "evidenceRefs": ["src/domain/farely/truthKernelV2.test.ts"]
+        },
+        {
+          "id": "TK-02",
+          "type": "CHANGE",
+          "target": "src/domain/farely/locationScope.ts",
+          "problem": "Dual location authorities (BKK_ALL vs BKK_METRO).",
+          "rootCause": "Ununified airport catalog.",
+          "selectedSolution": "Single canonical LocationCatalog with metro expansion and exact airport isolation.",
+          "dependencies": ["TK-01"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["src/domain/farely/locationScope.ts", "src/domain/farely/truthKernelV2.test.ts"]
+        },
+        {
+          "id": "TK-06",
+          "type": "CHANGE",
+          "target": "src/domain/farely/routeBest.ts",
+          "problem": "RouteBest was order-dependent and did not isolate location/stop scopes.",
+          "rootCause": "Lack of rigorous minimum price selection logic.",
+          "selectedSolution": "Mathematical minimum eligible price selection with scope isolation (Direct-only, Airport-exact).",
+          "dependencies": ["TK-01", "TK-02"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/price-truth-harness.node-test.mjs"]
+        }
+      ]
+    },
+    {
+      "program_id": "P3",
+      "title": "Canonical Data Cutover",
+      "nodes": [
+        {
+          "id": "DATA-02",
+          "type": "CHANGE",
+          "target": "supabase/migrations/20261007000100_canonical_fare_observations.sql",
+          "problem": "Unconstrained price_history table inflated observation counts on duplicate runs.",
+          "rootCause": "No canonical observation table with uniqueness constraints.",
+          "selectedSolution": "fare_observations table with UNIQUE (provider, observation_fingerprint).",
+          "dependencies": [],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/canonical-data-idempotency.node-test.mjs"]
+        },
+        {
+          "id": "DATA-04",
+          "type": "CHANGE",
+          "target": "src/domain/farely/identity.ts",
+          "problem": "OfferVariant ID included price, creating fake entities on price fluctuations.",
+          "rootCause": "String interpolation itinerary keys.",
+          "selectedSolution": "SHA-256 canonical serialization capturing itinerary segment identity and strictly excluding price.",
+          "dependencies": ["DATA-02"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/canonical-data-idempotency.node-test.mjs"]
+        }
+      ]
+    },
+    {
+      "program_id": "P4",
+      "title": "Search & Opportunity Cutover",
+      "nodes": [
+        {
+          "id": "DETAIL-01",
+          "type": "CHANGE",
+          "target": "src/app/pages/DealDetailPage.tsx",
+          "problem": "Cheaper Alternative used first-30 heuristics instead of canonical RouteBest.",
+          "rootCause": "Separate authority logic for DealDetail.",
+          "selectedSolution": "DealDetailPage uses createTravelIntent + selectRouteBest with strict price advantage gate.",
+          "dependencies": ["TK-06"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["src/app/pages/DealDetailPage.tsx", "src/domain/farely/truthKernelV2.test.ts"]
+        },
+        {
+          "id": "DETAIL-02",
+          "type": "CHANGE",
+          "target": "src/app/pages/DealDetailPage.tsx",
+          "problem": "Deal detail fell back to contaminated legacy price_history observations.",
+          "rootCause": "Fake observation fallback mechanism.",
+          "selectedSolution": "Eliminated price_history fallback. Display insufficient history honestly when canonical observations are sparse.",
+          "dependencies": ["DATA-02"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["src/app/pages/DealDetailPage.tsx"]
+        }
+      ]
+    },
+    {
+      "program_id": "P5",
+      "title": "Watch Subsystem & Atomic Outbox",
+      "nodes": [
+        {
+          "id": "WATCH-05",
+          "type": "CHANGE",
+          "target": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+          "problem": "Concurrent watch evaluations could create duplicate open condition episodes.",
+          "rootCause": "Lack of database-level constraint on open episodes.",
+          "selectedSolution": "Partial unique index idx_watch_condition_episodes_single_open on watch_condition_episodes (watch_id) WHERE closed_at IS NULL.",
+          "dependencies": [],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/watch-outbox-atomicity.node-test.mjs"]
+        },
+        {
+          "id": "OUTBOX-01",
+          "type": "CHANGE",
+          "target": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+          "problem": "Multiple non-transactional database updates caused partial failure states during watch evaluation.",
+          "rootCause": "Client-side sequential SQL calls.",
+          "selectedSolution": "PL/pgSQL RPC apply_watch_evaluation atomically transitions condition episode, logs evaluation, and enqueues outbox.",
+          "dependencies": ["WATCH-05"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/watch-outbox-atomicity.node-test.mjs"]
+        },
+        {
+          "id": "OUTBOX-03",
+          "type": "CHANGE",
+          "target": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+          "problem": "Race conditions and duplicate sends during concurrent outbox processing.",
+          "rootCause": "Plain SELECT on outbox queue.",
+          "selectedSolution": "claim_notification_outbox RPC with FOR UPDATE SKIP LOCKED and transition to PROCESSING state.",
+          "dependencies": ["OUTBOX-01"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/watch-outbox-atomicity.node-test.mjs"]
         }
       ]
     }
