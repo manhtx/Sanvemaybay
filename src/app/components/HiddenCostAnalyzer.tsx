@@ -44,7 +44,7 @@ export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
         {/* 1. GIÁ ĐÃ BIẾT */}
         <div className="space-y-2">
           <div className="text-stone-600 text-xs font-bold uppercase tracking-wider flex items-center justify-between">
-            <span>1. Giá đã biết</span>
+            <span>1. Chi phí đã biết</span>
             <span className="text-[10px] text-emerald-700 font-semibold">Đã gồm thuế & phí sân bay bắt buộc</span>
           </div>
           <div className="flex items-center justify-between p-3 bg-stone-50 border border-stone-200 rounded-lg">
@@ -161,7 +161,7 @@ export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
       <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
         <Info className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
         <p className="text-stone-700 text-xs leading-relaxed">
-          Farely không tự động coi các chi phí chưa rõ là 0₫. Luôn đối chiếu kỹ phí hành lý và phụ phí thanh toán trước khi hoàn tất đặt vé.
+          Hành lý, chỗ ngồi và phí thanh toán có thể chưa được nhà cung cấp trả về. Farely không tự động coi các chi phí chưa rõ là 0₫. Luôn đối chiếu kỹ phí hành lý và phụ phí thanh toán trước khi hoàn tất đặt vé.
         </p>
       </div>
     </div>

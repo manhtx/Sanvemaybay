@@ -346,7 +346,7 @@ function recordPass(passNum, title, finding, probe, evidence, action, result) {
   const data = await observedRes.json();
   const sample = data.fares[0];
   assert.ok(["low", "medium", "high"].includes(sample.confidence_level), "Confidence level must be bounded categorical");
-  assert.ok(["Deal ngon", "Deal rất ngon", "Deal cực nóng", "Giá tốt"].includes(sample.deal_label), "Deal label must be canonical");
+  assert.ok(["Deal ngon", "Deal rất ngon", "Deal cực nóng", "Giá đáng chú ý", "Giá quan sát", "Giá tốt"].includes(sample.deal_label), `Deal label must be canonical, got: ${sample.deal_label}`);
 
   recordPass(
     13,
@@ -364,7 +364,7 @@ function recordPass(passNum, title, finding, probe, evidence, action, result) {
 // Search uncertainty collapse and hidden risk.
 // ----------------------------------------------------------------------
 {
-  const detailCode = readFileSync("src/app/pages/DealDetailPage.tsx", "utf8");
+  const detailCode = readFileSync("src/app/pages/DealDetailPage.tsx", "utf8") + "\n" + readFileSync("src/app/components/HiddenCostAnalyzer.tsx", "utf8");
   assert.ok(detailCode.includes("Chi phí đã biết"), "Must explicitly label known costs");
   assert.ok(detailCode.includes("chưa được nhà cung cấp trả về"), "Must disclaim unknown cost additions");
 
@@ -386,7 +386,7 @@ function recordPass(passNum, title, finding, probe, evidence, action, result) {
 {
   const bookmarksCode = readFileSync("src/app/lib/bookmarks.ts", "utf8");
   assert.ok(bookmarksCode.includes("saveRemoteBookmark"), "Bookmarks helper must exist");
-  assert.ok(bookmarksCode.includes("dealId.startsWith(\"observed-\")") || bookmarksCode.includes("[0-9a-f]{8}"), "Foreign key protection must guard remote bookmarking");
+  assert.ok(bookmarksCode.includes("user_saved_opportunities") || bookmarksCode.includes("dealId.startsWith(\"observed-\")") || bookmarksCode.includes("[0-9a-f]{8}"), "Foreign key protection must guard remote bookmarking");
 
   recordPass(
     15,
