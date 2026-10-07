@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-07T09:00:19.370Z",
-  "tested_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+  "updated_at": "2026-10-07T09:15:23.069Z",
+  "tested_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
   "summary": {
     "vitest_test_files": 36,
-    "node_test_files": 30,
+    "node_test_files": 31,
     "deno_test_files": 18,
-    "total_test_suites": 84,
+    "total_test_suites": 85,
     "status": "PASS"
   },
   "layers": [
@@ -87,9 +87,10 @@
         "scripts/runtime-configuration.node-test.mjs",
         "scripts/security-smoke.node-test.mjs",
         "scripts/synthetic-health-check.node-test.mjs",
-        "scripts/verify-certification-integrity.node-test.mjs"
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/watch-outbox-atomicity.node-test.mjs"
       ],
-      "test_file_count": 30,
+      "test_file_count": 31,
       "verdict": "PASS"
     },
     {

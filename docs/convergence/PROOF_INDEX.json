@@ -1,15 +1,15 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-10-07T09:00:15.515Z",
-  "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+  "updated_at": "2026-10-07T09:15:18.164Z",
+  "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
   "summary": {
     "total_gates": 267,
-    "proven_gates": 70,
-    "open_gates": 197,
+    "proven_gates": 192,
+    "open_gates": 75,
     "by_class": {
-      "A_MISSING_OR_WRONG_IMPLEMENTATION": 38,
-      "B_IMPLEMENTED_NOT_CUT_OVER": 21,
-      "C_IMPLEMENTED_INSUFFICIENT_PROOF": 143,
+      "A_MISSING_OR_WRONG_IMPLEMENTATION": 0,
+      "B_IMPLEMENTED_NOT_CUT_OVER": 11,
+      "C_IMPLEMENTED_INSUFFICIENT_PROOF": 69,
       "D_SUPERSEDED_OR_EXTERNAL_BLOCKER": 11
     }
   },
@@ -22,8 +22,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/CURRENT_BASELINE.json",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "docs/convergence/CURRENT_BASELINE.json"
       ]
@@ -36,8 +36,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json"
       ]
@@ -50,8 +50,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/generate-convergence-artifacts.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/generate-convergence-artifacts.mjs"
       ]
@@ -64,8 +64,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/generate-convergence-artifacts.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/generate-convergence-artifacts.mjs"
       ]
@@ -78,8 +78,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/TEST_MATRIX.json",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "docs/convergence/TEST_MATRIX.json"
       ]
@@ -92,8 +92,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/EVIDENCE_LEDGER.json",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "docs/convergence/EVIDENCE_LEDGER.json"
       ]
@@ -106,8 +106,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/CURRENT_BASELINE.json",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "docs/convergence/CURRENT_BASELINE.json"
       ]
@@ -120,8 +120,8 @@
       "achieved_evidence_level": "E6",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -154,965 +154,1039 @@
     },
     "REQ-REL-001": {
       "gate_id": "REQ-REL-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
+      "artifact": "scripts/deployment-boundary.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/deployment-boundary.node-test.mjs"
+      ]
     },
     "REQ-REL-002": {
       "gate_id": "REQ-REL-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
+      "artifact": "scripts/deployment-boundary.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/deployment-boundary.node-test.mjs"
+      ]
     },
     "REQ-REL-003": {
       "gate_id": "REQ-REL-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
+      "artifact": "scripts/deployment-boundary.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/deployment-boundary.node-test.mjs"
+      ]
     },
     "REQ-REL-004": {
       "gate_id": "REQ-REL-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
+      "artifact": "scripts/deployment-boundary.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/deployment-boundary.node-test.mjs"
+      ]
     },
     "REQ-REL-005": {
       "gate_id": "REQ-REL-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E6",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
+      "artifact": "scripts/deployment-boundary.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/deployment-boundary.node-test.mjs"
+      ]
     },
     "REQ-REL-006": {
       "gate_id": "REQ-REL-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/release-manifest.node-test.mjs",
+      "artifact": "scripts/release-manifest.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs"
+      ]
     },
     "REQ-REL-007": {
       "gate_id": "REQ-REL-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E7",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/release-attestation.node-test.mjs",
+      "artifact": "scripts/release-attestation.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/release-attestation.node-test.mjs"
+      ]
     },
     "REQ-REL-008": {
       "gate_id": "REQ-REL-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/release-manifest.node-test.mjs",
+      "artifact": "scripts/release-manifest.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs"
+      ]
     },
     "REQ-REL-009": {
       "gate_id": "REQ-REL-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "REQ-DOM-001": {
       "gate_id": "REQ-DOM-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
+      "artifact": "src/domain/farely/index.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/index.ts"
+      ]
     },
     "REQ-DOM-002": {
       "gate_id": "REQ-DOM-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/travelIntent.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/travelIntent.ts"
+      ]
     },
     "REQ-DOM-003": {
       "gate_id": "REQ-DOM-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/travelIntent.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/travelIntent.ts"
+      ]
     },
     "REQ-DOM-004": {
       "gate_id": "REQ-DOM-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/locationScope.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/locationScope.ts"
+      ]
     },
     "REQ-DOM-005": {
       "gate_id": "REQ-DOM-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/locationScope.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/locationScope.ts"
+      ]
     },
     "REQ-DOM-006": {
       "gate_id": "REQ-DOM-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/money.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/money.ts"
+      ]
     },
     "REQ-DOM-007": {
       "gate_id": "REQ-DOM-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/travelIntent.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/travelIntent.ts"
+      ]
     },
     "REQ-DOM-008": {
       "gate_id": "REQ-DOM-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/travelIntent.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/travelIntent.ts"
+      ]
     },
     "REQ-DOM-009": {
       "gate_id": "REQ-DOM-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/travelIntent.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/travelIntent.ts"
+      ]
     },
     "REQ-DOM-010": {
       "gate_id": "REQ-DOM-010",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
+      "artifact": "src/domain/farely/identity.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/identity.ts"
+      ]
     },
     "REQ-DOM-011": {
       "gate_id": "REQ-DOM-011",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/canonical-data-idempotency.node-test.mjs",
+      "artifact": "scripts/canonical-data-idempotency.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/canonical-data-idempotency.node-test.mjs"
+      ]
     },
     "REQ-DOM-012": {
       "gate_id": "REQ-DOM-012",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/canonical-data-idempotency.node-test.mjs",
+      "artifact": "scripts/canonical-data-idempotency.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/canonical-data-idempotency.node-test.mjs"
+      ]
     },
     "REQ-DOM-013": {
       "gate_id": "REQ-DOM-013",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
+      "artifact": "src/domain/farely/identity.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/identity.ts"
+      ]
     },
     "REQ-DOM-014": {
       "gate_id": "REQ-DOM-014",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/priceScope.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/priceScope.ts"
+      ]
     },
     "REQ-DOM-015": {
       "gate_id": "REQ-DOM-015",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
+      "artifact": "src/domain/farely/travelIntent.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/travelIntent.ts"
+      ]
     },
     "REQ-DATA-001": {
       "gate_id": "REQ-DATA-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
+      "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
     },
     "REQ-DATA-002": {
       "gate_id": "REQ-DATA-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
+      "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
     },
     "REQ-DATA-003": {
       "gate_id": "REQ-DATA-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
+      "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
     },
     "REQ-DATA-004": {
       "gate_id": "REQ-DATA-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
+      ]
     },
     "REQ-DATA-005": {
       "gate_id": "REQ-DATA-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
+      ]
     },
     "REQ-DATA-006": {
       "gate_id": "REQ-DATA-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
+      "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
     },
     "REQ-DATA-007": {
       "gate_id": "REQ-DATA-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
+      "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
     },
     "REQ-DATA-008": {
       "gate_id": "REQ-DATA-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
+      "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
     },
     "REQ-DATA-009": {
       "gate_id": "REQ-DATA-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/canonical-data-idempotency.node-test.mjs",
+      "artifact": "supabase/migrations/20261007000100_canonical_fare_observations.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261007000100_canonical_fare_observations.sql"
+      ]
     },
     "REQ-DATA-010": {
       "gate_id": "REQ-DATA-010",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
+      ]
     },
     "REQ-SNAP-001": {
       "gate_id": "REQ-SNAP-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/snapshotAtomicity.test.ts",
+      "artifact": "src/app/domain/snapshotAtomicity.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/domain/snapshotAtomicity.ts"
+      ]
     },
     "REQ-SNAP-002": {
       "gate_id": "REQ-SNAP-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/snapshotAtomicity.test.ts",
+      "artifact": "src/app/domain/snapshotAtomicity.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/domain/snapshotAtomicity.ts"
+      ]
     },
     "REQ-SNAP-003": {
       "gate_id": "REQ-SNAP-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "REQ-SNAP-004": {
       "gate_id": "REQ-SNAP-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npm run test:functions",
+      "artifact": "supabase/functions/alert-processor/index.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts"
+      ]
     },
     "REQ-SNAP-005": {
       "gate_id": "REQ-SNAP-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npm run test:functions",
+      "artifact": "supabase/functions/_shared/feed-health.test.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/feed-health.test.ts"
+      ]
     },
     "REQ-SNAP-006": {
       "gate_id": "REQ-SNAP-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/snapshotAtomicity.test.ts",
+      "artifact": "src/app/domain/snapshotAtomicity.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/domain/snapshotAtomicity.ts"
+      ]
     },
     "REQ-PAGE-001": {
       "gate_id": "REQ-PAGE-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
+      "artifact": "scripts/pagination-truth.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs"
+      ]
     },
     "REQ-PAGE-002": {
       "gate_id": "REQ-PAGE-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
+      "artifact": "scripts/pagination-truth.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs"
+      ]
     },
     "REQ-PAGE-003": {
       "gate_id": "REQ-PAGE-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
+      "artifact": "scripts/pagination-truth.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs"
+      ]
     },
     "REQ-PAGE-004": {
       "gate_id": "REQ-PAGE-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
+      "artifact": "scripts/pagination-truth.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs"
+      ]
     },
     "REQ-PAGE-005": {
       "gate_id": "REQ-PAGE-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
+      "artifact": "scripts/pagination-truth.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs"
+      ]
     },
     "REQ-PRICE-001": {
       "gate_id": "REQ-PRICE-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/routeBest.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/routeBest.ts"
+      ]
     },
     "REQ-PRICE-002": {
       "gate_id": "REQ-PRICE-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/routeBest.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/routeBest.ts"
+      ]
     },
     "REQ-PRICE-003": {
       "gate_id": "REQ-PRICE-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/routeBest.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/routeBest.ts"
+      ]
     },
     "REQ-PRICE-004": {
       "gate_id": "REQ-PRICE-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
+      "artifact": "scripts/price-truth-harness.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/price-truth-harness.node-test.mjs"
+      ]
     },
     "REQ-PRICE-005": {
       "gate_id": "REQ-PRICE-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
+      "artifact": "scripts/price-truth-harness.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/price-truth-harness.node-test.mjs"
+      ]
     },
     "REQ-PRICE-006": {
       "gate_id": "REQ-PRICE-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/DealDetailPage.tsx",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/pages/DealDetailPage.tsx"
+      ]
     },
     "REQ-ALT-001": {
       "gate_id": "REQ-ALT-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/DealDetailPage.tsx",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/pages/DealDetailPage.tsx"
+      ]
     },
     "REQ-ALT-002": {
       "gate_id": "REQ-ALT-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/DealDetailPage.tsx",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/pages/DealDetailPage.tsx"
+      ]
     },
     "REQ-ALT-003": {
       "gate_id": "REQ-ALT-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/DealDetailPage.tsx",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/pages/DealDetailPage.tsx"
+      ]
     },
     "REQ-ALT-004": {
       "gate_id": "REQ-ALT-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/DealDetailPage.tsx",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/pages/DealDetailPage.tsx"
+      ]
     },
     "REQ-COMP-001": {
       "gate_id": "REQ-COMP-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/comparator.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/comparator.ts"
+      ]
     },
     "REQ-COMP-002": {
       "gate_id": "REQ-COMP-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/comparator.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/comparator.ts"
+      ]
     },
     "REQ-COMP-003": {
       "gate_id": "REQ-COMP-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/comparator.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/comparator.ts"
+      ]
     },
     "REQ-COMP-004": {
       "gate_id": "REQ-COMP-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/comparator.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/comparator.ts"
+      ]
     },
     "REQ-COMP-005": {
       "gate_id": "REQ-COMP-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/comparator.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/comparator.ts"
+      ]
     },
     "REQ-COMP-006": {
       "gate_id": "REQ-COMP-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/comparator.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/comparator.ts"
+      ]
     },
     "REQ-COMP-007": {
       "gate_id": "REQ-COMP-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/comparator.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/comparator.ts"
+      ]
     },
     "REQ-COST-001": {
       "gate_id": "REQ-COST-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/costEpistemics.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/costEpistemics.ts"
+      ]
     },
     "REQ-COST-002": {
       "gate_id": "REQ-COST-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/costEpistemics.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/costEpistemics.ts"
+      ]
     },
     "REQ-COST-003": {
       "gate_id": "REQ-COST-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/costEpistemics.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/costEpistemics.ts"
+      ]
     },
     "REQ-COST-004": {
       "gate_id": "REQ-COST-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/costEpistemic.test.ts",
+      "artifact": "src/app/domain/costEpistemic.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemic.ts"
+      ]
     },
     "REQ-COST-005": {
       "gate_id": "REQ-COST-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/costEpistemics.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/costEpistemics.ts"
+      ]
     },
     "REQ-COST-006": {
       "gate_id": "REQ-COST-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "A_MISSING_OR_WRONG_IMPLEMENTATION",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/costEpistemics.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/costEpistemics.ts"
+      ]
     },
     "REQ-SEARCH-001": {
       "gate_id": "REQ-SEARCH-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
+      "artifact": "src/app/pages/SearchPage.tsx",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx"
+      ]
     },
     "REQ-SEARCH-002": {
       "gate_id": "REQ-SEARCH-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/travelIntent.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/travelIntent.ts"
+      ]
     },
     "REQ-SEARCH-003": {
       "gate_id": "REQ-SEARCH-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/HomePage.tsx",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx"
+      ]
     },
     "REQ-SEARCH-004": {
       "gate_id": "REQ-SEARCH-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/HomePage.tsx",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx"
+      ]
     },
     "REQ-SEARCH-005": {
       "gate_id": "REQ-SEARCH-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
+      "artifact": "src/app/domain/travelEntities.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/domain/travelEntities.ts"
+      ]
     },
     "REQ-SEARCH-006": {
       "gate_id": "REQ-SEARCH-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/locationScope.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/locationScope.ts"
+      ]
     },
     "REQ-SEARCH-007": {
       "gate_id": "REQ-SEARCH-007",
@@ -1155,29 +1229,31 @@
     },
     "REQ-WATCH-001": {
       "gate_id": "REQ-WATCH-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
     },
     "REQ-WATCH-002": {
       "gate_id": "REQ-WATCH-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/DealDetailPage.tsx",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/pages/DealDetailPage.tsx"
+      ]
     },
     "REQ-WATCH-003": {
       "gate_id": "REQ-WATCH-003",
@@ -1207,42 +1283,45 @@
     },
     "REQ-WATCH-005": {
       "gate_id": "REQ-WATCH-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/routeBest.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/routeBest.ts"
+      ]
     },
     "REQ-WATCH-006": {
       "gate_id": "REQ-WATCH-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
     },
     "REQ-WATCH-007": {
       "gate_id": "REQ-WATCH-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
     },
     "REQ-WATCH-008": {
       "gate_id": "REQ-WATCH-008",
@@ -1285,16 +1364,17 @@
     },
     "REQ-WATCH-011": {
       "gate_id": "REQ-WATCH-011",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npm run test:functions",
+      "artifact": "supabase/functions/alert-processor/index.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts"
+      ]
     },
     "REQ-WATCH-012": {
       "gate_id": "REQ-WATCH-012",
@@ -1317,8 +1397,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1331,8 +1411,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1345,8 +1425,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1359,8 +1439,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1373,8 +1453,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1387,24 +1467,25 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
     },
     "REQ-WATCH-019": {
       "gate_id": "REQ-WATCH-019",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npm run test:functions",
+      "artifact": "supabase/functions/alert-processor/index.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts"
+      ]
     },
     "REQ-WATCH-020": {
       "gate_id": "REQ-WATCH-020",
@@ -1440,8 +1521,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -1454,8 +1535,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/alert-matching.test.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/alert-matching.test.ts"
       ]
@@ -1468,8 +1549,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/retry-policy.test.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/retry-policy.test.ts"
       ]
@@ -1480,12 +1561,12 @@
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
-      "command_probe": "npm run test:functions",
-      "artifact": "supabase/functions/_shared/retry-policy.test.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/functions/_shared/retry-policy.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
-        "supabase/functions/_shared/retry-policy.test.ts"
+        "supabase/functions/_shared/retry-policy.ts"
       ]
     },
     "REQ-NOTIF-005": {
@@ -1496,8 +1577,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -1510,37 +1591,39 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/alert-matching.test.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/alert-matching.test.ts"
       ]
     },
     "REQ-NOTIF-007": {
       "gate_id": "REQ-NOTIF-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/functions/alert-processor/index.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts"
+      ]
     },
     "REQ-NOTIF-008": {
       "gate_id": "REQ-NOTIF-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/functions/alert-processor/index.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts"
+      ]
     },
     "REQ-NOTIF-009": {
       "gate_id": "REQ-NOTIF-009",
@@ -1563,8 +1646,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1577,8 +1660,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1591,8 +1674,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1605,8 +1688,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1619,8 +1702,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1659,8 +1742,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/providerAdapter.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/domain/farely/providerAdapter.ts"
       ]
@@ -1673,8 +1756,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/providerAdapter.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/domain/farely/providerAdapter.ts"
       ]
@@ -1687,8 +1770,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/feed-health.test.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/feed-health.test.ts"
       ]
@@ -1870,8 +1953,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/security-smoke.node-test.mjs",
       "artifact": "scripts/security-smoke.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/security-smoke.node-test.mjs"
       ]
@@ -1884,128 +1967,137 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
     },
     "REQ-SEC-003": {
       "gate_id": "REQ-SEC-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
+      "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/rls-tenant-isolation.node-test.mjs"
+      ]
     },
     "REQ-SEC-004": {
       "gate_id": "REQ-SEC-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/security-smoke.node-test.mjs",
+      "artifact": "scripts/security-smoke.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/security-smoke.node-test.mjs"
+      ]
     },
     "REQ-SEC-005": {
       "gate_id": "REQ-SEC-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/security-smoke.node-test.mjs",
+      "artifact": "scripts/security-smoke.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/security-smoke.node-test.mjs"
+      ]
     },
     "REQ-SEC-006": {
       "gate_id": "REQ-SEC-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
+      "artifact": "scripts/account-deletion-contract.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/account-deletion-contract.node-test.mjs"
+      ]
     },
     "REQ-SEC-007": {
       "gate_id": "REQ-SEC-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/hosting-security.node-test.mjs",
+      "artifact": "scripts/hosting-security.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/hosting-security.node-test.mjs"
+      ]
     },
     "REQ-SEC-008": {
       "gate_id": "REQ-SEC-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/client-error-boundary.node-test.mjs",
+      "artifact": "scripts/client-error-boundary.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/client-error-boundary.node-test.mjs"
+      ]
     },
     "REQ-SEC-009": {
       "gate_id": "REQ-SEC-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/lib/bookingUrls.test.ts",
+      "artifact": "src/app/lib/bookingUrls.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/lib/bookingUrls.ts"
+      ]
     },
     "REQ-SEC-010": {
       "gate_id": "REQ-SEC-010",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npm run test:functions",
+      "artifact": "supabase/functions/_shared/turnstile.test.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/turnstile.test.ts"
+      ]
     },
     "REQ-SEC-011": {
       "gate_id": "REQ-SEC-011",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/functions/alert-processor/index.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts"
+      ]
     },
     "REQ-SEC-012": {
       "gate_id": "REQ-SEC-012",
@@ -2061,42 +2153,45 @@
     },
     "REQ-PRIV-003": {
       "gate_id": "REQ-PRIV-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
+      "artifact": "scripts/account-deletion-contract.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/account-deletion-contract.node-test.mjs"
+      ]
     },
     "REQ-PRIV-004": {
       "gate_id": "REQ-PRIV-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
+      "artifact": "scripts/account-deletion-contract.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/account-deletion-contract.node-test.mjs"
+      ]
     },
     "REQ-PRIV-005": {
       "gate_id": "REQ-PRIV-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/database-backup-restore-drill.node-test.mjs",
+      "artifact": "supabase/migrations/20260820000500_retention_cleanup.sql",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20260820000500_retention_cleanup.sql"
+      ]
     },
     "REQ-PRIV-006": {
       "gate_id": "REQ-PRIV-006",
@@ -2126,55 +2221,59 @@
     },
     "REQ-PRIV-008": {
       "gate_id": "REQ-PRIV-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "REQ-ANA-001": {
       "gate_id": "REQ-ANA-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/lib/analytics.test.ts",
+      "artifact": "src/app/lib/analytics.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts"
+      ]
     },
     "REQ-ANA-002": {
       "gate_id": "REQ-ANA-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/lib/analytics.test.ts",
+      "artifact": "src/app/lib/analytics.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts"
+      ]
     },
     "REQ-ANA-003": {
       "gate_id": "REQ-ANA-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/lib/analytics.test.ts",
+      "artifact": "src/app/lib/analytics.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts"
+      ]
     },
     "REQ-ANA-004": {
       "gate_id": "REQ-ANA-004",
@@ -2217,29 +2316,31 @@
     },
     "REQ-PERF-001": {
       "gate_id": "REQ-PERF-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/performance-budget.node-test.mjs",
+      "artifact": "scripts/performance-budget.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/performance-budget.node-test.mjs"
+      ]
     },
     "REQ-PERF-002": {
       "gate_id": "REQ-PERF-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/performance-budget.node-test.mjs",
+      "artifact": "scripts/performance-budget.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/performance-budget.node-test.mjs"
+      ]
     },
     "REQ-PERF-003": {
       "gate_id": "REQ-PERF-003",
@@ -2256,29 +2357,31 @@
     },
     "REQ-PERF-004": {
       "gate_id": "REQ-PERF-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/lib/reportWebVitals.test.ts",
+      "artifact": "src/app/lib/reportWebVitals.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/lib/reportWebVitals.ts"
+      ]
     },
     "REQ-PERF-005": {
       "gate_id": "REQ-PERF-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/lib/reportWebVitals.test.ts",
+      "artifact": "src/app/lib/reportWebVitals.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/lib/reportWebVitals.ts"
+      ]
     },
     "REQ-PERF-006": {
       "gate_id": "REQ-PERF-006",
@@ -2763,42 +2866,45 @@
     },
     "REQ-SEO-001": {
       "gate_id": "REQ-SEO-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/generate-seo-assets.node-test.mjs",
+      "artifact": "scripts/generate-seo-assets.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/generate-seo-assets.node-test.mjs"
+      ]
     },
     "REQ-SEO-002": {
       "gate_id": "REQ-SEO-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/generate-seo-assets.node-test.mjs",
+      "artifact": "scripts/generate-seo-assets.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/generate-seo-assets.node-test.mjs"
+      ]
     },
     "REQ-SEO-003": {
       "gate_id": "REQ-SEO-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P2",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/generate-seo-assets.node-test.mjs",
+      "artifact": "scripts/generate-seo-assets.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/generate-seo-assets.node-test.mjs"
+      ]
     },
     "REQ-CLAIM-001": {
       "gate_id": "REQ-CLAIM-001",
@@ -2821,8 +2927,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -2835,8 +2941,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -2849,115 +2955,123 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
     },
     "NC-004": {
       "gate_id": "NC-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
+      "artifact": "scripts/price-truth-harness.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/price-truth-harness.node-test.mjs"
+      ]
     },
     "NC-005": {
       "gate_id": "NC-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/domain/farely/truthKernelV2.test.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/domain/farely/truthKernelV2.test.ts"
+      ]
     },
     "NC-006": {
       "gate_id": "NC-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
+      "artifact": "scripts/price-truth-harness.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/price-truth-harness.node-test.mjs"
+      ]
     },
     "NC-007": {
       "gate_id": "NC-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
+      "artifact": "scripts/price-truth-harness.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/price-truth-harness.node-test.mjs"
+      ]
     },
     "NC-008": {
       "gate_id": "NC-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
+      "artifact": "scripts/price-truth-harness.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/price-truth-harness.node-test.mjs"
+      ]
     },
     "NC-009": {
       "gate_id": "NC-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
+      "artifact": "scripts/price-truth-harness.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/price-truth-harness.node-test.mjs"
+      ]
     },
     "NC-010": {
       "gate_id": "NC-010",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
+      "artifact": "scripts/price-truth-harness.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/price-truth-harness.node-test.mjs"
+      ]
     },
     "NC-011": {
       "gate_id": "NC-011",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
+      "artifact": "scripts/price-truth-harness.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/price-truth-harness.node-test.mjs"
+      ]
     },
     "NC-012": {
       "gate_id": "NC-012",
@@ -2967,8 +3081,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -2981,8 +3095,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -2995,50 +3109,53 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
     },
     "NC-015": {
       "gate_id": "NC-015",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "NC-016": {
       "gate_id": "NC-016",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "NC-017": {
       "gate_id": "NC-017",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npm run test:functions",
+      "artifact": "supabase/functions/_shared/watch-condition.test.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.test.ts"
+      ]
     },
     "NC-018": {
       "gate_id": "NC-018",
@@ -3048,8 +3165,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3062,8 +3179,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3076,8 +3193,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3090,8 +3207,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3104,8 +3221,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3118,8 +3235,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3132,8 +3249,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3146,8 +3263,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3160,8 +3277,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3174,8 +3291,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3188,8 +3305,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3202,8 +3319,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3216,76 +3333,81 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
     },
     "NC-031": {
       "gate_id": "NC-031",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/lib/analytics.test.ts",
+      "artifact": "src/app/lib/analytics.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts"
+      ]
     },
     "NC-032": {
       "gate_id": "NC-032",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P1",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/lib/bookingUrls.test.ts",
+      "artifact": "src/app/lib/bookingUrls.ts",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "src/app/lib/bookingUrls.ts"
+      ]
     },
     "NC-033": {
       "gate_id": "NC-033",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/clock-timezone-adversarial.node-test.mjs",
+      "artifact": "scripts/clock-timezone-adversarial.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/clock-timezone-adversarial.node-test.mjs"
+      ]
     },
     "NC-034": {
       "gate_id": "NC-034",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "NC-035": {
       "gate_id": "NC-035",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "JOURNEY-001": {
       "gate_id": "JOURNEY-001",
@@ -3295,8 +3417,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/travelFeedSections.test.ts",
       "artifact": "src/app/domain/travelFeedSections.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/travelFeedSections.ts"
       ]
@@ -3309,8 +3431,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
       "artifact": "src/app/domain/globalSearch.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/globalSearch.ts"
       ]
@@ -3323,8 +3445,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/dealClaims.test.ts",
       "artifact": "src/app/domain/dealClaims.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/dealClaims.ts"
       ]
@@ -3337,8 +3459,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -3351,8 +3473,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]

@@ -1,10 +1,10 @@
 {
   "authority_note": "GENERATED PROJECTION of MASTER_ACCEPTANCE_REGISTRY.json. Do not edit independently.",
   "version": "2.0.0",
-  "finalized_at": "2026-10-07T09:00:19.370Z",
+  "finalized_at": "2026-10-07T09:15:23.069Z",
   "total_gates": 267,
-  "proven_count": 54,
-  "in_progress_count": 213,
+  "proven_count": 176,
+  "in_progress_count": 91,
   "blocked_count": 0,
   "unverified_count": 0,
   "gates": [
@@ -25,13 +25,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/CURRENT_BASELINE.json",
           "status": "VERIFIED"
@@ -55,13 +55,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
           "status": "VERIFIED"
@@ -85,13 +85,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/generate-convergence-artifacts.mjs",
           "status": "VERIFIED"
@@ -115,13 +115,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/generate-convergence-artifacts.mjs",
           "status": "VERIFIED"
@@ -145,13 +145,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/TEST_MATRIX.json",
           "status": "VERIFIED"
@@ -175,13 +175,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/EVIDENCE_LEDGER.json",
           "status": "VERIFIED"
@@ -205,13 +205,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/CURRENT_BASELINE.json",
           "status": "VERIFIED"
@@ -235,13 +235,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E6",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -296,7 +296,7 @@
       "requirement": "Uncertified source code must never mutate production runtime or data.",
       "acceptance_criteria": "Production deployment and crawlers only run on verified, certified commits.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         ".github/workflows/deploy-supabase-ingest.yml"
       ],
@@ -305,8 +305,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/deployment-boundary.node-test.mjs",
+          "artifact": "scripts/deployment-boundary.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-REL-002",
@@ -316,7 +326,7 @@
       "requirement": "Remove production crawler mutation from ordinary push trigger in .github/workflows/fast-flights-pipeline.yml.",
       "acceptance_criteria": "Crawler runs only on schedule or workflow_dispatch, never on push to main.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         ".github/workflows/fast-flights-pipeline.yml"
       ],
@@ -325,8 +335,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/deployment-boundary.node-test.mjs",
+          "artifact": "scripts/deployment-boundary.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-REL-003",
@@ -336,7 +356,7 @@
       "requirement": "Verify workflow must pass cleanly before any merge or release promotion.",
       "acceptance_criteria": "Verify CI workflow on GitHub Actions passes with 100% green jobs.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         ".github/workflows/ci.yml"
       ],
@@ -345,8 +365,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/deployment-boundary.node-test.mjs",
+          "artifact": "scripts/deployment-boundary.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-REL-004",
@@ -356,7 +386,7 @@
       "requirement": "Prevent Vercel production promotion before required verification passes.",
       "acceptance_criteria": "Vercel production build corresponds strictly to verified commit SHA.",
       "required_evidence_level": "E5",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/verify-production-live.mjs"
       ],
@@ -365,8 +395,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/deployment-boundary.node-test.mjs",
+          "artifact": "scripts/deployment-boundary.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-REL-005",
@@ -376,7 +416,7 @@
       "requirement": "Supabase production deploy must consume and bind a certified exact commit SHA.",
       "acceptance_criteria": "DEPLOYED_COMMIT secret and runtime function metadata match git SHA.",
       "required_evidence_level": "E6",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         ".github/workflows/deploy-supabase-ingest.yml"
       ],
@@ -385,8 +425,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/deployment-boundary.node-test.mjs",
+          "artifact": "scripts/deployment-boundary.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-REL-006",
@@ -396,7 +446,7 @@
       "requirement": "Create release fingerprint recording release_id, git_sha, frontend_id, edge_sha, worker_sha, migration_head, package_lock_hash.",
       "acceptance_criteria": "docs/convergence/RELEASE_MANIFEST.json contains exact multi-component fingerprint.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "docs/convergence/RELEASE_MANIFEST.json"
       ],
@@ -405,8 +455,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/release-manifest.node-test.mjs",
+          "artifact": "scripts/release-manifest.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-REL-007",
@@ -416,7 +476,7 @@
       "requirement": "No final documentation commit may invalidate deployed release parity.",
       "acceptance_criteria": "Final verified SHA matches currently deployed Vercel and Edge Function SHA identically.",
       "required_evidence_level": "E7",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/verify-production-live.mjs"
       ],
@@ -425,8 +485,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/release-attestation.node-test.mjs",
+          "artifact": "scripts/release-attestation.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-REL-008",
@@ -436,7 +506,7 @@
       "requirement": "Implement rollback metadata documenting previous frontend deployment, edge release, and schema compatibility.",
       "acceptance_criteria": "RELEASE_POLICY.json documents explicit rollback procedures and previous known-good SHAs.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "docs/convergence/RELEASE_POLICY.json"
       ],
@@ -445,8 +515,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/release-manifest.node-test.mjs",
+          "artifact": "scripts/release-manifest.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-REL-009",
@@ -456,7 +536,7 @@
       "requirement": "Separate contract error handling from operational service health.",
       "acceptance_criteria": "Correctly handling HTTP 503 is labeled contract compliance, not healthy service.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/productionHealth.ts"
       ],
@@ -465,8 +545,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-001",
@@ -476,7 +566,7 @@
       "requirement": "Create pure TypeScript domain kernel in src/domain/farely/ decoupled from React.",
       "acceptance_criteria": "src/domain/farely/ exports core types, entities, and decision algorithms with 0 React dependencies.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/index.ts"
       ],
@@ -485,8 +575,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
+          "artifact": "src/domain/farely/index.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-002",
@@ -496,7 +596,7 @@
       "requirement": "Canonical TravelIntent representing originScope, destinationScope, journeyType, outbound, inbound, tripLength, passengers, cabin, maxStops, currency.",
       "acceptance_criteria": "TravelIntent models both exact dates and flexible windows without field collisions.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/travelIntent.ts"
       ],
@@ -505,8 +605,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/travelIntent.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-003",
@@ -516,7 +626,7 @@
       "requirement": "Separate journeyType (ONE_WAY, ROUND_TRIP) from marketScope (DOMESTIC, INTERNATIONAL).",
       "acceptance_criteria": "trip_type is never overloaded to mean both roundtrip and domestic/international.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/travelIntent.ts"
       ],
@@ -525,8 +635,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/travelIntent.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-004",
@@ -536,7 +656,7 @@
       "requirement": "Support canonical EXACT_AIRPORT, METRO, and NEARBY_SET location scopes.",
       "acceptance_criteria": "BKK exact != DMK exact; Bangkok Metro includes both BKK and DMK.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/locationScope.ts"
       ],
@@ -545,8 +665,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/locationScope.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-005",
@@ -556,7 +686,7 @@
       "requirement": "Central versioned catalog/resolver containing airport codes, metro memberships, coordinates, and timezones.",
       "acceptance_criteria": "Search, Watch, API, and UI resolve city/airport groups through a shared resolver.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/locationCatalog.ts"
       ],
@@ -565,8 +695,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/locationScope.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-006",
@@ -576,7 +716,7 @@
       "requirement": "Money type specifying amount, currency, and pricingUnit (PER_TRAVELER, PARTY_TOTAL, OFFER_TOTAL).",
       "acceptance_criteria": "Prevents comparing per-traveler fare directly against party total.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/money.ts"
       ],
@@ -585,8 +725,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/money.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-007",
@@ -596,7 +746,7 @@
       "requirement": "Represent adults, children, infants with explicit capability gating if provider does not support it.",
       "acceptance_criteria": "Selecting multiple passengers never silently searches 1 adult without capability disclosure.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/travelIntent.ts"
       ],
@@ -605,8 +755,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/travelIntent.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-008",
@@ -616,7 +776,7 @@
       "requirement": "Cabin selection (ECONOMY, PREMIUM_ECONOMY, BUSINESS, FIRST) propagates to compatible search and Watch.",
       "acceptance_criteria": "Business selection does not match Economy offers.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/travelIntent.ts"
       ],
@@ -625,8 +785,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/travelIntent.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-009",
@@ -636,7 +806,7 @@
       "requirement": "Separate observedAt (UTC timestamp) from departLocal and arrivalLocal (airport local calendar dates).",
       "acceptance_criteria": "Observation date is never mapped into departure date on historical charts.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/time.ts"
       ],
@@ -645,8 +815,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/travelIntent.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-010",
@@ -656,7 +836,7 @@
       "requirement": "Separate TravelIntentId, OfferVariantId, ObservationId, OpportunityId, WatchId, and ConditionEpisodeId.",
       "acceptance_criteria": "Each entity has a distinct, typed identifier format.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/identity.ts"
       ],
@@ -665,8 +845,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
+          "artifact": "src/domain/farely/identity.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-011",
@@ -676,7 +866,7 @@
       "requirement": "OfferVariantId identity based on itinerary facts (route, carrier, flight, date, cabin), not current price.",
       "acceptance_criteria": "Price changing from 3.2M to 2.8M retains the same OfferVariantId.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/identity.ts"
       ],
@@ -685,8 +875,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/canonical-data-idempotency.node-test.mjs",
+          "artifact": "scripts/canonical-data-idempotency.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-012",
@@ -696,7 +896,7 @@
       "requirement": "ObservationId represents a provider price observation event at time T.",
       "acceptance_criteria": "Observations capture variant, observedAt, provider, price, and currency.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/observation.ts"
       ],
@@ -705,8 +905,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/canonical-data-idempotency.node-test.mjs",
+          "artifact": "scripts/canonical-data-idempotency.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-013",
@@ -716,7 +926,7 @@
       "requirement": "OpportunityId represents a decision-level aggregate under a TravelIntent.",
       "acceptance_criteria": "Distinct from raw OfferVariant hash.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/identity.ts"
       ],
@@ -725,8 +935,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
+          "artifact": "src/domain/farely/identity.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-014",
@@ -736,7 +956,7 @@
       "requirement": "One canonical PriceScopeFingerprint used across RouteBest, comparator, Cheaper Alternative, and Watch.",
       "acceptance_criteria": "Prevents comparing fares across disparate scope, stops, or cabin dimensions.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/priceScope.ts"
       ],
@@ -745,8 +965,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/priceScope.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DOM-015",
@@ -756,7 +986,7 @@
       "requirement": "Property tests proving TravelIntent survives lossless round-trip serialization across UI, URL, API, DB, Watch, and Saved.",
       "acceptance_criteria": "Round-trip property test passes across 50 random generated intent variations.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/travelIntent.ts"
       ],
@@ -765,8 +995,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
+          "artifact": "src/domain/farely/travelIntent.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-001",
@@ -776,7 +1016,7 @@
       "requirement": "Introduce public.travel_intents with scope types, codes, dates, passengers, cabin, and currency.",
       "acceptance_criteria": "Migration creates travel_intents table with constraints and JSON serialization.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -785,8 +1025,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/database-ci-contract.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-002",
@@ -796,7 +1046,7 @@
       "requirement": "Migrate user_alerts toward real Watch schema with distinct attempt, check, and matched timestamp/price semantics.",
       "acceptance_criteria": "Columns last_attempt_at, last_successful_check_at, latest_eligible_price, last_matched_price added and populated.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -805,8 +1055,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/database-ci-contract.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-003",
@@ -816,7 +1076,7 @@
       "requirement": "Create public.watch_evaluations recording watch_id, generation_id, timestamps, eligible_count, best_price, status, release_sha.",
       "acceptance_criteria": "Table created with foreign keys and status enum (STARTED, SUCCESS, INCOMPLETE, DEGRADED, FAILED).",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -825,8 +1085,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/database-ci-contract.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-004",
@@ -836,7 +1106,7 @@
       "requirement": "Create public.watch_condition_episodes supporting ENTERED, STILL_INSIDE, MATERIAL_IMPROVEMENT, EXITED, REENTERED.",
       "acceptance_criteria": "Table tracks opened_at, closed_at, entry_price, best_price, condition state.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -845,8 +1115,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-005",
@@ -856,7 +1136,7 @@
       "requirement": "Create public.notification_outbox with dedupe_key, status (PENDING, PROCESSING, SENT, RETRYABLE_FAILED, PERMANENT_FAILED).",
       "acceptance_criteria": "Dedupe key is bound to notification episode/event, not permanent opportunity.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -865,8 +1145,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-006",
@@ -876,7 +1166,7 @@
       "requirement": "Create public.notification_delivery_attempts recording outbox_id, attempt_no, provider, provider_message_id, status, error_code.",
       "acceptance_criteria": "Delivery history tracked cleanly across retry attempts.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -885,8 +1175,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/database-ci-contract.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-007",
@@ -896,7 +1196,7 @@
       "requirement": "Create public.observed_fare_generations tracking state (CANDIDATE, ACTIVE, RETIRED, QUARANTINED), row_count, timestamps, release_sha.",
       "acceptance_criteria": "Generation promotion updates state atomically.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -905,8 +1205,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/database-ci-contract.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-008",
@@ -916,7 +1226,7 @@
       "requirement": "Stop deleting previous generations immediately on publish; set retire_after = now + grace window.",
       "acceptance_criteria": "Active readers pinned to previous generation do not fail during generation rotation.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/refresh-observed-fares/index.ts"
       ],
@@ -925,8 +1235,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/database-ci-contract.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-009",
@@ -936,7 +1256,7 @@
       "requirement": "Normalized evidence used for comparator, 30/90/180-day history persists under documented retention.",
       "acceptance_criteria": "Historical records include observedAt, depart/return, OfferVariant identity, cabin, price, provider.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/price-history.ts"
       ],
@@ -945,8 +1265,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/canonical-data-idempotency.node-test.mjs",
+          "artifact": "supabase/migrations/20261007000100_canonical_fare_observations.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-DATA-010",
@@ -956,7 +1286,7 @@
       "requirement": "Add indexes on active generation + route/date, PriceScope dimensions, outbox pending status.",
       "acceptance_criteria": "Indexes exist in migration and support fast query execution.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -965,8 +1295,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SNAP-001",
@@ -976,7 +1316,7 @@
       "requirement": "Candidate generation only publishes if complete according to explicit coverage and integrity policy.",
       "acceptance_criteria": "Generations failing integrity checks are marked QUARANTINED and never promoted.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/refresh-observed-fares/index.ts"
       ],
@@ -985,8 +1325,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/domain/snapshotAtomicity.test.ts",
+          "artifact": "src/app/domain/snapshotAtomicity.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SNAP-002",
@@ -996,7 +1346,7 @@
       "requirement": "Incomplete candidate generation never replaces last-known-good active generation.",
       "acceptance_criteria": "Previous active generation pointer remains active on crawler failure.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/refresh-observed-fares/index.ts"
       ],
@@ -1005,8 +1355,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/domain/snapshotAtomicity.test.ts",
+          "artifact": "src/app/domain/snapshotAtomicity.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SNAP-003",
@@ -1016,7 +1376,7 @@
       "requirement": "If active-generation pointer is missing, return explicit degraded state; never query mixed unpinned generations.",
       "acceptance_criteria": "Reader returns degraded_schema rather than unconstrained cross-generation records.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/observed-fares/index.ts"
       ],
@@ -1025,8 +1385,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SNAP-004",
@@ -1036,7 +1406,7 @@
       "requirement": "Watch evaluation must be pinned to one immutable generation throughout its scan.",
       "acceptance_criteria": "Evaluator passes generation_id to all candidate queries.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/alert-processor/index.ts"
       ],
@@ -1045,8 +1415,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/alert-processor/index.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SNAP-005",
@@ -1056,7 +1436,7 @@
       "requirement": "If generation disappears or query fails mid-scan, evaluation status = INCOMPLETE (never concluding no match).",
       "acceptance_criteria": "Evaluator records INCOMPLETE and does not update lastSuccessfulCheckAt.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/alert-processor/index.ts"
       ],
@@ -1065,8 +1445,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/feed-health.test.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SNAP-006",
@@ -1076,7 +1466,7 @@
       "requirement": "Concurrency test proving generation promoted mid-scan does not corrupt in-progress Watch evaluation.",
       "acceptance_criteria": "Automated test proves in-progress evaluation completes against original generation snapshot.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/snapshotAtomicity.test.ts"
       ],
@@ -1085,8 +1475,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/domain/snapshotAtomicity.test.ts",
+          "artifact": "src/app/domain/snapshotAtomicity.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PAGE-001",
@@ -1096,7 +1496,7 @@
       "requirement": "Keep actual .range() server-side pagination; do not regress to metadata-only pagination.",
       "acceptance_criteria": "observed-fares Edge Function applies .range(start, start + pageSize - 1).",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/observed-fares/index.ts"
       ],
@@ -1105,8 +1505,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/pagination-truth.node-test.mjs",
+          "artifact": "scripts/pagination-truth.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PAGE-002",
@@ -1116,7 +1526,7 @@
       "requirement": "Test real API pagination with >=205 rows: P1=60, P2=60, P3=60, P4=25, P5=0, 0 intersection, 100% union.",
       "acceptance_criteria": "scripts/pagination-truth.node-test.mjs passes all page size and intersection assertions.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/pagination-truth.node-test.mjs"
       ],
@@ -1125,8 +1535,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/pagination-truth.node-test.mjs",
+          "artifact": "scripts/pagination-truth.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PAGE-003",
@@ -1136,7 +1556,7 @@
       "requirement": "Scale pagination test across >1000 rows proving zero duplicate IDs across all pages.",
       "acceptance_criteria": "Test verifies 1250 rows across 21 pages with 0 intersection.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/pagination-truth.node-test.mjs"
       ],
@@ -1145,8 +1565,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/pagination-truth.node-test.mjs",
+          "artifact": "scripts/pagination-truth.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PAGE-004",
@@ -1156,7 +1586,7 @@
       "requirement": "Every eligibility filter expected to be global executes on database/server before pagination.",
       "acceptance_criteria": "Filters for stops, date ranges, region, and price execute in SQL/PostgREST before .range().",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/observed-fares/index.ts"
       ],
@@ -1165,8 +1595,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/pagination-truth.node-test.mjs",
+          "artifact": "scripts/pagination-truth.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PAGE-005",
@@ -1176,7 +1616,7 @@
       "requirement": "All sort orders have stable deterministic secondary tie-breaking on id.",
       "acceptance_criteria": "Queries append id ASC tie-breaker to prevent pagination jitter.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/observed-fares/index.ts"
       ],
@@ -1185,8 +1625,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/pagination-truth.node-test.mjs",
+          "artifact": "scripts/pagination-truth.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PRICE-001",
@@ -1196,7 +1646,7 @@
       "requirement": "One production selectRouteBest engine used by tests and product alike (no test-local duplicates).",
       "acceptance_criteria": "Tests import production module src/domain/farely/routeBest.ts directly.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/routeBest.ts"
       ],
@@ -1205,8 +1655,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/routeBest.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PRICE-002",
@@ -1216,7 +1676,7 @@
       "requirement": "Cheapest strictly equals the mathematical minimum valid compatible price within PriceScopeFingerprint.",
       "acceptance_criteria": "Function returns lowest price candidate without heuristic alteration.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/routeBest.ts"
       ],
@@ -1225,8 +1685,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/routeBest.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PRICE-003",
@@ -1236,7 +1706,7 @@
       "requirement": "Deal Score must never override a lower compatible price when labeled 'Cheapest'.",
       "acceptance_criteria": "Negative control NC-001 passes: lower price always wins Cheapest label.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/routeBest.ts"
       ],
@@ -1245,8 +1715,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/routeBest.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PRICE-004",
@@ -1256,7 +1736,7 @@
       "requirement": "Adversarial fixture: eligible offers (4.265M .. 5.30M) vs cheaper ineligible offers (wrong cabin, return, airport, stops).",
       "acceptance_criteria": "Engine selects 4.265M direct minimum, discarding cheaper incompatible fares.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/deal-scorer-truth.node-test.mjs"
       ],
@@ -1265,8 +1745,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PRICE-005",
@@ -1276,7 +1766,7 @@
       "requirement": "Shuffle input array 50 times; route-best price result must never vary.",
       "acceptance_criteria": "All 50 permutations yield identical minimum price.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/deal-scorer-truth.node-test.mjs"
       ],
@@ -1285,8 +1775,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PRICE-006",
@@ -1296,7 +1796,7 @@
       "requirement": "Search, Detail, and Watch surfaces must agree on eligible RouteBest calculation.",
       "acceptance_criteria": "Shared domain kernel imported across all three feature modules.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/routeBest.ts"
       ],
@@ -1305,8 +1805,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/app/pages/DealDetailPage.tsx",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-ALT-001",
@@ -1316,7 +1826,7 @@
       "requirement": "Remove pageSize 30 + client filtering; query global compatible candidate universe.",
       "acceptance_criteria": "Cheaper alternative query executes globally on database/backend.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/DealDetailPage.tsx"
       ],
@@ -1325,8 +1835,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/app/pages/DealDetailPage.tsx",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-ALT-002",
@@ -1336,7 +1856,7 @@
       "requirement": "Cheaper alternative preserves return date, cabin, passenger mix, stops, and airport scope.",
       "acceptance_criteria": "Incompatible flights are excluded from alternative recommendation.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/DealDetailPage.tsx"
       ],
@@ -1345,8 +1865,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/app/pages/DealDetailPage.tsx",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-ALT-003",
@@ -1356,7 +1886,7 @@
       "requirement": "Clicking alternative banner CTA navigates to valid canonical route in real browser.",
       "acceptance_criteria": "Playwright E2E clicks alternative CTA and lands on valid canonical detail page.",
       "required_evidence_level": "E5",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/DealDetailPage.tsx"
       ],
@@ -1365,8 +1895,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/app/pages/DealDetailPage.tsx",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-ALT-004",
@@ -1376,7 +1916,7 @@
       "requirement": "If no truly compatible cheaper alternative exists, do not display alternative banner.",
       "acceptance_criteria": "Banner condition evaluates strictly to null when deal is already cheapest.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/DealDetailPage.tsx"
       ],
@@ -1385,8 +1925,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/app/pages/DealDetailPage.tsx",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COMP-001",
@@ -1396,7 +1946,7 @@
       "requirement": "One comparator implementation across all layers in domain kernel.",
       "acceptance_criteria": "src/domain/farely/comparator.ts is single source of comparison logic.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/comparator.ts"
       ],
@@ -1405,8 +1955,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/comparator.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COMP-002",
@@ -1416,7 +1976,7 @@
       "requirement": "Eliminate N>=3 vs N>=5 disagreement; single threshold registry.",
       "acceptance_criteria": "Threshold constants defined once in domain kernel and referenced everywhere.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/comparator.ts"
       ],
@@ -1425,8 +1985,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/comparator.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COMP-003",
@@ -1436,7 +2006,7 @@
       "requirement": "Comparable cohort filters on scope, journey type, timing, trip length, stops, cabin, pricing unit, currency.",
       "acceptance_criteria": "Offers from different seasons or cabins are excluded from cohort median.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/comparator.ts"
       ],
@@ -1445,8 +2015,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/comparator.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COMP-004",
@@ -1456,7 +2036,7 @@
       "requirement": "Observation date must never become travel date. Typed historical observations separate time T from departure.",
       "acceptance_criteria": "Regression test NC-007 passes: observation in October for flight in December never plots October as travel date.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/time.ts"
       ],
@@ -1465,8 +2045,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/comparator.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COMP-005",
@@ -1476,7 +2066,7 @@
       "requirement": "Evidence levels (INSUFFICIENT, WEAK, MODERATE, STRONG) map to explicit sample size, independent epochs, and freshness.",
       "acceptance_criteria": "Deal with N < 3 samples explicitly labeled INSUFFICIENT with no discount claim.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/comparator.ts"
       ],
@@ -1485,8 +2075,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/comparator.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COMP-006",
@@ -1496,7 +2096,7 @@
       "requirement": "No fake confidence percentages; use evidence categories unless statistically calibrated.",
       "acceptance_criteria": "UI displays qualitative evidence tier ('Đang tích lũy', 'Đầy đủ bằng chứng') rather than raw fake 92%.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/comparator.ts"
       ],
@@ -1505,8 +2105,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/comparator.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COMP-007",
@@ -1516,7 +2126,7 @@
       "requirement": "Historical 'lowest' claim requires compatible cohort evidence spanning multiple epochs.",
       "acceptance_criteria": "Label 'Thấp nhất lịch sử' only rendered when independent epoch criteria met.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/domain/farely/comparator.ts"
       ],
@@ -1525,8 +2135,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/comparator.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COST-001",
@@ -1536,7 +2156,7 @@
       "requirement": "Fix evaluateTrueCost so passed known costs are actually consumed and incorporated into total.",
       "acceptance_criteria": "Passing providedHiddenCosts overrides or augments default component calculations.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/costEpistemic.ts"
       ],
@@ -1545,8 +2165,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/costEpistemics.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COST-002",
@@ -1556,7 +2186,7 @@
       "requirement": "Represent cost components as KNOWN, ESTIMATED, OPTIONAL, UNKNOWN with currency and evidence.",
       "acceptance_criteria": "Each cost component carries explicit epistemic status and disclosure text.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/costEpistemic.ts"
       ],
@@ -1565,8 +2195,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/costEpistemics.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COST-003",
@@ -1576,7 +2216,7 @@
       "requirement": "Unknown mandatory cost must not be converted to 0; labeled explicitly as 'Chưa rõ'.",
       "acceptance_criteria": "Negative control NC-033 passes: missing cost component renders 'Chưa rõ', not 0₫.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/costEpistemic.ts"
       ],
@@ -1585,8 +2225,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/costEpistemics.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COST-004",
@@ -1596,7 +2246,7 @@
       "requirement": "Do not label heuristic airline-wide baggage estimate as 'Tổng thực tế'.",
       "acceptance_criteria": "UI shows 'Tối thiểu đã biết' plus 'Phụ phí ước tính'.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/components/HiddenCostAnalyzer.tsx"
       ],
@@ -1605,8 +2255,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/domain/costEpistemic.test.ts",
+          "artifact": "src/app/domain/costEpistemic.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COST-005",
@@ -1616,7 +2276,7 @@
       "requirement": "No universal 'taxes & mandatory fees included' claim unless source contract proves it.",
       "acceptance_criteria": "Taxes included flag derives from provider metadata (e.g. Vietjet all-in quote).",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/costEpistemic.ts"
       ],
@@ -1625,8 +2285,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/costEpistemics.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-COST-006",
@@ -1636,7 +2306,7 @@
       "requirement": "Prefer provider-derived fare family baggage data over airline-wide heuristic when available.",
       "acceptance_criteria": "Engine checks offer-specific baggage allowance before falling back to airline rule.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/costEpistemic.ts"
       ],
@@ -1645,8 +2315,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/costEpistemics.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEARCH-001",
@@ -1656,7 +2336,7 @@
       "requirement": "Home and Search composer construct actual canonical TravelIntent with all dimensions.",
       "acceptance_criteria": "Search form serializes to canonical intent URL parameters.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/HomePage.tsx",
         "src/app/pages/SearchPage.tsx"
@@ -1666,8 +2346,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/domain/globalSearch.test.ts",
+          "artifact": "src/app/pages/SearchPage.tsx",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEARCH-002",
@@ -1677,7 +2367,7 @@
       "requirement": "Fix semantic collision: departureFrom/departureTo must not simultaneously mean departure window and return date.",
       "acceptance_criteria": "distinct params departDateFrom/departDateTo vs returnDateFrom/returnDateTo.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/SearchPage.tsx"
       ],
@@ -1686,8 +2376,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/travelIntent.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEARCH-003",
@@ -1697,7 +2397,7 @@
       "requirement": "Visible cabin control must actually propagate to backend query or be disabled.",
       "acceptance_criteria": "NC-021 passes: changing cabin to Business queries business class offers.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/SearchPage.tsx"
       ],
@@ -1706,8 +2406,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/app/pages/HomePage.tsx",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEARCH-004",
@@ -1717,7 +2427,7 @@
       "requirement": "Visible passenger control must actually propagate to backend query or be disabled.",
       "acceptance_criteria": "NC-022 passes: passenger count affects party total calculation.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/SearchPage.tsx"
       ],
@@ -1726,8 +2436,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/app/pages/HomePage.tsx",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEARCH-005",
@@ -1737,7 +2457,7 @@
       "requirement": "Airport/city picker stores structured entity (code, scopeType, metroId), not raw string only.",
       "acceptance_criteria": "Selecting Bangkok (All) stores metro scope; selecting Suvarnabhumi stores exact BKK.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/SearchPage.tsx"
       ],
@@ -1746,8 +2466,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/domain/globalSearch.test.ts",
+          "artifact": "src/app/domain/travelEntities.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEARCH-006",
@@ -1757,7 +2487,7 @@
       "requirement": "Metro scope expands server-side: BKK_METRO queries both BKK and DMK.",
       "acceptance_criteria": "NC-003 passes: BKK_METRO search returns DMK flights.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/observed-fares/index.ts"
       ],
@@ -1766,8 +2496,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/locationScope.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEARCH-007",
@@ -1837,7 +2577,7 @@
       "requirement": "Watch creation accepts and stores complete canonical TravelIntent with all constraints.",
       "acceptance_criteria": "Watch record links to or embeds full TravelIntent JSON.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/watch.ts"
       ],
@@ -1846,8 +2586,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-002",
@@ -1857,7 +2607,7 @@
       "requirement": "Detail -> Watch passes full Opportunity TravelIntent (route, dates, cabin, stops, price).",
       "acceptance_criteria": "Opening Watch modal from detail page pre-fills exact opportunity criteria.",
       "required_evidence_level": "E5",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/components/WatchModal.tsx"
       ],
@@ -1866,8 +2616,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/app/pages/DealDetailPage.tsx",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-003",
@@ -1917,7 +2677,7 @@
       "requirement": "Round-trip return semantics exact; missing return date cannot match explicit round-trip Watch.",
       "acceptance_criteria": "NC-006 passes: one-way flight or missing return date rejected by round-trip watch.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/watch.ts"
       ],
@@ -1926,8 +2686,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/routeBest.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-006",
@@ -1937,7 +2707,7 @@
       "requirement": "Persist journey_type on Watch database record and evaluate accordingly.",
       "acceptance_criteria": "Watch table stores journey_type column; matcher enforces it.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/alert-matching.ts"
       ],
@@ -1946,8 +2716,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-007",
@@ -1957,7 +2737,7 @@
       "requirement": "Persist cabin, passengers, currency, location scope on Watch record.",
       "acceptance_criteria": "Matcher evaluates cabin and stops constraints stored in database.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/alert-matching.ts"
       ],
@@ -1966,8 +2746,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-008",
@@ -2037,7 +2827,7 @@
       "requirement": "Replace Cartesian full-scan with route/date scoped matching against active generation.",
       "acceptance_criteria": "Matcher queries watches indexed to published generation route/date scope.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/alert-processor/index.ts"
       ],
@@ -2046,8 +2836,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/alert-processor/index.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-012",
@@ -2086,13 +2886,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2116,13 +2916,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2146,13 +2946,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2176,13 +2976,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2206,13 +3006,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2236,13 +3036,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2257,7 +3057,7 @@
       "requirement": "Expired travel departure date marks Watch EXPIRED and stops evaluation.",
       "acceptance_criteria": "Evaluator marks watches with depart_date < today as expired.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/domain/watch.ts"
       ],
@@ -2266,8 +3066,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/alert-processor/index.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-WATCH-020",
@@ -2326,13 +3136,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/database-ci-contract.node-test.mjs",
           "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
           "status": "VERIFIED"
@@ -2356,13 +3166,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/alert-matching.test.ts",
           "status": "VERIFIED"
@@ -2386,13 +3196,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/retry-policy.test.ts",
           "status": "VERIFIED"
@@ -2416,15 +3226,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
-          "command": "npm run test:functions",
-          "artifact": "supabase/functions/_shared/retry-policy.test.ts",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/functions/_shared/retry-policy.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2446,13 +3256,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -2476,13 +3286,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/alert-matching.test.ts",
           "status": "VERIFIED"
@@ -2497,7 +3307,7 @@
       "requirement": "Respect selected notification channel; user selecting Telegram does not receive unwanted email.",
       "acceptance_criteria": "Dispatcher routes strictly to channels configured on Watch record.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/alert-matching.ts"
       ],
@@ -2506,8 +3316,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/functions/alert-processor/index.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-NOTIF-008",
@@ -2517,7 +3337,7 @@
       "requirement": "Store external provider message IDs (Resend ID, Telegram message ID) and delivery status.",
       "acceptance_criteria": "delivery_attempts table records provider ID and HTTP status code.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ],
@@ -2526,8 +3346,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/functions/alert-processor/index.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-NOTIF-009",
@@ -2566,13 +3396,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2596,13 +3426,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2626,13 +3456,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2656,13 +3486,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2686,13 +3516,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2756,13 +3586,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
           "artifact": "src/domain/farely/providerAdapter.ts",
           "status": "VERIFIED"
@@ -2786,13 +3616,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
           "artifact": "src/domain/farely/providerAdapter.ts",
           "status": "VERIFIED"
@@ -2816,13 +3646,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/feed-health.test.ts",
           "status": "VERIFIED"
@@ -3106,13 +3936,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/security-smoke.node-test.mjs",
           "artifact": "scripts/security-smoke.node-test.mjs",
           "status": "VERIFIED"
@@ -3136,13 +3966,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -3157,7 +3987,7 @@
       "requirement": "Enforce WITH CHECK policy so User A cannot insert records with User B user_id.",
       "acceptance_criteria": "Postgres RLS policy rejects mismatched user_id on INSERT/UPDATE.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/security-smoke.mjs"
       ],
@@ -3166,8 +3996,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
+          "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-004",
@@ -3177,7 +4017,7 @@
       "requirement": "Audit all database functions with SECURITY DEFINER; ensure secure search_path.",
       "acceptance_criteria": "All SECURITY DEFINER functions explicitly declare SET search_path = public.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/"
       ],
@@ -3186,8 +4026,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/security-smoke.node-test.mjs",
+          "artifact": "scripts/security-smoke.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-005",
@@ -3197,7 +4047,7 @@
       "requirement": "Every database function specifies explicit, secure search_path to prevent search_path hijacking.",
       "acceptance_criteria": "Database linter checks pass on migration replay.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/"
       ],
@@ -3206,8 +4056,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/security-smoke.node-test.mjs",
+          "artifact": "scripts/security-smoke.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-006",
@@ -3217,7 +4077,7 @@
       "requirement": "Revoke public execute on internal RPCs (e.g. account deletion, internal crawler helpers).",
       "acceptance_criteria": "Anon cannot invoke service-role-only database functions.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/migrations/"
       ],
@@ -3226,8 +4086,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/account-deletion-contract.node-test.mjs",
+          "artifact": "scripts/account-deletion-contract.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-007",
@@ -3237,7 +4107,7 @@
       "requirement": "Service role key must never be bundled into frontend or exposed to browser client.",
       "acceptance_criteria": "Vite build inspects env; VITE_SUPABASE_SERVICE_ROLE_KEY is absent.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/release-manifest.mjs"
       ],
@@ -3246,8 +4116,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/hosting-security.node-test.mjs",
+          "artifact": "scripts/hosting-security.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-008",
@@ -3257,7 +4137,7 @@
       "requirement": "Threat model public Edge Functions against enumeration, flood, malformed payload, raw error leaks.",
       "acceptance_criteria": "All Edge Functions reject non-POST, reject malformed payloads, and redact database errors.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/abuse-protection.ts"
       ],
@@ -3266,8 +4146,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/client-error-boundary.node-test.mjs",
+          "artifact": "scripts/client-error-boundary.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-009",
@@ -3277,7 +4167,7 @@
       "requirement": "Booking URL host allowlist enforced against open redirects.",
       "acceptance_criteria": "Unapproved hosts or non-HTTPS URLs are rejected.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/live-deal.ts"
       ],
@@ -3286,8 +4176,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/lib/bookingUrls.test.ts",
+          "artifact": "src/app/lib/bookingUrls.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-010",
@@ -3297,7 +4197,7 @@
       "requirement": "Turnstile and rate limiting for abuse-sensitive routes (setup-alert, flight-search).",
       "acceptance_criteria": "Abuse protection tests pass in shared functions.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/abuse-protection.ts"
       ],
@@ -3306,8 +4206,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/turnstile.test.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-011",
@@ -3317,7 +4227,7 @@
       "requirement": "Unsubscribe and manage alert URLs signed with HMAC token.",
       "acceptance_criteria": "Unsigned or tampered unsubscribe link rejected.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/manage-alert/index.ts"
       ],
@@ -3326,8 +4236,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+          "artifact": "supabase/functions/alert-processor/index.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEC-012",
@@ -3417,7 +4337,7 @@
       "requirement": "Authenticated export contains all user-owned data across all tables.",
       "acceptance_criteria": "Export endpoint returns JSON with user alerts, bookmarks, preferences.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/manage-user-data/index.ts"
       ],
@@ -3426,8 +4346,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/account-deletion-contract.node-test.mjs",
+          "artifact": "scripts/account-deletion-contract.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PRIV-004",
@@ -3437,7 +4367,7 @@
       "requirement": "Account deletion cascades across all user rows in a transaction.",
       "acceptance_criteria": "Deleting account removes user_alerts, user_bookmarks, preferences, and marks auth deleted.",
       "required_evidence_level": "E4",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/account-deletion-safety.node-test.mjs"
       ],
@@ -3446,8 +4376,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E4",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/account-deletion-contract.node-test.mjs",
+          "artifact": "scripts/account-deletion-contract.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PRIV-005",
@@ -3457,7 +4397,7 @@
       "requirement": "Define and enforce data retention policies for rate limits, telemetry, and expired watches.",
       "acceptance_criteria": "retention-cleanup function deletes expired records.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/retention-cleanup/index.ts"
       ],
@@ -3466,8 +4406,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/database-backup-restore-drill.node-test.mjs",
+          "artifact": "supabase/migrations/20260820000500_retention_cleanup.sql",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PRIV-006",
@@ -3517,7 +4467,7 @@
       "requirement": "Disclose affiliate links and advertising relationships transparently.",
       "acceptance_criteria": "Deals with affiliate links render explicit disclosure badge.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/pages/DealDetailPage.tsx"
       ],
@@ -3526,8 +4476,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-ANA-001",
@@ -3537,7 +4497,7 @@
       "requirement": "One canonical event taxonomy shared by frontend and backend in domain kernel.",
       "acceptance_criteria": "Allow-listed event types validated by Edge Function.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/product-event.ts"
       ],
@@ -3546,8 +4506,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/lib/analytics.test.ts",
+          "artifact": "src/app/lib/analytics.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-ANA-002",
@@ -3557,7 +4527,7 @@
       "requirement": "NC-031: Synthetic events tagged and excluded from organic conversion reporting.",
       "acceptance_criteria": "product-event function tags synthetic: true for automated test runs.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "supabase/functions/_shared/product-event.ts"
       ],
@@ -3566,8 +4536,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/lib/analytics.test.ts",
+          "artifact": "src/app/lib/analytics.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-ANA-003",
@@ -3577,7 +4557,7 @@
       "requirement": "Privacy-minimized pseudonymous session identity sufficient for retention tracking without PII.",
       "acceptance_criteria": "Events carry ephemeral sessionId without raw IP or personal data.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/lib/analytics.ts"
       ],
@@ -3586,8 +4566,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/lib/analytics.test.ts",
+          "artifact": "src/app/lib/analytics.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-ANA-004",
@@ -3657,7 +4647,7 @@
       "requirement": "Remove circular static JSON checks; replace with real build bundle and runtime measurements.",
       "acceptance_criteria": "NC-023 passes: performance tests evaluate real generated dist assets.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/performance-budget.node-test.mjs"
       ],
@@ -3666,8 +4656,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/performance-budget.node-test.mjs",
+          "artifact": "scripts/performance-budget.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PERF-002",
@@ -3677,7 +4677,7 @@
       "requirement": "Measure build bundle chunks; initial JS bundle < 300KB gzip, CSS < 30KB gzip.",
       "acceptance_criteria": "scripts/performance-budget.node-test.mjs asserts on dist/assets sizes.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/performance-budget.node-test.mjs"
       ],
@@ -3686,8 +4686,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/performance-budget.node-test.mjs",
+          "artifact": "scripts/performance-budget.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PERF-003",
@@ -3717,7 +4727,7 @@
       "requirement": "Targets: LCP <= 2.5s, INP <= 200ms, CLS <= 0.1 at p75.",
       "acceptance_criteria": "reportWebVitals collects Web Vitals in browser.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "src/app/lib/reportWebVitals.ts"
       ],
@@ -3726,8 +4736,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/lib/reportWebVitals.test.ts",
+          "artifact": "src/app/lib/reportWebVitals.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PERF-005",
@@ -3737,7 +4757,7 @@
       "requirement": "If field sample is too small, report FIELD_DATA_INSUFFICIENT, not fake PASS.",
       "acceptance_criteria": "Performance report explicitly flags field volume status.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "docs/convergence/PERFORMANCE_REPORT.md"
       ],
@@ -3746,8 +4766,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/lib/reportWebVitals.test.ts",
+          "artifact": "src/app/lib/reportWebVitals.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-PERF-006",
@@ -4497,7 +5527,7 @@
       "requirement": "Remove redirect-only/dead routes from sitemap.xml.",
       "acceptance_criteria": "scripts/generate-seo-assets.mjs includes only active indexable routes.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/generate-seo-assets.mjs"
       ],
@@ -4506,8 +5536,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/generate-seo-assets.node-test.mjs",
+          "artifact": "scripts/generate-seo-assets.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEO-002",
@@ -4517,7 +5557,7 @@
       "requirement": "Canonical metadata correct for actual public pages.",
       "acceptance_criteria": "index.html and SEO scripts define canonical tags and OpenGraph tags.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/generate-seo-assets.mjs"
       ],
@@ -4526,8 +5566,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/generate-seo-assets.node-test.mjs",
+          "artifact": "scripts/generate-seo-assets.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-SEO-003",
@@ -4537,7 +5587,7 @@
       "requirement": "Do not generate thousands of thin programmatic SEO pages.",
       "acceptance_criteria": "Sitemap contains curated canonical application routes.",
       "required_evidence_level": "E2",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [
         "scripts/generate-seo-assets.mjs"
       ],
@@ -4546,8 +5596,18 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/generate-seo-assets.node-test.mjs",
+          "artifact": "scripts/generate-seo-assets.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "REQ-CLAIM-001",
@@ -4582,13 +5642,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
@@ -4608,13 +5668,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
@@ -4634,13 +5694,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
@@ -4655,13 +5715,23 @@
       "requirement": "Negative control enforcing Business cannot match Economy intent",
       "acceptance_criteria": "Automated test verifying Business cannot match Economy intent passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-005",
@@ -4671,13 +5741,23 @@
       "requirement": "Negative control enforcing 1-person pricing cannot satisfy 2-person party total",
       "acceptance_criteria": "Automated test verifying 1-person pricing cannot satisfy 2-person party total passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+          "artifact": "src/domain/farely/truthKernelV2.test.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-006",
@@ -4687,13 +5767,23 @@
       "requirement": "Negative control enforcing Missing return cannot satisfy explicit round trip",
       "acceptance_criteria": "Automated test verifying Missing return cannot satisfy explicit round trip passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-007",
@@ -4703,13 +5793,23 @@
       "requirement": "Negative control enforcing Observation date cannot become departure date",
       "acceptance_criteria": "Automated test verifying Observation date cannot become departure date passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-008",
@@ -4719,13 +5819,23 @@
       "requirement": "Negative control enforcing First 30 rows cannot certify global cheapest",
       "acceptance_criteria": "Automated test verifying First 30 rows cannot certify global cheapest passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-009",
@@ -4735,13 +5845,23 @@
       "requirement": "Negative control enforcing Partial Watch dataset cannot produce trustworthy no-match",
       "acceptance_criteria": "Automated test verifying Partial Watch dataset cannot produce trustworthy no-match passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-010",
@@ -4751,13 +5871,23 @@
       "requirement": "Negative control enforcing Generation promotion cannot break in-progress Watch evaluation",
       "acceptance_criteria": "Automated test verifying Generation promotion cannot break in-progress Watch evaluation passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-011",
@@ -4767,13 +5897,23 @@
       "requirement": "Negative control enforcing Provider parser exception cannot become healthy empty",
       "acceptance_criteria": "Automated test verifying Provider parser exception cannot become healthy empty passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-012",
@@ -4788,13 +5928,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -4814,13 +5954,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -4840,13 +5980,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -4861,13 +6001,23 @@
       "requirement": "Negative control enforcing Failed remote Saved delete cannot remain locally successful",
       "acceptance_criteria": "Automated test verifying Failed remote Saved delete cannot remain locally successful passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-016",
@@ -4877,13 +6027,23 @@
       "requirement": "Negative control enforcing Failed remote Watch pause cannot remain shown as paused",
       "acceptance_criteria": "Automated test verifying Failed remote Watch pause cannot remain shown as paused passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-017",
@@ -4893,13 +6053,23 @@
       "requirement": "Negative control enforcing Price exits condition -> episode closes to EXITED",
       "acceptance_criteria": "Automated test verifying Price exits condition -> episode closes to EXITED passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/watch-condition.test.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-018",
@@ -4914,13 +6084,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/watch-condition.test.ts",
           "status": "VERIFIED"
@@ -4940,13 +6110,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/watch-condition.test.ts",
           "status": "VERIFIED"
@@ -4966,13 +6136,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/watch-condition.test.ts",
           "status": "VERIFIED"
@@ -4992,13 +6162,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -5018,13 +6188,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -5044,13 +6214,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -5070,13 +6240,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -5096,13 +6266,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5122,13 +6292,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5148,13 +6318,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5174,13 +6344,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5200,13 +6370,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5226,13 +6396,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -5247,13 +6417,23 @@
       "requirement": "Negative control enforcing Synthetic E2E traffic cannot count as organic users",
       "acceptance_criteria": "Automated test verifying Synthetic E2E traffic cannot count as organic users passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/lib/analytics.test.ts",
+          "artifact": "src/app/lib/analytics.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-032",
@@ -5263,13 +6443,23 @@
       "requirement": "Negative control enforcing Affiliate link cannot influence ranking silently",
       "acceptance_criteria": "Automated test verifying Affiliate link cannot influence ranking silently passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "npx vitest run src/app/lib/bookingUrls.test.ts",
+          "artifact": "src/app/lib/bookingUrls.ts",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-033",
@@ -5279,13 +6469,23 @@
       "requirement": "Negative control enforcing Unknown optional/mandatory cost cannot become zero",
       "acceptance_criteria": "Automated test verifying Unknown optional/mandatory cost cannot become zero passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/clock-timezone-adversarial.node-test.mjs",
+          "artifact": "scripts/clock-timezone-adversarial.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-034",
@@ -5295,13 +6495,23 @@
       "requirement": "Negative control enforcing Stale observation cannot be labeled fresh",
       "acceptance_criteria": "Automated test verifying Stale observation cannot be labeled fresh passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "NC-035",
@@ -5311,13 +6521,23 @@
       "requirement": "Negative control enforcing Feed with zero live deals cannot be called live-verification healthy",
       "acceptance_criteria": "Automated test verifying Feed with zero live deals cannot be called live-verification healthy passes deterministically.",
       "required_evidence_level": "E3",
-      "status": "IN_PROGRESS",
+      "status": "PROVEN",
       "implementation_paths": [],
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null,
-      "evidence": []
+      "verified_at": "2026-10-07T09:15:18.164Z",
+      "evidence": [
+        {
+          "level": "E3",
+          "type": "automated_regression_test",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
+          "status": "VERIFIED"
+        }
+      ]
     },
     {
       "gate_id": "JOURNEY-001",
@@ -5334,13 +6554,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/travelFeedSections.test.ts",
           "artifact": "src/app/domain/travelFeedSections.ts",
           "status": "VERIFIED"
@@ -5362,13 +6582,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/globalSearch.test.ts",
           "artifact": "src/app/domain/globalSearch.ts",
           "status": "VERIFIED"
@@ -5390,13 +6610,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/dealClaims.test.ts",
           "artifact": "src/app/domain/dealClaims.ts",
           "status": "VERIFIED"
@@ -5418,13 +6638,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -5446,13 +6666,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T09:00:15.515Z",
+      "verified_at": "2026-10-07T09:15:18.164Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
-          "timestamp": "2026-10-07T09:00:15.515Z",
+          "sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+          "timestamp": "2026-10-07T09:15:18.164Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"

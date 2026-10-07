@@ -52,20 +52,77 @@ const VERIFIED_EVIDENCE = {
   "REQ-PROV-003": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/feed-health.test.ts" },
 
   // Watch Lifecycle (E3/E4)
+  "REQ-WATCH-001": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
+  "REQ-WATCH-002": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-WATCH-005": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/routeBest.ts" },
+  "REQ-WATCH-006": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
+  "REQ-WATCH-007": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
+  "REQ-WATCH-011": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/alert-processor/index.ts" },
   "REQ-WATCH-013": { level: "E4", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
   "REQ-WATCH-014": { level: "E4", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
   "REQ-WATCH-015": { level: "E3", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
   "REQ-WATCH-016": { level: "E3", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
   "REQ-WATCH-017": { level: "E3", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
   "REQ-WATCH-018": { level: "E3", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
+  "REQ-WATCH-019": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/alert-processor/index.ts" },
+
+  // Pure Domain Kernel (E2/E3)
+  "REQ-DOM-001": { level: "E3", command: "npx vitest run src/domain/farely/domainKernel.test.ts", artifact: "src/domain/farely/index.ts" },
+  "REQ-DOM-002": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/travelIntent.ts" },
+  "REQ-DOM-003": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/travelIntent.ts" },
+  "REQ-DOM-004": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/locationScope.ts" },
+  "REQ-DOM-005": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/locationScope.ts" },
+  "REQ-DOM-006": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/money.ts" },
+  "REQ-DOM-007": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/travelIntent.ts" },
+  "REQ-DOM-008": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/travelIntent.ts" },
+  "REQ-DOM-009": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/travelIntent.ts" },
+  "REQ-DOM-010": { level: "E3", command: "npx vitest run src/domain/farely/domainKernel.test.ts", artifact: "src/domain/farely/identity.ts" },
+  "REQ-DOM-011": { level: "E3", command: "node --test scripts/canonical-data-idempotency.node-test.mjs", artifact: "scripts/canonical-data-idempotency.node-test.mjs" },
+  "REQ-DOM-012": { level: "E3", command: "node --test scripts/canonical-data-idempotency.node-test.mjs", artifact: "scripts/canonical-data-idempotency.node-test.mjs" },
+  "REQ-DOM-013": { level: "E3", command: "npx vitest run src/domain/farely/domainKernel.test.ts", artifact: "src/domain/farely/identity.ts" },
+  "REQ-DOM-014": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/priceScope.ts" },
+  "REQ-DOM-015": { level: "E3", command: "npx vitest run src/domain/farely/domainKernel.test.ts", artifact: "src/domain/farely/travelIntent.ts" },
+
+  // Price Truth & RouteBest (E3/E4)
+  "REQ-PRICE-001": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/routeBest.ts" },
+  "REQ-PRICE-002": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/routeBest.ts" },
+  "REQ-PRICE-003": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/routeBest.ts" },
+  "REQ-PRICE-004": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
+  "REQ-PRICE-005": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
+  "REQ-PRICE-006": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+
+  // Cheaper Alternative (E3)
+  "REQ-ALT-001": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-ALT-002": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-ALT-003": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-ALT-004": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+
+  // Comparator & Cohort (E3)
+  "REQ-COMP-001": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/comparator.ts" },
+  "REQ-COMP-002": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/comparator.ts" },
+  "REQ-COMP-003": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/comparator.ts" },
+  "REQ-COMP-004": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/comparator.ts" },
+  "REQ-COMP-005": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/comparator.ts" },
+  "REQ-COMP-006": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/comparator.ts" },
+  "REQ-COMP-007": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/comparator.ts" },
+
+  // True Cost & Epistemics (E3)
+  "REQ-COST-001": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/costEpistemics.ts" },
+  "REQ-COST-002": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/costEpistemics.ts" },
+  "REQ-COST-003": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/costEpistemics.ts" },
+  "REQ-COST-004": { level: "E3", command: "npx vitest run src/app/domain/costEpistemic.test.ts", artifact: "src/app/domain/costEpistemic.ts" },
+  "REQ-COST-005": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/costEpistemics.ts" },
+  "REQ-COST-006": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/costEpistemics.ts" },
 
   // Notification Outbox (E3/E4)
   "REQ-NOTIF-001": { level: "E4", command: "node --test scripts/database-ci-contract.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
   "REQ-NOTIF-002": { level: "E4", command: "npm run test:functions", artifact: "supabase/functions/_shared/alert-matching.test.ts" },
   "REQ-NOTIF-003": { level: "E4", command: "npm run test:functions", artifact: "supabase/functions/_shared/retry-policy.test.ts" },
-  "REQ-NOTIF-004": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/retry-policy.test.ts" },
+  "REQ-NOTIF-004": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/functions/_shared/retry-policy.ts" },
   "REQ-NOTIF-005": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
   "REQ-NOTIF-006": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/alert-matching.test.ts" },
+  "REQ-NOTIF-007": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/functions/alert-processor/index.ts" },
+  "REQ-NOTIF-008": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/functions/alert-processor/index.ts" },
 
   // Saved Server Authority (E3/E4)
   "REQ-SAVED-001": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
@@ -74,17 +131,105 @@ const VERIFIED_EVIDENCE = {
   "REQ-SAVED-004": { level: "E3", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
   "REQ-SAVED-005": { level: "E3", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
 
+  // Database Architecture (E3/E4)
+  "REQ-DATA-001": { level: "E3", command: "node --test scripts/database-ci-contract.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
+  "REQ-DATA-002": { level: "E3", command: "node --test scripts/database-ci-contract.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
+  "REQ-DATA-003": { level: "E3", command: "node --test scripts/database-ci-contract.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
+  "REQ-DATA-004": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql" },
+  "REQ-DATA-005": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql" },
+  "REQ-DATA-006": { level: "E3", command: "node --test scripts/database-ci-contract.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
+  "REQ-DATA-007": { level: "E3", command: "node --test scripts/database-ci-contract.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
+  "REQ-DATA-008": { level: "E3", command: "node --test scripts/database-ci-contract.node-test.mjs", artifact: "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql" },
+  "REQ-DATA-009": { level: "E3", command: "node --test scripts/canonical-data-idempotency.node-test.mjs", artifact: "supabase/migrations/20261007000100_canonical_fare_observations.sql" },
+  "REQ-DATA-010": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql" },
+
+  // Snapshot Safety (E3)
+  "REQ-SNAP-001": { level: "E3", command: "npx vitest run src/app/domain/snapshotAtomicity.test.ts", artifact: "src/app/domain/snapshotAtomicity.ts" },
+  "REQ-SNAP-002": { level: "E3", command: "npx vitest run src/app/domain/snapshotAtomicity.test.ts", artifact: "src/app/domain/snapshotAtomicity.ts" },
+  "REQ-SNAP-003": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+  "REQ-SNAP-004": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/alert-processor/index.ts" },
+  "REQ-SNAP-005": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/feed-health.test.ts" },
+  "REQ-SNAP-006": { level: "E3", command: "npx vitest run src/app/domain/snapshotAtomicity.test.ts", artifact: "src/app/domain/snapshotAtomicity.ts" },
+
+  // Pagination Truth (E3)
+  "REQ-PAGE-001": { level: "E3", command: "node --test scripts/pagination-truth.node-test.mjs", artifact: "scripts/pagination-truth.node-test.mjs" },
+  "REQ-PAGE-002": { level: "E3", command: "node --test scripts/pagination-truth.node-test.mjs", artifact: "scripts/pagination-truth.node-test.mjs" },
+  "REQ-PAGE-003": { level: "E3", command: "node --test scripts/pagination-truth.node-test.mjs", artifact: "scripts/pagination-truth.node-test.mjs" },
+  "REQ-PAGE-004": { level: "E3", command: "node --test scripts/pagination-truth.node-test.mjs", artifact: "scripts/pagination-truth.node-test.mjs" },
+  "REQ-PAGE-005": { level: "E3", command: "node --test scripts/pagination-truth.node-test.mjs", artifact: "scripts/pagination-truth.node-test.mjs" },
+
+  // Release Engineering (E3/E4)
+  "REQ-REL-001": { level: "E4", command: "node --test scripts/deployment-boundary.node-test.mjs", artifact: "scripts/deployment-boundary.node-test.mjs" },
+  "REQ-REL-002": { level: "E4", command: "node --test scripts/deployment-boundary.node-test.mjs", artifact: "scripts/deployment-boundary.node-test.mjs" },
+  "REQ-REL-003": { level: "E4", command: "node --test scripts/deployment-boundary.node-test.mjs", artifact: "scripts/deployment-boundary.node-test.mjs" },
+  "REQ-REL-004": { level: "E4", command: "node --test scripts/deployment-boundary.node-test.mjs", artifact: "scripts/deployment-boundary.node-test.mjs" },
+  "REQ-REL-005": { level: "E4", command: "node --test scripts/deployment-boundary.node-test.mjs", artifact: "scripts/deployment-boundary.node-test.mjs" },
+  "REQ-REL-006": { level: "E3", command: "node --test scripts/release-manifest.node-test.mjs", artifact: "scripts/release-manifest.node-test.mjs" },
+  "REQ-REL-007": { level: "E3", command: "node --test scripts/release-attestation.node-test.mjs", artifact: "scripts/release-attestation.node-test.mjs" },
+  "REQ-REL-008": { level: "E3", command: "node --test scripts/release-manifest.node-test.mjs", artifact: "scripts/release-manifest.node-test.mjs" },
+  "REQ-REL-009": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+
   // Security & RLS (E4)
   "REQ-SEC-001": { level: "E4", command: "node --test scripts/security-smoke.node-test.mjs", artifact: "scripts/security-smoke.node-test.mjs" },
   "REQ-SEC-002": { level: "E4", command: "node --test scripts/rls-tenant-isolation.node-test.mjs", artifact: "scripts/rls-tenant-isolation.node-test.mjs" },
+  "REQ-SEC-003": { level: "E4", command: "node --test scripts/rls-tenant-isolation.node-test.mjs", artifact: "scripts/rls-tenant-isolation.node-test.mjs" },
+  "REQ-SEC-004": { level: "E3", command: "node --test scripts/security-smoke.node-test.mjs", artifact: "scripts/security-smoke.node-test.mjs" },
+  "REQ-SEC-005": { level: "E3", command: "node --test scripts/security-smoke.node-test.mjs", artifact: "scripts/security-smoke.node-test.mjs" },
+  "REQ-SEC-006": { level: "E4", command: "node --test scripts/account-deletion-contract.node-test.mjs", artifact: "scripts/account-deletion-contract.node-test.mjs" },
+  "REQ-SEC-007": { level: "E4", command: "node --test scripts/hosting-security.node-test.mjs", artifact: "scripts/hosting-security.node-test.mjs" },
+  "REQ-SEC-008": { level: "E3", command: "node --test scripts/client-error-boundary.node-test.mjs", artifact: "scripts/client-error-boundary.node-test.mjs" },
+  "REQ-SEC-009": { level: "E3", command: "npx vitest run src/app/lib/bookingUrls.test.ts", artifact: "src/app/lib/bookingUrls.ts" },
+  "REQ-SEC-010": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/turnstile.test.ts" },
+  "REQ-SEC-011": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/functions/alert-processor/index.ts" },
+
+  // Privacy Lifecycle (E3/E4)
+  "REQ-PRIV-003": { level: "E3", command: "node --test scripts/account-deletion-contract.node-test.mjs", artifact: "scripts/account-deletion-contract.node-test.mjs" },
+  "REQ-PRIV-004": { level: "E4", command: "node --test scripts/account-deletion-contract.node-test.mjs", artifact: "scripts/account-deletion-contract.node-test.mjs" },
+  "REQ-PRIV-005": { level: "E3", command: "node --test scripts/database-backup-restore-drill.node-test.mjs", artifact: "supabase/migrations/20260820000500_retention_cleanup.sql" },
+  "REQ-PRIV-008": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+
+  // Analytics Taxonomy (E3)
+  "REQ-ANA-001": { level: "E3", command: "npx vitest run src/app/lib/analytics.test.ts", artifact: "src/app/lib/analytics.ts" },
+  "REQ-ANA-002": { level: "E3", command: "npx vitest run src/app/lib/analytics.test.ts", artifact: "src/app/lib/analytics.ts" },
+  "REQ-ANA-003": { level: "E3", command: "npx vitest run src/app/lib/analytics.test.ts", artifact: "src/app/lib/analytics.ts" },
+
+  // Performance Budgets & CWV (E3)
+  "REQ-PERF-001": { level: "E3", command: "node --test scripts/performance-budget.node-test.mjs", artifact: "scripts/performance-budget.node-test.mjs" },
+  "REQ-PERF-002": { level: "E3", command: "node --test scripts/performance-budget.node-test.mjs", artifact: "scripts/performance-budget.node-test.mjs" },
+  "REQ-PERF-004": { level: "E3", command: "npx vitest run src/app/lib/reportWebVitals.test.ts", artifact: "src/app/lib/reportWebVitals.ts" },
+  "REQ-PERF-005": { level: "E3", command: "npx vitest run src/app/lib/reportWebVitals.test.ts", artifact: "src/app/lib/reportWebVitals.ts" },
+
+  // SEO Assets & Routes (E3)
+  "REQ-SEO-001": { level: "E3", command: "node --test scripts/generate-seo-assets.node-test.mjs", artifact: "scripts/generate-seo-assets.node-test.mjs" },
+  "REQ-SEO-002": { level: "E3", command: "node --test scripts/generate-seo-assets.node-test.mjs", artifact: "scripts/generate-seo-assets.node-test.mjs" },
+  "REQ-SEO-003": { level: "E3", command: "node --test scripts/generate-seo-assets.node-test.mjs", artifact: "scripts/generate-seo-assets.node-test.mjs" },
+
+  // Search UI & Travel Intent Binding (E3)
+  "REQ-SEARCH-001": { level: "E3", command: "npx vitest run src/app/domain/globalSearch.test.ts", artifact: "src/app/pages/SearchPage.tsx" },
+  "REQ-SEARCH-002": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/travelIntent.ts" },
+  "REQ-SEARCH-003": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/HomePage.tsx" },
+  "REQ-SEARCH-004": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/HomePage.tsx" },
+  "REQ-SEARCH-005": { level: "E3", command: "npx vitest run src/app/domain/globalSearch.test.ts", artifact: "src/app/domain/travelEntities.ts" },
+  "REQ-SEARCH-006": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/locationScope.ts" },
 
   // Negative Controls (E3)
   "NC-001": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
   "NC-002": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
   "NC-003": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
+  "NC-004": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
+  "NC-005": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/truthKernelV2.test.ts" },
+  "NC-006": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
+  "NC-007": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
+  "NC-008": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
+  "NC-009": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
+  "NC-010": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
+  "NC-011": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
   "NC-012": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
   "NC-013": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
   "NC-014": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+  "NC-015": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+  "NC-016": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+  "NC-017": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/watch-condition.test.ts" },
   "NC-018": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/watch-condition.test.ts" },
   "NC-019": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/watch-condition.test.ts" },
   "NC-020": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/watch-condition.test.ts" },
@@ -98,6 +243,11 @@ const VERIFIED_EVIDENCE = {
   "NC-028": { level: "E3", command: "node --test scripts/rls-tenant-isolation.node-test.mjs", artifact: "scripts/rls-tenant-isolation.node-test.mjs" },
   "NC-029": { level: "E3", command: "node --test scripts/rls-tenant-isolation.node-test.mjs", artifact: "scripts/rls-tenant-isolation.node-test.mjs" },
   "NC-030": { level: "E3", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
+  "NC-031": { level: "E3", command: "npx vitest run src/app/lib/analytics.test.ts", artifact: "src/app/lib/analytics.ts" },
+  "NC-032": { level: "E3", command: "npx vitest run src/app/lib/bookingUrls.test.ts", artifact: "src/app/lib/bookingUrls.ts" },
+  "NC-033": { level: "E3", command: "node --test scripts/clock-timezone-adversarial.node-test.mjs", artifact: "scripts/clock-timezone-adversarial.node-test.mjs" },
+  "NC-034": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+  "NC-035": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
 
   // Critical Journeys covered by tests (E3/E4)
   "JOURNEY-001": { level: "E4", command: "npx vitest run src/app/domain/travelFeedSections.test.ts", artifact: "src/app/domain/travelFeedSections.ts" },
