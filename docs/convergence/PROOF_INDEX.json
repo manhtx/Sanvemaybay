@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-10-07T08:33:08.008Z",
-  "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
+  "updated_at": "2026-10-07T09:00:15.515Z",
+  "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
   "summary": {
     "total_gates": 267,
     "proven_gates": 70,
@@ -22,8 +22,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/CURRENT_BASELINE.json",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "docs/convergence/CURRENT_BASELINE.json"
       ]
@@ -36,8 +36,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json"
       ]
@@ -50,8 +50,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/generate-convergence-artifacts.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/generate-convergence-artifacts.mjs"
       ]
@@ -64,8 +64,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/generate-convergence-artifacts.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/generate-convergence-artifacts.mjs"
       ]
@@ -78,8 +78,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/TEST_MATRIX.json",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "docs/convergence/TEST_MATRIX.json"
       ]
@@ -92,8 +92,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/EVIDENCE_LEDGER.json",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "docs/convergence/EVIDENCE_LEDGER.json"
       ]
@@ -106,8 +106,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/CURRENT_BASELINE.json",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "docs/convergence/CURRENT_BASELINE.json"
       ]
@@ -120,8 +120,8 @@
       "achieved_evidence_level": "E6",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -1317,8 +1317,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1331,8 +1331,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1345,8 +1345,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1359,8 +1359,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1373,8 +1373,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1387,8 +1387,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1440,8 +1440,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -1454,8 +1454,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/alert-matching.test.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/alert-matching.test.ts"
       ]
@@ -1468,8 +1468,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/retry-policy.test.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/retry-policy.test.ts"
       ]
@@ -1482,8 +1482,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/retry-policy.test.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/retry-policy.test.ts"
       ]
@@ -1496,8 +1496,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -1510,8 +1510,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/alert-matching.test.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/alert-matching.test.ts"
       ]
@@ -1563,8 +1563,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1577,8 +1577,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1591,8 +1591,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1605,8 +1605,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1619,8 +1619,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1659,8 +1659,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/providerAdapter.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/domain/farely/providerAdapter.ts"
       ]
@@ -1673,8 +1673,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/providerAdapter.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/domain/farely/providerAdapter.ts"
       ]
@@ -1687,8 +1687,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/feed-health.test.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/feed-health.test.ts"
       ]
@@ -1870,8 +1870,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/security-smoke.node-test.mjs",
       "artifact": "scripts/security-smoke.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/security-smoke.node-test.mjs"
       ]
@@ -1884,8 +1884,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -2821,8 +2821,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -2835,8 +2835,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -2849,8 +2849,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -2967,8 +2967,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -2981,8 +2981,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -2995,8 +2995,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3048,8 +3048,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3062,8 +3062,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3076,8 +3076,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3090,8 +3090,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3104,8 +3104,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3118,8 +3118,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3132,8 +3132,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3146,8 +3146,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3160,8 +3160,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3174,8 +3174,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3188,8 +3188,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3202,8 +3202,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3216,8 +3216,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -3295,8 +3295,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/travelFeedSections.test.ts",
       "artifact": "src/app/domain/travelFeedSections.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/travelFeedSections.ts"
       ]
@@ -3309,8 +3309,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
       "artifact": "src/app/domain/globalSearch.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/globalSearch.ts"
       ]
@@ -3323,8 +3323,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/dealClaims.test.ts",
       "artifact": "src/app/domain/dealClaims.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/dealClaims.ts"
       ]
@@ -3337,8 +3337,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -3351,8 +3351,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "source_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]

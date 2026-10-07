@@ -27,6 +27,7 @@ import { trackProductEvent } from "../lib/analytics";
 import { reportClientIssue } from "../lib/clientDiagnostics";
 import { WatchModal } from "../components/WatchModal";
 import { buildComparableCohort } from "../domain/opportunityCohort";
+import { createTravelIntent, selectRouteBest, type RouteOffer } from "../../domain/farely";
 
 const PriceHistoryChart = React.lazy(async () => ({
   default: (await import("../components/PriceHistoryChart")).PriceHistoryChart,
@@ -71,33 +72,43 @@ export function DealDetailPage() {
         setPriceHistory(history);
         setFareObservations(observations);
 
-        // Check if a cheaper eligible option exists for this travel intent
+        // Check if a cheaper eligible option exists for this travel intent (NODE DETAIL-01)
         try {
           const candidatesPage = await getObservedFares({
             origin: data.fromCode,
             destination: data.toCode,
             departDateFrom: data.departDate,
             departDateTo: data.departDate,
-            pageSize: 30,
+            pageSize: 100,
           });
-          const eligibleCandidates = (candidatesPage?.fares || []).filter(
-            (f) =>
-              f.id !== data.id &&
-              f.opportunityId !== data.opportunityId &&
-              f.fromCode.toUpperCase() === data.fromCode.toUpperCase() &&
-              f.toCode.toUpperCase() === data.toCode.toUpperCase() &&
-              f.departDate === data.departDate &&
-              f.price < data.price &&
-              (data.stops === 0 ? f.stops === 0 : true)
-          );
-          if (eligibleCandidates.length > 0) {
-            eligibleCandidates.sort((a, b) => a.price - b.price);
-            const bestCheaper = eligibleCandidates[0];
+          const intent = createTravelIntent({
+            origin: data.fromCode,
+            destination: data.toCode,
+            journeyType: data.returnDate ? "ROUND_TRIP" : "ONE_WAY",
+            outboundDate: data.departDate,
+            returnDate: data.returnDate || undefined,
+            cabin: "ECONOMY",
+            maxStops: data.stops === 0 ? 0 : undefined,
+          });
+          const candidateOffers: RouteOffer[] = (candidatesPage?.fares || []).map((f) => ({
+            id: f.id,
+            origin: f.fromCode,
+            destination: f.toCode,
+            departDate: f.departDate,
+            returnDate: f.returnDate,
+            airline: f.airline,
+            price: f.price,
+            stops: f.stops,
+            currency: f.currency,
+            cabin: "ECONOMY",
+          }));
+          const canonicalRouteBest = selectRouteBest(candidateOffers, intent);
+          if (canonicalRouteBest && canonicalRouteBest.id !== data.id && canonicalRouteBest.price < data.price) {
             setCheaperAlternative({
-              airline: bestCheaper.airline,
-              price: bestCheaper.price,
-              id: bestCheaper.id,
-              stops: bestCheaper.stops,
+              airline: canonicalRouteBest.airline,
+              price: canonicalRouteBest.price,
+              id: canonicalRouteBest.id,
+              stops: canonicalRouteBest.stops ?? 0,
             });
           } else {
             setCheaperAlternative(null);
@@ -172,19 +183,8 @@ export function DealDetailPage() {
     });
   };
 
-  // Build Comparable Cohort & Evidence using canonical observations where available (REQ-HIST-008, REQ-STATS-001)
-  const rawCohortObservations = fareObservations.length > 0
-    ? fareObservations
-    : priceHistory.map((ph, idx) => ({
-        id: `ph-${idx}`,
-        originCode: deal.fromCode,
-        destinationCode: deal.toCode,
-        departDate: ph.date,
-        price: ph.price,
-        stops: deal.stops,
-        airlineCode: deal.airlineCode,
-        observedAt: ph.date,
-      }));
+  // Build Comparable Cohort & Evidence using ONLY canonical fare_observations (REQ-HIST-008, NODE DATA-06, NODE DETAIL-02)
+  const rawCohortObservations = fareObservations;
 
   const cohort = buildComparableCohort(
     {

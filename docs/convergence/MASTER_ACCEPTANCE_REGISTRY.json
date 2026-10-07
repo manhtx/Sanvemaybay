@@ -23,13 +23,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/CURRENT_BASELINE.json",
           "status": "VERIFIED"
@@ -53,13 +53,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
           "status": "VERIFIED"
@@ -83,13 +83,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/generate-convergence-artifacts.mjs",
           "status": "VERIFIED"
@@ -113,13 +113,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/generate-convergence-artifacts.mjs",
           "status": "VERIFIED"
@@ -143,13 +143,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/TEST_MATRIX.json",
           "status": "VERIFIED"
@@ -173,13 +173,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/EVIDENCE_LEDGER.json",
           "status": "VERIFIED"
@@ -203,13 +203,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "docs/convergence/CURRENT_BASELINE.json",
           "status": "VERIFIED"
@@ -233,13 +233,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E6",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -2084,13 +2084,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2114,13 +2114,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2144,13 +2144,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2174,13 +2174,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2204,13 +2204,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2234,13 +2234,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -2324,13 +2324,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/database-ci-contract.node-test.mjs",
           "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
           "status": "VERIFIED"
@@ -2354,13 +2354,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/alert-matching.test.ts",
           "status": "VERIFIED"
@@ -2384,13 +2384,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/retry-policy.test.ts",
           "status": "VERIFIED"
@@ -2414,13 +2414,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/retry-policy.test.ts",
           "status": "VERIFIED"
@@ -2444,13 +2444,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -2474,13 +2474,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/alert-matching.test.ts",
           "status": "VERIFIED"
@@ -2564,13 +2564,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2594,13 +2594,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2624,13 +2624,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2654,13 +2654,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2684,13 +2684,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -2754,13 +2754,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
           "artifact": "src/domain/farely/providerAdapter.ts",
           "status": "VERIFIED"
@@ -2784,13 +2784,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
           "artifact": "src/domain/farely/providerAdapter.ts",
           "status": "VERIFIED"
@@ -2814,13 +2814,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/feed-health.test.ts",
           "status": "VERIFIED"
@@ -3104,13 +3104,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/security-smoke.node-test.mjs",
           "artifact": "scripts/security-smoke.node-test.mjs",
           "status": "VERIFIED"
@@ -3134,13 +3134,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -4580,13 +4580,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
@@ -4606,13 +4606,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
@@ -4632,13 +4632,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
@@ -4786,13 +4786,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -4812,13 +4812,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -4838,13 +4838,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -4912,13 +4912,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/watch-condition.test.ts",
           "status": "VERIFIED"
@@ -4938,13 +4938,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/watch-condition.test.ts",
           "status": "VERIFIED"
@@ -4964,13 +4964,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/watch-condition.test.ts",
           "status": "VERIFIED"
@@ -4990,13 +4990,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -5016,13 +5016,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -5042,13 +5042,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -5068,13 +5068,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -5094,13 +5094,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5120,13 +5120,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5146,13 +5146,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5172,13 +5172,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5198,13 +5198,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -5224,13 +5224,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -5332,13 +5332,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/travelFeedSections.test.ts",
           "artifact": "src/app/domain/travelFeedSections.ts",
           "status": "VERIFIED"
@@ -5360,13 +5360,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/globalSearch.test.ts",
           "artifact": "src/app/domain/globalSearch.ts",
           "status": "VERIFIED"
@@ -5388,13 +5388,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/dealClaims.test.ts",
           "artifact": "src/app/domain/dealClaims.ts",
           "status": "VERIFIED"
@@ -5416,13 +5416,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
@@ -5444,13 +5444,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T08:33:08.008Z",
+      "verified_at": "2026-10-07T09:00:15.515Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "5b33705c990cc0b952516355b71bc836762f8185",
-          "timestamp": "2026-10-07T08:33:08.008Z",
+          "sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
+          "timestamp": "2026-10-07T09:00:15.515Z",
           "command": "npx vitest run src/app/lib/bookmarks.test.ts",
           "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
@@ -5710,5 +5710,5 @@
       "evidence": []
     }
   ],
-  "updated_at": "2026-10-07T08:33:08.078Z"
+  "updated_at": "2026-10-07T09:00:19.370Z"
 }

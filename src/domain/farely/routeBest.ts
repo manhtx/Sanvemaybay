@@ -18,56 +18,129 @@ export interface RouteOffer {
   dealScore?: number;
   cabin?: string;
   stops?: number;
+  durationMinutes?: number;
   currency?: string;
   pricingUnit?: string;
+}
+
+export type IneligibilityReason =
+  | 'ORIGIN_MISMATCH'
+  | 'DESTINATION_MISMATCH'
+  | 'OUTBOUND_DATE_MISMATCH'
+  | 'RETURN_DATE_MISMATCH'
+  | 'MISSING_RETURN_DATE'
+  | 'CABIN_MISMATCH'
+  | 'STOPS_EXCEEDED'
+  | 'DURATION_EXCEEDED'
+  | 'CURRENCY_MISMATCH'
+  | 'INVALID_PRICE';
+
+export interface EligibilityResult {
+  isEligible: boolean;
+  reasons: IneligibilityReason[];
+  normalizedOffer?: RouteOffer;
+}
+
+/**
+ * Normalizes an offer for a given TravelIntent (e.g. party total -> per traveler).
+ * NODE TK-05
+ */
+export function normalizeOfferForIntent(offer: RouteOffer, intent: TravelIntent): RouteOffer {
+  let normalizedPrice = offer.price;
+  let normalizedPricingUnit = offer.pricingUnit || 'PER_TRAVELER';
+
+  if (normalizedPricingUnit === 'PARTY_TOTAL') {
+    const totalPax = (intent.passengers.adults || 1) + (intent.passengers.children || 0);
+    if (totalPax > 1) {
+      normalizedPrice = Math.round(offer.price / totalPax);
+      normalizedPricingUnit = 'PER_TRAVELER';
+    }
+  }
+
+  return {
+    ...offer,
+    price: normalizedPrice,
+    pricingUnit: normalizedPricingUnit
+  };
+}
+
+/**
+ * Evaluates offer eligibility against canonical TravelIntent, emitting typed reasons.
+ * Explicit production primitive (NODE TK-05).
+ */
+export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent): EligibilityResult {
+  const reasons: IneligibilityReason[] = [];
+
+  // 1. Origin scope (NC-002: DMK cannot satisfy exact BKK)
+  if (!satisfiesLocationScope(offer.origin, intent.originScope)) {
+    reasons.push('ORIGIN_MISMATCH');
+  }
+
+  // 2. Destination scope
+  if (!satisfiesLocationScope(offer.destination, intent.destinationScope)) {
+    reasons.push('DESTINATION_MISMATCH');
+  }
+
+  // 3. Return date & journey (NC-006: Missing return cannot satisfy explicit round-trip intent)
+  if (intent.journeyType === 'ROUND_TRIP') {
+    if (!offer.returnDate) {
+      reasons.push('MISSING_RETURN_DATE');
+    } else if (intent.inbound?.exact && offer.returnDate !== intent.inbound.exact) {
+      reasons.push('RETURN_DATE_MISMATCH');
+    }
+  }
+
+  // 4. Outbound date
+  if (intent.outbound.exact && offer.departDate !== intent.outbound.exact) {
+    reasons.push('OUTBOUND_DATE_MISMATCH');
+  }
+
+  // 5. Cabin compatibility (NC-004: Business cannot match Economy intent)
+  const offerCabin = (offer.cabin || 'ECONOMY').toUpperCase();
+  if (offerCabin !== intent.cabin.toUpperCase()) {
+    reasons.push('CABIN_MISMATCH');
+  }
+
+  // 6. Max stops constraint
+  if (intent.maxStops !== undefined && (offer.stops ?? 0) > intent.maxStops) {
+    reasons.push('STOPS_EXCEEDED');
+  }
+
+  // 7. Max duration constraint
+  if (
+    intent.maxDurationMinutes !== undefined &&
+    offer.durationMinutes !== undefined &&
+    offer.durationMinutes > intent.maxDurationMinutes
+  ) {
+    reasons.push('DURATION_EXCEEDED');
+  }
+
+  // 8. Currency match
+  if (offer.currency && offer.currency !== intent.currency) {
+    reasons.push('CURRENCY_MISMATCH');
+  }
+
+  // 9. Non-negative, finite price
+  if (!Number.isFinite(offer.price) || offer.price <= 0) {
+    reasons.push('INVALID_PRICE');
+  }
+
+  if (reasons.length > 0) {
+    return { isEligible: false, reasons };
+  }
+
+  return {
+    isEligible: true,
+    reasons: [],
+    normalizedOffer: normalizeOfferForIntent(offer, intent)
+  };
 }
 
 /**
  * Checks whether an offer is compatible with a TravelIntent.
  */
 export function isOfferCompatible(offer: RouteOffer, intent: TravelIntent): boolean {
-  // 1. Origin scope (NC-002: DMK cannot satisfy exact BKK)
-  if (!satisfiesLocationScope(offer.origin, intent.originScope)) {
-    return false;
-  }
-
-  // 2. Destination scope
-  if (!satisfiesLocationScope(offer.destination, intent.destinationScope)) {
-    return false;
-  }
-
-  // 3. Dates (NC-006: Missing return cannot satisfy explicit round-trip intent)
-  if (intent.journeyType === 'ROUND_TRIP') {
-    if (!offer.returnDate) return false;
-    if (intent.inbound?.exact && offer.returnDate !== intent.inbound.exact) return false;
-  }
-
-  if (intent.outbound.exact && offer.departDate !== intent.outbound.exact) {
-    return false;
-  }
-
-  // 4. Cabin compatibility (NC-004: Business cannot match Economy intent)
-  const offerCabin = (offer.cabin || 'ECONOMY').toUpperCase();
-  if (offerCabin !== intent.cabin.toUpperCase()) {
-    return false;
-  }
-
-  // 5. Max stops constraint
-  if (intent.maxStops !== undefined && (offer.stops ?? 0) > intent.maxStops) {
-    return false;
-  }
-
-  // 6. Currency match
-  if (offer.currency && offer.currency !== intent.currency) {
-    return false;
-  }
-
-  // 7. Non-negative, finite price
-  if (!Number.isFinite(offer.price) || offer.price <= 0) {
-    return false;
-  }
-
-  return true;
+  return evaluateOfferEligibility(offer, intent).isEligible;
 }
 
 /**
@@ -76,20 +149,28 @@ export function isOfferCompatible(offer: RouteOffer, intent: TravelIntent): bool
  * - REQ-PRICE-002: Cheapest = mathematical minimum valid compatible price.
  * - REQ-PRICE-003 / NC-001: Deal Score never overrides a lower compatible price.
  * - REQ-PRICE-005: Deterministic under input shuffling.
+ * - NODE TK-06: Evaluates eligibility, normalizes, selects minimum eligible price.
  */
 export function selectRouteBest(offers: RouteOffer[], intent: TravelIntent): RouteOffer | null {
   if (!offers || offers.length === 0) return null;
 
-  const compatible = offers.filter(o => isOfferCompatible(o, intent));
-  if (compatible.length === 0) return null;
+  const eligibleOffers: RouteOffer[] = [];
+  for (const offer of offers) {
+    const evalResult = evaluateOfferEligibility(offer, intent);
+    if (evalResult.isEligible && evalResult.normalizedOffer) {
+      eligibleOffers.push(evalResult.normalizedOffer);
+    }
+  }
+
+  if (eligibleOffers.length === 0) return null;
 
   // Sort deterministically by price ascending, with stable tie-breaker on offer ID
-  compatible.sort((a, b) => {
+  eligibleOffers.sort((a, b) => {
     if (a.price !== b.price) {
       return a.price - b.price; // mathematical minimum
     }
     return a.id.localeCompare(b.id);
   });
 
-  return compatible[0];
+  return eligibleOffers[0];
 }

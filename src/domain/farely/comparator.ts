@@ -16,6 +16,10 @@ export interface HistoricalObservation {
   currency: string;
   cabin: string;
   stops: number;
+  scanEpoch?: string;
+  sourceQuality?: 'PROVEN_PROVIDER' | 'DEGRADED_FALLBACK' | 'UNVERIFIED';
+  pricingUnit?: string;
+  tripLengthDays?: number;
 }
 
 export interface ComparisonResult {
@@ -26,6 +30,7 @@ export interface ComparisonResult {
   discountVsMedianPercent: number | null;
   evidenceLevel: EvidenceLevel;
   verdictLabel: string;
+  uniqueEpochs?: number;
 }
 
 // Canonical sample size thresholds (REQ-COMP-002: One threshold registry)
@@ -49,13 +54,27 @@ function computeMedian(sortedValues: number[]): number {
 }
 
 /**
- * Evaluates evidence level based on sample size and independent observations.
- * REQ-COMP-005, REQ-COMP-006 (no pseudo-confidence percentage).
+ * Evaluates evidence level based on sample size, independent scan epochs, and source quality.
+ * REQ-COMP-005, REQ-COMP-006, NODE TK-07.
  */
-export function determineEvidenceLevel(sampleSize: number): EvidenceLevel {
+export function determineEvidenceLevel(
+  sampleSize: number,
+  options?: { uniqueEpochs?: number; hasDegradedOnly?: boolean }
+): EvidenceLevel {
   if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_WEAK) {
     return 'INSUFFICIENT';
   }
+
+  // Degraded fallback data alone cannot produce STRONG evidence
+  if (options?.hasDegradedOnly) {
+    return sampleSize >= COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE ? 'MODERATE' : 'WEAK';
+  }
+
+  // If epochs are explicitly tracked, require independent scan epochs
+  if (options?.uniqueEpochs !== undefined && options.uniqueEpochs < 2 && sampleSize >= COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE) {
+    return 'WEAK'; // Single epoch cannot provide MODERATE/STRONG confidence
+  }
+
   if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE) {
     return 'WEAK';
   }
@@ -72,13 +91,24 @@ export function compareAgainstCohort(
   currentPrice: number,
   cohortObservations: HistoricalObservation[]
 ): ComparisonResult {
-  const validPrices = cohortObservations
+  const validObservations = cohortObservations
+    .filter(o => Number.isFinite(o.price) && o.price > 0);
+
+  const validPrices = validObservations
     .map(o => o.price)
-    .filter(p => Number.isFinite(p) && p > 0)
     .sort((a, b) => a - b);
 
   const sampleSize = validPrices.length;
-  const evidenceLevel = determineEvidenceLevel(sampleSize);
+
+  const epochs = new Set(
+    validObservations
+      .map(o => o.scanEpoch || o.observedAt.slice(0, 13))
+      .filter(Boolean)
+  );
+  const uniqueEpochs = epochs.size;
+  const hasDegradedOnly = validObservations.length > 0 && validObservations.every(o => o.sourceQuality === 'DEGRADED_FALLBACK');
+
+  const evidenceLevel = determineEvidenceLevel(sampleSize, { uniqueEpochs, hasDegradedOnly });
 
   if (evidenceLevel === 'INSUFFICIENT' || sampleSize === 0) {
     return {
@@ -88,7 +118,8 @@ export function compareAgainstCohort(
       lowestHistoricalPrice: null,
       discountVsMedianPercent: null,
       evidenceLevel: 'INSUFFICIENT',
-      verdictLabel: 'Giá quan sát'
+      verdictLabel: 'Giá quan sát',
+      uniqueEpochs
     };
   }
 
@@ -113,6 +144,33 @@ export function compareAgainstCohort(
     lowestHistoricalPrice,
     discountVsMedianPercent: discountPercent,
     evidenceLevel,
-    verdictLabel
+    verdictLabel,
+    uniqueEpochs
   };
+}
+
+/**
+ * Filters a raw observation pool into a strict Comparable Cohort.
+ * NODE TK-07: Do not equate all fares with same origin/destination.
+ */
+export function filterComparableCohort(
+  observations: HistoricalObservation[],
+  filter: {
+    origin: string;
+    destination: string;
+    cabin?: string;
+    currency?: string;
+    maxStops?: number;
+    tripLengthDays?: number;
+  }
+): HistoricalObservation[] {
+  return observations.filter(o => {
+    if (o.origin.toUpperCase() !== filter.origin.toUpperCase()) return false;
+    if (o.destination.toUpperCase() !== filter.destination.toUpperCase()) return false;
+    if (filter.cabin && (o.cabin || 'ECONOMY').toUpperCase() !== filter.cabin.toUpperCase()) return false;
+    if (filter.currency && o.currency && o.currency.toUpperCase() !== filter.currency.toUpperCase()) return false;
+    if (filter.maxStops !== undefined && o.stops > filter.maxStops) return false;
+    if (filter.tripLengthDays !== undefined && o.tripLengthDays !== undefined && o.tripLengthDays !== filter.tripLengthDays) return false;
+    return true;
+  });
 }

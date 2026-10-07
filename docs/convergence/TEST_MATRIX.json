@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-07T08:33:08.078Z",
-  "tested_sha": "5b33705c990cc0b952516355b71bc836762f8185",
+  "updated_at": "2026-10-07T09:00:19.370Z",
+  "tested_sha": "4959ff7bc4f4dcec754b2e463674611910f962f8",
   "summary": {
     "vitest_test_files": 36,
-    "node_test_files": 29,
+    "node_test_files": 30,
     "deno_test_files": 18,
-    "total_test_suites": 83,
+    "total_test_suites": 84,
     "status": "PASS"
   },
   "layers": [
@@ -60,6 +60,7 @@
       "files": [
         "scripts/acceptance-anti-shrinkage.node-test.mjs",
         "scripts/account-deletion-contract.node-test.mjs",
+        "scripts/canonical-data-idempotency.node-test.mjs",
         "scripts/client-error-boundary.node-test.mjs",
         "scripts/clock-timezone-adversarial.node-test.mjs",
         "scripts/database-backup-restore-drill.node-test.mjs",
@@ -88,7 +89,7 @@
         "scripts/synthetic-health-check.node-test.mjs",
         "scripts/verify-certification-integrity.node-test.mjs"
       ],
-      "test_file_count": 29,
+      "test_file_count": 30,
       "verdict": "PASS"
     },
     {

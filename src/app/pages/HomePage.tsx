@@ -53,8 +53,16 @@ export function HomePage() {
     const params = new URLSearchParams();
     if (origin) params.set("from", origin);
     if (destination) params.set("destination", destination);
-    if (departDate) params.set("departureFrom", departDate);
-    if (returnDate) params.set("departureTo", returnDate);
+    if (departDate) {
+      params.set("departDate", departDate);
+      params.set("departureFrom", departDate);
+    }
+    if (returnDate) {
+      params.set("returnDate", returnDate);
+      params.set("departureTo", returnDate);
+    }
+    if (passengers && passengers !== "1") params.set("passengers", passengers);
+    if (cabin && cabin !== "economy") params.set("cabin", cabin);
     navigate(`/search?${params.toString()}`);
   };
 

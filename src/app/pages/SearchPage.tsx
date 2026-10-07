@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import {
   Search,
   Bell,
@@ -32,12 +32,12 @@ const defaultDepartureCities = [
 
 const destinationEntities = [
   { code: "", label: "Tất cả điểm đến" },
-  { code: "BKK_ALL", label: "Bangkok - Tất cả sân bay (BKK, DMK)" },
+  { code: "BKK_METRO", label: "Bangkok - Tất cả sân bay (BKK, DMK)" },
   { code: "BKK", label: "Bangkok - Suvarnabhumi (BKK)" },
   { code: "DMK", label: "Bangkok - Don Mueang (DMK)" },
   { code: "SIN", label: "Singapore - Changi (SIN)" },
   { code: "KUL", label: "Kuala Lumpur (KUL)" },
-  { code: "TYO_ALL", label: "Tokyo - Tất cả sân bay (NRT, HND)" },
+  { code: "TYO_METRO", label: "Tokyo - Tất cả sân bay (NRT, HND)" },
   { code: "NRT", label: "Tokyo - Narita (NRT)" },
   { code: "HND", label: "Tokyo - Haneda (HND)" },
   { code: "ICN", label: "Seoul - Incheon (ICN)" },
@@ -49,14 +49,21 @@ const destinationEntities = [
 ];
 
 export function SearchPage() {
+  const [searchParams] = useSearchParams();
+  const urlFrom = searchParams.get("from");
+  const rawUrlDest = searchParams.get("destination");
+  const urlDest = rawUrlDest === "BKK_ALL" ? "BKK_METRO" : rawUrlDest === "TYO_ALL" ? "TYO_METRO" : rawUrlDest;
+  const urlDepart = searchParams.get("departDate") || searchParams.get("departureFrom");
+  const urlReturn = searchParams.get("returnDate") || searchParams.get("departureTo");
+
   const [departureCities, setDepartureCities] = useState(defaultDepartureCities);
   const [budget, setBudget] = useState(() => getUserPreferences().budget || 10000000);
-  const [fromCity, setFromCity] = useState(() => getUserPreferences().homeAirport || "HAN");
-  const [destination, setDestination] = useState("");
+  const [fromCity, setFromCity] = useState(() => urlFrom || getUserPreferences().homeAirport || "HAN");
+  const [destination, setDestination] = useState(() => urlDest || "");
   const [maxStops, setMaxStops] = useState(() => getUserPreferences().maxStops ?? 1);
   const [maxFlightTimeMinutes, setMaxFlightTimeMinutes] = useState(() => getUserPreferences().maxFlightTimeMinutes);
-  const [departureFrom, setDepartureFrom] = useState(() => getUserPreferences().departureFrom ?? "");
-  const [departureTo, setDepartureTo] = useState(() => getUserPreferences().departureTo ?? "");
+  const [departureFrom, setDepartureFrom] = useState(() => urlDepart || getUserPreferences().departureFrom || "");
+  const [departureTo, setDepartureTo] = useState(() => urlReturn || getUserPreferences().departureTo || "");
   const [results, setResults] = useState<Deal[]>([]);
   const [searchStatus, setSearchStatus] = useState<SearchStatus>("healthy");
   const [isScanning, setIsScanning] = useState(false);
@@ -74,14 +81,21 @@ export function SearchPage() {
     loadRemoteUserPreferences().then((remote) => {
       if (!remote) return;
       if (remote.budget) setBudget(remote.budget);
-      if (remote.homeAirport) setFromCity(remote.homeAirport);
+      if (!urlFrom && remote.homeAirport) setFromCity(remote.homeAirport);
       if (remote.maxStops != null) setMaxStops(remote.maxStops);
       if (remote.maxFlightTimeMinutes != null) setMaxFlightTimeMinutes(remote.maxFlightTimeMinutes);
-      if (remote.departureFrom) setDepartureFrom(remote.departureFrom);
-      if (remote.departureTo) setDepartureTo(remote.departureTo);
+      if (!urlDepart && remote.departureFrom) setDepartureFrom(remote.departureFrom);
+      if (!urlReturn && remote.departureTo) setDepartureTo(remote.departureTo);
       saveUserPreferences(remote);
     });
-  }, []);
+  }, [urlFrom, urlDepart, urlReturn]);
+
+  useEffect(() => {
+    if (urlFrom) setFromCity(urlFrom);
+    if (urlDest) setDestination(urlDest);
+    if (urlDepart) setDepartureFrom(urlDepart);
+    if (urlReturn) setDepartureTo(urlReturn);
+  }, [urlFrom, urlDest, urlDepart, urlReturn]);
 
   const runSearch = useCallback(
     async (isManual = false) => {

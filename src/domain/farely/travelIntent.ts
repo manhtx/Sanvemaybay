@@ -3,7 +3,7 @@
  * REQ-DOM-002, REQ-DOM-003, REQ-DOM-007, REQ-DOM-008, REQ-DOM-015, NC-004, NC-005, NC-006
  */
 
-import { LocationScope, resolveLocationScope } from './locationScope';
+import { LocationScope, resolveLocationScope, AIRPORT_CATALOG } from './locationScope';
 import { CurrencyCode } from './money';
 
 export type JourneyType = 'ONE_WAY' | 'ROUND_TRIP';
@@ -39,6 +39,7 @@ export interface TravelIntent {
   passengers: PassengerMix;
   cabin: CabinClass;
   maxStops?: number;
+  maxDurationMinutes?: number;
   baggagePreference?: 'ANY' | 'CARRY_ON' | 'CHECKED_20KG';
   currency: CurrencyCode;
 }
@@ -46,12 +47,15 @@ export interface TravelIntent {
 /**
  * Derives market scope from origin and destination countries.
  * Domestic if both within VN, International otherwise.
+ * Sourced purely from canonical AIRPORT_CATALOG country metadata.
  */
 export function deriveMarketScope(originCode: string, destinationCode: string): MarketScope {
-  const vnAirports = new Set(['HAN', 'SGN', 'DAD', 'CXR', 'PQC', 'HPH', 'VCA', 'HUI', 'BMV', 'UIH', 'VCL', 'VII', 'THD', 'PXU']);
-  const isOriginVn = vnAirports.has(originCode.toUpperCase());
-  const isDestVn = vnAirports.has(destinationCode.toUpperCase());
-  return (isOriginVn && isDestVn) ? 'DOMESTIC' : 'INTERNATIONAL';
+  const originAirport = AIRPORT_CATALOG[originCode.toUpperCase()];
+  const destAirport = AIRPORT_CATALOG[destinationCode.toUpperCase()];
+  if (originAirport && destAirport) {
+    return (originAirport.country === 'VN' && destAirport.country === 'VN') ? 'DOMESTIC' : 'INTERNATIONAL';
+  }
+  return 'INTERNATIONAL';
 }
 
 /**
@@ -68,6 +72,9 @@ export function createTravelIntent(params: {
   infants?: number;
   cabin?: CabinClass;
   maxStops?: number;
+  maxDurationMinutes?: number;
+  tripLength?: TripLengthConstraint;
+  baggagePreference?: 'ANY' | 'CARRY_ON' | 'CHECKED_20KG';
   currency?: CurrencyCode;
 }): TravelIntent {
   const originScope = resolveLocationScope(params.origin);
@@ -104,9 +111,12 @@ export function createTravelIntent(params: {
     marketScope,
     outbound,
     inbound,
+    tripLength: params.tripLength,
     passengers: { adults, children, infants },
     cabin: params.cabin ?? 'ECONOMY',
     maxStops: params.maxStops,
+    maxDurationMinutes: params.maxDurationMinutes,
+    baggagePreference: params.baggagePreference,
     currency: params.currency ?? 'VND'
   };
 }
