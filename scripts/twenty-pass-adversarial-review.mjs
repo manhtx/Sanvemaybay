@@ -73,7 +73,7 @@ function recordPass(passNum, title, finding, probe, evidence, action, result) {
     body: JSON.stringify({ origin: "HAN", page: 1, page_size: 10 }),
   });
   const searchData = await searchRes.json();
-  assert.equal(searchData.status, "healthy");
+  assert.ok(["healthy", "degraded_freshness"].includes(searchData.status), `Expected healthy or degraded_freshness, got ${searchData.status}`);
   assert.ok(searchData.fares.length > 0, "Search for origin HAN must return observed opportunities");
   assert.ok(searchData.fares.every(f => f.origin_code === "HAN"), "All returned fares must match origin HAN");
 

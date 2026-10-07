@@ -37,9 +37,9 @@
     "exact_final_release_state_reconciled": true
   },
   "market_outcome_evidence": "COLLECTING_EVIDENCE",
-  "timestamp": "2026-10-07T10:36:50.223Z",
-  "source_sha": "4a9a9ec73f06e0c7b3f1759eea3f332476d5afb1",
-  "remote_sha": "4a9a9ec73f06e0c7b3f1759eea3f332476d5afb1",
+  "timestamp": "2026-10-07T10:46:06.517Z",
+  "source_sha": "09a61327f3d9d562144d43af033769c817354f53",
+  "remote_sha": "09a61327f3d9d562144d43af033769c817354f53",
   "total_gates": 267,
   "total_p0_gates": 192,
   "proven_p0_gates": 192,
