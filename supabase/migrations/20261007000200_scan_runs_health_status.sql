@@ -7,8 +7,10 @@ ALTER TABLE public.scan_runs
   ADD COLUMN IF NOT EXISTS health_status TEXT NOT NULL DEFAULT 'healthy'
   CHECK (health_status IN ('healthy', 'partial', 'degraded', 'failed', 'unknown'));
 
--- Update operational_scan_health view to include health_status
-CREATE OR REPLACE VIEW public.operational_scan_health
+-- Drop and recreate operational_scan_health view to allow schema evolution without 42P16 error
+DROP VIEW IF EXISTS public.operational_scan_health;
+
+CREATE VIEW public.operational_scan_health
 WITH (security_invoker = true)
 AS
 SELECT
@@ -17,7 +19,6 @@ SELECT
   routes.destination_code,
   runs.provider,
   runs.status,
-  runs.health_status,
   runs.observations_saved,
   runs.started_at,
   runs.completed_at,
@@ -31,7 +32,8 @@ SELECT
   COALESCE(NULLIF(runs.response_payload ->> 'normalized_rows', '')::INT, 0) AS normalized_rows,
   COALESCE(NULLIF(runs.response_payload ->> 'rejected_rows', '')::INT, 0) AS rejected_rows,
   COALESCE(NULLIF(runs.response_payload ->> 'deduped_rows', '')::INT, 0) AS deduped_rows,
-  runs.error_message
+  runs.error_message,
+  runs.health_status
 FROM public.scan_runs AS runs
 JOIN public.tracked_routes AS routes ON routes.id = runs.route_id;
 
