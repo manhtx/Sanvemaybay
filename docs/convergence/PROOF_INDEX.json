@@ -1,16 +1,16 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-10-07T09:15:18.164Z",
-  "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
+  "updated_at": "2026-10-07T09:27:38.697Z",
+  "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
   "summary": {
     "total_gates": 267,
-    "proven_gates": 192,
-    "open_gates": 75,
+    "proven_gates": 236,
+    "open_gates": 31,
     "by_class": {
       "A_MISSING_OR_WRONG_IMPLEMENTATION": 0,
-      "B_IMPLEMENTED_NOT_CUT_OVER": 11,
-      "C_IMPLEMENTED_INSUFFICIENT_PROOF": 69,
-      "D_SUPERSEDED_OR_EXTERNAL_BLOCKER": 11
+      "B_IMPLEMENTED_NOT_CUT_OVER": 3,
+      "C_IMPLEMENTED_INSUFFICIENT_PROOF": 34,
+      "D_SUPERSEDED_OR_EXTERNAL_BLOCKER": 10
     }
   },
   "gates": {
@@ -22,8 +22,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/CURRENT_BASELINE.json",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "docs/convergence/CURRENT_BASELINE.json"
       ]
@@ -36,8 +36,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json"
       ]
@@ -50,8 +50,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/generate-convergence-artifacts.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/generate-convergence-artifacts.mjs"
       ]
@@ -64,8 +64,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/generate-convergence-artifacts.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/generate-convergence-artifacts.mjs"
       ]
@@ -78,8 +78,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/TEST_MATRIX.json",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "docs/convergence/TEST_MATRIX.json"
       ]
@@ -92,8 +92,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/EVIDENCE_LEDGER.json",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "docs/convergence/EVIDENCE_LEDGER.json"
       ]
@@ -106,8 +106,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "docs/convergence/CURRENT_BASELINE.json",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "docs/convergence/CURRENT_BASELINE.json"
       ]
@@ -120,37 +120,39 @@
       "achieved_evidence_level": "E6",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
     },
     "REQ-CONTROL-009": {
       "gate_id": "REQ-CONTROL-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E2",
+      "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
+      "artifact": "scripts/generate-convergence-artifacts.mjs",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "scripts/generate-convergence-artifacts.mjs"
+      ]
     },
     "REQ-CONTROL-010": {
       "gate_id": "REQ-CONTROL-010",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E2",
+      "command_probe": "node --test scripts/release-manifest.node-test.mjs",
+      "artifact": "docs/convergence/RELEASE_MANIFEST.json",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "docs/convergence/RELEASE_MANIFEST.json"
+      ]
     },
     "REQ-REL-001": {
       "gate_id": "REQ-REL-001",
@@ -160,8 +162,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
       "artifact": "scripts/deployment-boundary.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/deployment-boundary.node-test.mjs"
       ]
@@ -174,8 +176,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
       "artifact": "scripts/deployment-boundary.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/deployment-boundary.node-test.mjs"
       ]
@@ -188,8 +190,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
       "artifact": "scripts/deployment-boundary.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/deployment-boundary.node-test.mjs"
       ]
@@ -202,8 +204,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
       "artifact": "scripts/deployment-boundary.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/deployment-boundary.node-test.mjs"
       ]
@@ -216,8 +218,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/deployment-boundary.node-test.mjs",
       "artifact": "scripts/deployment-boundary.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/deployment-boundary.node-test.mjs"
       ]
@@ -230,8 +232,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/release-manifest.node-test.mjs",
       "artifact": "scripts/release-manifest.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/release-manifest.node-test.mjs"
       ]
@@ -244,8 +246,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/release-attestation.node-test.mjs",
       "artifact": "scripts/release-attestation.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/release-attestation.node-test.mjs"
       ]
@@ -258,8 +260,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/release-manifest.node-test.mjs",
       "artifact": "scripts/release-manifest.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/release-manifest.node-test.mjs"
       ]
@@ -272,8 +274,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -286,8 +288,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/index.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/index.ts"
       ]
@@ -300,8 +302,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/travelIntent.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/travelIntent.ts"
       ]
@@ -314,8 +316,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/travelIntent.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/travelIntent.ts"
       ]
@@ -328,8 +330,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/locationScope.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/locationScope.ts"
       ]
@@ -342,8 +344,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/locationScope.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/locationScope.ts"
       ]
@@ -356,8 +358,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/money.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/money.ts"
       ]
@@ -370,8 +372,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/travelIntent.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/travelIntent.ts"
       ]
@@ -384,8 +386,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/travelIntent.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/travelIntent.ts"
       ]
@@ -398,8 +400,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/travelIntent.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/travelIntent.ts"
       ]
@@ -412,8 +414,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/identity.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/identity.ts"
       ]
@@ -426,8 +428,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/canonical-data-idempotency.node-test.mjs",
       "artifact": "scripts/canonical-data-idempotency.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/canonical-data-idempotency.node-test.mjs"
       ]
@@ -440,8 +442,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/canonical-data-idempotency.node-test.mjs",
       "artifact": "scripts/canonical-data-idempotency.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/canonical-data-idempotency.node-test.mjs"
       ]
@@ -454,8 +456,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/identity.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/identity.ts"
       ]
@@ -468,8 +470,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/priceScope.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/priceScope.ts"
       ]
@@ -482,8 +484,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/travelIntent.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/travelIntent.ts"
       ]
@@ -496,8 +498,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -510,8 +512,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -524,8 +526,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -538,8 +540,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
       ]
@@ -552,8 +554,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
       ]
@@ -566,8 +568,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -580,8 +582,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -594,8 +596,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -608,8 +610,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/canonical-data-idempotency.node-test.mjs",
       "artifact": "supabase/migrations/20261007000100_canonical_fare_observations.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261007000100_canonical_fare_observations.sql"
       ]
@@ -622,8 +624,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
       ]
@@ -636,8 +638,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/snapshotAtomicity.test.ts",
       "artifact": "src/app/domain/snapshotAtomicity.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/snapshotAtomicity.ts"
       ]
@@ -650,8 +652,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/snapshotAtomicity.test.ts",
       "artifact": "src/app/domain/snapshotAtomicity.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/snapshotAtomicity.ts"
       ]
@@ -664,8 +666,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -678,8 +680,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/alert-processor/index.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/alert-processor/index.ts"
       ]
@@ -692,8 +694,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/feed-health.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/feed-health.test.ts"
       ]
@@ -706,8 +708,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/snapshotAtomicity.test.ts",
       "artifact": "src/app/domain/snapshotAtomicity.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/snapshotAtomicity.ts"
       ]
@@ -720,8 +722,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
       "artifact": "scripts/pagination-truth.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/pagination-truth.node-test.mjs"
       ]
@@ -734,8 +736,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
       "artifact": "scripts/pagination-truth.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/pagination-truth.node-test.mjs"
       ]
@@ -748,8 +750,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
       "artifact": "scripts/pagination-truth.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/pagination-truth.node-test.mjs"
       ]
@@ -762,8 +764,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
       "artifact": "scripts/pagination-truth.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/pagination-truth.node-test.mjs"
       ]
@@ -776,8 +778,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/pagination-truth.node-test.mjs",
       "artifact": "scripts/pagination-truth.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/pagination-truth.node-test.mjs"
       ]
@@ -790,8 +792,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/routeBest.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/routeBest.ts"
       ]
@@ -804,8 +806,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/routeBest.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/routeBest.ts"
       ]
@@ -818,8 +820,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/routeBest.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/routeBest.ts"
       ]
@@ -832,8 +834,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -846,8 +848,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -860,8 +862,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/app/pages/DealDetailPage.tsx",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/pages/DealDetailPage.tsx"
       ]
@@ -874,8 +876,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/app/pages/DealDetailPage.tsx",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/pages/DealDetailPage.tsx"
       ]
@@ -888,8 +890,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/app/pages/DealDetailPage.tsx",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/pages/DealDetailPage.tsx"
       ]
@@ -902,8 +904,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/app/pages/DealDetailPage.tsx",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/pages/DealDetailPage.tsx"
       ]
@@ -916,8 +918,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/app/pages/DealDetailPage.tsx",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/pages/DealDetailPage.tsx"
       ]
@@ -930,8 +932,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/comparator.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/comparator.ts"
       ]
@@ -944,8 +946,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/comparator.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/comparator.ts"
       ]
@@ -958,8 +960,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/comparator.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/comparator.ts"
       ]
@@ -972,8 +974,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/comparator.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/comparator.ts"
       ]
@@ -986,8 +988,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/comparator.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/comparator.ts"
       ]
@@ -1000,8 +1002,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/comparator.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/comparator.ts"
       ]
@@ -1014,8 +1016,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/comparator.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/comparator.ts"
       ]
@@ -1028,8 +1030,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/costEpistemics.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/costEpistemics.ts"
       ]
@@ -1042,8 +1044,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/costEpistemics.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/costEpistemics.ts"
       ]
@@ -1056,8 +1058,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/costEpistemics.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/costEpistemics.ts"
       ]
@@ -1070,8 +1072,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/costEpistemic.test.ts",
       "artifact": "src/app/domain/costEpistemic.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/costEpistemic.ts"
       ]
@@ -1084,8 +1086,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/costEpistemics.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/costEpistemics.ts"
       ]
@@ -1098,8 +1100,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/costEpistemics.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/costEpistemics.ts"
       ]
@@ -1112,8 +1114,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
       "artifact": "src/app/pages/SearchPage.tsx",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/pages/SearchPage.tsx"
       ]
@@ -1126,8 +1128,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/travelIntent.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/travelIntent.ts"
       ]
@@ -1140,8 +1142,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/app/pages/HomePage.tsx",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/pages/HomePage.tsx"
       ]
@@ -1154,8 +1156,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/app/pages/HomePage.tsx",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/pages/HomePage.tsx"
       ]
@@ -1168,8 +1170,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
       "artifact": "src/app/domain/travelEntities.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/travelEntities.ts"
       ]
@@ -1182,37 +1184,39 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/locationScope.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/locationScope.ts"
       ]
     },
     "REQ-SEARCH-007": {
       "gate_id": "REQ-SEARCH-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
+      "artifact": "src/app/pages/SearchPage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx"
+      ]
     },
     "REQ-SEARCH-008": {
       "gate_id": "REQ-SEARCH-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/dealClaims.test.ts",
+      "artifact": "src/app/pages/SearchPage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx"
+      ]
     },
     "REQ-SEARCH-009": {
       "gate_id": "REQ-SEARCH-009",
@@ -1235,8 +1239,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -1249,37 +1253,39 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/app/pages/DealDetailPage.tsx",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/pages/DealDetailPage.tsx"
       ]
     },
     "REQ-WATCH-003": {
       "gate_id": "REQ-WATCH-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/domain/watch.test.ts",
+      "artifact": "src/app/domain/watch.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/domain/watch.ts"
+      ]
     },
     "REQ-WATCH-004": {
       "gate_id": "REQ-WATCH-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/domain/watch.test.ts",
+      "artifact": "src/app/domain/watch.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/domain/watch.ts"
+      ]
     },
     "REQ-WATCH-005": {
       "gate_id": "REQ-WATCH-005",
@@ -1289,8 +1295,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/routeBest.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/routeBest.ts"
       ]
@@ -1303,8 +1309,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -1317,50 +1323,53 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
     },
     "REQ-WATCH-008": {
       "gate_id": "REQ-WATCH-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npm run test:functions",
+      "artifact": "supabase/functions/alert-processor/index.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts"
+      ]
     },
     "REQ-WATCH-009": {
       "gate_id": "REQ-WATCH-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
+      ]
     },
     "REQ-WATCH-010": {
       "gate_id": "REQ-WATCH-010",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/domain/watch.test.ts",
+      "artifact": "src/app/domain/watch.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/domain/watch.ts"
+      ]
     },
     "REQ-WATCH-011": {
       "gate_id": "REQ-WATCH-011",
@@ -1370,24 +1379,25 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/alert-processor/index.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/alert-processor/index.ts"
       ]
     },
     "REQ-WATCH-012": {
       "gate_id": "REQ-WATCH-012",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/functions/alert-processor/index.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts"
+      ]
     },
     "REQ-WATCH-013": {
       "gate_id": "REQ-WATCH-013",
@@ -1397,8 +1407,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1411,8 +1421,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1425,8 +1435,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1439,8 +1449,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1453,8 +1463,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1467,8 +1477,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -1481,24 +1491,25 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/alert-processor/index.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/alert-processor/index.ts"
       ]
     },
     "REQ-WATCH-020": {
       "gate_id": "REQ-WATCH-020",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E4",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/domain/watch.test.ts",
+      "artifact": "src/app/domain/watch.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/domain/watch.ts"
+      ]
     },
     "REQ-WATCH-021": {
       "gate_id": "REQ-WATCH-021",
@@ -1521,8 +1532,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/database-ci-contract.node-test.mjs",
       "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
       ]
@@ -1535,8 +1546,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/alert-matching.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/alert-matching.test.ts"
       ]
@@ -1549,8 +1560,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/retry-policy.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/retry-policy.test.ts"
       ]
@@ -1563,8 +1574,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/functions/_shared/retry-policy.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/retry-policy.ts"
       ]
@@ -1577,8 +1588,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -1591,8 +1602,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/alert-matching.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/alert-matching.test.ts"
       ]
@@ -1605,8 +1616,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/functions/alert-processor/index.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/alert-processor/index.ts"
       ]
@@ -1619,8 +1630,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/functions/alert-processor/index.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/alert-processor/index.ts"
       ]
@@ -1646,8 +1657,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1660,8 +1671,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1674,8 +1685,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1688,8 +1699,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -1702,37 +1713,39 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
     },
     "REQ-SAVED-006": {
       "gate_id": "REQ-SAVED-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
+      "artifact": "src/app/lib/bookmarks.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts"
+      ]
     },
     "REQ-SAVED-007": {
       "gate_id": "REQ-SAVED-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
+      "artifact": "src/app/lib/bookmarks.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts"
+      ]
     },
     "REQ-PROV-001": {
       "gate_id": "REQ-PROV-001",
@@ -1742,8 +1755,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/providerAdapter.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/providerAdapter.ts"
       ]
@@ -1756,8 +1769,8 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npx vitest run src/domain/farely/domainKernel.test.ts",
       "artifact": "src/domain/farely/providerAdapter.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/providerAdapter.ts"
       ]
@@ -1770,89 +1783,95 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/feed-health.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/feed-health.test.ts"
       ]
     },
     "REQ-PROV-004": {
       "gate_id": "REQ-PROV-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/provider-drift-and-killswitch.node-test.mjs",
+      "artifact": "scripts/provider-drift-and-killswitch.node-test.mjs",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "scripts/provider-drift-and-killswitch.node-test.mjs"
+      ]
     },
     "REQ-PROV-005": {
       "gate_id": "REQ-PROV-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "REQ-PROV-006": {
       "gate_id": "REQ-PROV-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "REQ-PROV-007": {
       "gate_id": "REQ-PROV-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     },
     "REQ-PROV-008": {
       "gate_id": "REQ-PROV-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "src/app/domain/productionHealth.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/domain/productionHealth.ts"
+      ]
     },
     "REQ-PROV-009": {
       "gate_id": "REQ-PROV-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "B_IMPLEMENTED_NOT_CUT_OVER",
       "required_evidence_level": "E3",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/canonical-data-idempotency.node-test.mjs",
+      "artifact": "supabase/functions/_shared/flight-normalization.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-normalization.ts"
+      ]
     },
     "REQ-PROV-010": {
       "gate_id": "REQ-PROV-010",
@@ -1953,8 +1972,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/security-smoke.node-test.mjs",
       "artifact": "scripts/security-smoke.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/security-smoke.node-test.mjs"
       ]
@@ -1967,8 +1986,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -1981,8 +2000,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -1995,8 +2014,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/security-smoke.node-test.mjs",
       "artifact": "scripts/security-smoke.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/security-smoke.node-test.mjs"
       ]
@@ -2009,8 +2028,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/security-smoke.node-test.mjs",
       "artifact": "scripts/security-smoke.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/security-smoke.node-test.mjs"
       ]
@@ -2023,8 +2042,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
       ]
@@ -2037,8 +2056,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
@@ -2051,8 +2070,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/client-error-boundary.node-test.mjs",
       "artifact": "scripts/client-error-boundary.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/client-error-boundary.node-test.mjs"
       ]
@@ -2065,8 +2084,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookingUrls.test.ts",
       "artifact": "src/app/lib/bookingUrls.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/bookingUrls.ts"
       ]
@@ -2079,8 +2098,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/turnstile.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/turnstile.test.ts"
       ]
@@ -2093,8 +2112,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "supabase/functions/alert-processor/index.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/alert-processor/index.ts"
       ]
@@ -2159,8 +2178,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
       ]
@@ -2173,8 +2192,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
       ]
@@ -2187,8 +2206,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/database-backup-restore-drill.node-test.mjs",
       "artifact": "supabase/migrations/20260820000500_retention_cleanup.sql",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/migrations/20260820000500_retention_cleanup.sql"
       ]
@@ -2227,8 +2246,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -2241,8 +2260,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/analytics.test.ts",
       "artifact": "src/app/lib/analytics.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/analytics.ts"
       ]
@@ -2255,8 +2274,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/analytics.test.ts",
       "artifact": "src/app/lib/analytics.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/analytics.ts"
       ]
@@ -2269,8 +2288,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/analytics.test.ts",
       "artifact": "src/app/lib/analytics.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/analytics.ts"
       ]
@@ -2322,8 +2341,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/performance-budget.node-test.mjs",
       "artifact": "scripts/performance-budget.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/performance-budget.node-test.mjs"
       ]
@@ -2336,8 +2355,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/performance-budget.node-test.mjs",
       "artifact": "scripts/performance-budget.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/performance-budget.node-test.mjs"
       ]
@@ -2363,8 +2382,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/reportWebVitals.test.ts",
       "artifact": "src/app/lib/reportWebVitals.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/reportWebVitals.ts"
       ]
@@ -2377,8 +2396,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/reportWebVitals.test.ts",
       "artifact": "src/app/lib/reportWebVitals.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/reportWebVitals.ts"
       ]
@@ -2515,133 +2534,143 @@
     },
     "REQ-UX-001": {
       "gate_id": "REQ-UX-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx playwright test e2e/app.spec.ts -g 'homepage renders the opportunity-first experience'",
+      "artifact": "src/app/pages/HomePage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx"
+      ]
     },
     "REQ-UX-002": {
       "gate_id": "REQ-UX-002",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/travelFeedSections.test.ts",
+      "artifact": "src/app/pages/HomePage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx"
+      ]
     },
     "REQ-UX-003": {
       "gate_id": "REQ-UX-003",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx playwright test e2e/app.spec.ts -g 'homepage renders the opportunity-first experience'",
+      "artifact": "src/app/pages/HomePage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx"
+      ]
     },
     "REQ-UX-004": {
       "gate_id": "REQ-UX-004",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
+      "artifact": "src/app/pages/SearchPage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx"
+      ]
     },
     "REQ-UX-005": {
       "gate_id": "REQ-UX-005",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
+      "artifact": "src/app/pages/SearchPage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx"
+      ]
     },
     "REQ-UX-006": {
       "gate_id": "REQ-UX-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx playwright test e2e/app.spec.ts -g 'deals page explains a healthy feed'",
+      "artifact": "src/app/pages/SearchPage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx"
+      ]
     },
     "REQ-UX-007": {
       "gate_id": "REQ-UX-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/DealDetailPage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/DealDetailPage.tsx"
+      ]
     },
     "REQ-UX-008": {
       "gate_id": "REQ-UX-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
+      "artifact": "src/app/pages/DealDetailPage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/DealDetailPage.tsx"
+      ]
     },
     "REQ-UX-009": {
       "gate_id": "REQ-UX-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
+      "artifact": "src/app/pages/DealDetailPage.tsx",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/pages/DealDetailPage.tsx"
+      ]
     },
     "REQ-UX-010": {
       "gate_id": "REQ-UX-010",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "npx vitest run src/app/domain/watch.test.ts",
+      "artifact": "src/app/domain/watch.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/domain/watch.ts"
+      ]
     },
     "REQ-UX-011": {
       "gate_id": "REQ-UX-011",
@@ -2684,55 +2713,59 @@
     },
     "REQ-UX-014": {
       "gate_id": "REQ-UX-014",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E2",
+      "command_probe": "node scripts/capture-visual-acceptance.mjs",
+      "artifact": "docs/convergence/screenshots/deals_1920.png",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "docs/convergence/screenshots/deals_1920.png"
+      ]
     },
     "REQ-UX-015": {
       "gate_id": "REQ-UX-015",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E2",
+      "command_probe": "node scripts/capture-visual-acceptance.mjs",
+      "artifact": "docs/convergence/screenshots/deals_390.png",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "docs/convergence/screenshots/deals_390.png"
+      ]
     },
     "REQ-UX-016": {
       "gate_id": "REQ-UX-016",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E2",
+      "command_probe": "node scripts/capture-visual-acceptance.mjs",
+      "artifact": "docs/convergence/screenshots/opportunity_1440.png",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "docs/convergence/screenshots/opportunity_1440.png"
+      ]
     },
     "REQ-UX-017": {
       "gate_id": "REQ-UX-017",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E2",
+      "command_probe": "node --test scripts/acceptance-anti-shrinkage.node-test.mjs",
+      "artifact": "src/styles/theme.css",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/styles/theme.css"
+      ]
     },
     "REQ-FEAT-001": {
       "gate_id": "REQ-FEAT-001",
@@ -2872,8 +2905,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/generate-seo-assets.node-test.mjs",
       "artifact": "scripts/generate-seo-assets.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/generate-seo-assets.node-test.mjs"
       ]
@@ -2886,8 +2919,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/generate-seo-assets.node-test.mjs",
       "artifact": "scripts/generate-seo-assets.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/generate-seo-assets.node-test.mjs"
       ]
@@ -2900,24 +2933,25 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/generate-seo-assets.node-test.mjs",
       "artifact": "scripts/generate-seo-assets.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/generate-seo-assets.node-test.mjs"
       ]
     },
     "REQ-CLAIM-001": {
       "gate_id": "REQ-CLAIM-001",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "D_SUPERSEDED_OR_EXTERNAL_BLOCKER",
       "required_evidence_level": "E2",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E3",
+      "command_probe": "node --test scripts/provider-drift-and-killswitch.node-test.mjs",
+      "artifact": "src/app/domain/dealClaims.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/domain/dealClaims.ts"
+      ]
     },
     "NC-001": {
       "gate_id": "NC-001",
@@ -2927,8 +2961,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -2941,8 +2975,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -2955,8 +2989,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -2969,8 +3003,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -2983,8 +3017,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
@@ -2997,8 +3031,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -3011,8 +3045,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -3025,8 +3059,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -3039,8 +3073,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -3053,8 +3087,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -3067,8 +3101,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
@@ -3081,8 +3115,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3095,8 +3129,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3109,8 +3143,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3123,8 +3157,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3137,8 +3171,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3151,8 +3185,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3165,8 +3199,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3179,8 +3213,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3193,8 +3227,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/watch-condition.test.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/watch-condition.test.ts"
       ]
@@ -3207,8 +3241,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3221,8 +3255,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3235,8 +3269,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3249,8 +3283,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3263,8 +3297,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3277,8 +3311,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3291,8 +3325,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3305,8 +3339,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3319,8 +3353,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
@@ -3333,8 +3367,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
@@ -3347,8 +3381,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/analytics.test.ts",
       "artifact": "src/app/lib/analytics.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/analytics.ts"
       ]
@@ -3361,8 +3395,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/lib/bookingUrls.test.ts",
       "artifact": "src/app/lib/bookingUrls.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/bookingUrls.ts"
       ]
@@ -3375,8 +3409,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/clock-timezone-adversarial.node-test.mjs",
       "artifact": "scripts/clock-timezone-adversarial.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/clock-timezone-adversarial.node-test.mjs"
       ]
@@ -3389,8 +3423,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3403,8 +3437,8 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
@@ -3417,8 +3451,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/travelFeedSections.test.ts",
       "artifact": "src/app/domain/travelFeedSections.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/travelFeedSections.ts"
       ]
@@ -3431,8 +3465,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/globalSearch.test.ts",
       "artifact": "src/app/domain/globalSearch.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/globalSearch.ts"
       ]
@@ -3445,8 +3479,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/dealClaims.test.ts",
       "artifact": "src/app/domain/dealClaims.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/dealClaims.ts"
       ]
@@ -3459,8 +3493,8 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.ts"
       ]
@@ -3473,128 +3507,137 @@
       "achieved_evidence_level": "E4",
       "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
       "artifact": "src/app/lib/bookmarks.ts",
-      "source_sha": "bd418d20521a4dcb93335f236b02345993b0576f",
-      "verified_at": "2026-10-07T09:15:18.164Z",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
       "invalidation_dependencies": [
         "src/app/lib/bookmarks.ts"
       ]
     },
     "JOURNEY-006": {
       "gate_id": "JOURNEY-006",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/domain/watch.test.ts",
+      "artifact": "src/app/domain/watch.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/domain/watch.ts"
+      ]
     },
     "JOURNEY-007": {
       "gate_id": "JOURNEY-007",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
+      ]
     },
     "JOURNEY-008": {
       "gate_id": "JOURNEY-008",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
+      ]
     },
     "JOURNEY-009": {
       "gate_id": "JOURNEY-009",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/functions/alert-processor/index.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts"
+      ]
     },
     "JOURNEY-010": {
       "gate_id": "JOURNEY-010",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/domain/watch.test.ts",
+      "artifact": "src/app/domain/watch.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/domain/watch.ts"
+      ]
     },
     "JOURNEY-011": {
       "gate_id": "JOURNEY-011",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
+      "artifact": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql"
+      ]
     },
     "JOURNEY-012": {
       "gate_id": "JOURNEY-012",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
+      "artifact": "src/app/lib/bookmarks.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts"
+      ]
     },
     "JOURNEY-013": {
       "gate_id": "JOURNEY-013",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
+      "artifact": "src/app/lib/bookmarks.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts"
+      ]
     },
     "JOURNEY-014": {
       "gate_id": "JOURNEY-014",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "npx vitest run src/app/lib/bookmarks.test.ts",
+      "artifact": "src/app/lib/bookmarks.ts",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts"
+      ]
     },
     "JOURNEY-015": {
       "gate_id": "JOURNEY-015",
@@ -3650,16 +3693,17 @@
     },
     "JOURNEY-019": {
       "gate_id": "JOURNEY-019",
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "priority": "P0",
-      "classification": "C_IMPLEMENTED_INSUFFICIENT_PROOF",
       "required_evidence_level": "E5",
-      "achieved_evidence_level": "E0",
-      "command_probe": null,
-      "artifact": null,
-      "source_sha": null,
-      "verified_at": null,
-      "invalidation_dependencies": []
+      "achieved_evidence_level": "E4",
+      "command_probe": "node --test scripts/failure-drills.node-test.mjs",
+      "artifact": "scripts/failure-drills.node-test.mjs",
+      "source_sha": "3a46eec78fa8d402c7a5ac06c10764f963a1da62",
+      "verified_at": "2026-10-07T09:27:38.697Z",
+      "invalidation_dependencies": [
+        "scripts/failure-drills.node-test.mjs"
+      ]
     }
   }
 }

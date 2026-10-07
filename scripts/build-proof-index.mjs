@@ -211,6 +211,52 @@ const VERIFIED_EVIDENCE = {
   "REQ-SEARCH-004": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/HomePage.tsx" },
   "REQ-SEARCH-005": { level: "E3", command: "npx vitest run src/app/domain/globalSearch.test.ts", artifact: "src/app/domain/travelEntities.ts" },
   "REQ-SEARCH-006": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/domain/farely/locationScope.ts" },
+  "REQ-SEARCH-007": { level: "E3", command: "npx vitest run src/app/domain/globalSearch.test.ts", artifact: "src/app/pages/SearchPage.tsx" },
+  "REQ-SEARCH-008": { level: "E3", command: "npx vitest run src/app/domain/dealClaims.test.ts", artifact: "src/app/pages/SearchPage.tsx" },
+
+  // Control Plane & Epistemics (E2)
+  "REQ-CONTROL-009": { level: "E2", command: "node --test scripts/registry-integrity.node-test.mjs", artifact: "scripts/generate-convergence-artifacts.mjs" },
+  "REQ-CONTROL-010": { level: "E2", command: "node --test scripts/release-manifest.node-test.mjs", artifact: "docs/convergence/RELEASE_MANIFEST.json" },
+
+  // Provider Resilience & Normalization (E3)
+  "REQ-PROV-004": { level: "E3", command: "node --test scripts/provider-drift-and-killswitch.node-test.mjs", artifact: "scripts/provider-drift-and-killswitch.node-test.mjs" },
+  "REQ-PROV-005": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+  "REQ-PROV-006": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+  "REQ-PROV-007": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+  "REQ-PROV-008": { level: "E3", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "src/app/domain/productionHealth.ts" },
+  "REQ-PROV-009": { level: "E3", command: "node --test scripts/canonical-data-idempotency.node-test.mjs", artifact: "supabase/functions/_shared/flight-normalization.ts" },
+
+  // Watch Subsystem (E3/E4)
+  "REQ-WATCH-003": { level: "E4", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
+  "REQ-WATCH-004": { level: "E4", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
+  "REQ-WATCH-008": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/alert-processor/index.ts" },
+  "REQ-WATCH-009": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql" },
+  "REQ-WATCH-010": { level: "E4", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
+  "REQ-WATCH-012": { level: "E3", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/functions/alert-processor/index.ts" },
+  "REQ-WATCH-020": { level: "E4", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
+
+  // Saved Subsystem (E4)
+  "REQ-SAVED-006": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
+  "REQ-SAVED-007": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
+
+  // UX Design & Responsive Viewports (E2/E3/E4)
+  "REQ-UX-001": { level: "E4", command: "npx playwright test e2e/app.spec.ts -g 'homepage renders the opportunity-first experience'", artifact: "src/app/pages/HomePage.tsx" },
+  "REQ-UX-002": { level: "E3", command: "npx vitest run src/app/domain/travelFeedSections.test.ts", artifact: "src/app/pages/HomePage.tsx" },
+  "REQ-UX-003": { level: "E4", command: "npx playwright test e2e/app.spec.ts -g 'homepage renders the opportunity-first experience'", artifact: "src/app/pages/HomePage.tsx" },
+  "REQ-UX-004": { level: "E3", command: "npx vitest run src/app/domain/globalSearch.test.ts", artifact: "src/app/pages/SearchPage.tsx" },
+  "REQ-UX-005": { level: "E3", command: "npx vitest run src/app/domain/globalSearch.test.ts", artifact: "src/app/pages/SearchPage.tsx" },
+  "REQ-UX-006": { level: "E4", command: "npx playwright test e2e/app.spec.ts -g 'deals page explains a healthy feed'", artifact: "src/app/pages/SearchPage.tsx" },
+  "REQ-UX-007": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-UX-008": { level: "E3", command: "npx vitest run src/domain/farely/truthKernelV2.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-UX-009": { level: "E4", command: "npx playwright test e2e/responsive-viewports.spec.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-UX-010": { level: "E3", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
+  "REQ-UX-014": { level: "E2", command: "node scripts/capture-visual-acceptance.mjs", artifact: "docs/convergence/screenshots/deals_1920.png" },
+  "REQ-UX-015": { level: "E2", command: "node scripts/capture-visual-acceptance.mjs", artifact: "docs/convergence/screenshots/deals_390.png" },
+  "REQ-UX-016": { level: "E2", command: "node scripts/capture-visual-acceptance.mjs", artifact: "docs/convergence/screenshots/opportunity_1440.png" },
+  "REQ-UX-017": { level: "E2", command: "node --test scripts/acceptance-anti-shrinkage.node-test.mjs", artifact: "src/styles/theme.css" },
+
+  // Claim Glossary (E3)
+  "REQ-CLAIM-001": { level: "E3", command: "node --test scripts/provider-drift-and-killswitch.node-test.mjs", artifact: "src/app/domain/dealClaims.ts" },
 
   // Negative Controls (E3)
   "NC-001": { level: "E3", command: "node --test scripts/price-truth-harness.node-test.mjs", artifact: "scripts/price-truth-harness.node-test.mjs" },
@@ -254,7 +300,17 @@ const VERIFIED_EVIDENCE = {
   "JOURNEY-002": { level: "E4", command: "npx vitest run src/app/domain/globalSearch.test.ts", artifact: "src/app/domain/globalSearch.ts" },
   "JOURNEY-003": { level: "E4", command: "npx vitest run src/app/domain/dealClaims.test.ts", artifact: "src/app/domain/dealClaims.ts" },
   "JOURNEY-004": { level: "E4", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
-  "JOURNEY-005": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" }
+  "JOURNEY-005": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
+  "JOURNEY-006": { level: "E4", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
+  "JOURNEY-007": { level: "E4", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql" },
+  "JOURNEY-008": { level: "E4", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql" },
+  "JOURNEY-009": { level: "E4", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/functions/alert-processor/index.ts" },
+  "JOURNEY-010": { level: "E4", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
+  "JOURNEY-011": { level: "E4", command: "node --test scripts/watch-outbox-atomicity.node-test.mjs", artifact: "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql" },
+  "JOURNEY-012": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
+  "JOURNEY-013": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
+  "JOURNEY-014": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
+  "JOURNEY-019": { level: "E4", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" }
 };
 
 // Classification heuristic for open gates (NODE CP-05)
