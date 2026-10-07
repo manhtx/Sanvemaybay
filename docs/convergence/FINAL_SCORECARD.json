@@ -1,10 +1,10 @@
 {
   "product": "Farely (Sanvemaybay)",
   "production_url": "https://farely.manhtx.com",
-  "mission_state": "INTERNALLY_CONVERGED_WITH_EXTERNAL_BLOCKERS",
+  "mission_state": "EXECUTING",
   "market_outcome_evidence": "UNVERIFIED",
-  "timestamp": "2026-10-07T03:23:40.807Z",
-  "source_sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+  "timestamp": "2026-10-07T08:16:57.706Z",
+  "source_sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
   "total_gates": 267,
   "total_p0_gates": 192,
   "proven_p0_gates": 50,
@@ -38,5 +38,5 @@
     "negative_control": 5.4,
     "critical_journey": 2.6
   },
-  "epistemic_note": "Machine-derived from docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json. Market outcomes (E9) remain strictly UNVERIFIED."
+  "epistemic_note": "Machine-derived from docs/convergence/PROOF_INDEX.json & MASTER_ACCEPTANCE_REGISTRY.json. Market outcomes (E9) remain strictly UNVERIFIED."
 }

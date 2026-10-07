@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-07T03:23:40.807Z",
-  "tested_sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+  "updated_at": "2026-10-07T08:16:57.706Z",
+  "tested_sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
   "summary": {
     "vitest_test_files": 36,
-    "node_test_files": 28,
+    "node_test_files": 29,
     "deno_test_files": 18,
-    "total_test_suites": 82,
+    "total_test_suites": 83,
     "status": "PASS"
   },
   "layers": [
@@ -75,6 +75,7 @@
         "scripts/mutation-sensitivity.node-test.mjs",
         "scripts/pagination-truth.node-test.mjs",
         "scripts/performance-budget.node-test.mjs",
+        "scripts/pipeline-recovery-contract.node-test.mjs",
         "scripts/price-truth-harness.node-test.mjs",
         "scripts/production-truth.node-test.mjs",
         "scripts/provider-drift-and-killswitch.node-test.mjs",
@@ -87,7 +88,7 @@
         "scripts/synthetic-health-check.node-test.mjs",
         "scripts/verify-certification-integrity.node-test.mjs"
       ],
-      "test_file_count": 28,
+      "test_file_count": 29,
       "verdict": "PASS"
     },
     {

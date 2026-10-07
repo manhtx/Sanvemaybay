@@ -1,0 +1,131 @@
+{
+  "mission_version": "2026-10-07",
+  "mission_class": "PROJECT_10X_EVIDENCE_TO_EXECUTION",
+  "repository": "https://github.com/manhtx/Sanvemaybay",
+  "production": "https://farely.manhtx.com",
+  "target": "FARELY INTERNAL PRODUCT & ENGINEERING READINESS = MAXIMUM DEFENSIBLE STATE",
+  "terminal_state_model": {
+    "terminal_states": ["TARGET_PROVEN", "HARD_BLOCKED"],
+    "allowed_non_terminal_states": [
+      "EXECUTING",
+      "VERIFYING",
+      "REPAIRING",
+      "RECONCILING",
+      "WAITING_EXTERNAL",
+      "RESOURCE_CHECKPOINT",
+      "STRATEGIC_REVIEW_REQUIRED"
+    ],
+    "never_terminal_states": [
+      "tests_passed",
+      "build_passed",
+      "deployment_ready",
+      "workflow_success",
+      "release_deployed",
+      "high_score",
+      "checklist_complete",
+      "resource_limit",
+      "context_limit",
+      "agent_says_done",
+      "final_report_created"
+    ]
+  },
+  "immutable_invariants": [
+    {
+      "id": "INV-01",
+      "name": "ONE_SEMANTIC_AUTHORITY",
+      "rule": "Every material concept has one canonical semantic authority."
+    },
+    {
+      "id": "INV-02",
+      "name": "NO_SHADOW_ARCHITECTURE",
+      "rule": "A replacement is not complete until actual production readers/writers use it and old authority is retired."
+    },
+    {
+      "id": "INV-03",
+      "name": "NO_INTENT_LOSS",
+      "rule": "Supported TravelIntent semantics cannot disappear between UI, API, Watch, Saved and decision logic."
+    },
+    {
+      "id": "INV-04",
+      "name": "NO_GLOBAL_CLAIM_FROM_PARTIAL_UNIVERSE",
+      "rule": "Cheapest, best, no match, no cheaper option and equivalent global claims require complete eligible scope or explicit bounded scope."
+    },
+    {
+      "id": "INV-05",
+      "name": "NO_EPISTEMIC_UPGRADE",
+      "rule": "A later layer cannot make data appear more certain than its evidence."
+    },
+    {
+      "id": "INV-06",
+      "name": "UNKNOWN_REMAINS_UNKNOWN",
+      "rule": "Unknown cost != zero. Provider failure != empty. Partial data != complete. Observed != verified."
+    },
+    {
+      "id": "INV-07",
+      "name": "NO_STATE_TRANSITION_FROM_INCOMPLETE_WATCH_EVALUATION",
+      "rule": "Incomplete data cannot produce ENTER/EXIT/no-match/success transition."
+    },
+    {
+      "id": "INV-08",
+      "name": "DURABLE_INTENT_BEFORE_EXTERNAL_SIDE_EFFECT",
+      "rule": "Email/Telegram side effects require durable committed notification intent."
+    },
+    {
+      "id": "INV-09",
+      "name": "EXACT_RELEASE_PROOF",
+      "rule": "Final proof belongs to the exact source/schema/runtime it certifies."
+    },
+    {
+      "id": "INV-10",
+      "name": "NO_SELF_CERTIFICATION",
+      "rule": "Executor cannot assign PROVEN merely because it authored the implementation."
+    },
+    {
+      "id": "INV-11",
+      "name": "CURRENT_REQUIREMENT_AUTHORITY",
+      "rule": "Requirements may be SUPERSEDED by stronger current external requirements but may not silently disappear."
+    },
+    {
+      "id": "INV-12",
+      "name": "PRESERVE_WORKING_BEHAVIOR",
+      "rule": "Do not break already-correct required flows while converging architecture."
+    }
+  ],
+  "decision_rights": {
+    "research_authority": [
+      "final product direction",
+      "material requirements",
+      "P0/P1 findings",
+      "target architecture",
+      "semantic invariants",
+      "hard gates",
+      "proof obligations",
+      "anti-gaming rules",
+      "terminal-state semantics"
+    ],
+    "repository_reality": [
+      "current code shape",
+      "current schema",
+      "current production state",
+      "current dependency versions",
+      "runtime observations"
+    ],
+    "local_authority": [
+      "file/module organization",
+      "naming preserving semantics",
+      "internal refactoring mechanics",
+      "equivalent query/index implementation",
+      "batching values supported by measurement",
+      "safe implementation details"
+    ]
+  },
+  "preservation_rules": [
+    "working production URL (https://farely.manhtx.com)",
+    "existing valid user data",
+    "valid observed observations",
+    "git history",
+    "no force pushes",
+    "no exposed secrets"
+  ],
+  "amendment_process": "Architectural decisions may be reopened only if empirical evidence proves design unsafe/inferior, documented with preserved invariants and durable state update."
+}

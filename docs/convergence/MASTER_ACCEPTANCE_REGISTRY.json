@@ -23,13 +23,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/registry-integrity.node-test.mjs",
+          "artifact": "docs/convergence/CURRENT_BASELINE.json",
           "status": "VERIFIED"
         }
       ]
@@ -51,13 +53,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/registry-integrity.node-test.mjs",
+          "artifact": "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
           "status": "VERIFIED"
         }
       ]
@@ -79,13 +83,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/registry-integrity.node-test.mjs",
+          "artifact": "scripts/generate-convergence-artifacts.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -107,13 +113,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/registry-integrity.node-test.mjs",
+          "artifact": "scripts/generate-convergence-artifacts.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -135,13 +143,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/registry-integrity.node-test.mjs",
+          "artifact": "docs/convergence/TEST_MATRIX.json",
           "status": "VERIFIED"
         }
       ]
@@ -163,13 +173,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/registry-integrity.node-test.mjs",
+          "artifact": "docs/convergence/EVIDENCE_LEDGER.json",
           "status": "VERIFIED"
         }
       ]
@@ -191,13 +203,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/registry-integrity.node-test.mjs",
+          "artifact": "docs/convergence/CURRENT_BASELINE.json",
           "status": "VERIFIED"
         }
       ]
@@ -219,13 +233,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E6",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -247,7 +263,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-CONTROL-010",
@@ -266,7 +283,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-REL-001",
@@ -285,7 +303,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-REL-002",
@@ -304,7 +323,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-REL-003",
@@ -323,7 +343,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-REL-004",
@@ -342,7 +363,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-REL-005",
@@ -361,7 +383,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-REL-006",
@@ -380,7 +403,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-REL-007",
@@ -399,7 +423,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-REL-008",
@@ -418,7 +443,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-REL-009",
@@ -437,7 +463,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-001",
@@ -456,7 +483,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-002",
@@ -475,7 +503,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-003",
@@ -494,7 +523,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-004",
@@ -513,7 +543,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-005",
@@ -532,7 +563,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-006",
@@ -551,7 +583,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-007",
@@ -570,7 +603,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-008",
@@ -589,7 +623,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-009",
@@ -608,7 +643,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-010",
@@ -627,7 +663,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-011",
@@ -646,7 +683,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-012",
@@ -665,7 +703,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-013",
@@ -684,7 +723,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-014",
@@ -703,7 +743,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DOM-015",
@@ -722,7 +763,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-001",
@@ -741,7 +783,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-002",
@@ -760,7 +803,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-003",
@@ -779,7 +823,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-004",
@@ -798,7 +843,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-005",
@@ -817,7 +863,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-006",
@@ -836,7 +883,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-007",
@@ -855,7 +903,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-008",
@@ -874,7 +923,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-009",
@@ -893,7 +943,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-DATA-010",
@@ -912,7 +963,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SNAP-001",
@@ -931,7 +983,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SNAP-002",
@@ -950,7 +1003,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SNAP-003",
@@ -969,7 +1023,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SNAP-004",
@@ -988,7 +1043,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SNAP-005",
@@ -1007,7 +1063,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SNAP-006",
@@ -1026,7 +1083,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PAGE-001",
@@ -1045,7 +1103,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PAGE-002",
@@ -1064,7 +1123,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PAGE-003",
@@ -1083,7 +1143,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PAGE-004",
@@ -1102,7 +1163,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PAGE-005",
@@ -1121,7 +1183,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRICE-001",
@@ -1140,7 +1203,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRICE-002",
@@ -1159,7 +1223,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRICE-003",
@@ -1178,7 +1243,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRICE-004",
@@ -1197,7 +1263,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRICE-005",
@@ -1216,7 +1283,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRICE-006",
@@ -1235,7 +1303,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ALT-001",
@@ -1254,7 +1323,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ALT-002",
@@ -1273,7 +1343,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ALT-003",
@@ -1292,7 +1363,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ALT-004",
@@ -1311,7 +1383,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COMP-001",
@@ -1330,7 +1403,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COMP-002",
@@ -1349,7 +1423,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COMP-003",
@@ -1368,7 +1443,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COMP-004",
@@ -1387,7 +1463,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COMP-005",
@@ -1406,7 +1483,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COMP-006",
@@ -1425,7 +1503,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COMP-007",
@@ -1444,7 +1523,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COST-001",
@@ -1463,7 +1543,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COST-002",
@@ -1482,7 +1563,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COST-003",
@@ -1501,7 +1583,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COST-004",
@@ -1520,7 +1603,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COST-005",
@@ -1539,7 +1623,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COST-006",
@@ -1558,7 +1643,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEARCH-001",
@@ -1578,7 +1664,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEARCH-002",
@@ -1597,7 +1684,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEARCH-003",
@@ -1616,7 +1704,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEARCH-004",
@@ -1635,7 +1724,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEARCH-005",
@@ -1654,7 +1744,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEARCH-006",
@@ -1673,7 +1764,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEARCH-007",
@@ -1692,7 +1784,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEARCH-008",
@@ -1711,7 +1804,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEARCH-009",
@@ -1730,7 +1824,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-001",
@@ -1749,7 +1844,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-002",
@@ -1768,7 +1864,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-003",
@@ -1787,7 +1884,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-004",
@@ -1806,7 +1904,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-005",
@@ -1825,7 +1924,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-006",
@@ -1844,7 +1944,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-007",
@@ -1863,7 +1964,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-008",
@@ -1882,7 +1984,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-009",
@@ -1901,7 +2004,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-010",
@@ -1920,7 +2024,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-011",
@@ -1939,7 +2044,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-012",
@@ -1958,7 +2064,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-013",
@@ -1977,13 +2084,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/watch.test.ts",
+          "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2005,13 +2114,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/watch.test.ts",
+          "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2033,13 +2144,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/watch.test.ts",
+          "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2061,13 +2174,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/watch.test.ts",
+          "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2089,13 +2204,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/watch.test.ts",
+          "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2117,13 +2234,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/watch.test.ts",
+          "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2145,7 +2264,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-020",
@@ -2164,7 +2284,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-WATCH-021",
@@ -2183,7 +2304,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-NOTIF-001",
@@ -2202,13 +2324,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/database-ci-contract.node-test.mjs",
+          "artifact": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
           "status": "VERIFIED"
         }
       ]
@@ -2230,13 +2354,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/alert-matching.test.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2258,13 +2384,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/retry-policy.test.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2286,13 +2414,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/retry-policy.test.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2314,13 +2444,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -2342,13 +2474,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/alert-matching.test.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2370,7 +2504,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-NOTIF-008",
@@ -2389,7 +2524,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-NOTIF-009",
@@ -2408,7 +2544,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SAVED-001",
@@ -2427,13 +2564,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/lib/bookmarks.test.ts",
+          "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2455,13 +2594,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/lib/bookmarks.test.ts",
+          "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2483,13 +2624,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/lib/bookmarks.test.ts",
+          "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2511,13 +2654,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/lib/bookmarks.test.ts",
+          "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2539,13 +2684,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/lib/bookmarks.test.ts",
+          "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2567,7 +2714,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SAVED-007",
@@ -2586,7 +2734,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PROV-001",
@@ -2605,13 +2754,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
+          "artifact": "src/domain/farely/providerAdapter.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2633,13 +2784,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/domain/farely/domainKernel.test.ts",
+          "artifact": "src/domain/farely/providerAdapter.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2661,13 +2814,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/feed-health.test.ts",
           "status": "VERIFIED"
         }
       ]
@@ -2689,7 +2844,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PROV-005",
@@ -2708,7 +2864,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PROV-006",
@@ -2727,7 +2884,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PROV-007",
@@ -2746,7 +2904,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PROV-008",
@@ -2765,7 +2924,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PROV-009",
@@ -2784,7 +2944,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PROV-010",
@@ -2803,7 +2964,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PROV-011",
@@ -2822,7 +2984,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PROV-012",
@@ -2841,7 +3004,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COV-001",
@@ -2860,7 +3024,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COV-002",
@@ -2879,7 +3044,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COV-003",
@@ -2898,7 +3064,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-COV-004",
@@ -2917,7 +3084,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-001",
@@ -2936,13 +3104,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/security-smoke.node-test.mjs",
+          "artifact": "scripts/security-smoke.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -2964,13 +3134,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
+          "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -2992,7 +3164,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-004",
@@ -3011,7 +3184,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-005",
@@ -3030,7 +3204,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-006",
@@ -3049,7 +3224,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-007",
@@ -3068,7 +3244,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-008",
@@ -3087,7 +3264,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-009",
@@ -3106,7 +3284,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-010",
@@ -3125,7 +3304,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-011",
@@ -3144,7 +3324,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-012",
@@ -3163,7 +3344,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEC-013",
@@ -3182,7 +3364,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRIV-001",
@@ -3201,7 +3384,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRIV-002",
@@ -3220,7 +3404,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRIV-003",
@@ -3239,7 +3424,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRIV-004",
@@ -3258,7 +3444,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRIV-005",
@@ -3277,7 +3464,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRIV-006",
@@ -3296,7 +3484,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRIV-007",
@@ -3315,7 +3504,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PRIV-008",
@@ -3334,7 +3524,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ANA-001",
@@ -3353,7 +3544,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ANA-002",
@@ -3372,7 +3564,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ANA-003",
@@ -3391,7 +3584,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ANA-004",
@@ -3410,7 +3604,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ANA-005",
@@ -3429,7 +3624,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-ANA-006",
@@ -3448,7 +3644,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PERF-001",
@@ -3467,7 +3664,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PERF-002",
@@ -3486,7 +3684,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PERF-003",
@@ -3505,7 +3704,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PERF-004",
@@ -3524,7 +3724,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PERF-005",
@@ -3543,7 +3744,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-PERF-006",
@@ -3562,7 +3764,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-A11Y-001",
@@ -3581,7 +3784,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-A11Y-002",
@@ -3600,7 +3804,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-A11Y-003",
@@ -3619,7 +3824,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-A11Y-004",
@@ -3638,7 +3844,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-A11Y-005",
@@ -3657,7 +3864,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-A11Y-006",
@@ -3676,7 +3884,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-A11Y-007",
@@ -3695,7 +3904,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-A11Y-008",
@@ -3714,7 +3924,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-A11Y-009",
@@ -3733,7 +3944,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-001",
@@ -3752,7 +3964,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-002",
@@ -3771,7 +3984,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-003",
@@ -3790,7 +4004,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-004",
@@ -3809,7 +4024,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-005",
@@ -3828,7 +4044,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-006",
@@ -3847,7 +4064,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-007",
@@ -3866,7 +4084,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-008",
@@ -3885,7 +4104,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-009",
@@ -3904,7 +4124,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-010",
@@ -3923,7 +4144,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-011",
@@ -3942,7 +4164,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-012",
@@ -3961,7 +4184,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-013",
@@ -3980,7 +4204,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-014",
@@ -3999,7 +4224,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-015",
@@ -4018,7 +4244,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-016",
@@ -4037,7 +4264,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-UX-017",
@@ -4056,7 +4284,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-001",
@@ -4075,7 +4304,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-002",
@@ -4094,7 +4324,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-003",
@@ -4113,7 +4344,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-004",
@@ -4132,7 +4364,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-005",
@@ -4151,7 +4384,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-006",
@@ -4170,7 +4404,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-007",
@@ -4189,7 +4424,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-008",
@@ -4208,7 +4444,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-009",
@@ -4227,7 +4464,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-FEAT-010",
@@ -4246,7 +4484,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEO-001",
@@ -4265,7 +4504,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEO-002",
@@ -4284,7 +4524,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-SEO-003",
@@ -4303,7 +4544,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "REQ-CLAIM-001",
@@ -4322,7 +4564,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-001",
@@ -4337,13 +4580,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4361,13 +4606,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4385,13 +4632,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/price-truth-harness.node-test.mjs",
+          "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4409,7 +4658,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-005",
@@ -4424,7 +4674,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-006",
@@ -4439,7 +4690,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-007",
@@ -4454,7 +4706,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-008",
@@ -4469,7 +4722,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-009",
@@ -4484,7 +4738,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-010",
@@ -4499,7 +4754,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-011",
@@ -4514,7 +4770,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-012",
@@ -4529,13 +4786,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4553,13 +4812,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4577,13 +4838,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4601,7 +4864,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-016",
@@ -4616,7 +4880,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-017",
@@ -4631,7 +4896,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-018",
@@ -4646,13 +4912,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/watch-condition.test.ts",
           "status": "VERIFIED"
         }
       ]
@@ -4670,13 +4938,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/watch-condition.test.ts",
           "status": "VERIFIED"
         }
       ]
@@ -4694,13 +4964,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npm run test:functions",
+          "artifact": "supabase/functions/_shared/watch-condition.test.ts",
           "status": "VERIFIED"
         }
       ]
@@ -4718,13 +4990,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4742,13 +5016,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4766,13 +5042,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4790,13 +5068,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/failure-drills.node-test.mjs",
+          "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4814,13 +5094,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
+          "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4838,13 +5120,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
+          "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4862,13 +5146,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
+          "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4886,13 +5172,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
+          "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4910,13 +5198,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
+          "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
         }
       ]
@@ -4934,13 +5224,15 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/lib/bookmarks.test.ts",
+          "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
         }
       ]
@@ -4958,7 +5250,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-032",
@@ -4973,7 +5266,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-033",
@@ -4988,7 +5282,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-034",
@@ -5003,7 +5298,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "NC-035",
@@ -5018,7 +5314,8 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-001",
@@ -5035,13 +5332,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
-          "level": "E5",
+          "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/travelFeedSections.test.ts",
+          "artifact": "src/app/domain/travelFeedSections.ts",
           "status": "VERIFIED"
         }
       ]
@@ -5061,13 +5360,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
-          "level": "E5",
+          "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/globalSearch.test.ts",
+          "artifact": "src/app/domain/globalSearch.ts",
           "status": "VERIFIED"
         }
       ]
@@ -5087,13 +5388,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
-          "level": "E5",
+          "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/dealClaims.test.ts",
+          "artifact": "src/app/domain/dealClaims.ts",
           "status": "VERIFIED"
         }
       ]
@@ -5113,13 +5416,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
-          "level": "E5",
+          "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/domain/watch.test.ts",
+          "artifact": "src/app/domain/watch.ts",
           "status": "VERIFIED"
         }
       ]
@@ -5139,13 +5444,15 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:23:40.807Z",
+      "verified_at": "2026-10-07T08:16:57.611Z",
       "evidence": [
         {
-          "level": "E5",
+          "level": "E4",
           "type": "automated_regression_test",
-          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
-          "timestamp": "2026-10-07T03:23:40.807Z",
+          "sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+          "timestamp": "2026-10-07T08:16:57.611Z",
+          "command": "npx vitest run src/app/lib/bookmarks.test.ts",
+          "artifact": "src/app/lib/bookmarks.ts",
           "status": "VERIFIED"
         }
       ]
@@ -5165,7 +5472,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-007",
@@ -5182,7 +5490,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-008",
@@ -5199,7 +5508,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-009",
@@ -5216,7 +5526,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-010",
@@ -5233,7 +5544,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-011",
@@ -5250,7 +5562,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-012",
@@ -5267,7 +5580,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-013",
@@ -5284,7 +5598,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-014",
@@ -5301,7 +5616,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-015",
@@ -5318,7 +5634,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-016",
@@ -5335,7 +5652,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-017",
@@ -5352,7 +5670,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-018",
@@ -5369,7 +5688,8 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     },
     {
       "gate_id": "JOURNEY-019",
@@ -5386,8 +5706,9 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": null
+      "verified_at": null,
+      "evidence": []
     }
   ],
-  "updated_at": "2026-10-07T03:23:40.807Z"
+  "updated_at": "2026-10-07T08:16:57.706Z"
 }

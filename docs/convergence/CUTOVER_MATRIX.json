@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-10-07T15:10:00Z",
+  "subsystems": [
+    {
+      "subsystem": "Observation Ledger",
+      "new_authority": "public.fare_observations (UNIQUE provider, observation_fingerprint)",
+      "legacy_authority": "public.price_history (unconstrained append-only)",
+      "writers": ["supabase/functions/analyze-price/index.ts"],
+      "readers": ["src/app/data/marketStats.ts", "src/domain/farely/comparator.ts"],
+      "migration_status": "MIGRATED_20261007000100",
+      "cutover_status": "DUAL_WRITE_CANONICAL_PRIMARY",
+      "retirement_status": "LEGACY_WRITES_DEDUPED_READS_CUTTING_OVER"
+    },
+    {
+      "subsystem": "OfferVariant & Observation Identity",
+      "new_authority": "src/domain/farely/identity.ts (SHA-256 canonical serialization, 128-bit collision resistance)",
+      "legacy_authority": "raw crawler itinerary_key (string interpolation)",
+      "writers": ["src/domain/farely/identity.ts", "supabase/functions/_shared/price-history.ts"],
+      "readers": ["src/domain/farely/*", "src/app/domain/*", "supabase/functions/*"],
+      "migration_status": "MIGRATED",
+      "cutover_status": "CANONICAL_ACTIVE",
+      "retirement_status": "RAW_ITINERARY_KEY_SCOPED_TO_TRANSPORT_ONLY"
+    },
+    {
+      "subsystem": "Watch Condition Episodes & Outbox",
+      "new_authority": "public.watch_condition_episodes & public.notification_outbox",
+      "legacy_authority": "direct in-memory alert firing & uncommitted webhook POSTs",
+      "writers": ["supabase/functions/alert-processor/index.ts"],
+      "readers": ["supabase/functions/alert-processor/index.ts"],
+      "migration_status": "MIGRATED_20261006000200",
+      "cutover_status": "OUTBOX_PATTERN_ACTIVE",
+      "retirement_status": "DIRECT_ALERTING_RETIRED"
+    },
+    {
+      "subsystem": "Saved Opportunities",
+      "new_authority": "public.saved_opportunities (remote Postgres with user_id RLS)",
+      "legacy_authority": "window.localStorage without sync",
+      "writers": ["src/app/lib/bookmarks.ts"],
+      "readers": ["src/app/components/SavedPage.tsx", "src/app/lib/bookmarks.ts"],
+      "migration_status": "MIGRATED_20261005000000",
+      "cutover_status": "AUTHENTICATED_SERVER_AUTHORITY_OPTIMISTIC_ROLLBACK",
+      "retirement_status": "LOCAL_STORAGE_FALLBACK_ANONYMOUS_ONLY"
+    },
+    {
+      "subsystem": "Scan Runs Lifecycle vs Quality",
+      "new_authority": "scan_runs.status in ('running','completed','failed') & scan_runs.health_status in ('healthy','partial','degraded','failed','unknown')",
+      "legacy_authority": "scan_runs.status = 'partial' (CHECK constraint violation)",
+      "writers": ["scripts/fast-flights-worker.py"],
+      "readers": ["public.operational_scan_health"],
+      "migration_status": "MIGRATED_20261007000200",
+      "cutover_status": "CUTOVER_APPLIED",
+      "retirement_status": "CONSTRAINT_VIOLATION_ELIMINATED"
+    },
+    {
+      "subsystem": "Analyzer Compute Envelope",
+      "new_authority": "analyze-price bounded keyset batching (300 rows/call, bulk upsert, source exhaustion loop)",
+      "legacy_authority": "5,000 in-memory rows per invocation with N sequential deals upserts",
+      "writers": ["scripts/orchestrate-analyzer.mjs", "supabase/functions/analyze-price/index.ts"],
+      "readers": ["public.deals", "public.deal_snapshots", "public.fare_observations"],
+      "migration_status": "IMPLEMENTED",
+      "cutover_status": "CUTOVER_APPLIED",
+      "retirement_status": "HTTP_546_WORKER_RESOURCE_LIMIT_ELIMINATED"
+    }
+  ]
+}

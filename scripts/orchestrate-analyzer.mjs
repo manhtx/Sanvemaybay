@@ -11,7 +11,7 @@ if (!baseUrl || !anonKey || !secret) {
 }
 
 const endpoint = `${baseUrl}/functions/v1/analyze-price`;
-const maxBatches = 20;
+const maxBatches = 50;
 
 let batch = 1;
 let continuation = null;
@@ -20,11 +20,14 @@ let totalHistory = 0;
 let totalDeals = 0;
 let hasMore = true;
 
-console.log(`Starting analyzer orchestration loop (max ${maxBatches} batches)...`);
+console.log(`Starting analyzer orchestration loop (max ${maxBatches} batches, bounded 300 rows/batch)...`);
 
 while (hasMore && batch <= maxBatches) {
   console.log(`Executing analyzer batch ${batch}...`);
-  const body = continuation ? continuation : {};
+  const body = {
+    max_observations: 300,
+    ...(continuation || {}),
+  };
 
   const res = await fetch(endpoint, {
     method: "POST",
@@ -59,15 +62,18 @@ while (hasMore && batch <= maxBatches) {
 
   if (!hasMore || !continuation) {
     console.log(
-      `Analyzer fully completed after ${batch} batch(es). Total: ${totalProcessed} processed, ${totalHistory} history rows, ${totalDeals} deals published.`
+      `Analyzer fully reached source exhaustion after ${batch} batch(es). Total: ${totalProcessed} processed, ${totalHistory} history rows, ${totalDeals} deals published.`
     );
     break;
   }
-
 
   batch++;
 }
 
 if (hasMore) {
-  console.warn(`Analyzer reached batch limit (${maxBatches}) with more records pending. Status: PARTIAL_CONTINUATION.`);
+  console.error(
+    `CRITICAL (NODE PIPE-04): Analyzer reached batch limit (${maxBatches}) with more records pending. Status: PARTIAL / RESUMABLE. Downstream snapshot must not be treated as fully updated.`
+  );
+  process.exit(1);
 }
+

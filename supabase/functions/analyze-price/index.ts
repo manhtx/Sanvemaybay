@@ -31,7 +31,7 @@ Deno.serve(async (request) => {
 
   let beforeTimestamp = "";
   let cursorId = "";
-  let maxObservations = 5000;
+  let maxObservations = 300;
   try {
     const body = await request.json();
     beforeTimestamp = typeof body?.cursor_timestamp === "string"
@@ -39,7 +39,7 @@ Deno.serve(async (request) => {
       : (typeof body?.before_timestamp === "string" ? body.before_timestamp : "");
     cursorId = typeof body?.cursor_id === "string" ? body.cursor_id : "";
     if (typeof body?.max_observations === "number" && body.max_observations > 0) {
-      maxObservations = Math.min(10000, body.max_observations);
+      maxObservations = Math.min(500, body.max_observations);
     }
   } catch {
     // Empty request bodies retain the default newest-flight page.
@@ -107,7 +107,11 @@ Deno.serve(async (request) => {
       isPartial = true;
     }
 
+    const startedAt = new Date().toISOString();
+    const runId = `analyzer-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
     const published: string[] = [];
+    const dealsToUpsert: any[] = [];
+    const snapshotsToUpsert: any[] = [];
     const aiFailures: Array<{ itinerary: string; reason: string }> = [];
     const aiExplanationsRequested = 0;
     const aiExplanationsSkipped = 0;
@@ -263,15 +267,9 @@ Deno.serve(async (request) => {
         },
       };
 
-      const { data: publishedDeal, error: publishError } = await supabase
-        .from("deals")
-        .upsert(deal, { onConflict: "itinerary_key" })
-        .select("id")
-        .single();
-      if (publishError) throw publishError;
-      published.push(flight.itinerary_key);
-      const { error: snapshotError } = await supabase.from("deal_snapshots").upsert({
-        deal_id: publishedDeal?.id ?? null,
+      dealsToUpsert.push(deal);
+      snapshotsToUpsert.push({
+        deal_id: null,
         itinerary_key: flight.itinerary_key,
         from_code: flight.origin_code,
         to_code: flight.destination_code,
@@ -291,15 +289,34 @@ Deno.serve(async (request) => {
         observed_at: flight.timestamp,
         valid_until: deal.valid_until,
         payload: deal,
-      }, { onConflict: "itinerary_key,observed_at" });
-      if (snapshotError) throw snapshotError;
-      if (publishedDeal?.id) {
-        // The deterministic ai_insight above is the verified explanation. AI
-        // enrichment is intentionally decoupled so a misconfigured optional
-        // worker can never turn a successful deal publish into a noisy failure.
-        void AI_EXPLANATION_BATCH_LIMIT;
-      }
+      });
+      published.push(flight.itinerary_key);
     }
+
+    if (dealsToUpsert.length > 0) {
+      const { data: upsertedDeals, error: publishError } = await supabase
+        .from("deals")
+        .upsert(dealsToUpsert, { onConflict: "itinerary_key" })
+        .select("id, itinerary_key");
+      if (publishError) throw publishError;
+
+      const dealIdByKey = new Map<string, string>();
+      for (const d of upsertedDeals ?? []) {
+        if (d.itinerary_key && d.id) {
+          dealIdByKey.set(d.itinerary_key, d.id);
+        }
+      }
+
+      for (const s of snapshotsToUpsert) {
+        s.deal_id = dealIdByKey.get(s.itinerary_key) ?? null;
+      }
+
+      const { error: snapshotError } = await supabase
+        .from("deal_snapshots")
+        .upsert(snapshotsToUpsert, { onConflict: "itinerary_key,observed_at" });
+      if (snapshotError) throw snapshotError;
+    }
+    void AI_EXPLANATION_BATCH_LIMIT;
 
     // Canonical Observation Ledger: Idempotent upsert by (provider, observation_fingerprint) (REQ-HIST-005)
     let fareObservationsSaved = 0;
@@ -336,10 +353,18 @@ Deno.serve(async (request) => {
       partial: isPartial,
       has_more: hasMore,
       continuation: hasMore ? { cursor_timestamp: curTimestamp, cursor_id: curId } : null,
+      analyzer_run_id: runId,
+      started_at: startedAt,
+      last_cursor: hasMore ? { cursor_timestamp: curTimestamp, cursor_id: curId } : null,
+      rows_attempted: flights?.length ?? 0,
+      rows_processed: flights?.length ?? 0,
       observations_processed: flights?.length ?? 0,
       fare_observations_saved: fareObservationsSaved,
       price_history_saved: legacySaved,
       deals_published: published.length,
+      deals_updated: published.length,
+      status: hasMore ? "partial" : "completed",
+      release_sha: Deno.env.get("DEPLOYED_COMMIT") ?? "unknown",
       ai_failures: aiFailures,
       ai_explanations_requested: aiExplanationsRequested,
       ai_explanations_skipped: aiExplanationsSkipped,

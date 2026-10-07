@@ -244,6 +244,7 @@ def search_route(route: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str,
         "provider_results": 0,
         "normalized_rows": 0,
         "rejected_rows": 0,
+        "window_outcomes": [],
         "failure_reasons": [],
     }
     for index in range(WINDOW_LIMIT):
@@ -251,6 +252,7 @@ def search_route(route: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str,
         offset = START_OFFSET + index * 30
         outbound = iso_date(offset)
         returned = iso_date(offset + trip_length)
+        window_outcome = "UNKNOWN_ERROR"
         try:
             query = create_query(
                 flights=[
@@ -266,22 +268,41 @@ def search_route(route: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str,
             results, parser_mode = fetch_all_flights(query)
             if parser_mode == "UPSTREAM_DEGRADED_FALLBACK":
                 metrics["has_degraded_parser"] = True
+                window_outcome = "DEGRADED_FALLBACK"
+            elif len(results) == 0:
+                window_outcome = "VERIFIED_EMPTY"
+            else:
+                window_outcome = "COMPLETE"
             metrics.setdefault("parser_modes", []).append(parser_mode)
-        except (IndexError, KeyError, TypeError, ValueError) as error:
-            # Google occasionally returns an incomplete result page for one
-            # date window. Keep the route alive and let later windows run.
+        except Exception as error:
             metrics["windows_failed"] += 1
-            metrics["failure_reasons"].append({"type": type(error).__name__, "message": str(error)[:160]})
+            err_str = str(error)
+            if isinstance(error, (IndexError, KeyError, TypeError, ValueError)):
+                window_outcome = "PARSER_SCHEMA_DRIFT"
+            elif "429" in err_str or "rate limit" in err_str.lower():
+                window_outcome = "RATE_LIMITED"
+            elif any(s in err_str.lower() for s in ["timeout", "connection", "network", "urlerror"]):
+                window_outcome = "NETWORK_ERROR"
+            elif any(code in err_str for code in ["500", "502", "503", "504"]):
+                window_outcome = "PROVIDER_ERROR"
+            elif "unsupported" in err_str.lower():
+                window_outcome = "UNSUPPORTED"
+            else:
+                window_outcome = "UNKNOWN_ERROR"
+            metrics["window_outcomes"].append(window_outcome)
+            metrics["failure_reasons"].append({"type": type(error).__name__, "message": err_str[:160], "outcome": window_outcome})
             print(json.dumps({
                 "run_id": RUN_ID,
                 "window_failure": {
                     "route": f"{route['origin_code']}-{route['destination_code']}",
                     "outbound": outbound,
                     "returned": returned,
-                    "reason": str(error),
+                    "outcome": window_outcome,
+                    "reason": err_str,
                 }
             }), file=sys.stderr)
             continue
+        metrics["window_outcomes"].append(window_outcome)
         metrics["windows_succeeded"] += 1
         metrics["provider_results"] += len(results)
         observed_at = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()
@@ -341,27 +362,35 @@ def direct_ingest(
         attempted = int(metrics.get("windows_attempted", 0))
         succeeded = int(metrics.get("windows_succeeded", 0))
         has_degraded = bool(metrics.get("has_degraded_parser", False))
+        window_outcomes = metrics.get("window_outcomes", [])
 
+        # NODE PIPE-01 & PIPE-02: scan_runs.status represents execution lifecycle ('completed', 'failed')
+        # health_status represents result quality ('healthy', 'partial', 'degraded', 'failed')
         if succeeded == attempted and attempted > 0 and not has_degraded:
             scan_status = "completed"
+            health_status = "healthy"
             failure_class = None
         elif succeeded > 0:
-            scan_status = "partial"
-            failure_class = "DEGRADED_COVERAGE" if has_degraded else "PARTIAL_WINDOWS"
+            scan_status = "completed"
+            health_status = "degraded" if has_degraded else "partial"
+            non_complete = [o for o in window_outcomes if o not in ("COMPLETE", "VERIFIED_EMPTY")]
+            failure_class = non_complete[0] if non_complete else ("DEGRADED_COVERAGE" if has_degraded else "PARTIAL_WINDOWS")
         else:
             scan_status = "failed"
-            failure_class = classify_failure(str(metrics.get("last_error", "All route windows failed")))
+            health_status = "failed"
+            non_complete = [o for o in window_outcomes if o not in ("COMPLETE", "VERIFIED_EMPTY")]
+            failure_class = non_complete[0] if non_complete else classify_failure(str(metrics.get("last_error", "All route windows failed")))
 
         # Update route operational scheduling state
         route_update = {
             "last_attempt_at": now_iso,
             "updated_at": now_iso,
         }
-        if scan_status == "completed":
+        if health_status == "healthy":
             route_update["last_success_at"] = now_iso
             route_update["consecutive_failures"] = 0
             route_update["failure_class"] = None
-        elif scan_status == "partial":
+        elif health_status in ("partial", "degraded"):
             route_update["last_success_at"] = now_iso
             route_update["failure_class"] = failure_class
         else:
@@ -385,6 +414,7 @@ def direct_ingest(
             "route_id": route["id"],
             "provider": "fast_flights_google",
             "status": scan_status,
+            "health_status": health_status,
             "observations_saved": len(rows),
             "started_at": observed_at,
             "completed_at": observed_at,
@@ -395,6 +425,7 @@ def direct_ingest(
                 "run_id": RUN_ID,
                 "release_sha": WORKER_RELEASE_SHA,
                 "failure_class": failure_class,
+                "health_status": health_status,
                 **metrics,
             },
         }).encode("utf-8")

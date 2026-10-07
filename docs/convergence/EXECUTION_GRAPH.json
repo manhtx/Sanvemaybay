@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-10-07T15:14:00Z",
+  "programs": [
+    {
+      "program_id": "P0",
+      "title": "Control Plane Repair",
+      "nodes": [
+        {
+          "id": "CP-01",
+          "type": "CHANGE",
+          "target": "scripts/generate-convergence-artifacts.mjs",
+          "problem": "Hardcoded PROVEN_GATES set assigned PROVEN status from gate identity rather than fresh proof.",
+          "rootCause": "Lack of dynamic PROOF_INDEX evaluation in artifact generator.",
+          "selectedSolution": "Load PROOF_INDEX.json dynamically and evaluate gate verification based on fresh test artifacts and SHA.",
+          "dependencies": [],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/build-proof-index.mjs", "docs/convergence/PROOF_INDEX.json"]
+        },
+        {
+          "id": "CP-02",
+          "type": "CHANGE",
+          "target": "scripts/generate-convergence-artifacts.mjs",
+          "problem": "FINAL_SCORECARD reported INTERNALLY_CONVERGED_WITH_EXTERNAL_BLOCKERS while unresolved_p0 was 142.",
+          "rootCause": "Flawed terminal state algebra default.",
+          "selectedSolution": "If any internally solvable P0 is unresolved, mission_state = EXECUTING. TARGET_PROVEN is COMPUTED from evidence only when unresolved_p0 === 0.",
+          "dependencies": ["CP-01"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["docs/convergence/FINAL_SCORECARD.json", "docs/convergence/MISSION_STATE.json"]
+        },
+        {
+          "id": "CP-03",
+          "type": "CHANGE",
+          "target": "docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
+          "problem": "Stale competing acceptance authorities and legacy 27-gate registries.",
+          "rootCause": "Historical evolution across multiple phases.",
+          "selectedSolution": "MASTER_ACCEPTANCE_REGISTRY.json is sole active authority with 267 registered gates.",
+          "dependencies": ["CP-01"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/registry-integrity.node-test.mjs"]
+        },
+        {
+          "id": "CP-04",
+          "type": "CHANGE",
+          "target": "docs/convergence/PROOF_INDEX.json",
+          "problem": "Requirement lifecycle and fresh evidence pointers missing.",
+          "rootCause": "Lack of unified gate-to-evidence index.",
+          "selectedSolution": "Create PROOF_INDEX.json with source_sha, command_probe, artifact, timestamp, and invalidation dependencies.",
+          "dependencies": ["CP-01"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["docs/convergence/PROOF_INDEX.json"]
+        },
+        {
+          "id": "CP-05",
+          "type": "VERIFY",
+          "target": "docs/convergence/PROOF_INDEX.json",
+          "problem": "Unclassified 213 in-progress gates.",
+          "rootCause": "All non-proven gates were lumped together.",
+          "selectedSolution": "Classified into A (Missing/Wrong), B (Implemented not cut over), C (Insufficient proof), D (Superseded/External blocker).",
+          "dependencies": ["CP-04"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["docs/convergence/PROOF_INDEX.json"]
+        }
+      ]
+    },
+    {
+      "program_id": "P1",
+      "title": "Recover Production Pipeline",
+      "nodes": [
+        {
+          "id": "PIPE-01",
+          "type": "CHANGE",
+          "target": "scripts/fast-flights-worker.py, supabase/migrations/20261007000200_scan_runs_health_status.sql",
+          "problem": "Worker persisted scan_runs.status = 'partial' violating scan_runs_status_check constraint.",
+          "rootCause": "Conflation of execution lifecycle with result quality.",
+          "selectedSolution": "status in ('running', 'completed', 'failed'); separate health_status in ('healthy', 'partial', 'degraded', 'failed', 'unknown').",
+          "dependencies": [],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/fast-flights-worker.py", "supabase/migrations/20261007000200_scan_runs_health_status.sql"]
+        },
+        {
+          "id": "PIPE-02",
+          "type": "CHANGE",
+          "target": "scripts/fast-flights-worker.py",
+          "problem": "Worker inferred failure class from missing or generic last_error string.",
+          "rootCause": "No per-window typed outcome emission.",
+          "selectedSolution": "Every window emits typed outcome (COMPLETE, VERIFIED_EMPTY, DEGRADED_FALLBACK, RATE_LIMITED, NETWORK_ERROR, PROVIDER_ERROR, PARSER_SCHEMA_DRIFT, UNSUPPORTED, UNKNOWN_ERROR).",
+          "dependencies": ["PIPE-01"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/fast-flights-worker.py"]
+        },
+        {
+          "id": "PIPE-03",
+          "type": "CHANGE",
+          "target": "supabase/functions/analyze-price/index.ts",
+          "problem": "Edge function failed with HTTP 546 WORKER_RESOURCE_LIMIT due to 5,000 in-memory rows and hundreds of sequential deals upserts.",
+          "rootCause": "Unbounded Edge Function workload architecture.",
+          "selectedSolution": "Bounded 300 rows/invocation budget, bulk upsert of deals and snapshots in 2 bulk queries, keyset continuation.",
+          "dependencies": [],
+          "status": "COMPLETED",
+          "evidenceRefs": ["supabase/functions/analyze-price/index.ts"]
+        },
+        {
+          "id": "PIPE-04",
+          "type": "CHANGE",
+          "target": "scripts/orchestrate-analyzer.mjs",
+          "problem": "Analyzer orchestrator warned on batch limit and exited 0, pretending green completion on partial source data.",
+          "rootCause": "Soft failure definition.",
+          "selectedSolution": "Orchestrator loops with bounded 300-row batches up to source exhaustion. Fails with exit code 1 if budget reached with pending records.",
+          "dependencies": ["PIPE-03"],
+          "status": "COMPLETED",
+          "evidenceRefs": ["scripts/orchestrate-analyzer.mjs"]
+        },
+        {
+          "id": "PIPE-05",
+          "type": "VERIFY",
+          "target": ".github/workflows/fast-flights-pipeline.yml",
+          "problem": "Scheduled run 37586115251 failed.",
+          "rootCause": "Failure A (constraint violation) and Failure B (worker resource limit).",
+          "selectedSolution": "Deploy migrations and edge functions, then trigger and verify discovery pipeline in production.",
+          "dependencies": ["PIPE-01", "PIPE-02", "PIPE-03", "PIPE-04"],
+          "status": "IN_PROGRESS",
+          "evidenceRefs": []
+        }
+      ]
+    }
+  ]
+}

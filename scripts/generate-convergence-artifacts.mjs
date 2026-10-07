@@ -53,7 +53,7 @@ if (fs.existsSync(packageLockPath)) {
   packageLockHash = crypto.createHash("sha256").update(fs.readFileSync(packageLockPath)).digest("hex");
 }
 
-// 2. Load Master Acceptance Registry (The Sole Active Truth Authority)
+// 2. Load Master Acceptance Registry and PROOF_INDEX
 const masterRegPath = path.resolve("docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json");
 if (!fs.existsSync(masterRegPath)) {
   console.error("Missing docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json");
@@ -62,48 +62,33 @@ if (!fs.existsSync(masterRegPath)) {
 const masterRegistry = JSON.parse(fs.readFileSync(masterRegPath, "utf8"));
 const gates = masterRegistry.gates || [];
 
-// Set of verified requirement, negative control, and journey IDs in this mission
-const PROVEN_GATES = new Set([
-  // Control Plane
-  "REQ-CONTROL-001", "REQ-CONTROL-002", "REQ-CONTROL-003", "REQ-CONTROL-004",
-  "REQ-CONTROL-005", "REQ-CONTROL-006", "REQ-CONTROL-007", "REQ-CONTROL-008",
-  // Historical Evidence & Canonical Observation Ledger
-  "REQ-HIST-001", "REQ-HIST-002", "REQ-HIST-003", "REQ-HIST-004", "REQ-HIST-005",
-  "REQ-HIST-006", "REQ-HIST-007", "REQ-HIST-008", "REQ-HIST-009", "REQ-HIST-010",
-  // Identity Stability
-  "REQ-ID-001", "REQ-ID-002", "REQ-ID-003", "REQ-ID-004", "REQ-ID-005", "REQ-ID-006",
-  // Provider Resilience
-  "REQ-PROV-001", "REQ-PROV-002", "REQ-PROV-003",
-  // Watch Lifecycle & Outbox
-  "REQ-WATCH-013", "REQ-WATCH-014", "REQ-WATCH-015", "REQ-WATCH-016", "REQ-WATCH-017", "REQ-WATCH-018",
-  "REQ-NOTIF-001", "REQ-NOTIF-002", "REQ-NOTIF-003", "REQ-NOTIF-004", "REQ-NOTIF-005", "REQ-NOTIF-006",
-  // Saved Server Authority
-  "REQ-SAVED-001", "REQ-SAVED-002", "REQ-SAVED-003", "REQ-SAVED-004", "REQ-SAVED-005",
-  // Security & RLS
-  "REQ-SEC-001", "REQ-SEC-002",
-  // Negative Controls verified by tests
-  "NC-001", "NC-002", "NC-003", "NC-012", "NC-013", "NC-014",
-  "NC-018", "NC-019", "NC-020", "NC-021", "NC-022", "NC-023", "NC-024",
-  "NC-025", "NC-026", "NC-027", "NC-028", "NC-029", "NC-030",
-  // Critical Journeys covered by unit/integration tests
-  "JOURNEY-001", "JOURNEY-002", "JOURNEY-003", "JOURNEY-004", "JOURNEY-005"
-]);
+// NODE CP-01: Remove hard-coded PROVEN_GATES. Derive PROVEN strictly from fresh PROOF_INDEX.json
+const proofIndexPath = path.resolve("docs/convergence/PROOF_INDEX.json");
+let proofIndex = null;
+if (fs.existsSync(proofIndexPath)) {
+  proofIndex = JSON.parse(fs.readFileSync(proofIndexPath, "utf8"));
+}
 
-// Mark gates as PROVEN if in verified set
 for (const gate of gates) {
-  if (PROVEN_GATES.has(gate.gate_id)) {
+  const proof = proofIndex?.gates?.[gate.gate_id];
+  if (proof && proof.status === "VERIFIED") {
     gate.status = "PROVEN";
-    gate.verified_at = now;
+    gate.verified_at = proof.verified_at || now;
     if (!gate.evidence_ids) gate.evidence_ids = [];
     gate.evidence = [
       {
-        level: gate.required_evidence_level || "E2",
+        level: proof.achieved_evidence_level || gate.required_evidence_level || "E2",
         type: "automated_regression_test",
         sha: currentSha,
-        timestamp: now,
+        timestamp: proof.verified_at || now,
+        command: proof.command_probe || null,
+        artifact: proof.artifact || null,
         status: "VERIFIED"
       }
     ];
+  } else {
+    gate.status = proof?.status || "IN_PROGRESS";
+    gate.evidence = [];
   }
 }
 
@@ -222,12 +207,14 @@ for (const [cat, stat] of Object.entries(categoryStats)) {
   scores[cat.toLowerCase()] = Math.round(ratio * 100) / 10;
 }
 
-// Final Mission State determination per Section 5 of contract:
-// INTERNAL_PRODUCT_READINESS_10_10 requires zero internally solvable P0 remains.
-// Otherwise INTERNALLY_CONVERGED_WITH_EXTERNAL_BLOCKERS or NOT_CONVERGED.
-let missionState = "INTERNALLY_CONVERGED_WITH_EXTERNAL_BLOCKERS";
+// NODE CP-02: Fix terminal-state algebra.
+// If any internally solvable P0 is unresolved, mission state is EXECUTING / VERIFYING / REPAIRING.
+// TARGET_PROVEN is COMPUTED from evidence only when unresolved_p0 === 0.
+let missionState = "EXECUTING";
 if (p0Unresolved === 0) {
-  missionState = "INTERNAL_PRODUCT_READINESS_10_10";
+  missionState = "TARGET_PROVEN";
+} else {
+  missionState = "EXECUTING";
 }
 
 const scorecard = {
@@ -242,18 +229,40 @@ const scorecard = {
   proven_p0_gates: p0Proven.length,
   unresolved_p0: p0Unresolved,
   category_scores: scores,
-  epistemic_note: "Machine-derived from docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json. Market outcomes (E9) remain strictly UNVERIFIED."
+  epistemic_note: "Machine-derived from docs/convergence/PROOF_INDEX.json & MASTER_ACCEPTANCE_REGISTRY.json. Market outcomes (E9) remain strictly UNVERIFIED."
 };
 fs.writeFileSync("docs/convergence/FINAL_SCORECARD.json", JSON.stringify(scorecard, null, 2) + "\n");
 
-// 7. Update MISSION_CHECKPOINT.json per Section 7 of contract
+// 7. Update MISSION_STATE.json per Section 7 & 8 of contract
+const missionStateDoc = {
+  mission_version: "2026-10-07",
+  mission_state: missionState,
+  current_slice: "SLICE_1_CONTROL_AND_PIPELINE_RECOVERY",
+  current_node: "PIPE-01",
+  open_critical_nodes: ["PIPE-01", "PIPE-02", "PIPE-03", "PIPE-04", "PIPE-05", "CP-01", "CP-02", "CP-03", "CP-04", "CP-05", "CP-06"],
+  latest_source_sha: currentSha,
+  latest_remote_sha: remoteSha,
+  dirty_files: dirtyFiles,
+  current_migration_head: migrationHead,
+  p0_total: p0Gates.length,
+  p0_proven: p0Proven.length,
+  p0_unresolved: p0Unresolved,
+  total_gates: gates.length,
+  proven_gates: gates.filter((g) => g.status === "PROVEN").length,
+  blockers: [],
+  exact_next_action: "Deploy scan_runs health_status migration and bounded analyzer Edge Function to recover scheduled pipeline",
+  timestamp: now
+};
+fs.writeFileSync("docs/convergence/MISSION_STATE.json", JSON.stringify(missionStateDoc, null, 2) + "\n");
+
+// Update MISSION_CHECKPOINT.json
 const checkpoint = {
   mission_version: "2026-10-07",
   current_branch: currentBranch,
   local_sha: currentSha,
   remote_sha: remoteSha,
   dirty_files: dirtyFiles,
-  completed_requirement_ids: Array.from(PROVEN_GATES),
+  completed_requirement_ids: gates.filter((g) => g.status === "PROVEN").map((g) => g.gate_id),
   open_requirement_ids: gates.filter((g) => g.status !== "PROVEN").map((g) => g.gate_id),
   falsified_requirement_ids: [],
   blocked_external_ids: ["E9-MARKET-OUTCOMES"],
@@ -263,23 +272,24 @@ const checkpoint = {
     "npm run test:functions",
     "node --test scripts/*.node-test.mjs"
   ],
-  last_ci_run: "37449399394",
+  last_ci_run: "37586115251",
   current_deployment_state: "PENDING_COMMIT_AND_PUSH",
   current_active_generation: "gen_live_v2",
-  current_runtime_health: "DEGRADED_DISCOVERY_CONVERGING",
+  current_runtime_health: "DEGRADED_DISCOVERY_RECOVERING",
   next_exact_actions: [
-    "Commit all changes to branch antigravity/farely-master-runtime-convergence-20261007",
+    "Commit all changes to branch antigravity/farely-project-10x-convergence-20261007",
     "Push to origin",
-    "Verify remote SHA matches local SHA",
-    "Deploy migrations and edge functions"
+    "Deploy migrations and edge functions",
+    "Verify pipeline recovery"
   ],
   timestamp: now
 };
 fs.writeFileSync("docs/convergence/MISSION_CHECKPOINT.json", JSON.stringify(checkpoint, null, 2) + "\n");
 
 console.log(`Successfully generated convergence artifacts!
-- Master Registry: ${gates.length} gates (${Array.from(PROVEN_GATES).length} proven)
+- Master Registry: ${gates.length} gates (${gates.filter((g) => g.status === "PROVEN").length} proven)
 - Test Matrix: ${testMatrix.summary.total_test_suites} suites across vitest, node, deno
 - Release Manifest: SHA ${currentSha.slice(0, 8)}, Migration ${migrationHead}
 - Final Scorecard: Derived from registry, Mission State: ${missionState}
 - Mission Checkpoint: Updated per Section 7 contract`);
+
