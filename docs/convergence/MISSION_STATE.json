@@ -16,11 +16,12 @@
     "CP-05",
     "CP-06"
   ],
-  "latest_source_sha": "654b8db17991ffbbf54f87742ee7de7cb23d5c94",
-  "latest_remote_sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+  "latest_source_sha": "5b33705c990cc0b952516355b71bc836762f8185",
+  "latest_remote_sha": "5b33705c990cc0b952516355b71bc836762f8185",
   "dirty_files": [
     "M docs/convergence/PROOF_INDEX.json",
-    "M supabase/migrations/20261007000200_scan_runs_health_status.sql"
+    "M scripts/orchestrate-analyzer.mjs",
+    "M supabase/functions/analyze-price/index.ts"
   ],
   "current_migration_head": "20261007000200_scan_runs_health_status.sql",
   "p0_total": 192,
@@ -30,5 +31,5 @@
   "proven_gates": 54,
   "blockers": [],
   "exact_next_action": "Deploy scan_runs health_status migration and bounded analyzer Edge Function to recover scheduled pipeline",
-  "timestamp": "2026-10-07T08:21:58.997Z"
+  "timestamp": "2026-10-07T08:33:08.078Z"
 }

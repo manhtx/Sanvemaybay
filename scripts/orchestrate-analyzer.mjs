@@ -12,6 +12,8 @@ if (!baseUrl || !anonKey || !secret) {
 
 const endpoint = `${baseUrl}/functions/v1/analyze-price`;
 const maxBatches = 50;
+const defaultSince = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+const sinceTimestamp = env.ANALYZER_SINCE_TIMESTAMP === "all" ? "" : (env.ANALYZER_SINCE_TIMESTAMP || defaultSince);
 
 let batch = 1;
 let continuation = null;
@@ -20,12 +22,15 @@ let totalHistory = 0;
 let totalDeals = 0;
 let hasMore = true;
 
-console.log(`Starting analyzer orchestration loop (max ${maxBatches} batches, bounded 300 rows/batch)...`);
+console.log(
+  `Starting analyzer orchestration loop (max ${maxBatches} batches, bounded 300 rows/batch, watermark: ${sinceTimestamp || "all"})...`
+);
 
 while (hasMore && batch <= maxBatches) {
   console.log(`Executing analyzer batch ${batch}...`);
   const body = {
     max_observations: 300,
+    ...(sinceTimestamp ? { since_timestamp: sinceTimestamp } : {}),
     ...(continuation || {}),
   };
 

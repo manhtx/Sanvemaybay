@@ -31,6 +31,7 @@ Deno.serve(async (request) => {
 
   let beforeTimestamp = "";
   let cursorId = "";
+  let sinceTimestamp = "";
   let maxObservations = 300;
   try {
     const body = await request.json();
@@ -38,6 +39,7 @@ Deno.serve(async (request) => {
       ? body.cursor_timestamp
       : (typeof body?.before_timestamp === "string" ? body.before_timestamp : "");
     cursorId = typeof body?.cursor_id === "string" ? body.cursor_id : "";
+    sinceTimestamp = typeof body?.since_timestamp === "string" ? body.since_timestamp : "";
     if (typeof body?.max_observations === "number" && body.max_observations > 0) {
       maxObservations = Math.min(500, body.max_observations);
     }
@@ -76,6 +78,10 @@ Deno.serve(async (request) => {
         .order("timestamp", { ascending: false })
         .order("id", { ascending: false })
         .limit(batchLimit);
+
+      if (sinceTimestamp) {
+        query = query.gte("timestamp", sinceTimestamp);
+      }
 
       if (curTimestamp && curId) {
         query = query.or(`timestamp.lt.${curTimestamp},and(timestamp.eq.${curTimestamp},id.lt.${curId})`);

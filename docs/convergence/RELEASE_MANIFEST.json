@@ -1,7 +1,7 @@
 {
-  "release_id": "farely-convergence-654b8db1",
-  "source_git_sha": "654b8db17991ffbbf54f87742ee7de7cb23d5c94",
-  "remote_git_sha": "fa4e7220b801e97e7671338b77d9e57f51fe0551",
+  "release_id": "farely-convergence-5b33705c",
+  "source_git_sha": "5b33705c990cc0b952516355b71bc836762f8185",
+  "remote_git_sha": "5b33705c990cc0b952516355b71bc836762f8185",
   "frontend_deployment_url": "https://farely.manhtx.com",
   "frontend_build_identity": "vite-6.4.3-react-19",
   "backend_edge_release_url": "https://yefbpmqfsstcaeqfrmyn.supabase.co/functions/v1/observed-fares",
@@ -18,5 +18,5 @@
     "saved_authority": "Server is canonical authority for authenticated users with automatic rollback on remote failure (NC-030)",
     "security_rls": "Multi-tenant RLS tenant isolation verified via pgTAP and node tests (User A cannot access User B)"
   },
-  "timestamp": "2026-10-07T08:21:58.997Z"
+  "timestamp": "2026-10-07T08:33:08.078Z"
 }
