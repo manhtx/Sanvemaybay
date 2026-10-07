@@ -1,7 +1,7 @@
 {
   "authority_note": "GENERATED PROJECTION of MASTER_ACCEPTANCE_REGISTRY.json. Do not edit independently.",
   "version": "2.0.0",
-  "finalized_at": "2026-10-07T03:22:56.106Z",
+  "finalized_at": "2026-10-07T03:23:40.807Z",
   "total_gates": 267,
   "proven_count": 54,
   "in_progress_count": 213,
@@ -25,13 +25,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -53,13 +53,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -81,13 +81,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -109,13 +109,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -137,13 +137,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -165,13 +165,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -193,13 +193,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -221,13 +221,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E6",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -1979,13 +1979,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2007,13 +2007,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2035,13 +2035,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2063,13 +2063,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2091,13 +2091,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2119,13 +2119,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2204,13 +2204,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2232,13 +2232,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2260,13 +2260,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2288,13 +2288,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2316,13 +2316,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2344,13 +2344,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2429,13 +2429,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2457,13 +2457,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2485,13 +2485,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2513,13 +2513,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2541,13 +2541,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2607,13 +2607,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2635,13 +2635,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2663,13 +2663,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2938,13 +2938,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -2966,13 +2966,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4339,13 +4339,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4363,13 +4363,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4387,13 +4387,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4531,13 +4531,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4555,13 +4555,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4579,13 +4579,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4648,13 +4648,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4672,13 +4672,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4696,13 +4696,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4720,13 +4720,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4744,13 +4744,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4768,13 +4768,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4792,13 +4792,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4816,13 +4816,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4840,13 +4840,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4864,13 +4864,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4888,13 +4888,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4912,13 +4912,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -4936,13 +4936,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -5037,13 +5037,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -5063,13 +5063,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -5089,13 +5089,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -5115,13 +5115,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
@@ -5141,13 +5141,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-07T03:22:56.106Z",
+      "verified_at": "2026-10-07T03:23:40.807Z",
       "evidence": [
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "e71de720f6f564bda5433976a9e97f536070b8b6",
-          "timestamp": "2026-10-07T03:22:56.106Z",
+          "sha": "39d7d7fc36f43e8f1103da03023113132bc201aa",
+          "timestamp": "2026-10-07T03:23:40.807Z",
           "status": "VERIFIED"
         }
       ]
