@@ -177,33 +177,49 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
     if not segments:
         return None
     first = segments[0]
+    last = segments[-1]
     airline_code = str(value(result, "type", "")).upper()
     airlines = value(result, "airlines", []) or []
     airline = str(airlines[0] if airlines else airline_code).strip()
     price = float(value(result, "price", 0) or 0)
     if not airline_code or not airline or price <= 0:
         return None
-    duration = sum(int(value(segment, "duration", 0) or 0) for segment in segments)
-    if duration <= 0:
-        return None
     origin_code = route["origin_code"]
     destination_code = route["destination_code"]
     depart_date, depart_time = date_time(value(first, "departure", {}))
-    arrival_date, arrival_time = date_time(value(first, "arrival", {}))
+    # F12: Use final segment's arrival for final destination arrival
+    arrival_date, arrival_time = date_time(value(last, "arrival", {}))
     if not depart_date or not depart_time or not arrival_date or not arrival_time:
         return None
+
+    # F12: Calculate layover-inclusive elapsed journey duration
+    flight_durations = sum(int(value(segment, "duration", 0) or 0) for segment in segments)
+    elapsed_duration = flight_durations
+    try:
+        dep_dt = datetime.fromisoformat(f"{depart_date}T{depart_time}")
+        arr_dt = datetime.fromisoformat(f"{arrival_date}T{arrival_time}")
+        diff_minutes = int((arr_dt - dep_dt).total_seconds() // 60)
+        if diff_minutes > 0:
+            elapsed_duration = max(diff_minutes, flight_durations)
+    except Exception:
+        pass
+    duration = elapsed_duration
+    if duration <= 0:
+        return None
+
     # Google Flights initial search segments represent outbound itinerary legs:
     # 1 leg = direct flight (0 stops). 2 legs = 1 transit stop.
     stops = max(0, len(segments) - 1)
+
+    # F13: Physical itinerary key MUST NOT contain price (stable physical identity)
     itinerary_key = ":".join([
         origin_code,
         destination_code,
         outbound,
-        returned,
+        returned or "",
         airline_code,
         depart_time,
         str(stops),
-        str(round(price)),
     ])
     source_url = google_source_url(origin_code, destination_code, outbound, returned)
     return {

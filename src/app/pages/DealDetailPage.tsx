@@ -84,14 +84,17 @@ export function DealDetailPage() {
             maxStops: data.stops === 0 ? 0 : undefined,
           });
 
-          // Query candidate universe with price_asc so true global minimum is checked first
+          // Query candidate universe with complete TravelIntent filters and price_asc (F11, S07)
           const candidatesPage = await getObservedFares({
             origin: data.fromCode,
             destination: data.toCode,
             departDateFrom: data.departDate,
             departDateTo: data.departDate,
+            returnDate: data.returnDate || undefined,
+            directOnly: data.stops === 0 ? true : undefined,
+            maxStops: data.stops != null && data.stops >= 0 ? data.stops : undefined,
             sort: "price_asc",
-            pageSize: 100,
+            pageSize: 60,
           });
 
           const candidateOffers: RouteOffer[] = (candidatesPage?.fares || []).map((f) => ({

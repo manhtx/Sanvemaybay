@@ -211,28 +211,53 @@ Deno.serve(async (request) => {
         continue;
       }
 
-      let matchingDeals = allCandidates.filter((deal) => matchesAlert(alert, deal));
+      // 1. Find all candidates on this route matching base route/intent criteria (without target_price filter!)
+      const routeCandidates = allCandidates.filter((deal) => matchesAlert(alert, deal));
 
-      if (alert.target_price != null && Number(alert.target_price) > 0) {
-        matchingDeals = matchingDeals.filter((deal) => Number(deal.price) <= Number(alert.target_price));
+      let conditionInput: "MATCH" | "CONFIRMED_NON_MATCH" | "INSUFFICIENT_EVIDENCE";
+      let bestCandidate: any = null;
+      let observedBestPrice: number | null = null;
+      let eligibleCandidates: any[] = [];
+
+      if (routeCandidates.length === 0) {
+        // F18: No candidates observed on this route in the active generation -> INSUFFICIENT_EVIDENCE
+        // Preserves active episode state; never false EXITED.
+        conditionInput = "INSUFFICIENT_EVIDENCE";
+      } else {
+        // Filter by max_stops if specified
+        let stopFiltered = routeCandidates;
+        if (alert.max_stops != null && alert.max_stops >= 0) {
+          stopFiltered = routeCandidates.filter((deal) => deal.stops == null || Number(deal.stops) <= Number(alert.max_stops));
+        }
+
+        const targetBudget = Number(alert.target_price ?? alert.budget ?? 0);
+        if (stopFiltered.length === 0) {
+          // Route exists, but all flights violate stop constraint -> CONFIRMED_NON_MATCH
+          conditionInput = "CONFIRMED_NON_MATCH";
+          const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
+          observedBestPrice = Number(sorted[0].price);
+        } else {
+          const sorted = [...stopFiltered].sort((a, b) => Number(a.price) - Number(b.price));
+          observedBestPrice = Number(sorted[0].price);
+          if (targetBudget > 0 && observedBestPrice <= targetBudget) {
+            conditionInput = "MATCH";
+            eligibleCandidates = sorted.filter((d) => Number(d.price) <= targetBudget);
+            bestCandidate = eligibleCandidates[0];
+          } else {
+            conditionInput = "CONFIRMED_NON_MATCH";
+          }
+        }
       }
 
-      if (alert.max_stops != null && alert.max_stops >= 0) {
-        matchingDeals = matchingDeals.filter((deal) => deal.stops == null || Number(deal.stops) <= Number(alert.max_stops));
-      }
-
-      const sortedByPrice = [...matchingDeals].sort((a, b) => Number(a.price) - Number(b.price));
-      const bestCandidate = sortedByPrice.length > 0 ? sortedByPrice[0] : null;
-
-      // Evaluate Condition Episode State Transition (REQ-DATA-004)
+      // Evaluate Condition Episode State Transition (REQ-DATA-004, F18)
       const targetBudget = Number(alert.target_price ?? alert.budget ?? 0);
-      const observedBestPrice = bestCandidate ? Number(bestCandidate.price) : Number.POSITIVE_INFINITY;
       const currentEpisode = episodesByWatch.get(alert.id) || null;
 
       const evalResult = evaluateWatchCondition({
         watchId: alert.id,
         targetPrice: targetBudget > 0 ? targetBudget : Number.POSITIVE_INFINITY,
         observedPrice: observedBestPrice,
+        conditionInput,
         activeEpisode: currentEpisode,
         generationId: activeGen?.active_generation_id ?? null,
         now: nowIso,
@@ -277,7 +302,7 @@ Deno.serve(async (request) => {
         p_watch_id: alert.id,
         p_now: nowIso,
         p_generation_id: activeGen?.active_generation_id ?? null,
-        p_eligible_count: matchingDeals.length,
+        p_eligible_count: eligibleCandidates.length,
         p_best_price: bestCandidate ? Number(bestCandidate.price) : null,
         p_episode_action: episodeAction,
         p_episode_id: evalResult.nextEpisode?.id ?? null,
@@ -346,9 +371,10 @@ Deno.serve(async (request) => {
 
         if (resolveErr) {
           console.warn("resolve_notification_outbox warning:", resolveErr.message);
+          failed++;
+        } else {
+          sent++;
         }
-
-        sent++;
       } catch (sendErr) {
         const errCode = safeOperationalErrorCode(sendErr, "delivery_failed");
         const isPermanent = attemptNo >= 3;

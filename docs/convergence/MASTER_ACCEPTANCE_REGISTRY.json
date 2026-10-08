@@ -236,7 +236,7 @@
       "verified_at": "2026-10-08T08:29:40.452Z",
       "evidence": [
         {
-          "level": "E6",
+          "level": "E1",
           "type": "automated_regression_test",
           "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
@@ -446,7 +446,7 @@
       "verified_at": "2026-10-08T08:29:40.452Z",
       "evidence": [
         {
-          "level": "E6",
+          "level": "E1",
           "type": "automated_regression_test",
           "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
@@ -506,7 +506,7 @@
       "verified_at": "2026-10-08T08:29:40.452Z",
       "evidence": [
         {
-          "level": "E7",
+          "level": "E1",
           "type": "automated_regression_test",
           "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
@@ -7840,5 +7840,5 @@
       ]
     }
   ],
-  "updated_at": "2026-10-08T08:33:04.562Z"
+  "updated_at": "2026-10-08T10:29:48.753Z"
 }

@@ -290,12 +290,33 @@ export function evaluateAdmission(options = {}) {
       if (gate.priority === 'P1') unresolvedP1++;
     }
 
+    // F06: Derive achieved evidence level from execution type, never copy from required
+    const derivedLevel = (() => {
+      if (status !== 'PROVEN') return 'E0';
+      const declaredLevel = gate.evidence?.[0]?.level;
+      if (declaredLevel && ['E0', 'E1', 'E2', 'E3', 'E4', 'E5'].includes(declaredLevel)) {
+        return declaredLevel;
+      }
+      if (probe.runner === 'playwright') return 'E3';
+      if (probe.runner === 'deno') return 'E2';
+      if (probe.runner === 'node') {
+        const isDbIntegration = probe.artifact.includes('database') ||
+          probe.artifact.includes('schedule') ||
+          probe.artifact.includes('rls') ||
+          probe.artifact.includes('outbox') ||
+          probe.artifact.includes('account-deletion');
+        return isDbIntegration ? 'E2' : 'E1';
+      }
+      if (probe.runner === 'vitest') return 'E1';
+      return 'E1';
+    })();
+
     evaluatedGates[gate.gate_id] = {
       gate_id: gate.gate_id,
       status: status === 'PROVEN' ? 'VERIFIED' : status,
       priority: gate.priority,
       required_evidence_level: gate.required_evidence_level || 'E2',
-      achieved_evidence_level: status === 'PROVEN' ? (gate.required_evidence_level || 'E2') : 'E0',
+      achieved_evidence_level: derivedLevel,
       command_probe: probe.command_probe,
       artifact: probe.artifact,
       source_sha: proofSha,
@@ -416,31 +437,7 @@ export function syncConvergenceArtifacts(projectRoot = process.cwd(), options = 
   let admissionOptions = { projectRoot, ...options };
 
   if (options.admitFreshRun || process.argv.includes('--admit-fresh-run')) {
-    const gitSha = execSync('git rev-parse HEAD', { cwd: projectRoot, encoding: 'utf8' }).trim();
-    const masterRegPath = path.join(projectRoot, 'docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
-    const masterRegistry = JSON.parse(fs.readFileSync(masterRegPath, 'utf8'));
-    const nowIso = new Date().toISOString();
-
-    const updatedGates = masterRegistry.gates.map((g) => {
-      const probe = getGateProbeMapping(g.gate_id);
-      return {
-        ...g,
-        status: 'PROVEN',
-        verified_at: nowIso,
-        evidence: [
-          {
-            level: g.required_evidence_level || 'E2',
-            type: 'automated_regression_test',
-            sha: gitSha,
-            timestamp: nowIso,
-            command: probe.command_probe,
-            artifact: probe.artifact,
-            status: 'VERIFIED'
-          }
-        ]
-      };
-    });
-    admissionOptions.registryOverride = { ...masterRegistry, gates: updatedGates };
+    throw new Error('Self-promotion path --admit-fresh-run is permanently disabled by Master Mission V9 (F05). Genuine execution proof receipts are mandatory.');
   }
 
   const result = evaluateAdmission(admissionOptions);

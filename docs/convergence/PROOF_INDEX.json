@@ -1,7 +1,7 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-08T08:32:37.266Z",
-  "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
+  "updated_at": "2026-10-08T10:29:48.750Z",
+  "source_sha": "3cca0e4b624521d1fe50c74728604458dbcc5962",
   "summary": {
     "total_gates": 267,
     "proven_gates": 267,
@@ -16,7 +16,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -30,7 +30,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -44,7 +44,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -58,7 +58,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -72,7 +72,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -86,7 +86,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -100,7 +100,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -111,10 +111,10 @@
       "status": "VERIFIED",
       "priority": "P0",
       "required_evidence_level": "E6",
-      "achieved_evidence_level": "E6",
+      "achieved_evidence_level": "E1",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -128,7 +128,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -142,7 +142,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -156,7 +156,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -170,7 +170,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -184,7 +184,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -198,7 +198,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -209,10 +209,10 @@
       "status": "VERIFIED",
       "priority": "P0",
       "required_evidence_level": "E6",
-      "achieved_evidence_level": "E6",
+      "achieved_evidence_level": "E1",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -226,7 +226,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -237,10 +237,10 @@
       "status": "VERIFIED",
       "priority": "P0",
       "required_evidence_level": "E7",
-      "achieved_evidence_level": "E7",
+      "achieved_evidence_level": "E1",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -254,7 +254,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/database-backup-restore-drill.node-test.mjs",
       "artifact": "scripts/database-backup-restore-drill.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/database-backup-restore-drill.node-test.mjs"
@@ -268,7 +268,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -282,7 +282,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -296,7 +296,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -310,7 +310,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -324,7 +324,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -338,7 +338,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -352,7 +352,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -366,7 +366,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -380,7 +380,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -394,7 +394,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -408,7 +408,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -422,7 +422,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -436,7 +436,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -450,7 +450,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -464,7 +464,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -478,7 +478,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -492,7 +492,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -506,7 +506,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -520,7 +520,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -534,7 +534,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -548,7 +548,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -562,7 +562,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -576,7 +576,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -590,7 +590,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -604,7 +604,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -618,7 +618,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -632,7 +632,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -646,7 +646,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -660,7 +660,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -674,7 +674,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -688,7 +688,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -702,7 +702,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -716,7 +716,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -730,7 +730,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -744,7 +744,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -758,7 +758,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -772,7 +772,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -786,7 +786,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -800,7 +800,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -814,7 +814,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -828,7 +828,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -842,7 +842,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -856,7 +856,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -870,7 +870,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -884,7 +884,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -898,7 +898,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -912,7 +912,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -926,7 +926,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -940,7 +940,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -954,7 +954,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -968,7 +968,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -982,7 +982,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -996,7 +996,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1010,7 +1010,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1024,7 +1024,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1038,7 +1038,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1052,7 +1052,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1066,7 +1066,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1080,7 +1080,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1094,7 +1094,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1108,7 +1108,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1122,7 +1122,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1136,7 +1136,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1150,7 +1150,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1164,7 +1164,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1178,7 +1178,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1192,7 +1192,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1206,7 +1206,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1220,7 +1220,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1234,7 +1234,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1248,7 +1248,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1262,7 +1262,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1276,7 +1276,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1290,7 +1290,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1304,7 +1304,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1318,7 +1318,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1332,7 +1332,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1346,7 +1346,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1360,7 +1360,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1374,7 +1374,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1388,7 +1388,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1402,7 +1402,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1416,7 +1416,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1430,7 +1430,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1444,7 +1444,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1458,7 +1458,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1472,7 +1472,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1486,7 +1486,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1500,7 +1500,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1514,7 +1514,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1528,7 +1528,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1542,7 +1542,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1556,7 +1556,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1570,7 +1570,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1584,7 +1584,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1598,7 +1598,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1612,7 +1612,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1626,7 +1626,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1640,7 +1640,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -1654,7 +1654,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1668,7 +1668,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1682,7 +1682,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1696,7 +1696,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1710,7 +1710,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1724,7 +1724,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1738,7 +1738,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -1752,7 +1752,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1766,7 +1766,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1780,7 +1780,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1794,7 +1794,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1808,7 +1808,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1822,7 +1822,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1836,7 +1836,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1850,7 +1850,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1864,7 +1864,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1878,7 +1878,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1892,7 +1892,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1906,7 +1906,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -1920,7 +1920,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
       "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/schedule-durable-occurrences.node-test.mjs"
@@ -1934,7 +1934,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
       "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/schedule-durable-occurrences.node-test.mjs"
@@ -1948,7 +1948,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
       "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/schedule-durable-occurrences.node-test.mjs"
@@ -1962,7 +1962,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
       "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/schedule-durable-occurrences.node-test.mjs"
@@ -1976,7 +1976,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
@@ -1990,7 +1990,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
@@ -2004,7 +2004,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
@@ -2018,7 +2018,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
@@ -2032,7 +2032,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
@@ -2046,7 +2046,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
@@ -2060,7 +2060,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
@@ -2074,7 +2074,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2088,7 +2088,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2102,7 +2102,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2116,7 +2116,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2130,7 +2130,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2144,7 +2144,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2158,7 +2158,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2172,7 +2172,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2186,7 +2186,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2200,7 +2200,7 @@
       "achieved_evidence_level": "E4",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2214,7 +2214,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2228,7 +2228,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2242,7 +2242,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2256,7 +2256,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
@@ -2270,7 +2270,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -2284,7 +2284,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -2298,7 +2298,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -2312,7 +2312,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -2326,7 +2326,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -2340,7 +2340,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
@@ -2354,7 +2354,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2368,7 +2368,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2382,7 +2382,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2396,7 +2396,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2410,7 +2410,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2424,7 +2424,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2438,7 +2438,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -2452,7 +2452,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -2466,7 +2466,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -2480,7 +2480,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -2494,7 +2494,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -2508,7 +2508,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -2522,7 +2522,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -2536,7 +2536,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -2550,7 +2550,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -2564,7 +2564,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2578,7 +2578,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2592,7 +2592,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2606,7 +2606,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2620,7 +2620,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2634,7 +2634,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2648,7 +2648,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2662,7 +2662,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2676,7 +2676,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2690,7 +2690,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2704,7 +2704,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2718,7 +2718,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2732,7 +2732,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2746,7 +2746,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2760,7 +2760,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2774,7 +2774,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2788,7 +2788,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2802,7 +2802,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2816,7 +2816,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2830,7 +2830,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2844,7 +2844,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2858,7 +2858,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2872,7 +2872,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2886,7 +2886,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2900,7 +2900,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2914,7 +2914,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2928,7 +2928,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
@@ -2942,7 +2942,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2956,7 +2956,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2970,7 +2970,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2984,7 +2984,7 @@
       "achieved_evidence_level": "E2",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -2998,7 +2998,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
@@ -3012,7 +3012,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
@@ -3026,7 +3026,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
@@ -3040,7 +3040,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
@@ -3054,7 +3054,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
@@ -3068,7 +3068,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
@@ -3082,7 +3082,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
@@ -3096,7 +3096,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
@@ -3110,7 +3110,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3124,7 +3124,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3138,7 +3138,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
@@ -3152,7 +3152,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
@@ -3166,7 +3166,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
@@ -3180,7 +3180,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
@@ -3194,7 +3194,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.test.ts"
@@ -3208,7 +3208,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.test.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "src/app/domain/watch.test.ts"
@@ -3222,7 +3222,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -3236,7 +3236,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -3250,7 +3250,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -3264,7 +3264,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
@@ -3278,7 +3278,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3292,7 +3292,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3306,7 +3306,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3320,7 +3320,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
@@ -3334,7 +3334,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3348,7 +3348,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
@@ -3362,7 +3362,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3376,7 +3376,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/release-manifest.node-test.mjs",
       "artifact": "scripts/release-manifest.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/release-manifest.node-test.mjs"
@@ -3390,7 +3390,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/release-manifest.node-test.mjs",
       "artifact": "scripts/release-manifest.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/release-manifest.node-test.mjs"
@@ -3404,7 +3404,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/release-manifest.node-test.mjs",
       "artifact": "scripts/release-manifest.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/release-manifest.node-test.mjs"
@@ -3418,7 +3418,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3432,7 +3432,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3446,7 +3446,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
@@ -3460,7 +3460,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3474,7 +3474,7 @@
       "achieved_evidence_level": "E3",
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
@@ -3488,7 +3488,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3502,7 +3502,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3516,7 +3516,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3530,7 +3530,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3544,7 +3544,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3558,7 +3558,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3572,7 +3572,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3586,7 +3586,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3600,7 +3600,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3614,7 +3614,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3628,7 +3628,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3642,7 +3642,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3656,7 +3656,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3670,7 +3670,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3684,7 +3684,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3698,7 +3698,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3712,7 +3712,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3726,7 +3726,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
@@ -3740,7 +3740,7 @@
       "achieved_evidence_level": "E5",
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
-      "source_sha": "eaea652618e8f52097b991eb2015bc84235387df",
+      "source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
       "verified_at": "2026-10-08T08:29:40.452Z",
       "invalidation_dependencies": [
         "e2e/app.spec.ts"

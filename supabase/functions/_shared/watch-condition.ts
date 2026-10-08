@@ -30,19 +30,38 @@ export interface EpisodeEvaluationResult {
   transitionReason: string;
 }
 
+export type WatchConditionInput = 'MATCH' | 'CONFIRMED_NON_MATCH' | 'INSUFFICIENT_EVIDENCE';
+
 export function evaluateWatchCondition(params: {
   watchId: string;
   targetPrice: number;
-  observedPrice: number;
+  observedPrice?: number | null;
+  conditionInput?: WatchConditionInput;
   activeEpisode: WatchConditionEpisode | null;
   generationId?: string | null;
   now?: string;
 }): EpisodeEvaluationResult {
   const now = params.now || new Date().toISOString();
-  const isEligible = params.observedPrice <= params.targetPrice;
   const active = params.activeEpisode;
 
-  // Case 1: Price is currently above target price (ineligible)
+  // Case 0: INSUFFICIENT_EVIDENCE (F18) - Preserve active episode state intact; never false EXIT
+  if (
+    params.conditionInput === 'INSUFFICIENT_EVIDENCE' ||
+    params.observedPrice == null ||
+    !Number.isFinite(params.observedPrice)
+  ) {
+    return {
+      nextEpisode: active,
+      stateChanged: false,
+      shouldAlert: false,
+      transitionReason: 'INSUFFICIENT_EVIDENCE: Scope unmonitored or no observations. Episode state preserved intact.',
+    };
+  }
+
+  const isEligible = params.conditionInput === 'MATCH' ||
+    (params.conditionInput !== 'CONFIRMED_NON_MATCH' && (params.observedPrice as number) <= params.targetPrice);
+
+  // Case 1: Price is confirmed above target price (CONFIRMED_NON_MATCH)
   if (!isEligible) {
     if (active && active.state !== 'EXITED' && !active.closed_at) {
       // NC-017 / NC-020: Price leaves target -> episode EXITED

@@ -9,7 +9,7 @@ export interface ObservedFaresCacheEntry {
   savedAt: number;
   fares: Deal[];
   total: number;
-  status: "healthy" | "healthy_empty" | "degraded_freshness" | "stale_only" | "provider_unavailable";
+  status: "healthy" | "healthy_empty" | "valid_zero" | "unmonitored" | "degraded_freshness" | "stale_only" | "provider_unavailable";
   latestObservedAt?: string;
   feedAgeMinutes?: number;
 }

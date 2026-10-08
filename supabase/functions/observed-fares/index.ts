@@ -16,8 +16,11 @@ function json(body: unknown, id: string, status = 200) {
   return new Response(JSON.stringify(payload), { status, headers: { ...headers, ...operationalHeaders(id) } });
 }
 
-export function observedStatus(latestObservedAt: unknown, total: number, now = Date.now()) {
-  if (total === 0) return { status: "healthy_empty", latestObservedAt: null, ageMinutes: null };
+export function observedStatus(latestObservedAt: unknown, total: number, isMonitoredRoute = true, now = Date.now()) {
+  if (total === 0) {
+    if (!isMonitoredRoute) return { status: "unmonitored", latestObservedAt: null, ageMinutes: null };
+    return { status: "valid_zero", latestObservedAt: null, ageMinutes: null };
+  }
   const latest = Date.parse(String(latestObservedAt ?? ""));
   if (!Number.isFinite(latest)) return { status: "provider_unavailable", latestObservedAt: null, ageMinutes: null };
   const ageMinutes = Math.max(0, Math.round((now - latest) / 60_000));
@@ -116,6 +119,15 @@ Deno.serve(async (request) => {
     if (typeof body.depart_date_to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.depart_date_to)) {
       query = query.lte("depart_date", body.depart_date_to);
     }
+    if (typeof body.return_date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.return_date)) {
+      query = query.eq("return_date", body.return_date);
+    }
+    if (typeof body.return_date_from === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.return_date_from)) {
+      query = query.gte("return_date", body.return_date_from);
+    }
+    if (typeof body.return_date_to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.return_date_to)) {
+      query = query.lte("return_date", body.return_date_to);
+    }
     if (typeof body.month === "string" && body.month !== "all") {
       const slashMatch = body.month.match(/^(\d{1,2})\/(\d{4})$/);
       if (slashMatch) {
@@ -181,7 +193,20 @@ Deno.serve(async (request) => {
     if (error) throw error;
     if (latestResult.error) throw latestResult.error;
     const total = count ?? 0;
-    const health = observedStatus(latestResult.data?.observed_at, total);
+
+    let isMonitoredRoute = true;
+    if (total === 0 && body.origin && body.destination) {
+      const { count: routeSnapshotCount } = await service
+        .from("observed_fare_snapshots")
+        .select("observation_id", { count: "exact", head: true })
+        .eq("generation_id", activeGen.active_generation_id)
+        .eq("origin_code", String(body.origin).trim().toUpperCase())
+        .eq("destination_code", String(body.destination).trim().toUpperCase());
+      if (!routeSnapshotCount || routeSnapshotCount === 0) {
+        isMonitoredRoute = false;
+      }
+    }
+    const health = observedStatus(latestResult.data?.observed_at, total, isMonitoredRoute);
     const fares = (data ?? []).map((row) => ({
       ...row,
       id: row.observation_id,

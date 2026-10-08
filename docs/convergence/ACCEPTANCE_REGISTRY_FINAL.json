@@ -1,12 +1,10 @@
 {
   "authority_note": "GENERATED PROJECTION of MASTER_ACCEPTANCE_REGISTRY.json. Do not edit independently.",
   "version": "2.0.0",
-  "finalized_at": "2026-10-08T08:33:04.562Z",
+  "finalized_at": "2026-10-08T10:29:48.753Z",
   "total_gates": 267,
   "proven_count": 267,
   "in_progress_count": 0,
-  "blocked_count": 0,
-  "unverified_count": 0,
   "gates": [
     {
       "gate_id": "REQ-CONTROL-001",
@@ -238,7 +236,7 @@
       "verified_at": "2026-10-08T08:29:40.452Z",
       "evidence": [
         {
-          "level": "E6",
+          "level": "E1",
           "type": "automated_regression_test",
           "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
@@ -448,7 +446,7 @@
       "verified_at": "2026-10-08T08:29:40.452Z",
       "evidence": [
         {
-          "level": "E6",
+          "level": "E1",
           "type": "automated_regression_test",
           "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
@@ -508,7 +506,7 @@
       "verified_at": "2026-10-08T08:29:40.452Z",
       "evidence": [
         {
-          "level": "E7",
+          "level": "E1",
           "type": "automated_regression_test",
           "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",

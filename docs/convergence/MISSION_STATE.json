@@ -10,25 +10,9 @@
     "market_state": "COLLECTING_EVIDENCE",
     "compliance_state": "CAPABILITY_PROVEN"
   },
-  "current_slice": "SLICE_6_COMPLETE",
-  "current_node": "TARGET_PROVEN",
-  "open_critical_nodes": [],
-  "latest_source_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
-  "latest_remote_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
-  "dirty_files": [
-    "M docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json",
-    "M docs/convergence/FINAL_SCORECARD.json",
-    "M docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
-    "M docs/convergence/MISSION_STATE.json",
-    "M docs/convergence/PROOF_INDEX.json"
-  ],
-  "current_migration_head": "20261008000100_security_lease_recovery_and_scheduler.sql",
-  "p0_total": 192,
-  "p0_proven": 192,
-  "p0_unresolved": 0,
-  "total_gates": 267,
-  "proven_gates": 267,
-  "blockers": [],
-  "exact_next_action": "All internally solvable P0 requirements mathematically proven with zero self-certification. Ready for final release.",
-  "timestamp": "2026-10-08T08:33:04.562Z"
+  "market_outcome_evidence": "COLLECTING_EVIDENCE",
+  "unresolved_p0": 0,
+  "unresolved_required_current_stage_p1": 0,
+  "source_sha": "3cca0e4b624521d1fe50c74728604458dbcc5962",
+  "timestamp": "2026-10-08T10:29:48.756Z"
 }

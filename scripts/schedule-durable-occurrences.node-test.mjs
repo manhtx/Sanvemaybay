@@ -9,11 +9,23 @@ import { execSync } from 'node:child_process';
 import { readdirSync, writeFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 
+function getPgCliFlags() {
+  const host = process.env.PGHOST || '/tmp';
+  const port = process.env.PGPORT || '5432';
+  const user = process.env.PGUSER;
+  let flags = `-h "${host}" -p ${port}`;
+  if (user) {
+    flags += ` -U "${user}"`;
+  }
+  return flags;
+}
+
 test('S18, C-20, A13: Durable schedule occurrences and missed-run detection', async () => {
+  const pgFlags = getPgCliFlags();
   const dbName = `farely_sched_${Date.now()}`;
 
   // 1. Create isolated temporary database
-  execSync(`createdb -h /tmp ${dbName}`, { encoding: 'utf8', stdio: 'pipe' });
+  execSync(`createdb ${pgFlags} ${dbName}`, { encoding: 'utf8', stdio: 'pipe' });
 
   const bootstrapFile = `/tmp/supabase_bootstrap_${Date.now()}.sql`;
   writeFileSync(bootstrapFile, `
@@ -32,7 +44,7 @@ test('S18, C-20, A13: Durable schedule occurrences and missed-run detection', as
   `);
 
   try {
-    execSync(`psql -h /tmp -d ${dbName} -f "${bootstrapFile}"`, { stdio: 'pipe' });
+    execSync(`psql ${pgFlags} -d ${dbName} -f "${bootstrapFile}"`, { stdio: 'pipe' });
 
     // Replay migrations
     const migrationsDir = join(process.cwd(), 'supabase', 'migrations');
@@ -42,7 +54,7 @@ test('S18, C-20, A13: Durable schedule occurrences and missed-run detection', as
 
     for (const file of migrationFiles) {
       const sqlPath = join(migrationsDir, file);
-      execSync(`psql -h /tmp -d ${dbName} -v ON_ERROR_STOP=1 -f "${sqlPath}"`, {
+      execSync(`psql ${pgFlags} -d ${dbName} -v ON_ERROR_STOP=1 -f "${sqlPath}"`, {
         encoding: 'utf8',
         stdio: 'pipe'
       });
@@ -57,11 +69,11 @@ test('S18, C-20, A13: Durable schedule occurrences and missed-run detection', as
         ('user_search', 'USER_DEMAND', now() + interval '10 minutes', '["HAN-BKK"]'::jsonb),
         ('discovery', 'EXPLORATION', now() + interval '30 minutes', '["DAD-CXR"]'::jsonb);
     `;
-    execSync(`psql -h /tmp -d ${dbName}`, { input: insertSql, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+    execSync(`psql ${pgFlags} -d ${dbName}`, { input: insertSql, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
 
     // 3. Run detect_missed_schedule_occurrences with 15 minute grace period (900 seconds)
     const missedResult = execSync(
-      `psql -h /tmp -d ${dbName} -t -A -c "SELECT public.detect_missed_schedule_occurrences(900);"`,
+      `psql ${pgFlags} -d ${dbName} -t -A -c "SELECT public.detect_missed_schedule_occurrences(900);"`,
       { encoding: 'utf8' }
     ).trim();
 
@@ -73,7 +85,7 @@ test('S18, C-20, A13: Durable schedule occurrences and missed-run detection', as
       FROM public.schedule_occurrences
       ORDER BY lane;
     `;
-    const rows = execSync(`psql -h /tmp -d ${dbName} -t -A -F "|" -c "${checkStatusSql}"`, { encoding: 'utf8' })
+    const rows = execSync(`psql ${pgFlags} -d ${dbName} -t -A -F "|" -c "${checkStatusSql}"`, { encoding: 'utf8' })
       .trim()
       .split('\n')
       .map((line) => line.split('|'));
@@ -91,7 +103,7 @@ test('S18, C-20, A13: Durable schedule occurrences and missed-run detection', as
 
     // 5. Verify security privileges: anon cannot execute detect_missed_schedule_occurrences
     const permCheck = execSync(`
-      psql -h /tmp -d ${dbName} -t -A -c "
+      psql ${pgFlags} -d ${dbName} -t -A -c "
         SELECT has_function_privilege('anon', 'public.detect_missed_schedule_occurrences(int)', 'EXECUTE');
       "
     `, { encoding: 'utf8' }).trim();
@@ -104,7 +116,7 @@ test('S18, C-20, A13: Durable schedule occurrences and missed-run detection', as
       // Ignore
     }
     try {
-      execSync(`dropdb -h /tmp ${dbName}`, { encoding: 'utf8', stdio: 'pipe' });
+      execSync(`dropdb ${pgFlags} ${dbName}`, { encoding: 'utf8', stdio: 'pipe' });
     } catch {
       // Ignore
     }

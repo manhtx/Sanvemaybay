@@ -40,6 +40,9 @@ export interface ObservedFareQuery {
   maxStops?: number;
   departDateFrom?: string;
   departDateTo?: string;
+  returnDate?: string;
+  returnDateFrom?: string;
+  returnDateTo?: string;
   id?: string;
   opportunityId?: string;
   observationId?: string;
@@ -53,7 +56,7 @@ export interface ObservedFarePage {
   latestObservedAt?: string;
   feedAgeMinutes?: number;
   retryable: boolean;
-  status: "healthy" | "healthy_empty" | "degraded_freshness" | "stale_only" | "provider_unavailable";
+  status: "healthy" | "healthy_empty" | "valid_zero" | "unmonitored" | "degraded_freshness" | "stale_only" | "provider_unavailable";
   regionCounts?: Record<string, number>;
 }
 
@@ -305,6 +308,9 @@ export async function getObservedFares(pageOrQuery: number | ObservedFareQuery =
     if (queryObj.maxStops != null) body.max_stops = queryObj.maxStops;
     if (queryObj.departDateFrom) body.depart_date_from = queryObj.departDateFrom;
     if (queryObj.departDateTo) body.depart_date_to = queryObj.departDateTo;
+    if (queryObj.returnDate) body.return_date = queryObj.returnDate;
+    if (queryObj.returnDateFrom) body.return_date_from = queryObj.returnDateFrom;
+    if (queryObj.returnDateTo) body.return_date_to = queryObj.returnDateTo;
     if (queryObj.id) body.id = queryObj.id;
     if (queryObj.opportunityId) body.opportunity_id = queryObj.opportunityId;
     if (queryObj.observationId) body.observation_id = queryObj.observationId;
@@ -328,7 +334,7 @@ export async function getObservedFares(pageOrQuery: number | ObservedFareQuery =
       return { fares: [], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" };
     }
 
-    const acceptedStatuses: ObservedFarePage["status"][] = ["healthy", "healthy_empty", "degraded_freshness", "stale_only", "provider_unavailable"];
+    const acceptedStatuses: ObservedFarePage["status"][] = ["healthy", "healthy_empty", "valid_zero", "unmonitored", "degraded_freshness", "stale_only", "provider_unavailable"];
     const status: ObservedFarePage["status"] = acceptedStatuses.includes(data.status as ObservedFarePage["status"])
       ? data.status as ObservedFarePage["status"]
       : "provider_unavailable";
