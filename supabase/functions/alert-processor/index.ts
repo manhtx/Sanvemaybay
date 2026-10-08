@@ -224,10 +224,10 @@ Deno.serve(async (request) => {
         // Preserves active episode state; never false EXITED.
         conditionInput = "INSUFFICIENT_EVIDENCE";
       } else {
-        // Filter by max_stops if specified
+        // Filter by max_stops if specified (D19: unknown stops is never eligible under max_stops constraint)
         let stopFiltered = routeCandidates;
         if (alert.max_stops != null && alert.max_stops >= 0) {
-          stopFiltered = routeCandidates.filter((deal) => deal.stops == null || Number(deal.stops) <= Number(alert.max_stops));
+          stopFiltered = routeCandidates.filter((deal) => deal.stops != null && Number(deal.stops) <= Number(alert.max_stops));
         }
 
         const targetBudget = Number(alert.target_price ?? alert.budget ?? 0);

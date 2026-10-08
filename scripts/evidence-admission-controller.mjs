@@ -247,7 +247,26 @@ export function evaluateAdmission(options = {}) {
     }
   }
 
-  // 2. Evidence Admission for each gate
+  // Load execution receipts map (options.receiptsOverride or from docs/convergence/PROOF_INDEX.json or EVIDENCE_RECEIPTS.json)
+  let receiptsMap = options.receiptsOverride;
+  if (!receiptsMap) {
+    receiptsMap = new Map();
+    const proofIndexPath = path.join(root, 'docs/convergence/PROOF_INDEX.json');
+    if (fs.existsSync(proofIndexPath)) {
+      try {
+        const proofIndex = JSON.parse(fs.readFileSync(proofIndexPath, 'utf8'));
+        if (proofIndex?.gates) {
+          for (const [gid, p] of Object.entries(proofIndex.gates)) {
+            receiptsMap.set(gid, p);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  // 2. Evidence Admission for each gate (D01 & D02: receipts-first, zero gate.status authority)
   let staleProofCount = 0;
   let forgedProofCount = 0;
   const evaluatedGates = {};
@@ -261,24 +280,43 @@ export function evaluateAdmission(options = {}) {
     // Negative control / sabotage override check (A03: forged pass, A04: stale sha)
     const forcedStatus = options.forcedGateStatus?.[gate.gate_id];
     const forcedSha = options.forcedGateSha?.[gate.gate_id];
+    const receipt = receiptsMap instanceof Map ? receiptsMap.get(gate.gate_id) : receiptsMap?.[gate.gate_id];
 
-    let status = forcedStatus || gate.status || 'IN_PROGRESS';
-    const proofSha = forcedSha !== undefined ? forcedSha : (gate.evidence?.[0]?.sha || ctx.gitSha);
+    let status = 'UNPROVEN';
+    let proofSha = forcedSha !== undefined ? forcedSha : (receipt?.source_sha || receipt?.sha || null);
 
-    // Validate SHA freshness (A04)
-    const isShaFresh = proofSha === ctx.gitSha ||
-      (ctx.parentSha && proofSha === ctx.parentSha) ||
-      (options.acceptableShas && options.acceptableShas.includes(proofSha));
-
-    if (proofSha && !isShaFresh) {
-      staleProofCount++;
-      if (status === 'PROVEN') {
-        status = 'STALE';
+    if (forcedStatus) {
+      status = forcedStatus;
+    } else if (receipt) {
+      // D01 & D02: Status is derived strictly from verified execution receipt, NEVER gate.status
+      const receiptStatus = receipt.status;
+      const isPass = receiptStatus === 'VERIFIED' || receiptStatus === 'PROVEN' || receipt.exit_code === 0;
+      if (isPass) {
+        status = 'PROVEN';
+      } else {
+        status = receiptStatus || 'FAILED';
       }
     }
 
+    // Validate SHA freshness (A04)
+    if (proofSha) {
+      const isShaFresh = proofSha === ctx.gitSha ||
+        (ctx.parentSha && proofSha === ctx.parentSha) ||
+        (options.acceptableShas && options.acceptableShas.includes(proofSha));
+
+      if (!isShaFresh) {
+        staleProofCount++;
+        if (status === 'PROVEN') {
+          status = 'STALE';
+        }
+      }
+    } else if (status === 'PROVEN') {
+      staleProofCount++;
+      status = 'STALE';
+    }
+
     // Validate forged pass (A03: if options.forgedPassGates flags this as forged)
-    if (options.forgedPassGates?.includes(gate.gate_id)) {
+    if (options.forgedPassGates?.includes(gate.gate_id) || receipt?.is_forged) {
       forgedProofCount++;
       status = 'FORGED_REJECTED';
     }
@@ -290,13 +328,9 @@ export function evaluateAdmission(options = {}) {
       if (gate.priority === 'P1') unresolvedP1++;
     }
 
-    // F06: Derive achieved evidence level from execution type, never copy from required
+    // D03: Derive achieved evidence level from execution type and verified receipt
     const derivedLevel = (() => {
       if (status !== 'PROVEN') return 'E0';
-      const declaredLevel = gate.evidence?.[0]?.level;
-      if (declaredLevel && ['E0', 'E1', 'E2', 'E3', 'E4', 'E5'].includes(declaredLevel)) {
-        return declaredLevel;
-      }
       if (probe.runner === 'playwright') return 'E3';
       if (probe.runner === 'deno') return 'E2';
       if (probe.runner === 'node') {
@@ -320,33 +354,50 @@ export function evaluateAdmission(options = {}) {
       command_probe: probe.command_probe,
       artifact: probe.artifact,
       source_sha: proofSha,
-      verified_at: status === 'PROVEN' ? (gate.verified_at || ctx.nowIso) : null,
+      verified_at: status === 'PROVEN' ? (receipt?.verified_at || receipt?.executed_at || ctx.nowIso) : null,
       invalidation_dependencies: [probe.artifact]
     };
   }
 
   // 3. Evaluate the 22 Boolean Predicates (NO HARDCODING)
-  const contractHashValid = ctx.contractHash && ctx.contractHash.length === 64;
+  // D05: Validate against canonical contract SHA-256 (not merely string length)
+  const CANONICAL_CONTRACT_HASH = '59d871a905eb0bffaa392e10fa2c30dc91628ae3f887f95d66e55dcb408bb620';
+  const contractHashValid = ctx.contractHash === CANONICAL_CONTRACT_HASH;
   const contractMutationDetected = options.simulateContractMutation ? true : false;
   const proofRevisionBindingValid = staleProofCount === 0 && forgedProofCount === 0;
 
   // Domain truth guarantees evaluated from admitted evidence
-  const requiredProviderTruthProven = (options.failProviderTruth ? false : true) && gateMap.get('REQ-PROV-001')?.status === 'PROVEN';
-  const requiredDataQualityProven = (options.failDataQuality ? false : true) && gateMap.get('REQ-DATA-001')?.status === 'PROVEN';
-  const requiredFareTruthProven = (options.failFareTruth ? false : true) && gateMap.get('REQ-PRICE-001')?.status === 'PROVEN';
-  const requiredWatchTruthProven = (options.failWatchTruth ? false : true) && gateMap.get('REQ-WATCH-001')?.status === 'PROVEN';
-  const requiredRuntimeReliabilityProven = (options.failRuntime ? false : true) && gateMap.get('REQ-REL-001')?.status === 'PROVEN';
-  const requiredSecurityProven = (options.failSecurity ? false : true) && gateMap.get('REQ-SEC-001')?.status === 'PROVEN';
+  const requiredProviderTruthProven = (options.failProviderTruth ? false : true) && evaluatedGates['REQ-PROV-001']?.status === 'VERIFIED';
+  const requiredDataQualityProven = (options.failDataQuality ? false : true) && evaluatedGates['REQ-DATA-001']?.status === 'VERIFIED';
+  const requiredFareTruthProven = (options.failFareTruth ? false : true) && evaluatedGates['REQ-PRICE-001']?.status === 'VERIFIED';
+  const requiredWatchTruthProven = (options.failWatchTruth ? false : true) && evaluatedGates['REQ-WATCH-001']?.status === 'VERIFIED';
+  const requiredRuntimeReliabilityProven = (options.failRuntime ? false : true) && evaluatedGates['REQ-REL-001']?.status === 'VERIFIED';
+  const requiredSecurityProven = (options.failSecurity ? false : true) && evaluatedGates['REQ-SEC-001']?.status === 'VERIFIED';
   const requiredDrProven = (options.failDr ? false : true) &&
-    (gateMap.get('REQ-REL-008')?.status === 'PROVEN' || gateMap.get('REQ-PRIV-005')?.status === 'PROVEN');
-  const requiredProductJourneysProven = (options.failJourneys ? false : true) && gateMap.get('JOURNEY-001')?.status === 'PROVEN';
-  const runtimeSoakRequirementProven = (options.failSoak ? false : true) && gateMap.get('REQ-REL-003')?.status === 'PROVEN';
+    (evaluatedGates['REQ-REL-008']?.status === 'VERIFIED' || evaluatedGates['REQ-PRIV-005']?.status === 'VERIFIED');
+  const requiredProductJourneysProven = (options.failJourneys ? false : true) && evaluatedGates['JOURNEY-001']?.status === 'VERIFIED';
+
+  // D07: Runtime soak is evaluated from genuine operational soak receipts, not stored gate status
+  const soakReceipts = options.soakReceipts || (() => {
+    const soakPath = path.join(root, 'docs/convergence/SOAK_RECEIPTS.json');
+    if (fs.existsSync(soakPath)) {
+      try { return JSON.parse(fs.readFileSync(soakPath, 'utf8')); } catch { return null; }
+    }
+    return null;
+  })();
+  const runtimeSoakRequirementProven = !options.failSoak && Boolean(
+    soakReceipts &&
+    soakReceipts.completed_cycles >= 24 &&
+    soakReceipts.elapsed_hours >= 24 &&
+    soakReceipts.source_sha === ctx.gitSha &&
+    soakReceipts.status === 'COMPLETED'
+  );
+
   const finalIndependentVerificationComplete = (options.failVerification ? false : true) && shrinkageErrors.length === 0;
 
-  // Exact final release state reconciled (A05 negative control!)
-  const releaseShaMatches = options.overrideProductionSha
-    ? options.overrideProductionSha === ctx.gitSha
-    : true;
+  // D06: Exact final release state reconciled fails closed unless verified production SHA is supplied matching current SHA
+  const verifiedProductionSha = options.overrideProductionSha ?? (process.env.PRODUCTION_RELEASE_SHA || null);
+  const releaseShaMatches = Boolean(verifiedProductionSha && verifiedProductionSha === ctx.gitSha);
   const exactFinalReleaseStateReconciled = releaseShaMatches && !options.simulateReleaseDrift;
 
   const booleanEvaluations = {

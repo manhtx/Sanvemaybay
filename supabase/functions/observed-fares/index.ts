@@ -179,6 +179,51 @@ Deno.serve(async (request) => {
         .order("dedupe_key", { ascending: true });
     }
 
+    // Server-side authoritative RouteBest evaluation across complete eligible universe (D09, W4)
+    if (body.route_best === true) {
+      const { data: allCandidates, error: candError } = await query
+        .order("price", { ascending: true })
+        .order("dedupe_key", { ascending: true })
+        .limit(1500);
+
+      if (candError) throw candError;
+
+      const intentMaxStops = body.direct_only === true ? 0 : (body.max_stops != null ? Number(body.max_stops) : undefined);
+      const eligible = (allCandidates || []).filter((row) => {
+        const p = Number(row.price);
+        if (!Number.isFinite(p) || p <= 0) return false;
+        if (intentMaxStops !== undefined) {
+          if (row.stops == null || !Number.isFinite(Number(row.stops))) return false;
+          if (Number(row.stops) > intentMaxStops) return false;
+        }
+        return true;
+      });
+
+      eligible.sort((a, b) => {
+        if (Number(a.price) !== Number(b.price)) return Number(a.price) - Number(b.price);
+        return String(a.dedupe_key).localeCompare(String(b.dedupe_key));
+      });
+
+      const bestRow = eligible[0] ?? null;
+      const bestOffer = bestRow ? {
+        ...bestRow,
+        id: bestRow.observation_id,
+        opportunity_id: [bestRow.origin_code, bestRow.destination_code, bestRow.depart_date, bestRow.return_date ?? "", bestRow.airline_code, bestRow.flight_number ?? "", bestRow.stops ?? 0].join(":"),
+        date: bestRow.depart_date,
+        timestamp: bestRow.observed_at,
+        freshness_minutes: Math.max(0, Math.round((Date.now() - Date.parse(bestRow.observed_at)) / 60_000)),
+      } : null;
+
+      return json({
+        status: bestOffer ? "healthy" : "valid_zero",
+        route_best: bestOffer,
+        eligible_candidate_count: eligible.length,
+        total_candidate_count: (allCandidates || []).length,
+        active_generation_id: activeGen?.active_generation_id ?? null,
+        generated_at: new Date().toISOString(),
+      }, id);
+    }
+
     const latestQuery = service
       .from("observed_fare_snapshots")
       .select("observed_at")

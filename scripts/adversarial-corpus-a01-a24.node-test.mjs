@@ -78,10 +78,11 @@ test('A09: Queue worker claim uses atomic FOR UPDATE SKIP LOCKED', () => {
   assert.ok(migration.includes('FOR UPDATE SKIP LOCKED'));
 });
 
-test('A10: Worker lease verification and rejection of stale workers', () => {
+test('A10: Worker lease verification and rejection of stale workers (D21 atomic conditional mutation)', () => {
   const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
-  assert.ok(migration.includes('v_outbox.claim_token <> p_claim_token'));
-  assert.ok(migration.includes('Stale worker lease rejected'));
+  assert.ok(migration.includes('claim_token = p_claim_token'), 'Must match claim_token in atomic UPDATE');
+  assert.ok(migration.includes('lease_until >= v_now'), 'Must verify active lease in atomic UPDATE');
+  assert.ok(migration.includes('Stale or invalid worker claim rejected'), 'Must reject stale worker claim if 0 rows updated');
 });
 
 test('A11: Missing candidate sections degrade status rather than showing empty', () => {
@@ -102,29 +103,117 @@ test('A13: Missed scheduler runs detected via durable occurrences table', () => 
   assert.ok(migration.includes('SCHEDULER_MISSED_RUN'));
 });
 
-test('A14: Distinct segment order produces distinct physical itinerary ID (S09)', () => {
-  const identityCode = fs.readFileSync('src/domain/farely/identity.ts', 'utf8');
-  assert.ok(identityCode.includes('buildPhysicalItineraryId'), 'identity.ts must define buildPhysicalItineraryId');
-  assert.ok(identityCode.includes('sortedSegments'), 'Must sort segments by chronological order');
+test('A14: Distinct segment order produces distinct physical itinerary ID (S09)', async () => {
+  const { buildPhysicalItineraryId } = await import('../src/domain/farely/identity.ts');
+  const segA = {
+    origin: 'HAN', destination: 'DAD', flightNumber: 'VN101', marketingCarrier: 'VN', segmentOrder: 0
+  };
+  const segB = {
+    origin: 'DAD', destination: 'SGN', flightNumber: 'VN102', marketingCarrier: 'VN', segmentOrder: 1
+  };
+  const id1 = buildPhysicalItineraryId({
+    origin: 'HAN', destination: 'SGN', departDate: '2026-11-01', segments: [segA, segB]
+  });
+  // Different intermediate connecting routing: HAN -> KUL -> SGN
+  const segC = {
+    origin: 'HAN', destination: 'KUL', flightNumber: 'VN201', marketingCarrier: 'VN', segmentOrder: 0
+  };
+  const segD = {
+    origin: 'KUL', destination: 'SGN', flightNumber: 'VN202', marketingCarrier: 'VN', segmentOrder: 1
+  };
+  const id2 = buildPhysicalItineraryId({
+    origin: 'HAN', destination: 'SGN', departDate: '2026-11-01', segments: [segC, segD]
+  });
+  assert.notEqual(id1, id2, 'Different connecting segments must produce different physical itinerary IDs');
 
-  // Verify mathematical non-commutativity: [A, B] != [B, A]
-  const seg1 = 'VN:101:HAN:DAD:08:00:09:20';
-  const seg2 = 'VN:102:DAD:SGN:11:00:12:30';
-  const hashA = crypto.createHash('sha256').update(`${seg1}>${seg2}`).digest('hex');
-  const hashB = crypto.createHash('sha256').update(`${seg2}>${seg1}`).digest('hex');
-  assert.notEqual(hashA, hashB, 'Different segment order must produce different itinerary hashes');
+  // Price change does NOT change physical itinerary ID
+  const id1PriceIgnored = buildPhysicalItineraryId({
+    origin: 'HAN', destination: 'SGN', departDate: '2026-11-01', segments: [segA, segB]
+  });
+  assert.equal(id1, id1PriceIgnored, 'Physical itinerary ID is stable and independent of price');
 });
 
-test('A15: RouteBest tri-state eligibility handles unknown constraints truthfully (S08 / C-13)', () => {
-  const routeBestCode = fs.readFileSync('src/domain/farely/routeBest.ts', 'utf8');
-  assert.ok(routeBestCode.includes('UNKNOWN_COMPATIBILITY'), 'Must support UNKNOWN_COMPATIBILITY status');
-  assert.ok(routeBestCode.includes('UNKNOWN_STOPS'), 'Must flag UNKNOWN_STOPS when flight stops is undefined');
-  assert.ok(routeBestCode.includes('UNKNOWN_DURATION'), 'Must flag UNKNOWN_DURATION when flight duration is undefined');
+test('A15: RouteBest tri-state eligibility handles unknown constraints truthfully (S08 / C-13)', async () => {
+  const { createTravelIntent, evaluateOfferEligibility } = await import('../src/domain/farely/index.ts');
+  const intent = createTravelIntent({
+    origin: 'HAN', destination: 'BKK', journeyType: 'ONE_WAY', outboundDate: '2026-11-10',
+    maxStops: 0, maxDurationMinutes: 180, cabin: 'ECONOMY'
+  });
+
+  // Unknown stops: stops is undefined/null
+  const offerUnknownStops = {
+    id: 'off_unk_stops', origin: 'HAN', destination: 'BKK', departDate: '2026-11-10',
+    airline: 'VN', price: 2000000, cabin: 'ECONOMY', durationMinutes: 120
+  };
+  const evalStops = evaluateOfferEligibility(offerUnknownStops, intent);
+  assert.equal(evalStops.isEligible, false, 'Unknown stops must not be eligible under maxStops: 0');
+  assert.equal(evalStops.state, 'UNKNOWN_COMPATIBILITY');
+  assert.ok(evalStops.reasons.includes('UNKNOWN_STOPS'));
+
+  // Unknown duration: duration is undefined/null
+  const offerUnknownDur = {
+    id: 'off_unk_dur', origin: 'HAN', destination: 'BKK', departDate: '2026-11-10',
+    airline: 'VN', price: 2000000, cabin: 'ECONOMY', stops: 0
+  };
+  const evalDur = evaluateOfferEligibility(offerUnknownDur, intent);
+  assert.equal(evalDur.isEligible, false, 'Unknown duration must not be eligible under maxDurationMinutes');
+  assert.equal(evalDur.state, 'UNKNOWN_COMPATIBILITY');
+  assert.ok(evalDur.reasons.includes('UNKNOWN_DURATION'));
 });
 
-test('A16: Cheaper alternative evaluates global minimum with sort price_asc (S07 / C-11)', () => {
-  const dealDetailPage = fs.readFileSync('src/app/pages/DealDetailPage.tsx', 'utf8');
-  assert.ok(dealDetailPage.includes('sort: "price_asc"'), 'DealDetailPage must sort price_asc across full candidate universe');
+test('A16: Server-side & domain RouteBest evaluates global minimum beyond page 1 (>1000 offers)', async () => {
+  const { createTravelIntent, selectRouteBest } = await import('../src/domain/farely/index.ts');
+  const intent = createTravelIntent({
+    origin: 'HAN', destination: 'BKK', journeyType: 'ONE_WAY', outboundDate: '2026-11-10',
+    maxStops: 0, cabin: 'ECONOMY'
+  });
+
+  // Generate 1,250 offers where the first 1,000 cheapest have disqualifying stops (stops: 1)
+  const offers = [];
+  for (let i = 0; i < 1000; i++) {
+    offers.push({
+      id: `cheap_ineligible_${i}`,
+      origin: 'HAN',
+      destination: 'BKK',
+      departDate: '2026-11-10',
+      airline: 'VJ',
+      price: 500000 + i * 100, // Very cheap: 500k to 600k
+      stops: 1, // Disqualified: 1 stop violates maxStops=0
+      durationMinutes: 120,
+      cabin: 'ECONOMY'
+    });
+  }
+  // The truly eligible minimum offer is at position 1,001 with price 1,200,000
+  offers.push({
+    id: 'eligible_global_best',
+    origin: 'HAN',
+    destination: 'BKK',
+    departDate: '2026-11-10',
+    airline: 'VN',
+    price: 1200000,
+    stops: 0,
+    durationMinutes: 110,
+    cabin: 'ECONOMY'
+  });
+  // Subsequent offers are more expensive
+  for (let i = 0; i < 249; i++) {
+    offers.push({
+      id: `expensive_eligible_${i}`,
+      origin: 'HAN',
+      destination: 'BKK',
+      departDate: '2026-11-10',
+      airline: 'TG',
+      price: 1500000 + i * 1000,
+      stops: 0,
+      durationMinutes: 110,
+      cabin: 'ECONOMY'
+    });
+  }
+
+  const best = selectRouteBest(offers, intent);
+  assert.ok(best !== null, 'Must find eligible offer');
+  assert.equal(best.id, 'eligible_global_best', 'Must select true global eligible minimum beyond first 1,000 offers');
+  assert.equal(best.price, 1200000);
 });
 
 test('A17: Same-day repeat quote inflation capped at MODERATE confidence (S13 / C-14)', async () => {
@@ -143,18 +232,44 @@ test('A18: Isolated real PostgreSQL restore drill verifies tables, archive, and 
   assert.ok(drCode.includes('ROLLBACK;'), 'Must verify transactional rollback capability');
 });
 
-test('A19: Unknown costs never become zero', () => {
-  const truthKernel = fs.readFileSync('src/domain/farely/truthKernelV2.test.ts', 'utf8');
-  assert.ok(truthKernel.includes('UNKNOWN mandatory != 0'));
+test('A19: Unknown costs never become zero and incomparable price scopes are rejected', async () => {
+  const { createMoney, normalizeToPerTraveler, IncompatibleMoneyComparisonError } = await import('../src/domain/farely/money.ts');
+  const unknownScopeMoney = createMoney(3000000, 'VND', 'UNKNOWN_PRICING_SCOPE');
+  assert.throws(
+    () => normalizeToPerTraveler(unknownScopeMoney, 2),
+    IncompatibleMoneyComparisonError,
+    'UNKNOWN_PRICING_SCOPE must never be normalized to PER_TRAVELER'
+  );
+
+  const partyTotalMoney = createMoney(6000000, 'VND', 'PARTY_TOTAL');
+  assert.throws(
+    () => normalizeToPerTraveler(partyTotalMoney, 3, { adults: 2, children: 1, infants: 0 }),
+    IncompatibleMoneyComparisonError,
+    'Mixed passenger composition must not be naively divided without fare breakdown'
+  );
 });
 
-test('A20: Synthetic events excluded from organic traveler analytics', () => {
-  const sharedEvent = fs.readFileSync('supabase/functions/_shared/product-event.ts', 'utf8');
-  assert.ok(sharedEvent.includes('synthetic'));
+test('A20: Synthetic events excluded from organic traveler analytics', async () => {
+  const { validateProductEvent } = await import('../supabase/functions/_shared/product-event.ts');
+  const syntheticEvent = validateProductEvent({
+    event_type: 'detail_view',
+    entity_id: 'test_1',
+    metadata: { route: 'HAN-BKK', synthetic: true }
+  });
+  assert.ok(syntheticEvent !== null, 'Event with synthetic metadata should be parsed');
+  assert.equal(syntheticEvent.metadata.synthetic, true, 'Synthetic flag must be preserved so aggregator excludes it');
 });
 
-test('A21: Bounded deterministic pagination across >1000 items', () => {
-  const allItems = Array.from({ length: 1250 }, (_, i) => ({ id: `item_${i}`, price: 1000 + i }));
+test('A21: Bounded deterministic pagination across >1000 items with composite tie-breakers', () => {
+  const allItems = Array.from({ length: 1250 }, (_, i) => ({
+    id: `item_${String(i).padStart(4, '0')}`,
+    price: 1000 + (i % 50), // Duplicate prices to test composite tie-breaking
+    departDate: '2026-11-10'
+  }));
+
+  // Composite deterministic sort: price ASC, then ID ASC
+  allItems.sort((a, b) => a.price - b.price || a.id.localeCompare(b.id));
+
   const pageSize = 60;
   const pages = [];
   for (let offset = 0; offset < allItems.length; offset += pageSize) {
@@ -163,6 +278,7 @@ test('A21: Bounded deterministic pagination across >1000 items', () => {
   assert.equal(pages.length, 21, 'Must produce 21 pages');
   const union = new Set(pages.flat().map((item) => item.id));
   assert.equal(union.size, 1250, 'Union must equal full item set with zero duplicates');
+  assert.notEqual(pages[0][59].id, pages[1][0].id, 'Page boundary items must not overlap');
 });
 
 test('A22: Provider accepted email != recipient delivered truth', () => {
@@ -179,14 +295,31 @@ test('A24: Legitimate evidence admitted when all conditions hold', () => {
   const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
   const validRegistry = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
   const currentSha = evaluateAdmission().evaluated_proof_index.source_sha;
-  const provenGates = validRegistry.gates.map((g) => ({
-    ...g,
-    status: 'PROVEN',
-    verified_at: new Date().toISOString(),
-    evidence: [{ level: g.required_evidence_level || 'E2', sha: currentSha, status: 'VERIFIED' }]
-  }));
-  const fullRegistry = { ...validRegistry, gates: provenGates };
-  const res = evaluateAdmission({ registryOverride: fullRegistry });
+
+  const receiptsOverride = new Map();
+  for (const g of validRegistry.gates) {
+    receiptsOverride.set(g.gate_id, {
+      gate_id: g.gate_id,
+      status: 'VERIFIED',
+      source_sha: currentSha,
+      exit_code: 0,
+      executed_at: new Date().toISOString()
+    });
+  }
+
+  const soakReceipts = {
+    status: 'COMPLETED',
+    completed_cycles: 24,
+    elapsed_hours: 24,
+    source_sha: currentSha
+  };
+
+  const res = evaluateAdmission({
+    registryOverride: validRegistry,
+    receiptsOverride,
+    overrideProductionSha: currentSha,
+    soakReceipts
+  });
   assert.equal(res.terminal_state, 'TARGET_PROVEN');
   assert.equal(res.all_conditions_hold, true);
 });

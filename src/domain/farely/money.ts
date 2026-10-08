@@ -3,7 +3,7 @@
  * REQ-DOM-006, NC-005
  */
 
-export type PricingUnit = 'PER_TRAVELER' | 'PARTY_TOTAL' | 'OFFER_TOTAL';
+export type PricingUnit = 'PER_TRAVELER' | 'PARTY_TOTAL' | 'OFFER_TOTAL' | 'UNKNOWN_PRICING_SCOPE';
 export type CurrencyCode = 'VND' | 'USD';
 
 export interface Money {
@@ -30,14 +30,27 @@ export function createMoney(amount: number, currency: CurrencyCode = 'VND', pric
 }
 
 /**
- * Normalizes money to PER_TRAVELER given the number of travelers.
+ * Normalizes money to PER_TRAVELER given the number of travelers and optional passenger composition.
+ * D14: Does not assume flat child/infant pricing when normalizing party total.
  */
-export function normalizeToPerTraveler(money: Money, travelerCount: number): Money {
+export function normalizeToPerTraveler(
+  money: Money,
+  travelerCount: number,
+  paxComposition?: { adults: number; children: number; infants: number }
+): Money {
   if (travelerCount <= 0) {
     throw new RangeError(`Traveler count must be positive, got ${travelerCount}`);
   }
+  if (money.pricingUnit === 'UNKNOWN_PRICING_SCOPE') {
+    throw new IncompatibleMoneyComparisonError('Cannot normalize UNKNOWN_PRICING_SCOPE to PER_TRAVELER');
+  }
   if (money.pricingUnit === 'PER_TRAVELER') {
     return money;
+  }
+  if (paxComposition && (paxComposition.children > 0 || paxComposition.infants > 0)) {
+    throw new IncompatibleMoneyComparisonError(
+      'Cannot normalize PARTY_TOTAL to PER_TRAVELER with mixed passenger composition (children/infants) without passenger-specific fare evidence'
+    );
   }
   return {
     amount: Math.round(money.amount / travelerCount),

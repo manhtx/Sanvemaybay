@@ -380,6 +380,51 @@ export async function getObservedFares(pageOrQuery: number | ObservedFareQuery =
   }
 }
 
+/**
+ * Server-side authoritative RouteBest query across complete eligible candidate universe (D09, W4).
+ * Evaluates entire available universe before pagination, eliminating client-side 60-row truncation.
+ */
+export async function getRouteBest(params: {
+  origin: string;
+  destination: string;
+  departDate: string;
+  returnDate?: string;
+  directOnly?: boolean;
+  maxStops?: number;
+}): Promise<{
+  bestOffer: Deal | null;
+  eligibleCount: number;
+  totalCount: number;
+  status: string;
+} | null> {
+  if (!isSupabaseConfigured) return null;
+  try {
+    const body: Record<string, unknown> = {
+      route_best: true,
+      origin: params.origin,
+      destination: params.destination,
+      depart_date_from: params.departDate,
+      depart_date_to: params.departDate,
+      sort: "price_asc",
+    };
+    if (params.returnDate) body.return_date = params.returnDate;
+    if (params.directOnly === true) body.direct_only = true;
+    if (params.maxStops != null) body.max_stops = params.maxStops;
+
+    const { data, error } = await supabase.functions.invoke("observed-fares", { body });
+    if (error || !data) return null;
+
+    return {
+      bestOffer: data.route_best ? mapObservedFare(data.route_best) : null,
+      eligibleCount: Number(data.eligible_candidate_count || 0),
+      totalCount: Number(data.total_candidate_count || 0),
+      status: String(data.status || "healthy"),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function getHistoricalDeals(): Promise<Deal[]> {
   if (!isSupabaseConfigured) return [];
   const { data, error } = await supabase

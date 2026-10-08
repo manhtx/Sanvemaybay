@@ -4,8 +4,8 @@
  * NC-001, NC-002, NC-004, NC-005, NC-006
  */
 
-import { TravelIntent } from './travelIntent';
-import { satisfiesLocationScope } from './locationScope';
+import type { TravelIntent } from './travelIntent.ts';
+import { satisfiesLocationScope } from './locationScope.ts';
 
 export interface RouteOffer {
   id: string;
@@ -49,17 +49,20 @@ export interface EligibilityResult {
 
 /**
  * Normalizes an offer for a given TravelIntent (e.g. party total -> per traveler).
- * NODE TK-05
+ * NODE TK-05, D14: Does not naively divide party total when children/infants are present without fare breakdown.
  */
 export function normalizeOfferForIntent(offer: RouteOffer, intent: TravelIntent): RouteOffer {
   let normalizedPrice = offer.price;
   let normalizedPricingUnit = offer.pricingUnit || 'PER_TRAVELER';
 
   if (normalizedPricingUnit === 'PARTY_TOTAL') {
-    const totalPax = (intent.passengers.adults || 1) + (intent.passengers.children || 0);
-    if (totalPax > 1) {
-      normalizedPrice = Math.round(offer.price / totalPax);
-      normalizedPricingUnit = 'PER_TRAVELER';
+    const hasChildrenOrInfants = (intent.passengers.children || 0) > 0 || (intent.passengers.infants || 0) > 0;
+    if (!hasChildrenOrInfants) {
+      const adults = intent.passengers.adults || 1;
+      if (adults > 1) {
+        normalizedPrice = Math.round(offer.price / adults);
+        normalizedPricingUnit = 'PER_TRAVELER';
+      }
     }
   }
 
@@ -142,6 +145,17 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
   // 9. Non-negative, finite price
   if (!Number.isFinite(offer.price) || offer.price <= 0) {
     reasons.push('INVALID_PRICE');
+  }
+
+  // 10. Commercial comparability and pricing scope (D14)
+  if (offer.pricingUnit === 'UNKNOWN_PRICING_SCOPE') {
+    reasons.push('UNKNOWN_COMPATIBILITY');
+  } else if (
+    offer.pricingUnit === 'PARTY_TOTAL' &&
+    ((intent.passengers.children || 0) > 0 || (intent.passengers.infants || 0) > 0)
+  ) {
+    // Incomparable without passenger-specific fare evidence
+    reasons.push('UNKNOWN_COMPATIBILITY');
   }
 
   // Tri-state classification

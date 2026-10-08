@@ -13,7 +13,7 @@ import {
   ShieldCheck,
   Clock,
 } from "lucide-react";
-import { getDealById, getPriceHistory, getObservedFares, getFareObservations } from "../data/api";
+import { getDealById, getPriceHistory, getObservedFares, getFareObservations, getRouteBest } from "../data/api";
 import { Deal, formatVND } from "../data/deals";
 import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import {
@@ -27,7 +27,6 @@ import { trackProductEvent } from "../lib/analytics";
 import { reportClientIssue } from "../lib/clientDiagnostics";
 import { WatchModal } from "../components/WatchModal";
 import { buildComparableCohort } from "../domain/opportunityCohort";
-import { createTravelIntent, selectRouteBest, type RouteOffer } from "../../domain/farely";
 
 const PriceHistoryChart = React.lazy(async () => ({
   default: (await import("../components/PriceHistoryChart")).PriceHistoryChart,
@@ -72,45 +71,18 @@ export function DealDetailPage() {
         setPriceHistory(history);
         setFareObservations(observations);
 
-        // Check if a cheaper eligible option exists for this travel intent across complete monitored universe (S07, C-11, A16)
+        // Check if a cheaper eligible option exists for this travel intent across complete monitored universe (S07, C-11, A16, D09)
         try {
-          const intent = createTravelIntent({
+          const routeBestResult = await getRouteBest({
             origin: data.fromCode,
             destination: data.toCode,
-            journeyType: data.returnDate ? "ROUND_TRIP" : "ONE_WAY",
-            outboundDate: data.departDate,
+            departDate: data.departDate,
             returnDate: data.returnDate || undefined,
-            cabin: "ECONOMY",
-            maxStops: data.stops === 0 ? 0 : undefined,
-          });
-
-          // Query candidate universe with complete TravelIntent filters and price_asc (F11, S07)
-          const candidatesPage = await getObservedFares({
-            origin: data.fromCode,
-            destination: data.toCode,
-            departDateFrom: data.departDate,
-            departDateTo: data.departDate,
-            returnDate: data.returnDate || undefined,
-            directOnly: data.stops === 0 ? true : undefined,
+            directOnly: data.stops === 0,
             maxStops: data.stops != null && data.stops >= 0 ? data.stops : undefined,
-            sort: "price_asc",
-            pageSize: 60,
           });
 
-          const candidateOffers: RouteOffer[] = (candidatesPage?.fares || []).map((f) => ({
-            id: f.id,
-            origin: f.fromCode,
-            destination: f.toCode,
-            departDate: f.departDate,
-            returnDate: f.returnDate,
-            airline: f.airline,
-            price: f.price,
-            stops: f.stops,
-            currency: f.currency,
-            cabin: "ECONOMY",
-          }));
-
-          const canonicalRouteBest = selectRouteBest(candidateOffers, intent);
+          const canonicalRouteBest = routeBestResult?.bestOffer;
           if (canonicalRouteBest && canonicalRouteBest.id !== data.id && canonicalRouteBest.price < data.price) {
             setCheaperAlternative({
               airline: canonicalRouteBest.airline,

@@ -89,27 +89,134 @@ test('A05: Terminal evaluator rejects mismatched production release SHA', () => 
   assert.equal(evalResult.boolean_evaluations.exact_final_release_state_reconciled, false, 'exact_final_release_state_reconciled must be false');
 });
 
+test('A06: Terminal evaluator rejects gate.status=PROVEN without execution receipts (D01, D02, D04)', () => {
+  const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
+  const validRegistry = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
+
+  // Sabotage attempt: Set status: 'PROVEN' directly on registry JSON without providing execution receipts
+  const fakeProvenGates = validRegistry.gates.map((g) => ({
+    ...g,
+    status: 'PROVEN',
+    verified_at: new Date().toISOString()
+  }));
+  const sabotagedRegistry = { ...validRegistry, gates: fakeProvenGates };
+
+  // Explicitly supply an empty receipts map
+  const evalResult = evaluateAdmission({
+    registryOverride: sabotagedRegistry,
+    receiptsOverride: new Map()
+  });
+
+  assert.notEqual(evalResult.terminal_state, 'TARGET_PROVEN', 'Must NOT grant TARGET_PROVEN merely from gate.status in registry');
+  assert.equal(evalResult.terminal_state, 'EXECUTING');
+  assert.ok(evalResult.boolean_evaluations.unresolved_p0 > 0, 'Must have unresolved P0 gates because receipts are missing');
+});
+
+test('A07: Terminal evaluator rejects missing or incomplete soak receipts (D07)', () => {
+  const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
+  const validRegistry = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
+  const currentSha = evaluateAdmission().evaluated_proof_index.source_sha;
+
+  const receiptsOverride = new Map();
+  for (const g of validRegistry.gates) {
+    receiptsOverride.set(g.gate_id, {
+      gate_id: g.gate_id,
+      status: 'VERIFIED',
+      source_sha: currentSha,
+      exit_code: 0,
+      executed_at: new Date().toISOString()
+    });
+  }
+
+  // Incomplete soak: only 12 cycles / 12 hours
+  const incompleteSoak = {
+    status: 'COMPLETED',
+    completed_cycles: 12,
+    elapsed_hours: 12,
+    source_sha: currentSha
+  };
+
+  const evalResult = evaluateAdmission({
+    registryOverride: validRegistry,
+    receiptsOverride,
+    overrideProductionSha: currentSha,
+    soakReceipts: incompleteSoak
+  });
+
+  assert.notEqual(evalResult.terminal_state, 'TARGET_PROVEN', 'Must reject TARGET_PROVEN when soak cycles < 24');
+  assert.equal(evalResult.boolean_evaluations.runtime_soak_requirement_proven, false);
+});
+
+test('A08: Terminal evaluator rejects missing production SHA by default (D06)', () => {
+  const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
+  const validRegistry = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
+  const currentSha = evaluateAdmission().evaluated_proof_index.source_sha;
+
+  const receiptsOverride = new Map();
+  for (const g of validRegistry.gates) {
+    receiptsOverride.set(g.gate_id, {
+      gate_id: g.gate_id,
+      status: 'VERIFIED',
+      source_sha: currentSha,
+      exit_code: 0,
+      executed_at: new Date().toISOString()
+    });
+  }
+
+  const soakReceipts = {
+    status: 'COMPLETED',
+    completed_cycles: 24,
+    elapsed_hours: 24,
+    source_sha: currentSha
+  };
+
+  // No overrideProductionSha provided and no env var: must fail closed
+  const prevEnv = process.env.PRODUCTION_RELEASE_SHA;
+  delete process.env.PRODUCTION_RELEASE_SHA;
+  try {
+    const evalResult = evaluateAdmission({
+      registryOverride: validRegistry,
+      receiptsOverride,
+      soakReceipts
+    });
+
+    assert.notEqual(evalResult.terminal_state, 'TARGET_PROVEN', 'Must fail closed when production release SHA is absent');
+    assert.equal(evalResult.boolean_evaluations.exact_final_release_state_reconciled, false);
+  } finally {
+    if (prevEnv) process.env.PRODUCTION_RELEASE_SHA = prevEnv;
+  }
+});
+
 test('A24: Terminal evaluator admits legitimate evidence when all conditions hold', () => {
-  // Construct fully verified registry where all 267 gates are legitimately proven
+  // Construct genuine execution receipts where all 267 gates have verified execution receipts
   const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
   const validRegistry = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
 
   const currentSha = evaluateAdmission().evaluated_proof_index.source_sha;
-  const provenGates = validRegistry.gates.map((g) => ({
-    ...g,
-    status: 'PROVEN',
-    verified_at: new Date().toISOString(),
-    evidence: [
-      {
-        level: g.required_evidence_level || 'E2',
-        sha: currentSha,
-        status: 'VERIFIED'
-      }
-    ]
-  }));
-  const fullRegistry = { ...validRegistry, gates: provenGates };
+  const receiptsOverride = new Map();
+  for (const g of validRegistry.gates) {
+    receiptsOverride.set(g.gate_id, {
+      gate_id: g.gate_id,
+      status: 'VERIFIED',
+      source_sha: currentSha,
+      exit_code: 0,
+      executed_at: new Date().toISOString()
+    });
+  }
 
-  const evalResult = evaluateAdmission({ registryOverride: fullRegistry });
+  const soakReceipts = {
+    status: 'COMPLETED',
+    completed_cycles: 24,
+    elapsed_hours: 24,
+    source_sha: currentSha
+  };
+
+  const evalResult = evaluateAdmission({
+    registryOverride: validRegistry,
+    receiptsOverride,
+    overrideProductionSha: currentSha,
+    soakReceipts
+  });
 
   assert.equal(evalResult.boolean_evaluations.missing_required_gates, 0);
   assert.equal(evalResult.boolean_evaluations.weakened_required_gates, 0);
@@ -117,7 +224,8 @@ test('A24: Terminal evaluator admits legitimate evidence when all conditions hol
   assert.equal(evalResult.boolean_evaluations.unresolved_required_current_stage_p1, 0);
   assert.equal(evalResult.boolean_evaluations.stale_critical_proof, 0);
   assert.equal(evalResult.boolean_evaluations.contract_hash_valid, true);
+  assert.equal(evalResult.boolean_evaluations.runtime_soak_requirement_proven, true);
   assert.equal(evalResult.boolean_evaluations.exact_final_release_state_reconciled, true);
   assert.equal(evalResult.all_conditions_hold, true, 'All 22 predicates must hold simultaneously');
-  assert.equal(evalResult.terminal_state, 'TARGET_PROVEN', 'Must admit TARGET_PROVEN when all conditions hold');
+  assert.equal(evalResult.terminal_state, 'TARGET_PROVEN', 'Must admit TARGET_PROVEN when all legitimate receipts hold');
 });

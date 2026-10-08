@@ -3,8 +3,8 @@
  * REQ-DOM-002, REQ-DOM-003, REQ-DOM-007, REQ-DOM-008, REQ-DOM-015, NC-004, NC-005, NC-006
  */
 
-import { LocationScope, resolveLocationScope, AIRPORT_CATALOG } from './locationScope';
-import { CurrencyCode } from './money';
+import { type LocationScope, resolveLocationScope, AIRPORT_CATALOG } from './locationScope.ts';
+import type { CurrencyCode } from './money.ts';
 
 export type JourneyType = 'ONE_WAY' | 'ROUND_TRIP';
 export type MarketScope = 'DOMESTIC' | 'INTERNATIONAL';

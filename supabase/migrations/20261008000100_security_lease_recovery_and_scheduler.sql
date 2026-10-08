@@ -96,7 +96,7 @@ $$;
 REVOKE ALL ON FUNCTION public.claim_notification_outbox(INT, TEXT, INT) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.claim_notification_outbox(INT, TEXT, INT) TO service_role;
 
--- 4. S04 & S05: Atomic resolution RPC preventing stale worker overwrites (A09, A10)
+-- 4. S04 & S05: Atomic resolution RPC preventing stale worker overwrites (D21, A09, A10)
 CREATE OR REPLACE FUNCTION public.resolve_notification_outbox(
   p_id UUID,
   p_claim_token UUID,
@@ -112,21 +112,30 @@ SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 DECLARE
-  v_outbox RECORD;
   v_now TIMESTAMPTZ := now();
   v_attempt_status TEXT;
+  v_attempt_count INT;
 BEGIN
-  SELECT * INTO v_outbox
-  FROM public.notification_outbox
-  WHERE id = p_id;
+  -- Atomic conditional update with claim_token and active lease verification (D21)
+  -- Eliminates time-of-check to time-of-use race between validation and UPDATE
+  UPDATE public.notification_outbox
+  SET
+    status = p_status,
+    sent_at = CASE WHEN p_status = 'SENT' THEN v_now ELSE sent_at END,
+    dead_lettered_at = CASE WHEN p_status = 'PERMANENT_FAILED' THEN v_now ELSE dead_lettered_at END,
+    last_error = p_error_code,
+    next_attempt_at = CASE WHEN p_status = 'RETRYABLE_FAILED' AND p_next_attempt_at IS NOT NULL THEN p_next_attempt_at ELSE next_attempt_at END,
+    lease_until = NULL,
+    claim_token = NULL
+  WHERE id = p_id
+    AND claim_token = p_claim_token
+    AND status = 'PROCESSING'
+    AND lease_until >= v_now
+  RETURNING attempt_count INTO v_attempt_count;
 
+  -- If zero rows updated, claim is stale, lease expired, or already completed
   IF NOT FOUND THEN
-    RETURN FALSE;
-  END IF;
-
-  -- Verify lease ownership: reject stale worker whose lease expired and was reclaimed
-  IF v_outbox.claim_token IS NOT NULL AND v_outbox.claim_token <> p_claim_token THEN
-    RAISE WARNING 'Stale worker lease rejected for outbox %', p_id;
+    RAISE WARNING 'Stale or invalid worker claim rejected for outbox %', p_id;
     RETURN FALSE;
   END IF;
 
@@ -137,7 +146,7 @@ BEGIN
     v_attempt_status := 'FAILED';
   END IF;
 
-  -- Record delivery attempt in audit history
+  -- Record delivery attempt in audit history inside the same transaction
   INSERT INTO public.notification_delivery_attempts (
     outbox_id,
     attempt_no,
@@ -148,25 +157,13 @@ BEGIN
     attempted_at
   ) VALUES (
     p_id,
-    v_outbox.attempt_count,
+    v_attempt_count,
     p_provider,
     p_provider_message_id,
     v_attempt_status,
     p_error_code,
     v_now
   );
-
-  -- Update outbox row
-  UPDATE public.notification_outbox
-  SET
-    status = p_status,
-    sent_at = CASE WHEN p_status = 'SENT' THEN v_now ELSE sent_at END,
-    dead_lettered_at = CASE WHEN p_status = 'PERMANENT_FAILED' THEN v_now ELSE dead_lettered_at END,
-    last_error = p_error_code,
-    next_attempt_at = CASE WHEN p_status = 'RETRYABLE_FAILED' AND p_next_attempt_at IS NOT NULL THEN p_next_attempt_at ELSE next_attempt_at END,
-    lease_until = NULL,
-    claim_token = NULL
-  WHERE id = p_id;
 
   RETURN TRUE;
 END;
