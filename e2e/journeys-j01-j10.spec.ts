@@ -51,6 +51,11 @@ test("J02: Deal detail -> accurate cost breakdown (mandatory vs optional fees)",
   await page.goto("/deals/deal-j02");
   await expect(page.getByRole("heading", { name: "HAN → BKK" })).toBeVisible();
   await expect(page.getByText(/2\.000\.000/).first()).toBeVisible();
+
+  // D24: Assert accurate mandatory cost breakdown and real total
+  await expect(page.getByText(/Chi Phí Thực Tế/i)).toBeVisible();
+  await expect(page.getByText(/Thuế & phụ phí sân bay/i)).toBeVisible();
+  await expect(page.getByText("+500.000₫")).toBeVisible();
 });
 
 test("J03: RouteBest comparison -> cheaper alternative across universe", async ({ page }) => {
@@ -62,11 +67,95 @@ test("J03: RouteBest comparison -> cheaper alternative across universe", async (
   await expect(stopsSelect).toHaveValue("0");
 });
 
-test("J04: Watch creation -> preserves full TravelIntent", async ({ page }) => {
+test("J04: Watch creation -> preserves full TravelIntent and persists locally (D24)", async ({ page }) => {
+  // Mock authenticated session so watch creation activates server-side
+  await page.addInitScript(() => {
+    const authSession = {
+      access_token: "mock-jwt-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      expires_at: Math.floor(Date.now() / 1000) + 7200,
+      refresh_token: "mock-refresh",
+      user: {
+        id: "00000000-0000-0000-0000-000000000042",
+        aud: "authenticated",
+        role: "authenticated",
+        email: "traveler@example.com",
+      },
+    };
+    localStorage.setItem("sb-e2e-fixture-auth-token", JSON.stringify(authSession));
+    localStorage.setItem("sb-yefbpmqfsstcaeqfrmyn-auth-token", JSON.stringify(authSession));
+  });
+
+
+  await page.route("**/auth/v1/**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        access_token: "mock-jwt-token",
+        token_type: "bearer",
+        expires_in: 3600,
+        expires_at: Math.floor(Date.now() / 1000) + 7200,
+        refresh_token: "mock-refresh",
+        user: {
+          id: "00000000-0000-0000-0000-000000000042",
+          aud: "authenticated",
+          role: "authenticated",
+          email: "traveler@example.com",
+        },
+      }),
+    });
+  });
+
+  // Intercept user_alerts insert API
+  await page.route("**/rest/v1/user_alerts**", async (route) => {
+    if (route.request().method() === "POST") {
+      await route.fulfill({
+        status: 201,
+        contentType: "application/json",
+        body: JSON.stringify([{ id: "mock-alert-id" }]),
+      });
+    } else {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([]),
+      });
+    }
+  });
+
   await page.goto("/watch");
   await expect(page.getByRole("heading", { name: /Tuyến bay bạn đang quan sát/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Tạo theo dõi/i })).toBeVisible();
+  const createBtn = page.getByRole("button", { name: /Tạo theo dõi mới/i });
+  await expect(createBtn).toBeVisible();
+  await createBtn.click();
+
+  // WatchModal opens
+  await expect(page.getByRole("heading", { name: /Theo dõi cơ hội bay|HAN.*BKK/i })).toBeVisible();
+
+  // Enter email
+  const emailInput = page.locator("#watch-email");
+  await emailInput.fill("traveler@example.com");
+
+  // Submit watch
+  const submitBtn = page.getByRole("button", { name: /Bắt đầu theo dõi/i });
+  await submitBtn.click();
+
+  // Success confirmation in modal
+  await expect(page.getByRole("heading", { name: /Đã bắt đầu theo dõi/i })).toBeVisible();
+
+  // Verify real persisted state in localStorage
+  const savedWatches = await page.evaluate(() => {
+    return JSON.parse(localStorage.getItem("farely_local_watches_v1") || "[]");
+  });
+  expect(savedWatches.length).toBeGreaterThanOrEqual(1);
+  expect(savedWatches[0].email).toBe("traveler@example.com");
+  expect(savedWatches[0].status).toBe("monitoring");
 });
+
+
+
 
 test("J05 & J06 & J07: Watch alert lifecycle confirmation and status", async ({ page }) => {
   await page.route("**/functions/v1/manage-alert", async (route) => {
@@ -81,11 +170,51 @@ test("J05 & J06 & J07: Watch alert lifecycle confirmation and status", async ({ 
   await expect(page.getByText("Cảnh báo đã được xác nhận và bắt đầu hoạt động.")).toBeVisible();
 });
 
-test("J08: Saved opportunity -> stable empty state and navigation", async ({ page }) => {
+test("J08: Saved opportunity -> persist, display, and remove saved opportunity (D24)", async ({ page }) => {
+  const mockOpp = {
+    opportunityId: "deal-saved-j08",
+    fromCode: "SGN",
+    toCode: "HAN",
+    fromCity: "TP. Hồ Chí Minh",
+    toCity: "Hà Nội",
+    departDate: "2099-11-15",
+    savedPrice: 1500000,
+    airline: "Vietnam Airlines",
+    stops: 0,
+    savedAt: new Date().toISOString(),
+    comparatorContext: { cohortMedian: 2000000, discountPercentage: 25, isSufficient: true },
+    evidenceContext: { freshnessText: "Vừa cập nhật", observedAt: new Date().toISOString() },
+  };
+
+  await page.addInitScript((opp) => {
+    localStorage.setItem("farely.saved-opportunities", JSON.stringify([opp.opportunityId]));
+    localStorage.setItem(
+      "farely.saved-snapshots",
+      JSON.stringify({ [opp.opportunityId]: { snapshotData: opp, savedAt: opp.savedAt } })
+    );
+  }, mockOpp);
+
   await page.goto("/saved");
   await expect(page.getByRole("heading", { name: "Cơ hội đã lưu" })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Khám phá cơ hội/i })).toBeVisible();
+
+  // Saved deal rendered with route and price
+  await expect(page.getByText("SGN → HAN")).toBeVisible();
+  await expect(page.getByText(/1\.500\.000/)).toBeVisible();
+
+  // Remove saved deal
+  const removeBtn = page.getByTitle(/Bỏ lưu cơ hội này/i).or(page.locator("button:has(svg.lucide-trash-2)"));
+  await removeBtn.first().click();
+
+  // Transition to empty state
+  await expect(page.getByText(/Chưa có cơ hội nào được lưu|Bạn chưa lưu cơ hội nào/i)).toBeVisible();
+
+  // Verify removed from persisted localStorage
+  const savedIds = await page.evaluate(() => {
+    return JSON.parse(localStorage.getItem("farely.saved-opportunities") || "[]");
+  });
+  expect(savedIds).toEqual([]);
 });
+
 
 test("J09: Account data rights and deletion integration", async ({ page }) => {
   await page.goto("/privacy");

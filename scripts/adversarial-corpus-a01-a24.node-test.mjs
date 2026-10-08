@@ -100,8 +100,13 @@ test('A13: Missed scheduler runs detected via durable occurrences table', () => 
   const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
   assert.ok(migration.includes('CREATE TABLE IF NOT EXISTS public.schedule_occurrences'));
   assert.ok(migration.includes('detect_missed_schedule_occurrences'));
+  assert.ok(migration.includes('claim_schedule_occurrence'));
+  assert.ok(migration.includes('heartbeat_schedule_occurrence'));
+  assert.ok(migration.includes('complete_schedule_occurrence'));
   assert.ok(migration.includes('SCHEDULER_MISSED_RUN'));
+  assert.ok(migration.includes('WORKER_HEARTBEAT_TIMEOUT'));
 });
+
 
 test('A14: Distinct segment order produces distinct physical itinerary ID (S09)', async () => {
   const { buildPhysicalItineraryId } = await import('../src/domain/farely/identity.ts');

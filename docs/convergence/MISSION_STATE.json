@@ -4,42 +4,15 @@
   "terminal_state": "EXECUTING",
   "mission_contract_sha256": "59d871a905eb0bffaa392e10fa2c30dc91628ae3f887f95d66e55dcb408bb620",
   "vector_state": {
-    "engineering_state": "PROVEN",
-    "runtime_state": "SOAK_PROVEN",
-    "product_state": "PUBLIC_BETA_READY",
+    "engineering_state": "EXECUTING",
+    "runtime_state": "EXECUTING",
+    "product_state": "EXECUTING",
     "market_state": "COLLECTING_EVIDENCE",
     "compliance_state": "CAPABILITY_PROVEN"
   },
-  "current_slice": "SLICE_5_TRUST_AND_OPERATIONS",
-  "current_node": "CP-06",
-  "open_critical_nodes": [
-    "CP-06"
-  ],
-  "latest_source_sha": "8de25acc68b397e91f14fd028e008160fd1c4035",
-  "latest_remote_sha": "084025b1f58a98655222ee4f8fc82461b286dd6a",
-  "dirty_files": [
-    "M docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json",
-    "M docs/convergence/FINAL_SCORECARD.json",
-    "M docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
-    "M docs/convergence/MISSION_CHECKPOINT.json",
-    "M docs/convergence/MISSION_STATE.json",
-    "M docs/convergence/PROOF_INDEX.json",
-    "M docs/convergence/RELEASE_MANIFEST.json",
-    "M docs/convergence/TEST_MATRIX.json",
-    "M scripts/failure-drills.node-test.mjs",
-    "M scripts/rpc-security-role.node-test.mjs",
-    "M scripts/watch-outbox-atomicity.node-test.mjs",
-    "M supabase/functions/alert-processor/index.ts",
-    "M supabase/functions/observed-fares/index.ts",
-    "M supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql"
-  ],
-  "current_migration_head": "20261008000100_security_lease_recovery_and_scheduler.sql",
-  "p0_total": 192,
-  "p0_proven": 192,
-  "p0_unresolved": 0,
-  "total_gates": 267,
-  "proven_gates": 220,
-  "blockers": [],
-  "exact_next_action": "Resolve remaining open P0 requirements",
-  "timestamp": "2026-10-08T11:49:51.654Z"
+  "market_outcome_evidence": "COLLECTING_EVIDENCE",
+  "unresolved_p0": 0,
+  "unresolved_required_current_stage_p1": 47,
+  "source_sha": "2b747cfe2a5302689bd47385d221b633b224c555",
+  "timestamp": "2026-10-08T12:03:44.250Z"
 }

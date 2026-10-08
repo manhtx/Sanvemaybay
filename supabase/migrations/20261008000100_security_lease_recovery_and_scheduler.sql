@@ -311,14 +311,18 @@ CREATE TABLE IF NOT EXISTS public.schedule_occurrences (
   job_name TEXT NOT NULL,
   lane TEXT NOT NULL DEFAULT 'BASELINE' CHECK (lane IN ('BASELINE', 'WATCH_CRITICAL', 'USER_DEMAND', 'EXPLORATION')),
   scheduled_for TIMESTAMPTZ NOT NULL,
+  claimed_by TEXT,
   started_at TIMESTAMPTZ,
   heartbeat_at TIMESTAMPTZ,
   completed_at TIMESTAMPTZ,
   lease_until TIMESTAMPTZ,
-  status TEXT NOT NULL DEFAULT 'SCHEDULED' CHECK (status IN ('SCHEDULED', 'RUNNING', 'COMPLETED', 'MISSED', 'FAILED')),
+  status TEXT NOT NULL DEFAULT 'SCHEDULED' CHECK (status IN ('SCHEDULED', 'CLAIMED', 'RUNNING', 'COMPLETED', 'DEGRADED', 'MISSED', 'RETRYABLE_FAILED', 'TERMINAL_FAILED', 'FAILED')),
   expected_routes JSONB DEFAULT '[]'::jsonb,
   actual_work JSONB DEFAULT '{}'::jsonb,
+  quality_result JSONB DEFAULT '{}'::jsonb,
   failure_classification TEXT,
+  recovery_policy TEXT DEFAULT 'RETRY_EXPONENTIAL',
+  retry_count INT DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -331,6 +335,136 @@ CREATE POLICY "Service role can manage schedule occurrences"
   ON public.schedule_occurrences FOR ALL
   USING (auth.jwt() ->> 'role' = 'service_role' OR auth.role() = 'service_role');
 
+-- Worker claim with fairness-lane ordering and concurrency lock (D23)
+CREATE OR REPLACE FUNCTION public.claim_schedule_occurrence(
+  p_worker_id TEXT,
+  p_lease_seconds INT DEFAULT 300
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_rec RECORD;
+  v_now TIMESTAMPTZ := now();
+BEGIN
+  SELECT *
+  INTO v_rec
+  FROM public.schedule_occurrences
+  WHERE status = 'SCHEDULED'
+    AND scheduled_for <= v_now
+  ORDER BY
+    CASE lane
+      WHEN 'WATCH_CRITICAL' THEN 1
+      WHEN 'BASELINE' THEN 2
+      WHEN 'USER_DEMAND' THEN 3
+      ELSE 4
+    END ASC,
+    scheduled_for ASC
+  FOR UPDATE SKIP LOCKED
+  LIMIT 1;
+
+  IF NOT FOUND THEN
+    RETURN NULL;
+  END IF;
+
+  UPDATE public.schedule_occurrences
+  SET status = 'RUNNING',
+      claimed_by = p_worker_id,
+      started_at = v_now,
+      heartbeat_at = v_now,
+      lease_until = v_now + make_interval(secs => p_lease_seconds)
+  WHERE id = v_rec.id;
+
+  RETURN jsonb_build_object(
+    'id', v_rec.id,
+    'job_name', v_rec.job_name,
+    'lane', v_rec.lane,
+    'scheduled_for', v_rec.scheduled_for,
+    'expected_routes', v_rec.expected_routes,
+    'claimed_by', p_worker_id,
+    'lease_until', v_now + make_interval(secs => p_lease_seconds)
+  );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.claim_schedule_occurrence(TEXT, INT) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.claim_schedule_occurrence(TEXT, INT) TO service_role;
+
+-- Worker heartbeat with lease extension (D23)
+CREATE OR REPLACE FUNCTION public.heartbeat_schedule_occurrence(
+  p_occurrence_id UUID,
+  p_worker_id TEXT,
+  p_lease_seconds INT DEFAULT 300
+)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_updated INT := 0;
+  v_now TIMESTAMPTZ := now();
+BEGIN
+  UPDATE public.schedule_occurrences
+  SET heartbeat_at = v_now,
+      lease_until = v_now + make_interval(secs => p_lease_seconds)
+  WHERE id = p_occurrence_id
+    AND claimed_by = p_worker_id
+    AND status = 'RUNNING'
+    AND lease_until >= v_now;
+
+  GET DIAGNOSTICS v_updated = ROW_COUNT;
+  RETURN (v_updated > 0);
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.heartbeat_schedule_occurrence(UUID, TEXT, INT) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.heartbeat_schedule_occurrence(UUID, TEXT, INT) TO service_role;
+
+-- Worker completion or failure reporting (D23)
+CREATE OR REPLACE FUNCTION public.complete_schedule_occurrence(
+  p_occurrence_id UUID,
+  p_worker_id TEXT,
+  p_status TEXT,
+  p_actual_work JSONB DEFAULT '{}'::jsonb,
+  p_quality_result JSONB DEFAULT '{}'::jsonb,
+  p_failure_classification TEXT DEFAULT NULL
+)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_updated INT := 0;
+  v_now TIMESTAMPTZ := now();
+BEGIN
+  IF p_status NOT IN ('COMPLETED', 'DEGRADED', 'RETRYABLE_FAILED', 'TERMINAL_FAILED', 'FAILED') THEN
+    RAISE EXCEPTION 'Invalid completion status: %', p_status;
+  END IF;
+
+  UPDATE public.schedule_occurrences
+  SET status = p_status,
+      actual_work = p_actual_work,
+      quality_result = p_quality_result,
+      completed_at = v_now,
+      failure_classification = p_failure_classification
+  WHERE id = p_occurrence_id
+    AND claimed_by = p_worker_id
+    AND status = 'RUNNING'
+    AND lease_until >= v_now;
+
+  GET DIAGNOSTICS v_updated = ROW_COUNT;
+  RETURN (v_updated > 0);
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.complete_schedule_occurrence(UUID, TEXT, TEXT, JSONB, JSONB, TEXT) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.complete_schedule_occurrence(UUID, TEXT, TEXT, JSONB, JSONB, TEXT) TO service_role;
+
+-- Watchdog missed occurrence & worker timeout detection (D23, A13)
 CREATE OR REPLACE FUNCTION public.detect_missed_schedule_occurrences(
   p_grace_seconds INT DEFAULT 900
 )
@@ -341,18 +475,33 @@ SET search_path = public, pg_temp
 AS $$
 DECLARE
   v_missed_count INT := 0;
+  v_timeout_count INT := 0;
+  v_now TIMESTAMPTZ := now();
 BEGIN
+  -- 1. Overdue scheduled occurrences (producer never ran)
   WITH marked_missed AS (
     UPDATE public.schedule_occurrences
     SET status = 'MISSED',
         failure_classification = 'SCHEDULER_MISSED_RUN'
     WHERE status = 'SCHEDULED'
-      AND scheduled_for < (now() - make_interval(secs => p_grace_seconds))
+      AND scheduled_for < (v_now - make_interval(secs => p_grace_seconds))
     RETURNING 1
   )
   SELECT count(*) INTO v_missed_count FROM marked_missed;
 
-  RETURN v_missed_count;
+  -- 2. Worker lease timeout (worker crashed or abandoned execution)
+  WITH marked_timed_out AS (
+    UPDATE public.schedule_occurrences
+    SET status = 'RETRYABLE_FAILED',
+        failure_classification = 'WORKER_HEARTBEAT_TIMEOUT',
+        completed_at = v_now
+    WHERE status = 'RUNNING'
+      AND lease_until < v_now
+    RETURNING 1
+  )
+  SELECT count(*) INTO v_timeout_count FROM marked_timed_out;
+
+  RETURN v_missed_count + v_timeout_count;
 END;
 $$;
 
@@ -360,3 +509,4 @@ REVOKE ALL ON FUNCTION public.detect_missed_schedule_occurrences(INT) FROM PUBLI
 GRANT EXECUTE ON FUNCTION public.detect_missed_schedule_occurrences(INT) TO service_role;
 
 COMMIT;
+

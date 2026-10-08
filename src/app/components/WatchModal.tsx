@@ -117,8 +117,9 @@ export function WatchModal({
           onClose();
         }, 1500);
       } else {
-        setError("Không thể tạo theo dõi lúc này. Vui lòng thử lại.");
+        setError(res.error || "Không thể tạo theo dõi lúc này. Vui lòng thử lại.");
       }
+
     } catch (err: any) {
       setError(err?.message || "Đã xảy ra lỗi khi tạo theo dõi.");
     } finally {
