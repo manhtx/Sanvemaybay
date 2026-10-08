@@ -120,7 +120,7 @@ Deno.serve(async (request) => {
       if (upsertError) throw upsertError;
     }
 
-    // 3. Transactionally switch active generation ONLY if candidate generation is complete, non-degraded, and valid
+    // 3. Transactionally switch active generation ONLY if candidate generation is complete, non-degraded, and valid (S16, S17, A08, A12)
     if (!isPartialDegraded && snapshots.length > 0) {
       const { error: rpcError } = await service.rpc("publish_observed_generation", {
         p_generation_id: candidateGenerationId,
@@ -129,25 +129,13 @@ Deno.serve(async (request) => {
       });
 
       if (rpcError) {
-        // Fallback to direct upsert if RPC is not yet applied
-        const { error: genError } = await service.from("active_observed_generation").upsert({
-          id: 1,
-          active_generation_id: candidateGenerationId,
-          row_count: snapshots.length,
-          published_at: refreshedAt,
-        });
-        if (genError) throw genError;
-
-        try {
-          await service.from("observed_fare_snapshots")
-            .delete()
-            .neq("generation_id", candidateGenerationId);
-        } catch {
-          // Ignore cleanup errors
-        }
+        // Fail closed (S17 / A08): Never fall back to direct pointer update.
+        // Candidate generation fails publication; previous active generation remains preserved.
+        console.error("Publication RPC failed:", rpcError.message);
+        throw new Error(`Generation publication failed: ${rpcError.message}`);
       }
     } else if (isPartialDegraded) {
-      // Quarantine incomplete candidate snapshots: remove them so unproven data is never served
+      // Quarantine incomplete candidate snapshots: remove them so unproven data is never served (S16, A12)
       try {
         await service.from("observed_fare_snapshots")
           .delete()

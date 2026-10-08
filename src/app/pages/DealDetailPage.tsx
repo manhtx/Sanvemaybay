@@ -72,15 +72,8 @@ export function DealDetailPage() {
         setPriceHistory(history);
         setFareObservations(observations);
 
-        // Check if a cheaper eligible option exists for this travel intent (NODE DETAIL-01)
+        // Check if a cheaper eligible option exists for this travel intent across complete monitored universe (S07, C-11, A16)
         try {
-          const candidatesPage = await getObservedFares({
-            origin: data.fromCode,
-            destination: data.toCode,
-            departDateFrom: data.departDate,
-            departDateTo: data.departDate,
-            pageSize: 100,
-          });
           const intent = createTravelIntent({
             origin: data.fromCode,
             destination: data.toCode,
@@ -90,6 +83,17 @@ export function DealDetailPage() {
             cabin: "ECONOMY",
             maxStops: data.stops === 0 ? 0 : undefined,
           });
+
+          // Query candidate universe with price_asc so true global minimum is checked first
+          const candidatesPage = await getObservedFares({
+            origin: data.fromCode,
+            destination: data.toCode,
+            departDateFrom: data.departDate,
+            departDateTo: data.departDate,
+            sort: "price_asc",
+            pageSize: 100,
+          });
+
           const candidateOffers: RouteOffer[] = (candidatesPage?.fares || []).map((f) => ({
             id: f.id,
             origin: f.fromCode,
@@ -102,6 +106,7 @@ export function DealDetailPage() {
             currency: f.currency,
             cabin: "ECONOMY",
           }));
+
           const canonicalRouteBest = selectRouteBest(candidateOffers, intent);
           if (canonicalRouteBest && canonicalRouteBest.id !== data.id && canonicalRouteBest.price < data.price) {
             setCheaperAlternative({

@@ -54,12 +54,12 @@ function computeMedian(sortedValues: number[]): number {
 }
 
 /**
- * Evaluates evidence level based on sample size, independent scan epochs, and source quality.
- * REQ-COMP-005, REQ-COMP-006, NODE TK-07.
+ * Evaluates evidence level based on sample size, independent scan epochs, distinct observation days, and source quality.
+ * S13, REQ-COMP-005, REQ-COMP-006, NODE TK-07.
  */
 export function determineEvidenceLevel(
   sampleSize: number,
-  options?: { uniqueEpochs?: number; hasDegradedOnly?: boolean }
+  options?: { uniqueEpochs?: number; distinctDays?: number; hasDegradedOnly?: boolean }
 ): EvidenceLevel {
   if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_WEAK) {
     return 'INSUFFICIENT';
@@ -78,6 +78,13 @@ export function determineEvidenceLevel(
   if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE) {
     return 'WEAK';
   }
+
+  // S13 / A17: Require multiple distinct observation days for STRONG confidence.
+  // Repeated observations on the same day cannot achieve STRONG confidence.
+  if (options?.distinctDays !== undefined && options.distinctDays < 3 && sampleSize >= COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_STRONG) {
+    return 'MODERATE';
+  }
+
   if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_STRONG) {
     return 'MODERATE';
   }
@@ -106,9 +113,17 @@ export function compareAgainstCohort(
       .filter(Boolean)
   );
   const uniqueEpochs = epochs.size;
+
+  const days = new Set(
+    validObservations
+      .map(o => (o.observedAt ? o.observedAt.slice(0, 10) : o.departLocalDate))
+      .filter(Boolean)
+  );
+  const distinctDays = days.size;
+
   const hasDegradedOnly = validObservations.length > 0 && validObservations.every(o => o.sourceQuality === 'DEGRADED_FALLBACK');
 
-  const evidenceLevel = determineEvidenceLevel(sampleSize, { uniqueEpochs, hasDegradedOnly });
+  const evidenceLevel = determineEvidenceLevel(sampleSize, { uniqueEpochs, distinctDays, hasDegradedOnly });
 
   if (evidenceLevel === 'INSUFFICIENT' || sampleSize === 0) {
     return {

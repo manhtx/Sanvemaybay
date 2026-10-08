@@ -290,79 +290,30 @@ Deno.serve(async (request) => {
       });
 
       if (evalRpcError) {
-        // Fallback gracefully for pre-migration environments
-        console.warn("Notice: apply_watch_evaluation RPC unavailable, falling back to sequential writes:", evalRpcError.message);
-        await supabase.from("user_alerts").update({
-          last_checked_at: nowIso,
-          last_attempt_at: nowIso,
-          last_successful_check_at: nowIso,
-          last_match_at: bestCandidate ? nowIso : alert.last_match_at,
-          latest_eligible_price: bestCandidate ? Number(bestCandidate.price) : null,
-          last_matched_price: bestCandidate ? Number(bestCandidate.price) : alert.last_matched_price,
-          latest_price: bestCandidate ? Number(bestCandidate.price) : alert.latest_price,
-        }).eq("id", alert.id);
-
-        if (evalResult.stateChanged && evalResult.nextEpisode) {
-          await supabase.from("watch_condition_episodes").upsert({
-            id: evalResult.nextEpisode.id,
-            watch_id: alert.id,
-            condition_fingerprint: evalResult.nextEpisode.condition_fingerprint,
-            opened_at: evalResult.nextEpisode.opened_at,
-            closed_at: evalResult.nextEpisode.closed_at,
-            state: evalResult.nextEpisode.state,
-            entry_price: evalResult.nextEpisode.entry_price,
-            best_price: evalResult.nextEpisode.best_price,
-            last_event_at: nowIso,
-            generation_id: activeGen?.active_generation_id ?? null,
-          });
-        }
-
-        await supabase.from("watch_evaluations").insert({
-          watch_id: alert.id,
-          generation_id: activeGen?.active_generation_id ?? null,
-          started_at: nowIso,
-          completed_at: nowIso,
-          status: activeGen?.active_generation_id ? "SUCCESS" : "DEGRADED",
-          eligible_count: matchingDeals.length,
-          best_price: bestCandidate ? Number(bestCandidate.price) : null,
-          release_sha: Deno.env.get("DEPLOYED_COMMIT") ?? null,
-        });
-
-        for (const item of outboxItems) {
-          const { error: outboxError } = await supabase.from("notification_outbox").insert({
-            watch_id: alert.id,
-            episode_id: evalResult.nextEpisode?.id,
-            event_type: item.event_type,
-            channel: item.channel,
-            dedupe_key: item.dedupe_key,
-            payload: item.payload,
-            status: "PENDING",
-            next_attempt_at: nowIso,
-          });
-          if (!outboxError) outboxCreated++;
-        }
-        evaluationsCount++;
-      } else {
-        evaluationsCount++;
-        outboxCreated += Number(evalResultRpc?.outbox_count ?? 0);
+        // Fail closed (S02 / A07): Never fall back to weaker sequential writes.
+        // On RPC failure, no partial condition transition or outbox row is created;
+        // previous canonical episode state is preserved intact.
+        console.warn("Notice: apply_watch_evaluation RPC failed, preserving canonical episode state:", evalRpcError.message);
+        continue;
       }
+
+      evaluationsCount++;
+      outboxCreated += Number(evalResultRpc?.outbox_count ?? 0);
     }
 
-    // STEP 2: The Notification Dispatcher (Executes Strictly Post-Evaluation Transaction) (REQ-NOTIF-002, NODE OUTBOX-02, NODE OUTBOX-03)
+    // STEP 2: The Notification Dispatcher (Executes Strictly Post-Evaluation Transaction) (S03, S04, S05, A09, A10)
     let pendingOutbox: Array<Record<string, any>> = [];
+    const workerId = `worker_${crypto.randomUUID()}`;
     const { data: claimedOutbox, error: claimError } = await supabase.rpc("claim_notification_outbox", {
       p_batch_size: 50,
+      p_worker_id: workerId,
+      p_lease_seconds: 300,
     });
 
     if (claimError || !claimedOutbox) {
-      console.warn("Notice: claim_notification_outbox RPC unavailable, falling back to select:", claimError?.message);
-      const { data: fallbackOutbox } = await supabase
-        .from("notification_outbox")
-        .select("*")
-        .in("status", ["PENDING", "RETRYABLE_FAILED"])
-        .lte("next_attempt_at", nowIso)
-        .limit(50);
-      pendingOutbox = (fallbackOutbox ?? []) as Array<Record<string, any>>;
+      // Fail closed (S03 / A09): Never fall back to non-atomic SELECT.
+      console.warn("Notice: claim_notification_outbox RPC unavailable, skipping dispatch cycle:", claimError?.message);
+      pendingOutbox = [];
     } else {
       pendingOutbox = claimedOutbox as Array<Record<string, any>>;
     }
@@ -382,50 +333,40 @@ Deno.serve(async (request) => {
           providerId = await sendTelegram(alert, deal);
         }
 
-        // Record successful attempt in notification_delivery_attempts (REQ-DATA-006)
-        await supabase.from("notification_delivery_attempts").insert({
-          outbox_id: item.id,
-          attempt_no: attemptNo,
-          provider: item.channel === "EMAIL" ? "resend" : "telegram",
-          provider_message_id: providerId,
-          status: "SUCCESS",
-          attempted_at: new Date().toISOString(),
+        // S04 & S05: Atomic resolution RPC verifying lease claim_token and recording delivery attempt
+        const { error: resolveErr } = await supabase.rpc("resolve_notification_outbox", {
+          p_id: item.id,
+          p_claim_token: item.claim_token,
+          p_status: "SENT",
+          p_provider: item.channel === "EMAIL" ? "resend" : "telegram",
+          p_provider_message_id: providerId,
+          p_error_code: null,
+          p_next_attempt_at: null,
         });
 
-        // Mark outbox item SENT
-        await supabase.from("notification_outbox").update({
-          status: "SENT",
-          attempt_count: attemptNo,
-          sent_at: new Date().toISOString(),
-        }).eq("id", item.id);
+        if (resolveErr) {
+          console.warn("resolve_notification_outbox warning:", resolveErr.message);
+        }
 
         sent++;
       } catch (sendErr) {
         const errCode = safeOperationalErrorCode(sendErr, "delivery_failed");
+        const isPermanent = attemptNo >= 3;
+        const nextRetry = isPermanent ? null : (nextNotificationRetry(attemptNo - 1).nextRetryAt ?? nowIso);
+        const resolved = isPermanent
+          ? { status: "PERMANENT_FAILED" as const }
+          : { status: "RETRYABLE_FAILED" as const };
 
-        // Record failed attempt in notification_delivery_attempts
-        await supabase.from("notification_delivery_attempts").insert({
-          outbox_id: item.id,
-          attempt_no: attemptNo,
-          provider: item.channel === "EMAIL" ? "resend" : "telegram",
-          status: "FAILED",
-          error_code: errCode,
-          attempted_at: new Date().toISOString(),
+        await supabase.rpc("resolve_notification_outbox", {
+          p_id: item.id,
+          p_claim_token: item.claim_token,
+          p_status: resolved.status,
+          p_provider: item.channel === "EMAIL" ? "resend" : "telegram",
+          p_provider_message_id: null,
+          p_error_code: errCode,
+          p_next_attempt_at: nextRetry,
         });
 
-        if (attemptNo >= 3) {
-          await supabase.from("notification_outbox").update({
-            status: "PERMANENT_FAILED",
-            attempt_count: attemptNo,
-          }).eq("id", item.id);
-        } else {
-          const retry = nextNotificationRetry(attemptNo - 1);
-          await supabase.from("notification_outbox").update({
-            status: "RETRYABLE_FAILED",
-            attempt_count: attemptNo,
-            next_attempt_at: retry.nextRetryAt ?? new Date().toISOString(),
-          }).eq("id", item.id);
-        }
         failed++;
       }
     }

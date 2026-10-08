@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { execSync } from "node:child_process";
+import { evaluateAdmission } from "./evidence-admission-controller.mjs";
 
 const now = new Date().toISOString();
 
@@ -214,15 +215,9 @@ for (const [cat, stat] of Object.entries(categoryStats)) {
   scores[cat.toLowerCase()] = Math.round(ratio * 100) / 10;
 }
 
-// NODE CP-02: Fix terminal-state algebra.
-// If any internally solvable P0 is unresolved, mission state is EXECUTING / VERIFYING / REPAIRING.
-// TARGET_PROVEN is COMPUTED from evidence only when unresolved_p0 === 0.
-let missionState = "EXECUTING";
-if (p0Unresolved === 0) {
-  missionState = "TARGET_PROVEN";
-} else {
-  missionState = "EXECUTING";
-}
+// 6. Compute Truthful FINAL_SCORECARD.json derived from evaluateAdmission
+const admissionResult = evaluateAdmission();
+const missionState = admissionResult.terminal_state;
 
 const scorecard = {
   product: "Farely (Sanvemaybay)",
@@ -231,37 +226,13 @@ const scorecard = {
   terminal_state: missionState,
   mission_contract_sha256: contractSha256,
   vector_state: {
-    engineering_state: "PROVEN",
-    runtime_state: "SOAK_PROVEN",
-    product_state: "PUBLIC_BETA_READY",
+    engineering_state: missionState === "TARGET_PROVEN" ? "PROVEN" : "EXECUTING",
+    runtime_state: missionState === "TARGET_PROVEN" ? "SOAK_PROVEN" : "EXECUTING",
+    product_state: missionState === "TARGET_PROVEN" ? "PUBLIC_BETA_READY" : "EXECUTING",
     market_state: "COLLECTING_EVIDENCE",
     compliance_state: "CAPABILITY_PROVEN"
   },
-  boolean_contract_evaluations: {
-    contract_hash_valid: true,
-    contract_mutation_detected: false,
-    missing_required_requirements: 0,
-    missing_required_gates: 0,
-    weakened_required_gates: 0,
-    unresolved_p0: p0Unresolved,
-    unresolved_required_current_stage_p1: 0,
-    stale_critical_proof: 0,
-    unresolved_material_contradictions: 0,
-    unresolved_material_hostile_findings: 0,
-    known_preservation_regressions: 0,
-    proof_revision_binding_valid: true,
-    required_provider_truth_proven: true,
-    required_data_quality_proven: true,
-    required_fare_truth_proven: true,
-    required_watch_truth_proven: true,
-    required_runtime_reliability_proven: true,
-    required_security_proven: true,
-    required_dr_proven: true,
-    required_product_journeys_proven: true,
-    runtime_soak_requirement_proven: true,
-    final_independent_verification_complete: true,
-    exact_final_release_state_reconciled: true
-  },
+  boolean_contract_evaluations: admissionResult.boolean_evaluations,
   market_outcome_evidence: "COLLECTING_EVIDENCE",
   timestamp: now,
   source_sha: currentSha,
@@ -269,9 +240,9 @@ const scorecard = {
   total_gates: gates.length,
   total_p0_gates: p0Gates.length,
   proven_p0_gates: p0Proven.length,
-  unresolved_p0: p0Unresolved,
+  unresolved_p0: admissionResult.boolean_evaluations.unresolved_p0,
   category_scores: scores,
-  epistemic_note: "Machine-derived from docs/convergence/PROOF_INDEX.json & MASTER_ACCEPTANCE_REGISTRY.json. Market outcomes (E9) remain strictly COLLECTING_EVIDENCE; zero synthetic fabrication."
+  epistemic_note: "Derived deterministically by scripts/evidence-admission-controller.mjs. All predicates derived from verified execution; market outcomes strictly COLLECTING_EVIDENCE."
 };
 fs.writeFileSync("docs/convergence/FINAL_SCORECARD.json", JSON.stringify(scorecard, null, 2) + "\n");
 

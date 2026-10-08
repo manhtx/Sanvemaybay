@@ -80,6 +80,92 @@ export function sha256Hex(ascii: string): string {
   return result;
 }
 
+export interface PhysicalFlightSegment {
+  origin: string;
+  destination: string;
+  flightNumber: string;
+  marketingCarrier: string;
+  operatingCarrier?: string;
+  departureInstant?: string;
+  arrivalInstant?: string;
+  segmentOrder?: number;
+}
+
+/**
+ * Physical Itinerary Fingerprint (S09 / A14)
+ * Distinguishes physical itineraries based on ordered physical flight segments.
+ * Format: itin:v1:<128-bit sha256 hex>
+ */
+export function buildPhysicalItineraryId(params: {
+  origin: string;
+  destination: string;
+  departDate: string;
+  returnDate?: string | null;
+  segments?: PhysicalFlightSegment[];
+  airline?: string;
+  flightNumber?: string | null;
+}): string {
+  const parts: string[] = [
+    params.origin.trim().toUpperCase(),
+    params.destination.trim().toUpperCase(),
+    params.departDate.trim(),
+    (params.returnDate || '').trim(),
+  ];
+
+  if (params.segments && params.segments.length > 0) {
+    const sortedSegments = [...params.segments].sort(
+      (a, b) => (a.segmentOrder ?? 0) - (b.segmentOrder ?? 0)
+    );
+    for (const seg of sortedSegments) {
+      parts.push(
+        [
+          seg.origin.trim().toUpperCase(),
+          seg.destination.trim().toUpperCase(),
+          seg.marketingCarrier.trim().toUpperCase(),
+          (seg.operatingCarrier || seg.marketingCarrier).trim().toUpperCase(),
+          seg.flightNumber.trim().toUpperCase(),
+          (seg.departureInstant || '').trim(),
+          (seg.arrivalInstant || '').trim(),
+        ].join('>')
+      );
+    }
+  } else {
+    parts.push((params.airline || '').trim().toUpperCase());
+    parts.push((params.flightNumber || '').trim().toUpperCase());
+  }
+
+  return `itin:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;
+}
+
+/**
+ * Commercial Offer Product (S10)
+ * Separates physical flight itinerary from commercial offer dimensions:
+ * cabin, fare brand, baggage, refundability, changeability, and sales channel.
+ * Format: prod:v1:<128-bit sha256 hex>
+ */
+export interface CommercialOfferProduct {
+  itineraryId: string;
+  cabin: string;
+  fareBrand?: string;
+  baggageIncluded?: boolean;
+  refundable?: boolean;
+  changeAllowed?: boolean;
+  salesChannel?: string;
+}
+
+export function buildOfferProductId(params: CommercialOfferProduct): string {
+  const parts = [
+    params.itineraryId.trim(),
+    (params.cabin || 'ECONOMY').trim().toUpperCase(),
+    (params.fareBrand || '').trim().toUpperCase(),
+    params.baggageIncluded === true ? 'BAG:YES' : params.baggageIncluded === false ? 'BAG:NO' : 'BAG:UNKNOWN',
+    params.refundable === true ? 'REF:YES' : params.refundable === false ? 'REF:NO' : 'REF:UNKNOWN',
+    params.changeAllowed === true ? 'CHG:YES' : params.changeAllowed === false ? 'CHG:NO' : 'CHG:UNKNOWN',
+    (params.salesChannel || '').trim().toUpperCase(),
+  ];
+  return `prod:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;
+}
+
 /**
  * OfferVariantId MUST NOT contain price (REQ-DOM-011, REQ-ID-002).
  * Same itinerary at 3.2m today and 2.8m tomorrow has the SAME OfferVariantId.
@@ -94,6 +180,7 @@ export function buildOfferVariantId(params: {
   flightNumber?: string | null;
   cabin?: string;
   stops?: number;
+  segments?: PhysicalFlightSegment[];
 }): string {
   const parts = [
     params.origin.trim().toUpperCase(),
@@ -105,6 +192,14 @@ export function buildOfferVariantId(params: {
     (params.cabin || 'ECONOMY').trim().toUpperCase(),
     String(params.stops ?? 0)
   ];
+
+  if (params.segments && params.segments.length > 0) {
+    const sorted = [...params.segments].sort((a, b) => (a.segmentOrder ?? 0) - (b.segmentOrder ?? 0));
+    for (const s of sorted) {
+      parts.push(`${s.origin}-${s.destination}-${s.flightNumber}`);
+    }
+  }
+
   return `ov:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;
 }
 

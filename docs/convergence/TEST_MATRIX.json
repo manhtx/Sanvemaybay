@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-07T10:46:06.517Z",
-  "tested_sha": "09a61327f3d9d562144d43af033769c817354f53",
+  "updated_at": "2026-10-08T08:27:45.887Z",
+  "tested_sha": "f08b4b42472faff1dcc132106ee30b5a54938571",
   "summary": {
     "vitest_test_files": 36,
-    "node_test_files": 31,
+    "node_test_files": 35,
     "deno_test_files": 18,
-    "total_test_suites": 85,
+    "total_test_suites": 89,
     "status": "PASS"
   },
   "layers": [
@@ -60,7 +60,9 @@
       "files": [
         "scripts/acceptance-anti-shrinkage.node-test.mjs",
         "scripts/account-deletion-contract.node-test.mjs",
+        "scripts/adversarial-corpus-a01-a24.node-test.mjs",
         "scripts/canonical-data-idempotency.node-test.mjs",
+        "scripts/certifier-sabotage.node-test.mjs",
         "scripts/client-error-boundary.node-test.mjs",
         "scripts/clock-timezone-adversarial.node-test.mjs",
         "scripts/database-backup-restore-drill.node-test.mjs",
@@ -84,13 +86,15 @@
         "scripts/release-attestation.node-test.mjs",
         "scripts/release-manifest.node-test.mjs",
         "scripts/rls-tenant-isolation.node-test.mjs",
+        "scripts/rpc-security-role.node-test.mjs",
         "scripts/runtime-configuration.node-test.mjs",
+        "scripts/schedule-durable-occurrences.node-test.mjs",
         "scripts/security-smoke.node-test.mjs",
         "scripts/synthetic-health-check.node-test.mjs",
         "scripts/verify-certification-integrity.node-test.mjs",
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ],
-      "test_file_count": 31,
+      "test_file_count": 35,
       "verdict": "PASS"
     },
     {

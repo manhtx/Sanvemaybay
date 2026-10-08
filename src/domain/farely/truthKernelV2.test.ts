@@ -220,7 +220,8 @@ describe('NODE TK-05 & TK-06: Offer Eligibility & Canonical RouteBest', () => {
       airline: 'VJ',
       price: 5000000, // 5M for party of 2 = 2.5M per person
       pricingUnit: 'PARTY_TOTAL',
-      stops: 0
+      stops: 0,
+      durationMinutes: 110,
     };
 
     const perTravelerOffer: RouteOffer = {
@@ -232,7 +233,8 @@ describe('NODE TK-05 & TK-06: Offer Eligibility & Canonical RouteBest', () => {
       airline: 'VN',
       price: 2800000, // 2.8M per person
       pricingUnit: 'PER_TRAVELER',
-      stops: 0
+      stops: 0,
+      durationMinutes: 110,
     };
 
     const best = selectRouteBest([perTravelerOffer, partyOffer], baseIntent);
@@ -251,7 +253,8 @@ describe('NODE TK-05 & TK-06: Offer Eligibility & Canonical RouteBest', () => {
       airline: 'AK',
       price: 2400000,
       dealScore: 70,
-      stops: 0
+      stops: 0,
+      durationMinutes: 110,
     };
 
     const highDealScoreOffer: RouteOffer = {
@@ -263,12 +266,51 @@ describe('NODE TK-05 & TK-06: Offer Eligibility & Canonical RouteBest', () => {
       airline: 'VN',
       price: 2700000,
       dealScore: 99,
-      stops: 0
+      stops: 0,
+      durationMinutes: 110,
     };
 
     const best = selectRouteBest([highDealScoreOffer, cheapOffer], baseIntent);
     expect(best?.id).toBe('off_cheap');
     expect(best?.price).toBe(2400000);
+  });
+
+  it('S08 & A15: emits UNKNOWN_STOPS and UNKNOWN_DURATION with UNKNOWN_COMPATIBILITY state', () => {
+    // Missing stops under hard maxStops: 0 filter
+    const unknownStopsOffer: RouteOffer = {
+      id: 'off_unknown_stops',
+      origin: 'HAN',
+      destination: 'BKK',
+      departDate: '2026-11-10',
+      returnDate: '2026-11-15',
+      airline: 'VN',
+      price: 1500000,
+      durationMinutes: 110,
+    };
+    const evalStops = evaluateOfferEligibility(unknownStopsOffer, baseIntent);
+    expect(evalStops.isEligible).toBe(false);
+    expect(evalStops.state).toBe('UNKNOWN_COMPATIBILITY');
+    expect(evalStops.reasons).toContain('UNKNOWN_STOPS');
+
+    // Missing duration under hard maxDurationMinutes: 200 filter
+    const unknownDurationOffer: RouteOffer = {
+      id: 'off_unknown_dur',
+      origin: 'HAN',
+      destination: 'BKK',
+      departDate: '2026-11-10',
+      returnDate: '2026-11-15',
+      airline: 'VN',
+      price: 1400000,
+      stops: 0,
+    };
+    const evalDur = evaluateOfferEligibility(unknownDurationOffer, baseIntent);
+    expect(evalDur.isEligible).toBe(false);
+    expect(evalDur.state).toBe('UNKNOWN_COMPATIBILITY');
+    expect(evalDur.reasons).toContain('UNKNOWN_DURATION');
+
+    // Neither unknown offer can win RouteBest
+    const best = selectRouteBest([unknownStopsOffer, unknownDurationOffer], baseIntent);
+    expect(best).toBeNull();
   });
 
   it('normalizes PARTY_TOTAL offer prices to PER_TRAVELER based on party size', () => {

@@ -33,10 +33,16 @@ export type IneligibilityReason =
   | 'STOPS_EXCEEDED'
   | 'DURATION_EXCEEDED'
   | 'CURRENCY_MISMATCH'
-  | 'INVALID_PRICE';
+  | 'INVALID_PRICE'
+  | 'UNKNOWN_STOPS'
+  | 'UNKNOWN_DURATION'
+  | 'UNKNOWN_COMPATIBILITY';
+
+export type EligibilityState = 'ELIGIBLE' | 'INELIGIBLE' | 'UNKNOWN_COMPATIBILITY';
 
 export interface EligibilityResult {
   isEligible: boolean;
+  state: EligibilityState;
   reasons: IneligibilityReason[];
   normalizedOffer?: RouteOffer;
 }
@@ -65,8 +71,9 @@ export function normalizeOfferForIntent(offer: RouteOffer, intent: TravelIntent)
 }
 
 /**
- * Evaluates offer eligibility against canonical TravelIntent, emitting typed reasons.
- * Explicit production primitive (NODE TK-05).
+ * Evaluates offer eligibility against canonical TravelIntent, emitting typed reasons and tri-state result.
+ * S08: ELIGIBLE, INELIGIBLE, UNKNOWN_COMPATIBILITY.
+ * Unknown stops is not zero stops. Unknown duration does not satisfy duration constraint.
  */
 export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent): EligibilityResult {
   const reasons: IneligibilityReason[] = [];
@@ -87,12 +94,20 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
       reasons.push('MISSING_RETURN_DATE');
     } else if (intent.inbound?.exact && offer.returnDate !== intent.inbound.exact) {
       reasons.push('RETURN_DATE_MISMATCH');
+    } else if (intent.inbound?.from && intent.inbound?.to) {
+      if (offer.returnDate < intent.inbound.from || offer.returnDate > intent.inbound.to) {
+        reasons.push('RETURN_DATE_MISMATCH');
+      }
     }
   }
 
-  // 4. Outbound date
+  // 4. Outbound date & windows (S08 / C-13)
   if (intent.outbound.exact && offer.departDate !== intent.outbound.exact) {
     reasons.push('OUTBOUND_DATE_MISMATCH');
+  } else if (intent.outbound.from && intent.outbound.to) {
+    if (offer.departDate < intent.outbound.from || offer.departDate > intent.outbound.to) {
+      reasons.push('OUTBOUND_DATE_MISMATCH');
+    }
   }
 
   // 5. Cabin compatibility (NC-004: Business cannot match Economy intent)
@@ -101,18 +116,22 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
     reasons.push('CABIN_MISMATCH');
   }
 
-  // 6. Max stops constraint
-  if (intent.maxStops !== undefined && (offer.stops ?? 0) > intent.maxStops) {
-    reasons.push('STOPS_EXCEEDED');
+  // 6. Max stops constraint (S08 / A15: Unknown stops is not 0 stops)
+  if (intent.maxStops !== undefined) {
+    if (offer.stops === undefined || offer.stops === null || !Number.isFinite(offer.stops)) {
+      reasons.push('UNKNOWN_STOPS');
+    } else if (offer.stops > intent.maxStops) {
+      reasons.push('STOPS_EXCEEDED');
+    }
   }
 
-  // 7. Max duration constraint
-  if (
-    intent.maxDurationMinutes !== undefined &&
-    offer.durationMinutes !== undefined &&
-    offer.durationMinutes > intent.maxDurationMinutes
-  ) {
-    reasons.push('DURATION_EXCEEDED');
+  // 7. Max duration constraint (S08 / A15: Unknown duration does not satisfy constraint)
+  if (intent.maxDurationMinutes !== undefined) {
+    if (offer.durationMinutes === undefined || offer.durationMinutes === null || !Number.isFinite(offer.durationMinutes)) {
+      reasons.push('UNKNOWN_DURATION');
+    } else if (offer.durationMinutes > intent.maxDurationMinutes) {
+      reasons.push('DURATION_EXCEEDED');
+    }
   }
 
   // 8. Currency match
@@ -125,14 +144,29 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
     reasons.push('INVALID_PRICE');
   }
 
+  // Tri-state classification
+  const hasUnknown = reasons.some((r) => r.startsWith('UNKNOWN_'));
+  if (hasUnknown) {
+    return {
+      isEligible: false,
+      state: 'UNKNOWN_COMPATIBILITY',
+      reasons,
+    };
+  }
+
   if (reasons.length > 0) {
-    return { isEligible: false, reasons };
+    return {
+      isEligible: false,
+      state: 'INELIGIBLE',
+      reasons,
+    };
   }
 
   return {
     isEligible: true,
+    state: 'ELIGIBLE',
     reasons: [],
-    normalizedOffer: normalizeOfferForIntent(offer, intent)
+    normalizedOffer: normalizeOfferForIntent(offer, intent),
   };
 }
 
