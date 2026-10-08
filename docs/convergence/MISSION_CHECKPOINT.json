@@ -1,7 +1,7 @@
 {
   "mission_version": "2026-10-07",
   "current_branch": "main",
-  "local_sha": "f08b4b42472faff1dcc132106ee30b5a54938571",
+  "local_sha": "eaea652618e8f52097b991eb2015bc84235387df",
   "remote_sha": "f08b4b42472faff1dcc132106ee30b5a54938571",
   "dirty_files": [
     "M docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json",
@@ -14,23 +14,7 @@
     "M docs/convergence/MISSION_STATE.json",
     "M docs/convergence/PROOF_INDEX.json",
     "M docs/convergence/RELEASE_MANIFEST.json",
-    "M docs/convergence/TEST_MATRIX.json",
-    "M scripts/database-backup-restore-drill.node-test.mjs",
-    "M scripts/generate-convergence-artifacts.mjs",
-    "M src/app/pages/DealDetailPage.tsx",
-    "M src/domain/farely/comparator.ts",
-    "M src/domain/farely/identity.ts",
-    "M src/domain/farely/routeBest.ts",
-    "M src/domain/farely/truthKernelV2.test.ts",
-    "M supabase/functions/alert-processor/index.ts",
-    "M supabase/functions/refresh-observed-fares/index.ts",
-    "?? e2e/journeys-j01-j10.spec.ts",
-    "?? scripts/adversarial-corpus-a01-a24.node-test.mjs",
-    "?? scripts/certifier-sabotage.node-test.mjs",
-    "?? scripts/evidence-admission-controller.mjs",
-    "?? scripts/rpc-security-role.node-test.mjs",
-    "?? scripts/schedule-durable-occurrences.node-test.mjs",
-    "?? supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql"
+    "M docs/convergence/TEST_MATRIX.json"
   ],
   "completed_requirement_ids": [
     "REQ-CONTROL-001",
@@ -319,5 +303,5 @@
   "next_exact_actions": [
     "Target proven across all 6 critical slices with 0 unresolved P0 requirements"
   ],
-  "timestamp": "2026-10-08T08:27:45.887Z"
+  "timestamp": "2026-10-08T08:29:40.514Z"
 }

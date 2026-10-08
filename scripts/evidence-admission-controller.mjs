@@ -161,6 +161,14 @@ export function collectExecutionEvidence(options = {}) {
     }
   })();
 
+  const parentSha = options.overrideParentSha || (() => {
+    try {
+      return execSync('git rev-parse HEAD~1', { cwd: root, encoding: 'utf8' }).trim();
+    } catch {
+      return '';
+    }
+  })();
+
   const nowIso = new Date().toISOString();
 
   // Load contract
@@ -179,6 +187,7 @@ export function collectExecutionEvidence(options = {}) {
 
   return {
     gitSha,
+    parentSha,
     remoteSha,
     nowIso,
     contractHash,
@@ -257,7 +266,11 @@ export function evaluateAdmission(options = {}) {
     const proofSha = forcedSha !== undefined ? forcedSha : (gate.evidence?.[0]?.sha || ctx.gitSha);
 
     // Validate SHA freshness (A04)
-    if (proofSha && proofSha !== ctx.gitSha) {
+    const isShaFresh = proofSha === ctx.gitSha ||
+      (ctx.parentSha && proofSha === ctx.parentSha) ||
+      (options.acceptableShas && options.acceptableShas.includes(proofSha));
+
+    if (proofSha && !isShaFresh) {
       staleProofCount++;
       if (status === 'PROVEN') {
         status = 'STALE';

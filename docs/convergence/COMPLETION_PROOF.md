@@ -44,6 +44,7 @@
 
 * **Repository:** `https://github.com/manhtx/Sanvemaybay`
 * **Target Branch:** `main`
+* **Commit SHA:** `eaea652618e8f52097b991eb2015bc84235387df`
 * **Production Frontend Serving Release:**
   * Production Host: `https://farely.manhtx.com`
   * Release Descriptor: `https://farely.manhtx.com/release.json`
