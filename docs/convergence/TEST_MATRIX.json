@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-08T12:03:39.876Z",
-  "tested_sha": "2b747cfe2a5302689bd47385d221b633b224c555",
+  "updated_at": "2026-10-08T12:15:04.466Z",
+  "tested_sha": "2a2eb65fc3fcc62641fff9adf9aa2e38850fe67e",
   "summary": {
     "vitest_test_files": 36,
-    "node_test_files": 35,
+    "node_test_files": 36,
     "deno_test_files": 18,
-    "total_test_suites": 89,
+    "total_test_suites": 90,
     "status": "PASS"
   },
   "layers": [
@@ -59,6 +59,7 @@
       "runner": "node --test scripts/*.node-test.mjs",
       "files": [
         "scripts/acceptance-anti-shrinkage.node-test.mjs",
+        "scripts/acceptance-matrix-a01-a34.node-test.mjs",
         "scripts/account-deletion-contract.node-test.mjs",
         "scripts/adversarial-corpus-a01-a24.node-test.mjs",
         "scripts/canonical-data-idempotency.node-test.mjs",
@@ -94,7 +95,7 @@
         "scripts/verify-certification-integrity.node-test.mjs",
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ],
-      "test_file_count": 35,
+      "test_file_count": 36,
       "verdict": "PASS"
     },
     {

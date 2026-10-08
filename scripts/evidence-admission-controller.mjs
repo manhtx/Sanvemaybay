@@ -290,7 +290,9 @@ export function evaluateAdmission(options = {}) {
     } else if (receipt) {
       // D01 & D02: Status is derived strictly from verified execution receipt, NEVER gate.status
       const receiptStatus = receipt.status;
-      const isPass = receiptStatus === 'VERIFIED' || receiptStatus === 'PROVEN' || receipt.exit_code === 0;
+      const isPass = (receiptStatus === 'VERIFIED' || receiptStatus === 'PROVEN' || (!receiptStatus && receipt.exit_code === 0)) &&
+        (receipt.exit_code === undefined || receipt.exit_code === 0) &&
+        receiptStatus !== 'FAILED';
       if (isPass) {
         status = 'PROVEN';
       } else {
@@ -462,10 +464,20 @@ export function evaluateAdmission(options = {}) {
     summary: {
       total_gates: gates.length,
       proven_count: provenCount,
+      proven_gates: provenCount,
       unresolved_p0: unresolvedP0,
       unresolved_p1: unresolvedP1,
       stale_proofs: staleProofCount,
       forged_proofs: forgedProofCount
+    },
+    release_parity: {
+      matches: releaseShaMatches,
+      exact_final_release_state_reconciled: exactFinalReleaseStateReconciled,
+      verified_production_sha: verifiedProductionSha
+    },
+    soak_status: {
+      meets_requirements: runtimeSoakRequirementProven,
+      receipts: soakReceipts
     },
     evaluated_proof_index: {
       version: '2.0.0',

@@ -4,6 +4,7 @@
  */
 
 import type { TravelIntent } from './travelIntent.ts';
+export { calculateElapsedDurationMinutes } from './time.ts';
 
 /**
  * Pure SHA-256 Hex Digest Implementation
