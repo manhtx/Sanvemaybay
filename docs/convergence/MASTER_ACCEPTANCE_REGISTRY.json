@@ -28,7 +28,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -58,7 +58,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -88,7 +88,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -118,7 +118,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -148,7 +148,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -178,7 +178,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -208,7 +208,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -238,7 +238,7 @@
         {
           "level": "E6",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -268,7 +268,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -298,7 +298,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -328,7 +328,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -358,7 +358,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -388,7 +388,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -418,7 +418,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -448,7 +448,7 @@
         {
           "level": "E6",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -478,7 +478,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -508,7 +508,7 @@
         {
           "level": "E7",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -538,7 +538,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/database-backup-restore-drill.node-test.mjs",
           "artifact": "scripts/database-backup-restore-drill.node-test.mjs",
@@ -568,7 +568,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -598,7 +598,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -628,7 +628,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -658,7 +658,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -688,7 +688,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -718,7 +718,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -748,7 +748,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -778,7 +778,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -808,7 +808,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -838,7 +838,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -868,7 +868,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -898,7 +898,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -928,7 +928,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -958,7 +958,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -988,7 +988,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1018,7 +1018,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1048,7 +1048,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1078,7 +1078,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1108,7 +1108,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1138,7 +1138,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1168,7 +1168,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1198,7 +1198,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1228,7 +1228,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1258,7 +1258,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1288,7 +1288,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1318,7 +1318,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1348,7 +1348,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -1378,7 +1378,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -1408,7 +1408,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -1438,7 +1438,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -1468,7 +1468,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -1498,7 +1498,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -1528,7 +1528,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1558,7 +1558,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1588,7 +1588,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1618,7 +1618,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1648,7 +1648,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1678,7 +1678,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1708,7 +1708,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1738,7 +1738,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1768,7 +1768,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1798,7 +1798,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1828,7 +1828,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1858,7 +1858,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1888,7 +1888,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1918,7 +1918,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1948,7 +1948,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -1978,7 +1978,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2008,7 +2008,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2038,7 +2038,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2068,7 +2068,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2098,7 +2098,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2128,7 +2128,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2158,7 +2158,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2188,7 +2188,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2218,7 +2218,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2248,7 +2248,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2278,7 +2278,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2308,7 +2308,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2338,7 +2338,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2369,7 +2369,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2399,7 +2399,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2429,7 +2429,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2459,7 +2459,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2489,7 +2489,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2519,7 +2519,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2549,7 +2549,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2579,7 +2579,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2609,7 +2609,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -2639,7 +2639,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2669,7 +2669,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2699,7 +2699,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2729,7 +2729,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2759,7 +2759,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2789,7 +2789,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2819,7 +2819,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2849,7 +2849,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2879,7 +2879,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2909,7 +2909,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2939,7 +2939,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2969,7 +2969,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -2999,7 +2999,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3029,7 +3029,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3059,7 +3059,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3089,7 +3089,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3119,7 +3119,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3149,7 +3149,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3179,7 +3179,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3209,7 +3209,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3239,7 +3239,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3269,7 +3269,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3299,7 +3299,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3329,7 +3329,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3359,7 +3359,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3389,7 +3389,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3419,7 +3419,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3449,7 +3449,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3479,7 +3479,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3509,7 +3509,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -3539,7 +3539,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -3569,7 +3569,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -3599,7 +3599,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -3629,7 +3629,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -3659,7 +3659,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -3689,7 +3689,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -3719,7 +3719,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -3749,7 +3749,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -3779,7 +3779,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -3809,7 +3809,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -3839,7 +3839,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -3869,7 +3869,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -3899,7 +3899,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -3929,7 +3929,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -3959,7 +3959,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -3989,7 +3989,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -4019,7 +4019,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -4049,7 +4049,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -4079,7 +4079,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -4109,7 +4109,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
           "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
@@ -4139,7 +4139,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
           "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
@@ -4169,7 +4169,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
           "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
@@ -4199,7 +4199,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
           "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
@@ -4229,7 +4229,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/account-deletion-contract.node-test.mjs",
           "artifact": "scripts/account-deletion-contract.node-test.mjs",
@@ -4259,7 +4259,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
@@ -4289,7 +4289,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
@@ -4319,7 +4319,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
@@ -4349,7 +4349,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/account-deletion-contract.node-test.mjs",
           "artifact": "scripts/account-deletion-contract.node-test.mjs",
@@ -4379,7 +4379,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/account-deletion-contract.node-test.mjs",
           "artifact": "scripts/account-deletion-contract.node-test.mjs",
@@ -4409,7 +4409,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/account-deletion-contract.node-test.mjs",
           "artifact": "scripts/account-deletion-contract.node-test.mjs",
@@ -4439,7 +4439,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4469,7 +4469,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4499,7 +4499,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4529,7 +4529,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4559,7 +4559,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4589,7 +4589,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4619,7 +4619,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4649,7 +4649,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4679,7 +4679,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4709,7 +4709,7 @@
         {
           "level": "E4",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4739,7 +4739,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4769,7 +4769,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4799,7 +4799,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4829,7 +4829,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
@@ -4859,7 +4859,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -4889,7 +4889,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -4919,7 +4919,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -4949,7 +4949,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -4979,7 +4979,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -5009,7 +5009,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
@@ -5039,7 +5039,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5069,7 +5069,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5099,7 +5099,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5129,7 +5129,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5159,7 +5159,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5189,7 +5189,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5219,7 +5219,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -5249,7 +5249,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -5279,7 +5279,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -5309,7 +5309,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -5339,7 +5339,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -5369,7 +5369,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -5399,7 +5399,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -5429,7 +5429,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -5459,7 +5459,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -5489,7 +5489,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5519,7 +5519,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5549,7 +5549,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5579,7 +5579,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5609,7 +5609,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5639,7 +5639,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5669,7 +5669,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5699,7 +5699,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5729,7 +5729,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5759,7 +5759,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5789,7 +5789,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5819,7 +5819,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5849,7 +5849,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5879,7 +5879,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5909,7 +5909,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5939,7 +5939,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5969,7 +5969,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -5999,7 +5999,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6029,7 +6029,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6059,7 +6059,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6089,7 +6089,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6119,7 +6119,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6149,7 +6149,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6179,7 +6179,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6209,7 +6209,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6239,7 +6239,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6269,7 +6269,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
@@ -6299,7 +6299,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -6329,7 +6329,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -6359,7 +6359,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -6389,7 +6389,7 @@
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -6415,7 +6415,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
@@ -6441,7 +6441,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
@@ -6467,7 +6467,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
@@ -6493,7 +6493,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
@@ -6519,7 +6519,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
@@ -6545,7 +6545,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
@@ -6571,7 +6571,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
@@ -6597,7 +6597,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
@@ -6623,7 +6623,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -6649,7 +6649,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -6675,7 +6675,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
@@ -6701,7 +6701,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
@@ -6727,7 +6727,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
@@ -6753,7 +6753,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
@@ -6779,7 +6779,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.test.ts",
@@ -6805,7 +6805,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.test.ts",
@@ -6831,7 +6831,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -6857,7 +6857,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -6883,7 +6883,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -6909,7 +6909,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
@@ -6935,7 +6935,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -6961,7 +6961,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -6987,7 +6987,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -7013,7 +7013,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
@@ -7039,7 +7039,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -7065,7 +7065,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
@@ -7091,7 +7091,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -7117,7 +7117,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/release-manifest.node-test.mjs",
           "artifact": "scripts/release-manifest.node-test.mjs",
@@ -7143,7 +7143,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/release-manifest.node-test.mjs",
           "artifact": "scripts/release-manifest.node-test.mjs",
@@ -7169,7 +7169,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/release-manifest.node-test.mjs",
           "artifact": "scripts/release-manifest.node-test.mjs",
@@ -7195,7 +7195,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -7221,7 +7221,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -7247,7 +7247,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
@@ -7273,7 +7273,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -7299,7 +7299,7 @@
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
@@ -7327,7 +7327,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7355,7 +7355,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7383,7 +7383,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7411,7 +7411,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7439,7 +7439,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7467,7 +7467,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7495,7 +7495,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7523,7 +7523,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7551,7 +7551,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7579,7 +7579,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7607,7 +7607,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7635,7 +7635,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7663,7 +7663,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7691,7 +7691,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7719,7 +7719,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7747,7 +7747,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7775,7 +7775,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7803,7 +7803,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7831,7 +7831,7 @@
         {
           "level": "E5",
           "type": "automated_regression_test",
-          "sha": "eaea652618e8f52097b991eb2015bc84235387df",
+          "sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
           "timestamp": "2026-10-08T08:29:40.452Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
@@ -7840,5 +7840,5 @@
       ]
     }
   ],
-  "updated_at": "2026-10-08T08:29:40.514Z"
+  "updated_at": "2026-10-08T08:33:04.562Z"
 }
