@@ -228,9 +228,18 @@ BEGIN
   SET state = 'RETIRED'
   WHERE id <> p_generation_id AND state = 'ACTIVE';
 
-  -- Clean up prior generation snapshots
+  -- Rollback retention guarantee (D18):
+  -- Retain the last-known-good generation snapshots for rollback capability.
+  -- Only purge snapshots from generations older than the active and previous last-known-good generation.
   DELETE FROM public.observed_fare_snapshots
-  WHERE generation_id IS NOT NULL AND generation_id <> p_generation_id;
+  WHERE generation_id IS NOT NULL
+    AND generation_id <> p_generation_id
+    AND generation_id NOT IN (
+      SELECT id FROM public.observed_fare_generations
+      WHERE id <> p_generation_id
+      ORDER BY published_at DESC NULLS LAST
+      LIMIT 1
+    );
 
   RETURN jsonb_build_object(
     'success', true,
@@ -243,6 +252,58 @@ $$;
 
 REVOKE ALL ON FUNCTION public.publish_observed_generation(UUID, INT, TIMESTAMPTZ) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.publish_observed_generation(UUID, INT, TIMESTAMPTZ) TO service_role;
+
+-- Rollback RPC restoring last-known-good generation (D18, A20)
+CREATE OR REPLACE FUNCTION public.rollback_observed_generation()
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_current_gen UUID;
+  v_previous_gen UUID;
+  v_prev_count INT;
+BEGIN
+  SELECT active_generation_id INTO v_current_gen
+  FROM public.active_observed_generation
+  WHERE id = 1;
+
+  SELECT id, row_count INTO v_previous_gen, v_prev_count
+  FROM public.observed_fare_generations
+  WHERE id <> v_current_gen AND state = 'RETIRED'
+  ORDER BY published_at DESC NULLS LAST
+  LIMIT 1;
+
+  IF v_previous_gen IS NULL THEN
+    RAISE EXCEPTION 'No previous last-known-good generation found to rollback to';
+  END IF;
+
+  UPDATE public.active_observed_generation
+  SET active_generation_id = v_previous_gen,
+      row_count = v_prev_count,
+      published_at = NOW()
+  WHERE id = 1;
+
+  UPDATE public.observed_fare_generations
+  SET state = 'ACTIVE'
+  WHERE id = v_previous_gen;
+
+  UPDATE public.observed_fare_generations
+  SET state = 'QUARANTINED'
+  WHERE id = v_current_gen;
+
+  RETURN jsonb_build_object(
+    'success', true,
+    'rolled_back_from', v_current_gen,
+    'rolled_back_to', v_previous_gen,
+    'row_count', v_prev_count
+  );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.rollback_observed_generation() FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.rollback_observed_generation() TO service_role;
 
 -- 6. S18 / C-20 / A13: Durable schedule occurrences table & missed-run detection
 CREATE TABLE IF NOT EXISTS public.schedule_occurrences (

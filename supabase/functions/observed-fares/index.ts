@@ -239,19 +239,39 @@ Deno.serve(async (request) => {
     if (latestResult.error) throw latestResult.error;
     const total = count ?? 0;
 
-    let isMonitoredRoute = true;
+    let isMonitoredScope = true;
     if (total === 0 && body.origin && body.destination) {
+      const orig = String(body.origin).trim().toUpperCase();
+      const dest = String(body.destination).trim().toUpperCase();
+      const requestedDate = typeof body.depart_date_from === "string" ? body.depart_date_from : (typeof body.depart_date === "string" ? body.depart_date : null);
+
+      // Check overall route snapshots in active generation
       const { count: routeSnapshotCount } = await service
         .from("observed_fare_snapshots")
         .select("observation_id", { count: "exact", head: true })
         .eq("generation_id", activeGen.active_generation_id)
-        .eq("origin_code", String(body.origin).trim().toUpperCase())
-        .eq("destination_code", String(body.destination).trim().toUpperCase());
+        .eq("origin_code", orig)
+        .eq("destination_code", dest);
+
       if (!routeSnapshotCount || routeSnapshotCount === 0) {
-        isMonitoredRoute = false;
+        isMonitoredScope = false;
+      } else if (requestedDate) {
+        // Query-scoped check (D16): A route may have snapshots on other dates, but this specific date has never been observed
+        const { count: dateScopeCount } = await service
+          .from("observed_fare_snapshots")
+          .select("observation_id", { count: "exact", head: true })
+          .eq("generation_id", activeGen.active_generation_id)
+          .eq("origin_code", orig)
+          .eq("destination_code", dest)
+          .gte("depart_date", requestedDate)
+          .lte("depart_date", typeof body.depart_date_to === "string" ? body.depart_date_to : requestedDate);
+
+        if (!dateScopeCount || dateScopeCount === 0) {
+          isMonitoredScope = false;
+        }
       }
     }
-    const health = observedStatus(latestResult.data?.observed_at, total, isMonitoredRoute);
+    const health = observedStatus(latestResult.data?.observed_at, total, isMonitoredScope);
     const fares = (data ?? []).map((row) => ({
       ...row,
       id: row.observation_id,

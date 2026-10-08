@@ -37,7 +37,7 @@ async function signAlertId(alertId: string, secret: string): Promise<string> {
     .join("");
 }
 
-async function sendEmail(alert: any, deal: any, eventType = "ENTERED"): Promise<string> {
+async function sendEmail(alert: any, deal: any, eventType = "ENTERED", outboxId?: string): Promise<string> {
   const key = Deno.env.get("RESEND_API_KEY");
   const publicSiteUrl = (Deno.env.get("PUBLIC_SITE_URL") ?? "").replace(/\/$/, "");
   const unsubscribeSecret = Deno.env.get("UNSUBSCRIBE_SECRET") ?? "";
@@ -55,9 +55,17 @@ async function sendEmail(alert: any, deal: any, eventType = "ENTERED"): Promise<
     headline = "Giá vé vừa quay trở lại mức bạn mong muốn";
   }
 
+  const reqHeaders: Record<string, string> = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${key}`,
+  };
+  if (outboxId) {
+    reqHeaders["Idempotency-Key"] = `farely_notif_${outboxId}`;
+  }
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    headers: reqHeaders,
     body: JSON.stringify({
       from: Deno.env.get("ALERT_FROM_EMAIL") ?? "Farely Alerts <alerts@resend.dev>",
       to: [alert.email],
@@ -231,9 +239,15 @@ Deno.serve(async (request) => {
         }
 
         const targetBudget = Number(alert.target_price ?? alert.budget ?? 0);
+        // D20: Require qualified coverage certificate (>= 3 candidates) before concluding CONFIRMED_NON_MATCH
+        const hasQualifiedCoverage = routeCandidates.length >= 3;
+
         if (stopFiltered.length === 0) {
-          // Route exists, but all flights violate stop constraint -> CONFIRMED_NON_MATCH
-          conditionInput = "CONFIRMED_NON_MATCH";
+          if (!hasQualifiedCoverage) {
+            conditionInput = "INSUFFICIENT_EVIDENCE";
+          } else {
+            conditionInput = "CONFIRMED_NON_MATCH";
+          }
           const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
           observedBestPrice = Number(sorted[0].price);
         } else {
@@ -243,6 +257,9 @@ Deno.serve(async (request) => {
             conditionInput = "MATCH";
             eligibleCandidates = sorted.filter((d) => Number(d.price) <= targetBudget);
             bestCandidate = eligibleCandidates[0];
+          } else if (!hasQualifiedCoverage) {
+            // Sparse candidate data cannot prove confirmed price exit without qualified coverage
+            conditionInput = "INSUFFICIENT_EVIDENCE";
           } else {
             conditionInput = "CONFIRMED_NON_MATCH";
           }
@@ -353,7 +370,7 @@ Deno.serve(async (request) => {
       try {
         let providerId = "";
         if (item.channel === "EMAIL") {
-          providerId = await sendEmail(alert, deal, event_type);
+          providerId = await sendEmail(alert, deal, event_type, item.id);
         } else if (item.channel === "TELEGRAM") {
           providerId = await sendTelegram(alert, deal);
         }
