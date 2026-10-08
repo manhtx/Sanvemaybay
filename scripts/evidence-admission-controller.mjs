@@ -155,9 +155,14 @@ export function collectExecutionEvidence(options = {}) {
 
   const remoteSha = options.overrideRemoteSha || (() => {
     try {
-      return execSync('git rev-parse origin/main', { cwd: root, encoding: 'utf8' }).trim();
+      const currentBranch = execSync('git branch --show-current', { cwd: root, encoding: 'utf8' }).trim();
+      return execSync(`git rev-parse origin/${currentBranch}`, { cwd: root, encoding: 'utf8' }).trim();
     } catch {
-      return gitSha;
+      try {
+        return execSync('git rev-parse origin/main', { cwd: root, encoding: 'utf8' }).trim();
+      } catch {
+        return gitSha;
+      }
     }
   })();
 

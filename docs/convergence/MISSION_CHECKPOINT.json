@@ -1,8 +1,8 @@
 {
   "mission_version": "2026-10-07",
   "current_branch": "antigravity/farely-v10-truth-convergence",
-  "local_sha": "2a2eb65fc3fcc62641fff9adf9aa2e38850fe67e",
-  "remote_sha": "084025b1f58a98655222ee4f8fc82461b286dd6a",
+  "local_sha": "2faf90be49a3b9aea46f549d3d83998dea73ad84",
+  "remote_sha": "2faf90be49a3b9aea46f549d3d83998dea73ad84",
   "dirty_files": [
     "M docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json",
     "M docs/convergence/FINAL_SCORECARD.json",
@@ -13,9 +13,7 @@
     "M docs/convergence/RELEASE_MANIFEST.json",
     "M docs/convergence/TEST_MATRIX.json",
     "M scripts/evidence-admission-controller.mjs",
-    "M src/domain/farely/identity.ts",
-    "M src/domain/farely/time.ts",
-    "?? scripts/acceptance-matrix-a01-a34.node-test.mjs"
+    "M scripts/generate-convergence-artifacts.mjs"
   ],
   "completed_requirement_ids": [
     "REQ-CONTROL-001",
@@ -305,5 +303,5 @@
   "next_exact_actions": [
     "Resolve open P0 requirements"
   ],
-  "timestamp": "2026-10-08T12:15:04.466Z"
+  "timestamp": "2026-10-08T12:17:22.215Z"
 }

@@ -25,9 +25,13 @@ try {
 }
 
 try {
-  remoteSha = execSync("git rev-parse origin/main", { encoding: "utf8" }).trim();
+  remoteSha = execSync(`git rev-parse origin/${currentBranch}`, { encoding: "utf8" }).trim();
 } catch {
-  remoteSha = currentSha;
+  try {
+    remoteSha = execSync("git rev-parse origin/main", { encoding: "utf8" }).trim();
+  } catch {
+    remoteSha = currentSha;
+  }
 }
 
 try {
