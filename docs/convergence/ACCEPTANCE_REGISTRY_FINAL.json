@@ -1,7 +1,7 @@
 {
   "authority_note": "GENERATED PROJECTION of MASTER_ACCEPTANCE_REGISTRY.json. Do not edit independently.",
   "version": "2.0.0",
-  "finalized_at": "2026-10-09T04:13:10.952Z",
+  "finalized_at": "2026-10-09T04:17:37.855Z",
   "total_gates": 267,
   "proven_count": 267,
   "in_progress_count": 0,
@@ -23,13 +23,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -53,13 +53,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -83,13 +83,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -113,13 +113,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -143,13 +143,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -173,13 +173,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -203,13 +203,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -233,13 +233,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -263,13 +263,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -293,13 +293,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -323,13 +323,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -353,13 +353,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -383,13 +383,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -413,13 +413,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -443,13 +443,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -473,13 +473,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -503,13 +503,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -533,13 +533,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/database-backup-restore-drill.node-test.mjs",
           "artifact": "scripts/database-backup-restore-drill.node-test.mjs",
           "status": "VERIFIED"
@@ -563,13 +563,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -593,13 +593,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -623,13 +623,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -653,13 +653,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -683,13 +683,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -713,13 +713,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -743,13 +743,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -773,13 +773,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -803,13 +803,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -833,13 +833,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -863,13 +863,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -893,13 +893,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -923,13 +923,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -953,13 +953,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -983,13 +983,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1013,13 +1013,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1043,13 +1043,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1073,13 +1073,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1103,13 +1103,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1133,13 +1133,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1163,13 +1163,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1193,13 +1193,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1223,13 +1223,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1253,13 +1253,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1283,13 +1283,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1313,13 +1313,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1343,13 +1343,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -1373,13 +1373,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -1403,13 +1403,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -1433,13 +1433,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -1463,13 +1463,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -1493,13 +1493,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -1523,13 +1523,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1553,13 +1553,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1583,13 +1583,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1613,13 +1613,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1643,13 +1643,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1673,13 +1673,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1703,13 +1703,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1733,13 +1733,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1763,13 +1763,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1793,13 +1793,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1823,13 +1823,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1853,13 +1853,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1883,13 +1883,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1913,13 +1913,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1943,13 +1943,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -1973,13 +1973,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2003,13 +2003,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2033,13 +2033,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2063,13 +2063,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2093,13 +2093,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2123,13 +2123,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2153,13 +2153,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2183,13 +2183,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2213,13 +2213,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2243,13 +2243,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2273,13 +2273,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2303,13 +2303,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2333,13 +2333,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2364,13 +2364,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2394,13 +2394,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2424,13 +2424,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2454,13 +2454,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2484,13 +2484,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2514,13 +2514,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2544,13 +2544,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2574,13 +2574,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2604,13 +2604,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -2634,13 +2634,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2664,13 +2664,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2694,13 +2694,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2724,13 +2724,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2754,13 +2754,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2784,13 +2784,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2814,13 +2814,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2844,13 +2844,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2874,13 +2874,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2904,13 +2904,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2934,13 +2934,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2964,13 +2964,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -2994,13 +2994,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3024,13 +3024,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3054,13 +3054,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3084,13 +3084,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3114,13 +3114,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3144,13 +3144,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3174,13 +3174,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3204,13 +3204,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3234,13 +3234,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3264,13 +3264,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3294,13 +3294,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3324,13 +3324,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3354,13 +3354,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3384,13 +3384,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3414,13 +3414,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3444,13 +3444,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3474,13 +3474,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3504,13 +3504,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -3534,13 +3534,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -3564,13 +3564,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -3594,13 +3594,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -3624,13 +3624,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -3654,13 +3654,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -3684,13 +3684,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -3714,13 +3714,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -3744,13 +3744,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -3774,13 +3774,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -3804,13 +3804,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -3834,13 +3834,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -3864,13 +3864,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -3894,13 +3894,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -3924,13 +3924,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -3954,13 +3954,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -3984,13 +3984,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -4014,13 +4014,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -4044,13 +4044,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -4074,13 +4074,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -4104,13 +4104,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
           "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
           "status": "VERIFIED"
@@ -4134,13 +4134,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
           "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
           "status": "VERIFIED"
@@ -4164,13 +4164,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
           "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
           "status": "VERIFIED"
@@ -4194,13 +4194,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
           "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
           "status": "VERIFIED"
@@ -4224,13 +4224,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/account-deletion-contract.node-test.mjs",
           "artifact": "scripts/account-deletion-contract.node-test.mjs",
           "status": "VERIFIED"
@@ -4254,13 +4254,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -4284,13 +4284,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -4314,13 +4314,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -4344,13 +4344,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/account-deletion-contract.node-test.mjs",
           "artifact": "scripts/account-deletion-contract.node-test.mjs",
           "status": "VERIFIED"
@@ -4374,13 +4374,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/account-deletion-contract.node-test.mjs",
           "artifact": "scripts/account-deletion-contract.node-test.mjs",
           "status": "VERIFIED"
@@ -4404,13 +4404,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/account-deletion-contract.node-test.mjs",
           "artifact": "scripts/account-deletion-contract.node-test.mjs",
           "status": "VERIFIED"
@@ -4434,13 +4434,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4464,13 +4464,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4494,13 +4494,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4524,13 +4524,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4554,13 +4554,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4584,13 +4584,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4614,13 +4614,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4644,13 +4644,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4674,13 +4674,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4704,13 +4704,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4734,13 +4734,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4764,13 +4764,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4794,13 +4794,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4824,13 +4824,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/hosting-security.node-test.mjs",
           "artifact": "scripts/hosting-security.node-test.mjs",
           "status": "VERIFIED"
@@ -4854,13 +4854,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -4884,13 +4884,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -4914,13 +4914,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -4944,13 +4944,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -4974,13 +4974,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -5004,13 +5004,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npm run test:functions",
           "artifact": "supabase/functions/_shared/",
           "status": "VERIFIED"
@@ -5034,13 +5034,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5064,13 +5064,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5094,13 +5094,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5124,13 +5124,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5154,13 +5154,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5184,13 +5184,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5214,13 +5214,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -5244,13 +5244,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -5274,13 +5274,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -5304,13 +5304,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -5334,13 +5334,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -5364,13 +5364,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -5394,13 +5394,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -5424,13 +5424,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -5454,13 +5454,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -5484,13 +5484,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5514,13 +5514,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5544,13 +5544,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5574,13 +5574,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5604,13 +5604,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5634,13 +5634,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5664,13 +5664,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5694,13 +5694,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5724,13 +5724,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5754,13 +5754,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5784,13 +5784,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5814,13 +5814,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5844,13 +5844,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5874,13 +5874,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5904,13 +5904,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5934,13 +5934,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5964,13 +5964,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -5994,13 +5994,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6024,13 +6024,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6054,13 +6054,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6084,13 +6084,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6114,13 +6114,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6144,13 +6144,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6174,13 +6174,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6204,13 +6204,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6234,13 +6234,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6264,13 +6264,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/flightIntelligence.test.ts",
           "artifact": "src/app/domain/flightIntelligence.test.ts",
           "status": "VERIFIED"
@@ -6294,13 +6294,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -6324,13 +6324,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -6354,13 +6354,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -6384,13 +6384,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -6410,13 +6410,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
@@ -6436,13 +6436,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
           "status": "VERIFIED"
@@ -6462,13 +6462,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
           "status": "VERIFIED"
@@ -6488,13 +6488,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
           "status": "VERIFIED"
@@ -6514,13 +6514,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
           "status": "VERIFIED"
@@ -6540,13 +6540,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
           "status": "VERIFIED"
@@ -6566,13 +6566,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
           "artifact": "src/domain/farely/truthKernelV2.test.ts",
           "status": "VERIFIED"
@@ -6592,13 +6592,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
@@ -6618,13 +6618,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -6644,13 +6644,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -6670,13 +6670,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -6696,13 +6696,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -6722,13 +6722,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/rls-tenant-isolation.node-test.mjs",
           "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
           "status": "VERIFIED"
@@ -6748,13 +6748,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -6774,13 +6774,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.test.ts",
           "status": "VERIFIED"
@@ -6800,13 +6800,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx vitest run src/app/domain/watch.test.ts",
           "artifact": "src/app/domain/watch.test.ts",
           "status": "VERIFIED"
@@ -6826,13 +6826,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -6852,13 +6852,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -6878,13 +6878,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -6904,13 +6904,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E2",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
           "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
           "status": "VERIFIED"
@@ -6930,13 +6930,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -6956,13 +6956,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -6982,13 +6982,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -7008,13 +7008,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/responsive-viewports.spec.ts",
           "artifact": "e2e/responsive-viewports.spec.ts",
           "status": "VERIFIED"
@@ -7034,13 +7034,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -7060,13 +7060,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/failure-drills.node-test.mjs",
           "artifact": "scripts/failure-drills.node-test.mjs",
           "status": "VERIFIED"
@@ -7086,13 +7086,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -7112,13 +7112,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/release-manifest.node-test.mjs",
           "artifact": "scripts/release-manifest.node-test.mjs",
           "status": "VERIFIED"
@@ -7138,13 +7138,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/release-manifest.node-test.mjs",
           "artifact": "scripts/release-manifest.node-test.mjs",
           "status": "VERIFIED"
@@ -7164,13 +7164,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/release-manifest.node-test.mjs",
           "artifact": "scripts/release-manifest.node-test.mjs",
           "status": "VERIFIED"
@@ -7190,13 +7190,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -7216,13 +7216,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -7242,13 +7242,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/price-truth-harness.node-test.mjs",
           "artifact": "scripts/price-truth-harness.node-test.mjs",
           "status": "VERIFIED"
@@ -7268,13 +7268,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -7294,13 +7294,13 @@
       "test_paths": [],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E1",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "node --test scripts/registry-integrity.node-test.mjs",
           "artifact": "scripts/registry-integrity.node-test.mjs",
           "status": "VERIFIED"
@@ -7322,13 +7322,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7350,13 +7350,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7378,13 +7378,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7406,13 +7406,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7434,13 +7434,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7462,13 +7462,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7490,13 +7490,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7518,13 +7518,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7546,13 +7546,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7574,13 +7574,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7602,13 +7602,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7630,13 +7630,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7658,13 +7658,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7686,13 +7686,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7714,13 +7714,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7742,13 +7742,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7770,13 +7770,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7798,13 +7798,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
@@ -7826,13 +7826,13 @@
       ],
       "evidence_ids": [],
       "blocker": null,
-      "verified_at": "2026-10-09T04:12:15.065Z",
+      "verified_at": "2026-10-09T04:17:37.600Z",
       "evidence": [
         {
           "level": "E3",
           "type": "automated_regression_test",
-          "sha": "4d1761abba4764f8d8e6bbab53a1b013e9e82033",
-          "timestamp": "2026-10-09T04:12:15.065Z",
+          "sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
+          "timestamp": "2026-10-09T04:17:37.600Z",
           "command": "npx playwright test e2e/app.spec.ts",
           "artifact": "e2e/app.spec.ts",
           "status": "VERIFIED"
