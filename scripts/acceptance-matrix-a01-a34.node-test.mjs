@@ -12,6 +12,15 @@ import { evaluateAdmission } from './evidence-admission-controller.mjs';
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || "https://yefbpmqfsstcaeqfrmyn.supabase.co";
 const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllZmJwbXFmc3N0Y2FlcWZybXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2Mzk2MjQsImV4cCI6MjEwNjIxNTYyNH0.FxYMbfcX9Rg9Jj0L_D2VkX-Apzb6Iy5GqAeKlNpTRpc";
 
+function readMigrationChain() {
+  const migrationsDir = path.resolve('supabase/migrations');
+  return fs.readdirSync(migrationsDir)
+    .filter(f => f.endsWith('.sql'))
+    .sort()
+    .map(f => fs.readFileSync(path.join(migrationsDir, f), 'utf8'))
+    .join('\n');
+}
+
 // A01: A forged PROVEN gate without execution is rejected
 test('A01: Forged PROVEN gate without execution is rejected', () => {
   const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
@@ -202,7 +211,7 @@ test('A07: Anonymous privileged RPC is denied for correct reason', async () => {
 
 // A08: Authorized service worker RPC succeeds
 test('A08: Authorized service worker RPC succeeds in schema definition', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('GRANT EXECUTE ON FUNCTION public.claim_schedule_occurrence(TEXT, INT) TO service_role'));
   assert.ok(migration.includes('GRANT EXECUTE ON FUNCTION public.detect_missed_schedule_occurrences(INT) TO service_role'));
   assert.ok(migration.includes('GRANT EXECUTE ON FUNCTION public.resolve_notification_outbox(UUID, UUID, TEXT, TEXT, TEXT, TEXT, TIMESTAMPTZ) TO service_role'));
@@ -323,21 +332,21 @@ test('A18: Partial parser does not become healthy coverage', () => {
 
 // A19: Incomplete generation cannot publish as fully QUALIFIED
 test('A19: Incomplete generation cannot publish as fully QUALIFIED', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('v_stored_count < 20 OR v_route_count < 3'));
   assert.ok(migration.includes('incomplete coverage'));
 });
 
 // A20: Failed publication preserves last-known-good
 test('A20: Failed publication preserves last-known-good', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('rollback_observed_generation()'));
   assert.ok(migration.includes('v_previous_gen'));
 });
 
 // A21: Concurrent old generation cannot replace newer qualified data
 test('A21: Concurrent old generation cannot replace newer qualified data', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('published_at DESC NULLS LAST'));
 });
 
@@ -367,7 +376,7 @@ test('A24: Watch transaction failure cannot produce partial side effects', () =>
 
 // A25: Stale outbox claimant cannot ACK
 test('A25: Stale outbox claimant cannot ACK', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('claim_token = p_claim_token'));
   assert.ok(migration.includes('lease_until >= v_now'));
   assert.ok(migration.includes('Stale or invalid worker claim rejected'));
@@ -375,13 +384,13 @@ test('A25: Stale outbox claimant cannot ACK', () => {
 
 // A26: Provider accepted is not treated as delivered
 test('A26: Provider accepted is not treated as delivered', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes("v_attempt_status := 'PROVIDER_ACCEPTED'"));
 });
 
 // A27: Missed scheduled invocation is detected without worker start
 test('A27: Missed scheduled invocation is detected without worker start', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('detect_missed_schedule_occurrences'));
   assert.ok(migration.includes('SCHEDULER_MISSED_RUN'));
 });

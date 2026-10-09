@@ -375,8 +375,8 @@ Deno.serve(async (request) => {
           providerId = await sendTelegram(alert, deal);
         }
 
-        // S04 & S05: Atomic resolution RPC verifying lease claim_token and recording delivery attempt
-        const { error: resolveErr } = await supabase.rpc("resolve_notification_outbox", {
+        // S04 & S05 & D21: Atomic resolution RPC verifying lease claim_token and recording delivery attempt
+        const { data: resolveOk, error: resolveErr } = await supabase.rpc("resolve_notification_outbox", {
           p_id: item.id,
           p_claim_token: item.claim_token,
           p_status: "SENT",
@@ -386,8 +386,8 @@ Deno.serve(async (request) => {
           p_next_attempt_at: null,
         });
 
-        if (resolveErr) {
-          console.warn("resolve_notification_outbox warning:", resolveErr.message);
+        if (resolveErr || resolveOk !== true) {
+          console.warn("resolve_notification_outbox failed or stale:", resolveErr?.message ?? "returned false");
           failed++;
         } else {
           sent++;

@@ -9,6 +9,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { evaluateAdmission } from './evidence-admission-controller.mjs';
 
+function readMigrationChain() {
+  const migrationsDir = path.resolve('supabase/migrations');
+  return fs.readdirSync(migrationsDir)
+    .filter(f => f.endsWith('.sql'))
+    .sort()
+    .map(f => fs.readFileSync(path.join(migrationsDir, f), 'utf8'))
+    .join('\n');
+}
+
 test('A01: Missing gate rejection', () => {
   const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
   const valid = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
@@ -73,12 +82,12 @@ test('A08: Removed direct active-generation pointer fallback in refresh-observed
 });
 
 test('A09: Queue worker claim uses atomic FOR UPDATE SKIP LOCKED', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('FOR UPDATE SKIP LOCKED'));
 });
 
 test('A10: Worker lease verification and rejection of stale workers (D21 atomic conditional mutation)', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('claim_token = p_claim_token'), 'Must match claim_token in atomic UPDATE');
   assert.ok(migration.includes('lease_until >= v_now'), 'Must verify active lease in atomic UPDATE');
   assert.ok(migration.includes('Stale or invalid worker claim rejected'), 'Must reject stale worker claim if 0 rows updated');
@@ -90,13 +99,13 @@ test('A11: Missing candidate sections degrade status rather than showing empty',
 });
 
 test('A12: Incomplete candidate generation (<20 rows) rejected by publication RPC', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('v_stored_count < 20 OR v_route_count < 3'));
   assert.ok(migration.includes('incomplete coverage'));
 });
 
 test('A13: Missed scheduler runs detected via durable occurrences table', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes('CREATE TABLE IF NOT EXISTS public.schedule_occurrences'));
   assert.ok(migration.includes('detect_missed_schedule_occurrences'));
   assert.ok(migration.includes('claim_schedule_occurrence'));
@@ -286,7 +295,7 @@ test('A21: Bounded deterministic pagination across >1000 items with composite ti
 });
 
 test('A22: Provider accepted email != recipient delivered truth', () => {
-  const migration = fs.readFileSync('supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql', 'utf8');
+  const migration = readMigrationChain();
   assert.ok(migration.includes("v_attempt_status := 'PROVIDER_ACCEPTED'"));
 });
 

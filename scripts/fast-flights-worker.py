@@ -484,6 +484,7 @@ def direct_ingest(
                 "timestamp": row["timestamp"], "route_id": route["id"], "scan_run_id": scan_id,
                 "link_kind": row["link_kind"], "affiliate_network": row["affiliate_network"],
                 "affiliate_url": row["affiliate_url"],
+                "segments": row.get("segments") or [],
             } for row in rows]
             flight_headers = {**service_headers, "Prefer": "resolution=merge-duplicates,return=representation"}
             request_json(
