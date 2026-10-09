@@ -156,10 +156,10 @@ export function collectExecutionEvidence(options = {}) {
   const remoteSha = options.overrideRemoteSha || (() => {
     try {
       const currentBranch = execSync('git branch --show-current', { cwd: root, encoding: 'utf8' }).trim();
-      return execSync(`git rev-parse origin/${currentBranch}`, { cwd: root, encoding: 'utf8' }).trim();
+      return execSync(`git rev-parse origin/${currentBranch}`, { cwd: root, encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
     } catch {
       try {
-        return execSync('git rev-parse origin/main', { cwd: root, encoding: 'utf8' }).trim();
+        return execSync('git rev-parse origin/main', { cwd: root, encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
       } catch {
         return gitSha;
       }

@@ -13,7 +13,7 @@ import {
   ShieldCheck,
   Clock,
 } from "lucide-react";
-import { getDealById, getPriceHistory, getObservedFares, getFareObservations, getRouteBest } from "../data/api";
+import { getDealById, getPriceHistory, getFareObservations, getRouteBest } from "../data/api";
 import { Deal, formatVND } from "../data/deals";
 import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import {

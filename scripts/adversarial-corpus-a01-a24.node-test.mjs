@@ -8,7 +8,6 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { evaluateAdmission } from './evidence-admission-controller.mjs';
-import crypto from 'node:crypto';
 
 test('A01: Missing gate rejection', () => {
   const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
