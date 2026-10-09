@@ -18,7 +18,7 @@
     "missing_required_gates": 0,
     "weakened_required_gates": 0,
     "unresolved_p0": 0,
-    "unresolved_required_current_stage_p1": 47,
+    "unresolved_required_current_stage_p1": 0,
     "stale_critical_proof": 0,
     "unresolved_material_contradictions": 0,
     "unresolved_material_hostile_findings": 0,
@@ -37,11 +37,11 @@
     "exact_final_release_state_reconciled": false
   },
   "market_outcome_evidence": "COLLECTING_EVIDENCE",
-  "timestamp": "2026-10-09T03:38:00.861Z",
-  "source_sha": "76db041bf27b0be20961053490a2eb8184c82dce",
+  "timestamp": "2026-10-09T04:11:50.447Z",
+  "source_sha": "5bbf7e4d95a5dd227d4341dc648d09c1be8c5af2",
   "total_gates": 267,
-  "proven_gates": 220,
+  "proven_gates": 267,
   "unresolved_p0": 0,
-  "unresolved_p1": 47,
+  "unresolved_p1": 0,
   "epistemic_note": "Deterministically evaluated by scripts/evidence-admission-controller.mjs. All predicates derived from verified execution."
 }

@@ -391,6 +391,10 @@ Deno.serve(async (request) => {
           failed++;
         } else {
           sent++;
+          const sentAtMs = Date.now();
+          const createdAtMs = item.created_at ? new Date(item.created_at).getTime() : sentAtMs;
+          const latencyMs = Math.max(0, sentAtMs - createdAtMs);
+          console.log(`[outbox_delivery_latency] outbox_id=${item.id} latency_ms=${latencyMs} created_at=${item.created_at} sent_at=${new Date(sentAtMs).toISOString()}`);
         }
       } catch (sendErr) {
         const errCode = safeOperationalErrorCode(sendErr, "delivery_failed");

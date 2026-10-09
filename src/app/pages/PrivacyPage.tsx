@@ -22,8 +22,14 @@ export function PrivacyPage() {
             <p className="mt-1 text-xs sm:text-sm text-stone-600">Sản phẩm chỉ ghi nhận các tương tác ẩn danh cơ bản như xem chi tiết, lưu cơ hội, chia sẻ và tạo cảnh báo nhằm cải thiện trải nghiệm người dùng.</p>
           </section>
           <section>
-            <h2 className="text-base font-bold text-stone-900">Mục đích và chia sẻ</h2>
-            <p className="mt-1 text-xs sm:text-sm text-stone-600">Dữ liệu chỉ được dùng để gửi thông báo giá vé mà bạn đã yêu cầu và phòng chống thư rác/lạm dụng. Farely không bán hoặc chia sẻ dữ liệu người dùng cho các bên quảng cáo thứ ba.</p>
+            <h2 className="text-base font-bold text-stone-900">Mục đích và các bên xử lý dữ liệu (Data Processors)</h2>
+            <p className="mt-1 text-xs sm:text-sm text-stone-600">Dữ liệu chỉ được dùng để gửi thông báo giá vé mà bạn đã yêu cầu và phòng chống thư rác/lạm dụng. Farely không bán hoặc chia sẻ dữ liệu người dùng cho các bên quảng cáo thứ ba. Hệ thống sử dụng các bên xử lý dữ liệu cơ sở hạ tầng sau:</p>
+            <ul className="mt-2 list-disc list-inside space-y-1 text-xs sm:text-sm text-stone-600">
+              <li><strong>Supabase Inc.</strong>: Lưu trữ cơ sở dữ liệu quan sát, xác thực tài khoản và kiểm soát quyền truy cập RLS.</li>
+              <li><strong>Resend Technologies</strong>: Dịch vụ gửi email thông báo và liên kết xác nhận đăng ký theo dõi giá.</li>
+              <li><strong>Cloudflare Inc.</strong>: Xác thực chống bot tự động (Turnstile) và bảo vệ hạ tầng mạng.</li>
+              <li><strong>Vercel Inc.</strong>: Hạ tầng phân phối và lưu trữ ứng dụng web (CDN & Hosting).</li>
+            </ul>
           </section>
           <section>
             <h2 className="text-base font-bold text-stone-900">Quyền của bạn đối với dữ liệu</h2>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Bell, Check, ChevronDown, ChevronUp, Mail, ShieldCheck } from "lucide-react";
 import { formatVND } from "../data/deals";
 import { createWatch } from "../data/watchApi";
@@ -38,6 +38,10 @@ export function WatchModal({
   targetPrice: propTargetPrice,
   sourceContext,
 }: WatchModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   const effectiveOrigin = opportunity?.originCode || initialOrigin || "HAN";
   const effectiveDestination = opportunity?.destinationCode || initialDestination || "BKK";
   const effectiveCurrentPrice = opportunity?.price || currentPrice || 3000000;
@@ -54,22 +58,77 @@ export function WatchModal({
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      setIsSuccess(false);
-      setError(null);
-      setTargetPrice(propTargetPrice || Math.round(effectiveCurrentPrice * 0.95));
-      setMaxStops(opportunity?.stops);
+    if (!isOpen) return;
 
-      // Try prefilling email if signed in
-      if (isSupabaseConfigured) {
-        supabase.auth.getSession().then(({ data }) => {
-          if (data.session?.user?.email) {
-            setEmail(data.session.user.email);
-          }
-        });
-      }
+    setIsSuccess(false);
+    setError(null);
+    setTargetPrice(propTargetPrice || Math.round(effectiveCurrentPrice * 0.95));
+    setMaxStops(opportunity?.stops);
+
+    // Try prefilling email if signed in
+    if (isSupabaseConfigured) {
+      supabase.auth.getSession().then(({ data }) => {
+        if (data.session?.user?.email) {
+          setEmail(data.session.user.email);
+        }
+      });
     }
-  }, [isOpen, opportunity, propTargetPrice, effectiveCurrentPrice]);
+
+    // REQ-A11Y-005: Modal focus trap & restore
+    const previouslyFocusedElement = document.activeElement as HTMLElement | null;
+
+    // Focus first focusable element inside modal
+    const timer = setTimeout(() => {
+      const emailInput = document.getElementById("watch-email") as HTMLElement | null;
+      if (emailInput) {
+        emailInput.focus();
+      } else {
+        modalRef.current?.focus();
+      }
+    }, 50);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+
+      if (e.key === "Tab" && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const focusable = Array.from(focusableElements).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+        if (focusable.length === 0) return;
+
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("keydown", handleKeyDown);
+      // Restore focus on close
+      if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === "function") {
+        previouslyFocusedElement.focus();
+      }
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -83,6 +142,12 @@ export function WatchModal({
     setSubmitting(true);
     setError(null);
 
+    // REQ-FEAT-005: Any-Date Watch with explicit horizon (default to 90 days from today if unconstrained)
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const horizon90DaysStr = new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10);
+    const dateFrom = opportunity?.departDate || todayStr;
+    const dateTo = opportunity?.returnDate || opportunity?.departDate || horizon90DaysStr;
+
     try {
       const res = await createWatch({
         originCode: effectiveOrigin,
@@ -92,8 +157,8 @@ export function WatchModal({
         currentPrice: effectiveCurrentPrice,
         targetPrice,
         maxStops,
-        dateFrom: opportunity?.departDate,
-        dateTo: opportunity?.returnDate || opportunity?.departDate,
+        dateFrom,
+        dateTo,
         email: email.trim(),
         frequency,
         channel: "email",
@@ -119,7 +184,6 @@ export function WatchModal({
       } else {
         setError(res.error || "Không thể tạo theo dõi lúc này. Vui lòng thử lại.");
       }
-
     } catch (err: any) {
       setError(err?.message || "Đã xảy ra lỗi khi tạo theo dõi.");
     } finally {
@@ -130,7 +194,9 @@ export function WatchModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in duration-150">
       <div
-        className="relative w-full max-w-lg rounded-xl border border-stone-200 bg-white p-6 shadow-2xl text-stone-900"
+        ref={modalRef}
+        tabIndex={-1}
+        className="relative w-full max-w-lg rounded-xl border border-stone-200 bg-white p-6 shadow-2xl text-stone-900 outline-none"
         role="dialog"
         aria-modal="true"
         aria-labelledby="watch-modal-title"

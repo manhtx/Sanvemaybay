@@ -687,7 +687,7 @@ export function mapPriceHistoryRows(rows: Array<{ date?: unknown; price?: unknow
     .filter((point) => point.date && Number.isFinite(point.price) && point.price > 0);
 }
 
-export type SearchStatus = "healthy" | "healthy_empty" | "degraded" | "provider_unavailable";
+export type SearchStatus = "healthy" | "healthy_empty" | "degraded" | "provider_unavailable" | "unmonitored" | "valid_zero";
 
 export interface SearchDealsResult {
   deals: Deal[];
@@ -756,7 +756,11 @@ export async function searchDealsWithStatus(params: {
 
   let status: SearchStatus = "healthy";
   if (filtered.length === 0) {
-    if (observedFailed && (feedFailed || liveFailed)) {
+    if (observedResult.status === "unmonitored") {
+      status = "unmonitored";
+    } else if (observedResult.status === "valid_zero") {
+      status = "valid_zero";
+    } else if (observedFailed && (feedFailed || liveFailed)) {
       status = "provider_unavailable";
     } else if (observedFailed) {
       status = "degraded";
