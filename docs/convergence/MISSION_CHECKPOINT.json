@@ -1,18 +1,11 @@
 {
   "mission_version": "2026-10-07",
   "current_branch": "antigravity/farely-v12-product-convergence",
-  "local_sha": "605e2726ba02b6ab9abe4dc99f71c1eec7bd6093",
-  "remote_sha": "605e2726ba02b6ab9abe4dc99f71c1eec7bd6093",
+  "local_sha": "76db041bf27b0be20961053490a2eb8184c82dce",
+  "remote_sha": "76db041bf27b0be20961053490a2eb8184c82dce",
   "dirty_files": [
     "M docs/convergence/PROOF_INDEX.json",
-    "M scripts/acceptance-matrix-a01-a34.node-test.mjs",
-    "M scripts/adversarial-corpus-a01-a24.node-test.mjs",
-    "M scripts/fast-flights-worker.py",
-    "M supabase/functions/alert-processor/index.ts",
-    "M supabase/functions/observed-fares/index.ts",
-    "M supabase/functions/refresh-observed-fares/index.ts",
-    "M  supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql",
-    "?? supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql"
+    "M supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql"
   ],
   "completed_requirement_ids": [
     "REQ-CONTROL-001",
@@ -302,5 +295,5 @@
   "next_exact_actions": [
     "Resolve open P0 requirements"
   ],
-  "timestamp": "2026-10-09T03:32:17.523Z"
+  "timestamp": "2026-10-09T03:38:00.659Z"
 }

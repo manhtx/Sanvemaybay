@@ -8,12 +8,14 @@
 
 BEGIN;
 
--- 1. Lossless physical flight segments storage (W2 / D12 / REQ-DOM-010)
+-- 1. Lossless physical flight segments & commercial attributes storage (W2 / D12 / REQ-DOM-010)
 ALTER TABLE public.flights
-  ADD COLUMN IF NOT EXISTS segments JSONB DEFAULT '[]'::jsonb;
+  ADD COLUMN IF NOT EXISTS segments JSONB DEFAULT '[]'::jsonb,
+  ADD COLUMN IF NOT EXISTS cabin TEXT DEFAULT 'ECONOMY';
 
 ALTER TABLE public.observed_fare_snapshots
-  ADD COLUMN IF NOT EXISTS segments JSONB DEFAULT '[]'::jsonb;
+  ADD COLUMN IF NOT EXISTS segments JSONB DEFAULT '[]'::jsonb,
+  ADD COLUMN IF NOT EXISTS cabin TEXT DEFAULT 'ECONOMY';
 
 -- 2. Atomic conditional outbox resolution preventing TOCTOU lease reclaim races (W5 / D21)
 CREATE OR REPLACE FUNCTION public.resolve_notification_outbox(
@@ -141,6 +143,89 @@ $$;
 
 REVOKE ALL ON FUNCTION public.rollback_observed_generation() FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.rollback_observed_generation() TO service_role;
+
+-- 3b. Safe generation publication with payload integrity check (W3 / S16 / S17)
+CREATE OR REPLACE FUNCTION public.publish_observed_generation(
+  p_generation_id UUID,
+  p_row_count INT,
+  p_published_at TIMESTAMPTZ DEFAULT NOW()
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_stored_count INT;
+  v_route_count INT;
+BEGIN
+  IF p_generation_id IS NULL THEN
+    RAISE EXCEPTION 'generation_id is required';
+  END IF;
+
+  -- S16 & A12: Check actual stored snapshot count and route diversity
+  SELECT count(*), count(DISTINCT origin_code || '-' || destination_code)
+  INTO v_stored_count, v_route_count
+  FROM public.observed_fare_snapshots
+  WHERE generation_id = p_generation_id;
+
+  IF v_stored_count = 0 THEN
+    RAISE EXCEPTION 'Cannot publish generation %: 0 stored snapshots found', p_generation_id;
+  END IF;
+
+  -- Verify client row count matches or correlates
+  IF p_row_count IS NOT NULL AND p_row_count > 0 AND v_stored_count < p_row_count / 2 THEN
+    RAISE EXCEPTION 'Stored snapshot count % is materially lower than client reported count %', v_stored_count, p_row_count;
+  END IF;
+
+  -- Incomplete coverage guard (A12: e.g. 14/100 routes or under 20 total snapshots)
+  IF v_stored_count < 20 OR v_route_count < 3 THEN
+    RAISE EXCEPTION 'Generation % rejected: incomplete coverage (% snapshots across % routes)', p_generation_id, v_stored_count, v_route_count;
+  END IF;
+
+  -- Atomic cutover: upsert singleton active generation pointer
+  INSERT INTO public.active_observed_generation (id, active_generation_id, row_count, published_at)
+  VALUES (1, p_generation_id, v_stored_count, p_published_at)
+  ON CONFLICT (id) DO UPDATE
+  SET
+    active_generation_id = EXCLUDED.active_generation_id,
+    row_count = EXCLUDED.row_count,
+    published_at = EXCLUDED.published_at;
+
+  -- Retire previous active generations
+  UPDATE public.observed_fare_generations
+  SET state = 'RETIRED'
+  WHERE id <> p_generation_id AND state = 'ACTIVE';
+
+  -- Record candidate generation state
+  INSERT INTO public.observed_fare_generations (id, row_count, state, published_at)
+  VALUES (p_generation_id, v_stored_count, 'ACTIVE', p_published_at)
+  ON CONFLICT (id) DO UPDATE
+  SET
+    row_count = EXCLUDED.row_count,
+    state = 'ACTIVE',
+    published_at = EXCLUDED.published_at;
+
+  -- Clean up generations older than 7 days
+  DELETE FROM public.observed_fare_snapshots
+  WHERE generation_id IN (
+    SELECT id FROM public.observed_fare_generations
+    WHERE published_at < NOW() - INTERVAL '7 days'
+      AND state = 'RETIRED'
+  );
+
+  RETURN jsonb_build_object(
+    'success', true,
+    'generation_id', p_generation_id,
+    'row_count', v_stored_count,
+    'route_count', v_route_count,
+    'published_at', p_published_at
+  );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.publish_observed_generation(UUID, INT, TIMESTAMPTZ) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.publish_observed_generation(UUID, INT, TIMESTAMPTZ) TO service_role;
 
 -- 4. Durable schedule occurrences lifecycle extension (W5 / D23)
 ALTER TABLE public.schedule_occurrences
