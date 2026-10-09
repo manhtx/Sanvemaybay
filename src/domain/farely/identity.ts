@@ -3,7 +3,8 @@
  * REQ-DOM-010, REQ-DOM-011, REQ-DOM-012, REQ-DOM-013, REQ-ID-001..006
  */
 
-import { TravelIntent } from './travelIntent';
+import type { TravelIntent } from './travelIntent.ts';
+export { calculateElapsedDurationMinutes } from './time.ts';
 
 /**
  * Pure SHA-256 Hex Digest Implementation

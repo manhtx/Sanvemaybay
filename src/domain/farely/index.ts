@@ -3,15 +3,15 @@
  * REQ-DOM-001 through REQ-DOM-015
  */
 
-export * from './locationScope';
-export * from './money';
-export * from './time';
-export * from './travelIntent';
-export * from './identity';
-export * from './priceScope';
-export * from './routeBest';
-export * from './comparator';
-export * from './costEpistemics';
-export * from './providerResult';
-export * from './watchCondition';
-export * from './savings';
+export * from './locationScope.ts';
+export * from './money.ts';
+export * from './time.ts';
+export * from './travelIntent.ts';
+export * from './identity.ts';
+export * from './priceScope.ts';
+export * from './routeBest.ts';
+export * from './comparator.ts';
+export * from './costEpistemics.ts';
+export * from './providerResult.ts';
+export * from './watchCondition.ts';
+export * from './savings.ts';

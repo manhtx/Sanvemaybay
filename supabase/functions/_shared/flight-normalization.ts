@@ -37,13 +37,20 @@ export function normalizeProviderOptions(options: ProviderFlightOption[], contex
   const providerSource = context.provider_source ?? "fast_flights_google";
   const linkKind = providerSource.includes("archive") ? "historical" : "indicative";
   for (const option of options) {
-    const firstLeg = option.flights?.[0];
+    const flights = option.flights || [];
+    const firstLeg = flights[0];
     const price = option.price;
     const totalDuration = option.total_duration;
     if (!firstLeg?.flight_number || !firstLeg.airline || price == null || totalDuration == null || !Number.isFinite(price) || !Number.isFinite(totalDuration)) continue;
     if (price <= 0 || totalDuration <= 0) continue;
-    const stops = option.layovers?.length ?? 0;
-    const itineraryKey = [context.origin_code, context.destination_code, context.outbound_date, context.return_date, firstLeg.flight_number.trim(), stops].join(":");
+    const stops = option.layovers?.length ?? (flights.length > 1 ? flights.length - 1 : 0);
+    const flightSeq = flights.map((f) => f.flight_number?.trim() || "").filter(Boolean).join(">");
+    const itineraryKey = [context.origin_code, context.destination_code, context.outbound_date, context.return_date, flightSeq || firstLeg.flight_number.trim(), stops].join(":");
+    const segments = flights.map((f, idx) => ({
+      segment_order: idx,
+      flight_number: f.flight_number?.trim() || "",
+      airline: f.airline || "",
+    }));
     unique.set(itineraryKey, {
       route_id: context.route_id,
       scan_run_id: context.scan_run_id,
@@ -61,6 +68,7 @@ export function normalizeProviderOptions(options: ProviderFlightOption[], contex
       airline_code: firstLeg.flight_number.trim().split(/\s+/)[0],
       flight_number: firstLeg.flight_number.trim(),
       stops,
+      segments,
       duration: `${Math.floor(totalDuration / 60)}h ${totalDuration % 60}m`,
       source: providerSource,
       link_kind: linkKind,

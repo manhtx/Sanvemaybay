@@ -39,7 +39,7 @@ Deno.serve(async (request) => {
     // 1. Stable cutoff + keyset pagination on (timestamp, id)
     while (true) {
       let query = service.from("flights")
-        .select("id,origin,origin_code,destination,destination_code,country,region,price,currency,date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,timestamp")
+        .select("id,origin,origin_code,destination,destination_code,country,region,price,currency,date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,timestamp,segments")
         .eq("link_kind", "indicative")
         .gte("timestamp", cutoff)
         .gte("date", today)
@@ -95,6 +95,7 @@ Deno.serve(async (request) => {
         airline_code: row.airline_code,
         flight_number: row.flight_number,
         stops: row.stops,
+        segments: row.segments ?? [],
         duration: row.duration,
         booking_url: row.booking_url,
         source: row.source,

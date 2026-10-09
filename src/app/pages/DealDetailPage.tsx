@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router";
 import {
   Plane,
@@ -13,7 +13,7 @@ import {
   ShieldCheck,
   Clock,
 } from "lucide-react";
-import { getDealById, getPriceHistory, getObservedFares, getFareObservations } from "../data/api";
+import { getDealById, getPriceHistory, getFareObservations, getRouteBest } from "../data/api";
 import { Deal, formatVND } from "../data/deals";
 import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import {
@@ -27,7 +27,7 @@ import { trackProductEvent } from "../lib/analytics";
 import { reportClientIssue } from "../lib/clientDiagnostics";
 import { WatchModal } from "../components/WatchModal";
 import { buildComparableCohort } from "../domain/opportunityCohort";
-import { createTravelIntent, selectRouteBest, type RouteOffer } from "../../domain/farely";
+import { buildFlexibleFareMatrix } from "../domain/flightIntelligence";
 
 const PriceHistoryChart = React.lazy(async () => ({
   default: (await import("../components/PriceHistoryChart")).PriceHistoryChart,
@@ -72,45 +72,18 @@ export function DealDetailPage() {
         setPriceHistory(history);
         setFareObservations(observations);
 
-        // Check if a cheaper eligible option exists for this travel intent across complete monitored universe (S07, C-11, A16)
+        // Check if a cheaper eligible option exists for this travel intent across complete monitored universe (S07, C-11, A16, D09)
         try {
-          const intent = createTravelIntent({
+          const routeBestResult = await getRouteBest({
             origin: data.fromCode,
             destination: data.toCode,
-            journeyType: data.returnDate ? "ROUND_TRIP" : "ONE_WAY",
-            outboundDate: data.departDate,
+            departDate: data.departDate,
             returnDate: data.returnDate || undefined,
-            cabin: "ECONOMY",
-            maxStops: data.stops === 0 ? 0 : undefined,
-          });
-
-          // Query candidate universe with complete TravelIntent filters and price_asc (F11, S07)
-          const candidatesPage = await getObservedFares({
-            origin: data.fromCode,
-            destination: data.toCode,
-            departDateFrom: data.departDate,
-            departDateTo: data.departDate,
-            returnDate: data.returnDate || undefined,
-            directOnly: data.stops === 0 ? true : undefined,
+            directOnly: data.stops === 0,
             maxStops: data.stops != null && data.stops >= 0 ? data.stops : undefined,
-            sort: "price_asc",
-            pageSize: 60,
           });
 
-          const candidateOffers: RouteOffer[] = (candidatesPage?.fares || []).map((f) => ({
-            id: f.id,
-            origin: f.fromCode,
-            destination: f.toCode,
-            departDate: f.departDate,
-            returnDate: f.returnDate,
-            airline: f.airline,
-            price: f.price,
-            stops: f.stops,
-            currency: f.currency,
-            cabin: "ECONOMY",
-          }));
-
-          const canonicalRouteBest = selectRouteBest(candidateOffers, intent);
+          const canonicalRouteBest = routeBestResult?.bestOffer;
           if (canonicalRouteBest && canonicalRouteBest.id !== data.id && canonicalRouteBest.price < data.price) {
             setCheaperAlternative({
               airline: canonicalRouteBest.airline,
@@ -129,6 +102,40 @@ export function DealDetailPage() {
     }
     loadDeal();
   }, [id]);
+
+  // REQ-FEAT-001, REQ-FEAT-002, REQ-FEAT-003, REQ-FEAT-004: Flexible Fare Matrix
+  const flexibleMatrix = useMemo(() => {
+    if (!deal || !deal.departDate) return [];
+    try {
+      const baseDate = new Date(deal.departDate);
+      if (isNaN(baseDate.getTime())) return [];
+      const departDates: string[] = [];
+      for (let offset = -2; offset <= 2; offset++) {
+        const d = new Date(baseDate);
+        d.setDate(d.getDate() + offset);
+        departDates.push(d.toISOString().slice(0, 10));
+      }
+      const returnDates: (string | undefined)[] = deal.returnDate
+        ? [-1, 0, 1].map((offset) => {
+            const rd = new Date(deal.returnDate!);
+            rd.setDate(rd.getDate() + offset);
+            return rd.toISOString().slice(0, 10);
+          })
+        : [undefined];
+
+      const mappedOffers = fareObservations.map((obs: any) => ({
+        departDate: obs.departDate || obs.depart_local_date || obs.depart_date,
+        returnDate: obs.returnDate || obs.return_local_date || obs.return_date || undefined,
+        price: Number(obs.price) || 0,
+        observedAt: obs.observedAt || obs.observed_at || new Date().toISOString(),
+        carrier: obs.airline || obs.airlineCode,
+      }));
+
+      return buildFlexibleFareMatrix(departDates, returnDates, mappedOffers);
+    } catch {
+      return [];
+    }
+  }, [deal, fareObservations]);
 
   if (loading) {
     return (
@@ -208,6 +215,7 @@ export function DealDetailPage() {
     },
     rawCohortObservations
   );
+
 
   const formattedDepartTime = new Date(deal.departDate).toLocaleDateString("vi-VN", {
     day: "2-digit",
@@ -420,6 +428,79 @@ export function DealDetailPage() {
             </div>
           </div>
         </section>
+
+        {/* ── FLEXIBLE FARE MATRIX (REQ-FEAT-001, REQ-FEAT-002, REQ-FEAT-003, REQ-FEAT-004) ── */}
+        {flexibleMatrix.length > 0 && (
+          <section className="rounded-xl border border-stone-200 bg-white p-6 space-y-4 shadow-sm" aria-labelledby="flexible-matrix-heading">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 id="flexible-matrix-heading" className="text-sm font-bold uppercase tracking-wider text-stone-900 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-blue-600" />
+                  Bảng giá ngày lân cận (Flexible Calendar)
+                </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  Mức giá quan sát thấp nhất theo ngày khởi hành ±2 ngày. Nhấp vào ô giá để xem chi tiết.
+                </p>
+              </div>
+              <span className="text-[11px] font-medium text-stone-500 bg-stone-50 border border-stone-200 px-2.5 py-1 rounded-md self-start sm:self-auto">
+                Dữ liệu quan sát · Không cam kết giữ chỗ
+              </span>
+            </div>
+
+            <div className="overflow-x-auto pb-2">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 min-w-[320px]">
+                {flexibleMatrix.map((cell) => {
+                  const isSelected = cell.departDate === deal.departDate && (cell.returnDate === deal.returnDate || (!cell.returnDate && !deal.returnDate));
+                  const formattedDate = new Date(cell.departDate).toLocaleDateString("vi-VN", {
+                    day: "2-digit",
+                    month: "2-digit",
+                  });
+                  const dayOfWeek = new Date(cell.departDate).toLocaleDateString("vi-VN", { weekday: "short" });
+
+                  return (
+                    <button
+                      type="button"
+                      key={`${cell.departDate}-${cell.returnDate ?? "oneway"}`}
+                      disabled={!cell.price}
+                      onClick={() => {
+                        if (cell.price) {
+                          setDeal((prev) => prev ? { ...prev, departDate: cell.departDate } : null);
+                        }
+                      }}
+                      className={`p-3 rounded-xl border text-left transition-all ${
+                        isSelected
+                          ? "border-blue-600 bg-blue-50/50 shadow-xs ring-1 ring-blue-600"
+                          : cell.price
+                          ? "border-stone-200 hover:border-blue-300 hover:bg-stone-50 cursor-pointer"
+                          : "border-stone-100 bg-stone-50/50 opacity-60 cursor-not-allowed"
+                      }`}
+                    >
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-stone-800">{dayOfWeek}, {formattedDate}</span>
+                        {isSelected && <span className="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-semibold">Đang xem</span>}
+                      </div>
+                      <div className="mt-2 text-sm font-bold font-mono text-emerald-700">
+                        {cell.price ? formatVND(cell.price) : "Chưa có dữ liệu"}
+                      </div>
+                      <div className="mt-1 flex items-center justify-between text-[10px] text-stone-500">
+                        <span>{cell.carrier || "Chưa rõ hãng"}</span>
+                        <span className={`px-1 rounded ${
+                          cell.freshness === "fresh_observed"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : cell.freshness === "observed"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-stone-100 text-stone-600"
+                        }`}>
+                          {cell.freshness === "fresh_observed" ? "Vừa quét" : cell.freshness === "observed" ? "Đã ghi nhận" : "Cũ"}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ── TRUE COST ANALYSIS ── */}
         <HiddenCostAnalyzer deal={deal} />

@@ -37,7 +37,7 @@ async function signAlertId(alertId: string, secret: string): Promise<string> {
     .join("");
 }
 
-async function sendEmail(alert: any, deal: any, eventType = "ENTERED"): Promise<string> {
+async function sendEmail(alert: any, deal: any, eventType = "ENTERED", outboxId?: string): Promise<string> {
   const key = Deno.env.get("RESEND_API_KEY");
   const publicSiteUrl = (Deno.env.get("PUBLIC_SITE_URL") ?? "").replace(/\/$/, "");
   const unsubscribeSecret = Deno.env.get("UNSUBSCRIBE_SECRET") ?? "";
@@ -55,9 +55,17 @@ async function sendEmail(alert: any, deal: any, eventType = "ENTERED"): Promise<
     headline = "Giá vé vừa quay trở lại mức bạn mong muốn";
   }
 
+  const reqHeaders: Record<string, string> = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${key}`,
+  };
+  if (outboxId) {
+    reqHeaders["Idempotency-Key"] = `farely_notif_${outboxId}`;
+  }
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    headers: reqHeaders,
     body: JSON.stringify({
       from: Deno.env.get("ALERT_FROM_EMAIL") ?? "Farely Alerts <alerts@resend.dev>",
       to: [alert.email],
@@ -224,16 +232,22 @@ Deno.serve(async (request) => {
         // Preserves active episode state; never false EXITED.
         conditionInput = "INSUFFICIENT_EVIDENCE";
       } else {
-        // Filter by max_stops if specified
+        // Filter by max_stops if specified (D19: unknown stops is never eligible under max_stops constraint)
         let stopFiltered = routeCandidates;
         if (alert.max_stops != null && alert.max_stops >= 0) {
-          stopFiltered = routeCandidates.filter((deal) => deal.stops == null || Number(deal.stops) <= Number(alert.max_stops));
+          stopFiltered = routeCandidates.filter((deal) => deal.stops != null && Number(deal.stops) <= Number(alert.max_stops));
         }
 
         const targetBudget = Number(alert.target_price ?? alert.budget ?? 0);
+        // D20: Require qualified coverage certificate (>= 3 candidates) before concluding CONFIRMED_NON_MATCH
+        const hasQualifiedCoverage = routeCandidates.length >= 3;
+
         if (stopFiltered.length === 0) {
-          // Route exists, but all flights violate stop constraint -> CONFIRMED_NON_MATCH
-          conditionInput = "CONFIRMED_NON_MATCH";
+          if (!hasQualifiedCoverage) {
+            conditionInput = "INSUFFICIENT_EVIDENCE";
+          } else {
+            conditionInput = "CONFIRMED_NON_MATCH";
+          }
           const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
           observedBestPrice = Number(sorted[0].price);
         } else {
@@ -243,6 +257,9 @@ Deno.serve(async (request) => {
             conditionInput = "MATCH";
             eligibleCandidates = sorted.filter((d) => Number(d.price) <= targetBudget);
             bestCandidate = eligibleCandidates[0];
+          } else if (!hasQualifiedCoverage) {
+            // Sparse candidate data cannot prove confirmed price exit without qualified coverage
+            conditionInput = "INSUFFICIENT_EVIDENCE";
           } else {
             conditionInput = "CONFIRMED_NON_MATCH";
           }
@@ -353,13 +370,13 @@ Deno.serve(async (request) => {
       try {
         let providerId = "";
         if (item.channel === "EMAIL") {
-          providerId = await sendEmail(alert, deal, event_type);
+          providerId = await sendEmail(alert, deal, event_type, item.id);
         } else if (item.channel === "TELEGRAM") {
           providerId = await sendTelegram(alert, deal);
         }
 
-        // S04 & S05: Atomic resolution RPC verifying lease claim_token and recording delivery attempt
-        const { error: resolveErr } = await supabase.rpc("resolve_notification_outbox", {
+        // S04 & S05 & D21: Atomic resolution RPC verifying lease claim_token and recording delivery attempt
+        const { data: resolveOk, error: resolveErr } = await supabase.rpc("resolve_notification_outbox", {
           p_id: item.id,
           p_claim_token: item.claim_token,
           p_status: "SENT",
@@ -369,11 +386,15 @@ Deno.serve(async (request) => {
           p_next_attempt_at: null,
         });
 
-        if (resolveErr) {
-          console.warn("resolve_notification_outbox warning:", resolveErr.message);
+        if (resolveErr || resolveOk !== true) {
+          console.warn("resolve_notification_outbox failed or stale:", resolveErr?.message ?? "returned false");
           failed++;
         } else {
           sent++;
+          const sentAtMs = Date.now();
+          const createdAtMs = item.created_at ? new Date(item.created_at).getTime() : sentAtMs;
+          const latencyMs = Math.max(0, sentAtMs - createdAtMs);
+          console.log(`[outbox_delivery_latency] outbox_id=${item.id} latency_ms=${latencyMs} created_at=${item.created_at} sent_at=${new Date(sentAtMs).toISOString()}`);
         }
       } catch (sendErr) {
         const errCode = safeOperationalErrorCode(sendErr, "delivery_failed");

@@ -101,13 +101,88 @@ test('S18, C-20, A13: Durable schedule occurrences and missed-run detection', as
     assert.equal(byLane['USER_DEMAND'].status, 'SCHEDULED', 'Future user demand occurrence must remain SCHEDULED');
     assert.equal(byLane['EXPLORATION'].status, 'SCHEDULED', 'Future exploration occurrence must remain SCHEDULED');
 
-    // 5. Verify security privileges: anon cannot execute detect_missed_schedule_occurrences
-    const permCheck = execSync(`
-      psql ${pgFlags} -d ${dbName} -t -A -c "
-        SELECT has_function_privilege('anon', 'public.detect_missed_schedule_occurrences(int)', 'EXECUTE');
-      "
-    `, { encoding: 'utf8' }).trim();
-    assert.equal(permCheck, 'f', 'anon role must NOT have EXECUTE privilege on detect_missed_schedule_occurrences');
+    // 5. End-to-end Producer -> Claim -> Heartbeat -> Completion loop (D23)
+    const seedActiveSql = `
+      INSERT INTO public.schedule_occurrences (id, job_name, lane, scheduled_for, expected_routes)
+      VALUES
+        ('11111111-1111-1111-1111-111111111111', 'crawl_baseline', 'BASELINE', now() - interval '2 minutes', '["SGN-HAN"]'::jsonb),
+        ('22222222-2222-2222-2222-222222222222', 'watch_urgent', 'WATCH_CRITICAL', now() - interval '1 minute', '["HAN-DAD"]'::jsonb),
+        ('33333333-3333-3333-3333-333333333333', 'worker_dead', 'BASELINE', now() - interval '5 minutes', '["DAD-CXR"]'::jsonb);
+    `;
+    execSync(`psql ${pgFlags} -d ${dbName}`, { input: seedActiveSql, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+
+    // Claim 1: Must prioritize WATCH_CRITICAL over earlier BASELINE
+    const claim1Raw = execSync(
+      `psql ${pgFlags} -d ${dbName} -t -A -c "SELECT public.claim_schedule_occurrence('worker_alpha', 120);"`,
+      { encoding: 'utf8' }
+    ).trim();
+    const claim1 = JSON.parse(claim1Raw);
+    assert.equal(claim1.id, '22222222-2222-2222-2222-222222222222', 'Must claim WATCH_CRITICAL before BASELINE');
+    assert.equal(claim1.claimed_by, 'worker_alpha');
+
+    // Heartbeat: worker_alpha extends lease
+    const hbResult = execSync(
+      `psql ${pgFlags} -d ${dbName} -t -A -c "SELECT public.heartbeat_schedule_occurrence('${claim1.id}'::uuid, 'worker_alpha', 300);"`,
+      { encoding: 'utf8' }
+    ).trim();
+    assert.equal(hbResult, 't', 'Active worker heartbeat must succeed');
+
+    // Complete: worker_alpha completes successfully
+    const compSql = `SELECT public.complete_schedule_occurrence('${claim1.id}'::uuid, 'worker_alpha', 'COMPLETED', '{"processed_routes": 1}'::jsonb, '{"coverage": "FULL"}'::jsonb);`;
+    const compResult = execSync(`psql ${pgFlags} -d ${dbName} -t -A`, { input: compSql, encoding: 'utf8' }).trim();
+    assert.equal(compResult, 't', 'Worker completion must succeed');
+
+
+
+    // 6. Watchdog worker heartbeat timeout detection (D23, A13)
+    // Worker claims task 3333... but lease expires
+    const expireClaimSql = `
+      UPDATE public.schedule_occurrences
+      SET status = 'RUNNING',
+          claimed_by = 'crashed_worker',
+          started_at = now() - interval '10 minutes',
+          heartbeat_at = now() - interval '10 minutes',
+          lease_until = now() - interval '5 minutes'
+      WHERE id = '33333333-3333-3333-3333-333333333333';
+    `;
+    execSync(`psql ${pgFlags} -d ${dbName}`, { input: expireClaimSql, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+
+    // Run watchdog: detect_missed_schedule_occurrences
+    const watchdogCount = execSync(
+      `psql ${pgFlags} -d ${dbName} -t -A -c "SELECT public.detect_missed_schedule_occurrences(900);"`,
+      { encoding: 'utf8' }
+    ).trim();
+    assert.ok(Number(watchdogCount) >= 1, 'Watchdog must detect expired worker lease');
+
+    const deadStatus = execSync(
+      `psql ${pgFlags} -d ${dbName} -t -A -c "SELECT status || '|' || failure_classification FROM public.schedule_occurrences WHERE id = '33333333-3333-3333-3333-333333333333';"`,
+      { encoding: 'utf8' }
+    ).trim();
+    assert.equal(deadStatus, 'RETRYABLE_FAILED|WORKER_HEARTBEAT_TIMEOUT', 'Crashed worker occurrence must transition to RETRYABLE_FAILED with WORKER_HEARTBEAT_TIMEOUT');
+
+    // Stale worker completion rejection: crashed_worker cannot complete after timeout
+    const staleComp = execSync(
+      `psql ${pgFlags} -d ${dbName} -t -A -c "SELECT public.complete_schedule_occurrence('33333333-3333-3333-3333-333333333333'::uuid, 'crashed_worker', 'COMPLETED');"`,
+      { encoding: 'utf8' }
+    ).trim();
+    assert.equal(staleComp, 'f', 'Stale worker must be rejected from completing expired occurrence');
+
+    // 7. Verify security privileges: anon cannot execute privileged scheduler RPCs
+    const funcs = [
+      'public.detect_missed_schedule_occurrences(int)',
+      'public.claim_schedule_occurrence(text,int)',
+      'public.heartbeat_schedule_occurrence(uuid,text,int)',
+      'public.complete_schedule_occurrence(uuid,text,text,jsonb,jsonb,text)'
+    ];
+    for (const fn of funcs) {
+      const permCheck = execSync(`
+        psql ${pgFlags} -d ${dbName} -t -A -c "
+          SELECT has_function_privilege('anon', '${fn}', 'EXECUTE');
+        "
+      `, { encoding: 'utf8' }).trim();
+      assert.equal(permCheck, 'f', `anon role must NOT have EXECUTE privilege on ${fn}`);
+    }
+
 
   } finally {
     try {

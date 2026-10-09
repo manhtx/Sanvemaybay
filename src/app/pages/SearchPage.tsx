@@ -365,17 +365,58 @@ export function SearchPage() {
               Nhà cung cấp dữ liệu tạm thời không phản hồi. Hiển thị dữ liệu snapshot gần nhất.
             </div>
           )}
+          {searchStatus === "degraded" && (
+            <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg">
+              Dữ liệu quan sát đang được làm mới hoặc chưa đủ dữ liệu đa nguồn.
+            </div>
+          )}
+          {searchStatus === "unmonitored" && (
+            <div className="text-xs text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-lg">
+              Chặng bay hoặc ngày tìm kiếm hiện chưa nằm trong phạm vi quét định kỳ.
+            </div>
+          )}
         </div>
 
         {/* Results List */}
         {results.length === 0 ? (
           <div className="rounded-xl border border-stone-200 bg-white p-12 text-center space-y-3 shadow-sm">
-            <p className="text-stone-700 font-semibold text-sm">
-              Không tìm thấy cơ hội nào phù hợp với bộ lọc hiện tại.
-            </p>
-            <p className="text-stone-500 text-xs max-w-md mx-auto">
-              Thử nâng mức ngân sách hoặc chọn khoảng ngày rộng hơn để hệ thống hiển thị nhiều chặng bay quan sát hơn.
-            </p>
+            {searchStatus === "unmonitored" ? (
+              <>
+                <p className="text-stone-700 font-semibold text-sm">
+                  Chặng bay này chưa nằm trong phạm vi quét tự động định kỳ của Farely.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Farely hiện ưu tiên quét sâu các tuyến bay trọng điểm. Bạn có thể tạo cảnh báo để hệ thống ưu tiên mở rộng theo dõi tuyến này.
+                </p>
+              </>
+            ) : searchStatus === "provider_unavailable" ? (
+              <>
+                <p className="text-stone-700 font-semibold text-sm">
+                  Dịch vụ quan sát vé tạm thời gián đoạn kết nối.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Hệ thống đang tự động thử lại. Vui lòng làm mới trang sau ít phút.
+                </p>
+              </>
+            ) : searchStatus === "valid_zero" ? (
+              <>
+                <p className="text-stone-700 font-semibold text-sm">
+                  Đã quét hoàn chỉnh nhưng không có chuyến bay nào trong mức ngân sách này.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Phạm vi ngày đã được quét đầy đủ. Hãy thử tăng mức ngân sách hoặc chuyển sang chế độ ngày linh hoạt.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-stone-700 font-semibold text-sm">
+                  Không tìm thấy cơ hội nào phù hợp với bộ lọc hiện tại.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Thử nâng mức ngân sách hoặc chọn khoảng ngày rộng hơn để hệ thống hiển thị nhiều chặng bay quan sát hơn.
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

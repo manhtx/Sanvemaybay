@@ -211,6 +211,26 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
     # 1 leg = direct flight (0 stops). 2 legs = 1 transit stop.
     stops = max(0, len(segments) - 1)
 
+    ordered_segments = []
+    for idx, seg in enumerate(segments):
+        from_code = airport_code(value(seg, "from_airport", {})) or (origin_code if idx == 0 else "")
+        to_code = airport_code(value(seg, "to_airport", {})) or (destination_code if idx == len(segments) - 1 else "")
+        s_dep_date, s_dep_time = date_time(value(seg, "departure", {}))
+        s_arr_date, s_arr_time = date_time(value(seg, "arrival", {}))
+        s_dur = int(value(seg, "duration", 0) or 0)
+        ordered_segments.append({
+            "segment_order": idx,
+            "origin_airport": from_code,
+            "destination_airport": to_code,
+            "departure_local": f"{s_dep_date}T{s_dep_time}" if s_dep_date and s_dep_time else None,
+            "arrival_local": f"{s_arr_date}T{s_arr_time}" if s_arr_date and s_arr_time else None,
+            "marketing_carrier": airline_code,
+            "duration_minutes": s_dur,
+        })
+
+    # Segment route distinguishes itineraries with different connections (D12, A09)
+    segment_route = ">".join(f"{s['origin_airport']}-{s['destination_airport']}" for s in ordered_segments) if ordered_segments else f"{origin_code}-{destination_code}"
+
     # F13: Physical itinerary key MUST NOT contain price (stable physical identity)
     itinerary_key = ":".join([
         origin_code,
@@ -219,6 +239,7 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
         returned or "",
         airline_code,
         depart_time,
+        segment_route,
         str(stops),
     ])
     source_url = google_source_url(origin_code, destination_code, outbound, returned)
@@ -237,6 +258,7 @@ def normalize(result: Any, route: dict[str, Any], outbound: str, returned: str, 
         "airline_code": airline_code,
         "flight_number": None,
         "stops": stops,
+        "segments": ordered_segments,
         "duration": f"{duration // 60}h {duration % 60}m",
         "booking_url": source_url,
         "source": "fast_flights_google",
@@ -462,6 +484,7 @@ def direct_ingest(
                 "timestamp": row["timestamp"], "route_id": route["id"], "scan_run_id": scan_id,
                 "link_kind": row["link_kind"], "affiliate_network": row["affiliate_network"],
                 "affiliate_url": row["affiliate_url"],
+                "segments": row.get("segments") or [],
             } for row in rows]
             flight_headers = {**service_headers, "Prefer": "resolution=merge-duplicates,return=representation"}
             request_json(

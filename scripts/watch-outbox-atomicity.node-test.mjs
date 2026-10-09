@@ -119,3 +119,25 @@ test("NODE OUTBOX-04: Outbox dispatch enforces bounded retries and dead letterin
     "Must use nextNotificationRetry for bounded exponential/step backoff"
   );
 });
+
+test("NODE OUTBOX-05 & D20 & D22: alert-processor enforces qualified coverage certificate and provider idempotency keys", () => {
+  const processorPath = path.resolve("supabase/functions/alert-processor/index.ts");
+  const code = fs.readFileSync(processorPath, "utf8");
+
+  // D20: Qualified coverage certificate
+  assert.ok(
+    code.includes("hasQualifiedCoverage = routeCandidates.length >= 3"),
+    "Must verify qualified coverage certificate (>= 3 candidates) before concluding CONFIRMED_NON_MATCH"
+  );
+  assert.ok(
+    code.includes('conditionInput = "INSUFFICIENT_EVIDENCE"'),
+    "Sparse candidate universe must produce INSUFFICIENT_EVIDENCE instead of false price exit"
+  );
+
+  // D22: Resend Idempotency-Key
+  assert.ok(
+    code.includes('reqHeaders["Idempotency-Key"] = `farely_notif_${outboxId}`'),
+    "Must include stable Idempotency-Key header on notification provider dispatch"
+  );
+});
+

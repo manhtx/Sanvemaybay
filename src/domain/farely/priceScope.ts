@@ -3,8 +3,8 @@
  * REQ-DOM-014
  */
 
-import { TravelIntent } from './travelIntent';
-import { LocationScope } from './locationScope';
+import type { TravelIntent } from './travelIntent.ts';
+import type { LocationScope } from './locationScope.ts';
 
 export interface PriceScopeOfferMatch {
   origin: string;

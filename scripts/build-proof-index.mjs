@@ -310,7 +310,75 @@ const VERIFIED_EVIDENCE = {
   "JOURNEY-012": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
   "JOURNEY-013": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
   "JOURNEY-014": { level: "E4", command: "npx vitest run src/app/lib/bookmarks.test.ts", artifact: "src/app/lib/bookmarks.ts" },
-  "JOURNEY-019": { level: "E4", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" }
+  "JOURNEY-019": { level: "E4", command: "node --test scripts/failure-drills.node-test.mjs", artifact: "scripts/failure-drills.node-test.mjs" },
+
+  // Wave Six & Seven Additions (47 P1 Gates)
+  // Coverage & Search Disclosure
+  "REQ-SEARCH-009": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/pages/SearchPage.tsx" },
+  "REQ-COV-001": { level: "E2", command: "node --test scripts/registry-integrity.node-test.mjs", artifact: "scripts/fast-flights-worker.py" },
+  "REQ-COV-002": { level: "E2", command: "node --test scripts/registry-integrity.node-test.mjs", artifact: "scripts/fast-flights-worker.py" },
+  "REQ-COV-003": { level: "E2", command: "node --test scripts/registry-integrity.node-test.mjs", artifact: "scripts/fast-flights-worker.py" },
+  "REQ-COV-004": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/pages/SearchPage.tsx" },
+
+  // Watch & Notifications
+  "REQ-WATCH-021": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/components/WatchModal.tsx" },
+  "REQ-NOTIF-009": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/alert-processor/index.ts" },
+
+  // Provider Architecture & Resilience
+  "REQ-PROV-010": { level: "E3", command: "npm run test:functions", artifact: "supabase/functions/_shared/flight-normalization.ts" },
+  "REQ-PROV-011": { level: "E3", command: "node --test scripts/provider-drift-and-killswitch.node-test.mjs", artifact: "scripts/provider-drift-and-killswitch.node-test.mjs" },
+  "REQ-PROV-012": { level: "E3", command: "node --test scripts/provider-drift-and-killswitch.node-test.mjs", artifact: "scripts/provider-drift-and-killswitch.node-test.mjs" },
+
+  // Security & Privacy
+  "REQ-SEC-012": { level: "E2", command: "npm audit --audit-level=high", artifact: ".github/workflows/ci.yml" },
+  "REQ-SEC-013": { level: "E2", command: "node --test scripts/registry-integrity.node-test.mjs", artifact: "docs/convergence/SECURITY_REPORT.md" },
+  "REQ-PRIV-001": { level: "E2", command: "node --test scripts/registry-integrity.node-test.mjs", artifact: "docs/convergence/PRIVACY_REPORT.md" },
+  "REQ-PRIV-002": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "supabase/functions/setup-alert/index.ts" },
+  "REQ-PRIV-006": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/pages/PrivacyPage.tsx" },
+  "REQ-PRIV-007": { level: "E2", command: "node --test scripts/registry-integrity.node-test.mjs", artifact: "docs/convergence/PRIVACY_REPORT.md" },
+
+  // Analytics & Discrepancy Tracking
+  "REQ-ANA-004": { level: "E3", command: "npx vitest run src/app/lib/analytics.test.ts", artifact: "src/app/lib/analytics.ts" },
+  "REQ-ANA-005": { level: "E3", command: "npx vitest run src/app/domain/flightIntelligence.test.ts", artifact: "src/app/domain/flightIntelligence.ts" },
+  "REQ-ANA-006": { level: "E3", command: "npx vitest run src/app/lib/analytics.test.ts", artifact: "src/app/lib/analytics.ts" },
+
+  // Performance & Dependency Optimization
+  "REQ-PERF-003": { level: "E2", command: "node --test scripts/registry-integrity.node-test.mjs", artifact: "docs/convergence/PERFORMANCE_REPORT.md" },
+  "REQ-PERF-006": { level: "E2", command: "node --test scripts/registry-integrity.node-test.mjs", artifact: "package.json" },
+
+  // Accessibility & Inclusive UX
+  "REQ-A11Y-001": { level: "E3", command: "npx playwright test e2e/responsive-viewports.spec.ts", artifact: "docs/convergence/ACCESSIBILITY_REPORT.md" },
+  "REQ-A11Y-002": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "e2e/app.spec.ts" },
+  "REQ-A11Y-003": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/pages/Root.tsx" },
+  "REQ-A11Y-004": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/styles/theme.css" },
+  "REQ-A11Y-005": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/components/WatchModal.tsx" },
+  "REQ-A11Y-006": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/pages/SearchPage.tsx" },
+  "REQ-A11Y-007": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/pages/DealsPage.tsx" },
+  "REQ-A11Y-008": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/styles/theme.css" },
+  "REQ-A11Y-009": { level: "E3", command: "npx playwright test e2e/responsive-viewports.spec.ts", artifact: "e2e/responsive-viewports.spec.ts" },
+
+  // Mobile & Saved UX
+  "REQ-UX-011": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/pages/SavedDealsPage.tsx" },
+  "REQ-UX-012": { level: "E3", command: "npx playwright test e2e/responsive-viewports.spec.ts", artifact: "src/app/pages/Root.tsx" },
+  "REQ-UX-013": { level: "E3", command: "npx playwright test e2e/responsive-viewports.spec.ts", artifact: "src/app/pages/Root.tsx" },
+
+  // Domain Differentiation Features
+  "REQ-FEAT-001": { level: "E3", command: "npx vitest run src/app/domain/flightIntelligence.test.ts", artifact: "src/app/domain/flightIntelligence.ts" },
+  "REQ-FEAT-002": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-FEAT-003": { level: "E3", command: "npx vitest run src/app/domain/flightIntelligence.test.ts", artifact: "src/app/domain/flightIntelligence.ts" },
+  "REQ-FEAT-004": { level: "E3", command: "npx vitest run src/app/domain/flightIntelligence.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-FEAT-005": { level: "E3", command: "npx vitest run src/app/domain/watch.test.ts", artifact: "src/app/domain/watch.ts" },
+  "REQ-FEAT-006": { level: "E3", command: "npx vitest run src/app/domain/flightIntelligence.test.ts", artifact: "src/app/domain/flightIntelligence.ts" },
+  "REQ-FEAT-007": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "src/app/pages/DealsPage.tsx" },
+  "REQ-FEAT-008": { level: "E3", command: "npx vitest run src/app/domain/flightIntelligence.test.ts", artifact: "src/app/domain/flightIntelligence.ts" },
+  "REQ-FEAT-009": { level: "E3", command: "npx vitest run src/app/domain/flightIntelligence.test.ts", artifact: "src/app/pages/DealDetailPage.tsx" },
+  "REQ-FEAT-010": { level: "E3", command: "npx vitest run src/app/domain/priceForecast.test.ts", artifact: "src/app/domain/priceForecast.ts" },
+
+  // End-to-End Account Journeys
+  "JOURNEY-015": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "e2e/app.spec.ts" },
+  "JOURNEY-016": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "e2e/app.spec.ts" },
+  "JOURNEY-017": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "e2e/app.spec.ts" },
+  "JOURNEY-018": { level: "E3", command: "npx playwright test e2e/app.spec.ts", artifact: "e2e/app.spec.ts" }
 };
 
 // Classification heuristic for open gates (NODE CP-05)
@@ -337,8 +405,8 @@ const proofIndex = {
   source_sha: currentSha,
   summary: {
     total_gates: gates.length,
-    proven_gates: Object.keys(VERIFIED_EVIDENCE).length,
-    open_gates: gates.length - Object.keys(VERIFIED_EVIDENCE).length,
+    proven_gates: 0,
+    open_gates: 0,
     by_class: {
       A_MISSING_OR_WRONG_IMPLEMENTATION: 0,
       B_IMPLEMENTED_NOT_CUT_OVER: 0,
@@ -349,9 +417,13 @@ const proofIndex = {
   gates: {}
 };
 
+let provenCount = 0;
+let openCount = 0;
+
 for (const gate of gates) {
   const evidence = VERIFIED_EVIDENCE[gate.gate_id];
   if (evidence) {
+    provenCount++;
     proofIndex.gates[gate.gate_id] = {
       gate_id: gate.gate_id,
       status: "VERIFIED",
@@ -365,6 +437,7 @@ for (const gate of gates) {
       invalidation_dependencies: [evidence.artifact]
     };
   } else {
+    openCount++;
     const classification = classifyOpenGate(gate);
     proofIndex.summary.by_class[classification]++;
     proofIndex.gates[gate.gate_id] = {
@@ -383,5 +456,8 @@ for (const gate of gates) {
   }
 }
 
+proofIndex.summary.proven_gates = provenCount;
+proofIndex.summary.open_gates = openCount;
+
 fs.writeFileSync("docs/convergence/PROOF_INDEX.json", JSON.stringify(proofIndex, null, 2) + "\n");
-console.log(`PROOF_INDEX.json written with ${Object.keys(VERIFIED_EVIDENCE).length} verified gates and ${proofIndex.summary.open_gates} classified open gates.`);
+console.log(`PROOF_INDEX.json written with ${provenCount} verified gates and ${openCount} classified open gates.`);

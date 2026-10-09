@@ -67,3 +67,32 @@ export function calendarDaysBetween(fromDateStr: string, toDateStr: string): num
   const db = Date.UTC(b.year, b.month - 1, b.day);
   return Math.round((db - da) / (1000 * 60 * 60 * 24));
 }
+
+/**
+ * Calculates elapsed flight duration in minutes between local departure and arrival times.
+ * Invariant A11 / NC-007: When timezones are unknown (null/undefined), exact elapsed duration
+ * cannot be safely determined and MUST NOT be fabricated. Returns null.
+ */
+export function calculateElapsedDurationMinutes(
+  departLocalIso: string,
+  arrivalLocalIso: string,
+  originTimezone?: string | null,
+  destinationTimezone?: string | null
+): number | null {
+  if (!originTimezone || !destinationTimezone) {
+    return null;
+  }
+  try {
+    const dep = new Date(departLocalIso);
+    const arr = new Date(arrivalLocalIso);
+    if (isNaN(dep.getTime()) || isNaN(arr.getTime())) {
+      return null;
+    }
+    const diffMs = arr.getTime() - dep.getTime();
+    if (diffMs < 0) return null;
+    return Math.round(diffMs / (60 * 1000));
+  } catch {
+    return null;
+  }
+}
+

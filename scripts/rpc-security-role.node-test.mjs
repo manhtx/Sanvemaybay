@@ -70,3 +70,39 @@ test('A06 & S01: Privileged worker RPC prepare_account_deletion denies anon exec
   assert.notEqual(res.status, 200, "prepare_account_deletion must never return 200 for anon key");
   assert.ok([401, 403, 404].includes(res.status), `Expected 401/403/404, got ${res.status}`);
 });
+
+test('A06 & S01: Privileged worker RPC rollback_observed_generation denies anon execution', async () => {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/rollback_observed_generation`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": ANON_KEY,
+      "Authorization": `Bearer ${ANON_KEY}`
+    },
+    body: JSON.stringify({})
+  });
+
+  assert.notEqual(res.status, 200, "rollback_observed_generation must never return 200 for anon key");
+  assert.ok([401, 403, 404].includes(res.status), `Expected 401/403/404, got ${res.status}`);
+});
+
+test('A06 & S01: Privileged worker RPC resolve_notification_outbox denies anon execution', async () => {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/resolve_notification_outbox`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": ANON_KEY,
+      "Authorization": `Bearer ${ANON_KEY}`
+    },
+    body: JSON.stringify({
+      p_id: "00000000-0000-0000-0000-000000000000",
+      p_claim_token: "test",
+      p_status: "SENT",
+      p_provider_id: "test"
+    })
+  });
+
+  assert.notEqual(res.status, 200, "resolve_notification_outbox must never return 200 for anon key");
+  assert.ok([401, 403, 404].includes(res.status), `Expected 401/403/404, got ${res.status}`);
+});
+

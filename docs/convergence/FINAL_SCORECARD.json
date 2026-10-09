@@ -1,13 +1,13 @@
 {
   "product": "Farely (Sanvemaybay)",
   "production_url": "https://farely.manhtx.com",
-  "mission_state": "TARGET_PROVEN",
-  "terminal_state": "TARGET_PROVEN",
+  "mission_state": "EXECUTING",
+  "terminal_state": "EXECUTING",
   "mission_contract_sha256": "59d871a905eb0bffaa392e10fa2c30dc91628ae3f887f95d66e55dcb408bb620",
   "vector_state": {
-    "engineering_state": "PROVEN",
-    "runtime_state": "SOAK_PROVEN",
-    "product_state": "PUBLIC_BETA_READY",
+    "engineering_state": "EXECUTING",
+    "runtime_state": "EXECUTING",
+    "product_state": "EXECUTING",
     "market_state": "COLLECTING_EVIDENCE",
     "compliance_state": "CAPABILITY_PROVEN"
   },
@@ -32,13 +32,13 @@
     "required_security_proven": true,
     "required_dr_proven": true,
     "required_product_journeys_proven": true,
-    "runtime_soak_requirement_proven": true,
+    "runtime_soak_requirement_proven": false,
     "final_independent_verification_complete": true,
-    "exact_final_release_state_reconciled": true
+    "exact_final_release_state_reconciled": false
   },
   "market_outcome_evidence": "COLLECTING_EVIDENCE",
-  "timestamp": "2026-10-08T10:29:48.756Z",
-  "source_sha": "3cca0e4b624521d1fe50c74728604458dbcc5962",
+  "timestamp": "2026-10-09T04:17:37.857Z",
+  "source_sha": "86f3538511a4d7118bc3760a25e3fdca409de25b",
   "total_gates": 267,
   "proven_gates": 267,
   "unresolved_p0": 0,
