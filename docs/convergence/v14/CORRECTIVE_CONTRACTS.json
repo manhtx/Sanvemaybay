@@ -1,0 +1,146 @@
+{
+  "version": "14.0.0",
+  "contract_id": "FARELY-V14-CORRECTIVE-CONTRACTS",
+  "contracts": [
+    {
+      "id": "V14-C01",
+      "title": "Authority Triad Separation",
+      "root_cause": "Requirement, implementation, and evidence authorities were previously conflated.",
+      "locked_solution": "Separate requirements in MASTER_ACCEPTANCE_REGISTRY, implementation in src/scripts, and evidence in PROOF_INDEX derived by admission controller.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C02",
+      "title": "Executable Exit Code Admission",
+      "root_cause": "Historical proof generator assigned exit_code: 0 without dynamic command execution.",
+      "locked_solution": "build-proof-index executes every unique probe via child_process, asserting actual exit code 0.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C03",
+      "title": "Evidence Level Rigor (Anti-Underlevel)",
+      "root_cause": "E1 unit tests were previously used to claim high-level database or staging gates.",
+      "locked_solution": "Evidence admission controller rejects any proof where achieved level < required level.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C04",
+      "title": "Anti-Shrinkage Registry Invariant",
+      "root_cause": "Acceptance criteria or priority could be weakened to pass gates.",
+      "locked_solution": "Immutable check asserts 267 total gates, 192 P0, 74 P1, and criteria length >= canonical.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C05",
+      "title": "Epistemic Honesty for Unknown Cost Dimensions",
+      "root_cause": "Unknown mandatory baggage, seat, or airport fees were assumed zero.",
+      "locked_solution": "Cost epistemics engine emits UNKNOWN state and prevents false lowest-ever claims.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C06",
+      "title": "TravelIntent V2 Parameter Scoping",
+      "root_cause": "Return date was conflated with departure window end; passenger composition defaulted to 1.",
+      "locked_solution": "TravelIntent V2 separates departure window, return window, trip length, and passenger mix.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C07",
+      "title": "Single Location Catalog Authority",
+      "root_cause": "Duplicate hardcoded airport lists caused Vietnam vs international route drift.",
+      "locked_solution": "locationCatalog.ts serves as single authoritative metadata source for all airports and metros.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C08",
+      "title": "RouteBest Mathematical Minimum Precedence",
+      "root_cause": "Higher Deal Score could beat a mathematically cheaper eligible offer.",
+      "locked_solution": "RouteBest strictly orders by normalized price first; Deal Score cannot override price truth.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C09",
+      "title": "Atomic Outbox Queue Claiming",
+      "root_cause": "Concurrent worker processes could race and send duplicate notifications.",
+      "locked_solution": "claim_notification_outbox RPC uses FOR UPDATE SKIP LOCKED with worker lease expiry.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C10",
+      "title": "Watch Condition Episode State Machine",
+      "root_cause": "Watch evaluations caused state flapping between ENTER and EXIT.",
+      "locked_solution": "Durable episodes: ENTERED -> STILL_INSIDE -> MATERIAL_IMPROVEMENT -> EXITED -> REENTERED.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C11",
+      "title": "Multi-Tenant RLS & Security Definer Hardening",
+      "root_cause": "Public RPC execution and missing search_path in SECURITY DEFINER functions.",
+      "locked_solution": "Revoke execution grants from PUBLIC/anon/authenticated on worker RPCs; set search_path=public.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C12",
+      "title": "Disaster Recovery Live Database Replay",
+      "root_cause": "Backups and migrations were never tested through live dump and restore drills.",
+      "locked_solution": "Automated DR drill dumps, restores, and validates sha256 checksums on live PostgreSQL.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C13",
+      "title": "Durable Cron Scheduler Missed Occurrence Recovery",
+      "root_cause": "Missed cron runs were lost without recovery mechanism.",
+      "locked_solution": "schedule_occurrences tracks durable intervals and triggers catch-up execution.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C14",
+      "title": "Multi-Viewport Visual Acceptance Verification",
+      "root_cause": "Visual claims lacked programmatic multi-viewport screenshot verification.",
+      "locked_solution": "capture-visual-acceptance --verify validates 42 screenshots across 6 viewports and 7 screens.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C15",
+      "title": "Authoritative Keyset Pagination in Worker & API",
+      "root_cause": "Offset pagination or score limits (.limit(5000)) caused dropped deals.",
+      "locked_solution": "Deterministic keyset pagination using primary key tie-breakers ensures 0 dropped rows.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C16",
+      "title": "Provider Contract Drift & Claim Killswitch",
+      "root_cause": "Provider schema changes could corrupt cached observations.",
+      "locked_solution": "Quarantine corrupt rows; killswitch collapses strong claims when evidence drops below thresholds.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C17",
+      "title": "Account Deletion Privacy Cascade",
+      "root_cause": "Raw user IDs were retained in audit logs during GDPR account deletion.",
+      "locked_solution": "prepare_account_deletion RPC wipes all private tables and logs one-way HMAC-SHA256 identifier.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C18",
+      "title": "Core Web Vitals Privacy-Bounded Reporting",
+      "root_cause": "Analytics could inadvertently log high-cardinality PII or URL query parameters.",
+      "locked_solution": "reportWebVitals strips URL query params and enforces allow-listed metric types.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C19",
+      "title": "Authoritative Full-Universe Search Pre-Filter",
+      "root_cause": "Client search filtered and deduplicated only the visible first page (120 rows).",
+      "locked_solution": "Server executes filtering, comparability, and sorting across full dataset BEFORE pagination.",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "V14-C20",
+      "title": "Live PostgreSQL Migration Replay Suite",
+      "root_cause": "Database contracts relied on mock databases or static SQL file inspection.",
+      "locked_solution": "database-architecture-contract executes live migration replay of 43 migrations against PostgreSQL.",
+      "status": "RESOLVED"
+    }
+  ]
+}
