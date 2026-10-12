@@ -85,8 +85,24 @@ export function getGateProbeMapping(gateId) {
     };
   }
 
+  // 4b. Price Truth, Cohorts & Comparator (REQ-COMP-*, REQ-PRICE-*, REQ-ALT-*)
+  if (gateId.startsWith('REQ-COMP-') || gateId.startsWith('REQ-PRICE-') || gateId.startsWith('REQ-ALT-')) {
+    return {
+      command_probe: 'npx vitest run src/domain/farely/truthKernelV2.test.ts',
+      artifact: 'src/domain/farely/truthKernelV2.test.ts',
+      runner: 'vitest'
+    };
+  }
+
   // 5. Watch & Notification Subsystems
   if (gateId.startsWith('REQ-WATCH-') || gateId.startsWith('REQ-NOTIF-')) {
+    if (['REQ-NOTIF-001', 'REQ-NOTIF-002', 'REQ-NOTIF-003', 'REQ-NOTIF-008'].includes(gateId)) {
+      return {
+        command_probe: 'node --test scripts/database-architecture-contract.node-test.mjs',
+        artifact: 'scripts/database-architecture-contract.node-test.mjs',
+        runner: 'node'
+      };
+    }
     return {
       command_probe: 'node --test scripts/watch-outbox-atomicity.node-test.mjs',
       artifact: 'scripts/watch-outbox-atomicity.node-test.mjs',
@@ -132,7 +148,48 @@ export function getGateProbeMapping(gateId) {
     };
   }
 
-  // 10. Default fallback to registry integrity
+  // 10. Database Architecture
+  if (gateId.startsWith('REQ-DATA-')) {
+    return {
+      command_probe: 'node --test scripts/database-architecture-contract.node-test.mjs',
+      artifact: 'scripts/database-architecture-contract.node-test.mjs',
+      runner: 'node'
+    };
+  }
+
+  // 11. UX Design & Visual Evidence
+  if (gateId.startsWith('REQ-UX-')) {
+    if (['REQ-UX-014', 'REQ-UX-015', 'REQ-UX-016'].includes(gateId)) {
+      return {
+        command_probe: 'node scripts/capture-visual-acceptance.mjs',
+        artifact: 'docs/convergence/screenshots/deals_1920.png',
+        runner: 'playwright'
+      };
+    }
+    return {
+      command_probe: 'npx playwright test e2e/app.spec.ts',
+      artifact: 'e2e/app.spec.ts',
+      runner: 'playwright'
+    };
+  }
+
+  // 12. Release Verification & Parity
+  if (gateId === 'REQ-REL-004' || gateId === 'REQ-REL-007') {
+    return {
+      command_probe: 'node scripts/verify-production-live.mjs',
+      artifact: 'scripts/verify-production-live.mjs',
+      runner: 'playwright'
+    };
+  }
+  if (gateId === 'REQ-REL-005') {
+    return {
+      command_probe: 'node --test scripts/function-parity.node-test.mjs',
+      artifact: 'scripts/function-parity.node-test.mjs',
+      runner: 'node'
+    };
+  }
+
+  // 13. Default fallback to registry integrity
   return {
     command_probe: 'node --test scripts/registry-integrity.node-test.mjs',
     artifact: 'scripts/registry-integrity.node-test.mjs',

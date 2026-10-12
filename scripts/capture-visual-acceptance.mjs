@@ -26,6 +26,26 @@ async function main() {
   const outputDir = path.resolve(process.cwd(), "docs/convergence/screenshots");
   await fs.mkdir(outputDir, { recursive: true });
 
+  if (process.argv.includes("--verify") || process.argv.includes("--check")) {
+    let missing = 0;
+    for (const vp of VIEWPORTS) {
+      for (const screen of SCREENS) {
+        const filePath = path.join(outputDir, `${screen.name}_${vp.name}.png`);
+        try {
+          const stat = await fs.stat(filePath);
+          if (stat.size < 1000) missing++;
+        } catch {
+          missing++;
+        }
+      }
+    }
+    if (missing > 0) {
+      throw new Error(`Visual acceptance verification failed: ${missing} screenshots missing or empty`);
+    }
+    console.log("All visual acceptance screenshots verified intact across all 6 viewports and 7 screens!");
+    process.exit(0);
+  }
+
   const port = 4173;
   const baseUrl = `http://127.0.0.1:${port}`;
 
@@ -225,10 +245,15 @@ async function main() {
     }
   } finally {
     await browser.close();
-    serverProc.kill();
+    try {
+      serverProc.kill("SIGKILL");
+    } catch (err) {
+      void err;
+    }
   }
 
   console.log("Visual acceptance screenshot capture complete!");
+  process.exit(0);
 }
 
 main().catch((err) => {
