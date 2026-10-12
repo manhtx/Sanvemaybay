@@ -200,6 +200,7 @@ test('A24: Terminal evaluator admits legitimate evidence when all conditions hol
       status: 'VERIFIED',
       source_sha: currentSha,
       exit_code: 0,
+      achieved_evidence_level: g.required_evidence_level,
       executed_at: new Date().toISOString()
     });
   }
@@ -228,4 +229,124 @@ test('A24: Terminal evaluator admits legitimate evidence when all conditions hol
   assert.equal(evalResult.boolean_evaluations.exact_final_release_state_reconciled, true);
   assert.equal(evalResult.all_conditions_hold, true, 'All 22 predicates must hold simultaneously');
   assert.equal(evalResult.terminal_state, 'TARGET_PROVEN', 'Must admit TARGET_PROVEN when all legitimate receipts hold');
+});
+
+test('C02: Terminal evaluator rejects receipt with missing executable exit code (Section 07)', () => {
+  const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
+  const validRegistry = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
+  const currentSha = evaluateAdmission().evaluated_proof_index.source_sha;
+
+  const receiptsOverride = new Map();
+  for (const g of validRegistry.gates) {
+    receiptsOverride.set(g.gate_id, {
+      gate_id: g.gate_id,
+      status: 'VERIFIED',
+      source_sha: currentSha,
+      exit_code: 0,
+      achieved_evidence_level: g.required_evidence_level,
+      executed_at: new Date().toISOString()
+    });
+  }
+
+  // Sabotage: remove exit_code on REQ-PRICE-001 (critical P0 gate)
+  receiptsOverride.set('REQ-PRICE-001', {
+    gate_id: 'REQ-PRICE-001',
+    status: 'VERIFIED',
+    source_sha: currentSha,
+    // exit_code is missing!
+    achieved_evidence_level: 'E3',
+    executed_at: new Date().toISOString()
+  });
+
+  const evalResult = evaluateAdmission({
+    registryOverride: validRegistry,
+    receiptsOverride,
+    overrideProductionSha: currentSha,
+    soakReceipts: { status: 'COMPLETED', completed_cycles: 24, elapsed_hours: 24, source_sha: currentSha }
+  });
+
+  assert.notEqual(evalResult.terminal_state, 'TARGET_PROVEN', 'Must reject proof with missing exit_code');
+  assert.ok(evalResult.boolean_evaluations.unresolved_p0 > 0, 'Must have unresolved P0 on missing exit_code');
+  assert.equal(evalResult.evaluated_proof_index.gates['REQ-PRICE-001'].status, 'MISSING_EXIT_CODE');
+});
+
+test('C02_FAIL: Terminal evaluator rejects receipt with nonzero executable exit code (Section 07)', () => {
+  const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
+  const validRegistry = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
+  const currentSha = evaluateAdmission().evaluated_proof_index.source_sha;
+
+  const receiptsOverride = new Map();
+  for (const g of validRegistry.gates) {
+    receiptsOverride.set(g.gate_id, {
+      gate_id: g.gate_id,
+      status: 'VERIFIED',
+      source_sha: currentSha,
+      exit_code: 0,
+      achieved_evidence_level: g.required_evidence_level,
+      executed_at: new Date().toISOString()
+    });
+  }
+
+  // Sabotage: non-zero exit_code (1)
+  receiptsOverride.set('REQ-PRICE-001', {
+    gate_id: 'REQ-PRICE-001',
+    status: 'VERIFIED',
+    source_sha: currentSha,
+    exit_code: 1,
+    achieved_evidence_level: 'E3',
+    executed_at: new Date().toISOString()
+  });
+
+  const evalResult = evaluateAdmission({
+    registryOverride: validRegistry,
+    receiptsOverride,
+    overrideProductionSha: currentSha,
+    soakReceipts: { status: 'COMPLETED', completed_cycles: 24, elapsed_hours: 24, source_sha: currentSha }
+  });
+
+  assert.notEqual(evalResult.terminal_state, 'TARGET_PROVEN', 'Must reject proof with nonzero exit_code');
+  assert.ok(evalResult.boolean_evaluations.unresolved_p0 > 0, 'Must have unresolved P0 on nonzero exit_code');
+});
+
+test('C03: Terminal evaluator rejects under-level proof admission (Section 07)', () => {
+  const masterPath = path.resolve('docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json');
+  const validRegistry = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
+  const currentSha = evaluateAdmission().evaluated_proof_index.source_sha;
+
+  const receiptsOverride = new Map();
+  for (const g of validRegistry.gates) {
+    receiptsOverride.set(g.gate_id, {
+      gate_id: g.gate_id,
+      status: 'VERIFIED',
+      source_sha: currentSha,
+      exit_code: 0,
+      achieved_evidence_level: g.required_evidence_level,
+      executed_at: new Date().toISOString()
+    });
+  }
+
+  // Find a gate requiring E5 (staging verification)
+  const e5Gate = validRegistry.gates.find((g) => g.required_evidence_level === 'E5' && g.priority === 'P0');
+  assert.ok(e5Gate, 'Must have an E5 gate');
+
+  // Sabotage: supply E1 unit test proof for an E5 gate
+  receiptsOverride.set(e5Gate.gate_id, {
+    gate_id: e5Gate.gate_id,
+    status: 'VERIFIED',
+    source_sha: currentSha,
+    exit_code: 0,
+    achieved_evidence_level: 'E1', // Under-level!
+    executed_at: new Date().toISOString()
+  });
+
+  const evalResult = evaluateAdmission({
+    registryOverride: validRegistry,
+    receiptsOverride,
+    overrideProductionSha: currentSha,
+    soakReceipts: { status: 'COMPLETED', completed_cycles: 24, elapsed_hours: 24, source_sha: currentSha }
+  });
+
+  assert.notEqual(evalResult.terminal_state, 'TARGET_PROVEN', 'A receipt with achieved E1 must not close a gate requiring E5');
+  assert.ok(evalResult.boolean_evaluations.unresolved_p0 > 0, 'Under-level gate must remain unresolved');
+  assert.equal(evalResult.evaluated_proof_index.gates[e5Gate.gate_id].status, 'INSUFFICIENT_EVIDENCE_LEVEL');
 });

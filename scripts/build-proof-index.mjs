@@ -420,20 +420,47 @@ const proofIndex = {
 let provenCount = 0;
 let openCount = 0;
 
+const evidenceLevelRank = { E0: 0, E1: 1, E2: 2, E3: 3, E4: 4, E5: 5, E6: 6, E7: 7 };
+
 for (const gate of gates) {
   const evidence = VERIFIED_EVIDENCE[gate.gate_id];
-  if (evidence) {
+  const requiredLevel = gate.required_evidence_level || "E2";
+  const reqRank = evidenceLevelRank[requiredLevel] ?? 2;
+  const achievedLevel = evidence?.level || "E0";
+  const achievedRank = evidenceLevelRank[achievedLevel] ?? 0;
+  const isSufficient = achievedRank >= reqRank;
+
+  if (evidence && isSufficient) {
     provenCount++;
     proofIndex.gates[gate.gate_id] = {
       gate_id: gate.gate_id,
       status: "VERIFIED",
       priority: gate.priority,
-      required_evidence_level: gate.required_evidence_level || "E2",
+      required_evidence_level: requiredLevel,
       achieved_evidence_level: evidence.level,
       command_probe: evidence.command,
       artifact: evidence.artifact,
       source_sha: currentSha,
+      exit_code: 0,
       verified_at: now,
+      invalidation_dependencies: [evidence.artifact]
+    };
+  } else if (evidence) {
+    openCount++;
+    const classification = "UNDER_LEVEL_EVIDENCE";
+    proofIndex.summary.by_class[classification] = (proofIndex.summary.by_class[classification] || 0) + 1;
+    proofIndex.gates[gate.gate_id] = {
+      gate_id: gate.gate_id,
+      status: "INSUFFICIENT_EVIDENCE_LEVEL",
+      priority: gate.priority,
+      classification,
+      required_evidence_level: requiredLevel,
+      achieved_evidence_level: evidence.level,
+      command_probe: evidence.command,
+      artifact: evidence.artifact,
+      source_sha: currentSha,
+      exit_code: 0,
+      verified_at: null,
       invalidation_dependencies: [evidence.artifact]
     };
   } else {
@@ -445,11 +472,12 @@ for (const gate of gates) {
       status: "IN_PROGRESS",
       priority: gate.priority,
       classification,
-      required_evidence_level: gate.required_evidence_level || "E2",
+      required_evidence_level: requiredLevel,
       achieved_evidence_level: "E0",
       command_probe: null,
       artifact: null,
       source_sha: null,
+      exit_code: null,
       verified_at: null,
       invalidation_dependencies: []
     };

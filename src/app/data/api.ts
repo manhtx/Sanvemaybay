@@ -632,7 +632,7 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
       .select("observed_at, price, depart_local_date")
       .eq("origin_airport", fromCode)
       .eq("destination_airport", toCode)
-      .order("observed_at", { ascending: true })
+      .order("observed_at", { ascending: false })
       .limit(180);
 
     if (!canonicalError && canonicalData && canonicalData.length > 0) {
@@ -642,7 +642,7 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
           price: Number(d.price),
         }))
         .filter((p: PricePoint) => p.date && Number.isFinite(p.price) && p.price > 0);
-      if (points.length > 0) return points;
+      if (points.length > 0) return points.sort((a, b) => a.date.localeCompare(b.date));
     }
 
     // 2. Fallback to legacy price_history with deduplication
@@ -651,11 +651,11 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
       .select("date, price")
       .eq("from_code", fromCode)
       .eq("to_code", toCode)
-      .order("date", { ascending: true })
+      .order("date", { ascending: false })
       .limit(180);
     if (!error && data && data.length > 0) {
       const mapped = mapPriceHistoryRows(data);
-      if (mapped.length > 0) return mapped;
+      if (mapped.length > 0) return mapped.sort((a, b) => a.date.localeCompare(b.date));
     }
   } catch {
     reportClientIssue("price_history_unavailable");
@@ -702,7 +702,11 @@ export async function searchDealsWithStatus(params: {
   maxStops?: number;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
   maxFlightTimeMinutes?: number;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
 }): Promise<SearchDealsResult> {
   const canonicalDest = resolveCanonicalAirportOrCity(params.destination);
   const destinationCode = canonicalDest?.code || (params.destination && /^[A-Z]{3}$/i.test(params.destination.trim())
@@ -723,7 +727,10 @@ export async function searchDealsWithStatus(params: {
       maxStops: params.maxStops,
       departDateFrom: params.departureFrom,
       departDateTo: params.departureTo,
-      pageSize: 120,
+      returnDate: params.returnDate,
+      page: params.page ?? 1,
+      pageSize: params.pageSize ?? 120,
+      sort: params.sort ?? "price_asc",
     }).catch(() => {
       observedFailed = true;
       return { fares: [] as Deal[], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" as const };
@@ -786,7 +793,11 @@ export async function searchDeals(params: {
   maxStops?: number;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
   maxFlightTimeMinutes?: number;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
 }): Promise<Deal[]> {
   const result = await searchDealsWithStatus(params);
   return result.deals;
@@ -797,18 +808,25 @@ async function searchLiveDeals(params: {
   destination?: string;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
 }): Promise<Deal[]> {
   const destination = params.destination?.trim().toUpperCase() ?? "";
   const from = params.from?.trim().toUpperCase() ?? "";
   if (!isSupabaseConfigured || !/^[A-Z]{3}$/.test(from) || !/^[A-Z]{3}$/.test(destination) ||
-    !params.departureFrom || !params.departureTo) return [];
+    !params.departureFrom) return [];
+
+  const body: Record<string, string> = {
+    origin: from,
+    destination,
+    outbound_date: params.departureFrom,
+  };
+  // Explicit return date only: departureTo is the departure window boundary, never a fabricated return date (S08)
+  if (params.returnDate) {
+    body.return_date = params.returnDate;
+  }
+
   const { data, error } = await supabase.functions.invoke("flight-search", {
-    body: {
-      origin: from,
-      destination,
-      outbound_date: params.departureFrom,
-      return_date: params.departureTo,
-    },
+    body,
   });
   if (error || !Array.isArray(data?.results)) return [];
   return data.results.flatMap((row: Record<string, unknown>, index: number) => {

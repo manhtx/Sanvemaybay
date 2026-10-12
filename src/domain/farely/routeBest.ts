@@ -36,6 +36,7 @@ export type IneligibilityReason =
   | 'INVALID_PRICE'
   | 'UNKNOWN_STOPS'
   | 'UNKNOWN_DURATION'
+  | 'UNKNOWN_CABIN'
   | 'UNKNOWN_COMPATIBILITY';
 
 export type EligibilityState = 'ELIGIBLE' | 'INELIGIBLE' | 'UNKNOWN_COMPATIBILITY';
@@ -113,10 +114,15 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
     }
   }
 
-  // 5. Cabin compatibility (NC-004: Business cannot match Economy intent)
-  const offerCabin = (offer.cabin || 'ECONOMY').toUpperCase();
-  if (offerCabin !== intent.cabin.toUpperCase()) {
-    reasons.push('CABIN_MISMATCH');
+  // 5. Cabin compatibility (NC-004: Business cannot match Economy intent, Unknown cabin is not Economy)
+  if (offer.cabin === 'UNKNOWN' || offer.cabin === 'UNKNOWN_CABIN') {
+    reasons.push('UNKNOWN_CABIN');
+  } else if (offer.cabin) {
+    if (offer.cabin.toUpperCase() !== intent.cabin.toUpperCase()) {
+      reasons.push('CABIN_MISMATCH');
+    }
+  } else if (intent.cabin && intent.cabin.toUpperCase() !== 'ECONOMY') {
+    reasons.push('UNKNOWN_CABIN');
   }
 
   // 6. Max stops constraint (S08 / A15: Unknown stops is not 0 stops)

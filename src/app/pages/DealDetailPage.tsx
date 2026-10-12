@@ -127,7 +127,7 @@ export function DealDetailPage() {
         departDate: obs.departDate || obs.depart_local_date || obs.depart_date,
         returnDate: obs.returnDate || obs.return_local_date || obs.return_date || undefined,
         price: Number(obs.price) || 0,
-        observedAt: obs.observedAt || obs.observed_at || new Date().toISOString(),
+        observedAt: obs.observedAt || obs.observed_at || undefined,
         carrier: obs.airline || obs.airlineCode,
       }));
 

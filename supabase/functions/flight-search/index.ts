@@ -70,6 +70,10 @@ Deno.serve(async (request) => {
     const returnDate = typeof row.return_date === "string" ? row.return_date : input.returnDate;
     if (!Number.isFinite(price) || price <= 0 || !isIsoCalendarDate(departDate) || !isIsoCalendarDate(returnDate)) return [];
     const isActual = row.actual === true;
+    const rawChanges = row.number_of_changes;
+    const stops = typeof rawChanges === "number" && Number.isFinite(rawChanges) ? rawChanges : null;
+    const providerObservedAt = typeof row.created_at === "string" ? row.created_at : null;
+    const fetchTime = new Date().toISOString();
     return [{
       origin_code: input.origin,
       destination_code: input.destination,
@@ -78,7 +82,7 @@ Deno.serve(async (request) => {
       depart_date: departDate,
       return_date: returnDate,
       airline_code: typeof row.airline === "string" ? row.airline : null,
-      stops: Number(row.number_of_changes ?? 0),
+      stops,
       source: "travelpayouts_week_matrix",
       // Week Matrix is cached/indicative. `actual` and a route template do not
       // prove that an exact offer or provider-issued deeplink is bookable.
@@ -90,7 +94,11 @@ Deno.serve(async (request) => {
         hl: "vi",
         curr: "VND",
       }).toString()}`,
-      observed_at: new Date().toISOString(),
+      provider_observed_at: providerObservedAt,
+      provider_fetched_at: fetchTime,
+      farely_received_at: fetchTime,
+      observed_at: providerObservedAt,
+      source_age_status: providerObservedAt ? "KNOWN" : "UNKNOWN_SOURCE_AGE",
     }];
   });
   return json({ results, source: "travelpayouts_week_matrix", indicative: true }, id);

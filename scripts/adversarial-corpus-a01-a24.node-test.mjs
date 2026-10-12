@@ -316,6 +316,7 @@ test('A24: Legitimate evidence admitted when all conditions hold', () => {
       status: 'VERIFIED',
       source_sha: currentSha,
       exit_code: 0,
+      achieved_evidence_level: g.required_evidence_level,
       executed_at: new Date().toISOString()
     });
   }

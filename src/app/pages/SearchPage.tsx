@@ -54,7 +54,8 @@ export function SearchPage() {
   const rawUrlDest = searchParams.get("destination");
   const urlDest = rawUrlDest === "BKK_ALL" ? "BKK_METRO" : rawUrlDest === "TYO_ALL" ? "TYO_METRO" : rawUrlDest;
   const urlDepart = searchParams.get("departDate") || searchParams.get("departureFrom");
-  const urlReturn = searchParams.get("returnDate") || searchParams.get("departureTo");
+  const urlDepartureTo = searchParams.get("departureTo");
+  const urlReturn = searchParams.get("returnDate");
 
   const [departureCities, setDepartureCities] = useState(defaultDepartureCities);
   const [budget, setBudget] = useState(() => getUserPreferences().budget || 10000000);
@@ -63,7 +64,8 @@ export function SearchPage() {
   const [maxStops, setMaxStops] = useState(() => getUserPreferences().maxStops ?? 1);
   const [maxFlightTimeMinutes, setMaxFlightTimeMinutes] = useState(() => getUserPreferences().maxFlightTimeMinutes);
   const [departureFrom, setDepartureFrom] = useState(() => urlDepart || getUserPreferences().departureFrom || "");
-  const [departureTo, setDepartureTo] = useState(() => urlReturn || getUserPreferences().departureTo || "");
+  const [departureTo, setDepartureTo] = useState(() => urlDepartureTo || getUserPreferences().departureTo || "");
+  const [returnDate, setReturnDate] = useState(() => urlReturn || "");
   const [results, setResults] = useState<Deal[]>([]);
   const [searchStatus, setSearchStatus] = useState<SearchStatus>("healthy");
   const [isScanning, setIsScanning] = useState(false);
@@ -85,17 +87,18 @@ export function SearchPage() {
       if (remote.maxStops != null) setMaxStops(remote.maxStops);
       if (remote.maxFlightTimeMinutes != null) setMaxFlightTimeMinutes(remote.maxFlightTimeMinutes);
       if (!urlDepart && remote.departureFrom) setDepartureFrom(remote.departureFrom);
-      if (!urlReturn && remote.departureTo) setDepartureTo(remote.departureTo);
+      if (!urlDepartureTo && remote.departureTo) setDepartureTo(remote.departureTo);
       saveUserPreferences(remote);
     });
-  }, [urlFrom, urlDepart, urlReturn]);
+  }, [urlFrom, urlDepart, urlDepartureTo, urlReturn]);
 
   useEffect(() => {
     if (urlFrom) setFromCity(urlFrom);
     if (urlDest) setDestination(urlDest);
     if (urlDepart) setDepartureFrom(urlDepart);
-    if (urlReturn) setDepartureTo(urlReturn);
-  }, [urlFrom, urlDest, urlDepart, urlReturn]);
+    if (urlDepartureTo) setDepartureTo(urlDepartureTo);
+    if (urlReturn) setReturnDate(urlReturn);
+  }, [urlFrom, urlDest, urlDepart, urlDepartureTo, urlReturn]);
 
   const runSearch = useCallback(
     async (isManual = false) => {
@@ -108,6 +111,7 @@ export function SearchPage() {
           maxStops,
           departureFrom: departureFrom || undefined,
           departureTo: departureTo || undefined,
+          returnDate: returnDate || undefined,
           maxFlightTimeMinutes,
         });
         setResults(outcome.deals);
@@ -119,7 +123,7 @@ export function SearchPage() {
         setIsScanning(false);
       }
     },
-    [budget, fromCity, destination, maxStops, departureFrom, departureTo, maxFlightTimeMinutes]
+    [budget, fromCity, destination, maxStops, departureFrom, departureTo, returnDate, maxFlightTimeMinutes]
   );
 
   useEffect(() => {

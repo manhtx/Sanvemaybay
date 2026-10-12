@@ -115,7 +115,7 @@ export interface ObservedOfferForMatrix {
   departDate: string;
   returnDate?: string;
   price: number;
-  observedAt: string;
+  observedAt?: string;
   carrier?: string;
 }
 
@@ -155,10 +155,12 @@ export function buildFlexibleFareMatrix(
 
       // Select lowest price offer
       const best = matching.reduce((min, cur) => (cur.price < min.price ? cur : min));
-      const ageMs = Math.max(0, nowMs - new Date(best.observedAt).getTime());
+      const ageMs = best.observedAt ? Math.max(0, nowMs - new Date(best.observedAt).getTime()) : Number.POSITIVE_INFINITY;
 
       let freshness: CellFreshness = "stale";
-      if (ageMs <= ONE_HOUR) {
+      if (!best.observedAt || isNaN(new Date(best.observedAt).getTime())) {
+        freshness = "unavailable";
+      } else if (ageMs <= ONE_HOUR) {
         freshness = "fresh_observed";
       } else if (ageMs <= ONE_DAY) {
         freshness = "observed";

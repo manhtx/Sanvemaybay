@@ -287,18 +287,52 @@ export function evaluateAdmission(options = {}) {
     const forcedSha = options.forcedGateSha?.[gate.gate_id];
     const receipt = receiptsMap instanceof Map ? receiptsMap.get(gate.gate_id) : receiptsMap?.[gate.gate_id];
 
+    // D03: Derive achieved evidence level from execution type and verified receipt
+    const evidenceLevelRank = { E0: 0, E1: 1, E2: 2, E3: 3, E4: 4, E5: 5, E6: 6, E7: 7 };
+    const requiredLevel = gate.required_evidence_level || 'E2';
+    const reqRank = evidenceLevelRank[requiredLevel] ?? 2;
+
+    const derivedLevel = (() => {
+      if (receipt?.achieved_evidence_level) return receipt.achieved_evidence_level;
+      if (probe.runner === 'playwright') return 'E3';
+      if (probe.runner === 'deno') return 'E2';
+      if (probe.runner === 'node') {
+        const isDbIntegration = probe.artifact.includes('database') ||
+          probe.artifact.includes('schedule') ||
+          probe.artifact.includes('rls') ||
+          probe.artifact.includes('outbox') ||
+          probe.artifact.includes('account-deletion');
+        return isDbIntegration ? 'E2' : 'E1';
+      }
+      if (probe.runner === 'vitest') return 'E1';
+      return 'E1';
+    })();
+    const achievedRank = evidenceLevelRank[derivedLevel] ?? 0;
+
     let status = 'UNPROVEN';
     let proofSha = forcedSha !== undefined ? forcedSha : (receipt?.source_sha || receipt?.sha || null);
 
     if (forcedStatus) {
       status = forcedStatus;
     } else if (receipt) {
-      // D01 & D02: Status is derived strictly from verified execution receipt, NEVER gate.status
+      // D01, D02, S02..S06, C01..C04: Strict Evidence Admission (Section 07)
       const receiptStatus = receipt.status;
-      const isPass = (receiptStatus === 'VERIFIED' || receiptStatus === 'PROVEN' || (!receiptStatus && receipt.exit_code === 0)) &&
-        (receipt.exit_code === undefined || receipt.exit_code === 0) &&
-        receiptStatus !== 'FAILED';
-      if (isPass) {
+      const isFailed = receiptStatus === 'FAILED' || (receipt.exit_code !== undefined && receipt.exit_code !== 0);
+      const hasExitCode = receipt.exit_code !== undefined;
+      const exitCodeOk = receipt.exit_code === 0;
+      const isLevelSufficient = achievedRank >= reqRank;
+
+      if (isFailed) {
+        status = 'FAILED';
+      } else if (!hasExitCode && (receiptStatus === 'VERIFIED' || receiptStatus === 'PROVEN')) {
+        // Section 07 / C02: Missing executable exit code must NOT be admitted
+        status = 'MISSING_EXIT_CODE';
+      } else if (!exitCodeOk) {
+        status = 'NONZERO_EXIT_CODE';
+      } else if (!isLevelSufficient) {
+        // Section 07 / C03: Under-level proof admission rejected
+        status = 'INSUFFICIENT_EVIDENCE_LEVEL';
+      } else if (receiptStatus === 'VERIFIED' || receiptStatus === 'PROVEN' || exitCodeOk) {
         status = 'PROVEN';
       } else {
         status = receiptStatus || 'FAILED';
@@ -335,29 +369,13 @@ export function evaluateAdmission(options = {}) {
       if (gate.priority === 'P1') unresolvedP1++;
     }
 
-    // D03: Derive achieved evidence level from execution type and verified receipt
-    const derivedLevel = (() => {
-      if (status !== 'PROVEN') return 'E0';
-      if (probe.runner === 'playwright') return 'E3';
-      if (probe.runner === 'deno') return 'E2';
-      if (probe.runner === 'node') {
-        const isDbIntegration = probe.artifact.includes('database') ||
-          probe.artifact.includes('schedule') ||
-          probe.artifact.includes('rls') ||
-          probe.artifact.includes('outbox') ||
-          probe.artifact.includes('account-deletion');
-        return isDbIntegration ? 'E2' : 'E1';
-      }
-      if (probe.runner === 'vitest') return 'E1';
-      return 'E1';
-    })();
-
     evaluatedGates[gate.gate_id] = {
       gate_id: gate.gate_id,
       status: status === 'PROVEN' ? 'VERIFIED' : status,
       priority: gate.priority,
-      required_evidence_level: gate.required_evidence_level || 'E2',
+      required_evidence_level: requiredLevel,
       achieved_evidence_level: derivedLevel,
+      exit_code: receipt?.exit_code ?? null,
       command_probe: probe.command_probe,
       artifact: probe.artifact,
       source_sha: proofSha,

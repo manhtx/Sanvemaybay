@@ -168,6 +168,7 @@ test('A06: Legitimate execution proof is admitted', () => {
       status: 'VERIFIED',
       source_sha: currentSha,
       exit_code: 0,
+      achieved_evidence_level: g.required_evidence_level,
       executed_at: new Date().toISOString()
     });
   }
@@ -462,6 +463,7 @@ test('A34: A genuine complete evidence package passes admission', () => {
       status: 'VERIFIED',
       source_sha: currentSha,
       exit_code: 0,
+      achieved_evidence_level: g.required_evidence_level,
       executed_at: new Date().toISOString()
     });
   }
