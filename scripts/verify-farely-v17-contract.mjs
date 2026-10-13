@@ -91,9 +91,33 @@ export function verifyV17Contract(projectRoot = process.cwd()) {
     throw new Error(`Found ${prematureCompleted.length} work packages hardcoded to COMPLETED without dynamic proof derivation`);
   }
 
+  // 8. Validate Canonical DAG Capability Completeness (F00..F88, exactly 89, no missing, no dupes)
+  const dagPath = path.join(v17Dir, 'CANONICAL_DAG.json');
+  const dag = JSON.parse(fs.readFileSync(dagPath, 'utf8'));
+  const dagCaps = new Set();
+  const dagDuplicates = [];
+  for (const node of dag.nodes || []) {
+    for (const cap of node.capabilities || []) {
+      if (dagCaps.has(cap)) {
+        dagDuplicates.push(cap);
+      }
+      dagCaps.add(cap);
+    }
+  }
+  if (dagDuplicates.length > 0) {
+    throw new Error(`DAG contains duplicate capabilities: ${dagDuplicates.join(', ')}`);
+  }
+  if (dagCaps.size !== 89) {
+    throw new Error(`Expected exactly 89 capabilities in DAG, found ${dagCaps.size}`);
+  }
+  if (!dagCaps.has('F68')) {
+    throw new Error('Missing F68 in DAG capabilities');
+  }
+
   return {
     success: true,
     capability_count: v13Data.capability_contracts.length,
+    dag_capability_count: dagCaps.size,
     priority_drift_resolved: matrix.priority_mismatch_count,
     adversarial_challenges_count: challenges.challenges.length,
     rules_verified: requiredRules.length

@@ -18,7 +18,7 @@ export interface WatchModalProps {
     price?: number;
     departDate?: string;
     returnDate?: string;
-    stops?: number;
+    stops?: number | null;
   } | null;
   initialOrigin?: string;
   initialDestination?: string;
@@ -51,7 +51,9 @@ export function WatchModal({
   );
   const [email, setEmail] = useState("");
   const [frequency, setFrequency] = useState<"instant" | "daily">("instant");
-  const [maxStops, setMaxStops] = useState<number | undefined>(opportunity?.stops);
+  const [maxStops, setMaxStops] = useState<number | undefined>(
+    opportunity?.stops != null ? opportunity.stops : undefined
+  );
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +65,7 @@ export function WatchModal({
     setIsSuccess(false);
     setError(null);
     setTargetPrice(propTargetPrice || Math.round(effectiveCurrentPrice * 0.95));
-    setMaxStops(opportunity?.stops);
+    setMaxStops(opportunity?.stops != null ? opportunity.stops : undefined);
 
     // Try prefilling email if signed in
     if (isSupabaseConfigured) {
@@ -147,7 +149,8 @@ export function WatchModal({
     const todayStr = new Date().toISOString().slice(0, 10);
     const horizon90DaysStr = new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10);
     const dateFrom = opportunity?.departDate || todayStr;
-    const dateTo = opportunity?.returnDate || opportunity?.departDate || horizon90DaysStr;
+    const dateTo = opportunity?.departDate || horizon90DaysStr;
+    const returnDate = opportunity?.returnDate || undefined;
 
     try {
       const res = await createWatch({
@@ -160,6 +163,10 @@ export function WatchModal({
         maxStops,
         dateFrom,
         dateTo,
+        returnDate,
+        returnDateFrom: returnDate,
+        returnDateTo: returnDate,
+        journeyType: returnDate ? "round_trip" : "one_way",
         email: email.trim(),
         frequency,
         channel: "email",

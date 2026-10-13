@@ -213,7 +213,7 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     row.date || row.depart_date,
     row.return_date || "",
     row.airline_code,
-    row.stops ?? 0,
+    row.stops == null ? "unknown" : row.stops,
   ].join(":"));
 
   return {
@@ -235,7 +235,7 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     departDate: row.date,
     returnDate: row.return_date ?? undefined,
     duration: row.duration,
-    stops: Number(row.stops),
+    stops: row.stops == null || isNaN(Number(row.stops)) ? null : Number(row.stops),
     stopCity: null,
     seatsLeft: 0,
     expiresIn: row.freshness_minutes <= 60 ? "Quan sát trong 1 giờ" : `Quan sát ${Math.max(1, Math.round(Number(row.freshness_minutes) / 60))} giờ trước`,
@@ -458,7 +458,7 @@ export function mapDealRow(row: Record<string, any>): Deal {
     departDate: row.depart_date,
     returnDate: row.return_date ?? undefined,
     duration: row.duration,
-    stops: Number(row.stops),
+    stops: row.stops == null || isNaN(Number(row.stops)) ? null : Number(row.stops),
     stopCity: row.stop_city,
     seatsLeft: Number(row.seats_left),
     expiresIn: row.expires_in,
@@ -534,7 +534,7 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
     cleanId.includes(":");
   if (isObservedCandidate) {
     try {
-      const page = await getObservedFares({ id: rawId, pageSize: 60 });
+      const page = await getObservedFares({ id: rawId, opportunityId: cleanId, pageSize: 60 });
       const matching = page.fares.find(
         (f) =>
           f.id === cleanId ||
@@ -570,7 +570,24 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
     // Continue
   }
 
-  // 4. Fallback: check initial observed fares batch
+  // 4. Fallback: direct indexed lookup in database by exact ID or opportunity ID (beyond first 120)
+  try {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawId);
+    let query = supabase.from("fare_observations").select("*");
+    if (isUuid) {
+      query = query.eq("id", rawId);
+    } else {
+      query = query.eq("opportunity_id", cleanId);
+    }
+    const { data: obsData, error: obsErr } = await query.limit(1).maybeSingle();
+    if (!obsErr && obsData) {
+      return mapObservedFare(obsData);
+    }
+  } catch {
+    // Continue
+  }
+
+  // 5. Final fallback: check initial observed fares batch
   try {
     const fallbackPage = await getObservedFares(1, 120);
     const foundFallback = fallbackPage.fares.find(
@@ -854,7 +871,7 @@ async function searchLiveDeals(params: {
       departDate,
       returnDate,
       duration: "Chưa có dữ liệu",
-      stops: Number(row.stops ?? 0),
+      stops: row.stops == null || isNaN(Number(row.stops)) ? null : Number(row.stops),
       stopCity: null,
       seatsLeft: 0,
       expiresIn: "Kiểm tra lại trước khi đặt",
@@ -924,7 +941,7 @@ export function filterDeals(deals: Deal[], params: {
     } else if (destination && !`${d.to} ${d.toCode} ${d.country}`.toLocaleLowerCase("vi").includes(destination)) {
       return false;
     }
-    if (params.maxStops != null && d.stops > params.maxStops) return false;
+    if (params.maxStops != null && (d.stops == null || d.stops > params.maxStops)) return false;
     if (fromDate && d.departDate < fromDate) return false;
     if (toDate && d.departDate > toDate) return false;
     const duration = maxFlightTime == null ? undefined : durationInMinutes(d.duration);

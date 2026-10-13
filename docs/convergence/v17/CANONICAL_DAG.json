@@ -16,7 +16,7 @@
       "id": "WP01",
       "name": "Identity, TravelIntent, domain models and client adapters",
       "dependencies": ["WP00"],
-      "capabilities": ["F02", "F03", "F04", "F58", "F69"],
+      "capabilities": ["F02", "F03", "F04", "F58", "F68", "F69"],
       "status": "VERIFYING",
       "evidence_level": "C1",
       "target_level": "C1"

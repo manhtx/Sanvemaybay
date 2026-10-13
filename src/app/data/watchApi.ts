@@ -14,6 +14,10 @@ export interface CreateWatchInput {
   maxStops?: number;
   dateFrom?: string;
   dateTo?: string;
+  returnDate?: string;
+  returnDateFrom?: string;
+  returnDateTo?: string;
+  journeyType?: "one_way" | "round_trip";
   email: string;
   channel?: "email" | "telegram";
   telegramId?: string;
@@ -125,6 +129,8 @@ export async function createWatch(
     maxStops: input.maxStops ?? null,
     dateFrom: input.dateFrom || null,
     dateTo: input.dateTo || null,
+    returnDate: input.returnDate || null,
+    tripType: input.journeyType === "round_trip" || input.returnDate ? "roundtrip" : "oneway",
     status: "monitoring",
     frequency: input.frequency || "instant",
     email: input.email,
@@ -155,6 +161,8 @@ export async function createWatch(
           max_stops: input.maxStops ?? null,
           date_from: input.dateFrom || null,
           date_to: input.dateTo || null,
+          return_date: input.returnDate || null,
+          trip_type: input.journeyType === "round_trip" || input.returnDate ? "roundtrip" : "oneway",
           email: input.email || user.email,
           notify_email: true,
           notify_telegram: input.channel === "telegram",

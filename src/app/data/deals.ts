@@ -17,7 +17,7 @@ export interface Deal {
   departDate: string;
   returnDate?: string;
   duration: string;
-  stops: number;
+  stops: number | null;
   stopCity: string | null;
   seatsLeft: number;
   expiresIn: string;

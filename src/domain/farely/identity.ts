@@ -191,7 +191,7 @@ export function buildOfferVariantId(params: {
     params.airline.trim().toUpperCase(),
     (params.flightNumber || '').trim().toUpperCase(),
     (params.cabin || 'ECONOMY').trim().toUpperCase(),
-    String(params.stops ?? 0)
+    params.stops == null ? 'UNKNOWN' : String(params.stops)
   ];
 
   if (params.segments && params.segments.length > 0) {

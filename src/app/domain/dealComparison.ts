@@ -6,7 +6,7 @@ export interface DealComparisonRow {
   ticketPrice: number;
   totalCost: number;
   durationMinutes: number | undefined;
-  stops: number;
+  stops: number | null;
   refundPolicy: string | undefined;
   risk: Deal["aiInsight"]["risk"];
 }
@@ -35,7 +35,7 @@ export function explainTradeoff(cheaper: DealComparisonRow, costlier: DealCompar
   const priceDiff = costlier.totalCost - cheaper.totalCost;
   if (priceDiff <= 0) return "Hai phương án có tổng chi phí tương đương.";
 
-  const stopsDiff = cheaper.stops - costlier.stops;
+  const stopsDiff = (cheaper.stops != null && costlier.stops != null) ? cheaper.stops - costlier.stops : 0;
   const timeDiffMinutes = (cheaper.durationMinutes ?? 0) - (costlier.durationMinutes ?? 0);
 
   const formatMoney = (n: number) => {
@@ -71,8 +71,10 @@ export function identifyDominatedOptions(rows: DealComparisonRow[]): Set<string>
       if (a.id === b.id) continue;
       const durationA = a.durationMinutes ?? Infinity;
       const durationB = b.durationMinutes ?? Infinity;
-      const noWorse = a.totalCost <= b.totalCost && durationA <= durationB && a.stops <= b.stops;
-      const strictlyBetter = a.totalCost < b.totalCost || durationA < durationB || a.stops < b.stops;
+      const stopsA = a.stops ?? Infinity;
+      const stopsB = b.stops ?? Infinity;
+      const noWorse = a.totalCost <= b.totalCost && durationA <= durationB && stopsA <= stopsB;
+      const strictlyBetter = a.totalCost < b.totalCost || durationA < durationB || stopsA < stopsB;
       if (noWorse && strictlyBetter) {
         dominatedIds.add(b.id);
       }
