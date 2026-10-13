@@ -4,114 +4,114 @@
   "packages": [
     {
       "id": "WP00",
-      "name": "Control Plane & Proof Authority",
+      "name": "Owner contract, evidence authority, control-plane convergence",
       "dependencies": [],
       "solution_id": "S01",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["scripts/evidence-admission-controller.mjs", "scripts/build-proof-index.mjs", "scripts/certifier-sabotage.node-test.mjs"]
     },
     {
       "id": "WP01",
-      "name": "Canonical Flight Identity & Travel Intent",
+      "name": "Identity, TravelIntent, domain models and client adapters",
       "dependencies": ["WP00"],
       "solution_id": "S02",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["src/domain/farely/domainKernel.ts", "src/domain/farely/travelIntent.ts", "src/domain/farely/locationCatalog.ts"]
     },
     {
       "id": "WP02",
-      "name": "Provider Evidence & Rights",
+      "name": "Provider capability, source rights and coverage",
       "dependencies": ["WP00", "WP01"],
       "solution_id": "S03",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["src/app/data/providerContracts.ts", "scripts/provider-drift-and-killswitch.node-test.mjs"]
     },
     {
       "id": "WP03",
-      "name": "Scanner, Coverage & Atomic Generation",
+      "name": "Demand scheduling, scanner and atomic generation",
       "dependencies": ["WP01", "WP02"],
       "solution_id": "S04",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["scripts/fast-flights-worker.py", "scripts/pipeline-recovery-contract.node-test.mjs"]
     },
     {
       "id": "WP04",
-      "name": "Server Search & RouteBest",
+      "name": "Search and RouteBest",
       "dependencies": ["WP01", "WP03"],
       "solution_id": "S05",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["src/domain/farely/routeBest.ts", "supabase/functions/observed-fares/index.ts", "scripts/pagination-truth.node-test.mjs"]
     },
     {
       "id": "WP05",
-      "name": "Price Intelligence & Epoch Calibration",
+      "name": "Price truth, cohorts and history",
       "dependencies": ["WP03", "WP04"],
       "solution_id": "S06",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["src/domain/farely/comparator.ts", "src/app/domain/costEpistemic.ts", "src/domain/farely/truthKernelV2.test.ts"]
     },
     {
       "id": "WP06",
-      "name": "Opportunity Detail & Saved Shortlist",
+      "name": "Opportunity Detail and Saved",
       "dependencies": ["WP04", "WP05"],
       "solution_id": "S07",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["src/app/pages/DealDetailPage.tsx", "src/app/pages/SavedDealsPage.tsx", "src/app/lib/bookmarks.ts"]
     },
     {
       "id": "WP07",
-      "name": "Watch & Transactional Notification Outbox",
+      "name": "Watch and notification pipeline",
       "dependencies": ["WP01", "WP04"],
       "solution_id": "S08",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["src/app/components/WatchModal.tsx", "scripts/watch-outbox-atomicity.node-test.mjs", "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"]
     },
     {
       "id": "WP08",
-      "name": "Security, Database Migrations & Disaster Recovery",
+      "name": "Database, RLS, security and disaster recovery",
       "dependencies": ["WP00", "WP07"],
       "solution_id": "S09",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["scripts/database-architecture-contract.node-test.mjs", "scripts/rls-tenant-isolation.node-test.mjs", "scripts/database-backup-restore-drill.node-test.mjs"]
     },
     {
       "id": "WP09",
-      "name": "Real UX, Responsive Layout & Accessibility",
+      "name": "Responsive UX, accessibility and localization",
       "dependencies": ["WP04", "WP06", "WP07"],
       "solution_id": "S10",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["scripts/capture-visual-acceptance.mjs", "e2e/responsive-viewports.spec.ts", "docs/convergence/screenshots/"]
     },
     {
       "id": "WP10",
-      "name": "Differentiated Product Experience",
+      "name": "Differentiated opportunity intelligence and product journeys",
       "dependencies": ["WP05", "WP06", "WP09"],
       "solution_id": "S11",
-      "status": "COMPLETED",
+      "status": "VERIFYING",
       "artifacts": ["src/app/pages/HomePage.tsx", "src/app/pages/SearchPage.tsx", "src/app/domain/flightIntelligence.ts"]
     },
     {
       "id": "WP11",
-      "name": "Conditional Long-Term Growth Capabilities",
+      "name": "Conditional P2 development and feasibility",
       "dependencies": ["WP10"],
       "solution_id": "S12",
-      "status": "COMPLETED",
+      "status": "WAITING_EXTERNAL",
       "artifacts": ["docs/convergence/v15/CONDITIONAL_ROADMAP.md"]
     },
     {
       "id": "WP12",
-      "name": "High-Risk Commercial Extensions Governance",
+      "name": "High-risk P3/commercial boundary",
       "dependencies": ["WP11"],
       "solution_id": "S13",
-      "status": "COMPLETED",
+      "status": "WAITING_EXTERNAL",
       "artifacts": ["docs/convergence/v15/CONDITIONAL_ROADMAP.md"]
     },
     {
       "id": "WP13",
-      "name": "End-to-End Release Tuple & Live Production Audit",
+      "name": "Release tuple, staging/production acceptance and long-term outcome evidence",
       "dependencies": ["WP00", "WP01", "WP02", "WP03", "WP04", "WP05", "WP06", "WP07", "WP08", "WP09", "WP10", "WP11", "WP12"],
       "solution_id": "S14",
-      "status": "COMPLETED",
+      "status": "WAITING_EXTERNAL",
       "artifacts": ["scripts/verify-production-live.mjs", "docs/convergence/RELEASE_MANIFEST.json"]
     }
   ]

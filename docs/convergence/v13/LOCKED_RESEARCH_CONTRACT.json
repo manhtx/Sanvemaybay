@@ -2,116 +2,839 @@
   "version": "13.0.0",
   "contract_id": "FARELY-V13-RESEARCH-LOCK",
   "systemic_findings": [
-    { "id": "V3-N01", "name": "Incomplete search pagination filtering", "severity": "P0", "domain": "SEARCH" },
-    { "id": "V3-N02", "name": "Unknown fees normalized to zero", "severity": "P0", "domain": "PRICING" },
-    { "id": "V3-N03", "name": "Weak flight identity causing collisions", "severity": "P0", "domain": "IDENTITY" },
-    { "id": "V3-N04", "name": "TravelIntent returnDate conflated with departureTo", "severity": "P0", "domain": "INTENT" },
-    { "id": "V3-N05", "name": "Historical observations lack observed_at timestamp", "severity": "P0", "domain": "HISTORY" },
-    { "id": "V3-N06", "name": "Watch episodes lack single-open-episode constraint", "severity": "P0", "domain": "WATCH" },
-    { "id": "V3-N07", "name": "Outbox dispatch not decoupled from worker execution", "severity": "P0", "domain": "NOTIFICATIONS" },
-    { "id": "V3-N08", "name": "Missing RLS on private product event tables", "severity": "P0", "domain": "SECURITY" },
-    { "id": "V3-N09", "name": "Account deletion fails to cascade user preferences", "severity": "P0", "domain": "PRIVACY" },
-    { "id": "V3-N10", "name": "RouteBest selects before PriceScope eligibility", "severity": "P0", "domain": "COMPARATOR" },
-    { "id": "V3-N11", "name": "Fast flights worker lacks demand-aware scheduling", "severity": "P0", "domain": "SCHEDULING" },
-    { "id": "V3-N12", "name": "Scan runs lifecycle conflates status and health", "severity": "P0", "domain": "INGESTION" },
-    { "id": "V3-N13", "name": "Generation publication accepts excessive row divergence", "severity": "P0", "domain": "PUBLICATION" },
-    { "id": "V3-N14", "name": "Provider error 503 treated as empty flights", "severity": "P0", "domain": "PROVIDER" },
-    { "id": "V3-N15", "name": "Lack of qualified coverage certificate", "severity": "P0", "domain": "COVERAGE" },
-    { "id": "V3-N16", "name": "Mobile viewport horizontal scroll overflow", "severity": "P1", "domain": "UX" },
-    { "id": "V3-N17", "name": "Keyboard navigation traps in modal flows", "severity": "P1", "domain": "A11Y" },
-    { "id": "V3-N18", "name": "Inadequate disaster recovery backup/restore verification", "severity": "P0", "domain": "DATABASE" },
-    { "id": "V3-N19", "name": "Price history mixes route trends with exact offer", "severity": "P0", "domain": "HISTORY" },
-    { "id": "V3-N20", "name": "Opportunity detail lacks explainable confidence badge", "severity": "P1", "domain": "UX" }
+    {
+      "id": "V3-N01",
+      "name": "Incomplete search pagination filtering",
+      "severity": "P0",
+      "domain": "SEARCH"
+    },
+    {
+      "id": "V3-N02",
+      "name": "Unknown fees normalized to zero",
+      "severity": "P0",
+      "domain": "PRICING"
+    },
+    {
+      "id": "V3-N03",
+      "name": "Weak flight identity causing collisions",
+      "severity": "P0",
+      "domain": "IDENTITY"
+    },
+    {
+      "id": "V3-N04",
+      "name": "TravelIntent returnDate conflated with departureTo",
+      "severity": "P0",
+      "domain": "INTENT"
+    },
+    {
+      "id": "V3-N05",
+      "name": "Historical observations lack observed_at timestamp",
+      "severity": "P0",
+      "domain": "HISTORY"
+    },
+    {
+      "id": "V3-N06",
+      "name": "Watch episodes lack single-open-episode constraint",
+      "severity": "P0",
+      "domain": "WATCH"
+    },
+    {
+      "id": "V3-N07",
+      "name": "Outbox dispatch not decoupled from worker execution",
+      "severity": "P0",
+      "domain": "NOTIFICATIONS"
+    },
+    {
+      "id": "V3-N08",
+      "name": "Missing RLS on private product event tables",
+      "severity": "P0",
+      "domain": "SECURITY"
+    },
+    {
+      "id": "V3-N09",
+      "name": "Account deletion fails to cascade user preferences",
+      "severity": "P0",
+      "domain": "PRIVACY"
+    },
+    {
+      "id": "V3-N10",
+      "name": "RouteBest selects before PriceScope eligibility",
+      "severity": "P0",
+      "domain": "COMPARATOR"
+    },
+    {
+      "id": "V3-N11",
+      "name": "Fast flights worker lacks demand-aware scheduling",
+      "severity": "P0",
+      "domain": "SCHEDULING"
+    },
+    {
+      "id": "V3-N12",
+      "name": "Scan runs lifecycle conflates status and health",
+      "severity": "P0",
+      "domain": "INGESTION"
+    },
+    {
+      "id": "V3-N13",
+      "name": "Generation publication accepts excessive row divergence",
+      "severity": "P0",
+      "domain": "PUBLICATION"
+    },
+    {
+      "id": "V3-N14",
+      "name": "Provider error 503 treated as empty flights",
+      "severity": "P0",
+      "domain": "PROVIDER"
+    },
+    {
+      "id": "V3-N15",
+      "name": "Lack of qualified coverage certificate",
+      "severity": "P0",
+      "domain": "COVERAGE"
+    },
+    {
+      "id": "V3-N16",
+      "name": "Mobile viewport horizontal scroll overflow",
+      "severity": "P1",
+      "domain": "UX"
+    },
+    {
+      "id": "V3-N17",
+      "name": "Keyboard navigation traps in modal flows",
+      "severity": "P1",
+      "domain": "A11Y"
+    },
+    {
+      "id": "V3-N18",
+      "name": "Inadequate disaster recovery backup/restore verification",
+      "severity": "P0",
+      "domain": "DATABASE"
+    },
+    {
+      "id": "V3-N19",
+      "name": "Price history mixes route trends with exact offer",
+      "severity": "P0",
+      "domain": "HISTORY"
+    },
+    {
+      "id": "V3-N20",
+      "name": "Opportunity detail lacks explainable confidence badge",
+      "severity": "P1",
+      "domain": "UX"
+    }
   ],
   "capability_contracts": [
-    { "id": "F00", "title": "Single Canonical State Authority", "tier": "P0", "status": "KEEP" },
-    { "id": "F01", "title": "Canonical TravelIntent V2", "tier": "P0", "status": "KEEP" },
-    { "id": "F02", "title": "Single Location Catalog", "tier": "P0", "status": "KEEP" },
-    { "id": "F03", "title": "Airport Scope vs Metro Scope Invariant", "tier": "P0", "status": "KEEP" },
-    { "id": "F04", "title": "PriceScope Fingerprinting", "tier": "P0", "status": "KEEP" },
-    { "id": "F05", "title": "Pricing Unit Normalization", "tier": "P0", "status": "KEEP" },
-    { "id": "F06", "title": "Offer Eligibility Engine", "tier": "P0", "status": "KEEP" },
-    { "id": "F07", "title": "Canonical RouteBest Selector", "tier": "P0", "status": "KEEP" },
-    { "id": "F08", "title": "Mathematical Minimum Rule", "tier": "P0", "status": "KEEP" },
-    { "id": "F09", "title": "Comparable Cohort Engine", "tier": "P0", "status": "KEEP" },
-    { "id": "F10", "title": "Evidence Level Classification", "tier": "P0", "status": "KEEP" },
-    { "id": "F11", "title": "Independent Epoch Calibration", "tier": "P0", "status": "KEEP" },
-    { "id": "F12", "title": "Cost Epistemics Honesty", "tier": "P0", "status": "KEEP" },
-    { "id": "F13", "title": "Physical Itinerary Identification", "tier": "P0", "status": "KEEP" },
-    { "id": "F14", "title": "Commercial Offer Identification", "tier": "P0", "status": "KEEP" },
-    { "id": "F15", "title": "Fare Observation Identification", "tier": "P0", "status": "KEEP" },
-    { "id": "F16", "title": "Public Opportunity Identification", "tier": "P0", "status": "KEEP" },
-    { "id": "F17", "title": "Four-Part Flight Identity Separation", "tier": "P0", "status": "KEEP" },
-    { "id": "F18", "title": "Provider Capability Registry", "tier": "P0", "status": "KEEP" },
-    { "id": "F19", "title": "Provider Timestamp Separation", "tier": "P0", "status": "KEEP" },
-    { "id": "F20", "title": "Provider Failure Classification", "tier": "P0", "status": "KEEP" },
-    { "id": "F21", "title": "Fast Flights Worker State Machine", "tier": "P0", "status": "KEEP" },
-    { "id": "F22", "title": "Demand-Aware Priority Scheduling", "tier": "P0", "status": "KEEP" },
-    { "id": "F23", "title": "Scan Run Telemetry & Health Summary", "tier": "P0", "status": "KEEP" },
-    { "id": "F24", "title": "Query-Scoped Coverage Certificates", "tier": "P0", "status": "KEEP" },
-    { "id": "F25", "title": "Candidate Generation Reconciled Manifest", "tier": "P0", "status": "KEEP" },
-    { "id": "F26", "title": "Atomic Generation Pointer Publication", "tier": "P0", "status": "KEEP" },
-    { "id": "F27", "title": "Last-Known-Good Generation Rollback", "tier": "P0", "status": "KEEP" },
-    { "id": "F28", "title": "Full-Universe Server-Side Search", "tier": "P0", "status": "KEEP" },
-    { "id": "F29", "title": "Pre-Pagination Filtering & Sorting", "tier": "P0", "status": "KEEP" },
-    { "id": "F30", "title": "Deterministic Search Keyset Pagination", "tier": "P0", "status": "KEEP" },
-    { "id": "F31", "title": "Search Request Lifecycle & Debounce", "tier": "P1", "status": "KEEP" },
-    { "id": "F32", "title": "Same-Offer Historical Price Product", "tier": "P0", "status": "KEEP" },
-    { "id": "F33", "title": "Comparable Cohort Distribution Product", "tier": "P0", "status": "KEEP" },
-    { "id": "F34", "title": "Route-Level Macro Trend Product", "tier": "P0", "status": "KEEP" },
-    { "id": "F35", "title": "Authoritative Flexible Date Matrix", "tier": "P0", "status": "KEEP" },
-    { "id": "F36", "title": "Trip-Length Optimizer", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F37", "title": "Weekend Escape Finder", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F38", "title": "Holiday Discovery Calendar", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F39", "title": "Nearby Airport Economics", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F40", "title": "Itinerary Quality Score", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F41", "title": "Consumer Opportunity Explanation", "tier": "P1", "status": "KEEP" },
-    { "id": "F42", "title": "Intelligent Watch Episode Lifecycle", "tier": "P0", "status": "KEEP" },
-    { "id": "F43", "title": "Weekly Deal Digest System", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F44", "title": "Rule-Based Personalized Feed", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F45", "title": "Shareable Public Opportunity URLs", "tier": "P1", "status": "KEEP" },
-    { "id": "F46", "title": "Dynamic Editorial Collections", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F47", "title": "Provider Trust Metric", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F48", "title": "Adaptive Scan Prioritization", "tier": "P2", "status": "CONDITIONAL" },
-    { "id": "F49", "title": "AI Travel Assistant Copilot", "tier": "P3", "status": "CONDITIONAL" },
-    { "id": "F50", "title": "Predictive Buy/Wait Forecasting", "tier": "P3", "status": "CONDITIONAL" },
-    { "id": "F51", "title": "Premium Paid Watch Subscriptions", "tier": "P3", "status": "CONDITIONAL" },
-    { "id": "F52", "title": "Direct Booking Checkout Engine", "tier": "P3", "status": "CONDITIONAL" },
-    { "id": "F53", "title": "Commercial B2B Opportunity API", "tier": "P3", "status": "CONDITIONAL" },
-    { "id": "F54", "title": "Credit Card & Promotion Engine", "tier": "P3", "status": "CONDITIONAL" },
-    { "id": "F55", "title": "International Market Expansion", "tier": "P3", "status": "CONDITIONAL" },
-    { "id": "F56", "title": "Opportunity Detail Decision Hierarchy", "tier": "P0", "status": "KEEP" },
-    { "id": "F57", "title": "External Booking Verification CTA", "tier": "P0", "status": "KEEP" },
-    { "id": "F58", "title": "External Booking Link Classification", "tier": "P0", "status": "KEEP" },
-    { "id": "F59", "title": "Durable Saved Opportunities Shortlist", "tier": "P0", "status": "KEEP" },
-    { "id": "F60", "title": "Authenticated vs Guest Saved Sync", "tier": "P0", "status": "KEEP" },
-    { "id": "F61", "title": "Saved Price vs Current Price Tracking", "tier": "P0", "status": "KEEP" },
-    { "id": "F62", "title": "Full TravelIntent Watch Modal", "tier": "P0", "status": "KEEP" },
-    { "id": "F63", "title": "Return Date vs Departure Window Separation", "tier": "P0", "status": "KEEP" },
-    { "id": "F64", "title": "Single Open Episode Database Invariant", "tier": "P0", "status": "KEEP" },
-    { "id": "F65", "title": "Watch Episode State Transitions", "tier": "P0", "status": "KEEP" },
-    { "id": "F66", "title": "Transactional Notification Outbox", "tier": "P0", "status": "KEEP" },
-    { "id": "F67", "title": "Atomic Outbox Queue Claiming", "tier": "P0", "status": "KEEP" },
-    { "id": "F68", "title": "Outbox Dispatch Worker Lease Recovery", "tier": "P0", "status": "KEEP" },
-    { "id": "F69", "title": "Notification Idempotency & Deduping", "tier": "P0", "status": "KEEP" },
-    { "id": "F70", "title": "User Price Verification Feedback", "tier": "P1", "status": "KEEP" },
-    { "id": "F71", "title": "Verified vs User-Reported Feedback Separation", "tier": "P1", "status": "KEEP" },
-    { "id": "F72", "title": "Multi-Tenant Row Level Security (RLS)", "tier": "P0", "status": "KEEP" },
-    { "id": "F73", "title": "Service Role Restricted RPC Execution", "tier": "P0", "status": "KEEP" },
-    { "id": "F74", "title": "Security Definer Search Path Protection", "tier": "P0", "status": "KEEP" },
-    { "id": "F75", "title": "Cascading Account Deletion & Anonymization", "tier": "P0", "status": "KEEP" },
-    { "id": "F76", "title": "Privacy-Safe Logging & Audit Trail", "tier": "P0", "status": "KEEP" },
-    { "id": "F77", "title": "Database Disaster Recovery Replay Drill", "tier": "P0", "status": "KEEP" },
-    { "id": "F78", "title": "Additive Forward-Only Migration Chain", "tier": "P0", "status": "KEEP" },
-    { "id": "F79", "title": "Durable Cron Scheduler & Missed Runs", "tier": "P0", "status": "KEEP" },
-    { "id": "F80", "title": "Multi-Viewport Layout Integrity (320px..1920px)", "tier": "P0", "status": "KEEP" },
-    { "id": "F81", "title": "Accessible Keyboard Navigation & Focus", "tier": "P0", "status": "KEEP" },
-    { "id": "F82", "title": "Vietnamese Epistemic Domain Terminology", "tier": "P0", "status": "KEEP" },
-    { "id": "F83", "title": "Structured Product Telemetry Events", "tier": "P1", "status": "KEEP" },
-    { "id": "F84", "title": "Core Web Vitals Privacy Measurement", "tier": "P1", "status": "KEEP" },
-    { "id": "F85", "title": "Controlled Feature Flag Infrastructure", "tier": "P1", "status": "KEEP" },
-    { "id": "F86", "title": "Multi-City & Open-Jaw Routing", "tier": "P3", "status": "CONDITIONAL" },
-    { "id": "F87", "title": "Collaborative Travel Planning", "tier": "P3", "status": "CONDITIONAL" },
-    { "id": "F88", "title": "Travel Readiness & Entry Requirement Feed", "tier": "P3", "status": "CONDITIONAL" }
+    {
+      "id": "F00",
+      "tier": "P0",
+      "title": "Independent proof authority",
+      "solution": "Gate-level executed assertions, trustworthy raw receipts, source dependency digests and independent owner admission.",
+      "acceptance": "A forged PASS, parent SHA proof or tampered result cannot close an unrelated mandatory gate.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F01",
+      "tier": "P0",
+      "title": "One release manifest",
+      "solution": "Versioned runtime tuple covering frontend, source commit, database, Edge Functions, worker, scheduled jobs and active generation.",
+      "acceptance": "Historical preview and production SHAs do not falsely reconcile.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F02",
+      "tier": "P0",
+      "title": "Four canonical identities",
+      "solution": "Separate PhysicalItinerary, CommercialOffer, FareObservation and Opportunity with versioned IDs and migration aliases.",
+      "acceptance": "Distinct flights do not merge; Saved and Watch retain identity through generation rollover.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F03",
+      "tier": "P0",
+      "title": "Full TravelIntent",
+      "solution": "Typed trip kind, airport/city scope, outbound/inbound dates, travelers, cabin, stop requirements, baggage and price basis.",
+      "acceptance": "A full UI→API→DB→worker→decision round trip loses no material travel intent field.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F04",
+      "tier": "P0",
+      "title": "Unknown semantics",
+      "solution": "Use explicit KNOWN, UNKNOWN and NOT_APPLICABLE semantics across source, price and travel data.",
+      "acceptance": "Unknown stop count, baggage and tax are never silently coerced to zero.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F05",
+      "tier": "P0",
+      "title": "Provider evidence registry",
+      "solution": "Versioned provider mode, capability, license/terms, source age, parser state, quota and fallback policy.",
+      "acceptance": "HTTP 429/503 or parser failure cannot produce QUALIFIED_EMPTY.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F06",
+      "tier": "P0",
+      "title": "Coverage certificate",
+      "solution": "Scan proof bound to exact query scope, provider, dates, partition outcomes, generation and time.",
+      "acceptance": "Unscanned or partially scanned dates cannot be represented as verified no-fare results.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F07",
+      "tier": "P0",
+      "title": "Demand-aware worker",
+      "solution": "Union all active eligible Watch scopes before prioritizing under quotas, with bounded fairness, leases and retries.",
+      "acceptance": "Watch scopes outside the old first-N candidate slice receive their defined service opportunity.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F08",
+      "tier": "P0",
+      "title": "Atomic dataset generation",
+      "solution": "Candidate manifest, committed row-count reconciliation, transactional pointer publication and last-known-good fallback.",
+      "acceptance": "Crash or partial ingestion cannot expose mixed or false-complete generations.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F09",
+      "tier": "P0",
+      "title": "Authoritative search",
+      "solution": "Apply eligibility, full-universe filters, sort and count before cursor pagination on the server.",
+      "acceptance": "An eligible offer beyond the first 120, 1,500 or 5,000 rows remains discoverable and correctly ranked.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F10",
+      "tier": "P0",
+      "title": "Best/lowest truth",
+      "solution": "Arithmetic minimum across fully eligible comparable offers under one PriceScope, with separate unknown/excluded candidate counts.",
+      "acceptance": "Different cabins, passenger mixes, return dates or unknown required fees cannot be compared as one exact total.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F11",
+      "tier": "P0",
+      "title": "Comparable pricing",
+      "solution": "Exact PriceScope cohorts, independent scan epochs, duplicate controls and non-self-comparison. For STRONG historical claims preserve the original threshold: at least 12 independent comparable observations and at least 3 scan epochs, subject to original contract verification.",
+      "acceptance": "Multiple records from one scan never manufacture STRONG historical evidence.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F12",
+      "tier": "P0",
+      "title": "Explainable price label",
+      "solution": "Separate price exceptionality, freshness, confidence, evidence strength, cost uncertainty and journey fit.",
+      "acceptance": "Low-evidence prices cannot receive authoritative discount or lowest-ever claims.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F13",
+      "tier": "P0",
+      "title": "History/Matrix",
+      "solution": "Same-offer time-series by observed_at; departure-date matrix by travel_date; comparable cohort as separate product.",
+      "acceptance": "Departure date never masquerades as observation timestamp.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F14",
+      "tier": "P0",
+      "title": "Opportunity Detail",
+      "solution": "Primary deal card enters Farely's own stable Opportunity Decision Detail; external provider verification is a subsequent CTA.",
+      "acceptance": "Card opens the correct durable opportunity with evidence and alternatives.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F15",
+      "tier": "P0",
+      "title": "Saved lifecycle",
+      "solution": "Persist stable opportunity reference, saved-price snapshot, observed time, current state, expiry, alias migration and account ownership.",
+      "acceptance": "Saved survives refresh and correctly shows stale/replaced/invalidated opportunities.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F16",
+      "tier": "P0",
+      "title": "Watch & notification",
+      "solution": "Qualified Watch transition -> durable outbox -> provider acceptance -> delivery evidence where available -> deduped retry.",
+      "acceptance": "No duplicate logical notification episode; no strong price alert based on invalid coverage.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F17",
+      "tier": "P0",
+      "title": "Security/privacy",
+      "solution": "RLS, grants, RPC access, private credentials, consent, account deletion and bounded public APIs.",
+      "acceptance": "Tenant-crossing and privileged RPC abuse tests fail closed.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F18",
+      "tier": "P0",
+      "title": "Performance & accessibility",
+      "solution": "Actual hydrated browser tests, accessible forms/focus, real Web Vitals where measurable and manual critical journey review.",
+      "acceptance": "No critical user-flow accessibility blocker; report measured numbers instead of fabricated performance scores.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F19",
+      "tier": "P0",
+      "title": "Production release/soak",
+      "solution": "Authorized release process, exact deployment tuple, reversible rollout and at least 24 hours of actual runtime continuity for the historical soak gate.",
+      "acceptance": "Synthetic time-series or forged elapsed time cannot satisfy longitudinal proof.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F20",
+      "tier": "P0",
+      "title": "End-to-end anti-regression",
+      "solution": "Real-module tests, integration, browser journeys, database replay, adversarial faults and preservation proofs.",
+      "acceptance": "Critical user journeys survive changes without accepted regression.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F21",
+      "tier": "P1",
+      "title": "Budget-first Everywhere Explore",
+      "solution": "Origin + maximum budget + flexible travel period -> destination groups from fully covered eligible scopes.",
+      "acceptance": "Do not derive minimum price from first-page results or incomplete markets without a coverage warning.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F22",
+      "tier": "P1",
+      "title": "Flexible Date Matrix",
+      "solution": "Per-date observed minimum with same PriceScope, source age, cohort integrity and coverage status.",
+      "acceptance": "Missing cells show UNKNOWN, never 0₫ or invented fare.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F23",
+      "tier": "P1",
+      "title": "Airport alternatives",
+      "solution": "Nearby airport suggestions with actual transfer time/cost sources or explicitly labeled estimates.",
+      "acceptance": "Compare grounded air fare savings against travel inconvenience, not price-only airport swaps.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F24",
+      "tier": "P1",
+      "title": "Personal value of time",
+      "solution": "Optional disclosed user preferences for duration, stops and inconvenience; keep objective cheapest independent.",
+      "acceptance": "Turning preferences off restores transparent price ranking.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F25",
+      "tier": "P1",
+      "title": "Opportunity rationale",
+      "solution": "Expose sample count, independent epochs, comparable cohort, exclusions, observation age and claim ceiling.",
+      "acceptance": "A user can understand how Farely reached a recommendation.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F26",
+      "tier": "P1",
+      "title": "Price verification step",
+      "solution": "Clearly distinguish observed price, indicative CTA and provider-repriced quote when available.",
+      "acceptance": "Measure reported price match/mismatch, never infer a completed booking from a click.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F27",
+      "tier": "P1",
+      "title": "Watch setup from intent",
+      "solution": "Prepopulate and explicitly preview exact TravelIntent, departure/return conditions, price, expiry and cadence.",
+      "acceptance": "No silent modification of trip dates or traveler composition.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F28",
+      "tier": "P1",
+      "title": "Saved comparison board",
+      "solution": "Compare 2–4 saved compatible opportunities by verified cost fields, schedule, conditions, age and uncertainties.",
+      "acceptance": "No unknown information silently promoted to known.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F29",
+      "tier": "P1",
+      "title": "Fare movement timeline",
+      "solution": "Observed price history over time, with raw observations and missing-scan gaps.",
+      "acceptance": "Chart cannot use travel departure dates as historical observation dates.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F30",
+      "tier": "P1",
+      "title": "Fare recheck feedback",
+      "solution": "Accept user-reported matched, changed or unavailable price with source and timestamp.",
+      "acceptance": "Feedback remains USER_REPORTED until independently verified.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F31",
+      "tier": "P1",
+      "title": "Decision modes",
+      "solution": "Separate Cheapest Observed, Convenient, Budget Fit and Lower Risk rankings.",
+      "acceptance": "Users can inspect ranking reasons and return to objective price sort.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F32",
+      "tier": "P1",
+      "title": "Discovery empty/degraded recovery",
+      "solution": "Separate provider unavailable, no scan, partial coverage, genuinely no eligible offer and stale state.",
+      "acceptance": "Provider 503 does not show generic \"không tìm thấy vé\".",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F33",
+      "tier": "P1",
+      "title": "Vietnamese-first travel language",
+      "solution": "Natural Vietnamese UI for price units, observed-age, local date/time, baggage, airline and fare conditions.",
+      "acceptance": "Real user tasks show comprehension of data limitations.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F34",
+      "tier": "P1",
+      "title": "Digest and noise control",
+      "solution": "Instant/daily/weekly cadence, quiet hours, per-episode suppression, unsubscribe and delivery health.",
+      "acceptance": "No duplicate notifications and measurable alert burden.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F35",
+      "tier": "P1",
+      "title": "Data provenance UI",
+      "solution": "Compact source/age/evidence badges with detailed provenance on demand.",
+      "acceptance": "Users distinguish observed vs verified vs unavailable.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F36",
+      "tier": "P2",
+      "title": "Trust-calibrated Buy/Wait guidance",
+      "solution": "Longitudinal train/test split, forecast calibration, naive-baseline comparison and confidence limits.",
+      "acceptance": "Return insufficient_data until real out-of-sample evidence supports stronger guidance.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F37",
+      "tier": "P2",
+      "title": "Price anomaly detection",
+      "solution": "Robust seasonal/change-point analysis with measured precision@K and false-deal rate.",
+      "acceptance": "Never make strong anomaly claims on insufficient sample.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F38",
+      "tier": "P2",
+      "title": "Personalized travel feed",
+      "solution": "Explicit preference opt-in, privacy controls and controlled retention/saved-outcome evaluation.",
+      "acceptance": "No sensitive inference or covert profiling.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F39",
+      "tier": "P2",
+      "title": "Weekend escape templates",
+      "solution": "Schedule-aware weekends, local holidays, departure/arrival time and known fare coverage.",
+      "acceptance": "Templates must be possible and based on observed supporting data.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F40",
+      "tier": "P2",
+      "title": "Group/family fare planning",
+      "solution": "Correct traveler ages, baggage, seats and total-party fare scope.",
+      "acceptance": "Single-adult price cannot be shown as family total.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F41",
+      "tier": "P2",
+      "title": "Multi-city itinerary",
+      "solution": "Explicit multi-slice TravelIntent and provider-supported itinerary coherence.",
+      "acceptance": "No joining unrelated one-way tickets into a fictitious single purchasable offer.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F42",
+      "tier": "P2",
+      "title": "Deal curation and editorial collections",
+      "solution": "Human-reviewable collections based on evidence, freshness and expiry.",
+      "acceptance": "No fabricated scarcity or unsupported featured discount.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F43",
+      "tier": "P2",
+      "title": "Direct/affiliate provider comparison",
+      "solution": "Compare actual provider quote basis, refresh state, link class, partner rights and disclosures.",
+      "acceptance": "Commercial ranking does not override undisclosed objective cheapest result.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F44",
+      "tier": "P2",
+      "title": "Anonymous -> account continuity",
+      "solution": "Explicit consent-based guest-to-account Saved/Watch transfer with identity isolation.",
+      "acceptance": "No silent cross-account merge.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F45",
+      "tier": "P2",
+      "title": "Sharing, referrals and viral loops",
+      "solution": "Public links without personal information, bounded abuse controls and measurable acquisition outcomes.",
+      "acceptance": "No PII leaks or misleading stale deal shares.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F46",
+      "tier": "P2",
+      "title": "Explore by total trip budget",
+      "solution": "Include hotel and ground components only with source-supported data; preserve uncertainty.",
+      "acceptance": "No exact trip-total claim with unknown material costs.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F47",
+      "tier": "P2",
+      "title": "Partner integrations",
+      "solution": "Provider capability, live repricing, commercial permission, reliability and unit-economics evaluation.",
+      "acceptance": "No source enabled commercially without supporting rights and economics.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F48",
+      "tier": "P2",
+      "title": "Mobile-first PWA and push",
+      "solution": "Offline-safe experience, permission/consent, cache certainty protection and Watch-driven notification value.",
+      "acceptance": "Offline observed fares cannot appear as freshly available deals.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F49",
+      "tier": "P3",
+      "title": "AI travel copilot",
+      "solution": "LLM uses typed verified tools and deterministic price computation. No hallucinated prices, routes or available seats.",
+      "acceptance": "Empirical usefulness and factual grounding must beat simpler workflows before public activation.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F50",
+      "tier": "P3",
+      "title": "Historical fare forecasting",
+      "solution": "Longitudinal unbiased observation data and rolling-horizon backtesting.",
+      "acceptance": "No forecasting launch without evidence of calibration and practical value.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F51",
+      "tier": "P3",
+      "title": "Subscription/premium Watch",
+      "solution": "Proven recurring alert value, compliant billing, cancellation, support and consent.",
+      "acceptance": "No paid launch without commercial and product authorization.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F52",
+      "tier": "P3",
+      "title": "Full ticket checkout",
+      "solution": "Licensed issuing/fulfillment, booking provider integration, payment, refunds and support.",
+      "acceptance": "No direct checkout launch without authorized supplier and operational responsibility.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F53",
+      "tier": "P3",
+      "title": "B2B Fare Intelligence API",
+      "solution": "Explicit source redistribution rights, commercial quota, billing and quality SLA.",
+      "acceptance": "No B2B data resale based merely on the license of a scraper library.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F54",
+      "tier": "P3",
+      "title": "Credit-card / promotion optimization",
+      "solution": "Actual provider payable price + accurate card/promotion terms and effective periods.",
+      "acceptance": "No invented savings or irrelevant cashback catalog.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F55",
+      "tier": "P3",
+      "title": "International language and market expansion",
+      "solution": "Provider country rights, currency handling, localized policy and operational support.",
+      "acceptance": "No market release without supported data and service model.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F56",
+      "tier": "P0",
+      "title": "Authenticated Watch scoping",
+      "solution": "Remote tenant-owned Watch records are authoritative for signed-in users; guest cache must be isolated.",
+      "acceptance": "Account A logout -> Account B login shows no A Watch/email.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F57",
+      "tier": "P0",
+      "title": "Watch mutation acknowledgement",
+      "solution": "Server-authoritative idempotent pause/resume/delete and UI rollback.",
+      "acceptance": "403/500/offline cannot result in confirmed success UI.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F58",
+      "tier": "P0",
+      "title": "Typed WatchDateScope",
+      "solution": "Distinct outboundDateFrom/To, returnDateFrom/To, duration and any-date monitoring horizon.",
+      "acceptance": "Return date never becomes outbound window end.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F59",
+      "tier": "P0",
+      "title": "No invented observation time",
+      "solution": "Separate provider_observed_at, fetched_at and processed_at; preserve unknown provider time.",
+      "acceptance": "Unknown timestamp cannot be converted into \"just observed\".",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F60",
+      "tier": "P0",
+      "title": "Provider date provenance",
+      "solution": "Dates must originate from supported provider data and be validated.",
+      "acceptance": "Request date alone cannot certify physical flight date.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F61",
+      "tier": "P1",
+      "title": "One-way/roundtrip support boundary",
+      "solution": "Typed capability matrix for each provider.",
+      "acceptance": "One-way request never silently becomes round-trip.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F62",
+      "tier": "P0",
+      "title": "Immutable response coverage identity",
+      "solution": "Each response includes scope fingerprint, source mode, coverage IDs and generation.",
+      "acceptance": "A partial result page cannot claim full-market coverage.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F63",
+      "tier": "P0",
+      "title": "Watch visibility & truthful SLA",
+      "solution": "Show last checked, actual scan health, expected next evaluation and degraded status.",
+      "acceptance": "Stalled Watch cannot appear recently evaluated.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F64",
+      "tier": "P0",
+      "title": "Notification observed-at fidelity",
+      "solution": "Every price-specific alert references actual source observation and time.",
+      "acceptance": "Missing observation ID prevents a strong fare notification.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F65",
+      "tier": "P0",
+      "title": "Source mode quarantine",
+      "solution": "Separate OBSERVED_SCRAPE, CACHED_PRICE, LIVE_SEARCH and REPRICED modes.",
+      "acceptance": "Cached fares cannot be labeled purchasable live inventory.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F66",
+      "tier": "P0",
+      "title": "Currency and price scope integrity",
+      "solution": "Persist ISO currency, traveler mix, price unit and FX source/time when converted.",
+      "acceptance": "No cross-currency cheapest claim without suitable conversion evidence.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F67",
+      "tier": "P1",
+      "title": "Baggage/fare-rule uncertainty",
+      "solution": "Known mandatory fees, optional fees, estimates and unknowns are separate.",
+      "acceptance": "Unknown baggage is not free or included.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F68",
+      "tier": "P1",
+      "title": "Airport and local datetime correctness",
+      "solution": "IATA airport vs metro scope, timezone-aware flight instants and overnight connections.",
+      "acceptance": "Cross-timezone or same-city airport alternatives are evaluated correctly.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F69",
+      "tier": "P0",
+      "title": "Canonical client data adapters",
+      "solution": "Typed adapters preserve null/unknown instead of Number(x)||0 coercion.",
+      "acceptance": "Unknown values survive API -> UI -> Saved -> Watch -> notification.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F70",
+      "tier": "P0",
+      "title": "Watch source quorum and parser mode",
+      "solution": "Monitor parser/partition outcomes before certifying successful empty search.",
+      "acceptance": "Zero rows + parse failure = provider failure, not verified empty.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F71",
+      "tier": "P0",
+      "title": "Demand scheduler guarantees",
+      "solution": "Full active Watch demand union precedes candidate limit and quota selection.",
+      "acceptance": "Watch route beyond first-N tracked routes is not silently starved.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F72",
+      "tier": "P1",
+      "title": "Exact vs indicative CTA gate",
+      "solution": "Use exact deep links only when validated and allowed; generic/expired links disclose limits.",
+      "acceptance": "Generic search link cannot be labeled exact offer purchase.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F73",
+      "tier": "P0",
+      "title": "Browser-cache staleness ceiling",
+      "solution": "Cache entries carry observed timestamp, fetched timestamp, source and TTL.",
+      "acceptance": "A 7-day-old cache is never shown as a fresh fare.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F74",
+      "tier": "P0",
+      "title": "Cross-user analytics and privacy",
+      "solution": "Session/auth-bound pseudonymous analytics and logout cleanup.",
+      "acceptance": "No Watch/email leakage through browser caches or queued events.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F75",
+      "tier": "P1",
+      "title": "Verification reconciliation feedback",
+      "solution": "Capture observed price vs user/provider recheck result with valid denominators.",
+      "acceptance": "No booking or price-match success inferred from mere external clicks.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F76",
+      "tier": "P1",
+      "title": "Transparent partnership ranking",
+      "solution": "Separate editorial/affiliate promotion from objective cheapest ranking.",
+      "acceptance": "Changing referral revenue cannot silently change price sort.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F77",
+      "tier": "P0",
+      "title": "Secret and quota hygiene",
+      "solution": "Server-only secrets, redacted logs, safe provider quotas, rate limits, circuit breakers.",
+      "acceptance": "No secret leaks; quota 429 handled without false data truth.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F78",
+      "tier": "P0",
+      "title": "Synthetic-proof adversary",
+      "solution": "Gate-bound assertions, source hashes, real elapsed receipts and mutation detection.",
+      "acceptance": "Forged timestamps or parent SHA cannot prove new runtime behavior.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F79",
+      "tier": "P1",
+      "title": "Visual intent task tests",
+      "solution": "Actual tasks: find, compare, save, Watch, verify and understand data status.",
+      "acceptance": "Measurable task success/confusion; screenshots alone are insufficient.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F80",
+      "tier": "P1",
+      "title": "Compact evidence-led cards",
+      "solution": "Price basis, observed age, source class and uncertainty in progressive UI.",
+      "acceptance": "Users understand observed fare may change before booking.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F81",
+      "tier": "P1",
+      "title": "PWA operational safeguards",
+      "solution": "Offline-safe caching, secret safety and stale-data warnings.",
+      "acceptance": "Offline state cannot elevate cached fare certainty.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F82",
+      "tier": "P1",
+      "title": "Deal invalidation and lifecycle",
+      "solution": "Stable historical opportunity, expired/replaced states and compatible alternatives.",
+      "acceptance": "Saved opportunity does not disappear or point to a different physical flight.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F83",
+      "tier": "P0",
+      "title": "End-to-end after schema upgrade",
+      "solution": "Forward-compatible DB migrations and Edge/function signature checks.",
+      "acceptance": "Old/new consumer compatibility proven in isolated integration.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F84",
+      "tier": "P0",
+      "title": "Real notification receipt chain",
+      "solution": "Watch match -> durable outbox -> provider acceptance -> signed delivery event where supported.",
+      "acceptance": "Provider accepted is not delivered; logical episodes deduplicated.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F85",
+      "tier": "P1",
+      "title": "Provider source rights registry",
+      "solution": "Track source scraping terms, display, caching, redistribution and affiliate rights.",
+      "acceptance": "No premium/B2B redistribution without actual rights.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F86",
+      "tier": "P2",
+      "title": "Vietnam-specific travel UX",
+      "solution": "Vietnamese airport names, VND, baggage options, holidays and local transport context.",
+      "acceptance": "Localized real-data user tasks.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F87",
+      "tier": "P2",
+      "title": "Intent-based itinerary group planner",
+      "solution": "Group/family/multi-leg planning only with compatible trip and price units.",
+      "acceptance": "No one-person price promoted to total family fare.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    },
+    {
+      "id": "F88",
+      "tier": "P2",
+      "title": "Data economics optimizer",
+      "solution": "Track cost per scanned scope, eligible offer, verified opportunity and useful Watch event.",
+      "acceptance": "No scan expansion without measured marginal value.",
+      "status": "LOCKED_OWNER_AUTHORITY"
+    }
   ]
 }
