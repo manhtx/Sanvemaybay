@@ -367,6 +367,28 @@ Deno.serve(async (request) => {
       const attemptNo = Number(item.attempt_count ?? 1);
       const { alert, deal, event_type } = item.payload;
 
+      // J22: Verify recipient subscription state immediately prior to dispatch
+      if (item.watch_id) {
+        const { data: currentWatch } = await supabase
+          .from("user_alerts")
+          .select("id, status")
+          .eq("id", item.watch_id)
+          .maybeSingle();
+
+        if (!currentWatch || currentWatch.status === "unsubscribed" || currentWatch.status === "paused") {
+          await supabase.rpc("resolve_notification_outbox", {
+            p_id: item.id,
+            p_claim_token: item.claim_token,
+            p_status: "PERMANENT_FAILED",
+            p_provider: item.channel === "EMAIL" ? "resend" : "telegram",
+            p_provider_message_id: null,
+            p_error_code: "RECIPIENT_UNSUBSCRIBED_OR_PAUSED",
+            p_next_attempt_at: null,
+          });
+          continue;
+        }
+      }
+
       try {
         let providerId = "";
         if (item.channel === "EMAIL") {

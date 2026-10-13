@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Clock, AlertTriangle, Calendar, Bookmark, ShieldCheck } from "lucide-react";
-import { Deal, formatVND, regionFlag } from "../data/deals";
+import { Deal, formatStops, formatVND, regionFlag } from "../data/deals";
 import { isBookmarkedDeal, mutateBookmarkOptimistic, createOpportunitySnapshot } from "../lib/bookmarks";
 import { useState } from "react";
 import { trackProductEvent } from "../lib/analytics";
@@ -96,7 +96,7 @@ export function DealCard({ deal }: DealCardProps) {
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <span className="truncate">
-                  {deal.duration} · {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
+                  {deal.duration} · {formatStops(deal.stops)}
                 </span>
               </div>
             </div>

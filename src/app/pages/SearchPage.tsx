@@ -8,7 +8,7 @@ import {
   Calendar,
   TrendingDown,
 } from "lucide-react";
-import { formatVND, Deal } from "../data/deals";
+import { formatVND, formatStops, Deal } from "../data/deals";
 import { getTrackedRoutes, searchDealsWithStatus, SearchStatus } from "../data/api";
 import { uniqueOrigins } from "../data/origins";
 import {
@@ -477,7 +477,7 @@ export function SearchPage() {
                           {new Date(deal.departDate).toLocaleDateString("vi-VN")}
                         </span>
                         <span>·</span>
-                        <span>{deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}</span>
+                        <span>{formatStops(deal.stops)}</span>
                       </div>
                     </div>
                   </div>

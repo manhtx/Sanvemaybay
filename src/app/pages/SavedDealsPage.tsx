@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Bookmark, Bell, Trash2, ArrowRight, ExternalLink, Calendar, Plane } from "lucide-react";
-import { Deal, formatVND } from "../data/deals";
+import { Deal, formatStops, formatVND } from "../data/deals";
 import { getObservedFares } from "../data/api";
 import {
   syncSavedWithRemote,
@@ -20,7 +20,7 @@ interface DisplaySavedItem {
   returnDate?: string | null;
   savedPrice: number;
   airline?: string;
-  stops?: number;
+  stops?: number | null;
   savedAt: string;
   currentPrice: number | null;
   priceDiff: number | null;
@@ -191,7 +191,7 @@ export function SavedDealsPage() {
                         {item.airline && (
                           <span className="inline-flex items-center gap-1">
                             <Plane className="w-3.5 h-3.5 text-stone-400" />
-                            {item.airline} · {item.stops === 0 ? "Bay thẳng" : `${item.stops} điểm dừng`}
+                            {item.airline} · {formatStops(item.stops)}
                           </span>
                         )}
                         <span className="text-stone-500 font-mono text-[11px]">

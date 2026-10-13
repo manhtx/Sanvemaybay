@@ -139,3 +139,10 @@ export function getRecommendationLabel(
       return "TÌM BAY KHÁC";
   }
 }
+
+export function formatStops(stops: number | null | undefined): string {
+  if (stops === 0) return "Bay thẳng";
+  if (stops == null) return "Chưa rõ điểm dừng";
+  return `${stops} điểm dừng`;
+}
+

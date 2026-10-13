@@ -11,7 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { Deal, formatVND } from "../data/deals";
+import { Deal, formatStops, formatVND } from "../data/deals";
 import { getObservedFares, getDealsResult } from "../data/api";
 import {
   isBookmarkedDeal,
@@ -500,7 +500,7 @@ export function DealsPage() {
                         {new Date(deal.departDate).toLocaleDateString("vi-VN")}
                       </span>
                       <span>·</span>
-                      <span>{deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}</span>
+                      <span>{formatStops(deal.stops)}</span>
                     </div>
                   </div>
 

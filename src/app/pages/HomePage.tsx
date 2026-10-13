@@ -11,7 +11,7 @@ import {
   Search,
 } from "lucide-react";
 
-import { formatVND, Deal } from "../data/deals";
+import { formatVND, formatStops, Deal } from "../data/deals";
 import { getObservedFares, getDeals } from "../data/api";
 import { WatchModal } from "../components/WatchModal";
 
@@ -241,7 +241,7 @@ export function HomePage() {
                       Cơ hội quan sát tiêu biểu
                     </span>
                     <span className="text-stone-500 font-medium">
-                      {primaryOpportunity.airline} · {primaryOpportunity.stops === 0 ? "Bay thẳng" : `${primaryOpportunity.stops} điểm dừng`}
+                      {primaryOpportunity.airline} · {formatStops(primaryOpportunity.stops)}
                     </span>
                   </div>
 
@@ -400,7 +400,7 @@ export function HomePage() {
                         <td className="py-3 px-3 text-stone-700">
                           <div>{deal.airline}</div>
                           <div className="text-[10px] text-stone-500">
-                            {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
+                            {formatStops(deal.stops)}
                           </div>
                         </td>
 

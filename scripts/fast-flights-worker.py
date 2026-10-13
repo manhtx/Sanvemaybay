@@ -123,6 +123,7 @@ def fetch_all_flights(query: Any) -> list[Any]:
         script = parser.css_first(r"script.ds\:1")
         if not script:
             return (list(get_flights(query)), "UPSTREAM_DEGRADED_FALLBACK")
+        text = script.text()
         if "data:" not in text:
             return (list(get_flights(query)), "UPSTREAM_DEGRADED_FALLBACK")
         data = text.split("data:", 1)[1].rsplit(",", 1)[0]
@@ -561,18 +562,18 @@ def direct_ingest(
 def main() -> int:
     started = time.monotonic()
     public_headers = {"apikey": ANON_KEY, "Authorization": f"Bearer {ANON_KEY}"}
-    service_headers = {"apikey": SERVICE_ROLE_KEY, "Authorization": f"Bearer {SERVICE_ROLE_KEY}"}
+    service_headers = {"apikey": SUPABASE_SECRET_KEY, "Authorization": f"Bearer {SUPABASE_SECRET_KEY}"} if SUPABASE_SECRET_KEY else public_headers
 
     # REQ-COV-002: Demand-Aware Priority Scheduling
     # Fetch active watch routes to prioritize routes with current user demand
     active_watch_routes: set[tuple[str, str]] = set()
     try:
-        watches_url = f"{BASE_URL}/rest/v1/user_alerts?select=origin,destination&status=in.(active,ACTIVE)"
+        watches_url = f"{BASE_URL}/rest/v1/user_alerts?select=origin_code,destination_code,destination&status=in.(active,ACTIVE,monitoring)"
         active_watches = request_json(watches_url, service_headers)
         if isinstance(active_watches, list):
             for w in active_watches:
-                orig = str(w.get("origin") or "").upper().strip()
-                dest = str(w.get("destination") or "").upper().strip()
+                orig = str(w.get("origin_code") or w.get("origin") or "").upper().strip()
+                dest = str(w.get("destination_code") or w.get("destination") or "").upper().strip()
                 if orig and dest:
                     active_watch_routes.add((orig, dest))
                 elif dest:

@@ -14,7 +14,7 @@ import {
   Clock,
 } from "lucide-react";
 import { getDealById, getPriceHistory, getFareObservations, getRouteBest } from "../data/api";
-import { Deal, formatVND } from "../data/deals";
+import { Deal, formatStops, formatVND } from "../data/deals";
 import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import {
   isBookmarkedDeal,
@@ -311,7 +311,7 @@ export function DealDetailPage() {
                   <span>Đang có lựa chọn rẻ hơn cho chặng bay này</span>
                 </div>
                 <p className="text-xs text-amber-800 mt-0.5">
-                  <span>{cheaperAlternative.airline} ({cheaperAlternative.stops === 0 ? "Bay thẳng" : `${cheaperAlternative.stops} điểm dừng`})</span>
+                  <span>{cheaperAlternative.airline} ({formatStops(cheaperAlternative.stops)})</span>
                   {" · "}
                   <span className="font-bold tabular-nums">{formatVND(cheaperAlternative.price)}</span>
                   {" · "}
@@ -356,7 +356,7 @@ export function DealDetailPage() {
 
                 <span className="inline-flex items-center gap-1.5 bg-stone-100 px-2.5 py-1 rounded-md font-medium text-stone-800 border border-stone-200">
                   <Plane className="w-3.5 h-3.5 text-stone-500" />
-                  {deal.airline} · {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
+                  {deal.airline} · {formatStops(deal.stops)}
                 </span>
 
                 {deal.duration && (
