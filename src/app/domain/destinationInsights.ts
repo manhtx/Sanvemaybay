@@ -12,6 +12,21 @@ export interface DestinationInsight {
   hasWeekendDeal: boolean;
 }
 
+export function isWeekendFlightDate(departDate: string): boolean {
+  if (!departDate) return false;
+  const parts = departDate.split("-");
+  if (parts.length === 3) {
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const day = parseInt(parts[2], 10);
+    if (Number.isFinite(year) && Number.isFinite(month) && Number.isFinite(day)) {
+      const utcDay = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+      return utcDay === 0 || utcDay === 6;
+    }
+  }
+  return [0, 6].includes(new Date(departDate).getDay());
+}
+
 export function buildDestinationInsights(deals: Deal[]): DestinationInsight[] {
   const groups = new Map<string, Deal[]>();
   for (const deal of deals) {
@@ -34,8 +49,9 @@ export function buildDestinationInsights(deals: Deal[]): DestinationInsight[] {
         averageDiscount,
         bestDealScore: topDeal.dealScore ?? topDeal.aiInsight.savingScore,
         topDealId: topDeal.id,
-        hasWeekendDeal: destinationDeals.some((deal) => [0, 6].includes(new Date(deal.departDate).getDay())),
+        hasWeekendDeal: destinationDeals.some((deal) => isWeekendFlightDate(deal.departDate)),
       };
     })
     .sort((a, b) => b.bestDealScore - a.bestDealScore);
 }
+
