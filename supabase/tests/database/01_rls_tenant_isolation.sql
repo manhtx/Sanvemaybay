@@ -111,5 +111,44 @@ SELECT isnt_empty(
   'Service role retains operational read access to travel_intents'
 );
 
+-- 10. Test NC-029: Anon cannot enumerate notification_outbox
+SET LOCAL ROLE anon;
+SELECT is_empty(
+  'SELECT id FROM public.notification_outbox',
+  'NC-029: Anonymous users cannot SELECT from notification_outbox'
+);
+
+-- 11. Test NC-029: Anon cannot enumerate watch_evaluations
+SELECT is_empty(
+  'SELECT id FROM public.watch_evaluations',
+  'NC-029: Anonymous users cannot SELECT from watch_evaluations'
+);
+
+-- 12..15: HT24: Confirm privileged RPC existence separately from access denial
+SELECT has_function(
+  'public',
+  'claim_notification_outbox',
+  'HT24: Privileged RPC claim_notification_outbox must exist in public schema'
+);
+
+SELECT has_function(
+  'public',
+  'apply_watch_evaluation',
+  'HT24: Privileged RPC apply_watch_evaluation must exist in public schema'
+);
+
+SELECT has_function(
+  'public',
+  'publish_observed_generation',
+  'HT24: Privileged RPC publish_observed_generation must exist in public schema'
+);
+
+SELECT has_function(
+  'public',
+  'resolve_notification_outbox',
+  'HT24: Privileged RPC resolve_notification_outbox must exist in public schema'
+);
+
 SELECT * FROM finish();
 ROLLBACK;
+

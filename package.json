@@ -13,7 +13,7 @@
     "test:e2e": "playwright test",
     "test:all": "npm test && npm run test:functions && npm run test:e2e",
     "check:functions": "for f in supabase/functions/*/index.ts; do npx --yes deno check --quiet \"$f\" || exit 1; done",
-    "test:functions": "npx --yes deno test --allow-env supabase/functions/_shared",
+    "test:functions": "npx --yes deno test --allow-env --allow-read supabase/functions/_shared",
     "test:integration": "node scripts/supabase-smoke.mjs",
     "audit:production-truth": "node scripts/production-truth.mjs",
     "audit:security-read": "node scripts/security-smoke.mjs",

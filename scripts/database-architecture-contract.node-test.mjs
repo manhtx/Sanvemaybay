@@ -314,6 +314,29 @@ test('REQ-DATA-001..010 & REQ-SEC-004..005: Full PostgreSQL schema, constraints,
         `Function ${fn.proname} must have SET search_path = public, found: "${config}"`
       );
     }
+
+    // --- HT24 & REQ-SEC-001: Confirm Privileged RPC Existence in pg_proc ---
+    const allPublicProcs = queryJson(`
+      SELECT proname
+      FROM pg_proc p
+      JOIN pg_namespace n ON p.pronamespace = n.oid
+      WHERE n.nspname = 'public'
+    `);
+    const allProcNames = new Set(allPublicProcs.map((f) => f.proname));
+    const privilegedRpcs = [
+      'claim_notification_outbox',
+      'apply_watch_evaluation',
+      'publish_observed_generation',
+      'rollback_observed_generation',
+      'prepare_account_deletion',
+      'resolve_notification_outbox',
+    ];
+    for (const rpc of privilegedRpcs) {
+      assert.ok(
+        allProcNames.has(rpc),
+        `HT24: Privileged RPC ${rpc} must exist in pg_proc (404 cannot be counted as denial of nonexistent RPC)`
+      );
+    }
   } finally {
     // Clean up temporary database and files
     try {

@@ -5,6 +5,8 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || "https://yefbpmqfsstcaeqfrmyn.supabase.co";
 const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllZmJwbXFmc3N0Y2FlcWZybXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2Mzk2MjQsImV4cCI6MjEwNjIxNTYyNH0.FxYMbfcX9Rg9Jj0L_D2VkX-Apzb6Iy5GqAeKlNpTRpc";
@@ -105,4 +107,27 @@ test('A06 & S01: Privileged worker RPC resolve_notification_outbox denies anon e
   assert.notEqual(res.status, 200, "resolve_notification_outbox must never return 200 for anon key");
   assert.ok([401, 403, 404].includes(res.status), `Expected 401/403/404, got ${res.status}`);
 });
+
+test('HT24: Privileged RPC existence is validated in database migrations separately from denial', () => {
+  const migrationsDir = path.resolve("supabase/migrations");
+  const sql = fs.readdirSync(migrationsDir)
+    .filter(f => f.endsWith(".sql"))
+    .map(f => fs.readFileSync(path.join(migrationsDir, f), "utf8"))
+    .join("\n");
+
+  const requiredRpcs = [
+    'claim_notification_outbox',
+    'apply_watch_evaluation',
+    'publish_observed_generation',
+    'rollback_observed_generation',
+    'prepare_account_deletion',
+    'resolve_notification_outbox',
+  ];
+
+  for (const rpc of requiredRpcs) {
+    const rx = new RegExp(`CREATE\\s+(?:OR\\s+REPLACE\\s+)?FUNCTION\\s+public\\.${rpc}`, 'i');
+    assert.ok(rx.test(sql), `HT24: Function ${rpc} must be defined in migrations`);
+  }
+});
+
 
