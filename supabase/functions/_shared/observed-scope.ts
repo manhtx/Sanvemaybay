@@ -1,6 +1,7 @@
 /** Applied identically to page, RouteBest and freshness queries; do not reimplement separately. */
 export interface ObservedQueryScope {
   eq(column: string, value: unknown): ObservedQueryScope;
+  is(column: string, value: unknown): ObservedQueryScope;
   or(filters: string): ObservedQueryScope;
   lte(column: string, value: unknown): ObservedQueryScope;
   gte(column: string, value: unknown): ObservedQueryScope;
@@ -42,7 +43,7 @@ export function applyObservedScope<T extends ObservedQueryScope>(
           .eq("depart_date", depart);
         if (ret) query = query.eq("return_date", ret);
         if (airline) query = query.eq("airline_code", airline.toUpperCase());
-        if (stops === "UNKNOWN") query = query.eq("stops", null);
+        if (stops === "UNKNOWN") query = query.is("stops", null);
         else if (/^\d+$/.test(stops)) query = query.eq("stops", Number(stops));
         else if (stops !== "") throw new RangeError("INVALID_OPPORTUNITY_ID");
       } else {
