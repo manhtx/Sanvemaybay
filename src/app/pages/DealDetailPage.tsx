@@ -45,7 +45,7 @@ export function DealDetailPage() {
     airline: string;
     price: number;
     id: string;
-    stops: number;
+    stops: number | null;
   } | null>(null);
 
   useEffect(() => {
@@ -77,6 +77,7 @@ export function DealDetailPage() {
           const routeBestResult = await getRouteBest({
             origin: data.fromCode,
             destination: data.toCode,
+            currency: data.currency,
             departDate: data.departDate,
             returnDate: data.returnDate || undefined,
             directOnly: data.stops === 0,
@@ -84,12 +85,12 @@ export function DealDetailPage() {
           });
 
           const canonicalRouteBest = routeBestResult?.bestOffer;
-          if (canonicalRouteBest && canonicalRouteBest.id !== data.id && canonicalRouteBest.price < data.price) {
+          if (data.currency === "VND" && canonicalRouteBest?.currency === data.currency && canonicalRouteBest.id !== data.id && canonicalRouteBest.price < data.price) {
             setCheaperAlternative({
               airline: canonicalRouteBest.airline,
               price: canonicalRouteBest.price,
               id: canonicalRouteBest.id,
-              stops: canonicalRouteBest.stops ?? 0,
+              stops: canonicalRouteBest.stops,
             });
           } else {
             setCheaperAlternative(null);
@@ -308,14 +309,14 @@ export function DealDetailPage() {
               <div className="w-2.5 h-2.5 rounded-full bg-amber-600 mt-1 sm:mt-0 animate-pulse shrink-0" />
               <div>
                 <div className="text-sm font-bold text-amber-950 flex items-center gap-2">
-                  <span>Đang có lựa chọn rẻ hơn cho chặng bay này</span>
+                  <span>Có giá vé quan sát thấp hơn trên cùng chặng và ngày</span>
                 </div>
                 <p className="text-xs text-amber-800 mt-0.5">
                   <span>{cheaperAlternative.airline} ({formatStops(cheaperAlternative.stops)})</span>
                   {" · "}
                   <span className="font-bold tabular-nums">{formatVND(cheaperAlternative.price)}</span>
                   {" · "}
-                  <span>Thấp hơn {formatVND(deal.price - cheaperAlternative.price)} so với chuyến đang xem</span>
+                  <span>Chênh {formatVND(deal.price - cheaperAlternative.price)} tiền vé quan sát; tổng chi phí, hành lý và khả năng đặt mua chưa được xác minh</span>
                 </p>
               </div>
             </div>
