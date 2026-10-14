@@ -1,8 +1,8 @@
 {
   "mission_id": "FARELY-10X-V26-MAXIMUM-EXECUTION",
   "checkpoint_type": "POST_IMPLEMENTATION",
-  "implementation_commit_sha": "a12d140f39916b994690b1f1a5162c700e3e414c",
-  "timestamp": "2026-10-14T12:02:45Z",
+  "implementation_commit_sha": "751ca70eb00f99266e4f00cebb74242c696a2f80",
+  "timestamp": "2026-10-14T12:12:15Z",
   "branch": "antigravity/farely-v12-product-convergence",
   "pr_url": "https://github.com/manhtx/Sanvemaybay/pull/1",
   "production_url": "https://farely.manhtx.com",
@@ -16,13 +16,15 @@
     "priority_drift_resolved": 34
   },
   "root_causes_remediated": {
-    "total_findings": 36,
+    "total_findings": 37,
     "status": "ALL_ADDRESSED_OR_FIXED"
   },
   "recent_remediations": [
     "Fix Deno test runner permissions (--allow-read) in package.json without deleting tests (J3 CI REPAIR)",
     "Correct pgTAP plan(15) assertion count in 01_rls_tenant_isolation.sql adding anon isolation and privileged RPC checks",
     "Implement HT24 privileged RPC existence validation in pg_proc (database-architecture-contract.node-test.mjs) and migrations (rpc-security-role.node-test.mjs)",
+    "Implement budget-first Explore ceiling filters (J25/F21) and weekend escape toggle (F39) with region filtering in ExplorePage",
+    "Implement UTC-safe isWeekendFlightDate in destinationInsights.ts preventing timezone skew bugs across international locales",
     "Re-evaluate proof index with 42 independent probes passing 267 gates dynamically under EXECUTING terminal state",
     "Enforce strict founder authority invariants: zero fake TARGET_PROVEN claims and zero self-awarded 10/10 scores"
   ],
