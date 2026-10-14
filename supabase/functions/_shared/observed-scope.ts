@@ -14,14 +14,14 @@ export function isSafeObservedTextFilter(value: unknown): boolean {
   return normalized.length === 0 || (normalized.length <= 80 && /^[\p{L}\p{N}\s-]+$/u.test(normalized));
 }
 
-export function applyObservedScope<T extends ObservedQueryScope>(
+export function applyObservedScope<T>(
   initialQuery: T,
   body: Record<string, unknown>,
 ): T {
   if (!isSafeObservedTextFilter(body.destination) || !isSafeObservedTextFilter(body.search_text)) {
     throw new RangeError("INVALID_SEARCH_FILTER");
   }
-  let query: ObservedQueryScope = initialQuery;
+  let query: ObservedQueryScope = initialQuery as ObservedQueryScope;
     const targetId = typeof body.id === "string" && body.id
       ? body.id
       : typeof body.observation_id === "string"
@@ -104,5 +104,5 @@ export function applyObservedScope<T extends ObservedQueryScope>(
     if (typeof body.currency === "string" && /^[A-Za-z]{3}$/.test(body.currency)) {
       query = query.eq("currency", body.currency.toUpperCase());
     }
-  return query as T;
+  return query as unknown as T;
 }
