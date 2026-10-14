@@ -120,7 +120,7 @@ Deno.serve(async (request) => {
           comparable_total_proven: false, active_generation_id: activeGen.active_generation_id,
         }, id);
       }
-      let bestQuery = applyObservedScope(service.from("observed_fare_snapshots")
+      const bestQuery = applyObservedScope(service.from("observed_fare_snapshots")
         .select("dedupe_key,observation_id,generation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at,segments", { count: "exact" })
         .gte("depart_date", new Date().toISOString().slice(0, 10))
         .eq("generation_id", activeGen.active_generation_id), body)
