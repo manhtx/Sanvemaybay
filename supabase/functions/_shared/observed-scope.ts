@@ -42,7 +42,9 @@ export function applyObservedScope<T extends ObservedQueryScope>(
           .eq("depart_date", depart);
         if (ret) query = query.eq("return_date", ret);
         if (airline) query = query.eq("airline_code", airline.toUpperCase());
-        if (stops !== "") query = query.eq("stops", Number(stops));
+        if (stops === "UNKNOWN") query = query.eq("stops", null);
+        else if (/^\d+$/.test(stops)) query = query.eq("stops", Number(stops));
+        else if (stops !== "") throw new RangeError("INVALID_OPPORTUNITY_ID");
       } else {
         query = query.eq("dedupe_key", raw);
       }
