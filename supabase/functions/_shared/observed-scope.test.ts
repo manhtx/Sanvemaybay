@@ -4,6 +4,7 @@ import { applyObservedScope, isSafeObservedTextFilter, type ObservedQueryScope }
 class Capture implements ObservedQueryScope {
   calls: string[] = [];
   eq(column: string, value: unknown): this { this.calls.push("eq:" + column + ":" + String(value)); return this; }
+  is(column: string, value: unknown): this { this.calls.push("is:" + column + ":" + String(value)); return this; }
   or(filters: string): this { this.calls.push("or:" + filters); return this; }
   gte(column: string, value: unknown): this { this.calls.push("gte:" + column + ":" + String(value)); return this; }
   lte(column: string, value: unknown): this { this.calls.push("lte:" + column + ":" + String(value)); return this; }
