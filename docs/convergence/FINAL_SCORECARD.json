@@ -37,8 +37,8 @@
     "exact_final_release_state_reconciled": false
   },
   "market_outcome_evidence": "COLLECTING_EVIDENCE",
-  "timestamp": "2026-10-15T09:34:19.479Z",
-  "source_sha": "bef5fcf4f6dd85acb40d87535bee6f1d0a75995e",
+  "timestamp": "2026-10-15T09:39:58.542Z",
+  "source_sha": "528e0f6e779ca0d71353d9bc2a0f5141d4dfbd77",
   "total_gates": 267,
   "proven_gates": 0,
   "unresolved_p0": 192,
