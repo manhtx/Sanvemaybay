@@ -4,7 +4,6 @@ import {
   areAirportsInSameMetro,
   calculateTimezoneAwareTiming,
   evaluateAirportAlternative,
-  GROUND_TRANSFER_CATALOG,
 } from './airportAlternatives.ts';
 
 describe('F23: Airport Alternatives with Ground Transfer Time and Cost', () => {

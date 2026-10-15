@@ -3,7 +3,6 @@ import {
   getVietnamHolidayContext,
   getCarrierBaggagePolicy,
   getDestinationsByMotivation,
-  VIETNAM_MAJOR_HOLIDAYS_2026,
 } from "./vietnamTravelContext";
 
 describe("Vietnam Travel Context (F86 & F87)", () => {

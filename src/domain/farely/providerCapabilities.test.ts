@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import {
-  PROVIDER_CAPABILITY_REGISTRY,
   getProviderCapabilities,
   isProviderSupportingJourneyType,
   validateIntentProviderCompatibility,

@@ -26,7 +26,6 @@ export function RecheckFeedbackWidget({
   const [actualPrice, setActualPrice] = useState<string>("");
   const [note, setNote] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     const existing = getFeedbackForOpportunity(opportunityId);
@@ -52,7 +51,6 @@ export function RecheckFeedbackWidget({
 
       saveRecheckFeedback(record);
       setExistingFeedback(record);
-      setSubmitted(true);
 
       void trackProductEvent({
         eventType: "verify_result",

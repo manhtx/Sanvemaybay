@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Clock, AlertTriangle, Calendar, Bookmark, ShieldCheck } from "lucide-react";
+import { Clock, AlertTriangle, Calendar, Bookmark } from "lucide-react";
 import { Deal, formatStops, formatVND, regionFlag } from "../data/deals";
 import { isBookmarkedDeal, mutateBookmarkOptimistic, createOpportunitySnapshot } from "../lib/bookmarks";
 import { useState } from "react";

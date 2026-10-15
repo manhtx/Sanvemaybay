@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router";
-import { X, AlertTriangle, CheckCircle, Info, Calendar, Plane, Clock, ShieldAlert, Sparkles, ExternalLink, HelpCircle } from "lucide-react";
+import { X, AlertTriangle, CheckCircle, Info, Calendar, Plane, Clock, Sparkles, ExternalLink, HelpCircle } from "lucide-react";
 import { formatVND, formatStops } from "../data/deals";
 import {
   DealComparisonRow,

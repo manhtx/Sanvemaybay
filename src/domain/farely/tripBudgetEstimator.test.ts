@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { estimateTotalTripCost, DESTINATION_BENCHMARK_COSTS } from "./tripBudgetEstimator";
+import { estimateTotalTripCost } from "./tripBudgetEstimator";
 
 describe("Trip Budget Estimator (F46)", () => {
   it("calculates realistic estimated total cost for Phu Quoc trip", () => {

@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
   detectPriceAnomaly,
-  MIN_ANOMALY_SAMPLE_SIZE,
 } from "./priceAnomaly";
 
 describe("Price Anomaly Detection (F37)", () => {

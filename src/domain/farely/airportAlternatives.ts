@@ -5,7 +5,7 @@
  * REQ-DOM-004, REQ-DOM-005, NC-002, NC-003
  */
 
-import { AIRPORT_CATALOG, METRO_CATALOG, type AirportInfo } from './locationScope.ts';
+import { AIRPORT_CATALOG, type AirportInfo } from './locationScope.ts';
 
 export interface GroundTransferRoute {
   originCode: string;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, ShieldCheck, AlertCircle, ChevronDown, ChevronUp, Info, Clock, CheckCircle2 } from "lucide-react";
+import { Eye, AlertCircle, ChevronDown, ChevronUp, Info, CheckCircle2 } from "lucide-react";
 import { Deal } from "../data/deals";
 import { buildDataProvenance, DataProvenance } from "../domain/provenance";
 

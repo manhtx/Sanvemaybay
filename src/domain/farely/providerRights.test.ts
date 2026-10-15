@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import {
   PROVIDER_SOURCE_RIGHTS_REGISTRY,
   getProviderSourceRights,
-  hasB2BRedistributionRights,
   validateB2BRedistributionScope,
   filterRecordsForB2BExport,
   DataRightsViolationError,

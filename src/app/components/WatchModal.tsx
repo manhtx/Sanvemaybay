@@ -74,7 +74,6 @@ export function WatchModal({
   const effectiveCurrentPrice = opportunity?.price || currentPrice || 3000000;
 
   // F27: Prepopulate exact dates and passenger composition without silent modification
-  const todayStr = new Date().toISOString().slice(0, 10);
   const horizon90DaysStr = new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10);
 
   const effectiveDepartDate =

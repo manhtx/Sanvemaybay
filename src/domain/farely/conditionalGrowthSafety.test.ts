@@ -4,7 +4,6 @@ import {
   UnauthorizedP3ActivationError,
   P3_CAPABILITY_REGISTRY,
   generateFounderAuthToken,
-  verifyFounderAuthToken,
 } from './conditionalGrowthSafety';
 
 describe('Rule 4 & Section D4: Conditional Growth Safety & P3 Governance', () => {
