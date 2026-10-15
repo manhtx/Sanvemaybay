@@ -21,7 +21,10 @@ export interface CreateWatchInput {
   email: string;
   channel?: "email" | "telegram";
   telegramId?: string;
-  frequency?: "instant" | "daily";
+  frequency?: "instant" | "daily" | "weekly";
+  quietHoursEnabled?: boolean;
+  quietHoursStart?: string;
+  quietHoursEnd?: string;
   turnstileToken?: string;
 }
 
@@ -143,6 +146,9 @@ export async function createWatch(
     tripType: input.journeyType === "round_trip" || input.returnDate ? "roundtrip" : "oneway",
     status: "monitoring",
     frequency: input.frequency || "instant",
+    quietHoursEnabled: input.quietHoursEnabled ?? null,
+    quietHoursStart: input.quietHoursStart ?? null,
+    quietHoursEnd: input.quietHoursEnd ?? null,
     email: input.email,
     channel: input.channel || "email",
     telegramId: input.telegramId || null,

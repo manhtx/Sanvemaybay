@@ -19,6 +19,7 @@ import {
   createOpportunitySnapshot,
 } from "../lib/bookmarks";
 import { WatchModal } from "../components/WatchModal";
+import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { trackProductEvent } from "../lib/analytics";
 
 type SortType = "discount" | "price_asc" | "date_near";
@@ -501,6 +502,10 @@ export function DealsPage() {
                       </span>
                       <span>·</span>
                       <span>{formatStops(deal.stops)}</span>
+                    </div>
+
+                    <div className="pt-2">
+                      <ProvenanceBadge deal={deal} />
                     </div>
                   </div>
 

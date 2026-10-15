@@ -17,6 +17,7 @@ import {
   DECISION_MODES,
   rankDealsByDecisionMode,
 } from "../domain/decisionModes";
+import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { uniqueOrigins } from "../data/origins";
 import {
   getUserPreferences,
@@ -548,6 +549,10 @@ export function SearchPage() {
                         <span>·</span>
                         <span>{formatStops(deal.stops)}</span>
                       </div>
+                    </div>
+
+                    <div className="pt-1">
+                      <ProvenanceBadge deal={deal} />
                     </div>
 
                     {/* Ranking Reason Banner (F31 transparent inspectable reasoning) */}

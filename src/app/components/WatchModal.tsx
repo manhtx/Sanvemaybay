@@ -50,7 +50,8 @@ export function WatchModal({
     propTargetPrice || Math.round(effectiveCurrentPrice * 0.95)
   );
   const [email, setEmail] = useState("");
-  const [frequency, setFrequency] = useState<"instant" | "daily">("instant");
+  const [frequency, setFrequency] = useState<"instant" | "daily" | "weekly">("instant");
+  const [quietHours, setQuietHours] = useState(true);
   const [maxStops, setMaxStops] = useState<number | undefined>(
     opportunity?.stops != null ? opportunity.stops : undefined
   );
@@ -169,6 +170,9 @@ export function WatchModal({
         journeyType: returnDate ? "round_trip" : "one_way",
         email: email.trim(),
         frequency,
+        quietHoursEnabled: quietHours,
+        quietHoursStart: quietHours ? "22:00" : undefined,
+        quietHoursEnd: quietHours ? "07:00" : undefined,
         channel: "email",
       });
 
@@ -314,31 +318,59 @@ export function WatchModal({
               {showAdvanced && (
                 <div className="mt-3 p-3.5 rounded-xl border border-stone-200 bg-stone-50 space-y-3 animate-in fade-in duration-100">
                   <div className="space-y-1">
-                    <label className="block text-xs text-stone-600 font-medium">Tần suất gửi tin</label>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <label className="block text-xs text-stone-600 font-medium">Tần suất gửi tin (F34 Noise Control)</label>
+                    <div className="grid grid-cols-3 gap-1.5 text-xs">
                       <button
                         type="button"
                         onClick={() => setFrequency("instant")}
-                        className={`p-2 rounded-lg border text-center transition ${
+                        className={`p-2 rounded-lg border text-center transition cursor-pointer ${
                           frequency === "instant"
                             ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
                             : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                         }`}
                       >
-                        Khi có lượt quét phù hợp
+                        Tức thì
                       </button>
                       <button
                         type="button"
                         onClick={() => setFrequency("daily")}
-                        className={`p-2 rounded-lg border text-center transition ${
+                        className={`p-2 rounded-lg border text-center transition cursor-pointer ${
                           frequency === "daily"
                             ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
                             : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                         }`}
                       >
-                        Tổng hợp 1 lần/ngày
+                        1 lần/ngày
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFrequency("weekly")}
+                        className={`p-2 rounded-lg border text-center transition cursor-pointer ${
+                          frequency === "weekly"
+                            ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
+                            : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
+                        }`}
+                      >
+                        1 lần/tuần
                       </button>
                     </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-stone-200/60">
+                    <label className="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={quietHours}
+                        onChange={(e) => setQuietHours(e.target.checked)}
+                        className="mt-0.5 rounded border-stone-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <div>
+                        <span className="font-semibold block text-stone-800">Khung giờ yên lặng (Quiet Hours)</span>
+                        <span className="text-[11px] text-stone-500 block">
+                          Tạm hoãn thông báo từ 22:00 đến 07:00 sáng hôm sau để không làm phiền giấc ngủ.
+                        </span>
+                      </div>
+                    </label>
                   </div>
 
                   <div className="space-y-1">
@@ -365,8 +397,8 @@ export function WatchModal({
 
             <div className="pt-2 flex items-center justify-between gap-3 border-t border-stone-100">
               <div className="flex items-center gap-1.5 text-[11px] text-stone-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-stone-400" />
-                <span>Không spam · Hủy bất kỳ lúc nào</span>
+                <ShieldCheck className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                <span>Không spam · Tối đa 1 tin/chu kỳ · Hủy 1-click</span>
               </div>
               <button
                 type="submit"

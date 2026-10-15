@@ -24,6 +24,7 @@ import {
 import { shareOrCopy } from "../lib/sharing";
 import { HiddenCostAnalyzer } from "../components/HiddenCostAnalyzer";
 import { RecheckFeedbackWidget } from "../components/RecheckFeedbackWidget";
+import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { trackProductEvent } from "../lib/analytics";
 import { reportClientIssue } from "../lib/clientDiagnostics";
 import { WatchModal } from "../components/WatchModal";
@@ -502,6 +503,9 @@ export function DealDetailPage() {
             </div>
           </section>
         )}
+
+        {/* ── DATA PROVENANCE & TRANSPARENCY (F35, F72, F80) ── */}
+        <ProvenanceBadge deal={deal} variant="detailed" />
 
         {/* ── TRUE COST ANALYSIS ── */}
         <HiddenCostAnalyzer deal={deal} />

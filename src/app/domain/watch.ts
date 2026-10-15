@@ -47,7 +47,10 @@ export interface WatchIntent {
   latestPrice?: number | null;
   maxStops?: number | null;
   status: WatchStatus;
-  frequency: "instant" | "daily";
+  frequency: "instant" | "daily" | "weekly";
+  quietHoursEnabled?: boolean | null;
+  quietHoursStart?: string | null;
+  quietHoursEnd?: string | null;
   email: string;
   channel: "email" | "telegram";
   telegramId?: string | null;
