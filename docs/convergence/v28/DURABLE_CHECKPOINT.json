@@ -1,8 +1,8 @@
 {
   "mission_id": "FARELY-10X-V28-DEEP-EXECUTION-CONVERGENCE",
   "checkpoint_type": "POST_IMPLEMENTATION",
-  "implementation_commit_sha": "8a86fa43bd51207ad898b57a4700248495308afb",
-  "timestamp": "2026-10-15T08:32:00Z",
+  "implementation_commit_sha": "916434e9a0144101ecb5eb0fc2486063783d4b33",
+  "timestamp": "2026-10-15T08:55:00Z",
   "branch": "antigravity/farely-v12-product-convergence",
   "pr_url": "https://github.com/manhtx/Sanvemaybay/pull/1",
   "production_url": "https://farely.manhtx.com",
@@ -21,6 +21,7 @@
     "contract_shrinkage": false
   },
   "recent_remediations": [
+    "Remediate Forensic Audit Items (AUD-04, AUD-05, AUD-07, AUD-08, AUD-09, AUD-11): enforce PriceScope strictness (ROUTE_LEVEL vs IDENTICAL_OFFER vs COHORT) in buyWaitGuidance.ts and priceAnomaly.ts with UI indication (AUD-04); verify database-level filtering and ranking before pagination without client truncation (AUD-05); implement rolling-horizon out-of-sample backtesting validation in evaluateRollingHorizonBacktest (AUD-07, AUD-11); add legal disclaimer and explicit declarationStatus in providerRights.ts documenting GDS feeds as staged pending executed contracts under BLK-PROV-01 (AUD-08); add explicit supabase test db execution in clean-database-bootstrap CI workflow executing pgTAP matrix (AUD-09)",
     "Remediate Core Domain Forensic Audit Defects (AUD-01 through AUD-15): reset hardcoded Founder authorization in P3 registry and implement SHA-256 token verification in conditionalGrowthSafety.ts (AUD-01, AUD-14); add .select('id') and affected row count verification to watchApi.ts (AUD-02); remove activeByRouteDate fallback in SavedDealsPage.tsx (AUD-03); eliminate ticket price substitution for realTotal and enforce known comparable dimensions for Pareto dominance in dealComparison.ts (AUD-06, AUD-15); normalize taxes/baggage strictly by quoteBasis preventing double taxation in directAffiliateComparison.ts (AUD-10); replace currency-specific 50k check and handle zero-MAD cohorts truthfully in priceAnomaly.ts (AUD-12); fail-closed without fabricating default 20k/10k utility values in dataEconomics.ts (AUD-13)",
     "Implement Conditional Growth Safety & P3 Governance (Rule 4 & Section D4) establishing prerequisite verification and explicit Founder authorization token gating for high-risk P3 capabilities (F49, F51, F52, F53, F55) in conditionalGrowthSafety.ts",
     "Implement Deal Curation and Editorial Collections (F42) with authentic discount calculation verification, expiration enforcement, and strict anti-fabrication of scarcity without provider inventory evidence in editorialCollections.ts",
@@ -62,12 +63,16 @@
     "Preserve 15 pgTAP assertions in 01_rls_tenant_isolation.sql and explicit privileged RPC existence checks defending HT24"
   ],
   "verification_suites": {
-    "unit_and_contract_tests": 263,
-    "unit_and_contract_failed": 0,
+    "vitest_domain_tests": 314,
+    "vitest_domain_failed": 0,
+    "node_contract_tests": 263,
+    "node_contract_failed": 0,
     "deno_edge_tests": 54,
     "deno_edge_failed": 0,
     "playwright_e2e_tests": 74,
     "playwright_e2e_failed": 0,
+    "total_automated_tests": 705,
+    "total_automated_failed": 0,
     "proof_index_probes": 42,
     "proof_index_probes_passed": 42,
     "vertical_journeys_j01_j32": 32,

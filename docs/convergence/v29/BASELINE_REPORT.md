@@ -5,7 +5,7 @@
 **Branch**: `antigravity/farely-v12-product-convergence`  
 **Reference PR**: [#1](https://github.com/manhtx/Sanvemaybay/pull/1)  
 **Production Site**: [https://farely.manhtx.com](https://farely.manhtx.com)  
-**Stage 1 Implementation SHA**: `8a86fa43bd51207ad898b57a4700248495308afb`  
+**Stage 1 Implementation SHA**: `916434e9a0144101ecb5eb0fc2486063783d4b33`  
 **Authority Status**: `READY_FOR_INDEPENDENT_ACCEPTANCE` (Founder Supremacy Preserved; Zero Self-Certification)
 
 ---
@@ -16,7 +16,7 @@ This Baseline Report establishes the empirical convergence foundation for **Fare
 All engineering implementations strictly adhere to:
 1. **Owner Authority Supremacy**: Zero contract shrinkage across all 89 capability contracts (`F00..F88`) and 267 historical acceptance gates.
 2. **Authentic Capability Roster**: 40 P0, 26 P1, 16 P2, and 7 P3 capabilities mapped with exact authentic titles and solutions.
-3. **Anti-Circularity Protocol**: Two-stage commit discipline (Implementation code committed in `8a86fa4`, followed by durable checkpoint recording).
+3. **Anti-Circularity Protocol**: Two-stage commit discipline (Implementation code committed in `916434e`, followed by durable checkpoint recording).
 4. **Zero Fake Done**: No self-awarded 10/10 scores, no manufactured `TARGET_PROVEN` claims; all status dynamically derived from test suites.
 
 ---
@@ -28,7 +28,7 @@ All engineering implementations strictly adhere to:
 | **Active Branch** | `antigravity/farely-v12-product-convergence` |
 | **Reference PR** | `https://github.com/manhtx/Sanvemaybay/pull/1` |
 | **Reference Baseline SHA** | `5a924a01cbcca62b58c3e8350707e2cc9678ea83` |
-| **Implementation Commit** | `8a86fa43bd51207ad898b57a4700248495308afb` |
+| **Implementation Commit** | `916434e9a0144101ecb5eb0fc2486063783d4b33` |
 | **Working Tree** | Clean prior to checkpoint generation |
 | **Node.js Environment** | Node v20+ / Vite 6.4.3 / Playwright / Deno |
 | **PostgreSQL / Supabase** | PostgreSQL 17 / pgTAP / 38 Migrations / 14 Edge Functions |
@@ -42,7 +42,7 @@ All test suites execute with zero failures across all 4 runners:
 
 | Test Runner / Verification Suite | Tests Planned / Run | Passed | Failed | Status |
 | :--- | :---: | :---: | :---: | :---: |
-| **Vitest Tests (Domain & Logic)** | 309 | 309 | 0 | **PASS** |
+| **Vitest Tests (Domain & Logic)** | 314 | 314 | 0 | **PASS** |
 | **Node Test Contracts (Integrity & Architecture)** | 263 | 263 | 0 | **PASS** |
 | **Deno Edge Function Tests** | 54 | 54 | 0 | **PASS** |
 | **Playwright End-to-End Tests** | 74 | 74 | 0 | **PASS** |
@@ -254,6 +254,13 @@ All test suites execute with zero failures across all 4 runners:
 - **AUD-10**: In `directAffiliateComparison.ts`, normalized provider quote costs strictly based on `quoteBasis`, eliminating double taxation when quotes are already total-inclusive or all-inclusive.
 - **AUD-12**: In `priceAnomaly.ts`, replaced currency-specific 50k VND check with relative lower bound (`< median * 0.05`), and handled zero-variance cohorts (`rawMad === 0`) by returning `NORMAL_FLUCTUATION` with `mad: 0, modifiedZScore: 0` without fabricating synthetic dispersion.
 - **AUD-13**: In `dataEconomics.ts`, enforced fail-closed behavior to `REJECTED_UNECONOMIC` when measured utility evidence is omitted, preventing injection of default 20k/10k values.
+
+### 4.33 Additional Forensic Audit Remediations (AUD-04, AUD-05, AUD-07, AUD-08, AUD-09, AUD-11)
+- **AUD-04**: In `buyWaitGuidance.ts` and `priceAnomaly.ts`, implemented explicit `PriceScopeType` (`ROUTE_LEVEL`, `IDENTICAL_OFFER`, `COHORT`) and updated rationale text so that route-level baseline statistics are never confused with identical offer/flight history. Added visible scope badges in `DealDetailPage.tsx` and unit tests in `buyWaitGuidance.test.ts` and `priceAnomaly.test.ts`.
+- **AUD-05**: Audited the search query path across `supabase/functions/observed-fares/index.ts`, `src/app/data/api.ts`, and `src/app/pages/DealsPage.tsx`. Verified that database-level filtering (`origin`, `destination`, `date`, `stops`, `budget`) and ranking execute over the complete candidate universe before pagination (`range()`), with zero client-side truncation or 60-row limits.
+- **AUD-07 & AUD-11**: Implemented `evaluateRollingHorizonBacktest` in `buyWaitGuidance.ts` to provide out-of-sample empirical backtesting validation for Buy/Wait predictive calibrations across rolling windows, failing closed to `isSufficientForDeployment: false` on sparse or unproven data. Added test suite in `buyWaitGuidance.test.ts`.
+- **AUD-08**: In `providerRights.ts`, added comprehensive legal disclaimer and explicit `declarationStatus` ('INTERNAL_DECLARATION' vs 'COMMERCIAL_STAGED_CONTRACT_REQUIRED'). Documented that commercial GDS feeds are architectural software stubs staged pending executed contracts and resolution of `BLK-PROV-01`. Added test suite in `providerRights.test.ts`.
+- **AUD-09**: Re-verified pgTAP database test suite (`supabase/tests/database/01_rls_tenant_isolation.sql`, 15 assertions) and added explicit `supabase test db` execution to the `clean-database-bootstrap` job in `.github/workflows/ci.yml`.
 
 ---
 
