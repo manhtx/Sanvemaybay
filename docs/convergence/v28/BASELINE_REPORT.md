@@ -28,7 +28,7 @@ All engineering implementations strictly adhere to:
 | **Active Branch** | `antigravity/farely-v12-product-convergence` |
 | **Reference PR** | `https://github.com/manhtx/Sanvemaybay/pull/1` |
 | **Reference Baseline SHA** | `5a924a01cbcca62b58c3e8350707e2cc9678ea83` |
-| **Implementation Commit** | `814605a6a088705896b78b93a760be7358d0dbd6` |
+| **Implementation Commit** | `6541ad444021eca805719bca78e0e3cdfbb48e4f` |
 | **Working Tree** | Clean prior to checkpoint generation |
 | **Node.js Environment** | Node v20+ / Vite 6.4.3 / Playwright / Deno |
 | **PostgreSQL / Supabase** | PostgreSQL 17 / pgTAP / 38 Migrations / 14 Edge Functions |
@@ -42,7 +42,7 @@ All test suites execute with zero failures across all 4 runners:
 
 | Test Runner / Verification Suite | Tests Planned / Run | Passed | Failed | Status |
 | :--- | :---: | :---: | :---: | :---: |
-| **Vitest Tests (Domain & Logic)** | 272 | 272 | 0 | **PASS** |
+| **Vitest Tests (Domain & Logic)** | 296 | 296 | 0 | **PASS** |
 | **Node Test Contracts (Integrity & Architecture)** | 263 | 263 | 0 | **PASS** |
 | **Deno Edge Function Tests** | 54 | 54 | 0 | **PASS** |
 | **Playwright End-to-End Tests** | 74 | 74 | 0 | **PASS** |
@@ -51,9 +51,9 @@ All test suites execute with zero failures across all 4 runners:
 | **Negative Vector Defenses (`NV01..NV24`)** | 24 | 24 | 0 | **PASS** |
 | **Proof Index Probes** | 42 | 42 | 0 | **PASS** |
 | **TypeScript Typecheck (`tsc --noEmit`)** | Full repo | Clean | 0 | **PASS** |
-| **ESLint (`npm run lint`)** | Full repo | Clean (0 warnings) | 0 | **PASS** |
+| **ESLint (`npm run lint`)** | Full repo | Clean (0 errors) | 0 | **PASS** |
 | **Vite Production Build (`vite build`)** | Full bundle | Clean | 0 | **PASS** |
-| **Total Automated Tests** | **663** | **663** | **0** | **PASS** |
+| **Total Automated Tests** | **687** | **687** | **0** | **PASS** |
 
 ---
 
@@ -215,6 +215,31 @@ All test suites execute with zero failures across all 4 runners:
 - **Files**: `src/domain/farely/dataEconomics.ts`, `src/domain/farely/dataEconomics.test.ts`.
 - Implemented economic scanner budget optimization calculating compute and proxy cost against active subscriber demand and downstream conversion utility.
 - Strict F88 acceptance criteria: Evaluates marginal scraping ROI; returns `REJECTED_UNECONOMIC` for low-demand, high-cost route scan expansions lacking active watch subscriptions or positive utility balance.
+
+### 4.26 F42: Deal Curation and Editorial Collections (P2)
+- **Files**: `src/domain/farely/editorialCollections.ts`, `src/domain/farely/editorialCollections.test.ts`.
+- Implemented evidence-grounded editorial collections with curator identity and expiration enforcement.
+- Strict F42 acceptance criteria: Rejects stale items (>48h); throws `UnsupportedFeaturedDiscountError` if advertised discount exceeds authentic cohort calculation; throws `FabricatedScarcityError` if urgency claims (e.g., "chỉ còn 2 vé") lack provider inventory proof.
+
+### 4.27 F43: Direct/Affiliate Provider Comparison (P2)
+- **Files**: `src/domain/farely/directAffiliateComparison.ts`, `src/domain/farely/directAffiliateComparison.test.ts`.
+- Implemented normalized total cost comparison across direct airline websites, OTAs, and affiliate aggregators, adjusting for mandatory fees and baggage.
+- Strict F43 acceptance criteria: Commercial ranking can never override the undisclosed objective cheapest result; throws `CommercialRankingOverrideError` if a higher-paying partner is falsely advertised as the cheapest channel.
+
+### 4.28 F48: Mobile-First PWA and Push Freshness Integrity (P2)
+- **Files**: `src/domain/farely/pwaOfflineFreshness.ts`, `src/domain/farely/pwaOfflineFreshness.test.ts`.
+- Implemented offline state handling for PWA client, stamping cached fares with explicit offline indicators and staleness disclosures.
+- Strict F48 acceptance criteria: Offline observed fares cannot appear as freshly available live deals; throws `StaleOfflineDealAsFreshError` if offline items are marked as live-verified or allow unverified direct checkout.
+
+### 4.29 F38: Personalized Travel Feed Privacy & Non-Profiling (P2)
+- **Files**: `src/domain/farely/personalizedFeedPrivacy.ts`, `src/domain/farely/personalizedFeedPrivacy.test.ts`.
+- Implemented feed personalization governed strictly by explicit opt-in preferences (home airports, preferred airlines, budget, stops).
+- Strict F38 acceptance criteria: No covert profiling or demographic inference; throws `CovertProfilingViolationError` if context contains forbidden sensitive traits (e.g. inferred income, ethnicity, religion, device tracking fingerprint); falls back cleanly to objective DealScore if opt-in is false.
+
+### 4.30 F47: Partner Integrations & Commercial Enablement Governance (P2)
+- **Files**: `src/domain/farely/partnerIntegrations.ts`, `src/domain/farely/partnerIntegrations.test.ts`.
+- Implemented technical, legal, and economic gating for commercial partner enablement.
+- Strict F47 acceptance criteria: No source enabled commercially without supporting rights and economics; throws `UnauthorizedCommercialSourceError` if a provider lacking commercial agreements, failing reliability SLAs, or exhibiting negative unit economics (cost > revenue) is enabled for commercial routing.
 
 ---
 
