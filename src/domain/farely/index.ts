@@ -19,3 +19,7 @@ export * from './providerCapabilities.ts';
 export * from './airportAlternatives.ts';
 export * from './providerRights.ts';
 export * from './groupFarePlanner.ts';
+export * from './buyWaitGuidance.ts';
+export * from './priceAnomaly.ts';
+export * from './multiCityItinerary.ts';
+export * from './dataEconomics.ts';

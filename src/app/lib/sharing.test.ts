@@ -3,7 +3,6 @@ import {
   shareOrCopy,
   buildPiiSafeShareUrl,
   formatSafeShareContent,
-  checkShareRateLimit,
   resetShareRateLimitForTest,
 } from "./sharing";
 

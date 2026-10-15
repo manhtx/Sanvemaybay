@@ -12,6 +12,8 @@ import {
   Bookmark,
   ShieldCheck,
   Clock,
+  Sparkles,
+  Info,
 } from "lucide-react";
 import { getDealById, getPriceHistory, getFareObservations, getRouteBest } from "../data/api";
 import { Deal, formatStops, formatVND } from "../data/deals";
@@ -37,6 +39,8 @@ import {
   type AirportAlternativeEvaluation,
 } from "../../domain/farely/airportAlternatives";
 import { PassengerPartyComposition } from "../../domain/farely/groupFarePlanner";
+import { evaluateBuyWaitGuidance } from "../../domain/farely/buyWaitGuidance";
+import { detectPriceAnomaly } from "../../domain/farely/priceAnomaly";
 import { AIRPORT_CATALOG, METRO_CATALOG } from "../../domain/farely/locationScope";
 
 const PriceHistoryChart = React.lazy(async () => ({
@@ -190,6 +194,23 @@ export function DealDetailPage() {
     }
   }, [deal, fareObservations]);
 
+  const buyWait = useMemo(() => {
+    if (!deal) return null;
+    return evaluateBuyWaitGuidance({
+      currentPrice: deal.price,
+      priceHistory,
+      departureDate: deal.departDate,
+    });
+  }, [deal, priceHistory]);
+
+  const anomaly = useMemo(() => {
+    if (!deal || priceHistory.length === 0) return null;
+    return detectPriceAnomaly({
+      currentPrice: deal.price,
+      historicalCohortPrices: priceHistory.map((p) => p.price),
+    });
+  }, [deal, priceHistory]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--canvas-bg)] flex items-center justify-center">
@@ -265,7 +286,6 @@ export function DealDetailPage() {
     },
     rawCohortObservations
   );
-
 
   const formattedDepartTime = new Date(deal.departDate).toLocaleDateString("vi-VN", {
     day: "2-digit",
@@ -485,6 +505,79 @@ export function DealDetailPage() {
               {freshnessLabel}
             </div>
           </div>
+
+          {/* Buy/Wait Guidance (F36) & Price Anomaly (F37) */}
+          {buyWait && (
+            <div className="mt-4 pt-4 border-t border-stone-100 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div className={`p-3 rounded-lg border flex items-start gap-2.5 ${
+                buyWait.recommendation === "BUY_NOW"
+                  ? "bg-emerald-50/70 border-emerald-200 text-emerald-950"
+                  : buyWait.recommendation === "WAIT_AND_WATCH"
+                  ? "bg-blue-50/70 border-blue-200 text-blue-950"
+                  : "bg-stone-50 border-stone-200 text-stone-700"
+              }`}>
+                <div className="shrink-0 mt-0.5">
+                  {buyWait.recommendation === "BUY_NOW" ? (
+                    <TrendingDown className="w-4 h-4 text-emerald-600" />
+                  ) : buyWait.recommendation === "WAIT_AND_WATCH" ? (
+                    <Clock className="w-4 h-4 text-blue-600" />
+                  ) : (
+                    <Info className="w-4 h-4 text-stone-500" />
+                  )}
+                </div>
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold uppercase tracking-wider text-[11px]">
+                      {buyWait.recommendation === "BUY_NOW"
+                        ? "Khuyến nghị: Mua ngay (Buy Now)"
+                        : buyWait.recommendation === "WAIT_AND_WATCH"
+                        ? "Khuyến nghị: Theo dõi thêm (Wait & Watch)"
+                        : "Khuyến nghị Mua hay Chờ: Chưa đủ dữ liệu"}
+                    </span>
+                    {buyWait.isCalibrated && (
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/80 border border-current">
+                        Độ tin cậy: {Math.round(buyWait.confidence * 100)}%
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] leading-relaxed text-stone-700">
+                    {buyWait.rationaleVi}
+                  </p>
+                </div>
+              </div>
+
+              {anomaly && anomaly.isActionableDeal ? (
+                <div className="p-3 rounded-lg border bg-amber-50/70 border-amber-200 text-amber-950 flex items-start gap-2.5">
+                  <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold uppercase tracking-wider text-[11px]">
+                        Chỉ báo: Đột biến giá giảm (Price Anomaly)
+                      </span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/80 border border-amber-300">
+                        MAD z-score: {anomaly.modifiedZScore.toFixed(2)}
+                      </span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed text-stone-700">
+                      {anomaly.explanationVi}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-3 rounded-lg border bg-stone-50/70 border-stone-200 text-stone-700 flex items-start gap-2.5">
+                  <ShieldCheck className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <span className="font-bold uppercase tracking-wider text-[11px]">
+                      Biến động giá thống kê (F37)
+                    </span>
+                    <p className="text-[11px] leading-relaxed text-stone-600">
+                      {anomaly?.explanationVi || "Đang thu thập thêm mẫu quan sát độc lập để đánh giá đột biến."}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </section>
 
         {/* ── FLEXIBLE FARE MATRIX (REQ-FEAT-001, REQ-FEAT-002, REQ-FEAT-003, REQ-FEAT-004) ── */}

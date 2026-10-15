@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Users, Luggage, Info, AlertCircle, ShieldCheck } from "lucide-react";
+import { Users, Luggage, AlertCircle, ShieldCheck } from "lucide-react";
 import { Deal, formatVND } from "../data/deals";
 import {
   calculateGroupFamilyFare,
@@ -47,7 +47,7 @@ export function GroupFarePlannerCard({ deal, onPassengerMixChange }: GroupFarePl
         childrenBaggage: Array(children).fill(childBaggage),
       },
     });
-  }, [deal.price, party, segmentsCount, adultBaggage, childBaggage, validationError]);
+  }, [deal.price, party, segmentsCount, adultBaggage, childBaggage, validationError, adults, children]);
 
   const handleAdultsChange = (val: number) => {
     const nextAdults = Math.max(1, Math.min(9, val));
