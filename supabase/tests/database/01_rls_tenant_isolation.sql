@@ -5,17 +5,22 @@ BEGIN;
 SELECT plan(15);
 
 -- 1. Verify RLS is enabled on all sensitive tables
-SELECT tables_are_rls_enabled(
-  'public',
-  ARRAY[
-    'user_alerts',
-    'travel_intents',
-    'user_bookmarks',
-    'watch_evaluations',
-    'watch_condition_episodes',
-    'notification_outbox',
-    'notification_delivery_attempts'
-  ],
+SELECT ok(
+  NOT EXISTS (
+    SELECT 1 FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relname = ANY(ARRAY[
+        'user_alerts',
+        'travel_intents',
+        'user_bookmarks',
+        'watch_evaluations',
+        'watch_condition_episodes',
+        'notification_outbox',
+        'notification_delivery_attempts'
+      ])
+      AND NOT c.relrowsecurity
+  ),
   'All user-owned and internal tables must have Row Level Security enabled'
 );
 
