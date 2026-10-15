@@ -1,43 +1,18 @@
 {
   "mission_version": "2026-10-07",
   "current_branch": "antigravity/farely-v12-product-convergence",
-  "local_sha": "c38332b3768396bbb3319ba575179540830b1e94",
-  "remote_sha": "c38332b3768396bbb3319ba575179540830b1e94",
+  "local_sha": "90bf772cbbbfa473384b7913b4320a5ab24e4e8b",
+  "remote_sha": "f8ae5c470df91a2b547fc1503b9baa5491156862",
   "dirty_files": [
     "M docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json",
     "M docs/convergence/FINAL_SCORECARD.json",
     "M docs/convergence/MASTER_ACCEPTANCE_REGISTRY.json",
+    "M docs/convergence/MISSION_CHECKPOINT.json",
     "M docs/convergence/MISSION_STATE.json",
     "M docs/convergence/PROOF_INDEX.json",
-    "M docs/convergence/screenshots/deals_1207x861.png",
-    "M docs/convergence/screenshots/deals_1440.png",
-    "M docs/convergence/screenshots/deals_1920.png",
-    "M docs/convergence/screenshots/deals_320.png",
-    "M docs/convergence/screenshots/deals_390.png",
-    "M docs/convergence/screenshots/deals_768.png",
-    "M docs/convergence/screenshots/home_1207x861.png",
-    "M docs/convergence/screenshots/home_1440.png",
-    "M docs/convergence/screenshots/home_1920.png",
-    "M docs/convergence/screenshots/home_390.png",
-    "M docs/convergence/screenshots/home_768.png",
-    "M docs/convergence/screenshots/opportunity_1207x861.png",
-    "M docs/convergence/screenshots/opportunity_1440.png",
-    "M docs/convergence/screenshots/opportunity_1920.png",
-    "M docs/convergence/screenshots/opportunity_320.png",
-    "M docs/convergence/screenshots/opportunity_390.png",
-    "M docs/convergence/screenshots/opportunity_768.png",
-    "M docs/convergence/screenshots/search_1207x861.png",
-    "M docs/convergence/screenshots/search_1440.png",
-    "M docs/convergence/screenshots/search_1920.png",
-    "M docs/convergence/screenshots/search_320.png",
-    "M docs/convergence/screenshots/search_390.png",
-    "M docs/convergence/screenshots/search_768.png",
-    "M scripts/build-proof-index.mjs",
-    "M scripts/capture-visual-acceptance.mjs",
-    "M scripts/evidence-admission-controller.mjs",
-    "M scripts/fast-flights-worker.py",
-    "M scripts/pipeline-recovery-contract.node-test.mjs",
-    "?? scripts/database-architecture-contract.node-test.mjs"
+    "M docs/convergence/RELEASE_MANIFEST.json",
+    "M docs/convergence/TEST_MATRIX.json",
+    "?? docs/convergence/v32/"
   ],
   "completed_requirement_ids": [
     "REQ-CONTROL-001",
@@ -326,5 +301,5 @@
   "next_exact_actions": [
     "Resolve open P0 requirements"
   ],
-  "timestamp": "2026-10-12T05:03:00.580Z"
+  "timestamp": "2026-10-15T11:15:33.951Z"
 }

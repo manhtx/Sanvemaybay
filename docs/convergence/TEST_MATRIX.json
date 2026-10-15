@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-12T05:03:00.580Z",
-  "tested_sha": "c38332b3768396bbb3319ba575179540830b1e94",
+  "updated_at": "2026-10-15T11:15:33.951Z",
+  "tested_sha": "90bf772cbbbfa473384b7913b4320a5ab24e4e8b",
   "summary": {
-    "vitest_test_files": 36,
-    "node_test_files": 37,
+    "vitest_test_files": 41,
+    "node_test_files": 44,
     "deno_test_files": 18,
-    "total_test_suites": 91,
+    "total_test_suites": 103,
     "status": "PASS"
   },
   "layers": [
@@ -14,10 +14,12 @@
       "layer": "domain_and_property",
       "runner": "vitest run",
       "files": [
+        "src/app/domain/accountContinuity.test.ts",
         "src/app/domain/authPolicy.test.ts",
         "src/app/domain/costEpistemic.test.ts",
         "src/app/domain/dealClaims.test.ts",
         "src/app/domain/dealComparison.test.ts",
+        "src/app/domain/decisionModes.test.ts",
         "src/app/domain/destinationInsights.test.ts",
         "src/app/domain/differentialAndMetamorphic.test.ts",
         "src/app/domain/exhaustiveAnalyzer.test.ts",
@@ -30,6 +32,8 @@
         "src/app/domain/priceHistoryWindows.test.ts",
         "src/app/domain/productionHealth.test.ts",
         "src/app/domain/promotionMatching.test.ts",
+        "src/app/domain/provenance.test.ts",
+        "src/app/domain/recheckFeedback.test.ts",
         "src/app/domain/routeOptimization.test.ts",
         "src/app/domain/snapshotAtomicity.test.ts",
         "src/app/domain/travelEntities.test.ts",
@@ -40,6 +44,7 @@
         "src/app/domain/watch.test.ts",
         "src/app/data/api.test.ts",
         "src/app/data/origins.test.ts",
+        "src/app/data/watchApi.test.ts",
         "src/app/lib/analytics.test.ts",
         "src/app/lib/bookingUrls.test.ts",
         "src/app/lib/bookmarks.test.ts",
@@ -51,7 +56,7 @@
         "src/app/lib/sharing.test.ts",
         "src/domain/farely/domainKernel.test.ts"
       ],
-      "test_file_count": 36,
+      "test_file_count": 41,
       "verdict": "PASS"
     },
     {
@@ -93,10 +98,17 @@
         "scripts/schedule-durable-occurrences.node-test.mjs",
         "scripts/security-smoke.node-test.mjs",
         "scripts/synthetic-health-check.node-test.mjs",
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v17-adversarial-challenges.node-test.mjs",
+        "scripts/v22-vertical-journeys.node-test.mjs",
+        "scripts/v32-adversarial-requirements.node-test.mjs",
         "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/verify-farely-v14-contract.node-test.mjs",
+        "scripts/verify-farely-v15-handoff.node-test.mjs",
+        "scripts/verify-farely-v17-contract.node-test.mjs",
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ],
-      "test_file_count": 37,
+      "test_file_count": 44,
       "verdict": "PASS"
     },
     {
