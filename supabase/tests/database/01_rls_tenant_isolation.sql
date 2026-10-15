@@ -37,6 +37,11 @@ INSERT INTO test_actors (role_name, user_id, email) VALUES
 
 -- 3. Seed data for User B
 SET LOCAL ROLE postgres;
+INSERT INTO auth.users (id, email) VALUES
+  ('11111111-1111-4111-a111-111111111111'::uuid, 'alice@example.com'),
+  ('22222222-2222-4222-b222-222222222222'::uuid, 'bob@example.com')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO public.user_alerts (id, user_id, destination, budget)
 VALUES ('bbbbbbbb-bbbb-4bbb-bbbb-bbbbbbbbbbbb'::uuid, '22222222-2222-4222-b222-222222222222'::uuid, 'NRT', 5000000);
 
