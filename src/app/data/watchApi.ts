@@ -26,6 +26,14 @@ export interface CreateWatchInput {
   quietHoursStart?: string;
   quietHoursEnd?: string;
   turnstileToken?: string;
+  passengers?: number;
+  passengerMix?: {
+    adults: number;
+    children: number;
+    infants: number;
+  };
+  cabin?: "economy" | "premium_economy" | "business" | "first";
+  currency?: string;
 }
 
 function getStorage(): Storage | undefined {
@@ -144,6 +152,10 @@ export async function createWatch(
     dateTo: input.dateTo || null,
     returnDate: input.returnDate || null,
     tripType: input.journeyType === "round_trip" || input.returnDate ? "roundtrip" : "oneway",
+    passengers: input.passengers ?? (input.passengerMix ? (input.passengerMix.adults + input.passengerMix.children + input.passengerMix.infants) : 1),
+    passengerMix: input.passengerMix || null,
+    cabin: input.cabin || "economy",
+    currency: input.currency || "VND",
     status: "monitoring",
     frequency: input.frequency || "instant",
     quietHoursEnabled: input.quietHoursEnabled ?? null,

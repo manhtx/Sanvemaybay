@@ -17,3 +17,4 @@ export * from './watchCondition.ts';
 export * from './savings.ts';
 export * from './providerCapabilities.ts';
 export * from './airportAlternatives.ts';
+export * from './providerRights.ts';

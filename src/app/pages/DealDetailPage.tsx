@@ -645,6 +645,17 @@ export function DealDetailPage() {
       <WatchModal
         isOpen={watchOpen}
         onClose={() => setWatchOpen(false)}
+        opportunity={{
+          id: deal.id,
+          originCode: deal.fromCode,
+          originName: deal.from,
+          destinationCode: deal.toCode,
+          destinationName: deal.to,
+          price: deal.price,
+          departDate: deal.departDate,
+          returnDate: deal.returnDate,
+          stops: deal.stops,
+        }}
         initialOrigin={deal.fromCode}
         initialDestination={deal.toCode}
         currentPrice={deal.price}

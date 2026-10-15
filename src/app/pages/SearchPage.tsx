@@ -716,6 +716,8 @@ export function SearchPage() {
         }
         initialOrigin={fromCity}
         initialDestination={destination || "BKK"}
+        initialDepartDate={departureFrom || undefined}
+        initialReturnDate={returnDate || undefined}
         sourceContext="search"
       />
     </main>

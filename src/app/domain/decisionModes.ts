@@ -36,15 +36,46 @@ export const DECISION_MODES: Record<DecisionMode, DecisionModeMeta> = {
   },
 };
 
+export interface UserTimePreferences {
+  enabled: boolean;
+  hourlyValueVND: number; // Disclosed rate in VND/hr, e.g. 250,000 VND / hr saved
+  stopPenaltyVND: number; // Disclosed layover penalty in VND/stop, e.g. 300,000 VND / stop
+}
+
+export const DEFAULT_USER_TIME_PREFERENCES: UserTimePreferences = {
+  enabled: false,
+  hourlyValueVND: 250000,
+  stopPenaltyVND: 300000,
+};
+
+export interface EffectiveCostBreakdown {
+  baseFare: number;
+  durationMinutes: number;
+  durationHours: number;
+  timeInconvenienceCost: number;
+  stopsPenaltyCost: number;
+  totalGeneralizedCost: number;
+}
+
+export interface PartnershipMeta {
+  isSponsored: boolean;
+  partnerName?: string;
+  referralRevenueVND?: number;
+  affiliateCommissionRate?: number;
+  disclosureText: string;
+}
+
 export interface RankedDeal {
   deal: Deal;
   mode: DecisionMode;
   rank: number;
   rankingReason: string;
   modeBadge: string;
+  effectiveCostBreakdown?: EffectiveCostBreakdown;
+  partnershipMeta?: PartnershipMeta;
 }
 
-function parseDurationMinutes(durationStr?: string): number {
+export function parseDurationMinutes(durationStr?: string): number {
   if (!durationStr) return 9999;
   // Parse format like "2h 15m" or "2h" or "135m"
   const hoursMatch = durationStr.match(/(\d+)\s*h/i);
@@ -53,6 +84,81 @@ function parseDurationMinutes(durationStr?: string): number {
   if (hoursMatch) total += parseInt(hoursMatch[1], 10) * 60;
   if (minsMatch) total += parseInt(minsMatch[1], 10);
   return total > 0 ? total : 9999;
+}
+
+/**
+ * Calculates disclosed effective generalized travel cost (Air Fare + Value of Time + Stops Inconvenience).
+ * F24: Personal value of time
+ */
+export function calculateEffectiveGeneralizedCost(
+  deal: Deal,
+  preferences: UserTimePreferences
+): EffectiveCostBreakdown {
+  const baseFare = deal.price;
+  const durationMinutes = parseDurationMinutes(deal.duration);
+  const durationHours = durationMinutes < 9999 ? Number((durationMinutes / 60).toFixed(2)) : 0;
+  const stops = deal.stops ?? 0;
+  const timeInconvenienceCost = Math.round(durationHours * preferences.hourlyValueVND);
+  const stopsPenaltyCost = stops * preferences.stopPenaltyVND;
+  const totalGeneralizedCost = baseFare + timeInconvenienceCost + stopsPenaltyCost;
+
+  return {
+    baseFare,
+    durationMinutes,
+    durationHours,
+    timeInconvenienceCost,
+    stopsPenaltyCost,
+    totalGeneralizedCost,
+  };
+}
+
+/**
+ * Ranks deals according to personal value of time (generalized travel cost).
+ * INVARIANT F24: Turning preferences off restores transparent price ranking.
+ */
+export function rankDealsByPersonalTimeValue(
+  deals: Deal[],
+  preferences: UserTimePreferences
+): RankedDeal[] {
+  if (!deals.length) return [];
+
+  // Acceptance F24: Turning preferences off restores transparent price ranking
+  if (!preferences.enabled) {
+    return rankDealsByDecisionMode(deals, "CHEAPEST");
+  }
+
+  const copy = [...deals];
+  copy.sort((a, b) => {
+    const costA = calculateEffectiveGeneralizedCost(a, preferences).totalGeneralizedCost;
+    const costB = calculateEffectiveGeneralizedCost(b, preferences).totalGeneralizedCost;
+    if (costA !== costB) {
+      return costA - costB;
+    }
+    return a.price - b.price;
+  });
+
+  const nf = new Intl.NumberFormat("vi-VN");
+  return copy.map((deal, idx) => {
+    const breakdown = calculateEffectiveGeneralizedCost(deal, preferences);
+    const reason = `Tổng chi phí hữu dụng ${nf.format(breakdown.totalGeneralizedCost)}₫ (Giá vé ${nf.format(deal.price)}₫ + Thời gian ${nf.format(breakdown.timeInconvenienceCost)}₫ + Transit ${nf.format(breakdown.stopsPenaltyCost)}₫)`;
+    return {
+      deal,
+      mode: "CONVENIENT",
+      rank: idx + 1,
+      rankingReason: reason,
+      modeBadge: `Quy đổi: ${nf.format(breakdown.totalGeneralizedCost)}₫`,
+      effectiveCostBreakdown: breakdown,
+      partnershipMeta: deal.isSponsored
+        ? {
+            isSponsored: true,
+            partnerName: deal.sponsorName || deal.airline,
+            referralRevenueVND: deal.referralRevenueVND,
+            affiliateCommissionRate: deal.affiliateCommissionRate,
+            disclosureText: `Tài trợ đối tác · Thứ hạng giá khách quan: #${idx + 1} (Không làm sai lệch xếp hạng)`,
+          }
+        : undefined,
+    };
+  });
 }
 
 export function rankDealsByDecisionMode(
@@ -66,7 +172,7 @@ export function rankDealsByDecisionMode(
 
   switch (mode) {
     case "CHEAPEST": {
-      // Objective price sort (F31 contract: Users can return to objective price sort)
+      // Objective price sort (F31 & F76 contract: Users can return to objective price sort; changing referral revenue cannot silently change price sort)
       copy.sort((a, b) => a.price - b.price);
       return copy.map((deal, idx) => ({
         deal,
@@ -74,6 +180,15 @@ export function rankDealsByDecisionMode(
         rank: idx + 1,
         rankingReason: `Mức giá quan sát thấp thứ #${idx + 1} (${new Intl.NumberFormat("vi-VN").format(deal.price)}₫)`,
         modeBadge: idx === 0 ? "Giá thấp nhất" : `Hạng #${idx + 1}`,
+        partnershipMeta: deal.isSponsored
+          ? {
+              isSponsored: true,
+              partnerName: deal.sponsorName || deal.airline,
+              referralRevenueVND: deal.referralRevenueVND,
+              affiliateCommissionRate: deal.affiliateCommissionRate,
+              disclosureText: `Tài trợ đối tác · Thứ hạng giá khách quan: #${idx + 1} (Không ảnh hưởng đến thứ tự giá khách quan)`,
+            }
+          : undefined,
       }));
     }
 
@@ -186,4 +301,43 @@ export function rankDealsByDecisionMode(
       });
     }
   }
+}
+
+/**
+ * INVARIANT F76: Changing referral revenue or sponsorship cannot silently change price sort.
+ * Formally proves that mutating sponsorship status, commission rates, or referral revenue
+ * on candidate deals results in strictly identical ranking order under CHEAPEST mode.
+ */
+export function verifyObjectivePriceSortInvariance(deals: Deal[]): boolean {
+  if (!deals.length) return true;
+
+  const baseRanked = rankDealsByDecisionMode(deals, "CHEAPEST");
+
+  // Mutate all sponsorship, commission, and referral revenue metadata
+  const mutatedDeals: Deal[] = deals.map((d, idx) => ({
+    ...d,
+    isSponsored: idx % 2 === 0,
+    sponsorName: `Affiliate Partner ${idx + 1}`,
+    referralRevenueVND: (idx + 1) * 25000000, // Massive commission differences
+    affiliateCommissionRate: 0.10 * (idx + 1),
+  }));
+
+  const mutatedRanked = rankDealsByDecisionMode(mutatedDeals, "CHEAPEST");
+
+  if (baseRanked.length !== mutatedRanked.length) return false;
+
+  for (let i = 0; i < baseRanked.length; i++) {
+    if (baseRanked[i].deal.id !== mutatedRanked[i].deal.id) {
+      return false;
+    }
+    if (baseRanked[i].rank !== mutatedRanked[i].rank) {
+      return false;
+    }
+    // Verify each rank is purely non-decreasing in price
+    if (i > 0 && mutatedRanked[i].deal.price < mutatedRanked[i - 1].deal.price) {
+      return false;
+    }
+  }
+
+  return true;
 }

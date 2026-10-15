@@ -53,6 +53,10 @@ export interface Deal {
   refundPolicy?: string;
   observedAt?: string;
   validUntil?: string;
+  isSponsored?: boolean;
+  sponsorName?: string;
+  referralRevenueVND?: number;
+  affiliateCommissionRate?: number;
 }
 
 

@@ -41,6 +41,7 @@ export interface WatchIntent {
   tripType?: "oneway" | "roundtrip" | null;
   cabin?: "economy" | "premium_economy" | "business" | "first" | null;
   passengers?: number | null;
+  passengerMix?: { adults: number; children: number; infants: number } | null;
   currency?: string | null;
   locationScope?: "exact" | "metro" | "nearby" | null;
   targetPrice?: number | null;
