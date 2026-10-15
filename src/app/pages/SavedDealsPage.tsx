@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { Bookmark, Bell, Trash2, ArrowRight, ExternalLink, Calendar, Plane } from "lucide-react";
+import { Bookmark, Bell, Trash2, ArrowRight, ExternalLink, Calendar, Plane, Sparkles } from "lucide-react";
 import { Deal, formatStops, formatVND } from "../data/deals";
 import { getObservedFares } from "../data/api";
 import {
@@ -9,6 +9,8 @@ import {
   SavedOpportunityRecord,
 } from "../lib/bookmarks";
 import { WatchModal } from "../components/WatchModal";
+import { SavedComparisonModal } from "../components/SavedComparisonModal";
+import { compareSavedOpportunities } from "../domain/dealComparison";
 
 interface DisplaySavedItem {
   opportunityId: string;
@@ -27,12 +29,16 @@ interface DisplaySavedItem {
   priceDiffPercent: number | null;
   freshnessText: string;
   activeDealId?: string;
+  rawDeal?: Deal;
+  snapshotData?: Record<string, any> | null;
 }
 
 export function SavedDealsPage() {
   const [items, setItems] = useState<DisplaySavedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedWatchItem, setSelectedWatchItem] = useState<DisplaySavedItem | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
 
   async function loadSavedData() {
     setLoading(true);
@@ -110,6 +116,8 @@ export function SavedDealsPage() {
           priceDiffPercent,
           freshnessText,
           activeDealId: matchedActive?.id,
+          rawDeal: matchedActive,
+          snapshotData: snap,
         });
       }
 
@@ -124,9 +132,32 @@ export function SavedDealsPage() {
     void loadSavedData();
   }, []);
 
+  const toggleSelect = (oppId: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(oppId)) {
+        next.delete(oppId);
+      } else {
+        if (next.size < 4) {
+          next.add(oppId);
+        }
+      }
+      return next;
+    });
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+  };
+
   const handleRemove = async (opportunityId: string) => {
     const previousItems = items;
     setItems((prev) => prev.filter((item) => item.opportunityId !== opportunityId));
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      next.delete(opportunityId);
+      return next;
+    });
     const result = await mutateBookmarkOptimistic(opportunityId, false, undefined, undefined, {
       onRollback: () => {
         setItems(previousItems);
@@ -141,16 +172,36 @@ export function SavedDealsPage() {
     <main className="min-h-screen bg-[var(--canvas-bg)] text-stone-900 pt-24 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between pb-6 border-b border-stone-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-200">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight">Cơ hội đã lưu</h1>
             <p className="text-stone-600 text-xs sm:text-sm mt-1">
               Ghi nhớ mức giá theo thời gian. So sánh biến động giữa thời điểm lưu và quan sát mới nhất.
             </p>
           </div>
-          <span className="text-xs font-mono text-stone-500">
-            {items.length} cơ hội
-          </span>
+          <div className="flex items-center gap-3">
+            {items.length >= 2 && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (selectedIds.size >= 2) {
+                    setIsCompareOpen(true);
+                  } else {
+                    const firstN = items.slice(0, Math.min(items.length, 4)).map((i) => i.opportunityId);
+                    setSelectedIds(new Set(firstN));
+                    setIsCompareOpen(true);
+                  }
+                }}
+                className="px-3.5 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 font-bold text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm"
+              >
+                <Sparkles className="w-4 h-4 text-blue-600" />
+                <span>{selectedIds.size >= 2 ? `Mở bảng so sánh (${selectedIds.size})` : "So sánh 2–4 cơ hội"}</span>
+              </button>
+            )}
+            <span className="text-xs font-mono text-stone-500">
+              {items.length} cơ hội
+            </span>
+          </div>
         </div>
 
         {loading ? (
@@ -166,37 +217,59 @@ export function SavedDealsPage() {
                 month: "2-digit",
               });
 
+              const isSelected = selectedIds.has(item.opportunityId);
+
               return (
                 <div
                   key={item.opportunityId}
-                  className="rounded-xl border border-stone-200 bg-white p-5 hover:border-stone-300 transition-colors shadow-sm"
+                  className={`rounded-xl border p-5 transition-all shadow-sm ${
+                    isSelected
+                      ? "border-blue-500 bg-blue-50/20 ring-1 ring-blue-500"
+                      : "border-stone-200 bg-white hover:border-stone-300"
+                  }`}
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    {/* Route & Flight Metadata */}
-                    <div className="space-y-1.5 min-w-[240px]">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-stone-900 font-mono">
-                          {item.fromCode} <span className="text-blue-600 font-light">→</span> {item.toCode}
-                        </span>
-                        <span className="text-xs text-stone-500">
-                          ({item.fromCity} - {item.toCity})
-                        </span>
+                    {/* Checkbox & Route & Flight Metadata */}
+                    <div className="flex items-start gap-3 min-w-[240px]">
+                      <div className="pt-1">
+                        <input
+                          type="checkbox"
+                          id={`select-${item.opportunityId}`}
+                          checked={isSelected}
+                          disabled={!isSelected && selectedIds.size >= 4}
+                          onChange={() => toggleSelect(item.opportunityId)}
+                          className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-stone-300 cursor-pointer disabled:opacity-40"
+                          aria-label={`Chọn so sánh ${item.fromCode} đi ${item.toCode}`}
+                        />
                       </div>
-
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-stone-600">
-                        <span className="inline-flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-stone-400" />
-                          {formattedDate}
-                        </span>
-                        {item.airline && (
-                          <span className="inline-flex items-center gap-1">
-                            <Plane className="w-3.5 h-3.5 text-stone-400" />
-                            {item.airline} · {formatStops(item.stops)}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2">
+                          <label
+                            htmlFor={`select-${item.opportunityId}`}
+                            className="text-lg font-bold text-stone-900 font-mono cursor-pointer hover:text-blue-600 transition-colors"
+                          >
+                            {item.fromCode} <span className="text-blue-600 font-light">→</span> {item.toCode}
+                          </label>
+                          <span className="text-xs text-stone-500">
+                            ({item.fromCity} - {item.toCity})
                           </span>
-                        )}
-                        <span className="text-stone-500 font-mono text-[11px]">
-                          Lưu ngày {formattedSavedAt}
-                        </span>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-3 text-xs text-stone-600">
+                          <span className="inline-flex items-center gap-1">
+                            <Calendar className="w-3.5 h-3.5 text-stone-400" />
+                            {formattedDate}
+                          </span>
+                          {item.airline && (
+                            <span className="inline-flex items-center gap-1">
+                              <Plane className="w-3.5 h-3.5 text-stone-400" />
+                              {item.airline} · {formatStops(item.stops)}
+                            </span>
+                          )}
+                          <span className="text-stone-500 font-mono text-[11px]">
+                            Lưu ngày {formattedSavedAt}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
@@ -306,6 +379,48 @@ export function SavedDealsPage() {
           initialDestination={selectedWatchItem.toCode}
           currentPrice={selectedWatchItem.currentPrice ?? selectedWatchItem.savedPrice}
           sourceContext="saved_deals"
+        />
+      )}
+
+      {selectedIds.size > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-stone-900/95 backdrop-blur text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-4 border border-stone-700 animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <div className="text-xs sm:text-sm">
+            <span className="font-bold text-blue-400 font-mono">{selectedIds.size}/4</span>{" "}
+            <span className="text-stone-200">cơ hội được chọn</span>
+            {selectedIds.size < 2 && (
+              <span className="text-stone-400 text-xs ml-2 hidden sm:inline">
+                (Chọn tối thiểu 2 để mở bảng so sánh)
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={selectedIds.size < 2}
+              onClick={() => setIsCompareOpen(true)}
+              className="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:bg-stone-800 disabled:text-stone-500 text-white font-bold text-xs transition-colors cursor-pointer disabled:cursor-not-allowed shadow-sm"
+            >
+              Mở bảng so sánh
+            </button>
+
+            <button
+              type="button"
+              onClick={clearSelection}
+              className="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-medium text-xs transition-colors cursor-pointer"
+            >
+              Bỏ chọn
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isCompareOpen && (
+        <SavedComparisonModal
+          isOpen={isCompareOpen}
+          onClose={() => setIsCompareOpen(false)}
+          rows={compareSavedOpportunities(items.filter((it) => selectedIds.has(it.opportunityId)))}
+          activeDealMap={new Map(items.filter((it) => it.activeDealId).map((it) => [it.opportunityId, it.activeDealId!]))}
         />
       )}
     </main>

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { compareDeals, explainTradeoff, identifyDominatedOptions } from "./dealComparison";
+import {
+  compareDeals,
+  compareSavedOpportunities,
+  checkOpportunitiesCompatibility,
+  explainTradeoff,
+  identifyDominatedOptions,
+} from "./dealComparison";
 
 describe("deal comparison", () => {
   it("compares total cost and parses duration without inventing missing values", () => {
@@ -78,6 +84,106 @@ describe("deal comparison", () => {
     expect(dominatedSet.has("opt-dominated")).toBe(true);
     expect(dominatedSet.has("opt-superior")).toBe(false);
     expect(dominatedSet.has("opt-cheapest-slow")).toBe(false);
+  });
+
+  it("compares saved opportunities without promoting unknown information to known (F28)", () => {
+    const savedItems = [
+      {
+        opportunityId: "opp-1",
+        fromCode: "HAN",
+        toCode: "SGN",
+        savedPrice: 1_200_000,
+        currentPrice: 1_350_000,
+        airline: "Vietnam Airlines",
+        stops: 0,
+        departDate: "2026-11-10",
+        snapshotData: { duration: "2h 10m" },
+      },
+      {
+        opportunityId: "opp-2",
+        fromCode: "HAN",
+        toCode: "SGN",
+        savedPrice: 900_000,
+        currentPrice: null,
+        airline: "Vietjet Air",
+        stops: null, // unknown
+        departDate: "2026-11-10",
+        snapshotData: null, // no duration
+      },
+    ];
+
+    const rows = compareSavedOpportunities(savedItems);
+    expect(rows).toHaveLength(2);
+
+    // First item
+    expect(rows[0].id).toBe("opp-1");
+    expect(rows[0].ticketPrice).toBe(1_350_000);
+    expect(rows[0].durationMinutes).toBe(130);
+    expect(rows[0].stops).toBe(0);
+
+    // Second item has unknown stops and duration
+    expect(rows[1].id).toBe("opp-2");
+    expect(rows[1].ticketPrice).toBe(900_000);
+    expect(rows[1].durationMinutes).toBeUndefined();
+    expect(rows[1].stops).toBeNull();
+    expect(rows[1].refundPolicy).toBeUndefined();
+    expect(rows[1].risk).toBe("unknown");
+    expect(rows[1].unverifiedFields).toContain("Thời gian bay");
+    expect(rows[1].unverifiedFields).toContain("Số điểm dừng");
+    expect(rows[1].unverifiedFields).toContain("Chính sách hoàn/đổi vé");
+  });
+
+  it("checks compatibility between saved opportunities and detects route/date divergences", () => {
+    const sameRouteRows = [
+      {
+        id: "1",
+        route: "HAN → SGN",
+        departDate: "2026-11-10",
+        ticketPrice: 1_000_000,
+        totalCost: 1_000_000,
+        durationMinutes: 130,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      },
+      {
+        id: "2",
+        route: "HAN → SGN",
+        departDate: "2026-11-12",
+        ticketPrice: 1_200_000,
+        totalCost: 1_200_000,
+        durationMinutes: 130,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      },
+    ];
+
+    const compat1 = checkOpportunitiesCompatibility(sameRouteRows);
+    expect(compat1.isCompatible).toBe(true);
+    expect(compat1.sameRoute).toBe(true);
+    expect(compat1.dateWarning).toBeUndefined();
+
+    const diffRouteRows = [
+      ...sameRouteRows,
+      {
+        id: "3",
+        route: "HAN → DAD",
+        departDate: "2026-12-01",
+        ticketPrice: 800_000,
+        totalCost: 800_000,
+        durationMinutes: 80,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      },
+    ];
+
+    const compat2 = checkOpportunitiesCompatibility(diffRouteRows);
+    expect(compat2.isCompatible).toBe(false);
+    expect(compat2.sameRoute).toBe(false);
+    expect(compat2.notes.some((n) => n.includes("chặng bay khác nhau"))).toBe(true);
+    expect(compat2.dateWarning).toBeDefined();
   });
 });
 
