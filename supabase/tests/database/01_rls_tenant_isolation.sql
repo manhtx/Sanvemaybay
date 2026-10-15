@@ -48,6 +48,12 @@ VALUES ('bbbbbbbb-bbbb-4bbb-bbbb-bbbbbbbbbbbb'::uuid, '22222222-2222-4222-b222-2
 INSERT INTO public.travel_intents (id, user_id, is_ephemeral, origin_codes, destination_codes)
 VALUES ('33333333-3333-4333-a333-333333333333'::uuid, '22222222-2222-4222-b222-222222222222'::uuid, false, ARRAY['HAN'], ARRAY['NRT']);
 
+-- Grant schema and table access so RLS policies govern row visibility
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA public TO anon, authenticated, service_role;
+
 -- 4. Test NC-029: Anon cannot enumerate private travel_intents
 SET LOCAL ROLE anon;
 SELECT is_empty(
