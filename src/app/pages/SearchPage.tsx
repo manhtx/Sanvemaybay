@@ -7,9 +7,16 @@ import {
   LoaderCircle,
   Calendar,
   TrendingDown,
+  ArrowUpDown,
+  RotateCcw,
 } from "lucide-react";
 import { formatVND, formatStops, Deal } from "../data/deals";
 import { getTrackedRoutes, searchDealsWithStatus, SearchStatus } from "../data/api";
+import {
+  DecisionMode,
+  DECISION_MODES,
+  rankDealsByDecisionMode,
+} from "../domain/decisionModes";
 import { uniqueOrigins } from "../data/origins";
 import {
   getUserPreferences,
@@ -72,6 +79,12 @@ export function SearchPage() {
   const [watchOpen, setWatchOpen] = useState(false);
   const [selectedWatchDeal, setSelectedWatchDeal] = useState<Deal | null>(null);
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
+  const [decisionMode, setDecisionMode] = useState<DecisionMode>("CHEAPEST");
+
+  const rankedResults = useMemo(
+    () => rankDealsByDecisionMode(results, decisionMode, budget),
+    [results, decisionMode, budget]
+  );
 
   useEffect(() => {
     getTrackedRoutes().then((routes) => {
@@ -353,11 +366,62 @@ export function SearchPage() {
           </div>
         </section>
 
+        {/* ── DECISION MODES (F31) ── */}
+        <section className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4 text-blue-600 shrink-0" />
+              <span className="text-xs font-bold uppercase tracking-wider text-stone-700">
+                Chế độ quyết định (Decision Mode)
+              </span>
+            </div>
+            {decisionMode !== "CHEAPEST" && (
+              <button
+                type="button"
+                onClick={() => setDecisionMode("CHEAPEST")}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 self-start sm:self-auto cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Quay về sắp xếp giá rẻ nhất</span>
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {(Object.keys(DECISION_MODES) as DecisionMode[]).map((modeKey) => {
+              const meta = DECISION_MODES[modeKey];
+              const isSelected = decisionMode === modeKey;
+              return (
+                <button
+                  key={modeKey}
+                  type="button"
+                  onClick={() => setDecisionMode(modeKey)}
+                  className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
+                    isSelected
+                      ? "border-blue-600 bg-blue-50/70 text-blue-950 font-bold shadow-xs ring-1 ring-blue-600"
+                      : "border-stone-200 bg-stone-50/50 hover:bg-stone-100 text-stone-700"
+                  }`}
+                >
+                  <div className="text-xs flex items-center justify-between">
+                    <span>{meta.label}</span>
+                    {isSelected && <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0 ml-1" />}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="text-[11px] text-stone-600 bg-stone-50 rounded-lg p-2.5 border border-stone-200 flex items-start gap-2">
+            <span className="font-semibold text-stone-800 shrink-0">Nguyên lý xếp hạng:</span>
+            <span>{DECISION_MODES[decisionMode].description}</span>
+          </div>
+        </section>
+
         {/* Results Header / Counter */}
         <div className="flex items-center justify-between">
           <div className="text-sm font-bold text-stone-800">
             <span>
-              {results.length} Deal Khớp
+              {rankedResults.length} Deal Khớp
             </span>
             <span className="text-xs text-stone-500 font-normal ml-2">
               (Khởi hành: {fromCity} {destination ? `→ ${destination}` : ""} · Ngân sách ≤ {formatVND(budget)})
@@ -382,7 +446,7 @@ export function SearchPage() {
         </div>
 
         {/* Results List */}
-        {results.length === 0 ? (
+        {rankedResults.length === 0 ? (
           <div className="rounded-xl border border-stone-200 bg-white p-12 text-center space-y-3 shadow-sm">
             {searchStatus === "unmonitored" ? (
               <>
@@ -424,7 +488,7 @@ export function SearchPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {results.map((deal) => {
+            {rankedResults.map(({ deal, rank, rankingReason, modeBadge }) => {
               const targetId = deal.opportunityId || deal.id;
               const isSaved = bookmarkedIds.has(targetId) || isBookmarkedDeal(targetId);
 
@@ -435,9 +499,14 @@ export function SearchPage() {
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                        {deal.airline}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                          {deal.airline}
+                        </span>
+                        <span className="text-[10px] font-semibold text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200">
+                          {modeBadge}
+                        </span>
+                      </div>
                       <div className="flex items-center gap-1">
                         <button
                           type="button"
@@ -479,6 +548,12 @@ export function SearchPage() {
                         <span>·</span>
                         <span>{formatStops(deal.stops)}</span>
                       </div>
+                    </div>
+
+                    {/* Ranking Reason Banner (F31 transparent inspectable reasoning) */}
+                    <div className="text-[11px] bg-stone-50 border border-stone-200 rounded-lg px-2.5 py-1.5 text-stone-700 flex items-start gap-1.5 leading-snug">
+                      <span className="font-bold text-blue-700 shrink-0">#{rank}</span>
+                      <span>{rankingReason}</span>
                     </div>
                   </div>
 

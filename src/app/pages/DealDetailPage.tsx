@@ -23,6 +23,7 @@ import {
 } from "../lib/bookmarks";
 import { shareOrCopy } from "../lib/sharing";
 import { HiddenCostAnalyzer } from "../components/HiddenCostAnalyzer";
+import { RecheckFeedbackWidget } from "../components/RecheckFeedbackWidget";
 import { trackProductEvent } from "../lib/analytics";
 import { reportClientIssue } from "../lib/clientDiagnostics";
 import { WatchModal } from "../components/WatchModal";
@@ -504,6 +505,13 @@ export function DealDetailPage() {
 
         {/* ── TRUE COST ANALYSIS ── */}
         <HiddenCostAnalyzer deal={deal} />
+
+        {/* ── FARE RECHECK FEEDBACK (F26, F30) ── */}
+        <RecheckFeedbackWidget
+          opportunityId={deal.id}
+          route={`${deal.fromCode}-${deal.toCode}`}
+          observedPrice={deal.price}
+        />
 
         {/* ── PRICE HISTORY & COHORT CONTEXT ── */}
         {priceHistory.length > 0 ? (
