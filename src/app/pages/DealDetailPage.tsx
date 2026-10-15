@@ -21,8 +21,9 @@ import {
   mutateBookmarkOptimistic,
   createOpportunitySnapshot,
 } from "../lib/bookmarks";
-import { shareOrCopy } from "../lib/sharing";
+import { shareOrCopy, formatSafeShareContent } from "../lib/sharing";
 import { HiddenCostAnalyzer } from "../components/HiddenCostAnalyzer";
+import { GroupFarePlannerCard } from "../components/GroupFarePlannerCard";
 import { RecheckFeedbackWidget } from "../components/RecheckFeedbackWidget";
 import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { trackProductEvent } from "../lib/analytics";
@@ -35,6 +36,7 @@ import {
   evaluateAirportAlternative,
   type AirportAlternativeEvaluation,
 } from "../../domain/farely/airportAlternatives";
+import { PassengerPartyComposition } from "../../domain/farely/groupFarePlanner";
 import { AIRPORT_CATALOG, METRO_CATALOG } from "../../domain/farely/locationScope";
 
 const PriceHistoryChart = React.lazy(async () => ({
@@ -59,6 +61,11 @@ export function DealDetailPage() {
     evaluation: AirportAlternativeEvaluation;
     alternativeDealId?: string;
   } | null>(null);
+  const [passengerMix, setPassengerMix] = useState<PassengerPartyComposition>({
+    adults: 1,
+    children: 0,
+    infants: 0,
+  });
 
   useEffect(() => {
     async function loadDeal() {
@@ -203,11 +210,7 @@ export function DealDetailPage() {
   }
 
   const shareDeal = async () => {
-    const shareData = {
-      title: `${deal.fromCode} → ${deal.toCode} | Farely`,
-      text: `${deal.from} → ${deal.to}: ${formatVND(deal.price)}`,
-      url: window.location.href,
-    };
+    const shareData = formatSafeShareContent(deal, window.location.href);
     try {
       await shareOrCopy(shareData, navigator);
       await trackProductEvent({
@@ -230,6 +233,7 @@ export function DealDetailPage() {
       airlineCode: deal.airlineCode,
       tripType: deal.tripType,
       price: deal.price,
+      passengerMix,
     });
     const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
     window.open(bookingUrl, "_blank", "noopener,noreferrer");
@@ -559,6 +563,9 @@ export function DealDetailPage() {
         {/* ── DATA PROVENANCE & TRANSPARENCY (F35, F72, F80) ── */}
         <ProvenanceBadge deal={deal} variant="detailed" />
 
+        {/* ── GROUP & FAMILY FARE PLANNER (F40, F87) ── */}
+        <GroupFarePlannerCard deal={deal} onPassengerMixChange={setPassengerMix} />
+
         {/* ── TRUE COST ANALYSIS ── */}
         <HiddenCostAnalyzer deal={deal} />
 
@@ -600,7 +607,7 @@ export function DealDetailPage() {
             <div className="flex items-center gap-2 text-stone-800">
               <ShieldCheck className="w-5 h-5 text-blue-600" />
               <h3 id="opportunity-rationale-heading" className="text-sm font-bold uppercase tracking-wider text-stone-900">
-                Căn cứ khoa học & Giải trình cơ hội (Opportunity Rationale)
+                Căn cứ đánh dấu cơ hội &amp; Giải trình khoa học (Opportunity Rationale)
               </h3>
             </div>
             <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
@@ -714,6 +721,7 @@ export function DealDetailPage() {
         initialOrigin={deal.fromCode}
         initialDestination={deal.toCode}
         currentPrice={deal.price}
+        initialPassengers={passengerMix}
         sourceContext="deal_detail"
       />
     </main>
