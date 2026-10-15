@@ -159,7 +159,21 @@ All test suites execute with zero failures across all 4 runners:
 ### 4.16 F85: Provider Source Rights Registry (E-WP03 / P1)
 - **Files**: `src/domain/farely/providerRights.ts`, `src/domain/farely/providerRights.test.ts`, `src/domain/farely/index.ts`.
 - Implemented `PROVIDER_SOURCE_RIGHTS_REGISTRY` tracking source scraping terms, direct display permissions, caching TTLs, affiliate monetization, and B2B syndication rights across all canonical providers.
-- Strict F85 acceptance criteria: No premium/B2B redistribution without actual rights. `filterRecordsForB2BExport` strictly detects and rejects unauthorized sources, throwing `DataRightsViolationError` in strict mode and sanitizing export payloads.
+### 4.17 F25: Opportunity Rationale (E-WP06 / P1)
+- **Files**: `src/app/pages/DealDetailPage.tsx`, `src/app/domain/opportunityCohort.ts`.
+- Implemented comprehensive 6-parameter Opportunity Rationale matrix in `DealDetailPage.tsx` exposing:
+  1. Số mẫu quan sát (Sample Count).
+  2. Chu kỳ quét độc lập (Independent Scan Epochs).
+  3. Tuổi dữ liệu quan sát (Observation Age).
+  4. Nhóm đối sánh tương đương (Comparable Cohort Key).
+  5. Tiêu chí loại trừ (Exclusions: khác hạng vé, transit >24h).
+  6. Trần công bố (Claim Ceiling: Chỉ số tin cậy cao / trung bình / đang tích lũy).
+- Strict F25 acceptance criteria: Users can clearly inspect and understand how Farely reached each opportunity recommendation.
+
+### 4.18 F29: Fare Movement Timeline (E-WP06 / P1)
+- **Files**: `src/app/domain/priceHistoryWindows.ts`, `src/app/domain/priceHistoryWindows.test.ts`, `src/app/components/PriceHistoryChart.tsx`.
+- Implemented `detectPriceHistoryGaps` and `ObservationTimelineGap` detecting unmonitored scan periods (>3 days) and rendering explicit gap disclosure notices in `PriceHistoryChart.tsx`.
+- Strict F29 acceptance criteria: Never synthesizes intermediate daily points across an unmonitored gap (verified by unit test asserting exact point counts and no fabricated interpolation across an 11-day gap).
 
 ---
 

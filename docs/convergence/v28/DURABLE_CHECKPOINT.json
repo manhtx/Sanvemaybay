@@ -1,8 +1,8 @@
 {
   "mission_id": "FARELY-10X-V28-DEEP-EXECUTION-CONVERGENCE",
   "checkpoint_type": "POST_IMPLEMENTATION",
-  "implementation_commit_sha": "f15e146a41fb8756fd3f98854aa26c883ea791b0",
-  "timestamp": "2026-10-15T05:57:00Z",
+  "implementation_commit_sha": "eecb0c086c1b205f499183c3418b0cccf65c9513",
+  "timestamp": "2026-10-15T06:06:00Z",
   "branch": "antigravity/farely-v12-product-convergence",
   "pr_url": "https://github.com/manhtx/Sanvemaybay/pull/1",
   "production_url": "https://farely.manhtx.com",
@@ -21,6 +21,8 @@
     "contract_shrinkage": false
   },
   "recent_remediations": [
+    "Implement Opportunity Rationale (F25) exposing 6-parameter matrix (sample count, independent scan epochs, comparable cohort key, exclusions, observation age, claim ceiling) in DealDetailPage.tsx",
+    "Implement Fare Movement Timeline (F29) detecting unmonitored scan gaps (>3 days) and enforcing strict invariant that intermediate points are never synthesized in priceHistoryWindows.ts and PriceHistoryChart.tsx",
     "Implement Personal Value of Time (F24) with disclosed hourly time rates, stop penalties, generalized cost breakdowns, and strict invariant that turning preferences off restores transparent price ranking in decisionModes.ts",
     "Implement Watch Setup from Intent (F27) with TravelIntent preview, exact trip dates, journey type, traveler composition, and expiry condition preservation without silent modification in WatchModal.tsx, watchApi.ts, and watch.ts",
     "Implement Transparent Partnership Ranking (F76) ensuring changing referral revenue or sponsorship status cannot silently change objective price sort order in decisionModes.ts",
