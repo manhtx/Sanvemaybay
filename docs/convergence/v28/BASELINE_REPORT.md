@@ -175,6 +175,26 @@ All test suites execute with zero failures across all 4 runners:
 - Implemented `detectPriceHistoryGaps` and `ObservationTimelineGap` detecting unmonitored scan periods (>3 days) and rendering explicit gap disclosure notices in `PriceHistoryChart.tsx`.
 - Strict F29 acceptance criteria: Never synthesizes intermediate daily points across an unmonitored gap (verified by unit test asserting exact point counts and no fabricated interpolation across an 11-day gap).
 
+### 4.19 F40 & F87: Intent-Based Group/Family Fare Planner (P2)
+- **Files**: `src/domain/farely/groupFarePlanner.ts`, `src/domain/farely/groupFarePlanner.test.ts`, `src/domain/farely/index.ts`, `src/app/components/GroupFarePlannerCard.tsx`, `src/app/lib/bookingUrls.ts`, `src/app/pages/DealDetailPage.tsx`.
+- Implemented passenger party composition modeling (adults, children 2-11 with 75% base fare, lap infants <2 with safety invariant `infants <= adults`).
+- Implemented itemized baggage selection (cabin 7kg included, 20kg checked, 30kg checked) per passenger per segment.
+- Integrated `GroupFarePlannerCard` into `DealDetailPage.tsx` and dynamically passed passenger composition to Skyscanner, Kayak, and Google Flights deep links.
+- Strict F40/F87 acceptance criteria: Single-adult price cannot be promoted or advertised as family total fare (`SingleAdultPricePromotedToFamilyTotalError` enforced and tested).
+
+### 4.20 F44: Anonymous -> Account Continuity & Identity Isolation (P2)
+- **Files**: `src/app/domain/accountContinuity.ts`, `src/app/domain/accountContinuity.test.ts`, `src/app/pages/AuthPage.tsx`, `src/app/components/DataRightsPanel.tsx`.
+- Implemented `purgeLocalUserDataOnSignOut` completely purging local saved opportunities, saved snapshots, watches, and session owner tokens upon explicit sign out or account deletion, guaranteeing zero cross-account data bleed.
+- Implemented explicit consent migration flow `resolveAccountContinuity`: if an anonymous guest discovers opportunities and then signs in, an explicit consent banner asks whether to migrate or discard.
+- Strict F44 acceptance criteria: No silent cross-account merge. Cross-account bleed from previous user A to user B is strictly prohibited and throws `CrossAccountContaminationError`.
+
+### 4.21 F45: Sharing, Referrals and Viral Loops (P2)
+- **Files**: `src/app/lib/sharing.ts`, `src/app/lib/sharing.test.ts`, `src/app/pages/DealDetailPage.tsx`.
+- Implemented `buildPiiSafeShareUrl` stripping all sensitive query parameters (`token`, `auth`, `email`, `session`, `watch_id`, `key`) while preserving legitimate attribution tags (`ref=share`, `utm_source=farely`, `utm_medium=referral`).
+- Implemented stale deal protection in `formatSafeShareContent`: deals observed >24h ago automatically include an explicit freshness disclosure warning.
+- Implemented bounded abuse rate limiting preventing spam/bot share flooding.
+- Strict F45 acceptance criteria: No PII leaks or misleading stale deal shares.
+
 ---
 
 ## 5. Work Package Progress Status
