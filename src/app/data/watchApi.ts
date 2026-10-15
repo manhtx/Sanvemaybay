@@ -25,9 +25,17 @@ export interface CreateWatchInput {
   turnstileToken?: string;
 }
 
-function getLocalWatches(): WatchIntent[] {
+function getStorage(): Storage | undefined {
+  if (typeof window !== "undefined" && window.localStorage) return window.localStorage;
+  if (typeof globalThis !== "undefined" && (globalThis as any).localStorage) return (globalThis as any).localStorage;
+  return undefined;
+}
+
+function getLocalWatches(storage?: Storage): WatchIntent[] {
+  const store = storage ?? getStorage();
+  if (!store) return [];
   try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_WATCHES_KEY);
+    const raw = store.getItem(LOCAL_STORAGE_WATCHES_KEY);
     if (!raw) return [];
     return JSON.parse(raw);
   } catch {
@@ -35,9 +43,11 @@ function getLocalWatches(): WatchIntent[] {
   }
 }
 
-function saveLocalWatches(watches: WatchIntent[]): void {
+function saveLocalWatches(watches: WatchIntent[], storage?: Storage): void {
+  const store = storage ?? getStorage();
+  if (!store) return;
   try {
-    localStorage.setItem(LOCAL_STORAGE_WATCHES_KEY, JSON.stringify(watches));
+    store.setItem(LOCAL_STORAGE_WATCHES_KEY, JSON.stringify(watches));
   } catch {
     // Ignore localStorage write error
   }
@@ -237,53 +247,182 @@ export async function createWatch(
   return { success: true, watchId: newWatch.id };
 }
 
-export async function pauseWatch(id: string): Promise<void> {
+export interface WatchMutationResult {
+  success: boolean;
+  rolledBack?: boolean;
+  error?: string;
+}
+
+export async function pauseWatch(
+  id: string,
+  options?: {
+    onRollback?: (previousWatch: WatchIntent, error: string) => void;
+    mockRemoteUpdater?: (id: string, status: string) => Promise<boolean>;
+  }
+): Promise<WatchMutationResult> {
   const locals = getLocalWatches();
+  const priorWatch = locals.find((w) => w.id === id);
+  if (!priorWatch) {
+    return { success: false, error: "Không tìm thấy hợp đồng theo dõi." };
+  }
+
+  // Optimistic update
   const updated = locals.map((w) =>
-    w.id === id ? { ...w, status: "paused" as WatchStatus, updatedAt: new Date().toISOString() } : w,
+    w.id === id ? { ...w, status: "paused" as WatchStatus, updatedAt: new Date().toISOString() } : w
   );
   saveLocalWatches(updated);
 
+  if (options?.mockRemoteUpdater) {
+    const ok = await options.mockRemoteUpdater(id, "paused");
+    if (!ok) {
+      saveLocalWatches(locals);
+      options.onRollback?.(priorWatch, "Lỗi máy chủ khi tạm dừng theo dõi.");
+      return { success: false, rolledBack: true, error: "Lỗi máy chủ khi tạm dừng theo dõi." };
+    }
+    return { success: true };
+  }
+
   if (isSupabaseConfigured) {
     try {
-      await supabase
-        .from("user_alerts")
-        .update({ status: "paused", updated_at: new Date().toISOString() })
-        .eq("id", id);
-    } catch {
-      // Ignore
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData?.session?.user;
+      if (user) {
+        const { error } = await supabase
+          .from("user_alerts")
+          .update({ status: "paused", updated_at: new Date().toISOString() })
+          .eq("id", id)
+          .eq("user_id", user.id);
+
+        if (error) {
+          saveLocalWatches(locals);
+          reportClientIssue("watch_pause_remote_failed");
+          options?.onRollback?.(priorWatch, error.message);
+          return { success: false, rolledBack: true, error: error.message || "Không thể cập nhật trên máy chủ." };
+        }
+      }
+    } catch (err: any) {
+      saveLocalWatches(locals);
+      reportClientIssue("watch_pause_exception");
+      const errMsg = err?.message || "Lỗi kết nối khi tạm dừng theo dõi.";
+      options?.onRollback?.(priorWatch, errMsg);
+      return { success: false, rolledBack: true, error: errMsg };
     }
   }
+
+  return { success: true };
 }
 
-export async function resumeWatch(id: string): Promise<void> {
+export async function resumeWatch(
+  id: string,
+  options?: {
+    onRollback?: (previousWatch: WatchIntent, error: string) => void;
+    mockRemoteUpdater?: (id: string, status: string) => Promise<boolean>;
+  }
+): Promise<WatchMutationResult> {
   const locals = getLocalWatches();
+  const priorWatch = locals.find((w) => w.id === id);
+  if (!priorWatch) {
+    return { success: false, error: "Không tìm thấy hợp đồng theo dõi." };
+  }
+
+  // Optimistic update
   const updated = locals.map((w) =>
-    w.id === id ? { ...w, status: "monitoring" as WatchStatus, updatedAt: new Date().toISOString() } : w,
+    w.id === id ? { ...w, status: "monitoring" as WatchStatus, updatedAt: new Date().toISOString() } : w
   );
   saveLocalWatches(updated);
 
+  if (options?.mockRemoteUpdater) {
+    const ok = await options.mockRemoteUpdater(id, "active");
+    if (!ok) {
+      saveLocalWatches(locals);
+      options.onRollback?.(priorWatch, "Lỗi máy chủ khi tiếp tục theo dõi.");
+      return { success: false, rolledBack: true, error: "Lỗi máy chủ khi tiếp tục theo dõi." };
+    }
+    return { success: true };
+  }
+
   if (isSupabaseConfigured) {
     try {
-      await supabase
-        .from("user_alerts")
-        .update({ status: "active", updated_at: new Date().toISOString() })
-        .eq("id", id);
-    } catch {
-      // Ignore
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData?.session?.user;
+      if (user) {
+        const { error } = await supabase
+          .from("user_alerts")
+          .update({ status: "active", updated_at: new Date().toISOString() })
+          .eq("id", id)
+          .eq("user_id", user.id);
+
+        if (error) {
+          saveLocalWatches(locals);
+          reportClientIssue("watch_resume_remote_failed");
+          options?.onRollback?.(priorWatch, error.message);
+          return { success: false, rolledBack: true, error: error.message || "Không thể cập nhật trên máy chủ." };
+        }
+      }
+    } catch (err: any) {
+      saveLocalWatches(locals);
+      reportClientIssue("watch_resume_exception");
+      const errMsg = err?.message || "Lỗi kết nối khi tiếp tục theo dõi.";
+      options?.onRollback?.(priorWatch, errMsg);
+      return { success: false, rolledBack: true, error: errMsg };
     }
   }
+
+  return { success: true };
 }
 
-export async function deleteWatch(id: string): Promise<void> {
+export async function deleteWatch(
+  id: string,
+  options?: {
+    onRollback?: (previousWatch: WatchIntent, error: string) => void;
+    mockRemoteDeleter?: (id: string) => Promise<boolean>;
+  }
+): Promise<WatchMutationResult> {
   const locals = getLocalWatches();
+  const priorWatch = locals.find((w) => w.id === id);
+  if (!priorWatch) {
+    return { success: false, error: "Không tìm thấy hợp đồng theo dõi." };
+  }
+
+  // Optimistic delete
   saveLocalWatches(locals.filter((w) => w.id !== id));
 
+  if (options?.mockRemoteDeleter) {
+    const ok = await options.mockRemoteDeleter(id);
+    if (!ok) {
+      saveLocalWatches(locals);
+      options.onRollback?.(priorWatch, "Lỗi máy chủ khi hủy theo dõi.");
+      return { success: false, rolledBack: true, error: "Lỗi máy chủ khi hủy theo dõi." };
+    }
+    return { success: true };
+  }
+
   if (isSupabaseConfigured) {
     try {
-      await supabase.from("user_alerts").delete().eq("id", id);
-    } catch {
-      // Ignore
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData?.session?.user;
+      if (user) {
+        const { error } = await supabase
+          .from("user_alerts")
+          .delete()
+          .eq("id", id)
+          .eq("user_id", user.id);
+
+        if (error) {
+          saveLocalWatches(locals);
+          reportClientIssue("watch_delete_remote_failed");
+          options?.onRollback?.(priorWatch, error.message);
+          return { success: false, rolledBack: true, error: error.message || "Không thể xóa trên máy chủ." };
+        }
+      }
+    } catch (err: any) {
+      saveLocalWatches(locals);
+      reportClientIssue("watch_delete_exception");
+      const errMsg = err?.message || "Lỗi kết nối khi hủy theo dõi.";
+      options?.onRollback?.(priorWatch, errMsg);
+      return { success: false, rolledBack: true, error: errMsg };
     }
   }
+
+  return { success: true };
 }
