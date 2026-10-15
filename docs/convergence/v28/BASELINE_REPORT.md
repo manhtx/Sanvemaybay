@@ -28,7 +28,7 @@ All engineering implementations strictly adhere to:
 | **Active Branch** | `antigravity/farely-v12-product-convergence` |
 | **Reference PR** | `https://github.com/manhtx/Sanvemaybay/pull/1` |
 | **Reference Baseline SHA** | `5a924a01cbcca62b58c3e8350707e2cc9678ea83` |
-| **Implementation Commit** | `b756b1f0e97c0121bf031d13dd80ae77186936b9` |
+| **Implementation Commit** | `8a86fa43bd51207ad898b57a4700248495308afb` |
 | **Working Tree** | Clean prior to checkpoint generation |
 | **Node.js Environment** | Node v20+ / Vite 6.4.3 / Playwright / Deno |
 | **PostgreSQL / Supabase** | PostgreSQL 17 / pgTAP / 38 Migrations / 14 Edge Functions |
@@ -42,7 +42,7 @@ All test suites execute with zero failures across all 4 runners:
 
 | Test Runner / Verification Suite | Tests Planned / Run | Passed | Failed | Status |
 | :--- | :---: | :---: | :---: | :---: |
-| **Vitest Tests (Domain & Logic)** | 302 | 302 | 0 | **PASS** |
+| **Vitest Tests (Domain & Logic)** | 309 | 309 | 0 | **PASS** |
 | **Node Test Contracts (Integrity & Architecture)** | 263 | 263 | 0 | **PASS** |
 | **Deno Edge Function Tests** | 54 | 54 | 0 | **PASS** |
 | **Playwright End-to-End Tests** | 74 | 74 | 0 | **PASS** |
@@ -53,7 +53,7 @@ All test suites execute with zero failures across all 4 runners:
 | **TypeScript Typecheck (`tsc --noEmit`)** | Full repo | Clean | 0 | **PASS** |
 | **ESLint (`npm run lint`)** | Full repo | Clean (0 errors) | 0 | **PASS** |
 | **Vite Production Build (`vite build`)** | Full bundle | Clean | 0 | **PASS** |
-| **Total Automated Tests** | **693** | **693** | **0** | **PASS** |
+| **Total Automated Tests** | **700** | **700** | **0** | **PASS** |
 
 ---
 
@@ -245,6 +245,15 @@ All test suites execute with zero failures across all 4 runners:
 - **Files**: `src/domain/farely/conditionalGrowthSafety.ts`, `src/domain/farely/conditionalGrowthSafety.test.ts`.
 - Implemented prerequisite governance and founder authorization gating for candidate P3 capabilities (F49 AI Copilot, F51 Premium Watch, F52 Full Ticket Checkout, F53 B2B API, F55 International Expansion).
 - Strict Rule 4 acceptance criteria: High-risk commercial and legal features cannot be activated or marked as LIVE without verified prerequisites (e.g. IATA/BSP ticketing license, B2B redistribution rights, billing integration) and explicit Founder authorization tokens; throws `UnauthorizedP3ActivationError` on unauthorized enablement attempts.
+
+### 4.32 Forensic Audit Remediations & Domain Robustness (AUD-01 through AUD-15)
+- **AUD-01 & AUD-14**: In `conditionalGrowthSafety.ts`, removed hardcoded `isFounderAuthorized: true` from P3 registry (F50 and F54 reset to `STAGED_AWAITING_APPROVAL`). Implemented `generateFounderAuthToken` and `verifyFounderAuthToken` using SHA-256 HMAC-style signatures, capability binding, and epoch expiration. Enforced strict cryptographic verification in `assertP3ActivationSafety`.
+- **AUD-02**: In `watchApi.ts`, added `.select("id")` and row count checks to `.update()` and `.delete()`. Rolled back optimistic mutations on 0 matched rows or unauthenticated remote access.
+- **AUD-03**: In `SavedDealsPage.tsx`, removed `activeByRouteDate` fallback that falsely associated different flights on the same route/date, ensuring expired offers remain truthful historical snapshots.
+- **AUD-06 & AUD-15**: In `dealComparison.ts` and `SavedComparisonModal.tsx`, stopped substituting ticket price for unknown `realTotal` (kept `totalCost: undefined`). Enforced that Pareto dominance in `identifyDominatedOptions` strictly requires all compared dimensions (`totalCost`, `durationMinutes`, `stops`) to be defined and known.
+- **AUD-10**: In `directAffiliateComparison.ts`, normalized provider quote costs strictly based on `quoteBasis`, eliminating double taxation when quotes are already total-inclusive or all-inclusive.
+- **AUD-12**: In `priceAnomaly.ts`, replaced currency-specific 50k VND check with relative lower bound (`< median * 0.05`), and handled zero-variance cohorts (`rawMad === 0`) by returning `NORMAL_FLUCTUATION` with `mad: 0, modifiedZScore: 0` without fabricating synthetic dispersion.
+- **AUD-13**: In `dataEconomics.ts`, enforced fail-closed behavior to `REJECTED_UNECONOMIC` when measured utility evidence is omitted, preventing injection of default 20k/10k values.
 
 ---
 
