@@ -11,8 +11,8 @@
     "compliance_state": "CAPABILITY_PROVEN"
   },
   "market_outcome_evidence": "COLLECTING_EVIDENCE",
-  "unresolved_p0": 0,
-  "unresolved_required_current_stage_p1": 0,
-  "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-  "timestamp": "2026-10-14T12:02:16.841Z"
+  "unresolved_p0": 192,
+  "unresolved_required_current_stage_p1": 74,
+  "source_sha": "cac7cb6032195ac93ea3cca1764e9b7241d2ccb9",
+  "timestamp": "2026-10-15T03:53:21.321Z"
 }

@@ -1,16 +1,16 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-14T12:02:16.826Z",
-  "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
+  "updated_at": "2026-10-15T03:53:21.312Z",
+  "source_sha": "cac7cb6032195ac93ea3cca1764e9b7241d2ccb9",
   "summary": {
     "total_gates": 267,
-    "proven_gates": 267,
-    "open_gates": 0
+    "proven_gates": 0,
+    "open_gates": 267
   },
   "gates": {
     "REQ-CONTROL-001": {
       "gate_id": "REQ-CONTROL-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -18,14 +18,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CONTROL-002": {
       "gate_id": "REQ-CONTROL-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -33,14 +33,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CONTROL-003": {
       "gate_id": "REQ-CONTROL-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -48,14 +48,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CONTROL-004": {
       "gate_id": "REQ-CONTROL-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -63,14 +63,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CONTROL-005": {
       "gate_id": "REQ-CONTROL-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -78,14 +78,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CONTROL-006": {
       "gate_id": "REQ-CONTROL-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -93,14 +93,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CONTROL-007": {
       "gate_id": "REQ-CONTROL-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -108,14 +108,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CONTROL-008": {
       "gate_id": "REQ-CONTROL-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E6",
       "achieved_evidence_level": "E6",
@@ -123,14 +123,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CONTROL-009": {
       "gate_id": "REQ-CONTROL-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -138,14 +138,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CONTROL-010": {
       "gate_id": "REQ-CONTROL-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -153,14 +153,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-REL-001": {
       "gate_id": "REQ-REL-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E4",
@@ -168,14 +168,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-REL-002": {
       "gate_id": "REQ-REL-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E4",
@@ -183,14 +183,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-REL-003": {
       "gate_id": "REQ-REL-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E4",
@@ -198,14 +198,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-REL-004": {
       "gate_id": "REQ-REL-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -213,14 +213,14 @@
       "command_probe": "node scripts/verify-production-live.mjs",
       "artifact": "scripts/verify-production-live.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/verify-production-live.mjs"
       ]
     },
     "REQ-REL-005": {
       "gate_id": "REQ-REL-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E6",
       "achieved_evidence_level": "E6",
@@ -228,14 +228,14 @@
       "command_probe": "node --test scripts/function-parity.node-test.mjs",
       "artifact": "scripts/function-parity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/function-parity.node-test.mjs"
       ]
     },
     "REQ-REL-006": {
       "gate_id": "REQ-REL-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -243,14 +243,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-REL-007": {
       "gate_id": "REQ-REL-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E7",
       "achieved_evidence_level": "E7",
@@ -258,14 +258,14 @@
       "command_probe": "node scripts/verify-production-live.mjs",
       "artifact": "scripts/verify-production-live.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/verify-production-live.mjs"
       ]
     },
     "REQ-REL-008": {
       "gate_id": "REQ-REL-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -273,14 +273,14 @@
       "command_probe": "node --test scripts/database-backup-restore-drill.node-test.mjs",
       "artifact": "scripts/database-backup-restore-drill.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-backup-restore-drill.node-test.mjs"
       ]
     },
     "REQ-REL-009": {
       "gate_id": "REQ-REL-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -288,14 +288,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-001": {
       "gate_id": "REQ-DOM-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -303,14 +303,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-002": {
       "gate_id": "REQ-DOM-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -318,14 +318,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-003": {
       "gate_id": "REQ-DOM-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -333,14 +333,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-004": {
       "gate_id": "REQ-DOM-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -348,14 +348,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-005": {
       "gate_id": "REQ-DOM-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -363,14 +363,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-006": {
       "gate_id": "REQ-DOM-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -378,14 +378,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-007": {
       "gate_id": "REQ-DOM-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -393,14 +393,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-008": {
       "gate_id": "REQ-DOM-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -408,14 +408,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-009": {
       "gate_id": "REQ-DOM-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -423,14 +423,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-010": {
       "gate_id": "REQ-DOM-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -438,14 +438,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-011": {
       "gate_id": "REQ-DOM-011",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -453,14 +453,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-012": {
       "gate_id": "REQ-DOM-012",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -468,14 +468,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-013": {
       "gate_id": "REQ-DOM-013",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -483,14 +483,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-014": {
       "gate_id": "REQ-DOM-014",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -498,14 +498,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DOM-015": {
       "gate_id": "REQ-DOM-015",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -513,14 +513,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-DATA-001": {
       "gate_id": "REQ-DATA-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -528,14 +528,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-DATA-002": {
       "gate_id": "REQ-DATA-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -543,14 +543,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-DATA-003": {
       "gate_id": "REQ-DATA-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -558,14 +558,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-DATA-004": {
       "gate_id": "REQ-DATA-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -573,14 +573,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-DATA-005": {
       "gate_id": "REQ-DATA-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -588,14 +588,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-DATA-006": {
       "gate_id": "REQ-DATA-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -603,14 +603,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-DATA-007": {
       "gate_id": "REQ-DATA-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -618,14 +618,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-DATA-008": {
       "gate_id": "REQ-DATA-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -633,14 +633,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-DATA-009": {
       "gate_id": "REQ-DATA-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -648,14 +648,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-DATA-010": {
       "gate_id": "REQ-DATA-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -663,14 +663,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-SNAP-001": {
       "gate_id": "REQ-SNAP-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -678,14 +678,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-SNAP-002": {
       "gate_id": "REQ-SNAP-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -693,14 +693,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-SNAP-003": {
       "gate_id": "REQ-SNAP-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -708,14 +708,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-SNAP-004": {
       "gate_id": "REQ-SNAP-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -723,14 +723,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-SNAP-005": {
       "gate_id": "REQ-SNAP-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -738,14 +738,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-SNAP-006": {
       "gate_id": "REQ-SNAP-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -753,14 +753,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PAGE-001": {
       "gate_id": "REQ-PAGE-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -768,14 +768,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PAGE-002": {
       "gate_id": "REQ-PAGE-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -783,14 +783,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PAGE-003": {
       "gate_id": "REQ-PAGE-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -798,14 +798,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PAGE-004": {
       "gate_id": "REQ-PAGE-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -813,14 +813,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PAGE-005": {
       "gate_id": "REQ-PAGE-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -828,14 +828,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PRICE-001": {
       "gate_id": "REQ-PRICE-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -843,14 +843,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-PRICE-002": {
       "gate_id": "REQ-PRICE-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -858,14 +858,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-PRICE-003": {
       "gate_id": "REQ-PRICE-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -873,14 +873,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-PRICE-004": {
       "gate_id": "REQ-PRICE-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -888,14 +888,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-PRICE-005": {
       "gate_id": "REQ-PRICE-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -903,14 +903,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-PRICE-006": {
       "gate_id": "REQ-PRICE-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -918,14 +918,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-ALT-001": {
       "gate_id": "REQ-ALT-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -933,14 +933,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-ALT-002": {
       "gate_id": "REQ-ALT-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -948,14 +948,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-ALT-003": {
       "gate_id": "REQ-ALT-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -963,14 +963,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-ALT-004": {
       "gate_id": "REQ-ALT-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -978,14 +978,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-COMP-001": {
       "gate_id": "REQ-COMP-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -993,14 +993,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-COMP-002": {
       "gate_id": "REQ-COMP-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1008,14 +1008,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-COMP-003": {
       "gate_id": "REQ-COMP-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1023,14 +1023,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-COMP-004": {
       "gate_id": "REQ-COMP-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1038,14 +1038,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-COMP-005": {
       "gate_id": "REQ-COMP-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1053,14 +1053,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-COMP-006": {
       "gate_id": "REQ-COMP-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1068,14 +1068,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-COMP-007": {
       "gate_id": "REQ-COMP-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1083,14 +1083,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "REQ-COST-001": {
       "gate_id": "REQ-COST-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1098,14 +1098,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-COST-002": {
       "gate_id": "REQ-COST-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1113,14 +1113,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-COST-003": {
       "gate_id": "REQ-COST-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1128,14 +1128,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-COST-004": {
       "gate_id": "REQ-COST-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1143,14 +1143,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-COST-005": {
       "gate_id": "REQ-COST-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1158,14 +1158,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-COST-006": {
       "gate_id": "REQ-COST-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -1173,14 +1173,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEARCH-001": {
       "gate_id": "REQ-SEARCH-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1188,14 +1188,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEARCH-002": {
       "gate_id": "REQ-SEARCH-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1203,14 +1203,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEARCH-003": {
       "gate_id": "REQ-SEARCH-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1218,14 +1218,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEARCH-004": {
       "gate_id": "REQ-SEARCH-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1233,14 +1233,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEARCH-005": {
       "gate_id": "REQ-SEARCH-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1248,14 +1248,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEARCH-006": {
       "gate_id": "REQ-SEARCH-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1263,14 +1263,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEARCH-007": {
       "gate_id": "REQ-SEARCH-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1278,14 +1278,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEARCH-008": {
       "gate_id": "REQ-SEARCH-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1293,14 +1293,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEARCH-009": {
       "gate_id": "REQ-SEARCH-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1308,14 +1308,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-WATCH-001": {
       "gate_id": "REQ-WATCH-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1323,14 +1323,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-002": {
       "gate_id": "REQ-WATCH-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -1338,14 +1338,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-003": {
       "gate_id": "REQ-WATCH-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -1353,14 +1353,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-004": {
       "gate_id": "REQ-WATCH-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E4",
@@ -1368,14 +1368,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-005": {
       "gate_id": "REQ-WATCH-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1383,14 +1383,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-006": {
       "gate_id": "REQ-WATCH-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1398,14 +1398,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-007": {
       "gate_id": "REQ-WATCH-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1413,14 +1413,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-008": {
       "gate_id": "REQ-WATCH-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1428,14 +1428,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-009": {
       "gate_id": "REQ-WATCH-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1443,14 +1443,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-010": {
       "gate_id": "REQ-WATCH-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E4",
@@ -1458,14 +1458,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-011": {
       "gate_id": "REQ-WATCH-011",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1473,14 +1473,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-012": {
       "gate_id": "REQ-WATCH-012",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1488,14 +1488,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-013": {
       "gate_id": "REQ-WATCH-013",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1503,14 +1503,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-014": {
       "gate_id": "REQ-WATCH-014",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1518,14 +1518,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-015": {
       "gate_id": "REQ-WATCH-015",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1533,14 +1533,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-016": {
       "gate_id": "REQ-WATCH-016",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1548,14 +1548,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-017": {
       "gate_id": "REQ-WATCH-017",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1563,14 +1563,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-018": {
       "gate_id": "REQ-WATCH-018",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1578,14 +1578,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-019": {
       "gate_id": "REQ-WATCH-019",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1593,14 +1593,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-020": {
       "gate_id": "REQ-WATCH-020",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1608,14 +1608,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-WATCH-021": {
       "gate_id": "REQ-WATCH-021",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -1623,14 +1623,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-NOTIF-001": {
       "gate_id": "REQ-NOTIF-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1638,14 +1638,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-NOTIF-002": {
       "gate_id": "REQ-NOTIF-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1653,14 +1653,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-NOTIF-003": {
       "gate_id": "REQ-NOTIF-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1668,14 +1668,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-NOTIF-004": {
       "gate_id": "REQ-NOTIF-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1683,14 +1683,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-NOTIF-005": {
       "gate_id": "REQ-NOTIF-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1698,14 +1698,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-NOTIF-006": {
       "gate_id": "REQ-NOTIF-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1713,14 +1713,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-NOTIF-007": {
       "gate_id": "REQ-NOTIF-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1728,14 +1728,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-NOTIF-008": {
       "gate_id": "REQ-NOTIF-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1743,14 +1743,14 @@
       "command_probe": "node --test scripts/database-architecture-contract.node-test.mjs",
       "artifact": "scripts/database-architecture-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/database-architecture-contract.node-test.mjs"
       ]
     },
     "REQ-NOTIF-009": {
       "gate_id": "REQ-NOTIF-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1758,14 +1758,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "REQ-SAVED-001": {
       "gate_id": "REQ-SAVED-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -1773,14 +1773,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SAVED-002": {
       "gate_id": "REQ-SAVED-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E4",
@@ -1788,14 +1788,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SAVED-003": {
       "gate_id": "REQ-SAVED-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E4",
@@ -1803,14 +1803,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SAVED-004": {
       "gate_id": "REQ-SAVED-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E4",
@@ -1818,14 +1818,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SAVED-005": {
       "gate_id": "REQ-SAVED-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E4",
@@ -1833,14 +1833,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SAVED-006": {
       "gate_id": "REQ-SAVED-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E4",
@@ -1848,14 +1848,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SAVED-007": {
       "gate_id": "REQ-SAVED-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -1863,14 +1863,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PROV-001": {
       "gate_id": "REQ-PROV-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -1878,14 +1878,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-002": {
       "gate_id": "REQ-PROV-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -1893,14 +1893,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-003": {
       "gate_id": "REQ-PROV-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1908,14 +1908,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-004": {
       "gate_id": "REQ-PROV-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1923,14 +1923,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-005": {
       "gate_id": "REQ-PROV-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1938,14 +1938,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-006": {
       "gate_id": "REQ-PROV-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1953,14 +1953,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-007": {
       "gate_id": "REQ-PROV-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1968,14 +1968,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-008": {
       "gate_id": "REQ-PROV-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1983,14 +1983,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-009": {
       "gate_id": "REQ-PROV-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -1998,14 +1998,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-010": {
       "gate_id": "REQ-PROV-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2013,14 +2013,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-011": {
       "gate_id": "REQ-PROV-011",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2028,14 +2028,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PROV-012": {
       "gate_id": "REQ-PROV-012",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2043,14 +2043,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-COV-001": {
       "gate_id": "REQ-COV-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -2058,14 +2058,14 @@
       "command_probe": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
       "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/schedule-durable-occurrences.node-test.mjs"
       ]
     },
     "REQ-COV-002": {
       "gate_id": "REQ-COV-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2073,14 +2073,14 @@
       "command_probe": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
       "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/schedule-durable-occurrences.node-test.mjs"
       ]
     },
     "REQ-COV-003": {
       "gate_id": "REQ-COV-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2088,14 +2088,14 @@
       "command_probe": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
       "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/schedule-durable-occurrences.node-test.mjs"
       ]
     },
     "REQ-COV-004": {
       "gate_id": "REQ-COV-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2103,14 +2103,14 @@
       "command_probe": "node --test scripts/schedule-durable-occurrences.node-test.mjs",
       "artifact": "scripts/schedule-durable-occurrences.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/schedule-durable-occurrences.node-test.mjs"
       ]
     },
     "REQ-SEC-001": {
       "gate_id": "REQ-SEC-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -2118,14 +2118,14 @@
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
       ]
     },
     "REQ-SEC-002": {
       "gate_id": "REQ-SEC-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -2133,14 +2133,14 @@
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
     },
     "REQ-SEC-003": {
       "gate_id": "REQ-SEC-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -2148,14 +2148,14 @@
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
     },
     "REQ-SEC-004": {
       "gate_id": "REQ-SEC-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -2163,14 +2163,14 @@
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
     },
     "REQ-SEC-005": {
       "gate_id": "REQ-SEC-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -2178,14 +2178,14 @@
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
       ]
     },
     "REQ-SEC-006": {
       "gate_id": "REQ-SEC-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -2193,14 +2193,14 @@
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
       ]
     },
     "REQ-SEC-007": {
       "gate_id": "REQ-SEC-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E4",
@@ -2208,14 +2208,14 @@
       "command_probe": "node --test scripts/account-deletion-contract.node-test.mjs",
       "artifact": "scripts/account-deletion-contract.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/account-deletion-contract.node-test.mjs"
       ]
     },
     "REQ-SEC-008": {
       "gate_id": "REQ-SEC-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2223,14 +2223,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-SEC-009": {
       "gate_id": "REQ-SEC-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2238,14 +2238,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-SEC-010": {
       "gate_id": "REQ-SEC-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2253,14 +2253,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-SEC-011": {
       "gate_id": "REQ-SEC-011",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2268,14 +2268,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-SEC-012": {
       "gate_id": "REQ-SEC-012",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -2283,14 +2283,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-SEC-013": {
       "gate_id": "REQ-SEC-013",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -2298,14 +2298,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-PRIV-001": {
       "gate_id": "REQ-PRIV-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -2313,14 +2313,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-PRIV-002": {
       "gate_id": "REQ-PRIV-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2328,14 +2328,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-PRIV-003": {
       "gate_id": "REQ-PRIV-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2343,14 +2343,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-PRIV-004": {
       "gate_id": "REQ-PRIV-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E4",
       "achieved_evidence_level": "E4",
@@ -2358,14 +2358,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-PRIV-005": {
       "gate_id": "REQ-PRIV-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2373,14 +2373,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-PRIV-006": {
       "gate_id": "REQ-PRIV-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -2388,14 +2388,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-PRIV-007": {
       "gate_id": "REQ-PRIV-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -2403,14 +2403,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-PRIV-008": {
       "gate_id": "REQ-PRIV-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2418,14 +2418,14 @@
       "command_probe": "node --test scripts/hosting-security.node-test.mjs",
       "artifact": "scripts/hosting-security.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/hosting-security.node-test.mjs"
       ]
     },
     "REQ-ANA-001": {
       "gate_id": "REQ-ANA-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2433,14 +2433,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-ANA-002": {
       "gate_id": "REQ-ANA-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2448,14 +2448,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-ANA-003": {
       "gate_id": "REQ-ANA-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2463,14 +2463,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-ANA-004": {
       "gate_id": "REQ-ANA-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2478,14 +2478,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-ANA-005": {
       "gate_id": "REQ-ANA-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2493,14 +2493,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-ANA-006": {
       "gate_id": "REQ-ANA-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -2508,14 +2508,14 @@
       "command_probe": "npm run test:functions",
       "artifact": "supabase/functions/_shared/",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "supabase/functions/_shared/"
       ]
     },
     "REQ-PERF-001": {
       "gate_id": "REQ-PERF-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -2523,14 +2523,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PERF-002": {
       "gate_id": "REQ-PERF-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -2538,14 +2538,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PERF-003": {
       "gate_id": "REQ-PERF-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2553,14 +2553,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PERF-004": {
       "gate_id": "REQ-PERF-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -2568,14 +2568,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PERF-005": {
       "gate_id": "REQ-PERF-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -2583,14 +2583,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-PERF-006": {
       "gate_id": "REQ-PERF-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -2598,14 +2598,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-A11Y-001": {
       "gate_id": "REQ-A11Y-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2613,14 +2613,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "REQ-A11Y-002": {
       "gate_id": "REQ-A11Y-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2628,14 +2628,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "REQ-A11Y-003": {
       "gate_id": "REQ-A11Y-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2643,14 +2643,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "REQ-A11Y-004": {
       "gate_id": "REQ-A11Y-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2658,14 +2658,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "REQ-A11Y-005": {
       "gate_id": "REQ-A11Y-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2673,14 +2673,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "REQ-A11Y-006": {
       "gate_id": "REQ-A11Y-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2688,14 +2688,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "REQ-A11Y-007": {
       "gate_id": "REQ-A11Y-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2703,14 +2703,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "REQ-A11Y-008": {
       "gate_id": "REQ-A11Y-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2718,14 +2718,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "REQ-A11Y-009": {
       "gate_id": "REQ-A11Y-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2733,14 +2733,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "REQ-UX-001": {
       "gate_id": "REQ-UX-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2748,14 +2748,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-002": {
       "gate_id": "REQ-UX-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2763,14 +2763,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-003": {
       "gate_id": "REQ-UX-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2778,14 +2778,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-004": {
       "gate_id": "REQ-UX-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2793,14 +2793,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-005": {
       "gate_id": "REQ-UX-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2808,14 +2808,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-006": {
       "gate_id": "REQ-UX-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2823,14 +2823,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-007": {
       "gate_id": "REQ-UX-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2838,14 +2838,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-008": {
       "gate_id": "REQ-UX-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2853,14 +2853,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-009": {
       "gate_id": "REQ-UX-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2868,14 +2868,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-010": {
       "gate_id": "REQ-UX-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2883,14 +2883,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-011": {
       "gate_id": "REQ-UX-011",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2898,14 +2898,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-012": {
       "gate_id": "REQ-UX-012",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2913,14 +2913,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-013": {
       "gate_id": "REQ-UX-013",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2928,14 +2928,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-UX-014": {
       "gate_id": "REQ-UX-014",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2943,14 +2943,14 @@
       "command_probe": "node scripts/capture-visual-acceptance.mjs",
       "artifact": "docs/convergence/screenshots/deals_1920.png",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "docs/convergence/screenshots/deals_1920.png"
       ]
     },
     "REQ-UX-015": {
       "gate_id": "REQ-UX-015",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2958,14 +2958,14 @@
       "command_probe": "node scripts/capture-visual-acceptance.mjs",
       "artifact": "docs/convergence/screenshots/deals_1920.png",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "docs/convergence/screenshots/deals_1920.png"
       ]
     },
     "REQ-UX-016": {
       "gate_id": "REQ-UX-016",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -2973,14 +2973,14 @@
       "command_probe": "node scripts/capture-visual-acceptance.mjs",
       "artifact": "docs/convergence/screenshots/deals_1920.png",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "docs/convergence/screenshots/deals_1920.png"
       ]
     },
     "REQ-UX-017": {
       "gate_id": "REQ-UX-017",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E2",
@@ -2988,14 +2988,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "REQ-FEAT-001": {
       "gate_id": "REQ-FEAT-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3003,14 +3003,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-FEAT-002": {
       "gate_id": "REQ-FEAT-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3018,14 +3018,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-FEAT-003": {
       "gate_id": "REQ-FEAT-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -3033,14 +3033,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-FEAT-004": {
       "gate_id": "REQ-FEAT-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3048,14 +3048,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-FEAT-005": {
       "gate_id": "REQ-FEAT-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3063,14 +3063,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-FEAT-006": {
       "gate_id": "REQ-FEAT-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3078,14 +3078,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-FEAT-007": {
       "gate_id": "REQ-FEAT-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3093,14 +3093,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-FEAT-008": {
       "gate_id": "REQ-FEAT-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3108,14 +3108,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-FEAT-009": {
       "gate_id": "REQ-FEAT-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3123,14 +3123,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-FEAT-010": {
       "gate_id": "REQ-FEAT-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -3138,14 +3138,14 @@
       "command_probe": "npx vitest run src/app/domain/flightIntelligence.test.ts",
       "artifact": "src/app/domain/flightIntelligence.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/flightIntelligence.test.ts"
       ]
     },
     "REQ-SEO-001": {
       "gate_id": "REQ-SEO-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -3153,14 +3153,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEO-002": {
       "gate_id": "REQ-SEO-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -3168,14 +3168,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-SEO-003": {
       "gate_id": "REQ-SEO-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P2",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -3183,14 +3183,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "REQ-CLAIM-001": {
       "gate_id": "REQ-CLAIM-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E2",
       "achieved_evidence_level": "E3",
@@ -3198,14 +3198,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-001": {
       "gate_id": "NC-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3213,14 +3213,14 @@
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
     },
     "NC-002": {
       "gate_id": "NC-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3228,14 +3228,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "NC-003": {
       "gate_id": "NC-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3243,14 +3243,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "NC-004": {
       "gate_id": "NC-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3258,14 +3258,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "NC-005": {
       "gate_id": "NC-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3273,14 +3273,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "NC-006": {
       "gate_id": "NC-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3288,14 +3288,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "NC-007": {
       "gate_id": "NC-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3303,14 +3303,14 @@
       "command_probe": "npx vitest run src/domain/farely/truthKernelV2.test.ts",
       "artifact": "src/domain/farely/truthKernelV2.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/domain/farely/truthKernelV2.test.ts"
       ]
     },
     "NC-008": {
       "gate_id": "NC-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3318,14 +3318,14 @@
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
     },
     "NC-009": {
       "gate_id": "NC-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3333,14 +3333,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-010": {
       "gate_id": "NC-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3348,14 +3348,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-011": {
       "gate_id": "NC-011",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3363,14 +3363,14 @@
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
     },
     "NC-012": {
       "gate_id": "NC-012",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3378,14 +3378,14 @@
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
     },
     "NC-013": {
       "gate_id": "NC-013",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3393,14 +3393,14 @@
       "command_probe": "node --test scripts/rls-tenant-isolation.node-test.mjs",
       "artifact": "scripts/rls-tenant-isolation.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/rls-tenant-isolation.node-test.mjs"
       ]
     },
     "NC-014": {
       "gate_id": "NC-014",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3408,14 +3408,14 @@
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
     },
     "NC-015": {
       "gate_id": "NC-015",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3423,14 +3423,14 @@
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/watch.test.ts"
       ]
     },
     "NC-016": {
       "gate_id": "NC-016",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3438,14 +3438,14 @@
       "command_probe": "npx vitest run src/app/domain/watch.test.ts",
       "artifact": "src/app/domain/watch.test.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "src/app/domain/watch.test.ts"
       ]
     },
     "NC-017": {
       "gate_id": "NC-017",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3453,14 +3453,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "NC-018": {
       "gate_id": "NC-018",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3468,14 +3468,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "NC-019": {
       "gate_id": "NC-019",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3483,14 +3483,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "NC-020": {
       "gate_id": "NC-020",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3498,14 +3498,14 @@
       "command_probe": "node --test scripts/watch-outbox-atomicity.node-test.mjs",
       "artifact": "scripts/watch-outbox-atomicity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ]
     },
     "NC-021": {
       "gate_id": "NC-021",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3513,14 +3513,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-022": {
       "gate_id": "NC-022",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3528,14 +3528,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-023": {
       "gate_id": "NC-023",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3543,14 +3543,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-024": {
       "gate_id": "NC-024",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3558,14 +3558,14 @@
       "command_probe": "npx playwright test e2e/responsive-viewports.spec.ts",
       "artifact": "e2e/responsive-viewports.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/responsive-viewports.spec.ts"
       ]
     },
     "NC-025": {
       "gate_id": "NC-025",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3573,14 +3573,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-026": {
       "gate_id": "NC-026",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3588,14 +3588,14 @@
       "command_probe": "node --test scripts/failure-drills.node-test.mjs",
       "artifact": "scripts/failure-drills.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/failure-drills.node-test.mjs"
       ]
     },
     "NC-027": {
       "gate_id": "NC-027",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3603,14 +3603,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-028": {
       "gate_id": "NC-028",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3618,14 +3618,14 @@
       "command_probe": "node --test scripts/release-manifest.node-test.mjs",
       "artifact": "scripts/release-manifest.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/release-manifest.node-test.mjs"
       ]
     },
     "NC-029": {
       "gate_id": "NC-029",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3633,14 +3633,14 @@
       "command_probe": "node --test scripts/release-manifest.node-test.mjs",
       "artifact": "scripts/release-manifest.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/release-manifest.node-test.mjs"
       ]
     },
     "NC-030": {
       "gate_id": "NC-030",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3648,14 +3648,14 @@
       "command_probe": "node --test scripts/release-manifest.node-test.mjs",
       "artifact": "scripts/release-manifest.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/release-manifest.node-test.mjs"
       ]
     },
     "NC-031": {
       "gate_id": "NC-031",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3663,14 +3663,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-032": {
       "gate_id": "NC-032",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3678,14 +3678,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-033": {
       "gate_id": "NC-033",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3693,14 +3693,14 @@
       "command_probe": "node --test scripts/price-truth-harness.node-test.mjs",
       "artifact": "scripts/price-truth-harness.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/price-truth-harness.node-test.mjs"
       ]
     },
     "NC-034": {
       "gate_id": "NC-034",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3708,14 +3708,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "NC-035": {
       "gate_id": "NC-035",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E3",
       "achieved_evidence_level": "E3",
@@ -3723,14 +3723,14 @@
       "command_probe": "node --test scripts/registry-integrity.node-test.mjs",
       "artifact": "scripts/registry-integrity.node-test.mjs",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "scripts/registry-integrity.node-test.mjs"
       ]
     },
     "JOURNEY-001": {
       "gate_id": "JOURNEY-001",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3738,14 +3738,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-002": {
       "gate_id": "JOURNEY-002",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3753,14 +3753,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-003": {
       "gate_id": "JOURNEY-003",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3768,14 +3768,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-004": {
       "gate_id": "JOURNEY-004",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3783,14 +3783,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-005": {
       "gate_id": "JOURNEY-005",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3798,14 +3798,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-006": {
       "gate_id": "JOURNEY-006",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3813,14 +3813,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-007": {
       "gate_id": "JOURNEY-007",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3828,14 +3828,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-008": {
       "gate_id": "JOURNEY-008",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3843,14 +3843,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-009": {
       "gate_id": "JOURNEY-009",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3858,14 +3858,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-010": {
       "gate_id": "JOURNEY-010",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3873,14 +3873,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-011": {
       "gate_id": "JOURNEY-011",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3888,14 +3888,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-012": {
       "gate_id": "JOURNEY-012",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3903,14 +3903,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-013": {
       "gate_id": "JOURNEY-013",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3918,14 +3918,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-014": {
       "gate_id": "JOURNEY-014",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3933,14 +3933,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-015": {
       "gate_id": "JOURNEY-015",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3948,14 +3948,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-016": {
       "gate_id": "JOURNEY-016",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3963,14 +3963,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-017": {
       "gate_id": "JOURNEY-017",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3978,14 +3978,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-018": {
       "gate_id": "JOURNEY-018",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P1",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -3993,14 +3993,14 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
     },
     "JOURNEY-019": {
       "gate_id": "JOURNEY-019",
-      "status": "VERIFIED",
+      "status": "STALE",
       "priority": "P0",
       "required_evidence_level": "E5",
       "achieved_evidence_level": "E5",
@@ -4008,7 +4008,7 @@
       "command_probe": "npx playwright test e2e/app.spec.ts",
       "artifact": "e2e/app.spec.ts",
       "source_sha": "bb222ebe900350a661d8fc309bc720a7d67415c8",
-      "verified_at": "2026-10-14T12:00:38.425Z",
+      "verified_at": null,
       "invalidation_dependencies": [
         "e2e/app.spec.ts"
       ]
