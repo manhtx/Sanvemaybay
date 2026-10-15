@@ -1,8 +1,8 @@
 {
   "mission_id": "FARELY-10X-V28-DEEP-EXECUTION-CONVERGENCE",
   "checkpoint_type": "POST_IMPLEMENTATION",
-  "implementation_commit_sha": "113e7e8d41746e9fc9fef6dbc9a423cab3cb52b5",
-  "timestamp": "2026-10-15T06:22:00Z",
+  "implementation_commit_sha": "814605a6a088705896b78b93a760be7358d0dbd6",
+  "timestamp": "2026-10-15T06:45:00Z",
   "branch": "antigravity/farely-v12-product-convergence",
   "pr_url": "https://github.com/manhtx/Sanvemaybay/pull/1",
   "production_url": "https://farely.manhtx.com",
@@ -21,6 +21,10 @@
     "contract_shrinkage": false
   },
   "recent_remediations": [
+    "Implement Buy/Wait Guidance (F36) with statistical quantile calibrations, fail-closed abstention under sparse data (<14 points over <7 days), and near-departure urgent buying thresholds in buyWaitGuidance.ts and DealDetailPage.tsx",
+    "Implement Price Anomaly Detection (F37) using Median Absolute Deviation (MAD) & Boris Iglewicz modified Z-scores, rejecting false drop claims on sparse cohorts (<10 points) in priceAnomaly.ts and DealDetailPage.tsx",
+    "Implement Multi-City Itinerary Coherence & Open-Jaw Guard (F41) flagging surface ground transfers, enforcing minimum inter-leg connection buffers, and preventing fictitious single-ticket promotion in multiCityItinerary.ts",
+    "Implement Data Economics Optimizer (F88) calibrating scraping compute/network expenditures against subscriber demand and utility value in dataEconomics.ts",
     "Implement Intent-Based Group/Family Fare Planner (F40/F87) with passenger party composition, checked baggage packages, total party fare breakdown, and strict invariant preventing single-adult price promotion to family total in groupFarePlanner.ts and GroupFarePlannerCard.tsx",
     "Implement Anonymous -> Account Continuity & Identity Isolation (F44) with explicit consent migration, complete local storage purge on sign out, and cross-account data bleed prohibition in accountContinuity.ts and AuthPage.tsx",
     "Implement PII-Safe Sharing and Stale Deal Protection (F45) stripping sensitive tokens/session keys, appending >24h freshness disclosures, and rate limiting share abuse in sharing.ts and DealDetailPage.tsx",

@@ -28,7 +28,7 @@ All engineering implementations strictly adhere to:
 | **Active Branch** | `antigravity/farely-v12-product-convergence` |
 | **Reference PR** | `https://github.com/manhtx/Sanvemaybay/pull/1` |
 | **Reference Baseline SHA** | `5a924a01cbcca62b58c3e8350707e2cc9678ea83` |
-| **Implementation Commit** | `e345daa69392880e5242f0a5e633a17bc061e2b4` |
+| **Implementation Commit** | `814605a6a088705896b78b93a760be7358d0dbd6` |
 | **Working Tree** | Clean prior to checkpoint generation |
 | **Node.js Environment** | Node v20+ / Vite 6.4.3 / Playwright / Deno |
 | **PostgreSQL / Supabase** | PostgreSQL 17 / pgTAP / 38 Migrations / 14 Edge Functions |
@@ -42,7 +42,8 @@ All test suites execute with zero failures across all 4 runners:
 
 | Test Runner / Verification Suite | Tests Planned / Run | Passed | Failed | Status |
 | :--- | :---: | :---: | :---: | :---: |
-| **Vitest & Node Test Contracts** | 263 | 263 | 0 | **PASS** |
+| **Vitest Tests (Domain & Logic)** | 272 | 272 | 0 | **PASS** |
+| **Node Test Contracts (Integrity & Architecture)** | 263 | 263 | 0 | **PASS** |
 | **Deno Edge Function Tests** | 54 | 54 | 0 | **PASS** |
 | **Playwright End-to-End Tests** | 74 | 74 | 0 | **PASS** |
 | **Vertical Journeys (`J01..J32`)** | 32 | 32 | 0 | **PASS** |
@@ -52,7 +53,7 @@ All test suites execute with zero failures across all 4 runners:
 | **TypeScript Typecheck (`tsc --noEmit`)** | Full repo | Clean | 0 | **PASS** |
 | **ESLint (`npm run lint`)** | Full repo | Clean (0 warnings) | 0 | **PASS** |
 | **Vite Production Build (`vite build`)** | Full bundle | Clean | 0 | **PASS** |
-| **Total Automated Tests** | **391** | **391** | **0** | **PASS** |
+| **Total Automated Tests** | **663** | **663** | **0** | **PASS** |
 
 ---
 
@@ -194,6 +195,26 @@ All test suites execute with zero failures across all 4 runners:
 - Implemented stale deal protection in `formatSafeShareContent`: deals observed >24h ago automatically include an explicit freshness disclosure warning.
 - Implemented bounded abuse rate limiting preventing spam/bot share flooding.
 - Strict F45 acceptance criteria: No PII leaks or misleading stale deal shares.
+
+### 4.22 F36: Trust-Calibrated Buy/Wait Guidance (P2)
+- **Files**: `src/domain/farely/buyWaitGuidance.ts`, `src/domain/farely/buyWaitGuidance.test.ts`, `src/app/pages/DealDetailPage.tsx`.
+- Implemented statistical quantile & volatility calibration advising users whether to `BUY_NOW`, `WAIT_AND_WATCH`, or fail-closed to `INSUFFICIENT_DATA`.
+- Strict F36 acceptance criteria: Requires minimum 14 observed historical price points over >= 7 distinct days before providing calibrated advice; automatically triggers `BUY_NOW` if current price is in the lowest 5th percentile or departure is <= 7 days away.
+
+### 4.23 F37: Price Anomaly Detection (P2)
+- **Files**: `src/domain/farely/priceAnomaly.ts`, `src/domain/farely/priceAnomaly.test.ts`, `src/app/pages/DealDetailPage.tsx`.
+- Implemented Median Absolute Deviation (MAD) & Boris Iglewicz modified Z-score algorithm for outlier deal identification.
+- Strict F37 acceptance criteria: Identifies genuine drops without false alarms; returns `SPARSE_DATA_ABSTENTION` if cohort sample < 10 points; flags actionable drops when modified Z-score <= -3.5.
+
+### 4.24 F41: Multi-City Itinerary Coherence & Open-Jaw Guard (P2)
+- **Files**: `src/domain/farely/multiCityItinerary.ts`, `src/domain/farely/multiCityItinerary.test.ts`.
+- Implemented validation for multi-segment and open-jaw flight sequences (e.g., SGN -> HAN, DAD -> SGN), detecting required surface ground transfers.
+- Strict F41 acceptance criteria: Detects insufficient connection buffers (<90m domestic, <180m international); strictly throws `FictitiousSingleOfferError` if non-interline independent one-way tickets are misrepresented as a single guaranteed through-itinerary.
+
+### 4.25 F88: Data Economics Optimizer (P2)
+- **Files**: `src/domain/farely/dataEconomics.ts`, `src/domain/farely/dataEconomics.test.ts`.
+- Implemented economic scanner budget optimization calculating compute and proxy cost against active subscriber demand and downstream conversion utility.
+- Strict F88 acceptance criteria: Evaluates marginal scraping ROI; returns `REJECTED_UNECONOMIC` for low-demand, high-cost route scan expansions lacking active watch subscriptions or positive utility balance.
 
 ---
 
