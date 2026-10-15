@@ -5,7 +5,7 @@
 **Branch**: `antigravity/farely-v12-product-convergence`  
 **Reference PR**: [#1](https://github.com/manhtx/Sanvemaybay/pull/1)  
 **Production Site**: [https://farely.manhtx.com](https://farely.manhtx.com)  
-**Stage 1 Implementation SHA**: `a26fdf373ace65552f05924c4ed965a21003433d`  
+**Stage 1 Implementation SHA**: `e345daa69392880e5242f0a5e633a17bc061e2b4`  
 **Authority Status**: `READY_FOR_INDEPENDENT_ACCEPTANCE` (Founder Supremacy Preserved; Zero Self-Certification)
 
 ---
@@ -16,7 +16,7 @@ This Baseline Report establishes the empirical convergence foundation for **Fare
 All engineering implementations strictly adhere to:
 1. **Owner Authority Supremacy**: Zero contract shrinkage across all 89 capability contracts (`F00..F88`) and 267 historical acceptance gates.
 2. **Authentic Capability Roster**: 40 P0, 26 P1, 16 P2, and 7 P3 capabilities mapped with exact authentic titles and solutions.
-3. **Anti-Circularity Protocol**: Two-stage commit discipline (Implementation code committed in `a26fdf3`, followed by durable checkpoint recording).
+3. **Anti-Circularity Protocol**: Two-stage commit discipline (Implementation code committed in `e345daa`, followed by durable checkpoint recording).
 4. **Zero Fake Done**: No self-awarded 10/10 scores, no manufactured `TARGET_PROVEN` claims; all status dynamically derived from test suites.
 
 ---
@@ -28,7 +28,7 @@ All engineering implementations strictly adhere to:
 | **Active Branch** | `antigravity/farely-v12-product-convergence` |
 | **Reference PR** | `https://github.com/manhtx/Sanvemaybay/pull/1` |
 | **Reference Baseline SHA** | `5a924a01cbcca62b58c3e8350707e2cc9678ea83` |
-| **Implementation Commit** | `a26fdf373ace65552f05924c4ed965a21003433d` |
+| **Implementation Commit** | `e345daa69392880e5242f0a5e633a17bc061e2b4` |
 | **Working Tree** | Clean prior to checkpoint generation |
 | **Node.js Environment** | Node v20+ / Vite 6.4.3 / Playwright / Deno |
 | **PostgreSQL / Supabase** | PostgreSQL 17 / pgTAP / 38 Migrations / 14 Edge Functions |
@@ -109,6 +109,19 @@ All test suites execute with zero failures across all 4 runners:
 - 4 separate decision modes: `CHEAPEST` (objective price sort default), `CONVENIENT` (bay thẳng 0 stops, shortest duration), `BUDGET_FIT` (tối ưu hóa hạn mức ngân sách và hiển thị ngân sách dôi dư), `LOWER_RISK` (loại trừ rủi ro trễ chuyến/nối chuyến, ưu tiên dữ liệu mới).
 - Every ranked deal displays an inspectable ranking reason (e.g. `Bay thẳng không điểm dừng, thời gian bay 1h 55m`, `Tiết kiệm 3.200.000₫ so với hạn mức ngân sách`).
 - Guaranteed seamless return to objective price sort via quick action button.
+
+### 4.8 F35 & F80: Data Provenance UI (E-WP06 / E-WP08)
+- **Files**: `src/app/domain/provenance.ts`, `src/app/domain/provenance.test.ts`, `src/app/components/ProvenanceBadge.tsx`, `src/app/components/DealCard.tsx`, `src/app/pages/DealsPage.tsx`, `src/app/pages/DealDetailPage.tsx`, `src/app/pages/SearchPage.tsx`.
+- Implemented `ProvenanceBadge` with compact pill on opportunity cards and detailed expandable breakdown on demand.
+- Formulates humanized observation ages (`Vừa quét < 5m`, `45 phút trước`, `8 giờ trước`, `2 ngày trước`) and freshness tiers (`FRESH`, `ACCEPTABLE`, `STALE`).
+- Explicitly distinguishes 3 core certainty statuses: `OBSERVED` (chỉ dẫn), `VERIFIED` (đã xác minh), `UNAVAILABLE` (hết chỗ), strictly satisfying F35 acceptance criteria.
+- Enforces F72 exact vs indicative CTA gate: live partner booking URLs receive exact CTA ("Đặt vé qua đối tác"), whereas standard aggregator quotes receive indicative recheck CTA ("Kiểm tra giá tại nguồn").
+
+### 4.9 F34: Digest & Noise Control (E-WP09 / E-WP10)
+- **Files**: `src/app/components/WatchModal.tsx`, `src/app/data/watchApi.ts`, `src/app/domain/watch.ts`.
+- Implemented 3-level cadence selector: `Tức thì` (instant), `1 lần/ngày` (daily), `1 lần/tuần` (weekly).
+- Implemented Quiet Hours toggle (`quietHoursEnabled`, `22:00` đến `07:00`) suppressing intrusive alerts during sleep hours.
+- Clear user disclosures: single notification per episode transition, anti-spam protections, and 1-click unsubscribe links.
 
 ---
 

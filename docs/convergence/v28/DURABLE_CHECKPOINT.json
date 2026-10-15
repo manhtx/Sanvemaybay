@@ -1,8 +1,8 @@
 {
   "mission_id": "FARELY-10X-V28-DEEP-EXECUTION-CONVERGENCE",
   "checkpoint_type": "POST_IMPLEMENTATION",
-  "implementation_commit_sha": "a26fdf373ace65552f05924c4ed965a21003433d",
-  "timestamp": "2026-10-15T04:16:30Z",
+  "implementation_commit_sha": "e345daa69392880e5242f0a5e633a17bc061e2b4",
+  "timestamp": "2026-10-15T04:28:00Z",
   "branch": "antigravity/farely-v12-product-convergence",
   "pr_url": "https://github.com/manhtx/Sanvemaybay/pull/1",
   "production_url": "https://farely.manhtx.com",
@@ -21,6 +21,8 @@
     "contract_shrinkage": false
   },
   "recent_remediations": [
+    "Implement Data Provenance UI (F35, F72, F80) with interactive ProvenanceBadge, distinct OBSERVED/VERIFIED/UNAVAILABLE statuses, humanized age formatting, and indicative/exact CTA routing in ProvenanceBadge.tsx, provenance.ts, DealCard.tsx, DealsPage.tsx, DealDetailPage.tsx, and SearchPage.tsx",
+    "Implement Watch Noise Control & Cadence (F34) with instant/daily/weekly cadences, quiet hours (22:00-07:00), 1-click unsubscribe disclosures, and single-episode suppression in WatchModal.tsx, watchApi.ts, and watch.ts",
     "Implement Fare Recheck Feedback (F26, F30) with immutable USER_REPORTED status badge, structured recheck outcome recording, and non-promoted telemetry in RecheckFeedbackWidget.tsx, recheckFeedback.ts, and DealDetailPage.tsx",
     "Implement Decision Modes (F31) with 4 distinct modes (CHEAPEST, CONVENIENT, BUDGET_FIT, LOWER_RISK), inspectable ranking reasons, and seamless return to objective price sort in decisionModes.ts and SearchPage.tsx",
     "Implement optimistic mutation rollback (pauseWatch, resumeWatch, deleteWatch) on 403/500/offline errors and server ACK verification in watchApi.ts and WatchPage.tsx (F57, J13)",
