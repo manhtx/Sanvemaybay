@@ -54,25 +54,20 @@ export function SavedDealsPage() {
       }
 
       const activeByOppId = new Map<string, Deal>();
-      const activeByRouteDate = new Map<string, Deal>();
       for (const fare of observedRes.fares) {
         if (fare.opportunityId) activeByOppId.set(fare.opportunityId, fare);
         activeByOppId.set(fare.id, fare);
         if (fare.id.startsWith("observed-")) {
           activeByOppId.set(fare.id.slice("observed-".length), fare);
         }
-        const routeKey = `${fare.fromCode}:${fare.toCode}:${fare.departDate}`;
-        if (!activeByRouteDate.has(routeKey)) {
-          activeByRouteDate.set(routeKey, fare);
-        }
       }
 
       const displayItems: DisplaySavedItem[] = [];
       for (const [oppId, record] of recordsMap.entries()) {
         const snap = record.snapshotData;
-        const matchedActive =
-          activeByOppId.get(oppId) ||
-          (snap ? activeByRouteDate.get(`${snap.fromCode}:${snap.toCode}:${snap.departDate}`) : undefined);
+        // AUD-03: Strictly match by exact opportunity ID. Do not fall back to generic route/date matching,
+        // which falsely associates different airline flights and fabricates erroneous price changes.
+        const matchedActive = activeByOppId.get(oppId);
 
         const fromCode = snap?.fromCode || matchedActive?.fromCode || oppId.split(":")[0] || "---";
         const toCode = snap?.toCode || matchedActive?.toCode || oppId.split(":")[1] || "---";

@@ -70,4 +70,42 @@ describe("Price Anomaly Detection (F37)", () => {
       expect(result.isActionableDeal).toBe(false);
     });
   });
+
+  describe("AUD-12: Currency Independence & Zero-MAD Handling", () => {
+    it("handles non-VND currencies (e.g. USD) without currency-specific 50k threshold", () => {
+      // Median $100 USD
+      const usdCohort = [95, 98, 100, 100, 102, 105, 98, 101, 99, 103, 97, 102];
+      
+      // $2 is < 5% of $100 -> SUSPECTED_DATA_GLITCH
+      const glitchResult = detectPriceAnomaly({
+        currentPrice: 2,
+        historicalCohortPrices: usdCohort,
+      });
+      expect(glitchResult.classification).toBe("SUSPECTED_DATA_GLITCH");
+
+      // $70 is 30% drop -> genuine drop anomaly in USD without tripping a 50k threshold!
+      const validDropResult = detectPriceAnomaly({
+        currentPrice: 70,
+        historicalCohortPrices: usdCohort,
+      });
+      expect(validDropResult.classification).toBe("STRONG_DROP_ANOMALY");
+      expect(validDropResult.isActionableDeal).toBe(true);
+    });
+
+    it("abstains from synthetic MAD dispersion when cohort has zero variance (rawMad === 0)", () => {
+      // 12 identical prices of 2,000,000 VND -> MAD is 0
+      const homogeneousCohort = Array(12).fill(2_000_000);
+
+      const result = detectPriceAnomaly({
+        currentPrice: 1_800_000,
+        historicalCohortPrices: homogeneousCohort,
+      });
+
+      expect(result.classification).toBe("NORMAL_FLUCTUATION");
+      expect(result.mad).toBe(0);
+      expect(result.modifiedZScore).toBe(0);
+      expect(result.isActionableDeal).toBe(false);
+      expect(result.explanationVi).toContain("độ phân tán MAD = 0");
+    });
+  });
 });

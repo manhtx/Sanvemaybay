@@ -37,7 +37,7 @@ export function SavedComparisonModal({
   const compatibility = checkOpportunitiesCompatibility(rows);
 
   // Find cheapest option for tradeoff baseline
-  const sortedByCost = [...rows].sort((a, b) => a.totalCost - b.totalCost);
+  const sortedByCost = [...rows].sort((a, b) => (a.totalCost ?? a.ticketPrice) - (b.totalCost ?? b.ticketPrice));
   const cheapest = sortedByCost[0];
 
   return (
@@ -150,13 +150,13 @@ export function SavedComparisonModal({
                     <div className="rounded-lg bg-stone-50 p-3 border border-stone-200 space-y-1.5">
                       <div>
                         <div className="text-[10px] uppercase font-bold tracking-wider text-stone-500">
-                          Tổng chi phí dự kiến
+                          {row.totalCost !== undefined ? "Tổng chi phí thực tế" : "Giá vé gốc (Chưa rõ phụ phí)"}
                         </div>
                         <div className="text-lg font-bold text-blue-700 font-mono">
-                          {formatVND(row.totalCost)}
+                          {formatVND(row.totalCost ?? row.ticketPrice)}
                         </div>
                       </div>
-                      {row.ticketPrice !== row.totalCost && (
+                      {row.totalCost !== undefined && row.ticketPrice !== row.totalCost && (
                         <div className="text-xs text-stone-500">
                           Giá vé gốc: <span className="font-mono">{formatVND(row.ticketPrice)}</span>
                         </div>
@@ -286,7 +286,7 @@ export function SavedComparisonModal({
               <div className="font-medium text-stone-800">
                 Lựa chọn có chi phí thấp nhất:{" "}
                 <span className="font-bold text-blue-700 font-mono">
-                  {cheapest.route} ({cheapest.airline || "Hãng"}) — {formatVND(cheapest.totalCost)}
+                  {cheapest.route} ({cheapest.airline || "Hãng"}) — {formatVND(cheapest.totalCost ?? cheapest.ticketPrice)}
                 </span>
               </div>
               <div className="space-y-1.5 pl-2 border-l-2 border-blue-400">
@@ -297,7 +297,7 @@ export function SavedComparisonModal({
                     return (
                       <div key={other.id} className="leading-relaxed">
                         <span className="font-semibold text-stone-900">
-                          So với {other.route} ({other.airline || "Hãng"} - {formatVND(other.totalCost)}):
+                          So với {other.route} ({other.airline || "Hãng"} - {formatVND(other.totalCost ?? other.ticketPrice)}):
                         </span>{" "}
                         <span className="text-stone-700">{explanation}</span>
                       </div>

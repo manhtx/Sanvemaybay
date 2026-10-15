@@ -4,7 +4,7 @@ export interface DealComparisonRow {
   id: string;
   route: string;
   ticketPrice: number;
-  totalCost: number;
+  totalCost?: number;
   durationMinutes: number | undefined;
   durationText?: string;
   stops: number | null;
@@ -33,7 +33,8 @@ export function compareDeals(deals: Deal[]): DealComparisonRow[] {
     if (!deal.duration) unverifiedFields.push("Thời gian bay");
     if (deal.stops === null || deal.stops === undefined) unverifiedFields.push("Số điểm dừng");
     if (!deal.refundPolicy) unverifiedFields.push("Chính sách hoàn/đổi vé");
-    if (deal.realTotal === undefined || deal.realTotal === null) {
+    const hasRealTotal = deal.realTotal !== undefined && deal.realTotal !== null;
+    if (!hasRealTotal) {
       unverifiedFields.push("Tổng chi phí thực tế (chưa có dữ liệu phụ phí)");
     }
 
@@ -41,7 +42,7 @@ export function compareDeals(deals: Deal[]): DealComparisonRow[] {
       id: deal.id,
       route: `${deal.fromCode} → ${deal.toCode}`,
       ticketPrice: deal.price,
-      totalCost: deal.realTotal ?? deal.price,
+      totalCost: hasRealTotal ? deal.realTotal : undefined,
       durationMinutes: durationMinutes(deal.duration),
       durationText: deal.duration,
       stops: deal.stops,
@@ -93,11 +94,14 @@ export function compareSavedOpportunities(items: SavedComparisonInput[]): DealCo
     const snap = item.snapshotData;
     const dur = snap?.duration;
     const durMin = durationMinutes(dur);
+    const hasRealTotal = snap?.realTotal !== undefined && snap?.realTotal !== null;
 
     if (!dur) unverifiedFields.push("Thời gian bay");
     if (item.stops === null || item.stops === undefined) unverifiedFields.push("Số điểm dừng");
     unverifiedFields.push("Chính sách hoàn/đổi vé");
-    unverifiedFields.push("Chi tiết phụ phí thực tế");
+    if (!hasRealTotal) {
+      unverifiedFields.push("Chi tiết phụ phí thực tế");
+    }
 
     const price = item.currentPrice ?? item.savedPrice;
 
@@ -105,7 +109,7 @@ export function compareSavedOpportunities(items: SavedComparisonInput[]): DealCo
       id: item.opportunityId,
       route: `${item.fromCode} → ${item.toCode}`,
       ticketPrice: price,
-      totalCost: price,
+      totalCost: hasRealTotal ? snap.realTotal : undefined,
       durationMinutes: durMin,
       durationText: dur,
       stops: item.stops ?? null,
@@ -171,7 +175,11 @@ export function checkOpportunitiesCompatibility(rows: DealComparisonRow[]): Comp
 }
 
 export function explainTradeoff(cheaper: DealComparisonRow, costlier: DealComparisonRow): string {
-  const priceDiff = costlier.totalCost - cheaper.totalCost;
+  const cheaperCost = cheaper.totalCost ?? cheaper.ticketPrice;
+  const costlierCost = costlier.totalCost ?? costlier.ticketPrice;
+  const priceDiff = costlierCost - cheaperCost;
+  const isEstimated = cheaper.totalCost === undefined || costlier.totalCost === undefined;
+
   if (priceDiff <= 0) return "Hai phương án có tổng chi phí tương đương.";
 
   const stopsDiff = (cheaper.stops != null && costlier.stops != null) ? cheaper.stops - costlier.stops : 0;
@@ -194,13 +202,14 @@ export function explainTradeoff(cheaper: DealComparisonRow, costlier: DealCompar
     parts.push(`thêm ${stopsDiff} điểm dừng`);
   }
 
+  const qualifier = isEstimated ? " (ước tính theo giá vé gốc)" : "";
   if (parts.length > 0) {
-    return `Rẻ hơn khoảng ${formatMoney(priceDiff)} nhưng ${parts.join(" và ")}.`;
+    return `Rẻ hơn khoảng ${formatMoney(priceDiff)}${qualifier} nhưng ${parts.join(" và ")}.`;
   }
   if (timeDiffMinutes <= -60) {
-    return `Rẻ hơn khoảng ${formatMoney(priceDiff)} và bay nhanh hơn.`;
+    return `Rẻ hơn khoảng ${formatMoney(priceDiff)}${qualifier} và bay nhanh hơn.`;
   }
-  return `Rẻ hơn khoảng ${formatMoney(priceDiff)} với hành trình tương đương.`;
+  return `Rẻ hơn khoảng ${formatMoney(priceDiff)}${qualifier} với hành trình tương đương.`;
 }
 
 export function identifyDominatedOptions(rows: DealComparisonRow[]): Set<string> {
@@ -208,12 +217,17 @@ export function identifyDominatedOptions(rows: DealComparisonRow[]): Set<string>
   for (const a of rows) {
     for (const b of rows) {
       if (a.id === b.id) continue;
-      const durationA = a.durationMinutes ?? Infinity;
-      const durationB = b.durationMinutes ?? Infinity;
-      const stopsA = a.stops ?? Infinity;
-      const stopsB = b.stops ?? Infinity;
-      const noWorse = a.totalCost <= b.totalCost && durationA <= durationB && stopsA <= stopsB;
-      const strictlyBetter = a.totalCost < b.totalCost || durationA < durationB || stopsA < stopsB;
+      // Invariant (AUD-06 & AUD-15): Pareto comparison strictly requires all compared
+      // dimensions to be defined and known on both options. Missing dimensions cannot be treated as Infinity.
+      if (
+        a.totalCost == null || b.totalCost == null ||
+        a.durationMinutes == null || b.durationMinutes == null ||
+        a.stops == null || b.stops == null
+      ) {
+        continue;
+      }
+      const noWorse = a.totalCost <= b.totalCost && a.durationMinutes <= b.durationMinutes && a.stops <= b.stops;
+      const strictlyBetter = a.totalCost < b.totalCost || a.durationMinutes < b.durationMinutes || a.stops < b.stops;
       if (noWorse && strictlyBetter) {
         dominatedIds.add(b.id);
       }

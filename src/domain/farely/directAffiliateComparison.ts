@@ -93,17 +93,35 @@ export function compareProviderChannels(params: {
 
   // 1. Calculate normalized total cost for each channel
   const normalizedList: NormalizedProviderChannel[] = quotes.map((q) => {
-    const baseFare = q.rawQuotedPriceVND;
-    const taxes = q.mandatoryTaxesAndFeesVND;
+    let baseFare = q.rawQuotedPriceVND;
+    let taxes = q.mandatoryTaxesAndFeesVND;
     let baggage = 0;
+    let totalCost = 0;
 
-    if (requiresCheckedBaggage) {
-      if (!q.isBaggageIncludedInQuote) {
+    if (q.quoteBasis === 'BASE_FARE_ONLY') {
+      baseFare = q.rawQuotedPriceVND;
+      taxes = q.mandatoryTaxesAndFeesVND;
+      if (requiresCheckedBaggage && !q.isBaggageIncludedInQuote) {
         baggage = q.checkedBaggageFeeVND;
       }
+      totalCost = baseFare + taxes + baggage;
+    } else if (q.quoteBasis === 'TOTAL_INCLUSIVE_NO_BAGGAGE') {
+      // Raw price already includes mandatory taxes and fees
+      taxes = q.mandatoryTaxesAndFeesVND;
+      baseFare = Math.max(0, q.rawQuotedPriceVND - taxes);
+      if (requiresCheckedBaggage && !q.isBaggageIncludedInQuote) {
+        baggage = q.checkedBaggageFeeVND;
+      }
+      totalCost = q.rawQuotedPriceVND + baggage;
+    } else {
+      // ALL_INCLUSIVE_WITH_BAGGAGE: already includes taxes and baggage
+      taxes = q.mandatoryTaxesAndFeesVND;
+      const includedBaggage = q.isBaggageIncludedInQuote ? q.checkedBaggageFeeVND : 0;
+      baggage = includedBaggage;
+      baseFare = Math.max(0, q.rawQuotedPriceVND - taxes - baggage);
+      totalCost = q.rawQuotedPriceVND;
     }
 
-    const totalCost = baseFare + taxes + baggage;
     const stalenessMinutes = Math.max(
       0,
       Math.round((nowMs - new Date(q.observedAt).getTime()) / (1000 * 60))

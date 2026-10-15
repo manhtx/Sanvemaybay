@@ -110,4 +110,67 @@ describe('F43: Direct/Affiliate Provider Comparison', () => {
       assertCommercialRankingIntegrity('ota_sponsored', result)
     ).toThrow(CommercialRankingOverrideError);
   });
+
+  it('avoids double taxation when quoteBasis is TOTAL_INCLUSIVE_NO_BAGGAGE or ALL_INCLUSIVE_WITH_BAGGAGE (AUD-10)', () => {
+    const inclusiveOtaQuote: ProviderQuoteInput = {
+      providerId: 'ota_inclusive',
+      providerName: 'Inclusive OTA',
+      channelType: 'OTA_PARTNER',
+      quoteBasis: 'TOTAL_INCLUSIVE_NO_BAGGAGE',
+      rawQuotedPriceVND: 1_600_000,
+      mandatoryTaxesAndFeesVND: 400_000, // Disclosed component, already included in 1.6M
+      checkedBaggageFeeVND: 200_000,
+      isBaggageIncludedInQuote: false,
+      deepLinkClass: 'DEEP_LINK_EXACT_OFFER',
+      deepLinkUrl: 'https://example.com/inclusive',
+      isCommercialPartner: false,
+      observedAt: '2026-10-15T02:00:00Z',
+    };
+
+    const allInclusiveQuote: ProviderQuoteInput = {
+      providerId: 'vna_package',
+      providerName: 'Vietnam Airlines Package',
+      channelType: 'DIRECT_AIRLINE',
+      quoteBasis: 'ALL_INCLUSIVE_WITH_BAGGAGE',
+      rawQuotedPriceVND: 1_900_000,
+      mandatoryTaxesAndFeesVND: 400_000,
+      checkedBaggageFeeVND: 250_000,
+      isBaggageIncludedInQuote: true,
+      deepLinkClass: 'DEEP_LINK_EXACT_OFFER',
+      deepLinkUrl: 'https://vietnamairlines.com/package',
+      isCommercialPartner: false,
+      observedAt: '2026-10-15T02:00:00Z',
+    };
+
+    // Without baggage:
+    const resNoBaggage = compareProviderChannels({
+      flightKey: 'VN214_SGN_HAN_20261101',
+      quotes: [inclusiveOtaQuote, allInclusiveQuote],
+      requiresCheckedBaggage: false,
+    });
+
+    const otaNoBaggage = resNoBaggage.channels.find((c) => c.providerId === 'ota_inclusive')!;
+    // Should NOT be 1.6M + 400k = 2.0M! It must strictly remain 1.6M
+    expect(otaNoBaggage.normalizedTotalCostVND).toBe(1_600_000);
+    expect(otaNoBaggage.breakdown.mandatoryTaxesAndFeesVND).toBe(400_000);
+    expect(otaNoBaggage.breakdown.baseFareVND).toBe(1_200_000);
+
+    const allIncNoBaggage = resNoBaggage.channels.find((c) => c.providerId === 'vna_package')!;
+    expect(allIncNoBaggage.normalizedTotalCostVND).toBe(1_900_000);
+
+    // With baggage:
+    const resWithBaggage = compareProviderChannels({
+      flightKey: 'VN214_SGN_HAN_20261101',
+      quotes: [inclusiveOtaQuote, allInclusiveQuote],
+      requiresCheckedBaggage: true,
+    });
+
+    const otaWithBaggage = resWithBaggage.channels.find((c) => c.providerId === 'ota_inclusive')!;
+    // 1.6M raw + 200k baggage = 1.8M (not 1.8M + 400k taxes!)
+    expect(otaWithBaggage.normalizedTotalCostVND).toBe(1_800_000);
+
+    const allIncWithBaggage = resWithBaggage.channels.find((c) => c.providerId === 'vna_package')!;
+    // Baggage is already included, so total cost remains 1.9M
+    expect(allIncWithBaggage.normalizedTotalCostVND).toBe(1_900_000);
+  });
 });

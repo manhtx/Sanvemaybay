@@ -305,18 +305,26 @@ export async function pauseWatch(
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData?.session?.user;
       if (user) {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("user_alerts")
           .update({ status: "paused", updated_at: new Date().toISOString() })
           .eq("id", id)
-          .eq("user_id", user.id);
+          .eq("user_id", user.id)
+          .select("id");
 
-        if (error) {
+        if (error || !data || data.length === 0) {
           saveLocalWatches(locals);
           reportClientIssue("watch_pause_remote_failed");
-          options?.onRollback?.(priorWatch, error.message);
-          return { success: false, rolledBack: true, error: error.message || "Không thể cập nhật trên máy chủ." };
+          const errMsg = error?.message || "Không tìm thấy thông báo hoặc bạn không có quyền cập nhật trên máy chủ.";
+          options?.onRollback?.(priorWatch, errMsg);
+          return { success: false, rolledBack: true, error: errMsg };
         }
+      } else if (priorWatch.userId) {
+        saveLocalWatches(locals);
+        reportClientIssue("watch_pause_auth_expired");
+        const errMsg = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để cập nhật theo dõi.";
+        options?.onRollback?.(priorWatch, errMsg);
+        return { success: false, rolledBack: true, error: errMsg };
       }
     } catch (err: any) {
       saveLocalWatches(locals);
@@ -364,18 +372,26 @@ export async function resumeWatch(
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData?.session?.user;
       if (user) {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("user_alerts")
           .update({ status: "active", updated_at: new Date().toISOString() })
           .eq("id", id)
-          .eq("user_id", user.id);
+          .eq("user_id", user.id)
+          .select("id");
 
-        if (error) {
+        if (error || !data || data.length === 0) {
           saveLocalWatches(locals);
           reportClientIssue("watch_resume_remote_failed");
-          options?.onRollback?.(priorWatch, error.message);
-          return { success: false, rolledBack: true, error: error.message || "Không thể cập nhật trên máy chủ." };
+          const errMsg = error?.message || "Không tìm thấy thông báo hoặc bạn không có quyền cập nhật trên máy chủ.";
+          options?.onRollback?.(priorWatch, errMsg);
+          return { success: false, rolledBack: true, error: errMsg };
         }
+      } else if (priorWatch.userId) {
+        saveLocalWatches(locals);
+        reportClientIssue("watch_resume_auth_expired");
+        const errMsg = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để tiếp tục theo dõi.";
+        options?.onRollback?.(priorWatch, errMsg);
+        return { success: false, rolledBack: true, error: errMsg };
       }
     } catch (err: any) {
       saveLocalWatches(locals);
@@ -420,18 +436,26 @@ export async function deleteWatch(
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData?.session?.user;
       if (user) {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("user_alerts")
           .delete()
           .eq("id", id)
-          .eq("user_id", user.id);
+          .eq("user_id", user.id)
+          .select("id");
 
-        if (error) {
+        if (error || !data || data.length === 0) {
           saveLocalWatches(locals);
           reportClientIssue("watch_delete_remote_failed");
-          options?.onRollback?.(priorWatch, error.message);
-          return { success: false, rolledBack: true, error: error.message || "Không thể xóa trên máy chủ." };
+          const errMsg = error?.message || "Không tìm thấy thông báo hoặc bạn không có quyền xóa trên máy chủ.";
+          options?.onRollback?.(priorWatch, errMsg);
+          return { success: false, rolledBack: true, error: errMsg };
         }
+      } else if (priorWatch.userId) {
+        saveLocalWatches(locals);
+        reportClientIssue("watch_delete_auth_expired");
+        const errMsg = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để hủy theo dõi.";
+        options?.onRollback?.(priorWatch, errMsg);
+        return { success: false, rolledBack: true, error: errMsg };
       }
     } catch (err: any) {
       saveLocalWatches(locals);

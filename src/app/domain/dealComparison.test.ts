@@ -185,5 +185,53 @@ describe("deal comparison", () => {
     expect(compat2.notes.some((n) => n.includes("chặng bay khác nhau"))).toBe(true);
     expect(compat2.dateWarning).toBeDefined();
   });
+
+  describe("AUD-06 & AUD-15: Truthful totalCost & Pareto Dominance Integrity", () => {
+    it("does not substitute ticket price for realTotal when unknown (AUD-06)", () => {
+      const rows = compareDeals([{
+        id: "deal-no-realtotal",
+        from: "Hà Nội", fromCode: "HAN", to: "Bangkok", toCode: "BKK", country: "Thái Lan", region: "asia",
+        price: 1_500_000, normalPrice: 2_000_000, discount: 25, currency: "VND", airline: "Air", airlineCode: "A",
+        departDate: "2026-10-01", duration: "2h", stops: 0, stopCity: null, seatsLeft: 5, expiresIn: "soon", image: "",
+        flightNumber: "A1", aiInsight: { reason: "data", tags: [], risk: "low", riskDetails: "", recommendation: "wait", recommendationNote: "", savingScore: 70 },
+        hiddenCosts: [], advertisedTotal: 1_500_000,
+        realTotal: undefined as any, // Unknown real total
+        tripType: "international",
+      }]);
+
+      expect(rows[0].ticketPrice).toBe(1_500_000);
+      expect(rows[0].totalCost).toBeUndefined();
+      expect(rows[0].unverifiedFields).toContain("Tổng chi phí thực tế (chưa có dữ liệu phụ phí)");
+    });
+
+    it("does not falsely mark option with unrecorded duration as Pareto-dominated (AUD-15)", () => {
+      const flightWithKnownStats = {
+        id: "flight-known",
+        route: "HAN → SGN",
+        ticketPrice: 1_500_000,
+        totalCost: 1_500_000,
+        durationMinutes: 120,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      };
+
+      const flightWithUnknownDuration = {
+        id: "flight-unknown-dur",
+        route: "HAN → SGN",
+        ticketPrice: 1_800_000,
+        totalCost: 1_800_000,
+        durationMinutes: undefined, // Missing duration! Must not be treated as Infinity!
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      };
+
+      const dominatedSet = identifyDominatedOptions([flightWithKnownStats, flightWithUnknownDuration]);
+      // Flight with unknown duration cannot be definitively declared dominated
+      expect(dominatedSet.has("flight-unknown-dur")).toBe(false);
+      expect(dominatedSet.has("flight-known")).toBe(false);
+    });
+  });
 });
 

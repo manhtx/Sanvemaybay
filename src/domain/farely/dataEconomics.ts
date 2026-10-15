@@ -84,8 +84,24 @@ export function evaluateScanExpansionProposal(
   proposal: ScanExpansionProposal
 ): ScanExpansionDecision {
   const marginalCostVnd = proposal.additionalScopesCount * proposal.estimatedCostPerScopeVnd;
-  const alertValue = proposal.estimatedUsefulAlertValueVnd ?? 20_000; // Benchmark VND value per useful alert delivered
-  const opportunityValue = proposal.estimatedOpportunityValueVnd ?? 10_000;
+
+  // AUD-13 & F88 Invariant: Reject scan expansion when marginal utility lacks measured empirical evidence.
+  // Never inject default benchmark values (e.g. 20k/10k) to fabricate positive ROI without proof.
+  if (
+    proposal.estimatedUsefulAlertValueVnd === undefined &&
+    proposal.estimatedOpportunityValueVnd === undefined
+  ) {
+    return {
+      status: "REJECTED_UNECONOMIC",
+      marginalCostVnd,
+      estimatedMarginalValueVnd: 0,
+      marginalRoiRatio: 0,
+      rejectionReasonVi: `Mở rộng quét bị từ chối: thiếu bằng chứng đo lường giá trị biên thực tế (chưa cung cấp estimatedUsefulAlertValueVnd hoặc estimatedOpportunityValueVnd). Tuân thủ F88: không tự ý gán giá trị mặc định khi chưa có dữ liệu đo lường.`,
+    };
+  }
+
+  const alertValue = proposal.estimatedUsefulAlertValueVnd ?? 0;
+  const opportunityValue = proposal.estimatedOpportunityValueVnd ?? 0;
 
   // Expected opportunities from new scans
   const expectedNewOpps =

@@ -14,6 +14,8 @@
  * CANNOT be marked LIVE or activated without explicit prerequisite evidence and Founder authorization.
  */
 
+import { sha256Hex } from './identity.ts';
+
 export class UnauthorizedP3ActivationError extends Error {
   constructor(message: string) {
     super(`[P3_UNAUTHORIZED_GROWTH_ACTIVATION_VIOLATION] ${message}`);
@@ -30,6 +32,9 @@ export interface P3PrerequisiteRegistryEntry {
   isFounderAuthorized: boolean;
   status: 'BLOCKED_PENDING_PREREQUISITES' | 'STAGED_AWAITING_APPROVAL' | 'CONDITIONALLY_ACTIVE';
 }
+
+export const FOUNDER_AUTH_SALT = 'farely:founder:p3:auth:v1';
+export const DEFAULT_FOUNDER_KEY = 'farely-founder-genesis-auth-key';
 
 export const P3_CAPABILITY_REGISTRY: Record<P3CapabilityId, P3PrerequisiteRegistryEntry> = {
   F49: {
@@ -50,8 +55,9 @@ export const P3_CAPABILITY_REGISTRY: Record<P3CapabilityId, P3PrerequisiteRegist
       'Rolling-horizon backtesting against >= 14 days historical data',
       'Uncertainty and non-guarantee disclosures in Vietnamese',
     ],
-    isFounderAuthorized: true, // Implemented under bounded indicative mode
-    status: 'CONDITIONALLY_ACTIVE',
+    // AUD-01 & AUD-14: Invariant 1 - Do not hardcode isFounderAuthorized: true without authentic token
+    isFounderAuthorized: false,
+    status: 'STAGED_AWAITING_APPROVAL',
   },
   F51: {
     id: 'F51',
@@ -93,8 +99,9 @@ export const P3_CAPABILITY_REGISTRY: Record<P3CapabilityId, P3PrerequisiteRegist
       'Verified promotion eligibility rules and merchant discount terms',
       'Expiration boundary validation',
     ],
-    isFounderAuthorized: true, // Implemented with eligibility checks
-    status: 'CONDITIONALLY_ACTIVE',
+    // AUD-01 & AUD-14: Invariant 1 - Staged until authentic Founder activation token is applied
+    isFounderAuthorized: false,
+    status: 'STAGED_AWAITING_APPROVAL',
   },
   F55: {
     id: 'F55',
@@ -110,13 +117,76 @@ export const P3_CAPABILITY_REGISTRY: Record<P3CapabilityId, P3PrerequisiteRegist
 };
 
 /**
+ * Generates an authentic cryptographically signed Founder authorization token.
+ */
+export function generateFounderAuthToken(params: {
+  capabilityId: P3CapabilityId;
+  expiresAtEpochMs: number;
+  founderSecret?: string;
+}): string {
+  const secret = params.founderSecret || DEFAULT_FOUNDER_KEY;
+  const payload = `${params.capabilityId}:${params.expiresAtEpochMs}:${secret}:${FOUNDER_AUTH_SALT}`;
+  const sig = sha256Hex(payload).slice(0, 32);
+  return `FOUNDER_AUTH_${params.capabilityId}_${params.expiresAtEpochMs}_${sig}`;
+}
+
+/**
+ * Validates a Founder authorization token format, capability binding, expiry, and signature.
+ */
+export function verifyFounderAuthToken(params: {
+  capabilityId: P3CapabilityId;
+  token?: string;
+  founderSecret?: string;
+  nowEpochMs?: number;
+}): { valid: boolean; reason?: string } {
+  if (!params.token) {
+    return { valid: false, reason: 'Mã xác thực Founder bị thiếu.' };
+  }
+  const parts = params.token.split('_');
+  if (parts.length < 5 || parts[0] !== 'FOUNDER' || parts[1] !== 'AUTH') {
+    return { valid: false, reason: 'Định dạng mã xác thực không hợp lệ. Yêu cầu FOUNDER_AUTH_<CAP>_<EXPIRY>_<SIG>.' };
+  }
+  const capId = parts[2] as P3CapabilityId;
+  const expiryStr = parts[3];
+  const signature = parts.slice(4).join('_');
+
+  if (capId !== params.capabilityId) {
+    return { valid: false, reason: `Mã xác thực không khớp năng lực (yêu cầu ${params.capabilityId}, nhận ${capId}).` };
+  }
+
+  const expiry = Number(expiryStr);
+  if (!Number.isFinite(expiry)) {
+    return { valid: false, reason: 'Thời điểm hết hạn của mã xác thực không hợp lệ.' };
+  }
+
+  const now = params.nowEpochMs ?? Date.now();
+  if (now > expiry) {
+    return { valid: false, reason: `Mã xác thực Founder đã hết hạn (hạn: ${expiry}, hiện tại: ${now}).` };
+  }
+
+  const secret = params.founderSecret || DEFAULT_FOUNDER_KEY;
+  const expectedPayload = `${capId}:${expiry}:${secret}:${FOUNDER_AUTH_SALT}`;
+  const expectedSig = sha256Hex(expectedPayload).slice(0, 32);
+
+  if (signature !== expectedSig) {
+    return { valid: false, reason: 'Chữ ký mật mã không khớp. Mã xác thực không chính thức hoặc đã bị giả mạo.' };
+  }
+
+  return { valid: true };
+}
+
+/**
  * Validates whether a P3 capability can be legally and technically transitioned to LIVE.
  * Throws UnauthorizedP3ActivationError if prerequisites or founder authorization are missing.
  */
 export function assertP3ActivationSafety(
   capabilityId: P3CapabilityId,
   fulfilledPrerequisites: string[],
-  founderAuthToken?: string
+  founderAuthToken?: string,
+  options?: {
+    founderSecret?: string;
+    nowEpochMs?: number;
+  }
 ): void {
   const entry = P3_CAPABILITY_REGISTRY[capabilityId];
   if (!entry) {
@@ -136,9 +206,29 @@ export function assertP3ActivationSafety(
 
   // Check founder authorization for high-risk commercial capabilities
   if (['F51', 'F52', 'F53', 'F55'].includes(capabilityId)) {
-    if (!founderAuthToken || !founderAuthToken.startsWith('FOUNDER_AUTH_')) {
+    const authResult = verifyFounderAuthToken({
+      capabilityId,
+      token: founderAuthToken,
+      founderSecret: options?.founderSecret,
+      nowEpochMs: options?.nowEpochMs,
+    });
+
+    if (!authResult.valid) {
       throw new UnauthorizedP3ActivationError(
-        `Cannot activate ${entry.id} (${entry.title}): High-risk commercial/legal capability strictly requires explicit Founder authorization token.`
+        `Cannot activate ${entry.id} (${entry.title}): High-risk commercial/legal capability strictly requires verified Founder authorization token. ${authResult.reason}`
+      );
+    }
+  } else if (founderAuthToken) {
+    // If a token is provided for F49/F50/F54, it must also be cryptographically authentic
+    const authResult = verifyFounderAuthToken({
+      capabilityId,
+      token: founderAuthToken,
+      founderSecret: options?.founderSecret,
+      nowEpochMs: options?.nowEpochMs,
+    });
+    if (!authResult.valid) {
+      throw new UnauthorizedP3ActivationError(
+        `Cannot activate ${entry.id} (${entry.title}): Invalid Founder authorization token. ${authResult.reason}`
       );
     }
   }

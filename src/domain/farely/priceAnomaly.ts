@@ -88,8 +88,8 @@ export function detectPriceAnomaly(params: {
 
   const median = calculateMedian(validCohort);
 
-  // Glitch check: impossibly small or massive price
-  if (currentPrice < 50_000 || currentPrice > median * 10) {
+  // Glitch check: impossibly small (< 5% of median) or massive price (> 10x median)
+  if (currentPrice < median * 0.05 || currentPrice > median * 10) {
     return {
       classification: "SUSPECTED_DATA_GLITCH",
       sampleSize: validCohort.length,
@@ -98,15 +98,31 @@ export function detectPriceAnomaly(params: {
       modifiedZScore: 99,
       discountVsMedianPercent: 0,
       isActionableDeal: false,
-      explanationVi: "Mức giá lệch cực đoan bất thường (>10 lần hoặc <50.000đ). Cần kiểm tra lại nguồn cấp dữ liệu.",
+      explanationVi: "Mức giá lệch cực đoan bất thường (>10 lần hoặc thấp hơn 5% trung vị). Cần kiểm tra lại nguồn cấp dữ liệu.",
     };
   }
 
   // Calculate Median Absolute Deviation (MAD)
   const deviations = validCohort.map((p) => Math.abs(p - median));
   const rawMad = calculateMedian(deviations);
-  // Ensure MAD > 0 to prevent division by zero in homogeneous series
-  const mad = rawMad > 0 ? rawMad : median * 0.05;
+
+  // AUD-12: If the historical cohort is homogeneous (rawMad === 0), there is zero empirical dispersion.
+  // Invariant: Do NOT fabricate synthetic dispersion (e.g. median * 0.05). Classify as NORMAL_FLUCTUATION without synthetic Z-score.
+  if (rawMad === 0) {
+    const discountVsMedianPercent = median > 0 ? Math.round(((median - currentPrice) / median) * 100) : 0;
+    return {
+      classification: "NORMAL_FLUCTUATION",
+      sampleSize: validCohort.length,
+      medianPrice: median,
+      mad: 0,
+      modifiedZScore: 0,
+      discountVsMedianPercent,
+      isActionableDeal: false,
+      explanationVi: "Tập dữ liệu lịch sử đồng nhất (độ phân tán MAD = 0). Hệ thống không tự chế tác độ phân tán giả lập để suy diễn bất thường.",
+    };
+  }
+
+  const mad = rawMad;
 
   // Boris Iglewicz and David Hoaglin modified Z-score: 0.6745 * (x - median) / MAD
   const modifiedZScore = (0.6745 * (currentPrice - median)) / mad;
