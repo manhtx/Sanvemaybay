@@ -16,7 +16,8 @@ export type AnomalyClassification =
   | "MODERATE_DROP_ANOMALY"
   | "NORMAL_FLUCTUATION"
   | "SUSPECTED_DATA_GLITCH"
-  | "SPARSE_DATA_ABSTENTION";
+  | "SPARSE_DATA_ABSTENTION"
+  | "INSUFFICIENT_DISPERSION_ABSTENTION";
 
 export type PriceAnomalyScope = "ROUTE_LEVEL" | "IDENTICAL_OFFER" | "COHORT";
 
@@ -119,6 +120,21 @@ export function detectPriceAnomaly(params: {
   // Invariant: Do NOT fabricate synthetic dispersion (e.g. median * 0.05). Classify as NORMAL_FLUCTUATION without synthetic Z-score.
   if (rawMad === 0) {
     const discountVsMedianPercent = median > 0 ? Math.round(((median - currentPrice) / median) * 100) : 0;
+    // EV-22: If MAD = 0 and price differs materially (>= 25%), do NOT automatically classify as NORMAL_FLUCTUATION
+    if (Math.abs(discountVsMedianPercent) >= 25) {
+      return {
+        classification: "INSUFFICIENT_DISPERSION_ABSTENTION",
+        sampleSize: validCohort.length,
+        medianPrice: median,
+        mad: 0,
+        modifiedZScore: 0,
+        discountVsMedianPercent,
+        isActionableDeal: false,
+        explanationVi: "Mức giá thay đổi lớn nhưng tập dữ liệu không có độ phân tán (MAD = 0). Hệ thống bảo lưu kết luận để tránh phân loại sai lệch.",
+        cohortScope,
+      };
+    }
+
     return {
       classification: "NORMAL_FLUCTUATION",
       sampleSize: validCohort.length,

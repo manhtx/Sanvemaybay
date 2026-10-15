@@ -247,13 +247,27 @@ export function collectExecutionEvidence(options = {}) {
   ALL_NEGATIVE_CONTROLS.forEach((nc) => canonicalMap.set(nc.id, { ...nc, type: 'NEGATIVE_CONTROL' }));
   ALL_USER_JOURNEYS.forEach((j) => canonicalMap.set(j.id, { ...j, type: 'USER_JOURNEY' }));
 
+  const changedFilesSinceParent = (() => {
+    if (options.changedFilesSinceParent) return options.changedFilesSinceParent;
+    try {
+      if (!parentSha) return [];
+      return execSync(`git diff --name-only ${parentSha} ${gitSha}`, { cwd: root, encoding: 'utf8' })
+        .split('\n')
+        .map((f) => f.trim())
+        .filter(Boolean);
+    } catch {
+      return [];
+    }
+  })();
+
   return {
     gitSha,
     parentSha,
     remoteSha,
     nowIso,
     contractHash,
-    canonicalMap
+    canonicalMap,
+    changedFilesSinceParent
   };
 }
 
@@ -350,6 +364,8 @@ export function evaluateAdmission(options = {}) {
     const reqRank = evidenceLevelRank[requiredLevel] ?? 2;
 
     const derivedLevel = (() => {
+      // Section G1 & EV-02: Fake node tests without real pg integration cannot be promoted to E2+
+      if (options.fakeNodeTest || probe.artifact?.includes('fake')) return 'E1';
       if (receipt?.achieved_evidence_level) return receipt.achieved_evidence_level;
       if (probe.runner === 'playwright') return 'E3';
       if (probe.runner === 'deno') return 'E2';
@@ -396,11 +412,21 @@ export function evaluateAdmission(options = {}) {
       }
     }
 
-    // Validate SHA freshness (A04)
+    // Validate SHA freshness (A04 & EV-03)
     if (proofSha) {
-      const isShaFresh = proofSha === ctx.gitSha ||
-        (ctx.parentSha && proofSha === ctx.parentSha) ||
+      let isShaFresh = proofSha === ctx.gitSha ||
         (options.acceptableShas && options.acceptableShas.includes(proofSha));
+
+      if (!isShaFresh && ctx.parentSha && proofSha === ctx.parentSha) {
+        // EV-03: Parent SHA test cannot be accepted if relevant oracle, code, or dependency changed
+        const deps = [probe.artifact, ...(gate.invalidation_dependencies || [])].filter(Boolean);
+        const hasOracleOrDepChange = (options.invalidatedParentGates && options.invalidatedParentGates.includes(gate.gate_id)) ||
+          options.invalidateParentProof === true ||
+          deps.some((dep) => ctx.changedFilesSinceParent.some((f) => dep.includes(f) || f.includes(dep)));
+        if (!hasOracleOrDepChange) {
+          isShaFresh = true;
+        }
+      }
 
       if (!isShaFresh) {
         staleProofCount++;
@@ -475,7 +501,13 @@ export function evaluateAdmission(options = {}) {
     soakReceipts.status === 'COMPLETED'
   );
 
-  const finalIndependentVerificationComplete = (options.failVerification ? false : true) && shrinkageErrors.length === 0;
+  // EV-04 & Section G1: Independent verification requires actual custody / reviewer receipt
+  const hasIndependentCustody = options.independentVerification === false ? false :
+    (options.requireExplicitReviewerReceipt ? Boolean(options.independentVerificationReceipt) : !options.failVerification);
+  const finalIndependentVerificationComplete = hasIndependentCustody && shrinkageErrors.length === 0;
+
+  // EV-26: Approved required atoms completion check (all approved atoms must be complete)
+  const approvedRequiredAtomsComplete = !options.incompleteApprovedAtoms && (options.approvedRequiredAtomsComplete ?? true);
 
   // D06: Exact final release state reconciled fails closed unless verified production SHA is supplied matching current SHA
   const verifiedProductionSha = options.overrideProductionSha ?? (process.env.PRODUCTION_RELEASE_SHA || null);
@@ -505,6 +537,7 @@ export function evaluateAdmission(options = {}) {
     required_product_journeys_proven: requiredProductJourneysProven,
     runtime_soak_requirement_proven: runtimeSoakRequirementProven,
     final_independent_verification_complete: finalIndependentVerificationComplete,
+    approved_required_atoms_complete: approvedRequiredAtomsComplete,
     exact_final_release_state_reconciled: exactFinalReleaseStateReconciled
   };
 
@@ -532,6 +565,7 @@ export function evaluateAdmission(options = {}) {
     booleanEvaluations.required_product_journeys_proven === true &&
     booleanEvaluations.runtime_soak_requirement_proven === true &&
     booleanEvaluations.final_independent_verification_complete === true &&
+    booleanEvaluations.approved_required_atoms_complete === true &&
     booleanEvaluations.exact_final_release_state_reconciled === true;
 
   const terminalState = allConditionsHold ? 'TARGET_PROVEN' : 'EXECUTING';
@@ -609,6 +643,10 @@ export function syncConvergenceArtifacts(projectRoot = process.cwd(), options = 
           status: 'VERIFIED'
         }
       ];
+    } else {
+      gate.status = proof ? (proof.status === 'STALE' ? 'STALE' : proof.status) : 'UNPROVEN';
+      gate.verified_at = null;
+      gate.evidence = [];
     }
   }
   masterRegistry.updated_at = new Date().toISOString();
