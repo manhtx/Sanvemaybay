@@ -704,7 +704,14 @@ export function mapPriceHistoryRows(rows: Array<{ date?: unknown; price?: unknow
     .filter((point) => point.date && Number.isFinite(point.price) && point.price > 0);
 }
 
-export type SearchStatus = "healthy" | "healthy_empty" | "degraded" | "provider_unavailable" | "unmonitored" | "valid_zero";
+export type SearchStatus =
+  | "healthy"
+  | "healthy_empty"
+  | "degraded"
+  | "provider_unavailable"
+  | "unmonitored"
+  | "valid_zero"
+  | "stale_only";
 
 export interface SearchDealsResult {
   deals: Deal[];
@@ -780,25 +787,29 @@ export async function searchDealsWithStatus(params: {
 
   let status: SearchStatus = "healthy";
   if (filtered.length === 0) {
-    if (observedResult.status === "unmonitored") {
+    if (observedResult.status === "provider_unavailable" || (observedFailed && candidatePool.length === 0)) {
+      status = "provider_unavailable";
+    } else if (observedResult.status === "unmonitored") {
       status = "unmonitored";
     } else if (observedResult.status === "valid_zero") {
       status = "valid_zero";
-    } else if (observedFailed && (feedFailed || liveFailed)) {
-      status = "provider_unavailable";
-    } else if (observedFailed) {
+    } else if (observedResult.status === "stale_only" || observedResult.status === "degraded_freshness") {
+      status = "stale_only";
+    } else if (observedFailed || feedFailed || liveFailed) {
       status = "degraded";
     } else {
       status = "healthy_empty";
     }
-  } else if (observedFailed || feedFailed) {
+  } else if (observedResult.status === "stale_only") {
+    status = "stale_only";
+  } else if (observedFailed || feedFailed || liveFailed || observedResult.status === "degraded_freshness") {
     status = "degraded";
   }
 
   return {
     deals: filtered,
     status,
-    retryable: status === "provider_unavailable" || status === "degraded",
+    retryable: status === "provider_unavailable" || status === "degraded" || status === "stale_only",
   };
 }
 

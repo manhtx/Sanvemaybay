@@ -10,9 +10,14 @@ import {
   Bookmark,
   ChevronLeft,
   ChevronRight,
+  RefreshCw,
+  AlertTriangle,
+  AlertCircle,
+  Compass,
+  Filter,
 } from "lucide-react";
 import { Deal, formatStops, formatVND } from "../data/deals";
-import { getObservedFares, getDealsResult } from "../data/api";
+import { getObservedFares, getDealsResult, ObservedFarePage } from "../data/api";
 import {
   isBookmarkedDeal,
   mutateBookmarkOptimistic,
@@ -44,6 +49,7 @@ export function DealsPage() {
   const [selectedWatchDeal, setSelectedWatchDeal] = useState<Deal | null>(null);
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<"all" | "by_destination">("all");
+  const [feedStatus, setFeedStatus] = useState<ObservedFarePage["status"]>("healthy");
 
   const pageSize = 60;
 
@@ -86,6 +92,8 @@ export function DealsPage() {
         directOnly: directOnly ? true : undefined,
       });
 
+      setFeedStatus(observed.status);
+
       if (observed.fares.length > 0 || observed.status !== "provider_unavailable") {
         setOpportunities(observed.fares);
         setTotalCount(observed.total);
@@ -97,9 +105,12 @@ export function DealsPage() {
         if (typeof maxBudget === "number") fallback = fallback.filter((d) => d.price <= maxBudget);
         setOpportunities(fallback.slice((currentPage - 1) * pageSize, currentPage * pageSize));
         setTotalCount(fallback.length);
+        if (fallback.length === 0) {
+          setFeedStatus("provider_unavailable");
+        }
       }
     } catch {
-      // Keep existing state
+      setFeedStatus("provider_unavailable");
     } finally {
       setIsLoading(false);
     }
@@ -376,13 +387,99 @@ export function DealsPage() {
             <span>Đang nạp dữ liệu quan sát…</span>
           </div>
         ) : opportunities.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-stone-300 bg-white p-12 text-center space-y-3 shadow-sm">
-            <p className="text-stone-700 font-semibold text-sm">
-              Không có cơ hội nào khớp với điều kiện lọc hiện tại.
-            </p>
-            <p className="text-stone-500 text-xs max-w-md mx-auto">
-              Thử điều chỉnh lại điểm khởi hành, tháng bay hoặc mở rộng ngân sách để xem thêm các chặng bay quan sát.
-            </p>
+          <div className="rounded-xl border border-stone-200 bg-white p-10 text-center space-y-3 shadow-sm">
+            {feedStatus === "provider_unavailable" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-2 border border-rose-200">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Dịch vụ quan sát vé tạm thời gián đoạn kết nối (HTTP 503).
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Máy chủ đối tác hoặc nguồn dữ liệu vé máy bay hiện không phản hồi. Đây là sự cố kết nối, không phải chặng bay không có vé.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void loadOpportunities()}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Thử lại kết nối</span>
+                  </button>
+                </div>
+              </>
+            ) : feedStatus === "valid_zero" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Filter className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Đã quét hoàn chỉnh nhưng không có chuyến bay nào trong mức ngân sách này.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Phạm vi theo dõi đã được đối chiếu toàn bộ các hãng. Hãy thử nâng mức ngân sách hoặc chuyển sang tháng bay khác.
+                </p>
+                {typeof maxBudget === "number" && (
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => handleBudgetChange("all")}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                    >
+                      <span>Bỏ giới hạn ngân sách</span>
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : feedStatus === "unmonitored" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-2 border border-blue-200">
+                  <Compass className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Chặng bay này chưa nằm trong phạm vi quét tự động định kỳ của Farely.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Hệ thống đang mở rộng dần phạm vi theo dõi sang các tuyến bổ sung.
+                </p>
+              </>
+            ) : feedStatus === "stale_only" || feedStatus === "degraded_freshness" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-2 border border-amber-200">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Dữ liệu quan sát hiện tại đang tạm ngừng cập nhật chu kỳ mới.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Vui lòng thử lại sau ít phút hoặc bấm làm mới bên dưới để nạp lại dữ liệu quan sát.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void loadOpportunities()}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Làm mới dữ liệu</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-500 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Filter className="w-5 h-5" />
+                </div>
+                <p className="text-stone-700 font-semibold text-sm">
+                  Không có cơ hội nào khớp với điều kiện lọc hiện tại.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Thử điều chỉnh lại điểm khởi hành, tháng bay hoặc mở rộng ngân sách để xem thêm các chặng bay quan sát.
+                </p>
+              </>
+            )}
           </div>
         ) : viewMode === "by_destination" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

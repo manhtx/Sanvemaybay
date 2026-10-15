@@ -30,6 +30,12 @@ import { reportClientIssue } from "../lib/clientDiagnostics";
 import { WatchModal } from "../components/WatchModal";
 import { buildComparableCohort } from "../domain/opportunityCohort";
 import { buildFlexibleFareMatrix } from "../domain/flightIntelligence";
+import { AirportAlternativeCard } from "../components/AirportAlternativeCard";
+import {
+  evaluateAirportAlternative,
+  type AirportAlternativeEvaluation,
+} from "../../domain/farely/airportAlternatives";
+import { AIRPORT_CATALOG, METRO_CATALOG } from "../../domain/farely/locationScope";
 
 const PriceHistoryChart = React.lazy(async () => ({
   default: (await import("../components/PriceHistoryChart")).PriceHistoryChart,
@@ -48,6 +54,10 @@ export function DealDetailPage() {
     price: number;
     id: string;
     stops: number;
+  } | null>(null);
+  const [airportAlternative, setAirportAlternative] = useState<{
+    evaluation: AirportAlternativeEvaluation;
+    alternativeDealId?: string;
   } | null>(null);
 
   useEffect(() => {
@@ -98,6 +108,40 @@ export function DealDetailPage() {
           }
         } catch {
           // Gracefully omit banner if query fails
+        }
+
+        // Check for airport alternatives in the same metro or nearby region (F23 & F68)
+        try {
+          const destAirport = AIRPORT_CATALOG[data.toCode];
+          if (destAirport?.metroId) {
+            const metro = METRO_CATALOG[destAirport.metroId];
+            const altAirports = metro?.airports.filter((code) => code !== data.toCode) || [];
+            for (const altCode of altAirports) {
+              const altResult = await getRouteBest({
+                origin: data.fromCode,
+                destination: altCode,
+                departDate: data.departDate,
+                returnDate: data.returnDate || undefined,
+                directOnly: data.stops === 0,
+              }).catch(() => null);
+
+              if (altResult?.bestOffer) {
+                const evalResult = evaluateAirportAlternative({
+                  baselineAirportCode: data.toCode,
+                  baselinePrice: data.price,
+                  alternativeAirportCode: altCode,
+                  alternativePrice: altResult.bestOffer.price,
+                });
+                setAirportAlternative({
+                  evaluation: evalResult,
+                  alternativeDealId: altResult.bestOffer.id,
+                });
+                break;
+              }
+            }
+          }
+        } catch {
+          // Gracefully omit airport alternative if query fails
         }
       }
       setLoading(false);
@@ -329,6 +373,14 @@ export function DealDetailPage() {
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
+        )}
+
+        {/* ── AIRPORT ALTERNATIVES INTELLIGENCE CARD (F23, F68) ── */}
+        {airportAlternative && (
+          <AirportAlternativeCard
+            evaluation={airportAlternative.evaluation}
+            alternativeDealId={airportAlternative.alternativeDealId}
+          />
         )}
 
         {/* ── SECTION 58: FLAGSHIP SCREEN DECISION HERO ── */}

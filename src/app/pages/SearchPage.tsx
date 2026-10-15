@@ -9,6 +9,12 @@ import {
   TrendingDown,
   ArrowUpDown,
   RotateCcw,
+  RefreshCw,
+  AlertTriangle,
+  AlertCircle,
+  Compass,
+  Clock,
+  Filter,
 } from "lucide-react";
 import { formatVND, formatStops, Deal } from "../data/deals";
 import { getTrackedRoutes, searchDealsWithStatus, SearchStatus } from "../data/api";
@@ -430,54 +436,154 @@ export function SearchPage() {
           </div>
 
           {searchStatus === "provider_unavailable" && (
-            <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg">
-              Nhà cung cấp dữ liệu tạm thời không phản hồi. Hiển thị dữ liệu snapshot gần nhất.
+            <div className="text-xs text-rose-800 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+              <span>Dịch vụ quan sát tạm thời gián đoạn kết nối HTTP 503. Đang hiển thị kết quả snapshot trước đó.</span>
             </div>
           )}
           {searchStatus === "degraded" && (
-            <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg">
-              Dữ liệu quan sát đang được làm mới hoặc chưa đủ dữ liệu đa nguồn.
+            <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span>Độ phủ dữ liệu bị suy giảm một phần do một số nguồn hãng bay gặp sự cố kết nối.</span>
+            </div>
+          )}
+          {searchStatus === "stale_only" && (
+            <div className="text-xs text-stone-700 bg-stone-100 border border-stone-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-stone-500 shrink-0" />
+              <span>Dữ liệu quan sát có thể chưa cập nhật chu kỳ mới nhất từ hãng.</span>
             </div>
           )}
           {searchStatus === "unmonitored" && (
-            <div className="text-xs text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-lg">
-              Chặng bay hoặc ngày tìm kiếm hiện chưa nằm trong phạm vi quét định kỳ.
+            <div className="text-xs text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <Compass className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <span>Chặng bay hoặc ngày tìm kiếm hiện chưa nằm trong phạm vi quét định kỳ.</span>
             </div>
           )}
         </div>
 
         {/* Results List */}
         {rankedResults.length === 0 ? (
-          <div className="rounded-xl border border-stone-200 bg-white p-12 text-center space-y-3 shadow-sm">
-            {searchStatus === "unmonitored" ? (
+          <div className="rounded-xl border border-stone-200 bg-white p-10 text-center space-y-3 shadow-sm">
+            {searchStatus === "provider_unavailable" ? (
               <>
-                <p className="text-stone-700 font-semibold text-sm">
+                <div className="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-2 border border-rose-200">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Dịch vụ quan sát vé tạm thời gián đoạn kết nối (HTTP 503).
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Máy chủ đối tác hoặc nguồn dữ liệu vé máy bay hiện không phản hồi. Đây là sự cố kết nối, không phải chặng bay này không có vé.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void runSearch(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Thử lại kết nối</span>
+                  </button>
+                </div>
+              </>
+            ) : searchStatus === "degraded" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-2 border border-amber-200">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Độ phủ dữ liệu bị suy giảm một phần do sự cố kết nối nhà cung cấp.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Một số nguồn dữ liệu hãng bay tạm thời chưa phản hồi, hệ thống không thể quét toàn diện cho bộ tiêu chí này.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void runSearch(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Quét lại toàn bộ nguồn</span>
+                  </button>
+                </div>
+              </>
+            ) : searchStatus === "stale_only" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Dữ liệu quan sát đã cũ do chu kỳ quét bị chậm trễ.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Hệ thống chưa có bản ghi quét mới nhất khớp với điều kiện lọc này. Giá thực tế tại hãng có thể đã biến động.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void runSearch(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Làm mới chu kỳ quét</span>
+                  </button>
+                </div>
+              </>
+            ) : searchStatus === "unmonitored" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-2 border border-blue-200">
+                  <Compass className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
                   Chặng bay này chưa nằm trong phạm vi quét tự động định kỳ của Farely.
                 </p>
                 <p className="text-stone-500 text-xs max-w-md mx-auto">
                   Farely hiện ưu tiên quét sâu các tuyến bay trọng điểm. Bạn có thể tạo cảnh báo để hệ thống ưu tiên mở rộng theo dõi tuyến này.
                 </p>
-              </>
-            ) : searchStatus === "provider_unavailable" ? (
-              <>
-                <p className="text-stone-700 font-semibold text-sm">
-                  Dịch vụ quan sát vé tạm thời gián đoạn kết nối.
-                </p>
-                <p className="text-stone-500 text-xs max-w-md mx-auto">
-                  Hệ thống đang tự động thử lại. Vui lòng làm mới trang sau ít phút.
-                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setWatchOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <Bell className="w-3.5 h-3.5" />
+                    <span>Tạo cảnh báo tuyến này</span>
+                  </button>
+                </div>
               </>
             ) : searchStatus === "valid_zero" ? (
               <>
-                <p className="text-stone-700 font-semibold text-sm">
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Filter className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
                   Đã quét hoàn chỉnh nhưng không có chuyến bay nào trong mức ngân sách này.
                 </p>
                 <p className="text-stone-500 text-xs max-w-md mx-auto">
-                  Phạm vi ngày đã được quét đầy đủ. Hãy thử tăng mức ngân sách hoặc chuyển sang chế độ ngày linh hoạt.
+                  Phạm vi ngày và tuyến bay đã được quét đầy đủ 100%. Hãy thử tăng mức ngân sách hoặc chọn khoảng ngày rộng hơn.
                 </p>
+                {typeof budget === "number" && (
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newBudget = Math.max(budget * 2, 20000000);
+                        setBudget(newBudget);
+                        saveUserPreferences({ budget: newBudget });
+                      }}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                    >
+                      <span>Mở rộng mức ngân sách</span>
+                    </button>
+                  </div>
+                )}
               </>
             ) : (
               <>
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-500 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Filter className="w-5 h-5" />
+                </div>
                 <p className="text-stone-700 font-semibold text-sm">
                   Không tìm thấy cơ hội nào phù hợp với bộ lọc hiện tại.
                 </p>

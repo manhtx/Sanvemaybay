@@ -15,3 +15,5 @@ export * from './costEpistemics.ts';
 export * from './providerResult.ts';
 export * from './watchCondition.ts';
 export * from './savings.ts';
+export * from './providerCapabilities.ts';
+export * from './airportAlternatives.ts';
