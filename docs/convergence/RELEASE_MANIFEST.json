@@ -1,6 +1,6 @@
 {
-  "release_id": "farely-convergence-29dce60c",
-  "source_git_sha": "29dce60c90dc5eb9d21abaf6df763ad69733650a",
+  "release_id": "farely-convergence-bef5fcf4",
+  "source_git_sha": "bef5fcf4f6dd85acb40d87535bee6f1d0a75995e",
   "remote_git_sha": "c1d60d03346085729f766b4f16c62e803e5956d3",
   "frontend_deployment_url": "https://farely.manhtx.com",
   "frontend_build_identity": "vite-6.4.3-react-19",
