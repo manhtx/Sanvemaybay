@@ -84,6 +84,7 @@ PREPARE insert_forged_alert AS
 SELECT throws_ok(
   'insert_forged_alert',
   '42501',
+  'new row violates row-level security policy for table "user_alerts"',
   'NC-026: User A cannot INSERT alert forged with user_id of User B'
 );
 
@@ -94,6 +95,7 @@ PREPARE insert_forged_intent AS
 SELECT throws_ok(
   'insert_forged_intent',
   '42501',
+  'new row violates row-level security policy for table "travel_intents"',
   'NC-026: User A cannot INSERT travel intent forged with user_id of User B'
 );
 
