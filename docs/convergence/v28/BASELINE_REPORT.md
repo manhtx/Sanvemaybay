@@ -123,6 +123,23 @@ All test suites execute with zero failures across all 4 runners:
 - Implemented Quiet Hours toggle (`quietHoursEnabled`, `22:00` đến `07:00`) suppressing intrusive alerts during sleep hours.
 - Clear user disclosures: single notification per episode transition, anti-spam protections, and 1-click unsubscribe links.
 
+### 4.10 F32: Discovery Empty / Degraded Recovery (E-WP07 / P1)
+- **Files**: `src/app/data/api.ts`, `src/app/data/api.test.ts`, `src/app/pages/SearchPage.tsx`, `src/app/pages/DealsPage.tsx`.
+- Discretely separates 6 distinct search and explore states: `provider_unavailable` (HTTP 503 / network), `unmonitored` (out of scan catalog), `valid_zero` (scanned but 0 within constraints), `stale_only` / `degraded_freshness` (delayed refresh), `degraded` (partial provider coverage), and `healthy_empty` (strict filter empty).
+- Enforces F32 acceptance criteria: Upstream provider 503 strictly displays clear connection outage notice with actionable "Thử lại kết nối" (Retry) action, NEVER generic "không tìm thấy vé".
+
+### 4.11 F61: One-Way / Roundtrip Support Boundary (E-WP03 / E-WP07 / P1)
+- **Files**: `src/domain/farely/providerCapabilities.ts`, `src/domain/farely/providerCapabilities.test.ts`, `src/domain/farely/index.ts`.
+- Implemented typed capability matrix `ProviderCapabilities` and `PROVIDER_CAPABILITY_REGISTRY` registering supported journey types (`ONE_WAY`, `ROUND_TRIP`), cabin classes, market scopes, and advance booking constraints.
+- Enforces strict F61 invariant: A one-way travel intent NEVER silently coerces or synthesizes a return flight even if queried against roundtrip-only providers; returns explicit compatibility violations or filters candidate providers safely.
+
+### 4.12 F23 & F68: Airport Alternatives & Metro Area Flight Clustering (E-WP07 / P1)
+- **Files**: `src/domain/farely/airportAlternatives.ts`, `src/domain/farely/airportAlternatives.test.ts`, `src/app/components/AirportAlternativeCard.tsx`, `src/app/pages/DealDetailPage.tsx`.
+- Ground transfer catalog with verified sources (BKK<->DMK, HND<->NRT, ICN<->GMP, KIX<->ITM, TPE<->TSA, HAN<->HPH, SGN<->VCA) specifying travel time, highway taxi/train costs, and explicit tariff source labels.
+- Enforces F23 acceptance criteria: Evaluates grounded air fare savings against travel inconvenience (net savings VND = air fare difference - ground transfer cost) and minimum hourly efficiency thresholds (250,000 VND/hr), strictly forbidding deceptive price-only airport swaps.
+- Enforces F68 acceptance criteria: Timezone-aware flight instant calculations using airport catalog timezones, correctly evaluating true elapsed durations, cross-timezone arrivals, and overnight connections.
+- Integrated `AirportAlternativeCard` directly into `DealDetailPage.tsx` for instant decision transparency when alternative airport deals exist within the same metro cluster.
+
 ---
 
 ## 5. Work Package Progress Status
