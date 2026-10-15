@@ -5,7 +5,7 @@
 **Branch**: `antigravity/farely-v12-product-convergence`  
 **Reference PR**: [#1](https://github.com/manhtx/Sanvemaybay/pull/1)  
 **Production Site**: [https://farely.manhtx.com](https://farely.manhtx.com)  
-**Stage 1 Implementation SHA**: `3c9d22828b5b2c89c8ab5939e8fb0f31742af658`  
+**Stage 1 Implementation SHA**: `29dce60c90dc5eb9d21abaf6df763ad69733650a`  
 **Authority Status**: `READY_FOR_INDEPENDENT_ACCEPTANCE` (Founder Supremacy Preserved; Zero Self-Certification)
 
 ---
@@ -16,7 +16,7 @@ This Baseline Report establishes the empirical convergence foundation for **Fare
 All engineering implementations strictly adhere to:
 1. **Owner Authority Supremacy**: Zero contract shrinkage across all 89 capability contracts (`F00..F88`) and 267 historical acceptance gates.
 2. **Authentic Capability Roster**: 40 P0, 26 P1, 16 P2, and 7 P3 capabilities mapped with exact authentic titles and solutions.
-3. **Anti-Circularity Protocol**: Two-stage commit discipline (Implementation code committed in `3c9d228`, followed by durable checkpoint recording).
+3. **Anti-Circularity Protocol**: Two-stage commit discipline (Implementation code committed in `29dce60`, followed by durable checkpoint recording).
 4. **Zero Fake Done**: No self-awarded 10/10 scores, no manufactured `TARGET_PROVEN` claims; all status dynamically derived from test suites.
 
 ---
@@ -28,7 +28,7 @@ All engineering implementations strictly adhere to:
 | **Active Branch** | `antigravity/farely-v12-product-convergence` |
 | **Reference PR** | `https://github.com/manhtx/Sanvemaybay/pull/1` |
 | **Reference Baseline SHA** | `5a924a01cbcca62b58c3e8350707e2cc9678ea83` |
-| **Implementation Commit** | `3c9d22828b5b2c89c8ab5939e8fb0f31742af658` |
+| **Implementation Commit** | `29dce60c90dc5eb9d21abaf6df763ad69733650a` |
 | **Working Tree** | Clean prior to checkpoint generation |
 | **Node.js Environment** | Node v20+ / Vite 6.4.3 / Playwright / Deno |
 | **PostgreSQL / Supabase** | PostgreSQL 17 / pgTAP / 38 Migrations / 14 Edge Functions |
