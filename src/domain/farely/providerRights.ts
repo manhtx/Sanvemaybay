@@ -3,6 +3,13 @@
  * F85: Provider source rights registry
  * Acceptance: "No premium/B2B redistribution without actual rights."
  * NC-006, REQ-DOM-002, REQ-PROV-001
+ * 
+ * EPISTEMIC STATUS & LEGAL DISCLAIMER (AUD-08):
+ * Entries in PROVIDER_SOURCE_RIGHTS_REGISTRY represent internal architectural specifications,
+ * access-control guardrails, and compliance policy declarations implemented within Farely's software boundaries.
+ * They DO NOT constitute or imply executed commercial agreements, GDS master services agreements,
+ * or third-party legal licenses.
+ * Live commercial API execution requires separate founder legal authorization and resolution of BLK-PROV-01.
  */
 
 export type SourceLicenseType =
@@ -16,10 +23,15 @@ export type AuthorizedDataScope =
   | 'INTERNAL_ANALYTICS'
   | 'B2B_SYNDICATION';
 
+export type ProviderDeclarationStatus =
+  | 'INTERNAL_DECLARATION'
+  | 'COMMERCIAL_STAGED_CONTRACT_REQUIRED';
+
 export interface ProviderSourceRights {
   providerId: string;
   sourceName: string;
   licenseType: SourceLicenseType;
+  declarationStatus: ProviderDeclarationStatus;
   // Specific data rights
   canScrape: boolean;
   canDisplayDirectly: boolean;
@@ -37,6 +49,7 @@ export const PROVIDER_SOURCE_RIGHTS_REGISTRY: Record<string, ProviderSourceRight
     providerId: 'vietjet_direct',
     sourceName: 'Vietjet Air Direct',
     licenseType: 'PUBLIC_INDICATIVE',
+    declarationStatus: 'INTERNAL_DECLARATION',
     canScrape: true,
     canDisplayDirectly: true,
     canCache: true,
@@ -51,6 +64,7 @@ export const PROVIDER_SOURCE_RIGHTS_REGISTRY: Record<string, ProviderSourceRight
     providerId: 'vietnam_airlines',
     sourceName: 'Vietnam Airlines',
     licenseType: 'PUBLIC_INDICATIVE',
+    declarationStatus: 'INTERNAL_DECLARATION',
     canScrape: true,
     canDisplayDirectly: true,
     canCache: true,
@@ -65,6 +79,7 @@ export const PROVIDER_SOURCE_RIGHTS_REGISTRY: Record<string, ProviderSourceRight
     providerId: 'bamboo_airways',
     sourceName: 'Bamboo Airways',
     licenseType: 'PUBLIC_INDICATIVE',
+    declarationStatus: 'INTERNAL_DECLARATION',
     canScrape: true,
     canDisplayDirectly: true,
     canCache: true,
@@ -79,6 +94,7 @@ export const PROVIDER_SOURCE_RIGHTS_REGISTRY: Record<string, ProviderSourceRight
     providerId: 'fast_flights_google',
     sourceName: 'Google Flights Aggregator',
     licenseType: 'PUBLIC_INDICATIVE',
+    declarationStatus: 'INTERNAL_DECLARATION',
     canScrape: true,
     canDisplayDirectly: true,
     canCache: true,
@@ -93,31 +109,42 @@ export const PROVIDER_SOURCE_RIGHTS_REGISTRY: Record<string, ProviderSourceRight
     providerId: 'amadeus_commercial_gds',
     sourceName: 'Amadeus Commercial GDS',
     licenseType: 'COMMERCIAL_DIRECT',
+    declarationStatus: 'COMMERCIAL_STAGED_CONTRACT_REQUIRED',
     canScrape: false,
     canDisplayDirectly: true,
     canCache: true,
     cacheTtlSeconds: 3600,
-    canRedistributeB2B: true, // Commercial GDS with negotiated B2B resale license
+    canRedistributeB2B: true, // Commercial GDS architectural stub; staged pending executed contract
     canMonetizeAffiliate: true,
     attributionRequired: false,
-    termsSummary: 'Full commercial GDS distribution agreement permitting B2B API syndication and white-label integration.',
+    termsSummary: 'Architectural stub for commercial GDS distribution. Staged pending executed commercial contract (BLK-PROV-01).',
     authorizedScopes: ['CONSUMER_INDICATIVE', 'INTERNAL_ANALYTICS', 'B2B_SYNDICATION'],
   },
   sabre_enterprise_feed: {
     providerId: 'sabre_enterprise_feed',
     sourceName: 'Sabre Enterprise API',
     licenseType: 'COMMERCIAL_DIRECT',
+    declarationStatus: 'COMMERCIAL_STAGED_CONTRACT_REQUIRED',
     canScrape: false,
     canDisplayDirectly: true,
     canCache: true,
     cacheTtlSeconds: 7200,
-    canRedistributeB2B: true,
+    canRedistributeB2B: true, // Commercial API architectural stub; staged pending executed contract
     canMonetizeAffiliate: true,
     attributionRequired: false,
-    termsSummary: 'Enterprise B2B data licensing agreement.',
+    termsSummary: 'Architectural stub for Enterprise B2B licensing. Staged pending executed commercial contract (BLK-PROV-01).',
     authorizedScopes: ['CONSUMER_INDICATIVE', 'INTERNAL_ANALYTICS', 'B2B_SYNDICATION'],
   },
 };
+
+/**
+ * Checks whether an integration requires an executed commercial contract before live activation.
+ * AUD-08: Ensures architectural declarations are never misrepresented as executed legal rights.
+ */
+export function isCommercialContractRequired(providerId: string): boolean {
+  const rights = getProviderSourceRights(providerId);
+  return rights?.declarationStatus === 'COMMERCIAL_STAGED_CONTRACT_REQUIRED';
+}
 
 export class DataRightsViolationError extends Error {
   providerId: string;

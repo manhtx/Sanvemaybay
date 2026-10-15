@@ -200,6 +200,7 @@ export function DealDetailPage() {
       currentPrice: deal.price,
       priceHistory,
       departureDate: deal.departDate,
+      scopeType: "ROUTE_LEVEL",
     });
   }, [deal, priceHistory]);
 
@@ -208,6 +209,7 @@ export function DealDetailPage() {
     return detectPriceAnomaly({
       currentPrice: deal.price,
       historicalCohortPrices: priceHistory.map((p) => p.price),
+      cohortScope: "ROUTE_LEVEL",
     });
   }, [deal, priceHistory]);
 
@@ -534,6 +536,9 @@ export function DealDetailPage() {
                         ? "Khuyến nghị: Theo dõi thêm (Wait & Watch)"
                         : "Khuyến nghị Mua hay Chờ: Chưa đủ dữ liệu"}
                     </span>
+                    <span className="text-[9px] uppercase px-1 rounded bg-stone-100 text-stone-600 font-normal border border-stone-200">
+                      Toàn tuyến
+                    </span>
                     {buyWait.isCalibrated && (
                       <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/80 border border-current">
                         Độ tin cậy: {Math.round(buyWait.confidence * 100)}%
@@ -554,6 +559,9 @@ export function DealDetailPage() {
                       <span className="font-bold uppercase tracking-wider text-[11px]">
                         Chỉ báo: Đột biến giá giảm (Price Anomaly)
                       </span>
+                      <span className="text-[9px] uppercase px-1 rounded bg-amber-100 text-amber-800 font-normal border border-amber-200">
+                        Toàn tuyến
+                      </span>
                       <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/80 border border-amber-300">
                         MAD z-score: {anomaly.modifiedZScore.toFixed(2)}
                       </span>
@@ -567,9 +575,14 @@ export function DealDetailPage() {
                 <div className="p-3 rounded-lg border bg-stone-50/70 border-stone-200 text-stone-700 flex items-start gap-2.5">
                   <ShieldCheck className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
                   <div className="space-y-0.5">
-                    <span className="font-bold uppercase tracking-wider text-[11px]">
-                      Biến động giá thống kê (F37)
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold uppercase tracking-wider text-[11px]">
+                        Biến động giá thống kê (F37)
+                      </span>
+                      <span className="text-[9px] uppercase px-1 rounded bg-stone-100 text-stone-600 font-normal border border-stone-200">
+                        Toàn tuyến
+                      </span>
+                    </div>
                     <p className="text-[11px] leading-relaxed text-stone-600">
                       {anomaly?.explanationVi || "Đang thu thập thêm mẫu quan sát độc lập để đánh giá đột biến."}
                     </p>

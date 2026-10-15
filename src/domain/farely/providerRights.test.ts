@@ -6,6 +6,7 @@ import {
   validateB2BRedistributionScope,
   filterRecordsForB2BExport,
   DataRightsViolationError,
+  isCommercialContractRequired,
 } from './providerRights.ts';
 
 describe('Provider Source Rights Registry (F85)', () => {
@@ -98,6 +99,28 @@ describe('Provider Source Rights Registry (F85)', () => {
       const outcome = filterRecordsForB2BExport(licensedRecords, { strict: true });
       expect(outcome.permittedRecords).toHaveLength(2);
       expect(outcome.rejectedRecords).toHaveLength(0);
+    });
+  });
+
+  describe('Epistemic & Boundary Audit (AUD-08)', () => {
+    it('flags public indicative providers as internal declarations', () => {
+      const google = getProviderSourceRights('fast_flights_google');
+      expect(google?.declarationStatus).toBe('INTERNAL_DECLARATION');
+
+      const vj = getProviderSourceRights('vietjet_direct');
+      expect(vj?.declarationStatus).toBe('INTERNAL_DECLARATION');
+      expect(isCommercialContractRequired('vietjet_direct')).toBe(false);
+    });
+
+    it('flags commercial GDS feeds as staged pending executed contracts (BLK-PROV-01)', () => {
+      const amadeus = getProviderSourceRights('amadeus_commercial_gds');
+      expect(amadeus?.declarationStatus).toBe('COMMERCIAL_STAGED_CONTRACT_REQUIRED');
+      expect(amadeus?.termsSummary).toContain('BLK-PROV-01');
+      expect(isCommercialContractRequired('amadeus_commercial_gds')).toBe(true);
+
+      const sabre = getProviderSourceRights('sabre_enterprise_feed');
+      expect(sabre?.declarationStatus).toBe('COMMERCIAL_STAGED_CONTRACT_REQUIRED');
+      expect(isCommercialContractRequired('sabre_enterprise_feed')).toBe(true);
     });
   });
 });

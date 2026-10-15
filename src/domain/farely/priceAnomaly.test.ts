@@ -107,5 +107,26 @@ describe("Price Anomaly Detection (F37)", () => {
       expect(result.isActionableDeal).toBe(false);
       expect(result.explanationVi).toContain("độ phân tán MAD = 0");
     });
+
+    it("differentiates IDENTICAL_OFFER cohort scope from ROUTE_LEVEL baseline (AUD-04)", () => {
+      const cohort = [2_000_000, 2_100_000, 1_900_000, 2_050_000, 1_950_000, 2_200_000, 2_150_000, 2_000_000, 2_050_000, 2_100_000];
+      const routeResult = detectPriceAnomaly({
+        currentPrice: 1_200_000,
+        historicalCohortPrices: cohort,
+        cohortScope: "ROUTE_LEVEL",
+      });
+      expect(routeResult.classification).toBe("STRONG_DROP_ANOMALY");
+      expect(routeResult.cohortScope).toBe("ROUTE_LEVEL");
+      expect(routeResult.explanationVi).toContain("toàn chặng");
+
+      const offerResult = detectPriceAnomaly({
+        currentPrice: 1_200_000,
+        historicalCohortPrices: cohort,
+        cohortScope: "IDENTICAL_OFFER",
+      });
+      expect(offerResult.classification).toBe("STRONG_DROP_ANOMALY");
+      expect(offerResult.cohortScope).toBe("IDENTICAL_OFFER");
+      expect(offerResult.explanationVi).toContain("chính chuyến bay này");
+    });
   });
 });

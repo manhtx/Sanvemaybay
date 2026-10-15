@@ -18,6 +18,8 @@ export type AnomalyClassification =
   | "SUSPECTED_DATA_GLITCH"
   | "SPARSE_DATA_ABSTENTION";
 
+export type PriceAnomalyScope = "ROUTE_LEVEL" | "IDENTICAL_OFFER" | "COHORT";
+
 export interface AnomalyEvaluation {
   classification: AnomalyClassification;
   sampleSize: number;
@@ -27,6 +29,7 @@ export interface AnomalyEvaluation {
   discountVsMedianPercent: number;
   isActionableDeal: boolean;
   explanationVi: string;
+  cohortScope?: PriceAnomalyScope;
 }
 
 export const MIN_ANOMALY_SAMPLE_SIZE = 10;
@@ -47,11 +50,14 @@ function calculateMedian(numbers: number[]): number {
 /**
  * Evaluates whether a fare observation is a genuine statistical price anomaly
  * using Median Absolute Deviation (MAD) robust statistics.
+ * Distinguishes route trends from identical offer cohorts (AUD-04).
  */
 export function detectPriceAnomaly(params: {
   currentPrice: number;
   historicalCohortPrices: number[];
+  cohortScope?: PriceAnomalyScope;
 }): AnomalyEvaluation {
+  const cohortScope = params.cohortScope || "ROUTE_LEVEL";
   const currentPrice = Number(params.currentPrice);
 
   // Glitch check: negative or non-finite
@@ -65,6 +71,7 @@ export function detectPriceAnomaly(params: {
       discountVsMedianPercent: 0,
       isActionableDeal: false,
       explanationVi: "Giá vé không hợp lệ (nhỏ hơn hoặc bằng 0). Phân loại là lỗi dữ liệu.",
+      cohortScope,
     };
   }
 
@@ -83,6 +90,7 @@ export function detectPriceAnomaly(params: {
       discountVsMedianPercent: 0,
       isActionableDeal: false,
       explanationVi: `Số mẫu quan sát (${validCohort.length}/${MIN_ANOMALY_SAMPLE_SIZE}) chưa đủ để kết luận bất thường giá thống kê. Hệ thống từ chối đưa ra nhận định đột biến.`,
+      cohortScope,
     };
   }
 
@@ -99,6 +107,7 @@ export function detectPriceAnomaly(params: {
       discountVsMedianPercent: 0,
       isActionableDeal: false,
       explanationVi: "Mức giá lệch cực đoan bất thường (>10 lần hoặc thấp hơn 5% trung vị). Cần kiểm tra lại nguồn cấp dữ liệu.",
+      cohortScope,
     };
   }
 
@@ -119,6 +128,7 @@ export function detectPriceAnomaly(params: {
       discountVsMedianPercent,
       isActionableDeal: false,
       explanationVi: "Tập dữ liệu lịch sử đồng nhất (độ phân tán MAD = 0). Hệ thống không tự chế tác độ phân tán giả lập để suy diễn bất thường.",
+      cohortScope,
     };
   }
 
@@ -130,6 +140,12 @@ export function detectPriceAnomaly(params: {
 
   // Strong drop anomaly: z-score < -2.5 and discount >= 20%
   if (modifiedZScore <= -2.5 && discountVsMedianPercent >= 20) {
+    const explanationVi = cohortScope === "IDENTICAL_OFFER"
+      ? `Giá chuyến bay giảm đột biến mạnh so với lịch sử (thấp hơn trung vị ${discountVsMedianPercent}%, độ lệch chuẩn MAD z-score ${modifiedZScore.toFixed(2)}). Đây là cơ hội vé giá rẻ vượt trội của chính chuyến bay này.`
+      : cohortScope === "COHORT"
+      ? `Giá giảm đột biến mạnh trong nhóm vé tương đương (thấp hơn trung vị ${discountVsMedianPercent}%, độ lệch chuẩn MAD z-score ${modifiedZScore.toFixed(2)}).`
+      : `Giá giảm đột biến mạnh trên toàn chặng (thấp hơn trung vị ${discountVsMedianPercent}%, độ lệch chuẩn MAD z-score ${modifiedZScore.toFixed(2)}). Đây là cơ hội vé giá rẻ vượt trội.`;
+
     return {
       classification: "STRONG_DROP_ANOMALY",
       sampleSize: validCohort.length,
@@ -138,12 +154,19 @@ export function detectPriceAnomaly(params: {
       modifiedZScore,
       discountVsMedianPercent,
       isActionableDeal: true,
-      explanationVi: `Giá giảm đột biến mạnh (thấp hơn trung vị ${discountVsMedianPercent}%, độ lệch chuẩn MAD z-score ${modifiedZScore.toFixed(2)}). Đây là cơ hội vé giá rẻ vượt trội.`,
+      explanationVi,
+      cohortScope,
     };
   }
 
   // Moderate drop anomaly: z-score < -1.5 and discount >= 10%
   if (modifiedZScore <= -1.5 && discountVsMedianPercent >= 10) {
+    const explanationVi = cohortScope === "IDENTICAL_OFFER"
+      ? `Giá chuyến bay thấp hơn mức thông thường (${discountVsMedianPercent}% so với trung vị), có xu hướng giảm đáng chú ý.`
+      : cohortScope === "COHORT"
+      ? `Giá thấp hơn mức thông thường trong nhóm vé tương đương (${discountVsMedianPercent}% so với trung vị).`
+      : `Giá thấp hơn mức thông thường trên chặng (${discountVsMedianPercent}% so với trung vị), có xu hướng giảm đáng chú ý.`;
+
     return {
       classification: "MODERATE_DROP_ANOMALY",
       sampleSize: validCohort.length,
@@ -152,7 +175,8 @@ export function detectPriceAnomaly(params: {
       modifiedZScore,
       discountVsMedianPercent,
       isActionableDeal: true,
-      explanationVi: `Giá thấp hơn mức thông thường (${discountVsMedianPercent}% so với trung vị), có xu hướng giảm đáng chú ý.`,
+      explanationVi,
+      cohortScope,
     };
   }
 
@@ -164,6 +188,9 @@ export function detectPriceAnomaly(params: {
     modifiedZScore,
     discountVsMedianPercent,
     isActionableDeal: false,
-    explanationVi: "Mức giá nằm trong dải dao động thông thường của đường bay.",
+    explanationVi: cohortScope === "IDENTICAL_OFFER"
+      ? "Mức giá nằm trong dải dao động thông thường của chuyến bay này."
+      : "Mức giá nằm trong dải dao động thông thường của đường bay.",
+    cohortScope,
   };
 }

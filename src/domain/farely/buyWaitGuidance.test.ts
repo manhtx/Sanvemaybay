@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   evaluateBuyWaitGuidance,
+  evaluateRollingHorizonBacktest,
   PricePoint,
 } from "./buyWaitGuidance";
 
@@ -106,6 +107,58 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
       expect(result.recommendation).toBe("WAIT_AND_WATCH");
       expect(result.isCalibrated).toBe(true);
       expect(result.rationaleVi).toContain("cao hơn trung vị lịch sử");
+    });
+  });
+
+  describe("PriceScope Strictness & Boundary Separation (AUD-04)", () => {
+    it("differentiates IDENTICAL_OFFER scope from ROUTE_LEVEL baseline", () => {
+      const history = generateSyntheticHistory(20, 20, 2_000_000);
+      const routeResult = evaluateBuyWaitGuidance({
+        currentPrice: 2_000_000,
+        priceHistory: history,
+        departureDate: "2026-11-15",
+        evaluationDate: "2026-09-25",
+        scopeType: "ROUTE_LEVEL",
+      });
+      expect(routeResult.scopeType).toBe("ROUTE_LEVEL");
+      expect(routeResult.rationaleVi).toContain("chặng bay");
+
+      const offerResult = evaluateBuyWaitGuidance({
+        currentPrice: 2_000_000,
+        priceHistory: history,
+        departureDate: "2026-11-15",
+        evaluationDate: "2026-09-25",
+        scopeType: "IDENTICAL_OFFER",
+      });
+      expect(offerResult.scopeType).toBe("IDENTICAL_OFFER");
+      expect(offerResult.rationaleVi).toContain("chính chuyến bay này");
+    });
+  });
+
+  describe("Rolling-Horizon Out-of-Sample Backtesting (AUD-07 & AUD-11)", () => {
+    it("fails closed when history has insufficient samples to construct train/test split", () => {
+      const sparse = generateSyntheticHistory(15, 15, 2_000_000);
+      const backtest = evaluateRollingHorizonBacktest(sparse);
+      expect(backtest.isSufficientForDeployment).toBe(false);
+      expect(backtest.totalEvaluated).toBe(0);
+      expect(backtest.epistemicNote).toContain("không đủ để backtest");
+    });
+
+    it("evaluates rolling-horizon out-of-sample accuracy on sufficient historical series", () => {
+      // 30 days of data with upward trend
+      const history: PricePoint[] = [];
+      const baseDate = new Date("2026-08-01T00:00:00Z").getTime();
+      for (let i = 0; i < 30; i++) {
+        const d = new Date(baseDate + i * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+        // Price rises from 1.5M up to 2.5M
+        history.push({ date: d, price: 1_500_000 + i * 35_000 });
+      }
+
+      const backtest = evaluateRollingHorizonBacktest(history, 7, 14);
+      expect(backtest.totalEvaluated).toBeGreaterThanOrEqual(10);
+      expect(backtest.accuracyRate).toBeGreaterThan(0);
+      expect(backtest.backtestWindowDays).toBe(7);
+      expect(typeof backtest.epistemicNote).toBe("string");
     });
   });
 });
