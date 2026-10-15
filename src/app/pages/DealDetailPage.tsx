@@ -594,15 +594,70 @@ export function DealDetailPage() {
           </section>
         )}
 
-        {/* ── METHODOLOGY & DECISION EVIDENCE DETAILS ── */}
-        <section className="rounded-xl border border-stone-200 bg-white p-6 space-y-4 shadow-sm">
-          <div className="flex items-center gap-2 text-stone-800">
-            <ShieldCheck className="w-5 h-5 text-blue-600" />
-            <h3 className="text-sm font-bold uppercase tracking-wider text-stone-900">Căn cứ đánh dấu cơ hội</h3>
+        {/* ── METHODOLOGY & DECISION EVIDENCE DETAILS (F25: Opportunity Rationale) ── */}
+        <section className="rounded-xl border border-stone-200 bg-white p-6 space-y-4 shadow-sm" aria-labelledby="opportunity-rationale-heading">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-stone-800">
+              <ShieldCheck className="w-5 h-5 text-blue-600" />
+              <h3 id="opportunity-rationale-heading" className="text-sm font-bold uppercase tracking-wider text-stone-900">
+                Căn cứ khoa học & Giải trình cơ hội (Opportunity Rationale)
+              </h3>
+            </div>
+            <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
+              cohort.evidence.tier === "STRONG"
+                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                : cohort.evidence.tier === "MODERATE"
+                ? "bg-blue-50 text-blue-800 border-blue-200"
+                : "bg-stone-100 text-stone-700 border-stone-200"
+            }`}>
+              {cohort.evidence.label}
+            </span>
           </div>
-          <p className="text-stone-700 text-sm leading-relaxed">
+
+          <p className="text-stone-700 text-sm leading-relaxed font-medium">
             {deal.aiReasoning || deal.aiInsight?.reason || cohort.comparisonExplanation}
           </p>
+
+          {/* F25 6-point rationale matrix */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Số mẫu quan sát:</span>
+              <span className="font-bold text-stone-900 font-mono">
+                {cohort.evidence.sampleCount} lượt quan sát
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Chu kỳ quét độc lập:</span>
+              <span className="font-bold text-stone-900 font-mono">
+                {cohort.evidence.scanEpochCount} chu kỳ quét
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Tuổi dữ liệu quan sát:</span>
+              <span className="font-bold text-stone-900">
+                {freshnessLabel}
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Nhóm đối sánh tương đương:</span>
+              <span className="font-bold text-stone-900 font-mono text-[11px] truncate block" title={cohort.cohortKey}>
+                {cohort.cohortKey}
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Tiêu chí loại trừ (Exclusions):</span>
+              <span className="font-bold text-stone-900">
+                Khác hạng vé, transit &gt;24h
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Trần công bố (Claim Ceiling):</span>
+              <span className="font-bold text-blue-700">
+                {cohort.evidence.tier === "STRONG" ? "Chỉ số tin cậy cao" : cohort.evidence.tier === "MODERATE" ? "Chỉ số trung bình" : "Đang tích lũy"}
+              </span>
+            </div>
+          </div>
+
           <div className="text-xs text-stone-500 border-t border-stone-100 pt-3 leading-relaxed">
             Nguyên tắc Farely: Giá vé máy bay biến động theo từng đợt mở bán của hãng hàng không. Bấm &quot;Kiểm tra giá hiện tại&quot; để xác minh tình trạng chỗ và giá thực tế trực tiếp với đơn vị bán trước khi tiến hành thanh toán.
           </div>
