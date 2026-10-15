@@ -23,3 +23,8 @@ export * from './buyWaitGuidance.ts';
 export * from './priceAnomaly.ts';
 export * from './multiCityItinerary.ts';
 export * from './dataEconomics.ts';
+export * from './editorialCollections.ts';
+export * from './directAffiliateComparison.ts';
+export * from './pwaOfflineFreshness.ts';
+export * from './personalizedFeedPrivacy.ts';
+export * from './partnerIntegrations.ts';
