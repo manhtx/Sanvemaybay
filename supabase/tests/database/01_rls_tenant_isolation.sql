@@ -83,6 +83,7 @@ PREPARE insert_forged_alert AS
 
 SELECT throws_ok(
   'insert_forged_alert',
+  '42501',
   'NC-026: User A cannot INSERT alert forged with user_id of User B'
 );
 
@@ -92,6 +93,7 @@ PREPARE insert_forged_intent AS
 
 SELECT throws_ok(
   'insert_forged_intent',
+  '42501',
   'NC-026: User A cannot INSERT travel intent forged with user_id of User B'
 );
 
