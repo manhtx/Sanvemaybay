@@ -1,8 +1,8 @@
 {
   "mission_id": "FARELY-10X-V28-DEEP-EXECUTION-CONVERGENCE",
   "checkpoint_type": "POST_IMPLEMENTATION",
-  "implementation_commit_sha": "b78f7b55d6c7843ac6d9328a5be1e8e71843e609",
-  "timestamp": "2026-10-15T04:48:00Z",
+  "implementation_commit_sha": "f15e146a41fb8756fd3f98854aa26c883ea791b0",
+  "timestamp": "2026-10-15T05:57:00Z",
   "branch": "antigravity/farely-v12-product-convergence",
   "pr_url": "https://github.com/manhtx/Sanvemaybay/pull/1",
   "production_url": "https://farely.manhtx.com",
@@ -21,6 +21,10 @@
     "contract_shrinkage": false
   },
   "recent_remediations": [
+    "Implement Personal Value of Time (F24) with disclosed hourly time rates, stop penalties, generalized cost breakdowns, and strict invariant that turning preferences off restores transparent price ranking in decisionModes.ts",
+    "Implement Watch Setup from Intent (F27) with TravelIntent preview, exact trip dates, journey type, traveler composition, and expiry condition preservation without silent modification in WatchModal.tsx, watchApi.ts, and watch.ts",
+    "Implement Transparent Partnership Ranking (F76) ensuring changing referral revenue or sponsorship status cannot silently change objective price sort order in decisionModes.ts",
+    "Implement Provider Source Rights Registry (F85) tracking scraping terms, display, caching, redistribution, and affiliate rights with strict invariant forbidding premium/B2B redistribution without actual rights in providerRights.ts",
     "Implement Discovery Degraded Recovery (F32) with discrete error/stale/unmonitored/valid_zero states and retry controls in SearchPage.tsx, DealsPage.tsx, and api.ts",
     "Implement Typed Provider Capability Matrix (F61) enforcing one-way request never silently becomes round-trip in providerCapabilities.ts",
     "Implement Airport Alternatives & Metro Area Flight Clustering (F23 & F68) with grounded transfer time/cost sources and timezone-aware local datetime calculations in airportAlternatives.ts, AirportAlternativeCard.tsx, and DealDetailPage.tsx",

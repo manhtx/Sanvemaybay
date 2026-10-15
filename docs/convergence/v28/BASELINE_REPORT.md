@@ -140,6 +140,27 @@ All test suites execute with zero failures across all 4 runners:
 - Enforces F68 acceptance criteria: Timezone-aware flight instant calculations using airport catalog timezones, correctly evaluating true elapsed durations, cross-timezone arrivals, and overnight connections.
 - Integrated `AirportAlternativeCard` directly into `DealDetailPage.tsx` for instant decision transparency when alternative airport deals exist within the same metro cluster.
 
+### 4.13 F24: Personal Value of Time (E-WP07 / P1)
+- **Files**: `src/app/domain/decisionModes.ts`, `src/app/domain/decisionModes.test.ts`.
+- Implemented `UserTimePreferences` and `calculateEffectiveGeneralizedCost` calculating personalized generalized travel cost: Base Air Fare + (Travel Duration Hours * Hourly Value Rate) + (Stops Count * Layover Inconvenience Penalty).
+- Computes `EffectiveCostBreakdown` and inspectable Vietnamese ranking rationale on each deal.
+- Strict F24 acceptance criteria: Turning user preferences off immediately and transparently restores pure objective price ranking (`CHEAPEST`).
+
+### 4.14 F27: Watch Setup from Intent (E-WP09 / P1)
+- **Files**: `src/app/components/WatchModal.tsx`, `src/app/data/watchApi.ts`, `src/app/domain/watch.ts`, `src/app/domain/watch.test.ts`, `src/app/pages/SearchPage.tsx`, `src/app/pages/DealDetailPage.tsx`.
+- Implemented dedicated TravelIntent Preview card in `WatchModal.tsx` displaying exact origin/destination, trip type (round-trip vs one-way), outbound and inbound dates, passenger composition (adults, children, infants), price ceiling, and expiry date.
+- Strict F27 acceptance criteria: No silent modification of trip dates or traveler composition. User-selected dates and passenger mix are passed verbatim to `createWatch` and stored in `WatchIntent`.
+
+### 4.15 F76: Transparent Partnership Ranking (E-WP07 / P1)
+- **Files**: `src/app/domain/decisionModes.ts`, `src/app/domain/decisionModes.test.ts`, `src/app/data/deals.ts`.
+- Separated editorial and affiliate promotions from objective cheapest ranking with explicit `PartnershipMeta` disclosure tags (`Tài trợ đối tác · Hạng giá khách quan: #X`).
+- Strict F76 acceptance criteria: Changing referral revenue or commission rates cannot silently alter objective price sort order. Verified via `verifyObjectivePriceSortInvariance` which mathematically proves that inflating referral revenue from 0 to 100M VND produces strictly identical sort order.
+
+### 4.16 F85: Provider Source Rights Registry (E-WP03 / P1)
+- **Files**: `src/domain/farely/providerRights.ts`, `src/domain/farely/providerRights.test.ts`, `src/domain/farely/index.ts`.
+- Implemented `PROVIDER_SOURCE_RIGHTS_REGISTRY` tracking source scraping terms, direct display permissions, caching TTLs, affiliate monetization, and B2B syndication rights across all canonical providers.
+- Strict F85 acceptance criteria: No premium/B2B redistribution without actual rights. `filterRecordsForB2BExport` strictly detects and rejects unauthorized sources, throwing `DataRightsViolationError` in strict mode and sanitizing export payloads.
+
 ---
 
 ## 5. Work Package Progress Status
