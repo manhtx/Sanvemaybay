@@ -5,7 +5,7 @@
 **Branch**: `antigravity/farely-v12-product-convergence`  
 **Reference PR**: [#1](https://github.com/manhtx/Sanvemaybay/pull/1)  
 **Production Site**: [https://farely.manhtx.com](https://farely.manhtx.com)  
-**Stage 1 Implementation SHA**: `cac7cb6032195ac93ea3cca1764e9b7241d2ccb9`  
+**Stage 1 Implementation SHA**: `a26fdf373ace65552f05924c4ed965a21003433d`  
 **Authority Status**: `READY_FOR_INDEPENDENT_ACCEPTANCE` (Founder Supremacy Preserved; Zero Self-Certification)
 
 ---
@@ -16,7 +16,7 @@ This Baseline Report establishes the empirical convergence foundation for **Fare
 All engineering implementations strictly adhere to:
 1. **Owner Authority Supremacy**: Zero contract shrinkage across all 89 capability contracts (`F00..F88`) and 267 historical acceptance gates.
 2. **Authentic Capability Roster**: 40 P0, 26 P1, 16 P2, and 7 P3 capabilities mapped with exact authentic titles and solutions.
-3. **Anti-Circularity Protocol**: Two-stage commit discipline (Implementation code committed in `cac7cb6`, followed by durable checkpoint recording).
+3. **Anti-Circularity Protocol**: Two-stage commit discipline (Implementation code committed in `a26fdf3`, followed by durable checkpoint recording).
 4. **Zero Fake Done**: No self-awarded 10/10 scores, no manufactured `TARGET_PROVEN` claims; all status dynamically derived from test suites.
 
 ---
@@ -28,7 +28,7 @@ All engineering implementations strictly adhere to:
 | **Active Branch** | `antigravity/farely-v12-product-convergence` |
 | **Reference PR** | `https://github.com/manhtx/Sanvemaybay/pull/1` |
 | **Reference Baseline SHA** | `5a924a01cbcca62b58c3e8350707e2cc9678ea83` |
-| **Implementation Commit** | `cac7cb6032195ac93ea3cca1764e9b7241d2ccb9` |
+| **Implementation Commit** | `a26fdf373ace65552f05924c4ed965a21003433d` |
 | **Working Tree** | Clean prior to checkpoint generation |
 | **Node.js Environment** | Node v20+ / Vite 6.4.3 / Playwright / Deno |
 | **PostgreSQL / Supabase** | PostgreSQL 17 / pgTAP / 38 Migrations / 14 Edge Functions |
@@ -51,7 +51,7 @@ All test suites execute with zero failures across all 4 runners:
 | **Proof Index Probes** | 42 | 42 | 0 | **PASS** |
 | **TypeScript Typecheck (`tsc --noEmit`)** | Full repo | Clean | 0 | **PASS** |
 | **ESLint (`npm run lint`)** | Full repo | Clean (0 warnings) | 0 | **PASS** |
-| **Vite Production Build (`vite build`)** | Full bundle | 1.96s | 0 | **PASS** |
+| **Vite Production Build (`vite build`)** | Full bundle | Clean | 0 | **PASS** |
 | **Total Automated Tests** | **391** | **391** | **0** | **PASS** |
 
 ---
@@ -92,6 +92,23 @@ All test suites execute with zero failures across all 4 runners:
 - `package.json`: Fixed Deno runner read permissions (`--allow-read` in `test:functions`).
 - `supabase/tests/database/01_rls_tenant_isolation.sql`: Expanded to 15 planned assertions matching `plan(15)`, adding anon isolation on `notification_outbox` & `watch_evaluations` (NC-029).
 - `scripts/database-architecture-contract.node-test.mjs` & `scripts/rpc-security-role.node-test.mjs`: Added explicit existence tests in `pg_proc` and migration files for all 6 privileged RPCs, defending Hostile Test HT24.
+
+### 4.5 F57 & J13: Watch Mutation Optimistic Rollback & Server ACK Verification (E-WP09)
+- **Files**: `src/app/data/watchApi.ts`, `src/app/data/watchApi.test.ts`, `src/app/pages/WatchPage.tsx`.
+- Implemented `WatchMutationResult` returning error reason, rollback state, and ACK confirmation.
+- On network failure or HTTP 403/500, local storage optimistic update is automatically rolled back to prior state and explicit error banner is rendered.
+
+### 4.6 F26 & F30: Fare Recheck Feedback Widget (E-WP08 / E-WP10)
+- **Files**: `src/app/domain/recheckFeedback.ts`, `src/app/domain/recheckFeedback.test.ts`, `src/app/components/RecheckFeedbackWidget.tsx`, `src/app/pages/DealDetailPage.tsx`.
+- Structured 3-way user outcome reporting: `MATCHED`, `PRICE_CHANGED` (with actual price input), `UNAVAILABLE`.
+- Strict F30 acceptance invariant: feedback status is unconditionally stamped with `USER_REPORTED` and never auto-promoted to verified without independent machine scanning.
+- Emits product analytics event `verify_result`.
+
+### 4.7 F31: Decision Modes Ranking (E-WP07)
+- **Files**: `src/app/domain/decisionModes.ts`, `src/app/domain/decisionModes.test.ts`, `src/app/pages/SearchPage.tsx`.
+- 4 separate decision modes: `CHEAPEST` (objective price sort default), `CONVENIENT` (bay thẳng 0 stops, shortest duration), `BUDGET_FIT` (tối ưu hóa hạn mức ngân sách và hiển thị ngân sách dôi dư), `LOWER_RISK` (loại trừ rủi ro trễ chuyến/nối chuyến, ưu tiên dữ liệu mới).
+- Every ranked deal displays an inspectable ranking reason (e.g. `Bay thẳng không điểm dừng, thời gian bay 1h 55m`, `Tiết kiệm 3.200.000₫ so với hạn mức ngân sách`).
+- Guaranteed seamless return to objective price sort via quick action button.
 
 ---
 
