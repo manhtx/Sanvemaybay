@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Bookmark, Bell, Trash2, ArrowRight, ExternalLink, Calendar, Plane, Sparkles } from "lucide-react";
 import { Deal, formatStops, formatVND } from "../data/deals";
-import { getObservedFares } from "../data/api";
+import { getObservedFares, batchResolveSavedOpportunities } from "../data/api";
 import {
   syncSavedWithRemote,
   mutateBookmarkOptimistic,
@@ -59,6 +59,15 @@ export function SavedDealsPage() {
         activeByOppId.set(fare.id, fare);
         if (fare.id.startsWith("observed-")) {
           activeByOppId.set(fare.id.slice("observed-".length), fare);
+        }
+      }
+
+      // AUD-V34-05 & EV34-17: Exact-ID batch resolution independent of feed pagination
+      const missingOppIds = [...recordsMap.keys()].filter((oppId) => !activeByOppId.has(oppId));
+      if (missingOppIds.length > 0) {
+        const resolvedBatch = await batchResolveSavedOpportunities(missingOppIds);
+        for (const [key, deal] of resolvedBatch.entries()) {
+          activeByOppId.set(key, deal);
         }
       }
 

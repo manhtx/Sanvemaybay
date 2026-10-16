@@ -352,7 +352,7 @@ test('EV-23: Economic utility unknown -> INSUFFICIENT_EVIDENCE, not approved exp
     estimatedOpportunityValueVnd: undefined
   });
 
-  assert.equal(result.status, 'REJECTED_UNECONOMIC', 'Unknown utility cannot be approved for scan expansion');
+  assert.equal(result.status, 'INSUFFICIENT_EVIDENCE', 'Unknown utility cannot be approved for scan expansion');
   assert.ok(result.rejectionReasonVi.includes('thiếu bằng chứng đo lường'));
 });
 

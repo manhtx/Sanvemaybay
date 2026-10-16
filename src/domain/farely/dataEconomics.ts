@@ -38,7 +38,7 @@ export interface ScanExpansionProposal {
   estimatedOpportunityValueVnd?: number;
 }
 
-export type ExpansionDecisionStatus = "APPROVED_VALUE_ACCRETIVE" | "REJECTED_UNECONOMIC";
+export type ExpansionDecisionStatus = "APPROVED_VALUE_ACCRETIVE" | "REJECTED_UNECONOMIC" | "INSUFFICIENT_EVIDENCE";
 
 export interface ScanExpansionDecision {
   status: ExpansionDecisionStatus;
@@ -92,11 +92,11 @@ export function evaluateScanExpansionProposal(
     proposal.estimatedOpportunityValueVnd === undefined
   ) {
     return {
-      status: "REJECTED_UNECONOMIC",
+      status: "INSUFFICIENT_EVIDENCE",
       marginalCostVnd,
       estimatedMarginalValueVnd: 0,
       marginalRoiRatio: 0,
-      rejectionReasonVi: `Mở rộng quét bị từ chối: thiếu bằng chứng đo lường giá trị biên thực tế (chưa cung cấp estimatedUsefulAlertValueVnd hoặc estimatedOpportunityValueVnd). Tuân thủ F88: không tự ý gán giá trị mặc định khi chưa có dữ liệu đo lường.`,
+      rejectionReasonVi: `Mở rộng quét bị bảo lưu (INSUFFICIENT_EVIDENCE): thiếu bằng chứng đo lường giá trị biên thực tế (chưa cung cấp estimatedUsefulAlertValueVnd hoặc estimatedOpportunityValueVnd). Tuân thủ F88 & AUD-V34-10: không tự ý gán giá trị mặc định khi chưa có dữ liệu đo lường, và phân biệt rõ ràng giữa thiếu bằng chứng với trường hợp đã chứng minh ROI âm.`,
     };
   }
 

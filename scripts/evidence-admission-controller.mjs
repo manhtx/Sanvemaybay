@@ -439,8 +439,9 @@ export function evaluateAdmission(options = {}) {
       status = 'STALE';
     }
 
-    // Validate forged pass (A03: if options.forgedPassGates flags this as forged)
-    if (options.forgedPassGates?.includes(gate.gate_id) || receipt?.is_forged) {
+    // Validate forged pass (A03: if options.forgedPassGates flags this as forged, or EV34-04 manual proof edit without execution receipt)
+    const isUnverifiedManualProof = options.unverifiedManualProofs?.includes(gate.gate_id) || receipt?.is_manual_edit === true || receipt?.authentic === false;
+    if (options.forgedPassGates?.includes(gate.gate_id) || receipt?.is_forged || isUnverifiedManualProof) {
       forgedProofCount++;
       status = 'FORGED_REJECTED';
     }
@@ -501,13 +502,16 @@ export function evaluateAdmission(options = {}) {
     soakReceipts.status === 'COMPLETED'
   );
 
-  // EV-04 & Section G1: Independent verification requires actual custody / reviewer receipt
+  // EV-04 & Section G1 & EV34-05: Independent verification requires actual custody / reviewer receipt
+  const enforceReviewerReceipt = options.requireExplicitReviewerReceipt || options.enforceReviewerReceipt || options.v34Admission;
   const hasIndependentCustody = options.independentVerification === false ? false :
-    (options.requireExplicitReviewerReceipt ? Boolean(options.independentVerificationReceipt) : !options.failVerification);
+    (enforceReviewerReceipt ? Boolean(options.independentVerificationReceipt) : !options.failVerification);
   const finalIndependentVerificationComplete = hasIndependentCustody && shrinkageErrors.length === 0;
 
-  // EV-26: Approved required atoms completion check (all approved atoms must be complete)
-  const approvedRequiredAtomsComplete = !options.incompleteApprovedAtoms && (options.approvedRequiredAtomsComplete ?? true);
+  // EV-26 & EV34-06: Approved required atoms completion check (all approved atoms must be complete, fail closed if omitted in strict mode)
+  const enforceFailClosedAtoms = options.enforceFailClosedAtoms || options.v34Admission;
+  const approvedRequiredAtomsComplete = !options.incompleteApprovedAtoms &&
+    (enforceFailClosedAtoms ? Boolean(options.approvedRequiredAtomsComplete === true) : (options.approvedRequiredAtomsComplete ?? true));
 
   // D06: Exact final release state reconciled fails closed unless verified production SHA is supplied matching current SHA
   const verifiedProductionSha = options.overrideProductionSha ?? (process.env.PRODUCTION_RELEASE_SHA || null);

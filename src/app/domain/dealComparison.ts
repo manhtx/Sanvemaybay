@@ -1,4 +1,4 @@
-import { Deal } from "../data/deals";
+import type { Deal } from "../data/deals.ts";
 
 export interface DealComparisonRow {
   id: string;
@@ -175,6 +175,12 @@ export function checkOpportunitiesCompatibility(rows: DealComparisonRow[]): Comp
 }
 
 export function explainTradeoff(cheaper: DealComparisonRow, costlier: DealComparisonRow): string {
+  // AUD-V34-07 & EV34-15: If cheaper has unknown totalCost but costlier has verified totalCost,
+  // we cannot claim cheaper is genuinely cheaper because unverified mandatory fees may exceed the difference.
+  if (cheaper.totalCost === undefined && costlier.totalCost !== undefined) {
+    return "Chưa thể khẳng định phương án này rẻ hơn: thiếu dữ liệu phụ phí bắt buộc của phương án so sánh (chưa rõ tổng chi phí thực tế).";
+  }
+
   const cheaperCost = cheaper.totalCost ?? cheaper.ticketPrice;
   const costlierCost = costlier.totalCost ?? costlier.ticketPrice;
   const priceDiff = costlierCost - cheaperCost;

@@ -164,7 +164,24 @@ export function verifyFounderAuthToken(params: {
     return { valid: false, reason: `Mã xác thực Founder đã hết hạn (hạn: ${expiry}, hiện tại: ${now}).` };
   }
 
-  const secret = params.founderSecret || DEFAULT_FOUNDER_KEY;
+  // EV34-11 & AUD-V34-09: Reject tokens signed using repository-known secret (DEFAULT_FOUNDER_KEY)
+  const defaultPayload = `${capId}:${expiry}:${DEFAULT_FOUNDER_KEY}:${FOUNDER_AUTH_SALT}`;
+  const defaultSig = sha256Hex(defaultPayload).slice(0, 32);
+  if (signature === defaultSig) {
+    return {
+      valid: false,
+      reason: 'Từ chối kích hoạt P3: Token được ký bằng khóa mặc định công khai trong mã nguồn (repository-known DEFAULT_FOUNDER_KEY). Yêu cầu bí mật server-side thực tế.',
+    };
+  }
+
+  const secret = params.founderSecret || (typeof process !== 'undefined' ? process.env?.FOUNDER_ACTIVATION_SECRET : undefined);
+  if (!secret || secret === DEFAULT_FOUNDER_KEY || secret === 'farely-founder-genesis-auth-key') {
+    return {
+      valid: false,
+      reason: 'Bí mật xác thực Founder chưa được cấu hình hoặc sử dụng khóa mặc định công khai.',
+    };
+  }
+
   const expectedPayload = `${capId}:${expiry}:${secret}:${FOUNDER_AUTH_SALT}`;
   const expectedSig = sha256Hex(expectedPayload).slice(0, 32);
 
@@ -205,7 +222,7 @@ export function assertP3ActivationSafety(
   }
 
   // Check founder authorization for high-risk commercial capabilities
-  if (['F51', 'F52', 'F53', 'F55'].includes(capabilityId)) {
+  if (['F49', 'F51', 'F52', 'F53', 'F55'].includes(capabilityId)) {
     const authResult = verifyFounderAuthToken({
       capabilityId,
       token: founderAuthToken,

@@ -66,14 +66,16 @@ describe('Rule 4 & Section D4: Conditional Growth Safety & P3 Governance', () =>
     expect(P3_CAPABILITY_REGISTRY.F54.status).toBe('STAGED_AWAITING_APPROVAL');
   });
 
-  it('authenticates valid cryptographic Founder authorization token and rejects forged/expired tokens (AUD-01)', () => {
+  it('authenticates valid cryptographic Founder authorization token with secure secret and rejects repository-known/forged/expired tokens (AUD-01, AUD-V34-09, EV34-11)', () => {
     const futureExpiry = Date.now() + 1000 * 60 * 60; // 1 hour ahead
+    const secureSecret = 'secure-founder-auth-secret-epoch-2026';
     const validToken = generateFounderAuthToken({
       capabilityId: 'F52',
       expiresAtEpochMs: futureExpiry,
+      founderSecret: secureSecret,
     });
 
-    // Valid token allows activation when all prerequisites are fulfilled
+    // Valid token with authentic secret allows activation when all prerequisites are fulfilled
     expect(() =>
       assertP3ActivationSafety(
         'F52',
@@ -82,9 +84,29 @@ describe('Rule 4 & Section D4: Conditional Growth Safety & P3 Governance', () =>
           'Real-time ticketing escrow and refund guarantee fund',
           'Explicit founder legal authorization',
         ],
-        validToken
+        validToken,
+        { founderSecret: secureSecret }
       )
     ).not.toThrow();
+
+    // EV34-11: Token signed with repository-known DEFAULT_FOUNDER_KEY is strictly rejected
+    const defaultKeyToken = generateFounderAuthToken({
+      capabilityId: 'F52',
+      expiresAtEpochMs: futureExpiry,
+      // Uses DEFAULT_FOUNDER_KEY
+    });
+    expect(() =>
+      assertP3ActivationSafety(
+        'F52',
+        [
+          'Direct IATA / BSP ticketing agent license or OTA fulfillment partner agreement',
+          'Real-time ticketing escrow and refund guarantee fund',
+          'Explicit founder legal authorization',
+        ],
+        defaultKeyToken,
+        { founderSecret: secureSecret }
+      )
+    ).toThrow(UnauthorizedP3ActivationError);
 
     // Forged token is rejected with cryptographic signature mismatch
     const forgedToken = `FOUNDER_AUTH_F52_${futureExpiry}_deadbeefcafebabe0000000000000000`;
@@ -96,7 +118,8 @@ describe('Rule 4 & Section D4: Conditional Growth Safety & P3 Governance', () =>
           'Real-time ticketing escrow and refund guarantee fund',
           'Explicit founder legal authorization',
         ],
-        forgedToken
+        forgedToken,
+        { founderSecret: secureSecret }
       )
     ).toThrow(UnauthorizedP3ActivationError);
 
@@ -105,6 +128,7 @@ describe('Rule 4 & Section D4: Conditional Growth Safety & P3 Governance', () =>
     const expiredToken = generateFounderAuthToken({
       capabilityId: 'F52',
       expiresAtEpochMs: pastExpiry,
+      founderSecret: secureSecret,
     });
     expect(() =>
       assertP3ActivationSafety(
@@ -114,7 +138,8 @@ describe('Rule 4 & Section D4: Conditional Growth Safety & P3 Governance', () =>
           'Real-time ticketing escrow and refund guarantee fund',
           'Explicit founder legal authorization',
         ],
-        expiredToken
+        expiredToken,
+        { founderSecret: secureSecret }
       )
     ).toThrow(UnauthorizedP3ActivationError);
   });

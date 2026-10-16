@@ -73,6 +73,7 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
         priceHistory: history,
         departureDate: "2026-11-15",
         evaluationDate: "2026-09-25",
+        scopeType: "COHORT",
       });
 
       expect(result.recommendation).toBe("BUY_NOW");
@@ -88,6 +89,7 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
         priceHistory: history,
         departureDate: "2026-09-28", // 3 days after evaluationDate
         evaluationDate: "2026-09-25",
+        scopeType: "COHORT",
       });
 
       expect(result.recommendation).toBe("BUY_NOW");
@@ -102,11 +104,12 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
         priceHistory: history,
         departureDate: "2026-12-01", // ~67 days away
         evaluationDate: "2026-09-25",
+        scopeType: "COHORT",
       });
 
       expect(result.recommendation).toBe("WAIT_AND_WATCH");
       expect(result.isCalibrated).toBe(true);
-      expect(result.rationaleVi).toContain("cao hơn trung vị lịch sử");
+      expect(result.rationaleVi).toContain("cao hơn trung vị của nhóm vé");
     });
   });
 
@@ -121,6 +124,7 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
         scopeType: "ROUTE_LEVEL",
       });
       expect(routeResult.scopeType).toBe("ROUTE_LEVEL");
+      expect(routeResult.isCalibrated).toBe(false); // EV34-23: ROUTE_LEVEL cannot claim calibrated offer-specific probability
       expect(routeResult.rationaleVi).toContain("chặng bay");
 
       const offerResult = evaluateBuyWaitGuidance({
@@ -131,6 +135,7 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
         scopeType: "IDENTICAL_OFFER",
       });
       expect(offerResult.scopeType).toBe("IDENTICAL_OFFER");
+      expect(offerResult.isCalibrated).toBe(true);
       expect(offerResult.rationaleVi).toContain("chính chuyến bay này");
     });
   });

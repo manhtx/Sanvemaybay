@@ -76,7 +76,7 @@ describe("Data Economics Optimizer (F88)", () => {
       };
 
       const decision = evaluateScanExpansionProposal(proposalWithoutEvidence);
-      expect(decision.status).toBe("REJECTED_UNECONOMIC");
+      expect(decision.status).toBe("INSUFFICIENT_EVIDENCE");
       expect(decision.marginalRoiRatio).toBe(0);
       expect(decision.estimatedMarginalValueVnd).toBe(0);
       expect(decision.rejectionReasonVi).toContain("thiếu bằng chứng đo lường");

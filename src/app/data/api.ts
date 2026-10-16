@@ -609,6 +609,36 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
   return undefined;
 }
 
+/**
+ * AUD-V34-05 & EV34-17: Exact-ID batch resolver for saved opportunities.
+ * Resolves current live/active offer state for saved items independently of search/feed pagination.
+ */
+export async function batchResolveSavedOpportunities(
+  opportunityIds: string[]
+): Promise<Map<string, Deal>> {
+  const result = new Map<string, Deal>();
+  if (!opportunityIds || opportunityIds.length === 0) return result;
+
+  const promises = opportunityIds.map(async (oppId) => {
+    try {
+      const deal = await getDealById(oppId);
+      if (deal) {
+        result.set(oppId, deal);
+        if (deal.opportunityId) result.set(deal.opportunityId, deal);
+        result.set(deal.id, deal);
+        if (deal.id.startsWith("observed-")) {
+          result.set(deal.id.slice("observed-".length), deal);
+        }
+      }
+    } catch {
+      // Graceful fallback
+    }
+  });
+
+  await Promise.all(promises);
+  return result;
+}
+
 export async function getFareObservations(fromCode: string, toCode: string): Promise<ObservationData[]> {
   if (!isSupabaseConfigured) return [];
   try {

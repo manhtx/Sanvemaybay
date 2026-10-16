@@ -110,6 +110,10 @@ export function evaluateBuyWaitGuidance(params: {
   const depDate = new Date(params.departureDate);
   const daysUntilDeparture = Math.round((depDate.getTime() - evalDate.getTime()) / (1000 * 60 * 60 * 24));
 
+  // AUD-V34-08 & EV34-23: Route-level historical samples feed Buy/Wait cannot claim calibrated offer-specific probability.
+  // Calibration requires IDENTICAL_OFFER or COHORT scope with sufficient data.
+  const isCalibrated = scopeType === "IDENTICAL_OFFER" || scopeType === "COHORT";
+
   // If departing in less than 7 days, prices almost never drop (airline yield management)
   if (daysUntilDeparture <= 7 && currentPrice <= medianPrice * 1.1) {
     const rationaleVi = scopeType === "IDENTICAL_OFFER"
@@ -121,7 +125,7 @@ export function evaluateBuyWaitGuidance(params: {
     return {
       recommendation: "BUY_NOW",
       confidence: 0.85,
-      isCalibrated: true,
+      isCalibrated,
       sampleCount: validPoints.length,
       timespanDays,
       cohortPercentile: percentile,
@@ -143,7 +147,7 @@ export function evaluateBuyWaitGuidance(params: {
     return {
       recommendation: "BUY_NOW",
       confidence: 0.9,
-      isCalibrated: true,
+      isCalibrated,
       sampleCount: validPoints.length,
       timespanDays,
       cohortPercentile: percentile,
@@ -166,7 +170,7 @@ export function evaluateBuyWaitGuidance(params: {
     return {
       recommendation: "WAIT_AND_WATCH",
       confidence: 0.75,
-      isCalibrated: true,
+      isCalibrated,
       sampleCount: validPoints.length,
       timespanDays,
       cohortPercentile: percentile,
@@ -187,7 +191,7 @@ export function evaluateBuyWaitGuidance(params: {
   return {
     recommendation: "WAIT_AND_WATCH",
     confidence: 0.6,
-    isCalibrated: true,
+    isCalibrated,
     sampleCount: validPoints.length,
     timespanDays,
     cohortPercentile: percentile,

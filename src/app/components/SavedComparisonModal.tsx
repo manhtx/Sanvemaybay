@@ -36,9 +36,13 @@ export function SavedComparisonModal({
 
   const compatibility = checkOpportunitiesCompatibility(rows);
 
-  // Find cheapest option for tradeoff baseline
-  const sortedByCost = [...rows].sort((a, b) => (a.totalCost ?? a.ticketPrice) - (b.totalCost ?? b.ticketPrice));
-  const cheapest = sortedByCost[0];
+  // AUD-V34-07 & EV34-15: Unknown total must not enter a verified-total comparison as cheapest.
+  // Segregate options with verified totalCost from options with unverified mandatory fees.
+  const optionsWithVerifiedTotal = rows.filter((r) => r.totalCost != null);
+  const cheapestVerified = optionsWithVerifiedTotal.length > 0
+    ? [...optionsWithVerifiedTotal].sort((a, b) => a.totalCost! - b.totalCost!)[0]
+    : null;
+  const cheapest = cheapestVerified ?? [...rows].sort((a, b) => a.ticketPrice - b.ticketPrice)[0];
 
   return (
     <div
