@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-15T11:15:33.951Z",
-  "tested_sha": "90bf772cbbbfa473384b7913b4320a5ab24e4e8b",
+  "updated_at": "2026-10-16T08:25:38.379Z",
+  "tested_sha": "a14440fbadb9444cb5c187899e77c30e82526fe8",
   "summary": {
     "vitest_test_files": 41,
-    "node_test_files": 44,
+    "node_test_files": 45,
     "deno_test_files": 18,
-    "total_test_suites": 103,
+    "total_test_suites": 104,
     "status": "PASS"
   },
   "layers": [
@@ -102,13 +102,14 @@
         "scripts/v17-adversarial-challenges.node-test.mjs",
         "scripts/v22-vertical-journeys.node-test.mjs",
         "scripts/v32-adversarial-requirements.node-test.mjs",
+        "scripts/v34-adversarial-requirements.node-test.mjs",
         "scripts/verify-certification-integrity.node-test.mjs",
         "scripts/verify-farely-v14-contract.node-test.mjs",
         "scripts/verify-farely-v15-handoff.node-test.mjs",
         "scripts/verify-farely-v17-contract.node-test.mjs",
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ],
-      "test_file_count": 44,
+      "test_file_count": 45,
       "verdict": "PASS"
     },
     {
