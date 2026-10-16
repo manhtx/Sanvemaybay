@@ -1,0 +1,18 @@
+{
+  "manifest_version": "14.0.0",
+  "authority": "OWNER_LOCK",
+  "frozen_at": "2026-10-12T00:00:00Z",
+  "total_requirements": 267,
+  "priority_distribution": {
+    "P0": 192,
+    "P1": 74,
+    "P2": 1
+  },
+  "corrective_contracts_count": 20,
+  "immutable_rules": [
+    "No weakening of acceptance criteria",
+    "No synthetic test reports",
+    "No reduction of canonical gate denominator",
+    "No self-certification"
+  ]
+}

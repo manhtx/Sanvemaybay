@@ -5,17 +5,22 @@ BEGIN;
 SELECT plan(15);
 
 -- 1. Verify RLS is enabled on all sensitive tables
-SELECT tables_are_rls_enabled(
-  'public',
-  ARRAY[
-    'user_alerts',
-    'travel_intents',
-    'user_bookmarks',
-    'watch_evaluations',
-    'watch_condition_episodes',
-    'notification_outbox',
-    'notification_delivery_attempts'
-  ],
+SELECT ok(
+  NOT EXISTS (
+    SELECT 1 FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relname = ANY(ARRAY[
+        'user_alerts',
+        'travel_intents',
+        'user_bookmarks',
+        'watch_evaluations',
+        'watch_condition_episodes',
+        'notification_outbox',
+        'notification_delivery_attempts'
+      ])
+      AND NOT c.relrowsecurity
+  ),
   'All user-owned and internal tables must have Row Level Security enabled'
 );
 
@@ -32,11 +37,22 @@ INSERT INTO test_actors (role_name, user_id, email) VALUES
 
 -- 3. Seed data for User B
 SET LOCAL ROLE postgres;
+INSERT INTO auth.users (id, email) VALUES
+  ('11111111-1111-4111-a111-111111111111'::uuid, 'alice@example.com'),
+  ('22222222-2222-4222-b222-222222222222'::uuid, 'bob@example.com')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO public.user_alerts (id, user_id, destination, budget)
 VALUES ('bbbbbbbb-bbbb-4bbb-bbbb-bbbbbbbbbbbb'::uuid, '22222222-2222-4222-b222-222222222222'::uuid, 'NRT', 5000000);
 
 INSERT INTO public.travel_intents (id, user_id, is_ephemeral, origin_codes, destination_codes)
 VALUES ('33333333-3333-4333-a333-333333333333'::uuid, '22222222-2222-4222-b222-222222222222'::uuid, false, ARRAY['HAN'], ARRAY['NRT']);
+
+-- Grant schema and table access so RLS policies govern row visibility
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA public TO anon, authenticated, service_role;
 
 -- 4. Test NC-029: Anon cannot enumerate private travel_intents
 SET LOCAL ROLE anon;
@@ -67,6 +83,8 @@ PREPARE insert_forged_alert AS
 
 SELECT throws_ok(
   'insert_forged_alert',
+  '42501',
+  'new row violates row-level security policy for table "user_alerts"',
   'NC-026: User A cannot INSERT alert forged with user_id of User B'
 );
 
@@ -76,6 +94,8 @@ PREPARE insert_forged_intent AS
 
 SELECT throws_ok(
   'insert_forged_intent',
+  '42501',
+  'new row violates row-level security policy for table "travel_intents"',
   'NC-026: User A cannot INSERT travel intent forged with user_id of User B'
 );
 
@@ -111,5 +131,44 @@ SELECT isnt_empty(
   'Service role retains operational read access to travel_intents'
 );
 
+-- 10. Test NC-029: Anon cannot enumerate notification_outbox
+SET LOCAL ROLE anon;
+SELECT is_empty(
+  'SELECT id FROM public.notification_outbox',
+  'NC-029: Anonymous users cannot SELECT from notification_outbox'
+);
+
+-- 11. Test NC-029: Anon cannot enumerate watch_evaluations
+SELECT is_empty(
+  'SELECT id FROM public.watch_evaluations',
+  'NC-029: Anonymous users cannot SELECT from watch_evaluations'
+);
+
+-- 12..15: HT24: Confirm privileged RPC existence separately from access denial
+SELECT has_function(
+  'public',
+  'claim_notification_outbox',
+  'HT24: Privileged RPC claim_notification_outbox must exist in public schema'
+);
+
+SELECT has_function(
+  'public',
+  'apply_watch_evaluation',
+  'HT24: Privileged RPC apply_watch_evaluation must exist in public schema'
+);
+
+SELECT has_function(
+  'public',
+  'publish_observed_generation',
+  'HT24: Privileged RPC publish_observed_generation must exist in public schema'
+);
+
+SELECT has_function(
+  'public',
+  'resolve_notification_outbox',
+  'HT24: Privileged RPC resolve_notification_outbox must exist in public schema'
+);
+
 SELECT * FROM finish();
 ROLLBACK;
+

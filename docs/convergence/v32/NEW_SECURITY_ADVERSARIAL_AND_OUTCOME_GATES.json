@@ -1,0 +1,672 @@
+{
+  "contract_id": "FARELY-V32-NEW-SECURITY-ADVERSARIAL-AND-OUTCOME-GATES",
+  "version": "32.0.0",
+  "description": "Adversarial challenges, negative vectors, vertical journeys, and security/adversarial requirements.",
+  "summary": {
+    "total_gates": 124,
+    "adversarial_challenges_a01_a40": 40,
+    "negative_vectors_nv01_nv24": 24,
+    "vertical_journeys_j01_j32": 32,
+    "adversarial_requirements_ev01_ev28": 28
+  },
+  "adversarial_challenges": [
+    {
+      "id": "A01",
+      "name": "Two distinct flights collide under weak ID",
+      "target": "domainKernel.ts / itinerary ID"
+    },
+    {
+      "id": "A02",
+      "name": "Cheapest result beyond first pagination window is lost",
+      "target": "observed-fares pagination / full-universe sort"
+    },
+    {
+      "id": "A03",
+      "name": "Fresh Route A falsely freshens stale Route B",
+      "target": "coverage certificate / query-scoped freshness"
+    },
+    {
+      "id": "A04",
+      "name": "Unknown stops become direct",
+      "target": "mapDealRow / domain normalization"
+    },
+    {
+      "id": "A05",
+      "name": "Unknown baggage becomes zero cost",
+      "target": "costEpistemic.ts calculateTotalCost"
+    },
+    {
+      "id": "A06",
+      "name": "One scan manufactures strong historical confidence",
+      "target": "truthKernelV2 / epoch calibration"
+    },
+    {
+      "id": "A07",
+      "name": "Provider 503 becomes healthy empty",
+      "target": "api.ts getObservedFares / providerContracts.ts"
+    },
+    {
+      "id": "A08",
+      "name": "Parser failure becomes verified empty",
+      "target": "scan_runs parser mode / health"
+    },
+    {
+      "id": "A09",
+      "name": "ReturnDate changes outbound Watch window",
+      "target": "WatchDateScope / travelIntent.ts"
+    },
+    {
+      "id": "A10",
+      "name": "User A Watch appears to User B",
+      "target": "RLS tenant isolation / bookmarks.ts"
+    },
+    {
+      "id": "A11",
+      "name": "Pending confirmation appears active",
+      "target": "Watch lifecycle state machine"
+    },
+    {
+      "id": "A12",
+      "name": "Server Watch mutation failure appears successful",
+      "target": "optimistic mutation rollback"
+    },
+    {
+      "id": "A13",
+      "name": "Provider accepted email becomes delivered",
+      "target": "outbox receipt status"
+    },
+    {
+      "id": "A14",
+      "name": "Concurrent outbox workers send duplicate logical alert",
+      "target": "SKIP LOCKED queue claiming"
+    },
+    {
+      "id": "A15",
+      "name": "Refresh completed without published generation",
+      "target": "atomic generation manifest"
+    },
+    {
+      "id": "A16",
+      "name": "Unsafe API filter changes the intended query",
+      "target": "PostgREST filter sanitization"
+    },
+    {
+      "id": "A17",
+      "name": "SPA HTTP 200 but React hydration fails",
+      "target": "dist/index.html & router bundles"
+    },
+    {
+      "id": "A18",
+      "name": "Old worker SHA is treated as current release",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "A19",
+      "name": "Old source proof passes changed dependency",
+      "target": "dependency digest verification"
+    },
+    {
+      "id": "A20",
+      "name": "Synthetic timestamps prove 24-hour soak",
+      "target": "soak elapsed validator"
+    },
+    {
+      "id": "A21",
+      "name": "F21 semantics change while all 89 IDs remain",
+      "target": "semantic drift detector"
+    },
+    {
+      "id": "A22",
+      "name": "Work package claims COMPLETED without evidence",
+      "target": "dynamic status derivation"
+    },
+    {
+      "id": "A23",
+      "name": "Rules lacking frontmatter are treated as active",
+      "target": "agent rule YAML parser"
+    },
+    {
+      "id": "A24",
+      "name": "Toy-test function passes while production code remains broken",
+      "target": "production module import enforcement"
+    },
+    {
+      "id": "A25",
+      "name": "Affiliate economics alter objective cheapest order",
+      "target": "routeBest price sort purity"
+    },
+    {
+      "id": "A26",
+      "name": "Expired cache appears live",
+      "target": "cache TTL & source mode"
+    },
+    {
+      "id": "A27",
+      "name": "Cross-currency prices compare without FX evidence",
+      "target": "priceScope currency integrity"
+    },
+    {
+      "id": "A28",
+      "name": "User events leak across accounts",
+      "target": "telemetry session boundary"
+    },
+    {
+      "id": "A29",
+      "name": "Rights-revoked source remains commercially enabled",
+      "target": "provider killswitch"
+    },
+    {
+      "id": "A30",
+      "name": "Saved item points to wrong opportunity after migration",
+      "target": "stable opportunity ID & alias migration"
+    },
+    {
+      "id": "A31",
+      "name": "Email sends after unsubscribe",
+      "target": "outbox suppression verification"
+    },
+    {
+      "id": "A32",
+      "name": "UPDATE zero affected rows is shown as successful mutation",
+      "target": "affected row count ACK"
+    },
+    {
+      "id": "A33",
+      "name": "Concurrent generation writers corrupt publication integrity",
+      "target": "transactional pointer publication"
+    },
+    {
+      "id": "A34",
+      "name": "Performance passes from response 200 alone",
+      "target": "Web Vitals measurement gate"
+    },
+    {
+      "id": "A35",
+      "name": "Accessibility passes based only on DOM file existence",
+      "target": "a11y semantic flow verification"
+    },
+    {
+      "id": "A36",
+      "name": "Secrets appear in logs/artifacts",
+      "target": "secret hygiene scanner"
+    },
+    {
+      "id": "A37",
+      "name": "Notification lacks source observation ID",
+      "target": "notification payload fidelity"
+    },
+    {
+      "id": "A38",
+      "name": "Partial scan is called all-market coverage",
+      "target": "coverage certificate scope"
+    },
+    {
+      "id": "A39",
+      "name": "Generic booking URL is called exact offer",
+      "target": "link class gating"
+    },
+    {
+      "id": "A40",
+      "name": "User input date is mistaken for provider-supplied date",
+      "target": "provenance date validation"
+    }
+  ],
+  "negative_vectors": [
+    {
+      "id": "NV01",
+      "name": "Weak ID collision between distinct flights",
+      "target": "identity.ts"
+    },
+    {
+      "id": "NV02",
+      "name": "Full candidate universe database filtering lost in pagination",
+      "target": "observed-fares/index.ts"
+    },
+    {
+      "id": "NV03",
+      "name": "Fresh Route A falsely freshens stale Route B",
+      "target": "routeBest.ts"
+    },
+    {
+      "id": "NV04",
+      "name": "Unknown stops promoted to direct flight",
+      "target": "mapDealRow"
+    },
+    {
+      "id": "NV05",
+      "name": "Unknown baggage fee defaulted to zero",
+      "target": "costEpistemics.ts"
+    },
+    {
+      "id": "NV06",
+      "name": "Single scan manufactures high confidence",
+      "target": "truthKernelV2.ts"
+    },
+    {
+      "id": "NV07",
+      "name": "Provider 503 classified as healthy empty",
+      "target": "api.ts / providerContracts.ts"
+    },
+    {
+      "id": "NV08",
+      "name": "Parser failure classified as healthy empty",
+      "target": "scan_runs parser health"
+    },
+    {
+      "id": "NV09",
+      "name": "Return date alters outbound date scope in watch",
+      "target": "watch.ts / travelIntent.ts"
+    },
+    {
+      "id": "NV10",
+      "name": "User A watch visible to User B",
+      "target": "RLS policies / bookmarks.ts"
+    },
+    {
+      "id": "NV11",
+      "name": "Anonymous pending watch active without verification",
+      "target": "watchLifecycle.ts"
+    },
+    {
+      "id": "NV12",
+      "name": "Server error during watch pause triggers rollback",
+      "target": "watchApi.ts"
+    },
+    {
+      "id": "NV13",
+      "name": "Provider HTTP acceptance of email is NOT confirmed delivery",
+      "target": "outbox.ts"
+    },
+    {
+      "id": "NV14",
+      "name": "Duplicate leased workers prevented by SKIP LOCKED queue claims",
+      "target": "alert-processor/index.ts"
+    },
+    {
+      "id": "NV15",
+      "name": "Zero-row candidate generation published as healthy",
+      "target": "feed-snapshot.ts"
+    },
+    {
+      "id": "NV16",
+      "name": "Unsafe PostgREST filters containing injection characters fail closed",
+      "target": "postgrestSanitizer.ts"
+    },
+    {
+      "id": "NV17",
+      "name": "SPA HTTP 200 with client crash fails build",
+      "target": "dist/index.html"
+    },
+    {
+      "id": "NV18",
+      "name": "Stale worker SHA or mismatched SHA fails closed in EAC",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV19",
+      "name": "Stale proof revision SHA fails closed in EAC",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV20",
+      "name": "Synthetic soak timestamps without 24 elapsed hours fail closed",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV21",
+      "name": "Weakened acceptance criteria text fails closed in EAC",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV22",
+      "name": "Missing persistent rules file detected by handoff verifier",
+      "target": "verify-farely-v15-handoff.mjs"
+    },
+    {
+      "id": "NV23",
+      "name": "Forged pass without execution probe fails closed",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV24",
+      "name": "Non-terminal state EXECUTING cannot claim TARGET_PROVEN",
+      "target": "evidence-admission-controller.mjs"
+    }
+  ],
+  "vertical_journeys": [
+    {
+      "id": "J01",
+      "name": "Vertical Journey J01",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J02",
+      "name": "Vertical Journey J02",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J03",
+      "name": "Vertical Journey J03",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J04",
+      "name": "Vertical Journey J04",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J05",
+      "name": "Vertical Journey J05",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J06",
+      "name": "Vertical Journey J06",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J07",
+      "name": "Vertical Journey J07",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J08",
+      "name": "Vertical Journey J08",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J09",
+      "name": "Vertical Journey J09",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J10",
+      "name": "Vertical Journey J10",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J11",
+      "name": "Vertical Journey J11",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J12",
+      "name": "Vertical Journey J12",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J13",
+      "name": "Vertical Journey J13",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J14",
+      "name": "Vertical Journey J14",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J15",
+      "name": "Vertical Journey J15",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J16",
+      "name": "Vertical Journey J16",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J17",
+      "name": "Vertical Journey J17",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J18",
+      "name": "Vertical Journey J18",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J19",
+      "name": "Vertical Journey J19",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J20",
+      "name": "Vertical Journey J20",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J21",
+      "name": "Vertical Journey J21",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J22",
+      "name": "Vertical Journey J22",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J23",
+      "name": "Vertical Journey J23",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J24",
+      "name": "Vertical Journey J24",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J25",
+      "name": "Vertical Journey J25",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J26",
+      "name": "Vertical Journey J26",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J27",
+      "name": "Vertical Journey J27",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J28",
+      "name": "Vertical Journey J28",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J29",
+      "name": "Vertical Journey J29",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J30",
+      "name": "Vertical Journey J30",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J31",
+      "name": "Vertical Journey J31",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    },
+    {
+      "id": "J32",
+      "name": "Vertical Journey J32",
+      "probe": "scripts/v22-vertical-journeys.node-test.mjs",
+      "runner": "node"
+    }
+  ],
+  "adversarial_requirements": [
+    {
+      "id": "EV-01",
+      "name": "267 historical PROVEN statuses + 267 stale receipts -> 0 currently proven",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "EV-02",
+      "name": "Fake Node test named rls-database-test exits zero -> not admitted as real PG integration",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "EV-03",
+      "name": "Parent SHA test reused after relevant oracle change -> dependent proof invalidated",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "EV-04",
+      "name": "No reviewer receipt, independentVerification flag false -> no independent acceptance",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "EV-05",
+      "name": "Private table missing from schema -> existence/RLS test fails",
+      "target": "01_rls_tenant_isolation.sql"
+    },
+    {
+      "id": "EV-06",
+      "name": "Test grants blanket access to conceal migration permission errors -> privilege contract fails",
+      "target": "01_rls_tenant_isolation.sql"
+    },
+    {
+      "id": "EV-07",
+      "name": "Anon can execute sensitive RPC -> security fails despite has_function PASS",
+      "target": "rpc-security-role.node-test.mjs"
+    },
+    {
+      "id": "EV-08",
+      "name": "User A has correct record but cannot access it -> positive RLS gate fails",
+      "target": "rls-tenant-isolation.node-test.mjs"
+    },
+    {
+      "id": "EV-09",
+      "name": "Founder token derived from repository-known secret -> authorization denied",
+      "target": "conditionalGrowthSafety.ts"
+    },
+    {
+      "id": "EV-10",
+      "name": "Caller supplies fabricated prerequisites -> authorization denied",
+      "target": "conditionalGrowthSafety.ts"
+    },
+    {
+      "id": "EV-11",
+      "name": "Old route snapshot exists but new scan failed -> not VERIFIED_EMPTY",
+      "target": "feed-health.ts"
+    },
+    {
+      "id": "EV-12",
+      "name": "Two flights share route/date but differ by segments -> distinct exact identities",
+      "target": "identity.ts"
+    },
+    {
+      "id": "EV-13",
+      "name": "Unknown mandatory fee is compared as zero -> strong cheapest claim rejected",
+      "target": "costEpistemics.ts"
+    },
+    {
+      "id": "EV-14",
+      "name": "Cheapest eligible fare lies beyond record 1,384 -> exact full-universe cheapest still identified",
+      "target": "candidateUniverse.ts"
+    },
+    {
+      "id": "EV-15",
+      "name": "Saved opportunity outside first 120 records -> correct exact-ID resolution",
+      "target": "SavedDealsPage.tsx"
+    },
+    {
+      "id": "EV-16",
+      "name": "Supabase unavailable; createWatch writes local only -> LOCAL_DRAFT, not ACTIVE_MONITORED",
+      "target": "watchApi.ts"
+    },
+    {
+      "id": "EV-17",
+      "name": "Authenticated remote Watch fetch fails while local old data exists -> no false remote success or account crossover",
+      "target": "watchApi.ts"
+    },
+    {
+      "id": "EV-18",
+      "name": "Watch persisted but no valid scan coverage -> PENDING_COVERAGE/DEGRADED",
+      "target": "watchLifecycle.ts"
+    },
+    {
+      "id": "EV-19",
+      "name": "Two workers process same condition -> no duplicate logical notification",
+      "target": "alert-processor/index.ts"
+    },
+    {
+      "id": "EV-20",
+      "name": "Provider accepted notification, no delivery receipt -> not DELIVERED",
+      "target": "alert-processor/index.ts"
+    },
+    {
+      "id": "EV-21",
+      "name": "14 route-level observations feed Buy/Wait -> no calibrated offer-specific probability",
+      "target": "buyWaitGuidance.ts"
+    },
+    {
+      "id": "EV-22",
+      "name": "MAD=0, current price differs materially -> no automatic normal classification",
+      "target": "priceAnomaly.ts"
+    },
+    {
+      "id": "EV-23",
+      "name": "Economic utility unknown -> INSUFFICIENT_EVIDENCE, not approved expansion",
+      "target": "dataEconomics.ts"
+    },
+    {
+      "id": "EV-24",
+      "name": "Provider rights absent for background scanning -> affected scanner disabled",
+      "target": "providerRights.ts"
+    },
+    {
+      "id": "EV-25",
+      "name": "Preview and production run different revisions -> production acceptance denied",
+      "target": "release-manifest.node-test.mjs"
+    },
+    {
+      "id": "EV-26",
+      "name": "All 267 historical gates pass while approved P2/P3 atoms remain incomplete -> whole-product TARGET_PROVEN denied",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "EV-27",
+      "name": "AI changes acceptance criteria to fit current implementation -> semantic protection gate fails",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "EV-28",
+      "name": "Synthetic user events satisfy apparent KPI -> real-product outcome gate fails",
+      "target": "evidence-admission-controller.mjs"
+    }
+  ]
+}

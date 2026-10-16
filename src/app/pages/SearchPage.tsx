@@ -7,9 +7,23 @@ import {
   LoaderCircle,
   Calendar,
   TrendingDown,
+  ArrowUpDown,
+  RotateCcw,
+  RefreshCw,
+  AlertTriangle,
+  AlertCircle,
+  Compass,
+  Clock,
+  Filter,
 } from "lucide-react";
-import { formatVND, Deal } from "../data/deals";
+import { formatVND, formatStops, Deal } from "../data/deals";
 import { getTrackedRoutes, searchDealsWithStatus, SearchStatus } from "../data/api";
+import {
+  DecisionMode,
+  DECISION_MODES,
+  rankDealsByDecisionMode,
+} from "../domain/decisionModes";
+import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { uniqueOrigins } from "../data/origins";
 import {
   getUserPreferences,
@@ -54,7 +68,8 @@ export function SearchPage() {
   const rawUrlDest = searchParams.get("destination");
   const urlDest = rawUrlDest === "BKK_ALL" ? "BKK_METRO" : rawUrlDest === "TYO_ALL" ? "TYO_METRO" : rawUrlDest;
   const urlDepart = searchParams.get("departDate") || searchParams.get("departureFrom");
-  const urlReturn = searchParams.get("returnDate") || searchParams.get("departureTo");
+  const urlDepartureTo = searchParams.get("departureTo");
+  const urlReturn = searchParams.get("returnDate");
 
   const [departureCities, setDepartureCities] = useState(defaultDepartureCities);
   const [budget, setBudget] = useState(() => getUserPreferences().budget || 10000000);
@@ -63,13 +78,20 @@ export function SearchPage() {
   const [maxStops, setMaxStops] = useState(() => getUserPreferences().maxStops ?? 1);
   const [maxFlightTimeMinutes, setMaxFlightTimeMinutes] = useState(() => getUserPreferences().maxFlightTimeMinutes);
   const [departureFrom, setDepartureFrom] = useState(() => urlDepart || getUserPreferences().departureFrom || "");
-  const [departureTo, setDepartureTo] = useState(() => urlReturn || getUserPreferences().departureTo || "");
+  const [departureTo, setDepartureTo] = useState(() => urlDepartureTo || getUserPreferences().departureTo || "");
+  const [returnDate, setReturnDate] = useState(() => urlReturn || "");
   const [results, setResults] = useState<Deal[]>([]);
   const [searchStatus, setSearchStatus] = useState<SearchStatus>("healthy");
   const [isScanning, setIsScanning] = useState(false);
   const [watchOpen, setWatchOpen] = useState(false);
   const [selectedWatchDeal, setSelectedWatchDeal] = useState<Deal | null>(null);
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
+  const [decisionMode, setDecisionMode] = useState<DecisionMode>("CHEAPEST");
+
+  const rankedResults = useMemo(
+    () => rankDealsByDecisionMode(results, decisionMode, budget),
+    [results, decisionMode, budget]
+  );
 
   useEffect(() => {
     getTrackedRoutes().then((routes) => {
@@ -85,17 +107,18 @@ export function SearchPage() {
       if (remote.maxStops != null) setMaxStops(remote.maxStops);
       if (remote.maxFlightTimeMinutes != null) setMaxFlightTimeMinutes(remote.maxFlightTimeMinutes);
       if (!urlDepart && remote.departureFrom) setDepartureFrom(remote.departureFrom);
-      if (!urlReturn && remote.departureTo) setDepartureTo(remote.departureTo);
+      if (!urlDepartureTo && remote.departureTo) setDepartureTo(remote.departureTo);
       saveUserPreferences(remote);
     });
-  }, [urlFrom, urlDepart, urlReturn]);
+  }, [urlFrom, urlDepart, urlDepartureTo, urlReturn]);
 
   useEffect(() => {
     if (urlFrom) setFromCity(urlFrom);
     if (urlDest) setDestination(urlDest);
     if (urlDepart) setDepartureFrom(urlDepart);
-    if (urlReturn) setDepartureTo(urlReturn);
-  }, [urlFrom, urlDest, urlDepart, urlReturn]);
+    if (urlDepartureTo) setDepartureTo(urlDepartureTo);
+    if (urlReturn) setReturnDate(urlReturn);
+  }, [urlFrom, urlDest, urlDepart, urlDepartureTo, urlReturn]);
 
   const runSearch = useCallback(
     async (isManual = false) => {
@@ -108,6 +131,7 @@ export function SearchPage() {
           maxStops,
           departureFrom: departureFrom || undefined,
           departureTo: departureTo || undefined,
+          returnDate: returnDate || undefined,
           maxFlightTimeMinutes,
         });
         setResults(outcome.deals);
@@ -119,7 +143,7 @@ export function SearchPage() {
         setIsScanning(false);
       }
     },
-    [budget, fromCity, destination, maxStops, departureFrom, departureTo, maxFlightTimeMinutes]
+    [budget, fromCity, destination, maxStops, departureFrom, departureTo, returnDate, maxFlightTimeMinutes]
   );
 
   useEffect(() => {
@@ -349,11 +373,62 @@ export function SearchPage() {
           </div>
         </section>
 
+        {/* ── DECISION MODES (F31) ── */}
+        <section className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4 text-blue-600 shrink-0" />
+              <span className="text-xs font-bold uppercase tracking-wider text-stone-700">
+                Chế độ quyết định (Decision Mode)
+              </span>
+            </div>
+            {decisionMode !== "CHEAPEST" && (
+              <button
+                type="button"
+                onClick={() => setDecisionMode("CHEAPEST")}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 self-start sm:self-auto cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Quay về sắp xếp giá rẻ nhất</span>
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {(Object.keys(DECISION_MODES) as DecisionMode[]).map((modeKey) => {
+              const meta = DECISION_MODES[modeKey];
+              const isSelected = decisionMode === modeKey;
+              return (
+                <button
+                  key={modeKey}
+                  type="button"
+                  onClick={() => setDecisionMode(modeKey)}
+                  className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
+                    isSelected
+                      ? "border-blue-600 bg-blue-50/70 text-blue-950 font-bold shadow-xs ring-1 ring-blue-600"
+                      : "border-stone-200 bg-stone-50/50 hover:bg-stone-100 text-stone-700"
+                  }`}
+                >
+                  <div className="text-xs flex items-center justify-between">
+                    <span>{meta.label}</span>
+                    {isSelected && <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0 ml-1" />}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="text-[11px] text-stone-600 bg-stone-50 rounded-lg p-2.5 border border-stone-200 flex items-start gap-2">
+            <span className="font-semibold text-stone-800 shrink-0">Nguyên lý xếp hạng:</span>
+            <span>{DECISION_MODES[decisionMode].description}</span>
+          </div>
+        </section>
+
         {/* Results Header / Counter */}
         <div className="flex items-center justify-between">
           <div className="text-sm font-bold text-stone-800">
             <span>
-              {results.length} Deal Khớp
+              {rankedResults.length} Deal Khớp
             </span>
             <span className="text-xs text-stone-500 font-normal ml-2">
               (Khởi hành: {fromCity} {destination ? `→ ${destination}` : ""} · Ngân sách ≤ {formatVND(budget)})
@@ -361,25 +436,166 @@ export function SearchPage() {
           </div>
 
           {searchStatus === "provider_unavailable" && (
-            <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg">
-              Nhà cung cấp dữ liệu tạm thời không phản hồi. Hiển thị dữ liệu snapshot gần nhất.
+            <div className="text-xs text-rose-800 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+              <span>Dịch vụ quan sát tạm thời gián đoạn kết nối HTTP 503. Đang hiển thị kết quả snapshot trước đó.</span>
+            </div>
+          )}
+          {searchStatus === "degraded" && (
+            <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span>Độ phủ dữ liệu bị suy giảm một phần do một số nguồn hãng bay gặp sự cố kết nối.</span>
+            </div>
+          )}
+          {searchStatus === "stale_only" && (
+            <div className="text-xs text-stone-700 bg-stone-100 border border-stone-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-stone-500 shrink-0" />
+              <span>Dữ liệu quan sát có thể chưa cập nhật chu kỳ mới nhất từ hãng.</span>
+            </div>
+          )}
+          {searchStatus === "unmonitored" && (
+            <div className="text-xs text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <Compass className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <span>Chặng bay hoặc ngày tìm kiếm hiện chưa nằm trong phạm vi quét định kỳ.</span>
             </div>
           )}
         </div>
 
         {/* Results List */}
-        {results.length === 0 ? (
-          <div className="rounded-xl border border-stone-200 bg-white p-12 text-center space-y-3 shadow-sm">
-            <p className="text-stone-700 font-semibold text-sm">
-              Không tìm thấy cơ hội nào phù hợp với bộ lọc hiện tại.
-            </p>
-            <p className="text-stone-500 text-xs max-w-md mx-auto">
-              Thử nâng mức ngân sách hoặc chọn khoảng ngày rộng hơn để hệ thống hiển thị nhiều chặng bay quan sát hơn.
-            </p>
+        {rankedResults.length === 0 ? (
+          <div className="rounded-xl border border-stone-200 bg-white p-10 text-center space-y-3 shadow-sm">
+            {searchStatus === "provider_unavailable" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-2 border border-rose-200">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Dịch vụ quan sát vé tạm thời gián đoạn kết nối (HTTP 503).
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Máy chủ đối tác hoặc nguồn dữ liệu vé máy bay hiện không phản hồi. Đây là sự cố kết nối, không phải chặng bay này không có vé.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void runSearch(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Thử lại kết nối</span>
+                  </button>
+                </div>
+              </>
+            ) : searchStatus === "degraded" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-2 border border-amber-200">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Độ phủ dữ liệu bị suy giảm một phần do sự cố kết nối nhà cung cấp.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Một số nguồn dữ liệu hãng bay tạm thời chưa phản hồi, hệ thống không thể quét toàn diện cho bộ tiêu chí này.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void runSearch(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Quét lại toàn bộ nguồn</span>
+                  </button>
+                </div>
+              </>
+            ) : searchStatus === "stale_only" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Dữ liệu quan sát đã cũ do chu kỳ quét bị chậm trễ.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Hệ thống chưa có bản ghi quét mới nhất khớp với điều kiện lọc này. Giá thực tế tại hãng có thể đã biến động.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void runSearch(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Làm mới chu kỳ quét</span>
+                  </button>
+                </div>
+              </>
+            ) : searchStatus === "unmonitored" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-2 border border-blue-200">
+                  <Compass className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Chặng bay này chưa nằm trong phạm vi quét tự động định kỳ của Farely.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Farely hiện ưu tiên quét sâu các tuyến bay trọng điểm. Bạn có thể tạo cảnh báo để hệ thống ưu tiên mở rộng theo dõi tuyến này.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setWatchOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <Bell className="w-3.5 h-3.5" />
+                    <span>Tạo cảnh báo tuyến này</span>
+                  </button>
+                </div>
+              </>
+            ) : searchStatus === "valid_zero" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Filter className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Đã quét hoàn chỉnh nhưng không có chuyến bay nào trong mức ngân sách này.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Phạm vi ngày và tuyến bay đã được quét đầy đủ 100%. Hãy thử tăng mức ngân sách hoặc chọn khoảng ngày rộng hơn.
+                </p>
+                {typeof budget === "number" && (
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newBudget = Math.max(budget * 2, 20000000);
+                        setBudget(newBudget);
+                        saveUserPreferences({ budget: newBudget });
+                      }}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                    >
+                      <span>Mở rộng mức ngân sách</span>
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-500 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Filter className="w-5 h-5" />
+                </div>
+                <p className="text-stone-700 font-semibold text-sm">
+                  Không tìm thấy cơ hội nào phù hợp với bộ lọc hiện tại.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Thử nâng mức ngân sách hoặc chọn khoảng ngày rộng hơn để hệ thống hiển thị nhiều chặng bay quan sát hơn.
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {results.map((deal) => {
+            {rankedResults.map(({ deal, rank, rankingReason, modeBadge }) => {
               const targetId = deal.opportunityId || deal.id;
               const isSaved = bookmarkedIds.has(targetId) || isBookmarkedDeal(targetId);
 
@@ -390,9 +606,14 @@ export function SearchPage() {
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                        {deal.airline}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                          {deal.airline}
+                        </span>
+                        <span className="text-[10px] font-semibold text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200">
+                          {modeBadge}
+                        </span>
+                      </div>
                       <div className="flex items-center gap-1">
                         <button
                           type="button"
@@ -432,8 +653,18 @@ export function SearchPage() {
                           {new Date(deal.departDate).toLocaleDateString("vi-VN")}
                         </span>
                         <span>·</span>
-                        <span>{deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}</span>
+                        <span>{formatStops(deal.stops)}</span>
                       </div>
+                    </div>
+
+                    <div className="pt-1">
+                      <ProvenanceBadge deal={deal} />
+                    </div>
+
+                    {/* Ranking Reason Banner (F31 transparent inspectable reasoning) */}
+                    <div className="text-[11px] bg-stone-50 border border-stone-200 rounded-lg px-2.5 py-1.5 text-stone-700 flex items-start gap-1.5 leading-snug">
+                      <span className="font-bold text-blue-700 shrink-0">#{rank}</span>
+                      <span>{rankingReason}</span>
                     </div>
                   </div>
 
@@ -485,6 +716,8 @@ export function SearchPage() {
         }
         initialOrigin={fromCity}
         initialDestination={destination || "BKK"}
+        initialDepartDate={departureFrom || undefined}
+        initialReturnDate={returnDate || undefined}
         sourceContext="search"
       />
     </main>

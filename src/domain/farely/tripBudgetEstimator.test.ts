@@ -1,0 +1,62 @@
+import { describe, expect, it } from "vitest";
+import { estimateTotalTripCost } from "./tripBudgetEstimator";
+
+describe("Trip Budget Estimator (F46)", () => {
+  it("calculates realistic estimated total cost for Phu Quoc trip", () => {
+    const airfare = 2_400_000;
+    const estimate = estimateTotalTripCost({
+      destinationCode: "PQC",
+      airfareTotal: airfare,
+      nights: 3,
+      travelers: 2,
+      style: "standard",
+    });
+
+    expect(estimate.destinationCode).toBe("PQC");
+    expect(estimate.destinationName).toBe("Phú Quốc");
+    expect(estimate.airfareTotal).toBe(airfare);
+    // 1 room needed for 2 travelers, standard lodging is 1,000,000 * 3 nights = 3,000,000
+    expect(estimate.lodgingTotalEstimated).toBe(3_000_000);
+    // Transfer: standard is 180,000 * 2 = 360,000
+    expect(estimate.groundTransferEstimated).toBe(360_000);
+    // Daily expenses: 600,000 * 4 days * 2 travelers = 4,800,000
+    expect(estimate.dailyExpensesEstimated).toBe(4_800_000);
+    expect(estimate.grandTotalEstimated).toBe(airfare + 3_000_000 + 360_000 + 4_800_000);
+    expect(estimate.uncertainty).toBe("ESTIMATED");
+    expect(estimate.disclosureVi).toContain("ước tính tham khảo");
+  });
+
+  it("adjusts costs accurately across budget vs comfort styles", () => {
+    const budget = estimateTotalTripCost({
+      destinationCode: "DAD",
+      airfareTotal: 1_500_000,
+      nights: 2,
+      travelers: 1,
+      style: "budget",
+    });
+
+    const comfort = estimateTotalTripCost({
+      destinationCode: "DAD",
+      airfareTotal: 1_500_000,
+      nights: 2,
+      travelers: 1,
+      style: "comfort",
+    });
+
+    expect(budget.grandTotalEstimated).toBeLessThan(comfort.grandTotalEstimated);
+    expect(budget.lodgingTotalEstimated).toBeLessThan(comfort.lodgingTotalEstimated);
+  });
+
+  it("handles unindexed fallback destinations safely without crashing", () => {
+    const estimate = estimateTotalTripCost({
+      destinationCode: "UNKNOWN_CITY",
+      airfareTotal: 2_000_000,
+      nights: 2,
+      travelers: 1,
+    });
+
+    expect(estimate.destinationCode).toBe("UNKNOWN_CITY");
+    expect(estimate.grandTotalEstimated).toBeGreaterThan(2_000_000);
+    expect(estimate.uncertainty).toBe("ESTIMATED");
+  });
+});

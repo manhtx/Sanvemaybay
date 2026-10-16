@@ -213,7 +213,7 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     row.date || row.depart_date,
     row.return_date || "",
     row.airline_code,
-    row.stops ?? 0,
+    row.stops == null ? "unknown" : row.stops,
   ].join(":"));
 
   return {
@@ -235,7 +235,7 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     departDate: row.date,
     returnDate: row.return_date ?? undefined,
     duration: row.duration,
-    stops: Number(row.stops),
+    stops: row.stops == null || isNaN(Number(row.stops)) ? null : Number(row.stops),
     stopCity: null,
     seatsLeft: 0,
     expiresIn: row.freshness_minutes <= 60 ? "Quan sát trong 1 giờ" : `Quan sát ${Math.max(1, Math.round(Number(row.freshness_minutes) / 60))} giờ trước`,
@@ -380,6 +380,51 @@ export async function getObservedFares(pageOrQuery: number | ObservedFareQuery =
   }
 }
 
+/**
+ * Server-side authoritative RouteBest query across complete eligible candidate universe (D09, W4).
+ * Evaluates entire available universe before pagination, eliminating client-side 60-row truncation.
+ */
+export async function getRouteBest(params: {
+  origin: string;
+  destination: string;
+  departDate: string;
+  returnDate?: string;
+  directOnly?: boolean;
+  maxStops?: number;
+}): Promise<{
+  bestOffer: Deal | null;
+  eligibleCount: number;
+  totalCount: number;
+  status: string;
+} | null> {
+  if (!isSupabaseConfigured) return null;
+  try {
+    const body: Record<string, unknown> = {
+      route_best: true,
+      origin: params.origin,
+      destination: params.destination,
+      depart_date_from: params.departDate,
+      depart_date_to: params.departDate,
+      sort: "price_asc",
+    };
+    if (params.returnDate) body.return_date = params.returnDate;
+    if (params.directOnly === true) body.direct_only = true;
+    if (params.maxStops != null) body.max_stops = params.maxStops;
+
+    const { data, error } = await supabase.functions.invoke("observed-fares", { body });
+    if (error || !data) return null;
+
+    return {
+      bestOffer: data.route_best ? mapObservedFare(data.route_best) : null,
+      eligibleCount: Number(data.eligible_candidate_count || 0),
+      totalCount: Number(data.total_candidate_count || 0),
+      status: String(data.status || "healthy"),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function getHistoricalDeals(): Promise<Deal[]> {
   if (!isSupabaseConfigured) return [];
   const { data, error } = await supabase
@@ -413,7 +458,7 @@ export function mapDealRow(row: Record<string, any>): Deal {
     departDate: row.depart_date,
     returnDate: row.return_date ?? undefined,
     duration: row.duration,
-    stops: Number(row.stops),
+    stops: row.stops == null || isNaN(Number(row.stops)) ? null : Number(row.stops),
     stopCity: row.stop_city,
     seatsLeft: Number(row.seats_left),
     expiresIn: row.expires_in,
@@ -489,7 +534,7 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
     cleanId.includes(":");
   if (isObservedCandidate) {
     try {
-      const page = await getObservedFares({ id: rawId, pageSize: 60 });
+      const page = await getObservedFares({ id: rawId, opportunityId: cleanId, pageSize: 60 });
       const matching = page.fares.find(
         (f) =>
           f.id === cleanId ||
@@ -525,7 +570,24 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
     // Continue
   }
 
-  // 4. Fallback: check initial observed fares batch
+  // 4. Fallback: direct indexed lookup in database by exact ID or opportunity ID (beyond first 120)
+  try {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawId);
+    let query = supabase.from("fare_observations").select("*");
+    if (isUuid) {
+      query = query.eq("id", rawId);
+    } else {
+      query = query.eq("opportunity_id", cleanId);
+    }
+    const { data: obsData, error: obsErr } = await query.limit(1).maybeSingle();
+    if (!obsErr && obsData) {
+      return mapObservedFare(obsData);
+    }
+  } catch {
+    // Continue
+  }
+
+  // 5. Final fallback: check initial observed fares batch
   try {
     const fallbackPage = await getObservedFares(1, 120);
     const foundFallback = fallbackPage.fares.find(
@@ -545,6 +607,36 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
 
   reportClientIssue("deal_detail_unavailable");
   return undefined;
+}
+
+/**
+ * AUD-V34-05 & EV34-17: Exact-ID batch resolver for saved opportunities.
+ * Resolves current live/active offer state for saved items independently of search/feed pagination.
+ */
+export async function batchResolveSavedOpportunities(
+  opportunityIds: string[]
+): Promise<Map<string, Deal>> {
+  const result = new Map<string, Deal>();
+  if (!opportunityIds || opportunityIds.length === 0) return result;
+
+  const promises = opportunityIds.map(async (oppId) => {
+    try {
+      const deal = await getDealById(oppId);
+      if (deal) {
+        result.set(oppId, deal);
+        if (deal.opportunityId) result.set(deal.opportunityId, deal);
+        result.set(deal.id, deal);
+        if (deal.id.startsWith("observed-")) {
+          result.set(deal.id.slice("observed-".length), deal);
+        }
+      }
+    } catch {
+      // Graceful fallback
+    }
+  });
+
+  await Promise.all(promises);
+  return result;
 }
 
 export async function getFareObservations(fromCode: string, toCode: string): Promise<ObservationData[]> {
@@ -587,7 +679,7 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
       .select("observed_at, price, depart_local_date")
       .eq("origin_airport", fromCode)
       .eq("destination_airport", toCode)
-      .order("observed_at", { ascending: true })
+      .order("observed_at", { ascending: false })
       .limit(180);
 
     if (!canonicalError && canonicalData && canonicalData.length > 0) {
@@ -597,7 +689,7 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
           price: Number(d.price),
         }))
         .filter((p: PricePoint) => p.date && Number.isFinite(p.price) && p.price > 0);
-      if (points.length > 0) return points;
+      if (points.length > 0) return points.sort((a, b) => a.date.localeCompare(b.date));
     }
 
     // 2. Fallback to legacy price_history with deduplication
@@ -606,11 +698,11 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
       .select("date, price")
       .eq("from_code", fromCode)
       .eq("to_code", toCode)
-      .order("date", { ascending: true })
+      .order("date", { ascending: false })
       .limit(180);
     if (!error && data && data.length > 0) {
       const mapped = mapPriceHistoryRows(data);
-      if (mapped.length > 0) return mapped;
+      if (mapped.length > 0) return mapped.sort((a, b) => a.date.localeCompare(b.date));
     }
   } catch {
     reportClientIssue("price_history_unavailable");
@@ -642,7 +734,14 @@ export function mapPriceHistoryRows(rows: Array<{ date?: unknown; price?: unknow
     .filter((point) => point.date && Number.isFinite(point.price) && point.price > 0);
 }
 
-export type SearchStatus = "healthy" | "healthy_empty" | "degraded" | "provider_unavailable";
+export type SearchStatus =
+  | "healthy"
+  | "healthy_empty"
+  | "degraded"
+  | "provider_unavailable"
+  | "unmonitored"
+  | "valid_zero"
+  | "stale_only";
 
 export interface SearchDealsResult {
   deals: Deal[];
@@ -657,7 +756,11 @@ export async function searchDealsWithStatus(params: {
   maxStops?: number;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
   maxFlightTimeMinutes?: number;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
 }): Promise<SearchDealsResult> {
   const canonicalDest = resolveCanonicalAirportOrCity(params.destination);
   const destinationCode = canonicalDest?.code || (params.destination && /^[A-Z]{3}$/i.test(params.destination.trim())
@@ -678,7 +781,10 @@ export async function searchDealsWithStatus(params: {
       maxStops: params.maxStops,
       departDateFrom: params.departureFrom,
       departDateTo: params.departureTo,
-      pageSize: 120,
+      returnDate: params.returnDate,
+      page: params.page ?? 1,
+      pageSize: params.pageSize ?? 120,
+      sort: params.sort ?? "price_asc",
     }).catch(() => {
       observedFailed = true;
       return { fares: [] as Deal[], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" as const };
@@ -711,21 +817,29 @@ export async function searchDealsWithStatus(params: {
 
   let status: SearchStatus = "healthy";
   if (filtered.length === 0) {
-    if (observedFailed && (feedFailed || liveFailed)) {
+    if (observedResult.status === "provider_unavailable" || (observedFailed && candidatePool.length === 0)) {
       status = "provider_unavailable";
-    } else if (observedFailed) {
+    } else if (observedResult.status === "unmonitored") {
+      status = "unmonitored";
+    } else if (observedResult.status === "valid_zero") {
+      status = "valid_zero";
+    } else if (observedResult.status === "stale_only" || observedResult.status === "degraded_freshness") {
+      status = "stale_only";
+    } else if (observedFailed || feedFailed || liveFailed) {
       status = "degraded";
     } else {
       status = "healthy_empty";
     }
-  } else if (observedFailed || feedFailed) {
+  } else if (observedResult.status === "stale_only") {
+    status = "stale_only";
+  } else if (observedFailed || feedFailed || liveFailed || observedResult.status === "degraded_freshness") {
     status = "degraded";
   }
 
   return {
     deals: filtered,
     status,
-    retryable: status === "provider_unavailable" || status === "degraded",
+    retryable: status === "provider_unavailable" || status === "degraded" || status === "stale_only",
   };
 }
 
@@ -737,7 +851,11 @@ export async function searchDeals(params: {
   maxStops?: number;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
   maxFlightTimeMinutes?: number;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
 }): Promise<Deal[]> {
   const result = await searchDealsWithStatus(params);
   return result.deals;
@@ -748,18 +866,25 @@ async function searchLiveDeals(params: {
   destination?: string;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
 }): Promise<Deal[]> {
   const destination = params.destination?.trim().toUpperCase() ?? "";
   const from = params.from?.trim().toUpperCase() ?? "";
   if (!isSupabaseConfigured || !/^[A-Z]{3}$/.test(from) || !/^[A-Z]{3}$/.test(destination) ||
-    !params.departureFrom || !params.departureTo) return [];
+    !params.departureFrom) return [];
+
+  const body: Record<string, string> = {
+    origin: from,
+    destination,
+    outbound_date: params.departureFrom,
+  };
+  // Explicit return date only: departureTo is the departure window boundary, never a fabricated return date (S08)
+  if (params.returnDate) {
+    body.return_date = params.returnDate;
+  }
+
   const { data, error } = await supabase.functions.invoke("flight-search", {
-    body: {
-      origin: from,
-      destination,
-      outbound_date: params.departureFrom,
-      return_date: params.departureTo,
-    },
+    body,
   });
   if (error || !Array.isArray(data?.results)) return [];
   return data.results.flatMap((row: Record<string, unknown>, index: number) => {
@@ -787,7 +912,7 @@ async function searchLiveDeals(params: {
       departDate,
       returnDate,
       duration: "Chưa có dữ liệu",
-      stops: Number(row.stops ?? 0),
+      stops: row.stops == null || isNaN(Number(row.stops)) ? null : Number(row.stops),
       stopCity: null,
       seatsLeft: 0,
       expiresIn: "Kiểm tra lại trước khi đặt",
@@ -857,7 +982,7 @@ export function filterDeals(deals: Deal[], params: {
     } else if (destination && !`${d.to} ${d.toCode} ${d.country}`.toLocaleLowerCase("vi").includes(destination)) {
       return false;
     }
-    if (params.maxStops != null && d.stops > params.maxStops) return false;
+    if (params.maxStops != null && (d.stops == null || d.stops > params.maxStops)) return false;
     if (fromDate && d.departDate < fromDate) return false;
     if (toDate && d.departDate > toDate) return false;
     const duration = maxFlightTime == null ? undefined : durationInMinutes(d.duration);

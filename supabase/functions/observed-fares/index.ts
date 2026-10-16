@@ -64,7 +64,7 @@ Deno.serve(async (request) => {
     }
 
     let query = service.from("observed_fare_snapshots")
-      .select("dedupe_key,observation_id,generation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at", { count: "exact" })
+      .select("dedupe_key,observation_id,generation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at,segments", { count: "exact" })
       .gte("depart_date", new Date().toISOString().slice(0, 10))
       .eq("generation_id", activeGen.active_generation_id);
 
@@ -179,6 +179,73 @@ Deno.serve(async (request) => {
         .order("dedupe_key", { ascending: true });
     }
 
+    // Server-side authoritative RouteBest evaluation across complete eligible universe (D09, W4)
+    if (body.route_best === true) {
+      const intentMaxStops = body.direct_only === true ? 0 : (body.max_stops != null ? Number(body.max_stops) : undefined);
+
+      // Build database-side eligibility query over the complete universe
+      let bestQuery = service.from("observed_fare_snapshots")
+        .select("dedupe_key,observation_id,generation_id,origin,origin_code,destination,destination_code,country,region,price,currency,depart_date,return_date,airline,airline_code,flight_number,stops,duration,booking_url,source,link_kind,observed_at,baseline_price,discount_percent,sample_size,percentile,deal_score,deal_label,confidence_percent,confidence_level,discount_strength,algorithm_version,refreshed_at,segments", { count: "exact" })
+        .gte("depart_date", new Date().toISOString().slice(0, 10))
+        .eq("generation_id", activeGen.active_generation_id)
+        .gt("price", 0);
+
+      if (typeof body.origin === "string" && body.origin) bestQuery = bestQuery.eq("origin_code", body.origin.trim().toUpperCase());
+      if (typeof body.destination === "string" && body.destination.trim()) {
+        const dest = body.destination.trim();
+        if (/^[A-Za-z]{3}$/.test(dest)) {
+          bestQuery = bestQuery.eq("destination_code", dest.toUpperCase());
+        } else {
+          bestQuery = bestQuery.or(`destination_code.ilike.%${dest}%,destination.ilike.%${dest}%,country.ilike.%${dest}%`);
+        }
+      }
+      if (typeof body.depart_date_from === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.depart_date_from)) {
+        bestQuery = bestQuery.gte("depart_date", body.depart_date_from);
+      }
+      if (typeof body.depart_date_to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.depart_date_to)) {
+        bestQuery = bestQuery.lte("depart_date", body.depart_date_to);
+      }
+      if (typeof body.return_date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.return_date)) {
+        bestQuery = bestQuery.eq("return_date", body.return_date);
+      }
+      if (typeof body.return_date_from === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.return_date_from)) {
+        bestQuery = bestQuery.gte("return_date", body.return_date_from);
+      }
+      if (typeof body.return_date_to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.return_date_to)) {
+        bestQuery = bestQuery.lte("return_date", body.return_date_to);
+      }
+      if (intentMaxStops !== undefined) {
+        bestQuery = bestQuery.lte("stops", intentMaxStops).not("stops", "is", null);
+      }
+
+      // Order by price ASC and deterministic key, fetch ONLY top 1 eligible candidate from DB
+      const { data: bestRows, error: bestError, count: eligibleCount } = await bestQuery
+        .order("price", { ascending: true })
+        .order("dedupe_key", { ascending: true })
+        .range(0, 0);
+
+      if (bestError) throw bestError;
+
+      const bestRow = bestRows?.[0] ?? null;
+      const bestOffer = bestRow ? {
+        ...bestRow,
+        id: bestRow.observation_id,
+        opportunity_id: [bestRow.origin_code, bestRow.destination_code, bestRow.depart_date, bestRow.return_date ?? "", bestRow.airline_code, bestRow.flight_number ?? "", bestRow.stops ?? 0].join(":"),
+        date: bestRow.depart_date,
+        timestamp: bestRow.observed_at,
+        freshness_minutes: Math.max(0, Math.round((Date.now() - Date.parse(bestRow.observed_at)) / 60_000)),
+      } : null;
+
+      return json({
+        status: bestOffer ? "healthy" : "valid_zero",
+        route_best: bestOffer,
+        eligible_candidate_count: eligibleCount ?? 0,
+        total_candidate_count: eligibleCount ?? 0,
+        active_generation_id: activeGen?.active_generation_id ?? null,
+        generated_at: new Date().toISOString(),
+      }, id);
+    }
+
     const latestQuery = service
       .from("observed_fare_snapshots")
       .select("observed_at")
@@ -194,19 +261,39 @@ Deno.serve(async (request) => {
     if (latestResult.error) throw latestResult.error;
     const total = count ?? 0;
 
-    let isMonitoredRoute = true;
+    let isMonitoredScope = true;
     if (total === 0 && body.origin && body.destination) {
+      const orig = String(body.origin).trim().toUpperCase();
+      const dest = String(body.destination).trim().toUpperCase();
+      const requestedDate = typeof body.depart_date_from === "string" ? body.depart_date_from : (typeof body.depart_date === "string" ? body.depart_date : null);
+
+      // Check overall route snapshots in active generation
       const { count: routeSnapshotCount } = await service
         .from("observed_fare_snapshots")
         .select("observation_id", { count: "exact", head: true })
         .eq("generation_id", activeGen.active_generation_id)
-        .eq("origin_code", String(body.origin).trim().toUpperCase())
-        .eq("destination_code", String(body.destination).trim().toUpperCase());
+        .eq("origin_code", orig)
+        .eq("destination_code", dest);
+
       if (!routeSnapshotCount || routeSnapshotCount === 0) {
-        isMonitoredRoute = false;
+        isMonitoredScope = false;
+      } else if (requestedDate) {
+        // Query-scoped check (D16): A route may have snapshots on other dates, but this specific date has never been observed
+        const { count: dateScopeCount } = await service
+          .from("observed_fare_snapshots")
+          .select("observation_id", { count: "exact", head: true })
+          .eq("generation_id", activeGen.active_generation_id)
+          .eq("origin_code", orig)
+          .eq("destination_code", dest)
+          .gte("depart_date", requestedDate)
+          .lte("depart_date", typeof body.depart_date_to === "string" ? body.depart_date_to : requestedDate);
+
+        if (!dateScopeCount || dateScopeCount === 0) {
+          isMonitoredScope = false;
+        }
       }
     }
-    const health = observedStatus(latestResult.data?.observed_at, total, isMonitoredRoute);
+    const health = observedStatus(latestResult.data?.observed_at, total, isMonitoredScope);
     const fares = (data ?? []).map((row) => ({
       ...row,
       id: row.observation_id,

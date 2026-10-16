@@ -5,7 +5,8 @@ export type WatchStatus =
   | "degraded"
   | "sync_failed"
   | "needs_attention"
-  | "expired";
+  | "expired"
+  | "local_draft";
 
 export const METRO_AIRPORT_MAP: Record<string, string[]> = {
   BKK_ALL: ["BKK", "DMK"],
@@ -41,13 +42,17 @@ export interface WatchIntent {
   tripType?: "oneway" | "roundtrip" | null;
   cabin?: "economy" | "premium_economy" | "business" | "first" | null;
   passengers?: number | null;
+  passengerMix?: { adults: number; children: number; infants: number } | null;
   currency?: string | null;
   locationScope?: "exact" | "metro" | "nearby" | null;
   targetPrice?: number | null;
   latestPrice?: number | null;
   maxStops?: number | null;
   status: WatchStatus;
-  frequency: "instant" | "daily";
+  frequency: "instant" | "daily" | "weekly";
+  quietHoursEnabled?: boolean | null;
+  quietHoursStart?: string | null;
+  quietHoursEnd?: string | null;
   email: string;
   channel: "email" | "telegram";
   telegramId?: string | null;
@@ -72,7 +77,7 @@ export function evaluateWatchMatch(
   watch: Partial<WatchIntent> & Pick<WatchIntent, "originCode" | "destinationCode">,
   candidate: WatchEvaluationInput,
 ): boolean {
-  if (watch.status === "paused" || watch.status === "expired" || watch.status === "sync_failed") {
+  if (watch.status === "paused" || watch.status === "expired" || watch.status === "sync_failed" || watch.status === "local_draft") {
     return false;
   }
   if (!matchLocationScope(watch.originCode, candidate.originCode, watch.locationScope)) {
@@ -119,6 +124,9 @@ export function computeWatchStatus(watch: {
   targetPrice?: number | null;
   latestPrice?: number | null;
 }): WatchStatus {
+  if (watch.status === "local_draft") {
+    return "local_draft";
+  }
   if (watch.status === "sync_failed") {
     return "sync_failed";
   }
@@ -211,6 +219,12 @@ export function formatWatchStatusLabel(status: WatchStatus): {
         label: "ĐÃ HẾT HẠN",
         colorClass: "bg-stone-100 text-stone-600 border-stone-200",
         description: "Khoảng thời gian bay dự kiến đã qua.",
+      };
+    case "local_draft":
+      return {
+        label: "BẢN NHÁP CỤC BỘ",
+        colorClass: "bg-amber-50 text-amber-700 border-amber-200",
+        description: "Lưu cục bộ tại trình duyệt — chưa kích hoạt giám sát tự động trên máy chủ.",
       };
   }
 }

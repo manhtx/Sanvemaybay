@@ -17,7 +17,7 @@ export interface Deal {
   departDate: string;
   returnDate?: string;
   duration: string;
-  stops: number;
+  stops: number | null;
   stopCity: string | null;
   seatsLeft: number;
   expiresIn: string;
@@ -53,6 +53,10 @@ export interface Deal {
   refundPolicy?: string;
   observedAt?: string;
   validUntil?: string;
+  isSponsored?: boolean;
+  sponsorName?: string;
+  referralRevenueVND?: number;
+  affiliateCommissionRate?: number;
 }
 
 
@@ -139,3 +143,10 @@ export function getRecommendationLabel(
       return "TÌM BAY KHÁC";
   }
 }
+
+export function formatStops(stops: number | null | undefined): string {
+  if (stops === 0) return "Bay thẳng";
+  if (stops == null) return "Chưa rõ điểm dừng";
+  return `${stops} điểm dừng`;
+}
+

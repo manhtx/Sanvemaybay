@@ -25,9 +25,13 @@ try {
 }
 
 try {
-  remoteSha = execSync("git rev-parse origin/main", { encoding: "utf8" }).trim();
+  remoteSha = execSync(`git rev-parse origin/${currentBranch}`, { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"] }).trim();
 } catch {
-  remoteSha = currentSha;
+  try {
+    remoteSha = execSync("git rev-parse origin/main", { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"] }).trim();
+  } catch {
+    remoteSha = currentSha;
+  }
 }
 
 try {
@@ -180,6 +184,15 @@ const releaseManifest = {
   package_lock_hash: packageLockHash,
   observation_schema_version: 1,
   identity_schema_version: 1,
+  release_tuple: {
+    tuple_id: "tuple_v35_coordinated_convergence",
+    frontend_release_sha: "084025b1f58a98655222ee4f8fc82461b286dd6a",
+    edge_runtime_sha: "f08b4b42472faff1dcc132106ee30b5a54938571",
+    convergence_target_sha: currentSha,
+    parity_mode: "COMPATIBLE_TUPLE",
+    worker_revision: "worker-v35.1",
+    active_generation_id: "gen_live_v2"
+  },
   runtime_invariants: {
     price_truth: "Cheapest strictly equals mathematical minimum eligible price within PriceScopeFingerprint",
     historical_evidence: "fare_observations table with UNIQUE (provider, observation_fingerprint) enforces observation idempotency",

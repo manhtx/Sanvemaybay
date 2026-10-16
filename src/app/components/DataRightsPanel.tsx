@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { purgeLocalUserDataOnSignOut } from "../domain/accountContinuity";
 
 export function DataRightsPanel() {
   const [signedIn, setSignedIn] = useState(false);
@@ -42,6 +43,7 @@ export function DataRightsPanel() {
       setStatus("Không thể xóa tài khoản lúc này. Dữ liệu không được coi là đã xóa.");
     } else {
       await supabase.auth.signOut();
+      purgeLocalUserDataOnSignOut();
       setSignedIn(false);
       setConfirmation("");
       setStatus("Tài khoản và dữ liệu gắn với tài khoản đã được xóa.");

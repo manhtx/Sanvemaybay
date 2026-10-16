@@ -1,0 +1,30 @@
+{
+  "version": "15.0.0",
+  "total_negative_vectors": 24,
+  "vectors": [
+    { "id": "NV01", "name": "Two different flights sharing weak route identity", "target": "WP01", "status": "DEFENDED" },
+    { "id": "NV02", "name": "Cheapest eligible price beyond first pagination window", "target": "WP04", "status": "DEFENDED" },
+    { "id": "NV03", "name": "Fresh Route A hiding stale Route B", "target": "WP03", "status": "DEFENDED" },
+    { "id": "NV04", "name": "Unknown stop count displayed as direct", "target": "WP05", "status": "DEFENDED" },
+    { "id": "NV05", "name": "Missing baggage fee treated as zero", "target": "WP05", "status": "DEFENDED" },
+    { "id": "NV06", "name": "One scan supplying false historical confidence", "target": "WP05", "status": "DEFENDED" },
+    { "id": "NV07", "name": "Provider 503 misclassified as empty flights", "target": "WP02", "status": "DEFENDED" },
+    { "id": "NV08", "name": "No coverage misclassified as verified zero", "target": "WP03", "status": "DEFENDED" },
+    { "id": "NV09", "name": "Incorrect Watch return-date semantics", "target": "WP07", "status": "DEFENDED" },
+    { "id": "NV10", "name": "Account A data visible to account B in storage", "target": "WP08", "status": "DEFENDED" },
+    { "id": "NV11", "name": "Anonymous pending confirmation shown ACTIVE", "target": "WP07", "status": "DEFENDED" },
+    { "id": "NV12", "name": "Server 500 during watch pause shown as success", "target": "WP07", "status": "DEFENDED" },
+    { "id": "NV13", "name": "Provider accepted email falsely shown delivered", "target": "WP07", "status": "DEFENDED" },
+    { "id": "NV14", "name": "Duplicate leased workers causing repeated notifications", "target": "WP07", "status": "DEFENDED" },
+    { "id": "NV15", "name": "Zero-row generation falsely marked published", "target": "WP03", "status": "DEFENDED" },
+    { "id": "NV16", "name": "Unsafe PostgREST public API filters", "target": "WP08", "status": "DEFENDED" },
+    { "id": "NV17", "name": "SPA page returning 200 with failed hydration", "target": "WP09", "status": "DEFENDED" },
+    { "id": "NV18", "name": "Old worker SHA treated as current feature SHA", "target": "WP00", "status": "DEFENDED" },
+    { "id": "NV19", "name": "Parent-commit evidence accepted as new revision proof", "target": "WP00", "status": "DEFENDED" },
+    { "id": "NV20", "name": "Synthetic 24-hour soak promoted to reality", "target": "WP00", "status": "DEFENDED" },
+    { "id": "NV21", "name": "Owner requirement wording weakened while count unchanged", "target": "WP00", "status": "DEFENDED" },
+    { "id": "NV22", "name": "Inactive Antigravity rules silent failure", "target": "WP00", "status": "DEFENDED" },
+    { "id": "NV23", "name": "Green generic CI mapped to unrelated requirements", "target": "WP00", "status": "DEFENDED" },
+    { "id": "NV24", "name": "Token exhaustion reported as DONE", "target": "WP00", "status": "DEFENDED" }
+  ]
+}

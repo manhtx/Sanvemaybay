@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router";
 import {
   Plane,
@@ -12,22 +12,36 @@ import {
   Bookmark,
   ShieldCheck,
   Clock,
+  Sparkles,
+  Info,
 } from "lucide-react";
-import { getDealById, getPriceHistory, getObservedFares, getFareObservations } from "../data/api";
-import { Deal, formatVND } from "../data/deals";
+import { getDealById, getPriceHistory, getFareObservations, getRouteBest } from "../data/api";
+import { Deal, formatStops, formatVND } from "../data/deals";
 import { getBestBookingUrl, getEffectiveDealBookingUrl } from "../lib/bookingUrls";
 import {
   isBookmarkedDeal,
   mutateBookmarkOptimistic,
   createOpportunitySnapshot,
 } from "../lib/bookmarks";
-import { shareOrCopy } from "../lib/sharing";
+import { shareOrCopy, formatSafeShareContent } from "../lib/sharing";
 import { HiddenCostAnalyzer } from "../components/HiddenCostAnalyzer";
+import { GroupFarePlannerCard } from "../components/GroupFarePlannerCard";
+import { RecheckFeedbackWidget } from "../components/RecheckFeedbackWidget";
+import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { trackProductEvent } from "../lib/analytics";
 import { reportClientIssue } from "../lib/clientDiagnostics";
 import { WatchModal } from "../components/WatchModal";
 import { buildComparableCohort } from "../domain/opportunityCohort";
-import { createTravelIntent, selectRouteBest, type RouteOffer } from "../../domain/farely";
+import { buildFlexibleFareMatrix } from "../domain/flightIntelligence";
+import { AirportAlternativeCard } from "../components/AirportAlternativeCard";
+import {
+  evaluateAirportAlternative,
+  type AirportAlternativeEvaluation,
+} from "../../domain/farely/airportAlternatives";
+import { PassengerPartyComposition } from "../../domain/farely/groupFarePlanner";
+import { evaluateBuyWaitGuidance } from "../../domain/farely/buyWaitGuidance";
+import { detectPriceAnomaly } from "../../domain/farely/priceAnomaly";
+import { AIRPORT_CATALOG, METRO_CATALOG } from "../../domain/farely/locationScope";
 
 const PriceHistoryChart = React.lazy(async () => ({
   default: (await import("../components/PriceHistoryChart")).PriceHistoryChart,
@@ -47,6 +61,15 @@ export function DealDetailPage() {
     id: string;
     stops: number;
   } | null>(null);
+  const [airportAlternative, setAirportAlternative] = useState<{
+    evaluation: AirportAlternativeEvaluation;
+    alternativeDealId?: string;
+  } | null>(null);
+  const [passengerMix, setPassengerMix] = useState<PassengerPartyComposition>({
+    adults: 1,
+    children: 0,
+    infants: 0,
+  });
 
   useEffect(() => {
     async function loadDeal() {
@@ -72,45 +95,18 @@ export function DealDetailPage() {
         setPriceHistory(history);
         setFareObservations(observations);
 
-        // Check if a cheaper eligible option exists for this travel intent across complete monitored universe (S07, C-11, A16)
+        // Check if a cheaper eligible option exists for this travel intent across complete monitored universe (S07, C-11, A16, D09)
         try {
-          const intent = createTravelIntent({
+          const routeBestResult = await getRouteBest({
             origin: data.fromCode,
             destination: data.toCode,
-            journeyType: data.returnDate ? "ROUND_TRIP" : "ONE_WAY",
-            outboundDate: data.departDate,
+            departDate: data.departDate,
             returnDate: data.returnDate || undefined,
-            cabin: "ECONOMY",
-            maxStops: data.stops === 0 ? 0 : undefined,
-          });
-
-          // Query candidate universe with complete TravelIntent filters and price_asc (F11, S07)
-          const candidatesPage = await getObservedFares({
-            origin: data.fromCode,
-            destination: data.toCode,
-            departDateFrom: data.departDate,
-            departDateTo: data.departDate,
-            returnDate: data.returnDate || undefined,
-            directOnly: data.stops === 0 ? true : undefined,
+            directOnly: data.stops === 0,
             maxStops: data.stops != null && data.stops >= 0 ? data.stops : undefined,
-            sort: "price_asc",
-            pageSize: 60,
           });
 
-          const candidateOffers: RouteOffer[] = (candidatesPage?.fares || []).map((f) => ({
-            id: f.id,
-            origin: f.fromCode,
-            destination: f.toCode,
-            departDate: f.departDate,
-            returnDate: f.returnDate,
-            airline: f.airline,
-            price: f.price,
-            stops: f.stops,
-            currency: f.currency,
-            cabin: "ECONOMY",
-          }));
-
-          const canonicalRouteBest = selectRouteBest(candidateOffers, intent);
+          const canonicalRouteBest = routeBestResult?.bestOffer;
           if (canonicalRouteBest && canonicalRouteBest.id !== data.id && canonicalRouteBest.price < data.price) {
             setCheaperAlternative({
               airline: canonicalRouteBest.airline,
@@ -124,11 +120,98 @@ export function DealDetailPage() {
         } catch {
           // Gracefully omit banner if query fails
         }
+
+        // Check for airport alternatives in the same metro or nearby region (F23 & F68)
+        try {
+          const destAirport = AIRPORT_CATALOG[data.toCode];
+          if (destAirport?.metroId) {
+            const metro = METRO_CATALOG[destAirport.metroId];
+            const altAirports = metro?.airports.filter((code) => code !== data.toCode) || [];
+            for (const altCode of altAirports) {
+              const altResult = await getRouteBest({
+                origin: data.fromCode,
+                destination: altCode,
+                departDate: data.departDate,
+                returnDate: data.returnDate || undefined,
+                directOnly: data.stops === 0,
+              }).catch(() => null);
+
+              if (altResult?.bestOffer) {
+                const evalResult = evaluateAirportAlternative({
+                  baselineAirportCode: data.toCode,
+                  baselinePrice: data.price,
+                  alternativeAirportCode: altCode,
+                  alternativePrice: altResult.bestOffer.price,
+                });
+                setAirportAlternative({
+                  evaluation: evalResult,
+                  alternativeDealId: altResult.bestOffer.id,
+                });
+                break;
+              }
+            }
+          }
+        } catch {
+          // Gracefully omit airport alternative if query fails
+        }
       }
       setLoading(false);
     }
     loadDeal();
   }, [id]);
+
+  // REQ-FEAT-001, REQ-FEAT-002, REQ-FEAT-003, REQ-FEAT-004: Flexible Fare Matrix
+  const flexibleMatrix = useMemo(() => {
+    if (!deal || !deal.departDate) return [];
+    try {
+      const baseDate = new Date(deal.departDate);
+      if (isNaN(baseDate.getTime())) return [];
+      const departDates: string[] = [];
+      for (let offset = -2; offset <= 2; offset++) {
+        const d = new Date(baseDate);
+        d.setDate(d.getDate() + offset);
+        departDates.push(d.toISOString().slice(0, 10));
+      }
+      const returnDates: (string | undefined)[] = deal.returnDate
+        ? [-1, 0, 1].map((offset) => {
+            const rd = new Date(deal.returnDate!);
+            rd.setDate(rd.getDate() + offset);
+            return rd.toISOString().slice(0, 10);
+          })
+        : [undefined];
+
+      const mappedOffers = fareObservations.map((obs: any) => ({
+        departDate: obs.departDate || obs.depart_local_date || obs.depart_date,
+        returnDate: obs.returnDate || obs.return_local_date || obs.return_date || undefined,
+        price: Number(obs.price) || 0,
+        observedAt: obs.observedAt || obs.observed_at || undefined,
+        carrier: obs.airline || obs.airlineCode,
+      }));
+
+      return buildFlexibleFareMatrix(departDates, returnDates, mappedOffers);
+    } catch {
+      return [];
+    }
+  }, [deal, fareObservations]);
+
+  const buyWait = useMemo(() => {
+    if (!deal) return null;
+    return evaluateBuyWaitGuidance({
+      currentPrice: deal.price,
+      priceHistory,
+      departureDate: deal.departDate,
+      scopeType: "ROUTE_LEVEL",
+    });
+  }, [deal, priceHistory]);
+
+  const anomaly = useMemo(() => {
+    if (!deal || priceHistory.length === 0) return null;
+    return detectPriceAnomaly({
+      currentPrice: deal.price,
+      historicalCohortPrices: priceHistory.map((p) => p.price),
+      cohortScope: "ROUTE_LEVEL",
+    });
+  }, [deal, priceHistory]);
 
   if (loading) {
     return (
@@ -150,11 +233,7 @@ export function DealDetailPage() {
   }
 
   const shareDeal = async () => {
-    const shareData = {
-      title: `${deal.fromCode} → ${deal.toCode} | Farely`,
-      text: `${deal.from} → ${deal.to}: ${formatVND(deal.price)}`,
-      url: window.location.href,
-    };
+    const shareData = formatSafeShareContent(deal, window.location.href);
     try {
       await shareOrCopy(shareData, navigator);
       await trackProductEvent({
@@ -177,6 +256,7 @@ export function DealDetailPage() {
       airlineCode: deal.airlineCode,
       tripType: deal.tripType,
       price: deal.price,
+      passengerMix,
     });
     const bookingUrl = getEffectiveDealBookingUrl(deal, fallbackUrl);
     window.open(bookingUrl, "_blank", "noopener,noreferrer");
@@ -303,7 +383,7 @@ export function DealDetailPage() {
                   <span>Đang có lựa chọn rẻ hơn cho chặng bay này</span>
                 </div>
                 <p className="text-xs text-amber-800 mt-0.5">
-                  <span>{cheaperAlternative.airline} ({cheaperAlternative.stops === 0 ? "Bay thẳng" : `${cheaperAlternative.stops} điểm dừng`})</span>
+                  <span>{cheaperAlternative.airline} ({formatStops(cheaperAlternative.stops)})</span>
                   {" · "}
                   <span className="font-bold tabular-nums">{formatVND(cheaperAlternative.price)}</span>
                   {" · "}
@@ -319,6 +399,14 @@ export function DealDetailPage() {
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
+        )}
+
+        {/* ── AIRPORT ALTERNATIVES INTELLIGENCE CARD (F23, F68) ── */}
+        {airportAlternative && (
+          <AirportAlternativeCard
+            evaluation={airportAlternative.evaluation}
+            alternativeDealId={airportAlternative.alternativeDealId}
+          />
         )}
 
         {/* ── SECTION 58: FLAGSHIP SCREEN DECISION HERO ── */}
@@ -348,7 +436,7 @@ export function DealDetailPage() {
 
                 <span className="inline-flex items-center gap-1.5 bg-stone-100 px-2.5 py-1 rounded-md font-medium text-stone-800 border border-stone-200">
                   <Plane className="w-3.5 h-3.5 text-stone-500" />
-                  {deal.airline} · {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
+                  {deal.airline} · {formatStops(deal.stops)}
                 </span>
 
                 {deal.duration && (
@@ -419,10 +507,180 @@ export function DealDetailPage() {
               {freshnessLabel}
             </div>
           </div>
+
+          {/* Buy/Wait Guidance (F36) & Price Anomaly (F37) */}
+          {buyWait && (
+            <div className="mt-4 pt-4 border-t border-stone-100 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div className={`p-3 rounded-lg border flex items-start gap-2.5 ${
+                buyWait.recommendation === "BUY_NOW"
+                  ? "bg-emerald-50/70 border-emerald-200 text-emerald-950"
+                  : buyWait.recommendation === "WAIT_AND_WATCH"
+                  ? "bg-blue-50/70 border-blue-200 text-blue-950"
+                  : "bg-stone-50 border-stone-200 text-stone-700"
+              }`}>
+                <div className="shrink-0 mt-0.5">
+                  {buyWait.recommendation === "BUY_NOW" ? (
+                    <TrendingDown className="w-4 h-4 text-emerald-600" />
+                  ) : buyWait.recommendation === "WAIT_AND_WATCH" ? (
+                    <Clock className="w-4 h-4 text-blue-600" />
+                  ) : (
+                    <Info className="w-4 h-4 text-stone-500" />
+                  )}
+                </div>
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold uppercase tracking-wider text-[11px]">
+                      {buyWait.recommendation === "BUY_NOW"
+                        ? "Khuyến nghị: Mua ngay (Buy Now)"
+                        : buyWait.recommendation === "WAIT_AND_WATCH"
+                        ? "Khuyến nghị: Theo dõi thêm (Wait & Watch)"
+                        : "Khuyến nghị Mua hay Chờ: Chưa đủ dữ liệu"}
+                    </span>
+                    <span className="text-[9px] uppercase px-1 rounded bg-stone-100 text-stone-600 font-normal border border-stone-200">
+                      Toàn tuyến
+                    </span>
+                    {buyWait.isCalibrated && (
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/80 border border-current">
+                        Độ tin cậy: {Math.round(buyWait.confidence * 100)}%
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] leading-relaxed text-stone-700">
+                    {buyWait.rationaleVi}
+                  </p>
+                </div>
+              </div>
+
+              {anomaly && anomaly.isActionableDeal ? (
+                <div className="p-3 rounded-lg border bg-amber-50/70 border-amber-200 text-amber-950 flex items-start gap-2.5">
+                  <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold uppercase tracking-wider text-[11px]">
+                        Chỉ báo: Đột biến giá giảm (Price Anomaly)
+                      </span>
+                      <span className="text-[9px] uppercase px-1 rounded bg-amber-100 text-amber-800 font-normal border border-amber-200">
+                        Toàn tuyến
+                      </span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/80 border border-amber-300">
+                        MAD z-score: {anomaly.modifiedZScore.toFixed(2)}
+                      </span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed text-stone-700">
+                      {anomaly.explanationVi}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-3 rounded-lg border bg-stone-50/70 border-stone-200 text-stone-700 flex items-start gap-2.5">
+                  <ShieldCheck className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold uppercase tracking-wider text-[11px]">
+                        Biến động giá thống kê (F37)
+                      </span>
+                      <span className="text-[9px] uppercase px-1 rounded bg-stone-100 text-stone-600 font-normal border border-stone-200">
+                        Toàn tuyến
+                      </span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed text-stone-600">
+                      {anomaly?.explanationVi || "Đang thu thập thêm mẫu quan sát độc lập để đánh giá đột biến."}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </section>
+
+        {/* ── FLEXIBLE FARE MATRIX (REQ-FEAT-001, REQ-FEAT-002, REQ-FEAT-003, REQ-FEAT-004) ── */}
+        {flexibleMatrix.length > 0 && (
+          <section className="rounded-xl border border-stone-200 bg-white p-6 space-y-4 shadow-sm" aria-labelledby="flexible-matrix-heading">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 id="flexible-matrix-heading" className="text-sm font-bold uppercase tracking-wider text-stone-900 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-blue-600" />
+                  Bảng giá ngày lân cận (Flexible Calendar)
+                </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  Mức giá quan sát thấp nhất theo ngày khởi hành ±2 ngày. Nhấp vào ô giá để xem chi tiết.
+                </p>
+              </div>
+              <span className="text-[11px] font-medium text-stone-500 bg-stone-50 border border-stone-200 px-2.5 py-1 rounded-md self-start sm:self-auto">
+                Dữ liệu quan sát · Không cam kết giữ chỗ
+              </span>
+            </div>
+
+            <div className="overflow-x-auto pb-2">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 min-w-[320px]">
+                {flexibleMatrix.map((cell) => {
+                  const isSelected = cell.departDate === deal.departDate && (cell.returnDate === deal.returnDate || (!cell.returnDate && !deal.returnDate));
+                  const formattedDate = new Date(cell.departDate).toLocaleDateString("vi-VN", {
+                    day: "2-digit",
+                    month: "2-digit",
+                  });
+                  const dayOfWeek = new Date(cell.departDate).toLocaleDateString("vi-VN", { weekday: "short" });
+
+                  return (
+                    <button
+                      type="button"
+                      key={`${cell.departDate}-${cell.returnDate ?? "oneway"}`}
+                      disabled={!cell.price}
+                      onClick={() => {
+                        if (cell.price) {
+                          setDeal((prev) => prev ? { ...prev, departDate: cell.departDate } : null);
+                        }
+                      }}
+                      className={`p-3 rounded-xl border text-left transition-all ${
+                        isSelected
+                          ? "border-blue-600 bg-blue-50/50 shadow-xs ring-1 ring-blue-600"
+                          : cell.price
+                          ? "border-stone-200 hover:border-blue-300 hover:bg-stone-50 cursor-pointer"
+                          : "border-stone-100 bg-stone-50/50 opacity-60 cursor-not-allowed"
+                      }`}
+                    >
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-stone-800">{dayOfWeek}, {formattedDate}</span>
+                        {isSelected && <span className="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-semibold">Đang xem</span>}
+                      </div>
+                      <div className="mt-2 text-sm font-bold font-mono text-emerald-700">
+                        {cell.price ? formatVND(cell.price) : "Chưa có dữ liệu"}
+                      </div>
+                      <div className="mt-1 flex items-center justify-between text-[10px] text-stone-500">
+                        <span>{cell.carrier || "Chưa rõ hãng"}</span>
+                        <span className={`px-1 rounded ${
+                          cell.freshness === "fresh_observed"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : cell.freshness === "observed"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-stone-100 text-stone-600"
+                        }`}>
+                          {cell.freshness === "fresh_observed" ? "Vừa quét" : cell.freshness === "observed" ? "Đã ghi nhận" : "Cũ"}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── DATA PROVENANCE & TRANSPARENCY (F35, F72, F80) ── */}
+        <ProvenanceBadge deal={deal} variant="detailed" />
+
+        {/* ── GROUP & FAMILY FARE PLANNER (F40, F87) ── */}
+        <GroupFarePlannerCard deal={deal} onPassengerMixChange={setPassengerMix} />
 
         {/* ── TRUE COST ANALYSIS ── */}
         <HiddenCostAnalyzer deal={deal} />
+
+        {/* ── FARE RECHECK FEEDBACK (F26, F30) ── */}
+        <RecheckFeedbackWidget
+          opportunityId={deal.id}
+          route={`${deal.fromCode}-${deal.toCode}`}
+          observedPrice={deal.price}
+        />
 
         {/* ── PRICE HISTORY & COHORT CONTEXT ── */}
         {priceHistory.length > 0 ? (
@@ -449,15 +707,70 @@ export function DealDetailPage() {
           </section>
         )}
 
-        {/* ── METHODOLOGY & DECISION EVIDENCE DETAILS ── */}
-        <section className="rounded-xl border border-stone-200 bg-white p-6 space-y-4 shadow-sm">
-          <div className="flex items-center gap-2 text-stone-800">
-            <ShieldCheck className="w-5 h-5 text-blue-600" />
-            <h3 className="text-sm font-bold uppercase tracking-wider text-stone-900">Căn cứ đánh dấu cơ hội</h3>
+        {/* ── METHODOLOGY & DECISION EVIDENCE DETAILS (F25: Opportunity Rationale) ── */}
+        <section className="rounded-xl border border-stone-200 bg-white p-6 space-y-4 shadow-sm" aria-labelledby="opportunity-rationale-heading">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-stone-800">
+              <ShieldCheck className="w-5 h-5 text-blue-600" />
+              <h3 id="opportunity-rationale-heading" className="text-sm font-bold uppercase tracking-wider text-stone-900">
+                Căn cứ đánh dấu cơ hội &amp; Giải trình khoa học (Opportunity Rationale)
+              </h3>
+            </div>
+            <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
+              cohort.evidence.tier === "STRONG"
+                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                : cohort.evidence.tier === "MODERATE"
+                ? "bg-blue-50 text-blue-800 border-blue-200"
+                : "bg-stone-100 text-stone-700 border-stone-200"
+            }`}>
+              {cohort.evidence.label}
+            </span>
           </div>
-          <p className="text-stone-700 text-sm leading-relaxed">
+
+          <p className="text-stone-700 text-sm leading-relaxed font-medium">
             {deal.aiReasoning || deal.aiInsight?.reason || cohort.comparisonExplanation}
           </p>
+
+          {/* F25 6-point rationale matrix */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Số mẫu quan sát:</span>
+              <span className="font-bold text-stone-900 font-mono">
+                {cohort.evidence.sampleCount} lượt quan sát
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Chu kỳ quét độc lập:</span>
+              <span className="font-bold text-stone-900 font-mono">
+                {cohort.evidence.scanEpochCount} chu kỳ quét
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Tuổi dữ liệu quan sát:</span>
+              <span className="font-bold text-stone-900">
+                {freshnessLabel}
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Nhóm đối sánh tương đương:</span>
+              <span className="font-bold text-stone-900 font-mono text-[11px] truncate block" title={cohort.cohortKey}>
+                {cohort.cohortKey}
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Tiêu chí loại trừ (Exclusions):</span>
+              <span className="font-bold text-stone-900">
+                Khác hạng vé, transit &gt;24h
+              </span>
+            </div>
+            <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-2.5">
+              <span className="text-[11px] text-stone-500 block">Trần công bố (Claim Ceiling):</span>
+              <span className="font-bold text-blue-700">
+                {cohort.evidence.tier === "STRONG" ? "Chỉ số tin cậy cao" : cohort.evidence.tier === "MODERATE" ? "Chỉ số trung bình" : "Đang tích lũy"}
+              </span>
+            </div>
+          </div>
+
           <div className="text-xs text-stone-500 border-t border-stone-100 pt-3 leading-relaxed">
             Nguyên tắc Farely: Giá vé máy bay biến động theo từng đợt mở bán của hãng hàng không. Bấm &quot;Kiểm tra giá hiện tại&quot; để xác minh tình trạng chỗ và giá thực tế trực tiếp với đơn vị bán trước khi tiến hành thanh toán.
           </div>
@@ -500,9 +813,21 @@ export function DealDetailPage() {
       <WatchModal
         isOpen={watchOpen}
         onClose={() => setWatchOpen(false)}
+        opportunity={{
+          id: deal.id,
+          originCode: deal.fromCode,
+          originName: deal.from,
+          destinationCode: deal.toCode,
+          destinationName: deal.to,
+          price: deal.price,
+          departDate: deal.departDate,
+          returnDate: deal.returnDate,
+          stops: deal.stops,
+        }}
         initialOrigin={deal.fromCode}
         initialDestination={deal.toCode}
         currentPrice={deal.price}
+        initialPassengers={passengerMix}
         sourceContext="deal_detail"
       />
     </main>
