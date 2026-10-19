@@ -113,3 +113,144 @@ Deno.test("F18 & Section 19: INSUFFICIENT_EVIDENCE preserves episode state witho
   assertEquals(step3.nextEpisode?.state, "EXITED");
   assertEquals(Boolean(step3.nextEpisode?.closed_at), true);
 });
+
+Deno.test("RC-15: buildConditionFingerprint captures all material criteria", async () => {
+  const { buildConditionFingerprint } = await import("./watch-condition.ts");
+  const fp1 = buildConditionFingerprint({
+    watchId: "w1",
+    targetPrice: 2000000,
+    criteria: {
+      origin_code: "HAN",
+      destination_code: "SGN",
+      date_from: "2026-11-01",
+      date_to: "2026-11-05",
+      return_date: "2026-11-10",
+      max_stops: 0,
+      criteria_version: 1,
+    },
+  });
+
+  // Mutating target price changes fingerprint
+  const fpPrice = buildConditionFingerprint({
+    watchId: "w1",
+    targetPrice: 1900000,
+    criteria: {
+      origin_code: "HAN",
+      destination_code: "SGN",
+      date_from: "2026-11-01",
+      date_to: "2026-11-05",
+      return_date: "2026-11-10",
+      max_stops: 0,
+      criteria_version: 1,
+    },
+  });
+  assertEquals(fp1 !== fpPrice, true);
+
+  // Mutating destination changes fingerprint
+  const fpDest = buildConditionFingerprint({
+    watchId: "w1",
+    targetPrice: 2000000,
+    criteria: {
+      origin_code: "HAN",
+      destination_code: "DAD",
+      date_from: "2026-11-01",
+      date_to: "2026-11-05",
+      return_date: "2026-11-10",
+      max_stops: 0,
+      criteria_version: 1,
+    },
+  });
+  assertEquals(fp1 !== fpDest, true);
+
+  // Mutating max_stops changes fingerprint
+  const fpStops = buildConditionFingerprint({
+    watchId: "w1",
+    targetPrice: 2000000,
+    criteria: {
+      origin_code: "HAN",
+      destination_code: "SGN",
+      date_from: "2026-11-01",
+      date_to: "2026-11-05",
+      return_date: "2026-11-10",
+      max_stops: 1,
+      criteria_version: 1,
+    },
+  });
+  assertEquals(fp1 !== fpStops, true);
+
+  // Mutating return_date changes fingerprint
+  const fpReturn = buildConditionFingerprint({
+    watchId: "w1",
+    targetPrice: 2000000,
+    criteria: {
+      origin_code: "HAN",
+      destination_code: "SGN",
+      date_from: "2026-11-01",
+      date_to: "2026-11-05",
+      return_date: "2026-11-12",
+      max_stops: 0,
+      criteria_version: 1,
+    },
+  });
+  assertEquals(fp1 !== fpReturn, true);
+});
+
+Deno.test("RC-15: Criteria mutation triggers distinct episode lifecycle", () => {
+  const watchId = "w-mut-1";
+  const criteria1 = {
+    origin_code: "HAN",
+    destination_code: "SGN",
+    date_from: "2026-11-01",
+    max_stops: 0,
+  };
+
+  // Step 1: Active episode entered under criteria 1
+  const step1 = evaluateWatchCondition({
+    watchId,
+    targetPrice: 2000000,
+    observedPrice: 1800000,
+    activeEpisode: null,
+    criteria: criteria1,
+  });
+  assertEquals(step1.nextEpisode?.state, "ENTERED");
+  assertEquals(step1.shouldAlert, true);
+  const fp1 = step1.nextEpisode?.condition_fingerprint;
+
+  // Step 2: User mutates criteria to DAD (with same target price 2000000)
+  const criteria2 = {
+    origin_code: "HAN",
+    destination_code: "DAD",
+    date_from: "2026-11-01",
+    max_stops: 0,
+  };
+
+  // Observation matches new criteria -> starts fresh ENTERED episode with distinct fingerprint
+  const step2 = evaluateWatchCondition({
+    watchId,
+    targetPrice: 2000000,
+    observedPrice: 1700000,
+    activeEpisode: step1.nextEpisode,
+    criteria: criteria2,
+  });
+  assertEquals(step2.nextEpisode?.state, "ENTERED");
+  assertEquals(step2.shouldAlert, true);
+  assertEquals(step2.nextEpisode?.condition_fingerprint !== fp1, true);
+
+  // Step 3: If candidate does not match mutated criteria, old active episode is cleanly EXITED
+  const criteria3 = {
+    origin_code: "HAN",
+    destination_code: "PQC",
+    date_from: "2026-11-01",
+  };
+  const step3 = evaluateWatchCondition({
+    watchId,
+    targetPrice: 2000000,
+    observedPrice: 2500000,
+    conditionInput: "CONFIRMED_NON_MATCH",
+    activeEpisode: step2.nextEpisode,
+    criteria: criteria3,
+  });
+  assertEquals(step3.nextEpisode?.state, "EXITED");
+  assertEquals(step3.stateChanged, true);
+});
+

@@ -278,6 +278,15 @@ Deno.serve(async (request) => {
         activeEpisode: currentEpisode,
         generationId: activeGen?.active_generation_id ?? null,
         now: nowIso,
+        criteria: {
+          origin_code: alert.origin_code,
+          destination_code: alert.destination_code || alert.destination,
+          date_from: alert.depart_date_from,
+          date_to: alert.depart_date_to,
+          return_date: alert.return_date,
+          max_stops: alert.max_stops,
+          criteria_version: alert.criteria_version,
+        },
       });
 
       // Determine episode transition action for atomic RPC

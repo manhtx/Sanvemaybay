@@ -73,8 +73,8 @@ export function matchesAlert(alert: AlertMatchInput, deal: AlertDealInput): bool
   // Stops constraint
   const stopsMatches = alert.max_stops == null || (deal.stops != null && Number(deal.stops) <= Number(alert.max_stops));
 
-  // Return date constraint
-  const returnDateMatches = !alert.return_date || !deal.return_date || deal.return_date === alert.return_date;
+  // Return date constraint: if alert specifies return_date, candidate must match it exactly (RC-14, D12)
+  const returnDateMatches = !alert.return_date || deal.return_date === alert.return_date;
 
   // Trip type constraint (roundtrip requires return_date, oneway requires absence of return_date)
   let tripTypeMatches = true;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterDeals, isActiveFeedDeal, mapDealRow, mapObservedFare, mapPriceHistoryRows, parseFeedEnvelope, sanitizeBookingUrl } from "./api";
+import { filterDeals, isActiveFeedDeal, mapDealRow, mapObservedFare, mapPriceHistoryRows, parseFeedEnvelope, sanitizeBookingUrl, sortDeals } from "./api";
 import { normalizeAIInsight } from "./deals";
 
 describe("mapDealRow", () => {
@@ -238,3 +238,78 @@ describe("F32: Discovery Empty & Degraded Recovery Status Invariants", () => {
     expect(new Set(statuses).size).toBe(7);
   });
 });
+
+describe("sortDeals (RC-01, F31, F76: Merged Candidate Objective Sorting)", () => {
+  const candidateLive = {
+    id: "live-search-HAN-SGN-2026-11-01-0",
+    fromCode: "HAN",
+    toCode: "SGN",
+    price: 3_500_000,
+    discount: 10,
+    dealScore: 70,
+    departDate: "2026-11-05",
+    linkKind: "indicative",
+  } as any;
+
+  const candidateObserved = {
+    id: "observed-12345",
+    fromCode: "HAN",
+    toCode: "SGN",
+    price: 1_800_000,
+    discount: 35,
+    dealScore: 88,
+    departDate: "2026-11-08",
+    linkKind: "indicative",
+  } as any;
+
+  const candidateFeed = {
+    id: "feed-999",
+    fromCode: "HAN",
+    toCode: "SGN",
+    price: 2_200_000,
+    discount: 20,
+    dealScore: 80,
+    departDate: "2026-11-02",
+    linkKind: "live_source",
+  } as any;
+
+  const pool = [candidateLive, candidateObserved, candidateFeed];
+
+  it("RC-01: price_asc sorts cheapest first regardless of candidatePool concatenation order", () => {
+    const sorted = sortDeals(pool, "price_asc");
+    expect(sorted.map((d) => d.price)).toEqual([1_800_000, 2_200_000, 3_500_000]);
+    expect(sorted[0].id).toBe("observed-12345");
+  });
+
+  it("price_desc sorts most expensive first", () => {
+    const sorted = sortDeals(pool, "price_desc");
+    expect(sorted.map((d) => d.price)).toEqual([3_500_000, 2_200_000, 1_800_000]);
+  });
+
+  it("score sorts highest deal score first", () => {
+    const sorted = sortDeals(pool, "score");
+    expect(sorted.map((d) => d.dealScore)).toEqual([88, 80, 70]);
+  });
+
+  it("date_near sorts earliest departure first", () => {
+    const sorted = sortDeals(pool, "date_near");
+    expect(sorted.map((d) => d.departDate)).toEqual(["2026-11-02", "2026-11-05", "2026-11-08"]);
+  });
+
+  it("discount sorts highest discount percent first", () => {
+    const sorted = sortDeals(pool, "discount");
+    expect(sorted.map((d) => d.discount)).toEqual([35, 20, 10]);
+  });
+
+  it("F76: objective price sort is invariant to linkKind, provider or feed source", () => {
+    // Permuting order cannot alter price sort outcome
+    const reversed = [...pool].reverse();
+    const sortedFromReversed = sortDeals(reversed, "price_asc");
+    expect(sortedFromReversed.map((d) => d.id)).toEqual([
+      "observed-12345",
+      "feed-999",
+      "live-search-HAN-SGN-2026-11-01-0",
+    ]);
+  });
+});
+

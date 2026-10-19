@@ -86,3 +86,12 @@ Deno.test("stops and trip-type constraints in alert matching", () => {
   assert(!matchesAlert(onewayAlert, { to_code: "SIN", depart_date: "2026-11-01", return_date: "2026-11-05" }));
 });
 
+Deno.test("RC-14 & D12: Watcher with specific return date rejects candidate whose return date is missing", () => {
+  const alertWithReturn = { destination_code: "SIN", return_date: "2026-11-05" };
+  assert(matchesAlert(alertWithReturn, { to_code: "SIN", return_date: "2026-11-05" }));
+  assert(!matchesAlert(alertWithReturn, { to_code: "SIN", return_date: null }));
+  assert(!matchesAlert(alertWithReturn, { to_code: "SIN", return_date: undefined }));
+  assert(!matchesAlert(alertWithReturn, { to_code: "SIN", return_date: "2026-11-06" }));
+});
+
+

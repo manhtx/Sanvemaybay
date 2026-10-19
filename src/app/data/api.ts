@@ -816,9 +816,10 @@ export async function searchDealsWithStatus(params: {
   }
 
   const filtered = filterDeals(uniquePool, params);
+  const sorted = sortDeals(filtered, params.sort ?? "price_asc");
 
   let status: SearchStatus = "healthy";
-  if (filtered.length === 0) {
+  if (sorted.length === 0) {
     if (observedResult.status === "provider_unavailable" || (observedFailed && candidatePool.length === 0)) {
       status = "provider_unavailable";
     } else if (observedResult.status === "unmonitored") {
@@ -839,10 +840,35 @@ export async function searchDealsWithStatus(params: {
   }
 
   return {
-    deals: filtered,
+    deals: sorted,
     status,
     retryable: status === "provider_unavailable" || status === "degraded" || status === "stale_only",
   };
+}
+
+/**
+ * Objective candidate sorting for search and discovery results (RC-01, F31, F76).
+ * Enforces strict objective sorting across merged pools (liveDeals, observedFares, feedDeals).
+ */
+export function sortDeals(deals: Deal[], sort = "price_asc"): Deal[] {
+  const sorted = [...deals];
+  if (sort === "price_asc") {
+    return sorted.sort((a, b) => a.price - b.price || (b.discount || 0) - (a.discount || 0) || a.id.localeCompare(b.id));
+  }
+  if (sort === "price_desc") {
+    return sorted.sort((a, b) => b.price - a.price || (b.discount || 0) - (a.discount || 0) || a.id.localeCompare(b.id));
+  }
+  if (sort === "score") {
+    return sorted.sort((a, b) => (b.dealScore || 0) - (a.dealScore || 0) || (b.discount || 0) - (a.discount || 0) || a.id.localeCompare(b.id));
+  }
+  if (sort === "date_near") {
+    return sorted.sort((a, b) => a.departDate.localeCompare(b.departDate) || a.price - b.price || a.id.localeCompare(b.id));
+  }
+  if (sort === "date_far") {
+    return sorted.sort((a, b) => b.departDate.localeCompare(a.departDate) || a.price - b.price || a.id.localeCompare(b.id));
+  }
+  // Default / "discount":
+  return sorted.sort((a, b) => (b.discount || 0) - (a.discount || 0) || (b.dealScore || 0) - (a.dealScore || 0) || a.price - b.price || a.id.localeCompare(b.id));
 }
 
 /** Filter observed deals only by fields returned by the data pipeline. */
