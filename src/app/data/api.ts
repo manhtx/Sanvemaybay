@@ -388,6 +388,7 @@ export async function getRouteBest(params: {
   origin: string;
   destination: string;
   departDate: string;
+  currency?: string;
   returnDate?: string;
   directOnly?: boolean;
   maxStops?: number;
@@ -401,6 +402,7 @@ export async function getRouteBest(params: {
   try {
     const body: Record<string, unknown> = {
       route_best: true,
+      currency: params.currency || "VND",
       origin: params.origin,
       destination: params.destination,
       depart_date_from: params.departDate,

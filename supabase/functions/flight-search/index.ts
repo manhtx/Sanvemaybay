@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { clientAddress, consumeRequestBudget, hashRateLimitKey } from "../_shared/abuse-protection.ts";
-import { boundedProviderRows, isIsoCalendarDate, validateFlightSearchInput } from "../_shared/flight-search.ts";
+import { boundedProviderRows, mapTravelpayoutsRow, validateFlightSearchInput } from "../_shared/flight-search.ts";
 import { operationalFields, operationalHeaders, requestId } from "../_shared/observability.ts";
 
 const headers = {
@@ -64,42 +64,10 @@ Deno.serve(async (request) => {
   if (!response.ok) return json({ error: "Search data provider failed" }, id, 502);
   const payload = await response.json().catch(() => null);
   const rows = boundedProviderRows(payload);
+  const fetchTime = new Date().toISOString();
   const results = rows.flatMap((row: Record<string, unknown>) => {
-    const price = Number(row.value);
-    const departDate = typeof row.depart_date === "string" ? row.depart_date : input.outboundDate;
-    const returnDate = typeof row.return_date === "string" ? row.return_date : input.returnDate;
-    if (!Number.isFinite(price) || price <= 0 || !isIsoCalendarDate(departDate) || !isIsoCalendarDate(returnDate)) return [];
-    const isActual = row.actual === true;
-    const rawChanges = row.number_of_changes;
-    const stops = typeof rawChanges === "number" && Number.isFinite(rawChanges) ? rawChanges : null;
-    const providerObservedAt = typeof row.created_at === "string" ? row.created_at : null;
-    const fetchTime = new Date().toISOString();
-    return [{
-      origin_code: input.origin,
-      destination_code: input.destination,
-      price,
-      currency: "VND",
-      depart_date: departDate,
-      return_date: returnDate,
-      airline_code: typeof row.airline === "string" ? row.airline : null,
-      stops,
-      source: "travelpayouts_week_matrix",
-      // Week Matrix is cached/indicative. `actual` and a route template do not
-      // prove that an exact offer or provider-issued deeplink is bookable.
-      link_kind: "indicative",
-      affiliate_url: null,
-      actual: isActual,
-      booking_url: `https://www.google.com/travel/flights?${new URLSearchParams({
-        q: `Flights to ${input.destination} from ${input.origin} on ${departDate} through ${returnDate}`,
-        hl: "vi",
-        curr: "VND",
-      }).toString()}`,
-      provider_observed_at: providerObservedAt,
-      provider_fetched_at: fetchTime,
-      farely_received_at: fetchTime,
-      observed_at: providerObservedAt,
-      source_age_status: providerObservedAt ? "KNOWN" : "UNKNOWN_SOURCE_AGE",
-    }];
+    const mapped = mapTravelpayoutsRow(row, input, fetchTime);
+    return mapped ? [mapped] : [];
   });
   return json({ results, source: "travelpayouts_week_matrix", indicative: true }, id);
 });

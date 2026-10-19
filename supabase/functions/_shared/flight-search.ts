@@ -39,3 +39,47 @@ export function boundedProviderRows(payload: unknown, maximum = 100): Record<str
     .filter((row): row is Record<string, unknown> => Boolean(row) && typeof row === "object" && !Array.isArray(row))
     .slice(0, maximum);
 }
+
+export function mapTravelpayoutsRow(
+  row: Record<string, unknown>,
+  input: FlightSearchInput,
+  fetchTime = new Date().toISOString()
+): Record<string, unknown> | null {
+  const price = Number(row.value);
+  const departDate = typeof row.depart_date === "string" ? row.depart_date : input.outboundDate;
+  const returnDate = typeof row.return_date === "string" ? row.return_date : input.returnDate;
+  if (!Number.isFinite(price) || price <= 0 || !isIsoCalendarDate(departDate) || !isIsoCalendarDate(returnDate)) return null;
+  const isActual = row.actual === true;
+  const rawChanges = row.number_of_changes;
+  const stops = typeof rawChanges === "number" && Number.isFinite(rawChanges) ? rawChanges : null;
+  // Prioritize documented found_at field over legacy created_at fallback (R14, NEG-11)
+  const providerObservedAt = typeof row.found_at === "string"
+    ? row.found_at
+    : typeof row.created_at === "string"
+      ? row.created_at
+      : null;
+  return {
+    origin_code: input.origin,
+    destination_code: input.destination,
+    price,
+    currency: "VND",
+    depart_date: departDate,
+    return_date: returnDate,
+    airline_code: typeof row.airline === "string" ? row.airline : null,
+    stops,
+    source: "travelpayouts_week_matrix",
+    link_kind: "indicative",
+    affiliate_url: null,
+    actual: isActual,
+    booking_url: `https://www.google.com/travel/flights?${new URLSearchParams({
+      q: `Flights to ${input.destination} from ${input.origin} on ${departDate} through ${returnDate}`,
+      hl: "vi",
+      curr: "VND",
+    }).toString()}`,
+    provider_observed_at: providerObservedAt,
+    provider_fetched_at: fetchTime,
+    farely_received_at: fetchTime,
+    observed_at: providerObservedAt,
+    source_age_status: providerObservedAt ? "KNOWN" : "UNKNOWN_SOURCE_AGE",
+  };
+}
