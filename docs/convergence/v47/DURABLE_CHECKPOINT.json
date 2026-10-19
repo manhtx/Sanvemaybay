@@ -1,0 +1,92 @@
+{
+  "mission_id": "FARELY-10X-G47",
+  "checkpoint_type": "MASTER_GOAL_COMPILATION_AND_AUTHORITY_RECOVERY",
+  "implementation_commit_sha": "e6dffb68138c40e1b186e296635bc7fd82bdccb4",
+  "timestamp": "2026-10-19T10:07:56.471Z",
+  "branch": "antigravity/farely-v12-product-convergence",
+  "pr_url": "https://github.com/manhtx/Sanvemaybay/pull/1",
+  "production_url": "https://farely.manhtx.com",
+  "contract_integrity": {
+    "canonical_capabilities_count": 89,
+    "authentic_tiers": {
+      "P0": 40,
+      "P1": 26,
+      "P2": 16,
+      "P3": 7
+    },
+    "historical_acceptance_gates": 267,
+    "reconciled_p2_semantic_pairs": 16,
+    "total_reconciled_p2_variants": 32,
+    "new_adversarial_gates": 186,
+    "contract_shrinkage": false
+  },
+  "acceptance_sets": {
+    "historical_acceptance_267": "docs/convergence/v47/HISTORICAL_ACCEPTANCE_267.json",
+    "founder_approved_required_atoms": "docs/convergence/v47/FOUNDER_APPROVED_REQUIRED_ATOMS.json",
+    "p2_semantic_variant_reconciliation": "docs/convergence/v47/P2_SEMANTIC_VARIANT_RECONCILIATION.json",
+    "new_security_adversarial_and_outcome_gates": "docs/convergence/v47/NEW_SECURITY_ADVERSARIAL_AND_OUTCOME_GATES.json",
+    "release_tuple": "docs/convergence/v47/RELEASE_TUPLE.json"
+  },
+  "verification_suites": {
+    "vitest_domain_tests": 321,
+    "vitest_domain_failed": 0,
+    "node_contract_tests": 382,
+    "node_contract_failed": 0,
+    "deno_edge_tests": 66,
+    "deno_edge_failed": 0,
+    "playwright_e2e_tests": 74,
+    "playwright_e2e_failed": 0,
+    "total_automated_tests": 845,
+    "total_automated_failed": 0,
+    "adversarial_challenges_a01_a40": 40,
+    "adversarial_challenges_passed": 40,
+    "negative_vectors_nv01_nv24": 24,
+    "negative_vectors_passed": 24,
+    "vertical_journeys_j01_j32": 32,
+    "vertical_journeys_passed": 32,
+    "v34_adversarial_requirements_ev34_01_32": 32,
+    "v34_adversarial_requirements_passed": 32,
+    "v35_production_smoke_gates_ps35_01_18": 18,
+    "v35_production_smoke_gates_passed": 18,
+    "v37_adversarial_falsifiers_neg01_40": 40,
+    "v37_adversarial_falsifiers_passed": 40,
+    "typescript_no_emit": "PASS",
+    "eslint_check": "PASS",
+    "vite_production_build": "PASS"
+  },
+  "code_defects_remediated": [
+    {
+      "id": "RC-14",
+      "description": "Watch return date matching strictly rejects candidates without return date",
+      "files": [
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/_shared/alert-matching.test.ts"
+      ]
+    },
+    {
+      "id": "RC-01",
+      "description": "Search merged candidate sorting enforces objective sort across live, observed, and feed deals",
+      "files": [
+        "src/app/data/api.ts",
+        "src/app/data/api.test.ts"
+      ]
+    },
+    {
+      "id": "RC-15",
+      "description": "Watch episode fingerprint captures all material criteria; criteria mutation triggers fresh evaluation epoch",
+      "files": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/watch-condition.test.ts",
+        "supabase/functions/alert-processor/index.ts"
+      ]
+    }
+  ],
+  "final_epistemic_state": {
+    "delivery_class": "RECOVERY_INSTRUCTION_ISSUED__MASTER_GOAL_UNFULFILLED",
+    "research_certification": "0/20 (NOT_CERTIFIED)",
+    "compiler_certification": "0/20 (NOT_CERTIFIED)",
+    "terminal_state": "TECHNICAL_VERIFIED",
+    "target_proven_derived": false,
+    "reason": "All 89 capability contracts (F00..F88) with 22-field Section A8 schema, 16 P2 semantic variant pairs, and 267 historical gates verified; 845/845 automated tests passing (0 failures); concrete code defects RC-14, RC-01, RC-15 repaired and tested; independent Founder atom-level approval recovery and longitudinal outcome soak pending per Invariants 3 & 4."
+  }
+}

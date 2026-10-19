@@ -30,24 +30,51 @@ export function applyObservedScope<T>(
         ? body.opportunity_id
         : undefined;
   if (targetId) {
-    const raw = targetId.replace(/^observed-/, "").trim();
-    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(raw)) {
-      query = query.eq("observation_id", raw);
-    } else if (raw.split(":").length >= 7) {
-      query = query.eq("dedupe_key", raw);
-    } else if (raw.split(":").length === 6) {
-      const [orig, dest, depart, ret, airline, stops] = raw.split(":");
-      query = query
-        .eq("origin_code", orig.toUpperCase())
-        .eq("destination_code", dest.toUpperCase())
-        .eq("depart_date", depart);
-      if (ret) query = query.eq("return_date", ret);
-      if (airline) query = query.eq("airline_code", airline.toUpperCase());
-      if (stops === "UNKNOWN") query = query.is("stops", null);
-      else if (/^\d+$/.test(stops)) query = query.eq("stops", Number(stops));
-      else if (stops !== "") throw new RangeError("INVALID_OPPORTUNITY_ID");
+    let raw = targetId.replace(/^observed-/, "").trim();
+    if (raw.startsWith("observation:") || raw.startsWith("obs:")) {
+      const obsId = raw.replace(/^(observation|obs):/, "").trim();
+      query = query.eq("observation_id", obsId);
+    } else if (raw.startsWith("dedupe:")) {
+      const dedupeKey = raw.replace(/^dedupe:/, "").trim();
+      query = query.eq("dedupe_key", dedupeKey);
     } else {
-      query = query.eq("dedupe_key", raw);
+      if (raw.startsWith("opportunity:") || raw.startsWith("opp:") || raw.startsWith("itinerary:") || raw.startsWith("offer:") || raw.startsWith("legacy:")) {
+        raw = raw.replace(/^(opportunity|opp|itinerary|offer|legacy):/, "").trim();
+      }
+      if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(raw)) {
+        query = query.eq("observation_id", raw);
+      } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}:/i.test(raw)) {
+        query = query.eq("dedupe_key", raw);
+      } else {
+        const parts = raw.split(":");
+        if (parts.length === 7) {
+          const [orig, dest, depart, ret, airline, flightNum, stops] = parts;
+          query = query
+            .eq("origin_code", orig.toUpperCase())
+            .eq("destination_code", dest.toUpperCase())
+            .eq("depart_date", depart);
+          if (ret) query = query.eq("return_date", ret);
+          else query = query.is("return_date", null);
+          if (airline) query = query.eq("airline_code", airline.toUpperCase());
+          if (flightNum) query = query.eq("flight_number", flightNum.toUpperCase());
+          if (stops === "UNKNOWN") query = query.is("stops", null);
+          else if (/^\d+$/.test(stops)) query = query.eq("stops", Number(stops));
+          else if (stops !== "") throw new RangeError("INVALID_OPPORTUNITY_ID");
+        } else if (parts.length === 6) {
+          const [orig, dest, depart, ret, airline, stops] = parts;
+          query = query
+            .eq("origin_code", orig.toUpperCase())
+            .eq("destination_code", dest.toUpperCase())
+            .eq("depart_date", depart);
+          if (ret) query = query.eq("return_date", ret);
+          if (airline) query = query.eq("airline_code", airline.toUpperCase());
+          if (stops === "UNKNOWN") query = query.is("stops", null);
+          else if (/^\d+$/.test(stops)) query = query.eq("stops", Number(stops));
+          else if (stops !== "") throw new RangeError("INVALID_OPPORTUNITY_ID");
+        } else {
+          query = query.eq("dedupe_key", raw);
+        }
+      }
     }
   }
   if (typeof body.origin === "string" && body.origin) query = query.eq("origin_code", body.origin.trim().toUpperCase());
