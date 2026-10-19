@@ -1,7 +1,7 @@
 {
-  "release_id": "farely-convergence-7ba8835e",
-  "source_git_sha": "7ba8835ed846d86e3c8b42e1298c89115557b2c5",
-  "remote_git_sha": "dfc4ad10cf43afc4f8adcd73718ecfbdc72c0b78",
+  "release_id": "farely-convergence-9aba47a2",
+  "source_git_sha": "9aba47a222295373e83c5d854f95301cc7072ccc",
+  "remote_git_sha": "50e40959feb08873f4b69eea4206b41b64055b17",
   "frontend_deployment_url": "https://farely.manhtx.com",
   "frontend_build_identity": "vite-6.4.3-react-19",
   "backend_edge_release_url": "https://yefbpmqfsstcaeqfrmyn.supabase.co/functions/v1/observed-fares",
@@ -10,12 +10,12 @@
   "observation_schema_version": 1,
   "identity_schema_version": 1,
   "release_tuple": {
-    "tuple_id": "tuple_v35_coordinated_convergence",
+    "tuple_id": "tuple_v37_continuous_convergence",
     "frontend_release_sha": "084025b1f58a98655222ee4f8fc82461b286dd6a",
     "edge_runtime_sha": "f08b4b42472faff1dcc132106ee30b5a54938571",
-    "convergence_target_sha": "7ba8835ed846d86e3c8b42e1298c89115557b2c5",
+    "convergence_target_sha": "9aba47a222295373e83c5d854f95301cc7072ccc",
     "parity_mode": "COMPATIBLE_TUPLE",
-    "worker_revision": "worker-v35.1",
+    "worker_revision": "worker-v37.1",
     "active_generation_id": "gen_live_v2"
   },
   "runtime_invariants": {
@@ -27,5 +27,5 @@
     "saved_authority": "Server is canonical authority for authenticated users with automatic rollback on remote failure (NC-030)",
     "security_rls": "Multi-tenant RLS tenant isolation verified via pgTAP and node tests (User A cannot access User B)"
   },
-  "timestamp": "2026-10-16T10:10:41.634Z"
+  "timestamp": "2026-10-19T03:33:33.030Z"
 }

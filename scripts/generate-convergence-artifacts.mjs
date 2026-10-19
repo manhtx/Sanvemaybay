@@ -185,12 +185,12 @@ const releaseManifest = {
   observation_schema_version: 1,
   identity_schema_version: 1,
   release_tuple: {
-    tuple_id: "tuple_v35_coordinated_convergence",
+    tuple_id: "tuple_v37_continuous_convergence",
     frontend_release_sha: "084025b1f58a98655222ee4f8fc82461b286dd6a",
     edge_runtime_sha: "f08b4b42472faff1dcc132106ee30b5a54938571",
     convergence_target_sha: currentSha,
     parity_mode: "COMPATIBLE_TUPLE",
-    worker_revision: "worker-v35.1",
+    worker_revision: "worker-v37.1",
     active_generation_id: "gen_live_v2"
   },
   runtime_invariants: {

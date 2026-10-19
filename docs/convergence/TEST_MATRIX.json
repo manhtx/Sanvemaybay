@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-16T10:10:41.634Z",
-  "tested_sha": "7ba8835ed846d86e3c8b42e1298c89115557b2c5",
+  "updated_at": "2026-10-19T03:33:33.030Z",
+  "tested_sha": "9aba47a222295373e83c5d854f95301cc7072ccc",
   "summary": {
     "vitest_test_files": 41,
-    "node_test_files": 46,
-    "deno_test_files": 18,
-    "total_test_suites": 105,
+    "node_test_files": 47,
+    "deno_test_files": 19,
+    "total_test_suites": 107,
     "status": "PASS"
   },
   "layers": [
@@ -104,13 +104,14 @@
         "scripts/v32-adversarial-requirements.node-test.mjs",
         "scripts/v34-adversarial-requirements.node-test.mjs",
         "scripts/v35-production-smoke-requirements.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs",
         "scripts/verify-certification-integrity.node-test.mjs",
         "scripts/verify-farely-v14-contract.node-test.mjs",
         "scripts/verify-farely-v15-handoff.node-test.mjs",
         "scripts/verify-farely-v17-contract.node-test.mjs",
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ],
-      "test_file_count": 46,
+      "test_file_count": 47,
       "verdict": "PASS"
     },
     {
@@ -129,6 +130,7 @@
         "supabase/functions/_shared/live-deal.test.ts",
         "supabase/functions/_shared/observability.test.ts",
         "supabase/functions/_shared/observed-fares.test.ts",
+        "supabase/functions/_shared/observed-scope.test.ts",
         "supabase/functions/_shared/price-history.test.ts",
         "supabase/functions/_shared/product-event.test.ts",
         "supabase/functions/_shared/retry-policy.test.ts",
@@ -136,7 +138,7 @@
         "supabase/functions/_shared/user-data.test.ts",
         "supabase/functions/_shared/watch-condition.test.ts"
       ],
-      "test_file_count": 18,
+      "test_file_count": 19,
       "verdict": "PASS"
     }
   ]
