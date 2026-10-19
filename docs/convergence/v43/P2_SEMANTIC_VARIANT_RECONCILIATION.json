@@ -1,0 +1,479 @@
+{
+  "contract_id": "FARELY-V43-P2-SEMANTIC-VARIANT-RECONCILIATION",
+  "version": "43.0.0",
+  "description": "Reconciliation of 16 historical P2 semantic variant pairs into 32 distinct capabilities preserving both authentic V1 and alternative V2.",
+  "summary": {
+    "total_pairs": 16,
+    "total_reconciled_variants": 32,
+    "v1_authentic_count": 16,
+    "v2_alternative_count": 16
+  },
+  "pairs": [
+    {
+      "id": "F36",
+      "v1_title": "Trust-calibrated Buy/Wait guidance",
+      "v1_solution": "Calibrated historical route distribution analysis providing justified BUY, MONITOR, or WAIT signals with uncertainty boundaries.",
+      "v1_acceptance": "Never displays definitive BUY recommendation when sample size < 10 or price variance is uncalibrated.",
+      "v2_title": "Trip-Length Optimizer",
+      "v2_solution": "Multi-day stay length duration matrix optimizing cheapest return date offset based on observed departure cohorts.",
+      "v2_acceptance": "Matrix accurately identifies price inflection points across stay durations of 3 to 14 days.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F36-V1 (Buy/Wait Guidance) and F36-V2 (Trip-Length Optimizer)."
+    },
+    {
+      "id": "F37",
+      "v1_title": "Price anomaly detection",
+      "v1_solution": "Median Absolute Deviation (MAD) robust outlier detection distinguishing genuine price drops from data glitches.",
+      "v1_acceptance": "Zero fares, negative prices, and 10x spikes flagged as SUSPECTED_DATA_GLITCH; drops require MAD >= 2.5 and sample >= 10.",
+      "v2_title": "Weekend Escape Finder",
+      "v2_solution": "Automated Thursday-to-Sunday or Friday-to-Monday weekend getaway finder across all monitored domestic/regional destinations.",
+      "v2_acceptance": "Correctly binds weekend calendar windows to observed flight schedules without false availability.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F37-V1 (Price Anomaly Detection) and F37-V2 (Weekend Escape Finder)."
+    },
+    {
+      "id": "F38",
+      "v1_title": "Holiday/Tet price surge calendar",
+      "v1_solution": "Historical lunar calendar and statutory holiday price surge pattern analysis indicating peak multiplier horizons.",
+      "v1_acceptance": "Forecasts Tet surge window with historical baseline dates and confidence intervals.",
+      "v2_title": "Holiday Calendar Matrix",
+      "v2_solution": "Comprehensive national holiday calendar grid mapping public holidays to observed route pricing tiers.",
+      "v2_acceptance": "Maps public holidays for Vietnam and ASEAN destinations with accurate date offsets.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F38-V1 (Holiday Surge Calendar) and F38-V2 (Holiday Calendar Matrix)."
+    },
+    {
+      "id": "F39",
+      "v1_title": "Nearby airport comparison",
+      "v1_solution": "Multi-airport catchment area price comparison evaluating total transit cost/time trade-offs.",
+      "v1_acceptance": "Displays alternative departures within 150km with ground transport estimates.",
+      "v2_title": "Nearby Airport Economics",
+      "v2_solution": "Mathematical optimization of airfare delta vs secondary ground transit expense and duration.",
+      "v2_acceptance": "Flags nearby airport only if net savings exceed estimated ground transfer cost.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F39-V1 (Nearby Airport Comparison) and F39-V2 (Nearby Airport Economics)."
+    },
+    {
+      "id": "F40",
+      "v1_title": "Hidden fee & total cost estimator",
+      "v1_solution": "Deterministic airline-specific ancillary fee model calculating true all-in checkout price.",
+      "v1_acceptance": "Itemizes seat selection, baggage tiers, and payment processing fees with breakdown.",
+      "v2_title": "Itinerary Quality Score",
+      "v2_solution": "Multi-factor composite scoring layover duration, red-eye flights, self-transfer risks, and airline punctuality.",
+      "v2_acceptance": "Calculates 0-100 quality score penalizing self-transfers and layovers > 8 hours.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F40-V1 (Hidden Fee Estimator) and F40-V2 (Itinerary Quality Score)."
+    },
+    {
+      "id": "F41",
+      "v1_title": "AI deal narrative & explanation",
+      "v1_solution": "Grounded natural language generation explaining why a deal is exceptional using cohort evidence.",
+      "v1_acceptance": "Explanations cite exact percentile and historical baseline; never hallucinate unverified savings.",
+      "v2_title": "Consumer Opportunity Explanation",
+      "v2_solution": "Rule-based structured evidence cards breaking down discount drivers, seasonality, and risk indicators.",
+      "v2_acceptance": "Renders standardized reason chips backed by mathematical cohort comparison.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F41-V1 (AI Deal Narrative) and F41-V2 (Consumer Opportunity Explanation)."
+    },
+    {
+      "id": "F42",
+      "v1_title": "Smart alert frequency throttling",
+      "v1_solution": "Adaptive alert dispatch frequency based on deal quality, user interaction, and price change velocity.",
+      "v1_acceptance": "Limits non-critical alerts to maximum 1 per 24 hours per route unless price drops > 15%.",
+      "v2_title": "Intelligent Watch Episode Management",
+      "v2_solution": "State-machine tracking alert episode lifecycles (ENTERED, IMPROVED, EXITED, REENTERED) preventing notification spam.",
+      "v2_acceptance": "Suppresses alerts within same episode unless price improves by at least the configured threshold.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F42-V1 (Smart Alert Frequency) and F42-V2 (Intelligent Watch Episode Management)."
+    },
+    {
+      "id": "F43",
+      "v1_title": "Weekly deal digest email",
+      "v1_solution": "Consolidated weekly summary of top opportunities matching user watchlists and saved routes.",
+      "v1_acceptance": "Dispatches scheduled weekly digest respecting unsubscribe and notification preferences.",
+      "v2_title": "Consolidated Opportunity Digest",
+      "v2_solution": "Aggregated multi-route report grouping verified deals by destination region and departure month.",
+      "v2_acceptance": "Generates structured multi-destination opportunity digest from active generations.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F43-V1 (Weekly Deal Digest) and F43-V2 (Consolidated Opportunity Digest)."
+    },
+    {
+      "id": "F44",
+      "v1_title": "Personalized deal feed",
+      "v1_solution": "Collaborative filtering and interest-based ranking personalizing the deal feed per user.",
+      "v1_acceptance": "Ranks user-preferred origins and destinations higher without hiding exceptional universal deals.",
+      "v2_title": "Rule-Based Personalized Feed",
+      "v2_solution": "Deterministic preference matching prioritizing explicit user travel parameters and budgets.",
+      "v2_acceptance": "Filters and sorts feed according to explicit user settings with zero opaque ML bias.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F44-V1 (Personalized Deal Feed) and F44-V2 (Rule-Based Personalized Feed)."
+    },
+    {
+      "id": "F45",
+      "v1_title": "Social shareable deal cards",
+      "v1_solution": "Dynamic Open Graph and social media card image generation highlighting deal price and savings.",
+      "v1_acceptance": "Generates valid 1200x630 OG preview cards with exact deal details and brand attribution.",
+      "v2_title": "Public Opportunity URLs",
+      "v2_solution": "Permanent shareable URLs for individual opportunities with real-time freshness and expiry status.",
+      "v2_acceptance": "Public links resolve to live opportunity or display clear EXPIRED notice with alternative deals.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F45-V1 (Social Shareable Cards) and F45-V2 (Public Opportunity URLs)."
+    },
+    {
+      "id": "F46",
+      "v1_title": "Curated editorial collections",
+      "v1_solution": "Editorially maintained collections (e.g., Summer Beach Getaways, Visa-Free Escapes) grouping related routes.",
+      "v1_acceptance": "Collections display curated thematic deals with active validation against current generation.",
+      "v2_title": "Dynamic Editorial Collections",
+      "v2_solution": "Algorithmic collections dynamically populated based on tag taxonomies and pricing anomalies.",
+      "v2_acceptance": "Auto-updates collections when new qualified deals enter the active generation.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F46-V1 (Curated Editorial Collections) and F46-V2 (Dynamic Editorial Collections)."
+    },
+    {
+      "id": "F47",
+      "v1_title": "Multi-provider price cross-check",
+      "v1_solution": "Simultaneous multi-source price cross-verification comparing GDS, OTA, and direct airline pricing.",
+      "v1_acceptance": "Cross-checks at least 2 independent provider sources before labeling a deal as VERIFIED_LOWEST.",
+      "v2_title": "Provider Trust Metric",
+      "v2_solution": "Empirical scoring of provider price accuracy based on downstream verification success rates.",
+      "v2_acceptance": "Downweights providers with price mismatch rates > 15% in RouteBest selection.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F47-V1 (Multi-Provider Cross-Check) and F47-V2 (Provider Trust Metric)."
+    },
+    {
+      "id": "F48",
+      "v1_title": "Historical price search on demand",
+      "v1_solution": "Interactive historical price lookup allowing users to query past fare distributions for any route.",
+      "v1_acceptance": "Renders 30/60/90-day price distribution percentile charts on demand.",
+      "v2_title": "Adaptive Scan Priority",
+      "v2_solution": "Dynamic crawler scheduling increasing scan frequency for volatile or high-demand routes.",
+      "v2_acceptance": "Allocates scan quota proportionally to route volatility and user watch density.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F48-V1 (Historical Price Search) and F48-V2 (Adaptive Scan Priority)."
+    },
+    {
+      "id": "F86",
+      "v1_title": "Multi-city & open-jaw routing",
+      "v1_solution": "Multi-leg flight routing engine detecting open-jaw and complex itinerary opportunities.",
+      "v1_acceptance": "Correctly prices and links multi-city itineraries without leg decoupling errors.",
+      "v2_title": "Open-Jaw Routing Architecture",
+      "v2_solution": "Specialized graph-based open-jaw route generator optimizing multi-city surface sectors.",
+      "v2_acceptance": "Identifies cheaper open-jaw alternatives where overland transit saves > 25% total airfare.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F86-V1 (Multi-City & Open-Jaw) and F86-V2 (Open-Jaw Routing Architecture)."
+    },
+    {
+      "id": "F87",
+      "v1_title": "Group booking optimization",
+      "v1_solution": "Multi-passenger fare bucket tiering analyzer optimizing split bookings across fare classes.",
+      "v1_acceptance": "Flags when booking 4 passengers as 2+2 saves money due to single-seat fare bucket boundaries.",
+      "v2_title": "Collaborative Group Planning",
+      "v2_solution": "Multi-user shared trip planning workspace with voting and split payment coordination.",
+      "v2_acceptance": "Enables multiple authenticated users to vote on candidate opportunities.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F87-V1 (Group Booking Optimization) and F87-V2 (Collaborative Group Planning)."
+    },
+    {
+      "id": "F88",
+      "v1_title": "Visa & entry requirement integration",
+      "v1_solution": "Timely visa and travel readiness status indicators bound to destination airports and citizen passports.",
+      "v1_acceptance": "Displays accurate visa-free duration, e-visa requirements, and passport validity rules.",
+      "v2_title": "Travel Readiness Feed",
+      "v2_solution": "Real-time entry regulation and border advisory alert stream updating travel requirements.",
+      "v2_acceptance": "Flags travel advisory changes within 24 hours of official government publication.",
+      "relationship": "DISTINCT_REQUIREMENT",
+      "resolution": "Preserved as dual future capabilities F88-V1 (Visa & Entry Integration) and F88-V2 (Travel Readiness Feed)."
+    }
+  ],
+  "reconciled_variants": [
+    {
+      "variant_id": "F36-V1",
+      "historical_capability_id": "F36",
+      "version": "V1_AUTHENTIC",
+      "title": "Trust-calibrated Buy/Wait guidance",
+      "solution": "Calibrated historical route distribution analysis providing justified BUY, MONITOR, or WAIT signals with uncertainty boundaries.",
+      "acceptance_criteria": "Never displays definitive BUY recommendation when sample size < 10 or price variance is uncalibrated.",
+      "resolution": "Preserved as dual future capabilities F36-V1 (Buy/Wait Guidance) and F36-V2 (Trip-Length Optimizer)."
+    },
+    {
+      "variant_id": "F36-V2",
+      "historical_capability_id": "F36",
+      "version": "V2_ALTERNATIVE",
+      "title": "Trip-Length Optimizer",
+      "solution": "Multi-day stay length duration matrix optimizing cheapest return date offset based on observed departure cohorts.",
+      "acceptance_criteria": "Matrix accurately identifies price inflection points across stay durations of 3 to 14 days.",
+      "resolution": "Preserved as dual future capabilities F36-V1 (Buy/Wait Guidance) and F36-V2 (Trip-Length Optimizer)."
+    },
+    {
+      "variant_id": "F37-V1",
+      "historical_capability_id": "F37",
+      "version": "V1_AUTHENTIC",
+      "title": "Price anomaly detection",
+      "solution": "Median Absolute Deviation (MAD) robust outlier detection distinguishing genuine price drops from data glitches.",
+      "acceptance_criteria": "Zero fares, negative prices, and 10x spikes flagged as SUSPECTED_DATA_GLITCH; drops require MAD >= 2.5 and sample >= 10.",
+      "resolution": "Preserved as dual future capabilities F37-V1 (Price Anomaly Detection) and F37-V2 (Weekend Escape Finder)."
+    },
+    {
+      "variant_id": "F37-V2",
+      "historical_capability_id": "F37",
+      "version": "V2_ALTERNATIVE",
+      "title": "Weekend Escape Finder",
+      "solution": "Automated Thursday-to-Sunday or Friday-to-Monday weekend getaway finder across all monitored domestic/regional destinations.",
+      "acceptance_criteria": "Correctly binds weekend calendar windows to observed flight schedules without false availability.",
+      "resolution": "Preserved as dual future capabilities F37-V1 (Price Anomaly Detection) and F37-V2 (Weekend Escape Finder)."
+    },
+    {
+      "variant_id": "F38-V1",
+      "historical_capability_id": "F38",
+      "version": "V1_AUTHENTIC",
+      "title": "Holiday/Tet price surge calendar",
+      "solution": "Historical lunar calendar and statutory holiday price surge pattern analysis indicating peak multiplier horizons.",
+      "acceptance_criteria": "Forecasts Tet surge window with historical baseline dates and confidence intervals.",
+      "resolution": "Preserved as dual future capabilities F38-V1 (Holiday Surge Calendar) and F38-V2 (Holiday Calendar Matrix)."
+    },
+    {
+      "variant_id": "F38-V2",
+      "historical_capability_id": "F38",
+      "version": "V2_ALTERNATIVE",
+      "title": "Holiday Calendar Matrix",
+      "solution": "Comprehensive national holiday calendar grid mapping public holidays to observed route pricing tiers.",
+      "acceptance_criteria": "Maps public holidays for Vietnam and ASEAN destinations with accurate date offsets.",
+      "resolution": "Preserved as dual future capabilities F38-V1 (Holiday Surge Calendar) and F38-V2 (Holiday Calendar Matrix)."
+    },
+    {
+      "variant_id": "F39-V1",
+      "historical_capability_id": "F39",
+      "version": "V1_AUTHENTIC",
+      "title": "Nearby airport comparison",
+      "solution": "Multi-airport catchment area price comparison evaluating total transit cost/time trade-offs.",
+      "acceptance_criteria": "Displays alternative departures within 150km with ground transport estimates.",
+      "resolution": "Preserved as dual future capabilities F39-V1 (Nearby Airport Comparison) and F39-V2 (Nearby Airport Economics)."
+    },
+    {
+      "variant_id": "F39-V2",
+      "historical_capability_id": "F39",
+      "version": "V2_ALTERNATIVE",
+      "title": "Nearby Airport Economics",
+      "solution": "Mathematical optimization of airfare delta vs secondary ground transit expense and duration.",
+      "acceptance_criteria": "Flags nearby airport only if net savings exceed estimated ground transfer cost.",
+      "resolution": "Preserved as dual future capabilities F39-V1 (Nearby Airport Comparison) and F39-V2 (Nearby Airport Economics)."
+    },
+    {
+      "variant_id": "F40-V1",
+      "historical_capability_id": "F40",
+      "version": "V1_AUTHENTIC",
+      "title": "Hidden fee & total cost estimator",
+      "solution": "Deterministic airline-specific ancillary fee model calculating true all-in checkout price.",
+      "acceptance_criteria": "Itemizes seat selection, baggage tiers, and payment processing fees with breakdown.",
+      "resolution": "Preserved as dual future capabilities F40-V1 (Hidden Fee Estimator) and F40-V2 (Itinerary Quality Score)."
+    },
+    {
+      "variant_id": "F40-V2",
+      "historical_capability_id": "F40",
+      "version": "V2_ALTERNATIVE",
+      "title": "Itinerary Quality Score",
+      "solution": "Multi-factor composite scoring layover duration, red-eye flights, self-transfer risks, and airline punctuality.",
+      "acceptance_criteria": "Calculates 0-100 quality score penalizing self-transfers and layovers > 8 hours.",
+      "resolution": "Preserved as dual future capabilities F40-V1 (Hidden Fee Estimator) and F40-V2 (Itinerary Quality Score)."
+    },
+    {
+      "variant_id": "F41-V1",
+      "historical_capability_id": "F41",
+      "version": "V1_AUTHENTIC",
+      "title": "AI deal narrative & explanation",
+      "solution": "Grounded natural language generation explaining why a deal is exceptional using cohort evidence.",
+      "acceptance_criteria": "Explanations cite exact percentile and historical baseline; never hallucinate unverified savings.",
+      "resolution": "Preserved as dual future capabilities F41-V1 (AI Deal Narrative) and F41-V2 (Consumer Opportunity Explanation)."
+    },
+    {
+      "variant_id": "F41-V2",
+      "historical_capability_id": "F41",
+      "version": "V2_ALTERNATIVE",
+      "title": "Consumer Opportunity Explanation",
+      "solution": "Rule-based structured evidence cards breaking down discount drivers, seasonality, and risk indicators.",
+      "acceptance_criteria": "Renders standardized reason chips backed by mathematical cohort comparison.",
+      "resolution": "Preserved as dual future capabilities F41-V1 (AI Deal Narrative) and F41-V2 (Consumer Opportunity Explanation)."
+    },
+    {
+      "variant_id": "F42-V1",
+      "historical_capability_id": "F42",
+      "version": "V1_AUTHENTIC",
+      "title": "Smart alert frequency throttling",
+      "solution": "Adaptive alert dispatch frequency based on deal quality, user interaction, and price change velocity.",
+      "acceptance_criteria": "Limits non-critical alerts to maximum 1 per 24 hours per route unless price drops > 15%.",
+      "resolution": "Preserved as dual future capabilities F42-V1 (Smart Alert Frequency) and F42-V2 (Intelligent Watch Episode Management)."
+    },
+    {
+      "variant_id": "F42-V2",
+      "historical_capability_id": "F42",
+      "version": "V2_ALTERNATIVE",
+      "title": "Intelligent Watch Episode Management",
+      "solution": "State-machine tracking alert episode lifecycles (ENTERED, IMPROVED, EXITED, REENTERED) preventing notification spam.",
+      "acceptance_criteria": "Suppresses alerts within same episode unless price improves by at least the configured threshold.",
+      "resolution": "Preserved as dual future capabilities F42-V1 (Smart Alert Frequency) and F42-V2 (Intelligent Watch Episode Management)."
+    },
+    {
+      "variant_id": "F43-V1",
+      "historical_capability_id": "F43",
+      "version": "V1_AUTHENTIC",
+      "title": "Weekly deal digest email",
+      "solution": "Consolidated weekly summary of top opportunities matching user watchlists and saved routes.",
+      "acceptance_criteria": "Dispatches scheduled weekly digest respecting unsubscribe and notification preferences.",
+      "resolution": "Preserved as dual future capabilities F43-V1 (Weekly Deal Digest) and F43-V2 (Consolidated Opportunity Digest)."
+    },
+    {
+      "variant_id": "F43-V2",
+      "historical_capability_id": "F43",
+      "version": "V2_ALTERNATIVE",
+      "title": "Consolidated Opportunity Digest",
+      "solution": "Aggregated multi-route report grouping verified deals by destination region and departure month.",
+      "acceptance_criteria": "Generates structured multi-destination opportunity digest from active generations.",
+      "resolution": "Preserved as dual future capabilities F43-V1 (Weekly Deal Digest) and F43-V2 (Consolidated Opportunity Digest)."
+    },
+    {
+      "variant_id": "F44-V1",
+      "historical_capability_id": "F44",
+      "version": "V1_AUTHENTIC",
+      "title": "Personalized deal feed",
+      "solution": "Collaborative filtering and interest-based ranking personalizing the deal feed per user.",
+      "acceptance_criteria": "Ranks user-preferred origins and destinations higher without hiding exceptional universal deals.",
+      "resolution": "Preserved as dual future capabilities F44-V1 (Personalized Deal Feed) and F44-V2 (Rule-Based Personalized Feed)."
+    },
+    {
+      "variant_id": "F44-V2",
+      "historical_capability_id": "F44",
+      "version": "V2_ALTERNATIVE",
+      "title": "Rule-Based Personalized Feed",
+      "solution": "Deterministic preference matching prioritizing explicit user travel parameters and budgets.",
+      "acceptance_criteria": "Filters and sorts feed according to explicit user settings with zero opaque ML bias.",
+      "resolution": "Preserved as dual future capabilities F44-V1 (Personalized Deal Feed) and F44-V2 (Rule-Based Personalized Feed)."
+    },
+    {
+      "variant_id": "F45-V1",
+      "historical_capability_id": "F45",
+      "version": "V1_AUTHENTIC",
+      "title": "Social shareable deal cards",
+      "solution": "Dynamic Open Graph and social media card image generation highlighting deal price and savings.",
+      "acceptance_criteria": "Generates valid 1200x630 OG preview cards with exact deal details and brand attribution.",
+      "resolution": "Preserved as dual future capabilities F45-V1 (Social Shareable Cards) and F45-V2 (Public Opportunity URLs)."
+    },
+    {
+      "variant_id": "F45-V2",
+      "historical_capability_id": "F45",
+      "version": "V2_ALTERNATIVE",
+      "title": "Public Opportunity URLs",
+      "solution": "Permanent shareable URLs for individual opportunities with real-time freshness and expiry status.",
+      "acceptance_criteria": "Public links resolve to live opportunity or display clear EXPIRED notice with alternative deals.",
+      "resolution": "Preserved as dual future capabilities F45-V1 (Social Shareable Cards) and F45-V2 (Public Opportunity URLs)."
+    },
+    {
+      "variant_id": "F46-V1",
+      "historical_capability_id": "F46",
+      "version": "V1_AUTHENTIC",
+      "title": "Curated editorial collections",
+      "solution": "Editorially maintained collections (e.g., Summer Beach Getaways, Visa-Free Escapes) grouping related routes.",
+      "acceptance_criteria": "Collections display curated thematic deals with active validation against current generation.",
+      "resolution": "Preserved as dual future capabilities F46-V1 (Curated Editorial Collections) and F46-V2 (Dynamic Editorial Collections)."
+    },
+    {
+      "variant_id": "F46-V2",
+      "historical_capability_id": "F46",
+      "version": "V2_ALTERNATIVE",
+      "title": "Dynamic Editorial Collections",
+      "solution": "Algorithmic collections dynamically populated based on tag taxonomies and pricing anomalies.",
+      "acceptance_criteria": "Auto-updates collections when new qualified deals enter the active generation.",
+      "resolution": "Preserved as dual future capabilities F46-V1 (Curated Editorial Collections) and F46-V2 (Dynamic Editorial Collections)."
+    },
+    {
+      "variant_id": "F47-V1",
+      "historical_capability_id": "F47",
+      "version": "V1_AUTHENTIC",
+      "title": "Multi-provider price cross-check",
+      "solution": "Simultaneous multi-source price cross-verification comparing GDS, OTA, and direct airline pricing.",
+      "acceptance_criteria": "Cross-checks at least 2 independent provider sources before labeling a deal as VERIFIED_LOWEST.",
+      "resolution": "Preserved as dual future capabilities F47-V1 (Multi-Provider Cross-Check) and F47-V2 (Provider Trust Metric)."
+    },
+    {
+      "variant_id": "F47-V2",
+      "historical_capability_id": "F47",
+      "version": "V2_ALTERNATIVE",
+      "title": "Provider Trust Metric",
+      "solution": "Empirical scoring of provider price accuracy based on downstream verification success rates.",
+      "acceptance_criteria": "Downweights providers with price mismatch rates > 15% in RouteBest selection.",
+      "resolution": "Preserved as dual future capabilities F47-V1 (Multi-Provider Cross-Check) and F47-V2 (Provider Trust Metric)."
+    },
+    {
+      "variant_id": "F48-V1",
+      "historical_capability_id": "F48",
+      "version": "V1_AUTHENTIC",
+      "title": "Historical price search on demand",
+      "solution": "Interactive historical price lookup allowing users to query past fare distributions for any route.",
+      "acceptance_criteria": "Renders 30/60/90-day price distribution percentile charts on demand.",
+      "resolution": "Preserved as dual future capabilities F48-V1 (Historical Price Search) and F48-V2 (Adaptive Scan Priority)."
+    },
+    {
+      "variant_id": "F48-V2",
+      "historical_capability_id": "F48",
+      "version": "V2_ALTERNATIVE",
+      "title": "Adaptive Scan Priority",
+      "solution": "Dynamic crawler scheduling increasing scan frequency for volatile or high-demand routes.",
+      "acceptance_criteria": "Allocates scan quota proportionally to route volatility and user watch density.",
+      "resolution": "Preserved as dual future capabilities F48-V1 (Historical Price Search) and F48-V2 (Adaptive Scan Priority)."
+    },
+    {
+      "variant_id": "F86-V1",
+      "historical_capability_id": "F86",
+      "version": "V1_AUTHENTIC",
+      "title": "Multi-city & open-jaw routing",
+      "solution": "Multi-leg flight routing engine detecting open-jaw and complex itinerary opportunities.",
+      "acceptance_criteria": "Correctly prices and links multi-city itineraries without leg decoupling errors.",
+      "resolution": "Preserved as dual future capabilities F86-V1 (Multi-City & Open-Jaw) and F86-V2 (Open-Jaw Routing Architecture)."
+    },
+    {
+      "variant_id": "F86-V2",
+      "historical_capability_id": "F86",
+      "version": "V2_ALTERNATIVE",
+      "title": "Open-Jaw Routing Architecture",
+      "solution": "Specialized graph-based open-jaw route generator optimizing multi-city surface sectors.",
+      "acceptance_criteria": "Identifies cheaper open-jaw alternatives where overland transit saves > 25% total airfare.",
+      "resolution": "Preserved as dual future capabilities F86-V1 (Multi-City & Open-Jaw) and F86-V2 (Open-Jaw Routing Architecture)."
+    },
+    {
+      "variant_id": "F87-V1",
+      "historical_capability_id": "F87",
+      "version": "V1_AUTHENTIC",
+      "title": "Group booking optimization",
+      "solution": "Multi-passenger fare bucket tiering analyzer optimizing split bookings across fare classes.",
+      "acceptance_criteria": "Flags when booking 4 passengers as 2+2 saves money due to single-seat fare bucket boundaries.",
+      "resolution": "Preserved as dual future capabilities F87-V1 (Group Booking Optimization) and F87-V2 (Collaborative Group Planning)."
+    },
+    {
+      "variant_id": "F87-V2",
+      "historical_capability_id": "F87",
+      "version": "V2_ALTERNATIVE",
+      "title": "Collaborative Group Planning",
+      "solution": "Multi-user shared trip planning workspace with voting and split payment coordination.",
+      "acceptance_criteria": "Enables multiple authenticated users to vote on candidate opportunities.",
+      "resolution": "Preserved as dual future capabilities F87-V1 (Group Booking Optimization) and F87-V2 (Collaborative Group Planning)."
+    },
+    {
+      "variant_id": "F88-V1",
+      "historical_capability_id": "F88",
+      "version": "V1_AUTHENTIC",
+      "title": "Visa & entry requirement integration",
+      "solution": "Timely visa and travel readiness status indicators bound to destination airports and citizen passports.",
+      "acceptance_criteria": "Displays accurate visa-free duration, e-visa requirements, and passport validity rules.",
+      "resolution": "Preserved as dual future capabilities F88-V1 (Visa & Entry Integration) and F88-V2 (Travel Readiness Feed)."
+    },
+    {
+      "variant_id": "F88-V2",
+      "historical_capability_id": "F88",
+      "version": "V2_ALTERNATIVE",
+      "title": "Travel Readiness Feed",
+      "solution": "Real-time entry regulation and border advisory alert stream updating travel requirements.",
+      "acceptance_criteria": "Flags travel advisory changes within 24 hours of official government publication.",
+      "resolution": "Preserved as dual future capabilities F88-V1 (Visa & Entry Integration) and F88-V2 (Travel Readiness Feed)."
+    }
+  ]
+}
