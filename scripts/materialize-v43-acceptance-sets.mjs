@@ -188,7 +188,6 @@ const capabilityAtoms = driftMatrix.discrepancies.map((c) => {
   let founder_commitment = 'AUTHORITY_UNRESOLVED';
   let conditional_trigger = null;
   let implementation_status = 'IMPLEMENTED';
-  let verification_status = 'TECHNICAL_VERIFIED';
   let semantic_variant = 'STANDARD';
 
   if (c.authentic_tier === 'P0') {
@@ -204,12 +203,10 @@ const capabilityAtoms = driftMatrix.discrepancies.map((c) => {
       founder_commitment = 'APPROVED_CONDITIONAL';
       conditional_trigger = 'FOUNDER_TICKETING_AMENDMENT_REQUIRED && OTA_LICENSING_VERIFIED';
       implementation_status = 'CONDITIONALLY_STAGED';
-      verification_status = 'TECHNICAL_VERIFIED';
     } else {
       founder_commitment = 'APPROVED_CONDITIONAL';
       conditional_trigger = 'FOUNDER_AUTH_TOKEN_REQUIRED && EXTERNAL_LICENSE_VERIFIED';
       implementation_status = 'CONDITIONALLY_STAGED';
-      verification_status = 'TECHNICAL_VERIFIED';
     }
   }
 
