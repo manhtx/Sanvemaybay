@@ -9,12 +9,9 @@ import path from 'node:path';
 const root = process.cwd();
 const v46Dir = path.join(root, 'docs/convergence/v46');
 
-const historicalGatesObj = JSON.parse(fs.readFileSync(path.join(v46Dir, 'HISTORICAL_ACCEPTANCE_267.json'), 'utf8'));
 const founderAtomsObj = JSON.parse(fs.readFileSync(path.join(v46Dir, 'FOUNDER_APPROVED_REQUIRED_ATOMS.json'), 'utf8'));
 const p2ReconciliationObj = JSON.parse(fs.readFileSync(path.join(v46Dir, 'P2_SEMANTIC_VARIANT_RECONCILIATION.json'), 'utf8'));
-const newGatesObj = JSON.parse(fs.readFileSync(path.join(v46Dir, 'NEW_SECURITY_ADVERSARIAL_AND_OUTCOME_GATES.json'), 'utf8'));
 const releaseTuple = JSON.parse(fs.readFileSync(path.join(v46Dir, 'RELEASE_TUPLE.json'), 'utf8'));
-const checkpoint = JSON.parse(fs.readFileSync(path.join(v46Dir, 'DURABLE_CHECKPOINT.json'), 'utf8'));
 
 let doc = `# FARELY PROJECT 10X — G46 LOSSLESS IMPLEMENTATION MASTER GOAL CANDIDATE
 # COMPILED BY G11 LOSSLESS COMPILER IN SAME WORKFLOW (2026-10-19)
