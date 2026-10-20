@@ -1,0 +1,3747 @@
+{
+  "contract_id": "FARELY-V50-HISTORICAL-ACCEPTANCE-267",
+  "version": "50.0.0",
+  "description": "The immutable set of 267 historical acceptance gates preserved without contract shrinkage, with authentic C1/C2 proof levels and non-empty invalidation dependencies.",
+  "composition": {
+    "requirements": 213,
+    "negative_controls": 35,
+    "user_journeys": 19,
+    "total_gates": 267
+  },
+  "priority_breakdown": {
+    "p0": 192,
+    "p1": 74,
+    "p2": 1
+  },
+  "proof_level_breakdown": {
+    "c1_code_verified": 182,
+    "c2_integration_verified": 85,
+    "c3_runtime_unproven": 0,
+    "c4_outcome_unproven": 0
+  },
+  "gates": [
+    {
+      "gate_id": "REQ-CONTROL-001",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "Capture Reality Baseline",
+      "acceptance_criteria": "CURRENT_BASELINE.json records git branch, head SHA, remote SHA, test counts, migration head, active generation, and provider health.",
+      "required_evidence_level": "E2",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-CONTROL-002",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "One Certification Control Plane",
+      "acceptance_criteria": "All active scripts and tests read from docs/convergence/ rather than .flycheap/. No dual authority.",
+      "required_evidence_level": "E2",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-CONTROL-003",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "Remove Hard-Coded Certification Values",
+      "acceptance_criteria": "Certification artifacts are generated from actual command and test execution rather than literal constants.",
+      "required_evidence_level": "E2",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-CONTROL-004",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "Fundamental Rewrite of Artifact Generator",
+      "acceptance_criteria": "generate-convergence-artifacts.mjs runs cleanly with 0 lint errors and computes counts dynamically.",
+      "required_evidence_level": "E2",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-CONTROL-005",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "Dynamic Test Counts From Runner Output",
+      "acceptance_criteria": "No hard-coded test totals in certification artifacts.",
+      "required_evidence_level": "E2",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-CONTROL-006",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "Dynamic Migration Count & Head",
+      "acceptance_criteria": "Actual file count and latest migration file name are dynamically detected.",
+      "required_evidence_level": "E2",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-CONTROL-007",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "Dynamic Git SHA Resolution",
+      "acceptance_criteria": "Release manifest and certification artifacts reflect actual git HEAD.",
+      "required_evidence_level": "E2",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-CONTROL-008",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "Dynamic Deployment Identity Verification",
+      "acceptance_criteria": "Probe queries https://farely.manhtx.com/release.json and observed-fares release_sha live.",
+      "required_evidence_level": "E6",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-CONTROL-009",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "Gate-Derived Readiness Score",
+      "acceptance_criteria": "Scorecard computes readiness percentage based on proven P0, P1, and P2 gates.",
+      "required_evidence_level": "E2",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-CONTROL-010",
+      "priority": "P0",
+      "category": "CONTROL_PLANE",
+      "title": "Registry Integrity Test",
+      "acceptance_criteria": "scripts/registry-integrity.node-test.mjs passes and fails closed if any ID is removed or priority weakened.",
+      "required_evidence_level": "E2",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/release-manifest.node-test.mjs",
+        "package.json"
+      ]
+    },
+    {
+      "gate_id": "REQ-REL-001",
+      "priority": "P0",
+      "category": "RELEASE_ENGINEERING",
+      "title": "Uncertified Source Mutation Prevention",
+      "acceptance_criteria": "Production deployment and crawlers only run on verified, certified commits.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs",
+        "vite.config.ts",
+        ".github/workflows/verify.yml"
+      ]
+    },
+    {
+      "gate_id": "REQ-REL-002",
+      "priority": "P0",
+      "category": "RELEASE_ENGINEERING",
+      "title": "Remove Crawler From Ordinary Push Trigger",
+      "acceptance_criteria": "Crawler runs only on schedule or workflow_dispatch, never on push to main.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs",
+        "vite.config.ts",
+        ".github/workflows/verify.yml"
+      ]
+    },
+    {
+      "gate_id": "REQ-REL-003",
+      "priority": "P0",
+      "category": "RELEASE_ENGINEERING",
+      "title": "Branch Protection & Required Verify Checks",
+      "acceptance_criteria": "Verify CI workflow on GitHub Actions passes with 100% green jobs.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs",
+        "vite.config.ts",
+        ".github/workflows/verify.yml"
+      ]
+    },
+    {
+      "gate_id": "REQ-REL-004",
+      "priority": "P0",
+      "category": "RELEASE_ENGINEERING",
+      "title": "Vercel Promotion Gating",
+      "acceptance_criteria": "Vercel production build corresponds strictly to verified commit SHA.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs",
+        "vite.config.ts",
+        ".github/workflows/verify.yml"
+      ]
+    },
+    {
+      "gate_id": "REQ-REL-005",
+      "priority": "P0",
+      "category": "RELEASE_ENGINEERING",
+      "title": "Supabase Exact SHA Deploy",
+      "acceptance_criteria": "DEPLOYED_COMMIT secret and runtime function metadata match git SHA.",
+      "required_evidence_level": "E6",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs",
+        "vite.config.ts",
+        ".github/workflows/verify.yml"
+      ]
+    },
+    {
+      "gate_id": "REQ-REL-006",
+      "priority": "P0",
+      "category": "RELEASE_ENGINEERING",
+      "title": "Release Fingerprint Across Components",
+      "acceptance_criteria": "docs/convergence/RELEASE_MANIFEST.json contains exact multi-component fingerprint.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs",
+        "vite.config.ts",
+        ".github/workflows/verify.yml"
+      ]
+    },
+    {
+      "gate_id": "REQ-REL-007",
+      "priority": "P0",
+      "category": "RELEASE_ENGINEERING",
+      "title": "Closure Does Not Invalidate Release Parity (F-01)",
+      "acceptance_criteria": "Final verified SHA matches currently deployed Vercel and Edge Function SHA identically.",
+      "required_evidence_level": "E7",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs",
+        "vite.config.ts",
+        ".github/workflows/verify.yml"
+      ]
+    },
+    {
+      "gate_id": "REQ-REL-008",
+      "priority": "P1",
+      "category": "RELEASE_ENGINEERING",
+      "title": "Rollback Metadata",
+      "acceptance_criteria": "RELEASE_POLICY.json documents explicit rollback procedures and previous known-good SHAs.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs",
+        "vite.config.ts",
+        ".github/workflows/verify.yml"
+      ]
+    },
+    {
+      "gate_id": "REQ-REL-009",
+      "priority": "P1",
+      "category": "RELEASE_ENGINEERING",
+      "title": "Contract Health vs Operational Health Discrimination",
+      "acceptance_criteria": "Correctly handling HTTP 503 is labeled contract compliance, not healthy service.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/release-manifest.node-test.mjs",
+        "vite.config.ts",
+        ".github/workflows/verify.yml"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-001",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "Canonical Pure Domain Module",
+      "acceptance_criteria": "src/domain/farely/ exports core types, entities, and decision algorithms with 0 React dependencies.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-002",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "Canonical TravelIntent Structure",
+      "acceptance_criteria": "TravelIntent models both exact dates and flexible windows without field collisions.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-003",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "JourneyType vs MarketScope Separation",
+      "acceptance_criteria": "trip_type is never overloaded to mean both roundtrip and domestic/international.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-004",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "LocationScope Architecture",
+      "acceptance_criteria": "BKK exact != DMK exact; Bangkok Metro includes both BKK and DMK.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-005",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "Central Airport and Metro Catalog",
+      "acceptance_criteria": "Search, Watch, API, and UI resolve city/airport groups through a shared resolver.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-006",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "Money and Pricing Unit Type",
+      "acceptance_criteria": "Prevents comparing per-traveler fare directly against party total.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-007",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "PassengerMix Capability Gating",
+      "acceptance_criteria": "Selecting multiple passengers never silently searches 1 adult without capability disclosure.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-008",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "Cabin Class Propagation",
+      "acceptance_criteria": "Business selection does not match Economy offers.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-009",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "Time Contract & UTC/Local Separation",
+      "acceptance_criteria": "Observation date is never mapped into departure date on historical charts.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-010",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "Separated Identity Taxonomy",
+      "acceptance_criteria": "Each entity has a distinct, typed identifier format.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-011",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "OfferVariantId Excludes Price",
+      "acceptance_criteria": "Price changing from 3.2M to 2.8M retains the same OfferVariantId.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-012",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "ObservationId Represents Timestamped Event",
+      "acceptance_criteria": "Observations capture variant, observedAt, provider, price, and currency.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-013",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "OpportunityId Represents Decision Aggregate",
+      "acceptance_criteria": "Distinct from raw OfferVariant hash.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-014",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "Canonical PriceScopeFingerprint",
+      "acceptance_criteria": "Prevents comparing fares across disparate scope, stops, or cabin dimensions.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DOM-015",
+      "priority": "P0",
+      "category": "DOMAIN_KERNEL",
+      "title": "TravelIntent Round-Trip Property Tests",
+      "acceptance_criteria": "Round-trip property test passes across 50 random generated intent variations.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/opportunityIdentity.ts",
+        "src/app/domain/costEpistemics.ts",
+        "src/app/domain/priceScope.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-001",
+      "priority": "P0",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Durable TravelIntent Table",
+      "acceptance_criteria": "Migration creates travel_intents table with constraints and JSON serialization.",
+      "required_evidence_level": "E4",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-002",
+      "priority": "P0",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Migrate user_alerts to Watch Schema",
+      "acceptance_criteria": "Columns last_attempt_at, last_successful_check_at, latest_eligible_price, last_matched_price added and populated.",
+      "required_evidence_level": "E4",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-003",
+      "priority": "P0",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Watch Evaluation History Table",
+      "acceptance_criteria": "Table created with foreign keys and status enum (STARTED, SUCCESS, INCOMPLETE, DEGRADED, FAILED).",
+      "required_evidence_level": "E4",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-004",
+      "priority": "P0",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Durable Watch Condition Episodes Table",
+      "acceptance_criteria": "Table tracks opened_at, closed_at, entry_price, best_price, condition state.",
+      "required_evidence_level": "E4",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-005",
+      "priority": "P0",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Transactional Notification Outbox Table",
+      "acceptance_criteria": "Dedupe key is bound to notification episode/event, not permanent opportunity.",
+      "required_evidence_level": "E4",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-006",
+      "priority": "P0",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Notification Delivery Attempts Table",
+      "acceptance_criteria": "Delivery history tracked cleanly across retry attempts.",
+      "required_evidence_level": "E4",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-007",
+      "priority": "P0",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Observed Fare Generations Registry",
+      "acceptance_criteria": "Generation promotion updates state atomically.",
+      "required_evidence_level": "E4",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-008",
+      "priority": "P0",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Reader-Safe Generation Retirement",
+      "acceptance_criteria": "Active readers pinned to previous generation do not fail during generation rotation.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-009",
+      "priority": "P0",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Long-Lived Normalized Price History",
+      "acceptance_criteria": "Historical records include observedAt, depart/return, OfferVariant identity, cabin, price, provider.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-DATA-010",
+      "priority": "P1",
+      "category": "DATABASE_ARCHITECTURE",
+      "title": "Targeted Database Indexes",
+      "acceptance_criteria": "Indexes exist in migration and support fast query execution.",
+      "required_evidence_level": "E4",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "scripts/database-architecture-contract.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "REQ-SNAP-001",
+      "priority": "P0",
+      "category": "SNAPSHOT_SAFETY",
+      "title": "Candidate Generation Integrity Gate",
+      "acceptance_criteria": "Generations failing integrity checks are marked QUARANTINED and never promoted.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/snapshotAtomicity.ts",
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-SNAP-002",
+      "priority": "P0",
+      "category": "SNAPSHOT_SAFETY",
+      "title": "Incomplete Candidate Preserves Last-Known-Good",
+      "acceptance_criteria": "Previous active generation pointer remains active on crawler failure.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/snapshotAtomicity.ts",
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-SNAP-003",
+      "priority": "P0",
+      "category": "SNAPSHOT_SAFETY",
+      "title": "Fail Closed on Missing Active Pointer",
+      "acceptance_criteria": "Reader returns degraded_schema rather than unconstrained cross-generation records.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/snapshotAtomicity.ts",
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-SNAP-004",
+      "priority": "P0",
+      "category": "SNAPSHOT_SAFETY",
+      "title": "Pinned Watch Evaluations",
+      "acceptance_criteria": "Evaluator passes generation_id to all candidate queries.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/snapshotAtomicity.ts",
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-SNAP-005",
+      "priority": "P0",
+      "category": "SNAPSHOT_SAFETY",
+      "title": "Incomplete Query Fails Watch Closed",
+      "acceptance_criteria": "Evaluator records INCOMPLETE and does not update lastSuccessfulCheckAt.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/snapshotAtomicity.ts",
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-SNAP-006",
+      "priority": "P0",
+      "category": "SNAPSHOT_SAFETY",
+      "title": "Snapshot Promotion Concurrency Test",
+      "acceptance_criteria": "Automated test proves in-progress evaluation completes against original generation snapshot.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/snapshotAtomicity.ts",
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PAGE-001",
+      "priority": "P0",
+      "category": "PAGINATION",
+      "title": "Server-Side .range() Pagination",
+      "acceptance_criteria": "observed-fares Edge Function applies .range(start, start + pageSize - 1).",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs",
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PAGE-002",
+      "priority": "P0",
+      "category": "PAGINATION",
+      "title": "Real API Pagination Proof (>=205 Rows)",
+      "acceptance_criteria": "scripts/pagination-truth.node-test.mjs passes all page size and intersection assertions.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs",
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PAGE-003",
+      "priority": "P0",
+      "category": "PAGINATION",
+      "title": "Scale Pagination Proof (>1000 Rows)",
+      "acceptance_criteria": "Test verifies 1250 rows across 21 pages with 0 intersection.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs",
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PAGE-004",
+      "priority": "P0",
+      "category": "PAGINATION",
+      "title": "Global Eligibility Filters Before Pagination",
+      "acceptance_criteria": "Filters for stops, date ranges, region, and price execute in SQL/PostgREST before .range().",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs",
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PAGE-005",
+      "priority": "P0",
+      "category": "PAGINATION",
+      "title": "Deterministic Tie-Breaking",
+      "acceptance_criteria": "Queries append id ASC tie-breaker to prevent pagination jitter.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/pagination-truth.node-test.mjs",
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRICE-001",
+      "priority": "P0",
+      "category": "PRICE_TRUTH",
+      "title": "One Production selectRouteBest Engine",
+      "acceptance_criteria": "Tests import production module src/domain/farely/routeBest.ts directly.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "supabase/functions/_shared/observed-fares.ts",
+        "src/app/domain/costEpistemics.test.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRICE-002",
+      "priority": "P0",
+      "category": "PRICE_TRUTH",
+      "title": "Cheapest = Mathematical Minimum",
+      "acceptance_criteria": "Function returns lowest price candidate without heuristic alteration.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "supabase/functions/_shared/observed-fares.ts",
+        "src/app/domain/costEpistemics.test.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRICE-003",
+      "priority": "P0",
+      "category": "PRICE_TRUTH",
+      "title": "Deal Score Never Overrides Lower Price",
+      "acceptance_criteria": "Negative control NC-001 passes: lower price always wins Cheapest label.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "supabase/functions/_shared/observed-fares.ts",
+        "src/app/domain/costEpistemics.test.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRICE-004",
+      "priority": "P0",
+      "category": "PRICE_TRUTH",
+      "title": "Adversarial Price Truth Fixtures",
+      "acceptance_criteria": "Engine selects 4.265M direct minimum, discarding cheaper incompatible fares.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "supabase/functions/_shared/observed-fares.ts",
+        "src/app/domain/costEpistemics.test.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRICE-005",
+      "priority": "P0",
+      "category": "PRICE_TRUTH",
+      "title": "Input Shuffle Invariance",
+      "acceptance_criteria": "All 50 permutations yield identical minimum price.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "supabase/functions/_shared/observed-fares.ts",
+        "src/app/domain/costEpistemics.test.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRICE-006",
+      "priority": "P0",
+      "category": "PRICE_TRUTH",
+      "title": "Cross-Surface RouteBest Agreement",
+      "acceptance_criteria": "Shared domain kernel imported across all three feature modules.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "supabase/functions/_shared/observed-fares.ts",
+        "src/app/domain/costEpistemics.test.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-ALT-001",
+      "priority": "P0",
+      "category": "CHEAPER_ALTERNATIVE",
+      "title": "Global Query Cheaper Alternative",
+      "acceptance_criteria": "Cheaper alternative query executes globally on database/backend.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-ALT-002",
+      "priority": "P0",
+      "category": "CHEAPER_ALTERNATIVE",
+      "title": "Strict Alternative Compatibility",
+      "acceptance_criteria": "Incompatible flights are excluded from alternative recommendation.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-ALT-003",
+      "priority": "P0",
+      "category": "CHEAPER_ALTERNATIVE",
+      "title": "Alternative CTA Browser Navigation",
+      "acceptance_criteria": "Playwright E2E clicks alternative CTA and lands on valid canonical detail page.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-ALT-004",
+      "priority": "P0",
+      "category": "CHEAPER_ALTERNATIVE",
+      "title": "No False Alternative Banner",
+      "acceptance_criteria": "Banner condition evaluates strictly to null when deal is already cheapest.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/observed-fares/index.ts",
+        "src/app/data/api.ts",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-COMP-001",
+      "priority": "P0",
+      "category": "COMPARATOR",
+      "title": "One Comparator Implementation",
+      "acceptance_criteria": "src/domain/farely/comparator.ts is single source of comparison logic.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/observed-scope.ts",
+        "src/app/data/api.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COMP-002",
+      "priority": "P0",
+      "category": "COMPARATOR",
+      "title": "Unified Sample Size Thresholds",
+      "acceptance_criteria": "Threshold constants defined once in domain kernel and referenced everywhere.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/observed-scope.ts",
+        "src/app/data/api.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COMP-003",
+      "priority": "P0",
+      "category": "COMPARATOR",
+      "title": "Comparable Cohort Dimensions",
+      "acceptance_criteria": "Offers from different seasons or cabins are excluded from cohort median.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/observed-scope.ts",
+        "src/app/data/api.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COMP-004",
+      "priority": "P0",
+      "category": "COMPARATOR",
+      "title": "Observation Date Isolated From Travel Date",
+      "acceptance_criteria": "Regression test NC-007 passes: observation in October for flight in December never plots October as travel date.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/observed-scope.ts",
+        "src/app/data/api.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COMP-005",
+      "priority": "P0",
+      "category": "COMPARATOR",
+      "title": "Evidence Level Classification",
+      "acceptance_criteria": "Deal with N < 3 samples explicitly labeled INSUFFICIENT with no discount claim.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/observed-scope.ts",
+        "src/app/data/api.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COMP-006",
+      "priority": "P0",
+      "category": "COMPARATOR",
+      "title": "No Pseudo-Probability Confidence",
+      "acceptance_criteria": "UI displays qualitative evidence tier ('Đang tích lũy', 'Đầy đủ bằng chứng') rather than raw fake 92%.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/observed-scope.ts",
+        "src/app/data/api.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COMP-007",
+      "priority": "P0",
+      "category": "COMPARATOR",
+      "title": "Historical Lowest Claim Requires Proof",
+      "acceptance_criteria": "Label 'Thấp nhất lịch sử' only rendered when independent epoch criteria met.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/observed-scope.ts",
+        "src/app/data/api.ts",
+        "supabase/functions/observed-fares/index.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COST-001",
+      "priority": "P0",
+      "category": "TRUE_COST",
+      "title": "Consume providedHiddenCosts",
+      "acceptance_criteria": "Passing providedHiddenCosts overrides or augments default component calculations.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "src/app/components/AllInCostModal.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-COST-002",
+      "priority": "P0",
+      "category": "TRUE_COST",
+      "title": "Epistemic Cost Component Breakdown",
+      "acceptance_criteria": "Each cost component carries explicit epistemic status and disclosure text.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "src/app/components/AllInCostModal.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-COST-003",
+      "priority": "P0",
+      "category": "TRUE_COST",
+      "title": "Unknown Mandatory Cost != Zero",
+      "acceptance_criteria": "Negative control NC-033 passes: missing cost component renders 'Chưa rõ', not 0₫.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "src/app/components/AllInCostModal.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-COST-004",
+      "priority": "P0",
+      "category": "TRUE_COST",
+      "title": "Heuristic Baggage Not Called Real Total",
+      "acceptance_criteria": "UI shows 'Tối thiểu đã biết' plus 'Phụ phí ước tính'.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "src/app/components/AllInCostModal.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-COST-005",
+      "priority": "P0",
+      "category": "TRUE_COST",
+      "title": "Taxes Included Claim Proven by Source",
+      "acceptance_criteria": "Taxes included flag derives from provider metadata (e.g. Vietjet all-in quote).",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "src/app/components/AllInCostModal.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-COST-006",
+      "priority": "P1",
+      "category": "TRUE_COST",
+      "title": "Fare Family Baggage Priority",
+      "acceptance_criteria": "Engine checks offer-specific baggage allowance before falling back to airline rule.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "src/app/components/AllInCostModal.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEARCH-001",
+      "priority": "P0",
+      "category": "SEARCH_UI",
+      "title": "Search Constructs Canonical TravelIntent",
+      "acceptance_criteria": "Search form serializes to canonical intent URL parameters.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx",
+        "src/app/data/api.ts",
+        "src/app/components/DealFilters.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEARCH-002",
+      "priority": "P0",
+      "category": "SEARCH_UI",
+      "title": "Separate Departure Range from Round-Trip Return",
+      "acceptance_criteria": "distinct params departDateFrom/departDateTo vs returnDateFrom/returnDateTo.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx",
+        "src/app/data/api.ts",
+        "src/app/components/DealFilters.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEARCH-003",
+      "priority": "P0",
+      "category": "SEARCH_UI",
+      "title": "Cabin Visible Control Propagates",
+      "acceptance_criteria": "NC-021 passes: changing cabin to Business queries business class offers.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx",
+        "src/app/data/api.ts",
+        "src/app/components/DealFilters.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEARCH-004",
+      "priority": "P0",
+      "category": "SEARCH_UI",
+      "title": "Passenger Visible Control Propagates",
+      "acceptance_criteria": "NC-022 passes: passenger count affects party total calculation.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx",
+        "src/app/data/api.ts",
+        "src/app/components/DealFilters.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEARCH-005",
+      "priority": "P0",
+      "category": "SEARCH_UI",
+      "title": "Canonical Airport/City Picker",
+      "acceptance_criteria": "Selecting Bangkok (All) stores metro scope; selecting Suvarnabhumi stores exact BKK.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx",
+        "src/app/data/api.ts",
+        "src/app/components/DealFilters.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEARCH-006",
+      "priority": "P0",
+      "category": "SEARCH_UI",
+      "title": "Server-Side Metro Scope Expansion",
+      "acceptance_criteria": "NC-003 passes: BKK_METRO search returns DMK flights.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx",
+        "src/app/data/api.ts",
+        "src/app/components/DealFilters.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEARCH-007",
+      "priority": "P0",
+      "category": "SEARCH_UI",
+      "title": "Typed Search Error States",
+      "acceptance_criteria": "Search status envelope includes status code, query, and message.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx",
+        "src/app/data/api.ts",
+        "src/app/components/DealFilters.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEARCH-008",
+      "priority": "P0",
+      "category": "SEARCH_UI",
+      "title": "Provider Failure Never Masquerades as Empty",
+      "acceptance_criteria": "NC-011 passes: provider 500/503 renders error retry card, not empty inventory.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx",
+        "src/app/data/api.ts",
+        "src/app/components/DealFilters.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEARCH-009",
+      "priority": "P1",
+      "category": "SEARCH_UI",
+      "title": "Search Coverage Disclosure",
+      "acceptance_criteria": "User searching unmonitored route receives informative coverage message.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/SearchPage.tsx",
+        "src/app/data/api.ts",
+        "src/app/components/DealFilters.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-001",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Watch Stores Canonical TravelIntent",
+      "acceptance_criteria": "Watch record links to or embeds full TravelIntent JSON.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-002",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Detail to Watch Intent Preservation",
+      "acceptance_criteria": "Opening Watch modal from detail page pre-fills exact opportunity criteria.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-003",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Search to Watch Intent Preservation",
+      "acceptance_criteria": "Creating watch from search results preserves all active search constraints.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-004",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "No Hidden Default Route",
+      "acceptance_criteria": "Watch modal without context requires user to select origin and destination explicitly.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-005",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Round-Trip Return Semantics Exact",
+      "acceptance_criteria": "NC-006 passes: one-way flight or missing return date rejected by round-trip watch.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-006",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Persist Journey Type on Watch",
+      "acceptance_criteria": "Watch table stores journey_type column; matcher enforces it.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-007",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Persist Scope & Constraints on Watch",
+      "acceptance_criteria": "Matcher evaluates cabin and stops constraints stored in database.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-008",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Server Authoritative Authenticated Watch",
+      "acceptance_criteria": "Authenticated user loads watches directly from Supabase DB via RLS.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-009",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "No Stale Local Union",
+      "acceptance_criteria": "Logging in syncs local to remote only on explicit user confirmation or replaces cache.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-010",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Watch Mutation Rollback on Server Error",
+      "acceptance_criteria": "NC-016 passes: failed remote pause rolls back UI toggle to active.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-011",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Scoped Indexed Watch Matching",
+      "acceptance_criteria": "Matcher queries watches indexed to published generation route/date scope.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-012",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Page Failure Fails Evaluation Closed",
+      "acceptance_criteria": "NC-009 passes: truncated evaluation does not conclude no-match.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-013",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Separate Check and Matched Timestamps",
+      "acceptance_criteria": "Watch record maintains all three distinct timestamps.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-014",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Separate Observed, Eligible, Matched Prices",
+      "acceptance_criteria": "Non-matching observed price does not overwrite lastMatchedPrice.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-015",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Durable Condition Episodes",
+      "acceptance_criteria": "Watch episode state machine handles price movements across boundary.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-016",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Price Leaves Target Transitions to EXITED",
+      "acceptance_criteria": "NC-017 passes: price rising above target closes condition episode.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-017",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Re-Entry Opens New Episode",
+      "acceptance_criteria": "NC-018 passes: price dropping back below target triggers REENTERED.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-018",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Material Improvement Re-Alert",
+      "acceptance_criteria": "NC-019 passes: 10%+ further price drop inside episode emits new alert.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-019",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Expired Travel Windows Expire Watch",
+      "acceptance_criteria": "Evaluator marks watches with depart_date < today as expired.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-020",
+      "priority": "P0",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Scheduler Heartbeat Proven",
+      "acceptance_criteria": "Heartbeat records persisted to database and verifiable via API.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-WATCH-021",
+      "priority": "P1",
+      "category": "WATCH_SUBSYSTEM",
+      "title": "Anonymous Watch Integrity",
+      "acceptance_criteria": "UI requires email and Turnstile token before accepting anonymous watch.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/watch-condition.ts",
+        "supabase/functions/_shared/alert-matching.ts",
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-NOTIF-001",
+      "priority": "P0",
+      "category": "NOTIFICATION",
+      "title": "Transactional Notification Outbox",
+      "acceptance_criteria": "Notification records written to outbox table inside business transaction.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "supabase/migrations/20261008000100_outbox_queue_claim_and_dispatch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-NOTIF-002",
+      "priority": "P0",
+      "category": "NOTIFICATION",
+      "title": "Outbox Precedes Side Effect",
+      "acceptance_criteria": "Zero network side effects executed inside evaluation database transaction.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "supabase/migrations/20261008000100_outbox_queue_claim_and_dispatch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-NOTIF-003",
+      "priority": "P0",
+      "category": "NOTIFICATION",
+      "title": "Outbox Delivery Worker",
+      "acceptance_criteria": "Worker queries status=PENDING, delivers, and updates status=SENT.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "supabase/migrations/20261008000100_outbox_queue_claim_and_dispatch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-NOTIF-004",
+      "priority": "P0",
+      "category": "NOTIFICATION",
+      "title": "Bounded Retry Backoff",
+      "acceptance_criteria": "Retry policy calculates exact backoff schedule and caps at maximum attempts.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "supabase/migrations/20261008000100_outbox_queue_claim_and_dispatch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-NOTIF-005",
+      "priority": "P0",
+      "category": "NOTIFICATION",
+      "title": "Idempotency Key Per Notification Event",
+      "acceptance_criteria": "NC-020 passes: duplicate scheduler invocation produces identical dedupe_key and sends once.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "supabase/migrations/20261008000100_outbox_queue_claim_and_dispatch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-NOTIF-006",
+      "priority": "P0",
+      "category": "NOTIFICATION",
+      "title": "Re-Alert on New Episode / Material Improvement",
+      "acceptance_criteria": "Evaluator checks episode status and price delta before deduplicating.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "supabase/migrations/20261008000100_outbox_queue_claim_and_dispatch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-NOTIF-007",
+      "priority": "P0",
+      "category": "NOTIFICATION",
+      "title": "Channel Respect Discipline",
+      "acceptance_criteria": "Dispatcher routes strictly to channels configured on Watch record.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "supabase/migrations/20261008000100_outbox_queue_claim_and_dispatch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-NOTIF-008",
+      "priority": "P0",
+      "category": "NOTIFICATION",
+      "title": "Provider Delivery ID & Status Storage",
+      "acceptance_criteria": "delivery_attempts table records provider ID and HTTP status code.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "supabase/migrations/20261008000100_outbox_queue_claim_and_dispatch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-NOTIF-009",
+      "priority": "P1",
+      "category": "NOTIFICATION",
+      "title": "Detection to Delivery Latency Tracking",
+      "acceptance_criteria": "Log and record duration between outbox created_at and sent_at.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/alert-processor/index.ts",
+        "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+        "supabase/migrations/20261008000100_outbox_queue_claim_and_dispatch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SAVED-001",
+      "priority": "P0",
+      "category": "SAVED",
+      "title": "Authenticated Saved Remote Authority",
+      "acceptance_criteria": "Bookmarks for authenticated users sync directly to user_saved_opportunities.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts",
+        "src/app/pages/SavedDealsPage.tsx",
+        "supabase/migrations/20261005000000_saved_opportunities_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SAVED-002",
+      "priority": "P0",
+      "category": "SAVED",
+      "title": "Anonymous Saved Local Allowed",
+      "acceptance_criteria": "Unauthenticated user saves items to localStorage without requiring login.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts",
+        "src/app/pages/SavedDealsPage.tsx",
+        "supabase/migrations/20261005000000_saved_opportunities_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SAVED-003",
+      "priority": "P0",
+      "category": "SAVED",
+      "title": "Explicit Login Merge Flow",
+      "acceptance_criteria": "Remote server state takes precedence on login with selective import.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts",
+        "src/app/pages/SavedDealsPage.tsx",
+        "supabase/migrations/20261005000000_saved_opportunities_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SAVED-004",
+      "priority": "P0",
+      "category": "SAVED",
+      "title": "Saved Mutation Rollback on Remote Failure",
+      "acceptance_criteria": "NC-015 passes: failed remote delete restores bookmark in UI.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts",
+        "src/app/pages/SavedDealsPage.tsx",
+        "supabase/migrations/20261005000000_saved_opportunities_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SAVED-005",
+      "priority": "P0",
+      "category": "SAVED",
+      "title": "Saved Persists Canonical Context",
+      "acceptance_criteria": "Saved record contains origin, destination, dates, cabin, saved price.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts",
+        "src/app/pages/SavedDealsPage.tsx",
+        "supabase/migrations/20261005000000_saved_opportunities_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SAVED-006",
+      "priority": "P0",
+      "category": "SAVED",
+      "title": "PriceScopeFingerprint Saved Current Price Resolution",
+      "acceptance_criteria": "Saved deal movement calculation requires matching TravelIntent scope.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts",
+        "src/app/pages/SavedDealsPage.tsx",
+        "supabase/migrations/20261005000000_saved_opportunities_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SAVED-007",
+      "priority": "P0",
+      "category": "SAVED",
+      "title": "Cross-Device Saved Integration Test",
+      "acceptance_criteria": "Playwright E2E verifies saved item restored in second browser context.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/bookmarks.ts",
+        "src/app/pages/SavedDealsPage.tsx",
+        "supabase/migrations/20261005000000_saved_opportunities_and_watch.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-001",
+      "priority": "P0",
+      "category": "PROVIDER",
+      "title": "FareProvider Interface",
+      "acceptance_criteria": "Provider adapter contract defined in domain kernel.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-002",
+      "priority": "P0",
+      "category": "PROVIDER",
+      "title": "Typed ProviderResult Taxonomy",
+      "acceptance_criteria": "Discriminated union covers all provider response states.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-003",
+      "priority": "P0",
+      "category": "PROVIDER",
+      "title": "No Generic Empty Array for Errors",
+      "acceptance_criteria": "Parser failure returns PARSER_SCHEMA_DRIFT or PROVIDER_ERROR.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-004",
+      "priority": "P0",
+      "category": "PROVIDER",
+      "title": "Fast-Flights Fallback Labeled DEGRADED",
+      "acceptance_criteria": "NC-012 passes: fallback window health labeled DEGRADED_COVERAGE.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-005",
+      "priority": "P0",
+      "category": "PROVIDER",
+      "title": "Valid Empty Requires Parse Evidence",
+      "acceptance_criteria": "Parser validates envelope structure before confirming empty inventory.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-006",
+      "priority": "P0",
+      "category": "PROVIDER",
+      "title": "Parser Tests Execute Production Parser",
+      "acceptance_criteria": "Deno and Node tests parse actual Amadeus and fast-flights JSON responses.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-007",
+      "priority": "P0",
+      "category": "PROVIDER",
+      "title": "Route & Window Status Tracking",
+      "acceptance_criteria": "Crawler writes window status to scan logs.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-008",
+      "priority": "P0",
+      "category": "PROVIDER",
+      "title": "Partial Route Failure Surfaces in Health",
+      "acceptance_criteria": "0/N windows successful on a route records route failure in scan run.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-009",
+      "priority": "P0",
+      "category": "PROVIDER",
+      "title": "OfferVariant Excludes Price",
+      "acceptance_criteria": "Deduplication key invariant tested: price change retains same itinerary key.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-010",
+      "priority": "P1",
+      "category": "PROVIDER",
+      "title": "Second Provider Architecture Ready",
+      "acceptance_criteria": "Provider adapter contract implemented for Amadeus in shared functions.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-011",
+      "priority": "P1",
+      "category": "PROVIDER",
+      "title": "Provider Kill Switch",
+      "acceptance_criteria": "Kill switch configuration tested in drills test suite.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PROV-012",
+      "priority": "P1",
+      "category": "PROVIDER",
+      "title": "Schema Drift Canaries",
+      "acceptance_criteria": "Automated test proves missing required fields trigger schema drift quarantine.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/flight-search.ts",
+        "supabase/functions/_shared/live-deal.ts",
+        "src/app/data/api.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COV-001",
+      "priority": "P1",
+      "category": "COVERAGE",
+      "title": "Accurate Fairness Baseline Labeling",
+      "acceptance_criteria": "Documentation and code comments describe scheduling policy truthfully.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "supabase/functions/_shared/flight-search.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COV-002",
+      "priority": "P1",
+      "category": "COVERAGE",
+      "title": "Demand-Aware Priority Scheduling",
+      "acceptance_criteria": "Routes with active watches prioritized in crawler selection queue.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "supabase/functions/_shared/flight-search.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COV-003",
+      "priority": "P1",
+      "category": "COVERAGE",
+      "title": "Route & Window Health Metrics",
+      "acceptance_criteria": "Crawler aggregates window stats and logs structured run summary.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "supabase/functions/_shared/flight-search.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-COV-004",
+      "priority": "P1",
+      "category": "COVERAGE",
+      "title": "UI Coverage Discrimination",
+      "acceptance_criteria": "Distinct user-facing messages for each case.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/refresh-observed-fares/index.ts",
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "supabase/functions/_shared/flight-search.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-001",
+      "priority": "P0",
+      "category": "SECURITY",
+      "title": "Database RLS CRUD Matrix Tests",
+      "acceptance_criteria": "All private user tables tested for tenant isolation.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-002",
+      "priority": "P0",
+      "category": "SECURITY",
+      "title": "Cross-Tenant Tampering Prevention",
+      "acceptance_criteria": "PostgREST queries across tenant boundaries return empty sets or 403.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-003",
+      "priority": "P0",
+      "category": "SECURITY",
+      "title": "WITH CHECK Semantics Enforcement",
+      "acceptance_criteria": "Postgres RLS policy rejects mismatched user_id on INSERT/UPDATE.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-004",
+      "priority": "P0",
+      "category": "SECURITY",
+      "title": "SECURITY DEFINER Audit",
+      "acceptance_criteria": "All SECURITY DEFINER functions explicitly declare SET search_path = public.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-005",
+      "priority": "P0",
+      "category": "SECURITY",
+      "title": "Secure search_path on DB Functions",
+      "acceptance_criteria": "Database linter checks pass on migration replay.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-006",
+      "priority": "P0",
+      "category": "SECURITY",
+      "title": "Revoke Public Execute Where Not Intended",
+      "acceptance_criteria": "Anon cannot invoke service-role-only database functions.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-007",
+      "priority": "P0",
+      "category": "SECURITY",
+      "title": "Service Role Secret Never Reaches Browser",
+      "acceptance_criteria": "Vite build inspects env; VITE_SUPABASE_SERVICE_ROLE_KEY is absent.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-008",
+      "priority": "P1",
+      "category": "SECURITY",
+      "title": "Edge Functions Threat Model",
+      "acceptance_criteria": "All Edge Functions reject non-POST, reject malformed payloads, and redact database errors.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-009",
+      "priority": "P1",
+      "category": "SECURITY",
+      "title": "Booking URL Allowlist",
+      "acceptance_criteria": "Unapproved hosts or non-HTTPS URLs are rejected.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-010",
+      "priority": "P1",
+      "category": "SECURITY",
+      "title": "Turnstile & Rate Limits for Sensitive Routes",
+      "acceptance_criteria": "Abuse protection tests pass in shared functions.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-011",
+      "priority": "P1",
+      "category": "SECURITY",
+      "title": "HMAC Signed Unsubscribe Tokens",
+      "acceptance_criteria": "Unsigned or tampered unsubscribe link rejected.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-012",
+      "priority": "P1",
+      "category": "SECURITY",
+      "title": "NPM Vulnerability Audit Threshold",
+      "acceptance_criteria": "0 high/critical vulnerabilities in dependencies.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEC-013",
+      "priority": "P1",
+      "category": "SECURITY",
+      "title": "OWASP ASVS Category Mapping",
+      "acceptance_criteria": "docs/convergence/SECURITY_REPORT.md includes ASVS mapping.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/_shared/internal-auth.ts",
+        "supabase/functions/_shared/turnstile.ts",
+        "supabase/migrations/20260901000000_security_foundation.sql"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRIV-001",
+      "priority": "P1",
+      "category": "PRIVACY",
+      "title": "Personal Data Inventory",
+      "acceptance_criteria": "Inventory covers email, user_id, preferences, bookmarks, IP hash.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/manage-user-data/index.ts",
+        "src/app/components/DataRightsPanel.tsx",
+        "src/app/pages/PrivacyPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRIV-002",
+      "priority": "P1",
+      "category": "PRIVACY",
+      "title": "Anonymous Watch Email Lifecycle",
+      "acceptance_criteria": "Anonymous email requires signed confirmation token before activation.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/manage-user-data/index.ts",
+        "src/app/components/DataRightsPanel.tsx",
+        "src/app/pages/PrivacyPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRIV-003",
+      "priority": "P1",
+      "category": "PRIVACY",
+      "title": "Complete Authenticated Data Export",
+      "acceptance_criteria": "Export endpoint returns JSON with user alerts, bookmarks, preferences.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/manage-user-data/index.ts",
+        "src/app/components/DataRightsPanel.tsx",
+        "src/app/pages/PrivacyPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRIV-004",
+      "priority": "P1",
+      "category": "PRIVACY",
+      "title": "Transactional Account Deletion Cascade",
+      "acceptance_criteria": "Deleting account removes user_alerts, user_bookmarks, preferences, and marks auth deleted.",
+      "required_evidence_level": "E4",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/manage-user-data/index.ts",
+        "src/app/components/DataRightsPanel.tsx",
+        "src/app/pages/PrivacyPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRIV-005",
+      "priority": "P1",
+      "category": "PRIVACY",
+      "title": "Defined Data Retention Policies",
+      "acceptance_criteria": "retention-cleanup function deletes expired records.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/manage-user-data/index.ts",
+        "src/app/components/DataRightsPanel.tsx",
+        "src/app/pages/PrivacyPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRIV-006",
+      "priority": "P1",
+      "category": "PRIVACY",
+      "title": "Truthful Privacy Policy",
+      "acceptance_criteria": "src/app/pages/PrivacyPage.tsx accurately lists all data processors.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/manage-user-data/index.ts",
+        "src/app/components/DataRightsPanel.tsx",
+        "src/app/pages/PrivacyPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRIV-007",
+      "priority": "P1",
+      "category": "PRIVACY",
+      "title": "Vietnamese Personal Data Gap Review",
+      "acceptance_criteria": "docs/convergence/PRIVACY_REPORT.md includes legal compliance review.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/manage-user-data/index.ts",
+        "src/app/components/DataRightsPanel.tsx",
+        "src/app/pages/PrivacyPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PRIV-008",
+      "priority": "P1",
+      "category": "PRIVACY",
+      "title": "Affiliate Monetization Transparency",
+      "acceptance_criteria": "Deals with affiliate links render explicit disclosure badge.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "supabase/functions/manage-user-data/index.ts",
+        "src/app/components/DataRightsPanel.tsx",
+        "src/app/pages/PrivacyPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-ANA-001",
+      "priority": "P1",
+      "category": "ANALYTICS",
+      "title": "Canonical Shared Event Taxonomy",
+      "acceptance_criteria": "Allow-listed event types validated by Edge Function.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts",
+        "supabase/functions/product-event/index.ts",
+        "supabase/functions/_shared/product-event.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-ANA-002",
+      "priority": "P1",
+      "category": "ANALYTICS",
+      "title": "Synthetic Events Quarantined",
+      "acceptance_criteria": "product-event function tags synthetic: true for automated test runs.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts",
+        "supabase/functions/product-event/index.ts",
+        "supabase/functions/_shared/product-event.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-ANA-003",
+      "priority": "P1",
+      "category": "ANALYTICS",
+      "title": "Privacy-Minimized Session Identity",
+      "acceptance_criteria": "Events carry ephemeral sessionId without raw IP or personal data.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts",
+        "supabase/functions/product-event/index.ts",
+        "supabase/functions/_shared/product-event.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-ANA-004",
+      "priority": "P1",
+      "category": "ANALYTICS",
+      "title": "Conversion Funnel Tracking",
+      "acceptance_criteria": "Telemetry emits events for each key funnel transition.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts",
+        "supabase/functions/product-event/index.ts",
+        "supabase/functions/_shared/product-event.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-ANA-005",
+      "priority": "P1",
+      "category": "ANALYTICS",
+      "title": "Observed vs Verified Discrepancy Persistence",
+      "acceptance_criteria": "Verification result records observedPrice, livePrice, absoluteDelta.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts",
+        "supabase/functions/product-event/index.ts",
+        "supabase/functions/_shared/product-event.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-ANA-006",
+      "priority": "P1",
+      "category": "ANALYTICS",
+      "title": "Outbound Click Never Counted as Booking",
+      "acceptance_criteria": "Event labeled booking_intent / outbound_click, never confirmed_booking.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/analytics.ts",
+        "supabase/functions/product-event/index.ts",
+        "supabase/functions/_shared/product-event.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-PERF-001",
+      "priority": "P1",
+      "category": "PERFORMANCE",
+      "title": "Eliminate Circular Performance Evidence",
+      "acceptance_criteria": "NC-023 passes: performance tests evaluate real generated dist assets.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/web-vitals.ts",
+        "vite.config.ts",
+        "src/main.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PERF-002",
+      "priority": "P1",
+      "category": "PERFORMANCE",
+      "title": "Measured Build Output Chunks",
+      "acceptance_criteria": "scripts/performance-budget.node-test.mjs asserts on dist/assets sizes.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/web-vitals.ts",
+        "vite.config.ts",
+        "src/main.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PERF-003",
+      "priority": "P1",
+      "category": "PERFORMANCE",
+      "title": "Lab Measurement on Critical Pages",
+      "acceptance_criteria": "Performance report records measured DOM elements and load timing.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/web-vitals.ts",
+        "vite.config.ts",
+        "src/main.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PERF-004",
+      "priority": "P1",
+      "category": "PERFORMANCE",
+      "title": "Core Web Vitals Targets",
+      "acceptance_criteria": "reportWebVitals collects Web Vitals in browser.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/web-vitals.ts",
+        "vite.config.ts",
+        "src/main.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PERF-005",
+      "priority": "P1",
+      "category": "PERFORMANCE",
+      "title": "Field Status Honest When Insufficient",
+      "acceptance_criteria": "Performance report explicitly flags field volume status.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/web-vitals.ts",
+        "vite.config.ts",
+        "src/main.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-PERF-006",
+      "priority": "P1",
+      "category": "PERFORMANCE",
+      "title": "Audit Unused Dependencies",
+      "acceptance_criteria": "package.json contains only required dependencies; build runs cleanly.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/lib/web-vitals.ts",
+        "vite.config.ts",
+        "src/main.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-A11Y-001",
+      "priority": "P1",
+      "category": "ACCESSIBILITY",
+      "title": "WCAG 2.2 AA Target for Core Journeys",
+      "acceptance_criteria": "Zero critical or serious accessibility violations.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/Navbar.tsx",
+        "src/app/components/DealCard.tsx",
+        "e2e/app.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-A11Y-002",
+      "priority": "P1",
+      "category": "ACCESSIBILITY",
+      "title": "Automated Axe Scanning",
+      "acceptance_criteria": "Playwright runs axe audit on Home, Search, Deals, Detail.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/Navbar.tsx",
+        "src/app/components/DealCard.tsx",
+        "e2e/app.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-A11Y-003",
+      "priority": "P1",
+      "category": "ACCESSIBILITY",
+      "title": "Keyboard-Only Navigation",
+      "acceptance_criteria": "Focusable elements reachable in logical tab order.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/Navbar.tsx",
+        "src/app/components/DealCard.tsx",
+        "e2e/app.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-A11Y-004",
+      "priority": "P1",
+      "category": "ACCESSIBILITY",
+      "title": "Visible Focus Indicators",
+      "acceptance_criteria": "focus-visible styles defined in CSS and visible on tab.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/Navbar.tsx",
+        "src/app/components/DealCard.tsx",
+        "e2e/app.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-A11Y-005",
+      "priority": "P1",
+      "category": "ACCESSIBILITY",
+      "title": "Modal Focus Trap & Restore",
+      "acceptance_criteria": "WatchModal traps Tab and restores focus on Escape/close.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/Navbar.tsx",
+        "src/app/components/DealCard.tsx",
+        "e2e/app.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-A11Y-006",
+      "priority": "P1",
+      "category": "ACCESSIBILITY",
+      "title": "Accessible Labels & Errors",
+      "acceptance_criteria": "Search form inputs have associated labels.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/Navbar.tsx",
+        "src/app/components/DealCard.tsx",
+        "e2e/app.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-A11Y-007",
+      "priority": "P1",
+      "category": "ACCESSIBILITY",
+      "title": "Async Live Region Announcements",
+      "acceptance_criteria": "Loading states and filter updates announced to screen readers.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/Navbar.tsx",
+        "src/app/components/DealCard.tsx",
+        "e2e/app.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-A11Y-008",
+      "priority": "P1",
+      "category": "ACCESSIBILITY",
+      "title": "Color Contrast Compliance",
+      "acceptance_criteria": "stone-900 on white canvas exceeds 12:1; stone-600 exceeds 4.8:1.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/Navbar.tsx",
+        "src/app/components/DealCard.tsx",
+        "e2e/app.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-A11Y-009",
+      "priority": "P1",
+      "category": "ACCESSIBILITY",
+      "title": "320px Reflow Without Horizontal Scroll",
+      "acceptance_criteria": "NC-024 passes: scrollWidth <= clientWidth at 320px width.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/Navbar.tsx",
+        "src/app/components/DealCard.tsx",
+        "e2e/app.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-001",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Search-First Above the Fold on Home",
+      "acceptance_criteria": "Home page renders compact search composer immediately visible.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-002",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Observed Opportunities List on Home",
+      "acceptance_criteria": "Home page displays recent verified opportunities.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-003",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Methodology Secondary to Utility",
+      "acceptance_criteria": "3 evaluation principles displayed calmly without dominating above-fold.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-004",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Compact Search Summary & Dominant Results",
+      "acceptance_criteria": "Search results grid scans route, carrier, price, stops, freshness clearly.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-005",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Functional & Understandable Filters",
+      "acceptance_criteria": "Applying stops, region, and price filters updates results deterministically.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-006",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Distinct Degraded vs Empty Visual States",
+      "acceptance_criteria": "Degraded banner displays amber warning with retry CTA; empty state offers search suggestions.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-007",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Flagship Opportunity Detail Screen",
+      "acceptance_criteria": "Detail screen renders full analytical context above fold with continuous sections below.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-008",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Avoid Nested Card Soup",
+      "acceptance_criteria": "Detail hero is single unified card with clear hierarchy.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-009",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Mobile Sticky Decision Bar",
+      "acceptance_criteria": "On screens < 640px, sticky bottom bar stays fixed.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-010",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Consumer Copy on Watch UI",
+      "acceptance_criteria": "Watch cards display friendly Vietnamese status labels.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-011",
+      "priority": "P1",
+      "category": "UX_DESIGN",
+      "title": "Traveler Shortlist Saved UX",
+      "acceptance_criteria": "Saved deals page allows comparing shortlisted opportunities.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-012",
+      "priority": "P1",
+      "category": "UX_DESIGN",
+      "title": "Mobile Bottom Navigation Bar",
+      "acceptance_criteria": "Bottom nav bar renders on screens < 768px in Root.tsx.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-013",
+      "priority": "P1",
+      "category": "UX_DESIGN",
+      "title": "Dedicated Mobile Layout Adaptation",
+      "acceptance_criteria": "Buttons and inputs have minimum 44px touch height on mobile.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-014",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Screenshots Across 6 Viewports",
+      "acceptance_criteria": "42 PNG screenshot artifacts captured in docs/convergence/screenshots/.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-015",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Realistic State Screenshot Coverage",
+      "acceptance_criteria": "Visual acceptance covers both populated and empty/error states.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-016",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Realistic Data in Visual Evidence",
+      "acceptance_criteria": "Real database fares (SGN->PQC, CXR->BKK) captured in screenshots.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-UX-017",
+      "priority": "P0",
+      "category": "UX_DESIGN",
+      "title": "Removal of Legacy Dark SaaS Styling",
+      "acceptance_criteria": "Search across active routes confirms 0 unreviewed slate-950 backgrounds.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/pages/HomePage.tsx",
+        "src/app/pages/DealsPage.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-001",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "Productize Flexible Fare Matrix",
+      "acceptance_criteria": "Domain module builds matrix with freshness labels and isGuaranteedLive=false.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-002",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "User-Accessible Flexible Calendar UI",
+      "acceptance_criteria": "UI renders flexible date matrix showing lowest observed prices.",
+      "required_evidence_level": "E5",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-003",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "Transparent Cell Status Labeling",
+      "acceptance_criteria": "isGuaranteedLive is strictly false on all matrix cells.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-004",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "Clicking Flexible Cell Constructs TravelIntent",
+      "acceptance_criteria": "Clicking cell updates depart/return dates and refreshes deal details.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-005",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "Any-Date Watch With Explicit Horizon",
+      "acceptance_criteria": "No unbounded infinite date-less Watch.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-006",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "Nearby Airport / Metro Intelligence",
+      "acceptance_criteria": "compareMetroAirports compares BKK vs DMK without fabricated ground costs.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-007",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "Budget Explore Capability",
+      "acceptance_criteria": "Explore surface queries observed fares grouped by destination.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-008",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "Fresh Price Verification Subsystem",
+      "acceptance_criteria": "verifyOfferPrice records observedPrice, verifiedPrice, percentageDelta, accuracyStatus.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-009",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "Transparent Verification Fallback",
+      "acceptance_criteria": "Unverified deal displays external deeplink to Google Flights with indicative disclosure.",
+      "required_evidence_level": "E3",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-FEAT-010",
+      "priority": "P1",
+      "category": "DIFFERENTIATION",
+      "title": "Predictive Forecasting Gated",
+      "acceptance_criteria": "UI shows historical trend without uncalibrated predictive buy/wait guarantee.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/components/ProvenanceBadge.tsx",
+        "src/app/components/RecheckFeedbackWidget.tsx",
+        "src/app/pages/DealDetailPage.tsx"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEO-001",
+      "priority": "P1",
+      "category": "SEO",
+      "title": "Remove Dead / Redirect Routes From Sitemap",
+      "acceptance_criteria": "scripts/generate-seo-assets.mjs includes only active indexable routes.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/generate-seo-assets.mjs",
+        "src/app/components/RouteMetadata.tsx",
+        "index.html"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEO-002",
+      "priority": "P1",
+      "category": "SEO",
+      "title": "Canonical Metadata on Public Pages",
+      "acceptance_criteria": "index.html and SEO scripts define canonical tags and OpenGraph tags.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/generate-seo-assets.mjs",
+        "src/app/components/RouteMetadata.tsx",
+        "index.html"
+      ]
+    },
+    {
+      "gate_id": "REQ-SEO-003",
+      "priority": "P2",
+      "category": "SEO",
+      "title": "App-First Posture Without Thin Pages",
+      "acceptance_criteria": "Sitemap contains curated canonical application routes.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/generate-seo-assets.mjs",
+        "src/app/components/RouteMetadata.tsx",
+        "index.html"
+      ]
+    },
+    {
+      "gate_id": "REQ-CLAIM-001",
+      "priority": "P0",
+      "category": "CLAIM_GLOSSARY",
+      "title": "Canonical Product Claim Contract",
+      "acceptance_criteria": "Product copy never claims 'lowest market price' or 'guaranteed' without evidence.",
+      "required_evidence_level": "E2",
+      "status": "C1_CODE_VERIFIED",
+      "invalidation_dependencies": [
+        "src/app/domain/costEpistemics.ts",
+        "docs/convergence/DECISIONS.md"
+      ]
+    },
+    {
+      "gate_id": "NC-001",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Deal score cannot override lower price for cheapest",
+      "acceptance_criteria": "Automated test verifying Deal score cannot override lower price for cheapest passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-002",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: DMK cannot satisfy exact BKK",
+      "acceptance_criteria": "Automated test verifying DMK cannot satisfy exact BKK passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-003",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: DMK can satisfy Bangkok Metro",
+      "acceptance_criteria": "Automated test verifying DMK can satisfy Bangkok Metro passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-004",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Business cannot match Economy intent",
+      "acceptance_criteria": "Automated test verifying Business cannot match Economy intent passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-005",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: 1-person pricing cannot satisfy 2-person party total",
+      "acceptance_criteria": "Automated test verifying 1-person pricing cannot satisfy 2-person party total passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-006",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Missing return cannot satisfy explicit round trip",
+      "acceptance_criteria": "Automated test verifying Missing return cannot satisfy explicit round trip passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-007",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Observation date cannot become departure date",
+      "acceptance_criteria": "Automated test verifying Observation date cannot become departure date passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-008",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: First 30 rows cannot certify global cheapest",
+      "acceptance_criteria": "Automated test verifying First 30 rows cannot certify global cheapest passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-009",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Partial Watch dataset cannot produce trustworthy no-match",
+      "acceptance_criteria": "Automated test verifying Partial Watch dataset cannot produce trustworthy no-match passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-010",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Generation promotion cannot break in-progress Watch evaluation",
+      "acceptance_criteria": "Automated test verifying Generation promotion cannot break in-progress Watch evaluation passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-011",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Provider parser exception cannot become healthy empty",
+      "acceptance_criteria": "Automated test verifying Provider parser exception cannot become healthy empty passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-012",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Known-weaker fallback cannot retain FULL_COVERAGE health",
+      "acceptance_criteria": "Automated test verifying Known-weaker fallback cannot retain FULL_COVERAGE health passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-013",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: User A cannot read User B Watch",
+      "acceptance_criteria": "Automated test verifying User A cannot read User B Watch passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-014",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: User A cannot update User B Saved record",
+      "acceptance_criteria": "Automated test verifying User A cannot update User B Saved record passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-015",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Failed remote Saved delete cannot remain locally successful",
+      "acceptance_criteria": "Automated test verifying Failed remote Saved delete cannot remain locally successful passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-016",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Failed remote Watch pause cannot remain shown as paused",
+      "acceptance_criteria": "Automated test verifying Failed remote Watch pause cannot remain shown as paused passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-017",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Price exits condition -> episode closes to EXITED",
+      "acceptance_criteria": "Automated test verifying Price exits condition -> episode closes to EXITED passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-018",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Price re-enters -> new eligible episode opens",
+      "acceptance_criteria": "Automated test verifying Price re-enters -> new eligible episode opens passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-019",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Later material price drop not permanently suppressed",
+      "acceptance_criteria": "Automated test verifying Later material price drop not permanently suppressed passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-020",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Duplicate notification worker invocation sends once",
+      "acceptance_criteria": "Automated test verifying Duplicate notification worker invocation sends once passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-021",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Visible cabin control must change downstream semantics",
+      "acceptance_criteria": "Automated test verifying Visible cabin control must change downstream semantics passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-022",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Visible passenger control must change downstream semantics",
+      "acceptance_criteria": "Automated test verifying Visible passenger control must change downstream semantics passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-023",
+      "priority": "P1",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Static PASS JSON cannot satisfy performance",
+      "acceptance_criteria": "Automated test verifying Static PASS JSON cannot satisfy performance passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-024",
+      "priority": "P1",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Screenshot existence cannot satisfy accessibility",
+      "acceptance_criteria": "Automated test verifying Screenshot existence cannot satisfy accessibility passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-025",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: HTTP 200 cannot certify complete journey",
+      "acceptance_criteria": "Automated test verifying HTTP 200 cannot certify complete journey passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-026",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: HTTP 503 handled correctly cannot certify healthy provider",
+      "acceptance_criteria": "Automated test verifying HTTP 503 handled correctly cannot certify healthy provider passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-027",
+      "priority": "P1",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Unreachable helper/page cannot satisfy feature gate",
+      "acceptance_criteria": "Automated test verifying Unreachable helper/page cannot satisfy feature gate passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-028",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Failed required Verify SHA cannot become certified production release",
+      "acceptance_criteria": "Automated test verifying Failed required Verify SHA cannot become certified production release passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-029",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Uncertified push cannot mutate production fare data",
+      "acceptance_criteria": "Automated test verifying Uncertified push cannot mutate production fare data passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-030",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Final report cannot create release drift",
+      "acceptance_criteria": "Automated test verifying Final report cannot create release drift passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-031",
+      "priority": "P1",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Synthetic E2E traffic cannot count as organic users",
+      "acceptance_criteria": "Automated test verifying Synthetic E2E traffic cannot count as organic users passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-032",
+      "priority": "P1",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Affiliate link cannot influence ranking silently",
+      "acceptance_criteria": "Automated test verifying Affiliate link cannot influence ranking silently passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-033",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Unknown optional/mandatory cost cannot become zero",
+      "acceptance_criteria": "Automated test verifying Unknown optional/mandatory cost cannot become zero passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-034",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Stale observation cannot be labeled fresh",
+      "acceptance_criteria": "Automated test verifying Stale observation cannot be labeled fresh passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "NC-035",
+      "priority": "P0",
+      "category": "NEGATIVE_CONTROL",
+      "title": "Negative Control: Feed with zero live deals cannot be called live-verification healthy",
+      "acceptance_criteria": "Automated test verifying Feed with zero live deals cannot be called live-verification healthy passes deterministically.",
+      "required_evidence_level": "E3",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-001",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Home Search -> real results",
+      "acceptance_criteria": "Playwright or integration test exercises Home Search -> real results successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-002",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Search -> Detail",
+      "acceptance_criteria": "Playwright or integration test exercises Search -> Detail successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-003",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Non-best detail -> cheaper compatible alternative",
+      "acceptance_criteria": "Playwright or integration test exercises Non-best detail -> cheaper compatible alternative successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-004",
+      "priority": "P1",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Detail -> verification",
+      "acceptance_criteria": "Playwright or integration test exercises Detail -> verification successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-005",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Search -> Watch preserves TravelIntent",
+      "acceptance_criteria": "Playwright or integration test exercises Search -> Watch preserves TravelIntent successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-006",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Detail -> Watch preserves TravelIntent",
+      "acceptance_criteria": "Playwright or integration test exercises Detail -> Watch preserves TravelIntent successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-007",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Watch target enters condition",
+      "acceptance_criteria": "Playwright or integration test exercises Watch target enters condition successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-008",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Condition creates outbox exactly once",
+      "acceptance_criteria": "Playwright or integration test exercises Condition creates outbox exactly once successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-009",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Delivery succeeds or retries",
+      "acceptance_criteria": "Playwright or integration test exercises Delivery succeeds or retries successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-010",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Condition exits on price rise",
+      "acceptance_criteria": "Playwright or integration test exercises Condition exits on price rise successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-011",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Condition re-enters and can alert again",
+      "acceptance_criteria": "Playwright or integration test exercises Condition re-enters and can alert again successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-012",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Saved creates remote record",
+      "acceptance_criteria": "Playwright or integration test exercises Saved creates remote record successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-013",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Saved survives second session/device",
+      "acceptance_criteria": "Playwright or integration test exercises Saved survives second session/device successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-014",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Saved delete rollback on backend failure",
+      "acceptance_criteria": "Playwright or integration test exercises Saved delete rollback on backend failure successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-015",
+      "priority": "P1",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Auth login/session/logout",
+      "acceptance_criteria": "Playwright or integration test exercises Auth login/session/logout successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-016",
+      "priority": "P1",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Password recovery flow",
+      "acceptance_criteria": "Playwright or integration test exercises Password recovery flow successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-017",
+      "priority": "P1",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Data export",
+      "acceptance_criteria": "Playwright or integration test exercises Data export successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-018",
+      "priority": "P1",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Safe account-delete integration",
+      "acceptance_criteria": "Playwright or integration test exercises Safe account-delete integration successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    },
+    {
+      "gate_id": "JOURNEY-019",
+      "priority": "P0",
+      "category": "CRITICAL_JOURNEY",
+      "title": "Journey: Provider outage displays error, not empty flights",
+      "acceptance_criteria": "Playwright or integration test exercises Provider outage displays error, not empty flights successfully.",
+      "required_evidence_level": "E5",
+      "status": "C2_INTEGRATION_VERIFIED",
+      "invalidation_dependencies": [
+        "e2e/app.spec.ts",
+        "e2e/v22-vertical-journeys.spec.ts",
+        "e2e/v32-journeys-j01-j10.spec.ts"
+      ]
+    }
+  ]
+}
