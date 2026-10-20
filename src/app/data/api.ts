@@ -977,6 +977,7 @@ export function filterDeals(deals: Deal[], params: {
   maxStops?: number;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
   maxFlightTimeMinutes?: number;
 }): Deal[] {
   const fromDate = params.departureFrom && /^\d{4}-\d{2}-\d{2}$/.test(params.departureFrom) ? params.departureFrom : undefined;
@@ -1013,6 +1014,7 @@ export function filterDeals(deals: Deal[], params: {
     if (params.maxStops != null && (d.stops == null || d.stops > params.maxStops)) return false;
     if (fromDate && d.departDate < fromDate) return false;
     if (toDate && d.departDate > toDate) return false;
+    if (params.returnDate && d.returnDate !== params.returnDate) return false;
     const duration = maxFlightTime == null ? undefined : durationInMinutes(d.duration);
     if (maxFlightTime != null && duration != null && duration > maxFlightTime) return false;
     return true;

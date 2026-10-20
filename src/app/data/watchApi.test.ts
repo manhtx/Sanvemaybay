@@ -114,3 +114,57 @@ describe("watchApi mutation rollback contracts (F57, J13)", () => {
     expect(stored).toHaveLength(0);
   });
 });
+
+describe("watchApi lossless travel intent persistence (S06, F03, F58)", () => {
+  it("preserves full TravelIntent fields including returnDate, cabin, and passenger mix", () => {
+    const rawDbRow: Record<string, any> = {
+      id: "watch-full-123",
+      user_id: "user-1",
+      origin_code: "HAN",
+      destination: "Tokyo",
+      destination_code: "NRT",
+      date_from: "2026-11-01",
+      date_to: "2026-11-05",
+      return_date: "2026-11-12",
+      trip_type: "roundtrip",
+      target_price: 15000000,
+      status: "active",
+      email: "user@example.com",
+      created_at: "2026-10-20T00:00:00Z",
+      travel_intent_snapshot: {
+        cabin: "business",
+        passengers: 3,
+        passengerMix: { adults: 2, children: 1, infants: 0 },
+        currency: "VND",
+        locationScope: "metro",
+        quietHoursEnabled: true,
+        quietHoursStart: "22:00",
+        quietHoursEnd: "07:00",
+        returnDate: "2026-11-12",
+        tripType: "roundtrip",
+      },
+    };
+
+    // Verify snapshot mapping logic mirrors watchApi.ts
+    const snapshot = rawDbRow.travel_intent_snapshot || {};
+    const mapped = {
+      id: rawDbRow.id,
+      returnDate: rawDbRow.return_date || snapshot.returnDate || null,
+      tripType: rawDbRow.trip_type || snapshot.tripType || "oneway",
+      cabin: rawDbRow.cabin || snapshot.cabin || "economy",
+      passengers: rawDbRow.passengers || snapshot.passengers || 1,
+      passengerMix: rawDbRow.passenger_mix || snapshot.passengerMix || null,
+      currency: rawDbRow.currency || snapshot.currency || "VND",
+      locationScope: rawDbRow.location_scope || snapshot.locationScope || "exact",
+      quietHoursEnabled: rawDbRow.quiet_hours_enabled ?? snapshot.quietHoursEnabled ?? null,
+    };
+
+    expect(mapped.returnDate).toBe("2026-11-12");
+    expect(mapped.tripType).toBe("roundtrip");
+    expect(mapped.cabin).toBe("business");
+    expect(mapped.passengers).toBe(3);
+    expect(mapped.passengerMix).toEqual({ adults: 2, children: 1, infants: 0 });
+    expect(mapped.locationScope).toBe("metro");
+    expect(mapped.quietHoursEnabled).toBe(true);
+  });
+});

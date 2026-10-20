@@ -101,7 +101,8 @@ export function buildDataProvenance(deal: Deal, nowMs?: number): DataProvenance 
       ? "AIRLINE_DIRECT"
       : "INDICATIVE_AGGREGATOR";
 
-  const confidenceScore = typeof deal.confidence === "number" ? deal.confidence : 0.7;
+  // S03 / DEC-03: Confidence=0 must remain zero; missing confidence defaults to 0 (Đang tích luỹ bằng chứng), never pseudo-inflated to 0.7
+  const confidenceScore = typeof deal.confidence === "number" ? deal.confidence : 0;
   const confidenceLabel =
     confidenceScore >= 0.8
       ? "Bằng chứng mạnh"

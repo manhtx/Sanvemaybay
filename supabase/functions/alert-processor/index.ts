@@ -286,6 +286,9 @@ Deno.serve(async (request) => {
           return_date: alert.return_date,
           max_stops: alert.max_stops,
           criteria_version: alert.criteria_version,
+          cabin: alert.cabin ?? alert.travel_intent_snapshot?.cabin,
+          trip_type: alert.trip_type ?? alert.travel_intent_snapshot?.tripType,
+          passengers: alert.passengers ?? alert.travel_intent_snapshot?.passengers,
         },
       });
 

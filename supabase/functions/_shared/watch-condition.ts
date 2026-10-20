@@ -40,6 +40,9 @@ export interface WatchCriteriaInput {
   return_date?: string | null;
   max_stops?: number | string | null;
   criteria_version?: number | string | null;
+  cabin?: string | null;
+  trip_type?: string | null;
+  passengers?: number | string | null;
 }
 
 export function buildConditionFingerprint(params: {
@@ -50,15 +53,20 @@ export function buildConditionFingerprint(params: {
   if (!params.criteria) {
     return `cond_${params.watchId}_${params.targetPrice}`;
   }
-  const origin = (params.criteria.origin_code ?? '').trim().toUpperCase();
-  const dest = (params.criteria.destination_code ?? '').trim().toUpperCase();
-  const dateFrom = (params.criteria.date_from ?? '').trim();
-  const dateTo = (params.criteria.date_to ?? '').trim();
-  const returnDate = (params.criteria.return_date ?? '').trim();
-  const maxStops = params.criteria.max_stops == null ? '' : String(params.criteria.max_stops);
-  const version = params.criteria.criteria_version == null ? '' : String(params.criteria.criteria_version);
+  const origin = (params.criteria.origin_code ?? "").trim().toUpperCase();
+  const dest = (params.criteria.destination_code ?? "").trim().toUpperCase();
+  const dateFrom = (params.criteria.date_from ?? "").trim();
+  const dateTo = (params.criteria.date_to ?? "").trim();
+  const returnDate = (params.criteria.return_date ?? "").trim();
+  const maxStops = params.criteria.max_stops == null ? "" : String(params.criteria.max_stops);
+  const version = params.criteria.criteria_version == null ? "" : String(params.criteria.criteria_version);
+  const cabin = (params.criteria.cabin ?? "").trim().toLowerCase();
+  const tripType = (params.criteria.trip_type ?? "").trim().toLowerCase();
+  const passengers = params.criteria.passengers == null ? "" : String(params.criteria.passengers);
 
-  return `cond_${params.watchId}_${params.targetPrice}_${origin}_${dest}_${dateFrom}_${dateTo}_${returnDate}_${maxStops}_${version}`;
+  const extra = (cabin || tripType || passengers) ? `_${cabin}_${tripType}_${passengers}` : "";
+
+  return `cond_${params.watchId}_${params.targetPrice}_${origin}_${dest}_${dateFrom}_${dateTo}_${returnDate}_${maxStops}_${version}${extra}`;
 }
 
 export function evaluateWatchCondition(params: {

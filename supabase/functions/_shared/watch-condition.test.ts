@@ -193,6 +193,57 @@ Deno.test("RC-15: buildConditionFingerprint captures all material criteria", asy
     },
   });
   assertEquals(fp1 !== fpReturn, true);
+
+  // Mutating cabin changes fingerprint (D07, S06)
+  const fpCabin = buildConditionFingerprint({
+    watchId: "w1",
+    targetPrice: 2000000,
+    criteria: {
+      origin_code: "HAN",
+      destination_code: "SGN",
+      date_from: "2026-11-01",
+      date_to: "2026-11-05",
+      return_date: "2026-11-10",
+      max_stops: 0,
+      criteria_version: 1,
+      cabin: "business",
+    },
+  });
+  assertEquals(fp1 !== fpCabin, true);
+
+  // Mutating trip_type changes fingerprint
+  const fpTripType = buildConditionFingerprint({
+    watchId: "w1",
+    targetPrice: 2000000,
+    criteria: {
+      origin_code: "HAN",
+      destination_code: "SGN",
+      date_from: "2026-11-01",
+      date_to: "2026-11-05",
+      return_date: "2026-11-10",
+      max_stops: 0,
+      criteria_version: 1,
+      trip_type: "roundtrip",
+    },
+  });
+  assertEquals(fp1 !== fpTripType, true);
+
+  // Mutating passengers changes fingerprint
+  const fpPassengers = buildConditionFingerprint({
+    watchId: "w1",
+    targetPrice: 2000000,
+    criteria: {
+      origin_code: "HAN",
+      destination_code: "SGN",
+      date_from: "2026-11-01",
+      date_to: "2026-11-05",
+      return_date: "2026-11-10",
+      max_stops: 0,
+      criteria_version: 1,
+      passengers: 2,
+    },
+  });
+  assertEquals(fp1 !== fpPassengers, true);
 });
 
 Deno.test("RC-15: Criteria mutation triggers distinct episode lifecycle", () => {

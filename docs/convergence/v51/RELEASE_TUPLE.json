@@ -1,0 +1,12 @@
+{
+  "tuple_id": "tuple_v51_truth_first_product_convergence",
+  "timestamp": "2026-10-20T06:04:15.111Z",
+  "frontend_release_sha": "8486ee405191090d30a047d3ae317b3d636e12a5",
+  "edge_runtime_sha": "8486ee405191090d30a047d3ae317b3d636e12a5",
+  "convergence_target_sha": "8486ee405191090d30a047d3ae317b3d636e12a5",
+  "db_migration_head": "20261016_v35_canonical_convergence",
+  "parity_mode": "COMPATIBLE_TUPLE",
+  "worker_revision": "worker-v51.1",
+  "audit_verdict": "TECHNICAL_VERIFIED",
+  "target_proven": false
+}

@@ -118,4 +118,23 @@ describe("Data Provenance Contracts (F35, F72, F80)", () => {
     expect(stale2d.ageLabel).toBe("2 ngày trước");
     expect(stale2d.freshnessTier).toBe("STALE");
   });
+  it("enforces S03 / DEC-03: confidence=0 remains zero and missing confidence defaults to 0, never pseudo-inflated", () => {
+    // Missing confidence
+    const dealNoConf = mockDeal({ confidence: undefined });
+    const provNoConf = buildDataProvenance(dealNoConf);
+    expect(provNoConf.confidenceScore).toBe(0);
+    expect(provNoConf.confidenceLabel).toBe("Đang tích luỹ bằng chứng");
+
+    // Zero confidence
+    const dealZeroConf = mockDeal({ confidence: 0 });
+    const provZeroConf = buildDataProvenance(dealZeroConf);
+    expect(provZeroConf.confidenceScore).toBe(0);
+    expect(provZeroConf.confidenceLabel).toBe("Đang tích luỹ bằng chứng");
+
+    // High confidence
+    const dealHighConf = mockDeal({ confidence: 0.85 });
+    const provHighConf = buildDataProvenance(dealHighConf);
+    expect(provHighConf.confidenceScore).toBe(0.85);
+    expect(provHighConf.confidenceLabel).toBe("Bằng chứng mạnh");
+  });
 });

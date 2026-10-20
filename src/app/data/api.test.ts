@@ -169,7 +169,18 @@ describe("filterDeals", () => {
     expect(filterDeals(destinations, { destination: "" })).toHaveLength(2);
   });
 
-  it("filters by parsed maximum flight duration while keeping unknown duration evidence", () => {
+  it("filters by returnDate strictly and excludes one-way deals when returnDate is requested (S02, NEG-02)", () => {
+    const returnDated = [
+      { ...deals[0], departDate: "2026-11-01", returnDate: "2026-11-05" },
+      { ...deals[1], departDate: "2026-11-01", returnDate: "2026-11-08" },
+      { ...deals[0], departDate: "2026-11-01" }, // one-way
+    ] as any;
+    expect(filterDeals(returnDated, { returnDate: "2026-11-05" })).toHaveLength(1);
+    expect(filterDeals(returnDated, { returnDate: "2026-11-05" })[0].returnDate).toBe("2026-11-05");
+    expect(filterDeals(returnDated, {})).toHaveLength(3);
+  });
+
+    it("filters by parsed maximum flight duration while keeping unknown duration evidence", () => {
     const durations = [
       { ...deals[0], duration: "2h 30m" },
       { ...deals[1], duration: "5h" },
