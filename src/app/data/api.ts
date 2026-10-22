@@ -916,7 +916,7 @@ async function searchLiveDeals(params: {
     body,
   });
   if (error || !Array.isArray(data?.results)) return [];
-  return data.results.flatMap((row: Record<string, unknown>, index: number) => {
+  return data.results.flatMap((row: Record<string, unknown>) => {
     const price = Number(row.price);
     const departDate = typeof row.depart_date === "string" ? row.depart_date : "";
     const returnDate = typeof row.return_date === "string" ? row.return_date : undefined;
