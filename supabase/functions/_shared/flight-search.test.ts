@@ -81,3 +81,9 @@ Deno.test("mapTravelpayoutsRow rejects invalid prices or non-calendar dates", ()
   assertEquals(mapTravelpayoutsRow({ value: 100, depart_date: "invalid" }, input), null);
 });
 
+Deno.test("RC-10: mapTravelpayoutsRow quarantines rows missing provider departure date", () => {
+  const input = { origin: "HAN", destination: "BKK", outboundDate: "2026-09-01", returnDate: "2026-09-08" };
+  // Missing provider depart_date must be quarantined, not fall back to input.outboundDate
+  assertEquals(mapTravelpayoutsRow({ value: 1500000, return_date: "2026-09-08" }, input), null);
+});
+

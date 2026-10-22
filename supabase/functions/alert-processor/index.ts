@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireInternalSecret } from "../_shared/internal-auth.ts";
-import { matchesAlert, selectDailyDeal } from "../_shared/alert-matching.ts";
+import { matchesAlert, matchesAlertIntent, selectDailyDeal } from "../_shared/alert-matching.ts";
 import { nextNotificationRetry } from "../_shared/retry-policy.ts";
 import { approvedBookingHosts, isActiveLiveDeal } from "../_shared/live-deal.ts";
 import { safeOperationalErrorCode } from "../_shared/observability.ts";
@@ -73,8 +73,8 @@ async function sendEmail(alert: any, deal: any, eventType = "ENTERED", outboxId?
       html: `<h2>${headline}</h2>
         <p>${escapeHtml(deal.from)} → ${escapeHtml(deal.to)}</p>
         <p><strong>${Number(deal.price).toLocaleString("vi-VN")} VND</strong></p>
-        <p>Ghi nhận lúc ${escapeHtml(deal.observed_at ?? new Date().toISOString())}.</p>
-        <p><a href="${publicSiteUrl}/deals">Kiểm tra giá hiện tại trên Farely</a></p>
+        <p>${deal.observed_at ? `Ghi nhận lúc ${escapeHtml(deal.observed_at)}.` : "Thời điểm ghi nhận: Chưa xác định chính xác."}</p>
+        <p><a href="${deal.id ? `${publicSiteUrl}/deal/${encodeURIComponent(deal.id)}` : `${publicSiteUrl}/deals`}">Kiểm tra giá hiện tại trên Farely</a></p>
         <hr/>
         <p><small><a href="${unsubscribeUrl}">Hủy theo dõi chặng bay này</a></small></p>`,
     }),
@@ -182,7 +182,7 @@ Deno.serve(async (request) => {
         row.return_date ?? "",
         row.airline_code,
         row.flight_number ?? "",
-        row.stops ?? 0,
+        row.stops == null ? "UNKNOWN" : String(row.stops),
       ].join(":");
       return {
         id: row.observation_id,
@@ -219,8 +219,8 @@ Deno.serve(async (request) => {
         continue;
       }
 
-      // 1. Find all candidates on this route matching base route/intent criteria (without target_price filter!)
-      const routeCandidates = allCandidates.filter((deal) => matchesAlert(alert, deal));
+      // 1. Find all candidates on this route matching base route/intent criteria (RC-01: without target_price filter!)
+      const routeCandidates = allCandidates.filter((deal) => matchesAlertIntent(alert, deal));
 
       let conditionInput: "MATCH" | "CONFIRMED_NON_MATCH" | "INSUFFICIENT_EVIDENCE";
       let bestCandidate: any = null;

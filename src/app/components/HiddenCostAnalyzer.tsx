@@ -45,7 +45,7 @@ export function HiddenCostAnalyzer({ deal }: HiddenCostAnalyzerProps) {
         <div className="space-y-2">
           <div className="text-stone-600 text-xs font-bold uppercase tracking-wider flex items-center justify-between">
             <span>1. Chi phí đã biết</span>
-            <span className="text-[10px] text-emerald-700 font-semibold">Đã gồm thuế & phí sân bay bắt buộc</span>
+            <span className="text-[10px] text-stone-500 font-medium">Theo biểu phí công bố của hãng</span>
           </div>
           <div className="flex items-center justify-between p-3 bg-stone-50 border border-stone-200 rounded-lg">
             <div className="flex items-center gap-2">

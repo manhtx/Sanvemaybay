@@ -53,14 +53,11 @@ export function matchLocationScope(targetCode: string | null | undefined, dealCo
   return false;
 }
 
-export function matchesAlert(alert: AlertMatchInput, deal: AlertDealInput): boolean {
+export function matchesAlertIntent(alert: AlertMatchInput, deal: AlertDealInput): boolean {
   const destinationMatches = alert.destination_code
     ? matchLocationScope(alert.destination_code, deal.to_code, alert.location_scope)
     : alert.destination === deal.to;
   const originMatches = !alert.origin_code || matchLocationScope(alert.origin_code, deal.from_code, alert.location_scope);
-  const budgetMatches = !alert.budget || Number(deal.price) <= Number(alert.budget);
-  const hasExplicitDiscount = alert.discount_threshold != null && Number(alert.discount_threshold) > 0;
-  const discountMatches = !hasExplicitDiscount || Number(deal.discount ?? 0) >= Number(alert.discount_threshold);
   const regionMatches =
     !alert.preferred_regions?.length ||
     (deal.trip_type === "domestic"
@@ -84,7 +81,18 @@ export function matchesAlert(alert: AlertMatchInput, deal: AlertDealInput): bool
     tripTypeMatches = !deal.return_date;
   }
 
-  return destinationMatches && originMatches && budgetMatches && discountMatches && regionMatches && dateMatches && stopsMatches && returnDateMatches && tripTypeMatches;
+  return destinationMatches && originMatches && regionMatches && dateMatches && stopsMatches && returnDateMatches && tripTypeMatches;
+}
+
+export function matchesAlertThreshold(alert: AlertMatchInput, deal: AlertDealInput): boolean {
+  const budgetMatches = !alert.budget || Number(deal.price) <= Number(alert.budget);
+  const hasExplicitDiscount = alert.discount_threshold != null && Number(alert.discount_threshold) > 0;
+  const discountMatches = !hasExplicitDiscount || Number(deal.discount ?? 0) >= Number(alert.discount_threshold);
+  return budgetMatches && discountMatches;
+}
+
+export function matchesAlert(alert: AlertMatchInput, deal: AlertDealInput): boolean {
+  return matchesAlertIntent(alert, deal) && matchesAlertThreshold(alert, deal);
 }
 
 export function selectDailyDeal<T extends AlertDealInput>(deals: T[]): T[] {

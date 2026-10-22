@@ -115,7 +115,7 @@ export function DealCard({ deal }: DealCardProps) {
                 </span>
               ) : (
                 <span className="text-slate-400 truncate text-[11px]">
-                  Đã gồm thuế sân bay
+                  Giá cơ bản
                 </span>
               )}
             </div>

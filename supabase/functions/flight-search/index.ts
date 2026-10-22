@@ -63,6 +63,13 @@ Deno.serve(async (request) => {
   }
   if (!response.ok) return json({ error: "Search data provider failed" }, id, 502);
   const payload = await response.json().catch(() => null);
+  // RC-11: Distinguish malformed response or provider error from verified empty
+  if (!payload || typeof payload !== "object" || (payload as Record<string, unknown>).success === false) {
+    return json({ error: "Search data provider returned error or malformed payload", error_code: "provider_schema_drift" }, id, 502);
+  }
+  if (!Array.isArray((payload as Record<string, unknown>).data)) {
+    return json({ error: "Search data provider payload missing data array", error_code: "provider_schema_drift" }, id, 502);
+  }
   const rows = boundedProviderRows(payload);
   const fetchTime = new Date().toISOString();
   const results = rows.flatMap((row: Record<string, unknown>) => {

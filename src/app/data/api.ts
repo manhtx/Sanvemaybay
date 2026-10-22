@@ -660,7 +660,7 @@ export async function getFareObservations(fromCode: string, toCode: string): Pro
         departDate: String(d.depart_local_date),
         returnDate: d.return_local_date ? String(d.return_local_date) : null,
         price: Number(d.price),
-        stops: Number(d.stops ?? 0),
+        stops: d.stops == null || isNaN(Number(d.stops)) ? null : Number(d.stops),
         airlineCode: d.airline_code ? String(d.airline_code) : undefined,
         observedAt: String(d.observed_at),
         scanRunId: d.scan_run_id ? String(d.scan_run_id) : undefined,
@@ -687,10 +687,10 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
     if (!canonicalError && canonicalData && canonicalData.length > 0) {
       const points = canonicalData
         .map((d: any) => ({
-          date: d.observed_at ? String(d.observed_at).slice(0, 10) : String(d.depart_local_date),
+          date: d.observed_at ? String(d.observed_at).slice(0, 10) : null,
           price: Number(d.price),
         }))
-        .filter((p: PricePoint) => p.date && Number.isFinite(p.price) && p.price > 0);
+        .filter((p: any): p is PricePoint => Boolean(p.date) && Number.isFinite(p.price) && p.price > 0);
       if (points.length > 0) return points.sort((a, b) => a.date.localeCompare(b.date));
     }
 
@@ -718,7 +718,8 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
   if (cachedFares.length > 0) {
     const pointsMap = new Map<string, number>();
     for (const f of cachedFares) {
-      const dateKey = f.observedAt ? f.observedAt.slice(0, 10) : f.departDate;
+      if (!f.observedAt) continue; // RC-05: Never substitute departDate for observation time
+      const dateKey = f.observedAt.slice(0, 10);
       if (!pointsMap.has(dateKey) || f.price < pointsMap.get(dateKey)!) {
         pointsMap.set(dateKey, f.price);
       }
@@ -923,8 +924,12 @@ async function searchLiveDeals(params: {
     const linkKind = row.link_kind === "live_affiliate" ? "live_affiliate" : "indicative";
     const bookingUrl = sanitizeBookingUrl(row.booking_url);
     const affiliateUrl = sanitizeBookingUrl(row.affiliate_url);
+    const carrier = typeof row.airline_code === "string" ? row.airline_code : "FL";
+    const flightNo = typeof row.flight_number === "string" ? row.flight_number : Math.round(price);
+    const stopsTag = row.stops == null || isNaN(Number(row.stops)) ? "u" : `s${row.stops}`;
+    const stableId = `live-search-${from}-${destination}-${departDate}-${returnDate ?? "ow"}-${carrier}-${flightNo}-${stopsTag}`;
     return [{
-      id: `live-search-${from}-${destination}-${departDate}-${index}`,
+      id: stableId,
       from: from,
       fromCode: from,
       to: destination,

@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { isValidDateOnly, matchesAlert, selectDailyDeal } from "./alert-matching.ts";
+import { isValidDateOnly, matchesAlert, matchesAlertIntent, matchesAlertThreshold, selectDailyDeal } from "./alert-matching.ts";
 
 Deno.test("matches alert filters by route, price, discount and region", () => {
   const alert = {
@@ -92,6 +92,27 @@ Deno.test("RC-14 & D12: Watcher with specific return date rejects candidate whos
   assert(!matchesAlert(alertWithReturn, { to_code: "SIN", return_date: null }));
   assert(!matchesAlert(alertWithReturn, { to_code: "SIN", return_date: undefined }));
   assert(!matchesAlert(alertWithReturn, { to_code: "SIN", return_date: "2026-11-06" }));
+});
+
+Deno.test("RC-01: matchesAlertIntent matches structural criteria even when price exceeds budget", () => {
+  const alert = {
+    origin_code: "SGN",
+    destination_code: "BKK",
+    budget: 2000000,
+    discount_threshold: 20,
+  };
+  const aboveBudgetCandidate = {
+    from_code: "SGN",
+    to_code: "BKK",
+    price: 3500000,
+    discount: 5,
+  };
+  // Structural matcher MUST return true so candidate reaches episode exit evaluator
+  assert(matchesAlertIntent(alert, aboveBudgetCandidate));
+  // Threshold matcher returns false because price > budget
+  assert(!matchesAlertThreshold(alert, aboveBudgetCandidate));
+  // Full composite matcher returns false
+  assert(!matchesAlert(alert, aboveBudgetCandidate));
 });
 
 

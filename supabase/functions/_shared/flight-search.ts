@@ -46,9 +46,13 @@ export function mapTravelpayoutsRow(
   fetchTime = new Date().toISOString()
 ): Record<string, unknown> | null {
   const price = Number(row.value);
-  const departDate = typeof row.depart_date === "string" ? row.depart_date : input.outboundDate;
-  const returnDate = typeof row.return_date === "string" ? row.return_date : input.returnDate;
-  if (!Number.isFinite(price) || price <= 0 || !isIsoCalendarDate(departDate) || !isIsoCalendarDate(returnDate)) return null;
+  // RC-10: Quarantine rows missing required provider departure date provenance
+  if (typeof row.depart_date !== "string" || !isIsoCalendarDate(row.depart_date)) return null;
+  const departDate = row.depart_date;
+  const returnDate = typeof row.return_date === "string" && isIsoCalendarDate(row.return_date)
+    ? row.return_date
+    : (input.returnDate || null);
+  if (!Number.isFinite(price) || price <= 0) return null;
   const isActual = row.actual === true;
   const rawChanges = row.number_of_changes;
   const stops = typeof rawChanges === "number" && Number.isFinite(rawChanges) ? rawChanges : null;

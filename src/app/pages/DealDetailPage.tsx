@@ -285,7 +285,7 @@ export function DealDetailPage() {
       price: deal.price,
       stops: deal.stops,
       airlineCode: deal.airlineCode,
-      observedAt: deal.observedAt || new Date().toISOString(),
+      observedAt: deal.observedAt || "",
     },
     rawCohortObservations
   );
@@ -305,7 +305,7 @@ export function DealDetailPage() {
 
   const freshnessLabel = deal.observedAt
     ? `Ghi nhận lúc ${new Date(deal.observedAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })} · ${new Date(deal.observedAt).toLocaleDateString("vi-VN")}`
-    : "Quan sát gần đây";
+    : "Chưa xác định thời điểm ghi nhận";
 
   return (
     <main className="min-h-screen bg-[var(--canvas-bg)] text-stone-900 pb-24 lg:pb-12">
