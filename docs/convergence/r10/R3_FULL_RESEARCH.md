@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — ACTION-FIRST RESEARCH R10 [R3]
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
 # MANDATE: Subject deliverable to adversarial attack simulations. Hardened across all 12 lenses against negative vectors NV01..NV24.
-# GIT_COMMIT: a3d7039ef5083c61e43c0123996e82bacf7f3064
-# TIMESTAMP: 2026-10-23T10:11:30.000Z
-# EXECUTION_RECEIPT_SHA256: fbf9d9ae288282c937ca42fab4d2130539683f2682810bb1b8411db5ea718cd7
+# GIT_COMMIT: 7293483c061a4ea761e46ae69cc210db80ca1691
+# TIMESTAMP: 2026-10-23T10:20:10.000Z
+# EXECUTION_RECEIPT_SHA256: 706007b589a01d64f5d2748b1226b49675700afaa9e2f97e1dcd1e84a727a80f
 
 ---
 
@@ -20,7 +20,7 @@
   - *Correction in R3*: Integrated metamorphic testing in `src/app/domain/differentialAndMetamorphic.test.ts` asserting that price calculation remains strictly monotonic under baggage surcharge permutations.
 - **[L03 FALSIFICATION]** (Deal Score, Statistical Confidence & Cost Monotonicity):
   - *Deficit in R2*: Pass R2 deal confidence score failed to penalize stale observations with high variance across changing holiday windows and tet peak seasons.
-  - *Correction in R3*: Negative vector NV03 requires empirical seasonal decay multipliers in `src/domain/farely/vietnamTravelContext.ts` and `src/domain/farely/priceAnomaly.ts`.
+  - *Correction in R3*: Negative vector NV03 requires empirical seasonal demand decay multipliers in `src/domain/farely/vietnamTravelContext.ts` and `src/domain/farely/priceAnomaly.ts`.
 - **[L05 FALSIFICATION]** (Provider Drift, Circuit Breakers & Kill Switches):
   - *Deficit in R2*: Pass R2 circuit breaker reset immediately on 3 successful probe requests without validating latency percentiles under heavy simulated load.
   - *Correction in R3*: Negative vector NV05 introduces latency-bounded half-open recovery in `supabase/functions/_shared/flight-search.ts` (p95 latency < 2500ms required for restoration).
@@ -95,7 +95,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G64 - PASS R3]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G65 - PASS R3]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Hostile defense against OTA scope creep, deceptive deep-links, and boundary violations. Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
@@ -264,10 +264,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ```json
 {
   "pass": "R3",
-  "cycleId": "G64",
+  "cycleId": "G65",
   "auditResult": "VERIFIED_FALSIFIED_HARDENED",
-  "timestamp": "2026-10-23T10:11:30.000Z",
-  "gitHead": "a3d7039ef5083c61e43c0123996e82bacf7f3064",
-  "executionReceipt": "fbf9d9ae288282c937ca42fab4d2130539683f2682810bb1b8411db5ea718cd7"
+  "timestamp": "2026-10-23T10:20:10.000Z",
+  "gitHead": "7293483c061a4ea761e46ae69cc210db80ca1691",
+  "executionReceipt": "706007b589a01d64f5d2748b1226b49675700afaa9e2f97e1dcd1e84a727a80f"
 }
 ```

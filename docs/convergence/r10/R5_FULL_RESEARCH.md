@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — ACTION-FIRST RESEARCH R10 [R5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence
 # MANDATE: Canonical sovereign synthesis across all 12 lenses. Zero wiggle-room, turnkey execution, cryptographically sealed.
-# GIT_COMMIT: a3d7039ef5083c61e43c0123996e82bacf7f3064
-# TIMESTAMP: 2026-10-23T10:13:00.000Z
-# EXECUTION_RECEIPT_SHA256: f74106635521a9d31e0b36fc03d4902c599852b33a7bf24b6cc1c982be348e21
+# GIT_COMMIT: 7293483c061a4ea761e46ae69cc210db80ca1691
+# TIMESTAMP: 2026-10-23T10:21:40.000Z
+# EXECUTION_RECEIPT_SHA256: f2cd9f524f1cae993b8a319c80d1aef869106b1b4f565db76b466b3acd5f461a
 
 ---
 
@@ -89,7 +89,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G64 - PASS R5]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G65 - PASS R5]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA scope integrity; pure flight intelligence; zero ticket sales or merchant processing. Curated editorial collections without transactional conflation. Direct ticketing, passenger checkout, and payment gateway integration are strictly boundary_excluded.
@@ -256,10 +256,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ```json
 {
   "pass": "R5",
-  "cycleId": "G64",
+  "cycleId": "G65",
   "auditResult": "VERIFIED_FALSIFIED_HARDENED",
-  "timestamp": "2026-10-23T10:13:00.000Z",
-  "gitHead": "a3d7039ef5083c61e43c0123996e82bacf7f3064",
-  "executionReceipt": "f74106635521a9d31e0b36fc03d4902c599852b33a7bf24b6cc1c982be348e21"
+  "timestamp": "2026-10-23T10:21:40.000Z",
+  "gitHead": "7293483c061a4ea761e46ae69cc210db80ca1691",
+  "executionReceipt": "f2cd9f524f1cae993b8a319c80d1aef869106b1b4f565db76b466b3acd5f461a"
 }
 ```
