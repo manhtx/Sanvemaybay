@@ -1,0 +1,12 @@
+{
+  "continuous-convergence-loop": {
+    "enabled": true,
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node scripts/convergence/hook-convergence-check.mjs",
+        "timeout": 30
+      }
+    ]
+  }
+}
