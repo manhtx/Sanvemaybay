@@ -1,13 +1,13 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 92fbb23a6a58a1d58544045c006ee58caa2fca1e
-# TIMESTAMP: 2026-10-23T08:08:35.040Z
-# EXECUTION_RECEIPT_SHA256: 04e10de709349fa692dccc9d8cef979495de9a65e920fd35a210bdb660a19805
+# GIT_COMMIT: e8a75aab41d1485bedc1492322a963158902f0a7
+# TIMESTAMP: 2026-10-23T08:22:09.191Z
+# EXECUTION_RECEIPT_SHA256: e6b71e4daadabbabf9693cd546be8cea28079fbfe807c57e5553867f1fcfffaa
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G54 - PASS R1]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G55 - PASS R1]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
@@ -78,8 +78,8 @@
 ### L06: Freshness, Stale Degradation & UX Honesty
 - **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution.
 - **Physical Code Citations**:
-  - `src/app/pages/DealsPage.tsx`: Freshness badges: `FRESH` (<120m), `WARM` (120m–360m), `STALE` (>360m).
-  - `src/app/lib/feedCache.ts`: Caching layer with TTL expiration.
+  - `src/app/pages/DealsPage.tsx`: Freshness badges (`FRESH` < 120m, `WARM` 120m-360m, `STALE` > 360m).
+  - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.
 - **Adversarial Vector Defense**:
   - *Vector NV35 Defense*: Offline cache cannot masquerade as fresh observations; renders `observed_at` in UTC+7.
 - **Verification Proof (C0..C4)**:
@@ -160,9 +160,9 @@
   - *Vector NV25 Defense*: Fake release tuples rejected by remote git verification.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/release-manifest.node-test.mjs` passes 100%.
-  - *Live Git Proof*: Local commit `92fbb23a6a58a1d58544045c006ee58caa2fca1e` matches remote origin.
+  - *Live Git Proof*: Local commit `e8a75aab41d1485bedc1492322a963158902f0a7` matches remote origin.
 
 ---
 
-## CONCLUSION OF PASS R1 [CYCLE G54]
-Pass R1 evaluates Cycle G54 across all 12 Adversarial Lenses, grounded in authentic code paths and verified with cryptographic execution receipt `04e10de709349fa692dccc9d8cef979495de9a65e920fd35a210bdb660a19805`.
+## CONCLUSION OF PASS R1 [CYCLE G55]
+Pass R1 evaluates Cycle G55 across all 12 Adversarial Lenses, grounded in authentic code paths and verified with cryptographic execution receipt `e6b71e4daadabbabf9693cd546be8cea28079fbfe807c57e5553867f1fcfffaa`.
