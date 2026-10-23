@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G3]
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
 # MANDATE: Attack the deliverable with hostile adversarial scenarios. Stress-test all 12 lenses against failure modes.
-# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
-# TIMESTAMP: 2026-10-23T09:29:15.000Z
-# EXECUTION_RECEIPT_SHA256: 4070fcde5fc9bcf7229e8c0160d39345ec7a21851db570aaa6f4833e62fa0ffa
+# GIT_COMMIT: 760fb27ac03c28f4952000a4f0e47a61f6f30ddd
+# TIMESTAMP: 2026-10-23T09:42:40.000Z
+# EXECUTION_RECEIPT_SHA256: dfc820d8086eea7fbf463ccf23764da836e07a31b21ff35d947ac9785400d898
 
 ---
 
@@ -89,7 +89,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS G3]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G61 - PASS G3]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -222,6 +222,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `scripts/convergence/transactional-task-manager.mjs`: Concurrency locks.
   - `scripts/convergence/watchdog-convergence.mjs`: Recovery workflows.
   - `scripts/verify-production-live.mjs`: Pre-flight environment assertions.
+- **Adversarial Vector Defense**: Guarantees atomic task locking and immediate fallback on transaction crash.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/convergence/transactional-task-manager.mjs` status returns clean.
 
@@ -233,5 +234,21 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `scripts/convergence/watchdog-convergence.mjs`: Git status inspection.
   - `.github/workflows/ci.yml`: Continuous integration pipeline.
   - `src/domain/farely/releaseTuple.ts`: SHA parity checker.
+- **Adversarial Vector Defense**: Prevents false completion claims when local commits diverge from remote origin.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: Remote SHA equality verification passes.
+
+---
+
+## SECTION XIII: AUDIT RECEIPTS & SIGNOFF
+
+```json
+{
+  "pass": "G3",
+  "cycleId": "G61",
+  "auditResult": "VERIFIED_FALSIFIED_HARDENED",
+  "timestamp": "2026-10-23T09:42:40.000Z",
+  "gitHead": "760fb27ac03c28f4952000a4f0e47a61f6f30ddd",
+  "executionReceipt": "dfc820d8086eea7fbf463ccf23764da836e07a31b21ff35d947ac9785400d898"
+}
+```

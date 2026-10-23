@@ -1,13 +1,13 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
-# TIMESTAMP: 2026-10-23T09:23:15.000Z
-# EXECUTION_RECEIPT_SHA256: df1521fbed54525af8324658cde2e9a75431381f01c00408d373136d51ef111b
+# GIT_COMMIT: 760fb27ac03c28f4952000a4f0e47a61f6f30ddd
+# TIMESTAMP: 2026-10-23T09:33:05.000Z
+# EXECUTION_RECEIPT_SHA256: c9594bc9097ee9c36df33a788ea48008074efac7b51a3c1447fb26bb8a3a4fd8
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS R1]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G61 - PASS R1]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.

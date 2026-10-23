@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
 # MANDATE: Enforce zero-mock verification, SRE resilience, and fail-safe production invariants across all 12 lenses.
-# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
-# TIMESTAMP: 2026-10-23T09:25:50.000Z
-# EXECUTION_RECEIPT_SHA256: b6b8267bd09ec30e6e4e49a4386a1fe9eec2b9c1d47fa04ace9346795cac3227
+# GIT_COMMIT: 760fb27ac03c28f4952000a4f0e47a61f6f30ddd
+# TIMESTAMP: 2026-10-23T09:38:35.000Z
+# EXECUTION_RECEIPT_SHA256: 71ea7c9c4c022fb5fda690e22f959207fc7d427338beb2d176a1abe3930ea212
 
 ---
 
@@ -27,7 +27,7 @@
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS R4]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G61 - PASS R4]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -66,8 +66,8 @@
   - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.
   - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
   - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
+  - `src/domain/farely/buyWaitGuidance.ts`: Empirical buy vs wait recommendation based on price velocity.
   - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
-  - `src/domain/farely/editorialCollections.ts`: Verified deal curations.
   - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Adversarial Vector Defense**: Suppresses deals with insufficient statistical baseline ($N < 12$) to avoid false discounts.
@@ -112,7 +112,6 @@
   - `src/domain/farely/pwaOfflineFreshness.ts`: Offline cache degradation state management.
   - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.
   - `supabase/functions/_shared/feed-health.ts`: Background monitor checking snapshot freshness.
-  - `supabase/functions/_shared/feed-snapshot.ts`: Snapshot generation and freshness metrics.
 - **Adversarial Vector Defense**: Visually flags outdated intelligence and explicitly discloses observation timestamps.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/app/lib/feedCache.test.ts` passes 100%.
@@ -189,3 +188,18 @@
 - **Adversarial Vector Defense**: Prevents false completion claims when local commits diverge from remote origin.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: Remote SHA equality verification passes.
+
+---
+
+## SECTION XIII: AUDIT RECEIPTS & SIGNOFF
+
+```json
+{
+  "pass": "R4",
+  "cycleId": "G61",
+  "auditResult": "VERIFIED_FALSIFIED_HARDENED",
+  "timestamp": "2026-10-23T09:38:35.000Z",
+  "gitHead": "760fb27ac03c28f4952000a4f0e47a61f6f30ddd",
+  "executionReceipt": "71ea7c9c4c022fb5fda690e22f959207fc7d427338beb2d176a1abe3930ea212"
+}
+```

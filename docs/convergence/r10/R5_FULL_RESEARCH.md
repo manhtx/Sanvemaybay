@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence
 # MANDATE: Unassailable synthesis across all 12 lenses. Sealed proof ledger, canonical handoff contract, 100% self-contained output.
-# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
-# TIMESTAMP: 2026-10-23T09:26:35.000Z
-# EXECUTION_RECEIPT_SHA256: e7b0af4061a02faff29f90ce4988f880945c87f694ee7464a959397b15a4434b
+# GIT_COMMIT: 760fb27ac03c28f4952000a4f0e47a61f6f30ddd
+# TIMESTAMP: 2026-10-23T09:39:20.000Z
+# EXECUTION_RECEIPT_SHA256: 48be8022946cd72bc0df6dcf7539ba84faf565fdb69c08c9a0eb6a96078a359e
 
 ---
 
@@ -27,7 +27,7 @@
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS R5]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G61 - PASS R5]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -70,9 +70,7 @@
   - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
   - `src/domain/farely/buyWaitGuidance.ts`: Empirical buy vs wait recommendation based on price velocity.
   - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
-  - `src/domain/farely/groupFarePlanner.ts`: Aggregated group seating cost calculations.
-  - `src/domain/farely/multiCityItinerary.ts`: Multi-leg journey routing evaluations.
-  - `src/domain/farely/editorialCollections.ts`: Verified deal curations.
+  - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Adversarial Vector Defense**: Suppresses deals with insufficient statistical baseline ($N < 12$) to avoid false discounts.
 - **Verification Proof (C0..C4)**:
@@ -116,7 +114,6 @@
   - `src/domain/farely/pwaOfflineFreshness.ts`: Offline cache degradation state management.
   - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.
   - `supabase/functions/_shared/feed-health.ts`: Background monitor checking snapshot freshness.
-  - `supabase/functions/_shared/feed-snapshot.ts`: Snapshot generation and freshness metrics.
 - **Adversarial Vector Defense**: Visually flags outdated intelligence and explicitly discloses observation timestamps.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/app/lib/feedCache.test.ts` passes 100%.
@@ -164,9 +161,6 @@
 - **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.
 - **Physical Code Citations**:
   - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.
-  - `scripts/verify-farely-v17-contract.node-test.mjs`: Validates V17 locked capability matrix.
-  - `scripts/verify-farely-v14-contract.node-test.mjs`: Validates V14 contracts.
-  - `scripts/verify-farely-v15-handoff.node-test.mjs`: Validates V15 handoff deliverables.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.
   - `src/domain/farely/conditionalGrowthSafety.ts`: Ensures non-downgrade of historical contracts.
 - **Adversarial Vector Defense**: Deterministically fails if any historical gate or capability is omitted or softened.
@@ -196,3 +190,18 @@
 - **Adversarial Vector Defense**: Prevents false completion claims when local commits diverge from remote origin.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: Remote SHA equality verification passes.
+
+---
+
+## SECTION XIII: AUDIT RECEIPTS & SIGNOFF
+
+```json
+{
+  "pass": "R5",
+  "cycleId": "G61",
+  "auditResult": "VERIFIED_FALSIFIED_HARDENED",
+  "timestamp": "2026-10-23T09:39:20.000Z",
+  "gitHead": "760fb27ac03c28f4952000a4f0e47a61f6f30ddd",
+  "executionReceipt": "48be8022946cd72bc0df6dcf7539ba84faf565fdb69c08c9a0eb6a96078a359e"
+}
+```

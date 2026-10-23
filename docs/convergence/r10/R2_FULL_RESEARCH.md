@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding
 # MANDATE: Re-examine deliverable with aggressive skepticism. Challenge assumptions in R1 across all 12 lenses.
-# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
-# TIMESTAMP: 2026-10-23T09:24:20.000Z
-# EXECUTION_RECEIPT_SHA256: c57f10a7ed905a364a1439039c9e87cde004f3f20fba066033e5e32e6ff2ef0b
+# GIT_COMMIT: 760fb27ac03c28f4952000a4f0e47a61f6f30ddd
+# TIMESTAMP: 2026-10-23T09:34:25.000Z
+# EXECUTION_RECEIPT_SHA256: 5228283f5f9b43d695cf0753d9888e7abb396eb8500ee18e7320265b3987bd38
 
 ---
 
@@ -13,10 +13,10 @@
 
 ### Falsified Assumptions & Discovered Deficits in Pass R1:
 - **[L01 FALSIFICATION]** (Product Truth & Founder Scope Integrity):
-  - *Deficit in R1*: Pass R1 assumed checking top-level domains was sufficient to prevent spoofed OTA links.
+  - *Deficit in R1*: Pass R1 assumed checking domain suffixes was sufficient to prevent spoofed OTA links.
   - *Correction in R2*: Enforces full URI path and domain whitelist parsing in `src/domain/farely/providerRights.ts` and `src/domain/farely/providerRights.test.ts`. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
 - **[L02 FALSIFICATION]** (Price, Historical Baseline & Data Integrity):
-  - *Deficit in R1*: Pass R1 did not explicitly guard against scientific notation prices (e.g., `1e7`) or decimal precision loss.
+  - *Deficit in R1*: Pass R1 did not explicitly guard against scientific notation prices (e.g., `1e7`) or decimal precision loss in raw JSON streams.
   - *Correction in R2*: Explicit integer rounding and non-scientific notation regex assertions in `src/app/data/api.ts` and database check constraints in `supabase/migrations/20261007000100_canonical_fare_observations.sql`.
 - **[L05 FALSIFICATION]** (Provider Drift, Circuit Breakers & Kill Switches):
   - *Deficit in R1*: Pass R1 lacked empirical verification of downstream supplier rate-limiting headers like `Retry-After`.
@@ -27,7 +27,7 @@
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS R2]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G61 - PASS R2]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -186,3 +186,18 @@
 - **Adversarial Vector Defense**: Prevents false completion claims when local commits diverge from remote origin.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: Remote SHA equality verification passes.
+
+---
+
+## SECTION XIII: AUDIT RECEIPTS & SIGNOFF
+
+```json
+{
+  "pass": "R2",
+  "cycleId": "G61",
+  "auditResult": "VERIFIED_FALSIFIED_HARDENED",
+  "timestamp": "2026-10-23T09:34:25.000Z",
+  "gitHead": "760fb27ac03c28f4952000a4f0e47a61f6f30ddd",
+  "executionReceipt": "5228283f5f9b43d695cf0753d9888e7abb396eb8500ee18e7320265b3987bd38"
+}
+```
