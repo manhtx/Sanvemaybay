@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireInternalSecret } from "../_shared/internal-auth.ts";
-import { matchesAlert, matchesAlertIntent, selectDailyDeal } from "../_shared/alert-matching.ts";
+import { matchesAlert, matchesAlertIntent, matchesAlertRouteIntent, selectDailyDeal } from "../_shared/alert-matching.ts";
 import { nextNotificationRetry } from "../_shared/retry-policy.ts";
 import { approvedBookingHosts, isActiveLiveDeal } from "../_shared/live-deal.ts";
 import { safeOperationalErrorCode } from "../_shared/observability.ts";
@@ -220,7 +220,7 @@ Deno.serve(async (request) => {
       }
 
       // 1. Find all candidates on this route matching base route/intent criteria (RC-01: without target_price filter!)
-      const routeCandidates = allCandidates.filter((deal) => matchesAlertIntent(alert, deal));
+      const routeCandidates = allCandidates.filter((deal) => matchesAlertRouteIntent(alert, deal));
 
       let conditionInput: "MATCH" | "CONFIRMED_NON_MATCH" | "INSUFFICIENT_EVIDENCE";
       let bestCandidate: any = null;
@@ -232,33 +232,54 @@ Deno.serve(async (request) => {
         // Preserves active episode state; never false EXITED.
         conditionInput = "INSUFFICIENT_EVIDENCE";
       } else {
-        // Filter by max_stops if specified (D19: unknown stops is never eligible under max_stops constraint)
-        let stopFiltered = routeCandidates;
-        if (alert.max_stops != null && alert.max_stops >= 0) {
-          stopFiltered = routeCandidates.filter((deal) => deal.stops != null && Number(deal.stops) <= Number(alert.max_stops));
-        }
-
         const targetBudget = Number(alert.target_price ?? alert.budget ?? 0);
         // D20: Require qualified coverage certificate (>= 3 candidates) before concluding CONFIRMED_NON_MATCH
         const hasQualifiedCoverage = routeCandidates.length >= 3;
 
-        if (stopFiltered.length === 0) {
-          if (!hasQualifiedCoverage) {
+        if (alert.max_stops != null && alert.max_stops >= 0) {
+          const knownStopCandidates = routeCandidates.filter((deal) => deal.stops != null);
+          const unknownStopCandidates = routeCandidates.filter((deal) => deal.stops == null);
+          const stopEligibleCandidates = knownStopCandidates.filter((deal) => Number(deal.stops) <= Number(alert.max_stops));
+
+          if (knownStopCandidates.length === 0) {
+            // E07: All candidates on this route have unknown stops; cannot confirm MATCH or NON_MATCH
             conditionInput = "INSUFFICIENT_EVIDENCE";
+            const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
+            observedBestPrice = Number(sorted[0].price);
+          } else if (stopEligibleCandidates.length === 0) {
+            // No candidates meet the stop limit among known stops
+            if (unknownStopCandidates.length > 0 || !hasQualifiedCoverage) {
+              // If there are unknown stops, one of them could be direct -> INSUFFICIENT_EVIDENCE
+              conditionInput = "INSUFFICIENT_EVIDENCE";
+            } else {
+              // Full qualified coverage and all verified candidates exceed max_stops
+              conditionInput = "CONFIRMED_NON_MATCH";
+            }
+            const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
+            observedBestPrice = Number(sorted[0].price);
           } else {
-            conditionInput = "CONFIRMED_NON_MATCH";
+            const sorted = [...stopEligibleCandidates].sort((a, b) => Number(a.price) - Number(b.price));
+            observedBestPrice = Number(sorted[0].price);
+            if (targetBudget > 0 && observedBestPrice <= targetBudget) {
+              conditionInput = "MATCH";
+              eligibleCandidates = sorted.filter((d) => Number(d.price) <= targetBudget);
+              bestCandidate = eligibleCandidates[0];
+            } else if (!hasQualifiedCoverage) {
+              // Sparse candidate data cannot prove confirmed price exit without qualified coverage
+              conditionInput = "INSUFFICIENT_EVIDENCE";
+            } else {
+              conditionInput = "CONFIRMED_NON_MATCH";
+            }
           }
-          const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
-          observedBestPrice = Number(sorted[0].price);
         } else {
-          const sorted = [...stopFiltered].sort((a, b) => Number(a.price) - Number(b.price));
+          // No max_stops constraint configured
+          const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
           observedBestPrice = Number(sorted[0].price);
           if (targetBudget > 0 && observedBestPrice <= targetBudget) {
             conditionInput = "MATCH";
             eligibleCandidates = sorted.filter((d) => Number(d.price) <= targetBudget);
             bestCandidate = eligibleCandidates[0];
           } else if (!hasQualifiedCoverage) {
-            // Sparse candidate data cannot prove confirmed price exit without qualified coverage
             conditionInput = "INSUFFICIENT_EVIDENCE";
           } else {
             conditionInput = "CONFIRMED_NON_MATCH";

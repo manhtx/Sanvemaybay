@@ -1,5 +1,6 @@
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import { Deal, normalizeAIInsight, PricePoint } from "./deals";
+import { evaluateTrueCost } from "../../domain/farely/costEpistemics";
 import { rankTravelFeed } from "../domain/travelFeed";
 import { readFeedCache, writeFeedCache, readObservedFaresCache, writeObservedFaresCache } from "../lib/feedCache";
 import { evidenceGatedDealLabel } from "../domain/dealClaims";
@@ -191,12 +192,20 @@ export async function getDealsResult(): Promise<DealFeedResult> {
   };
 }
 
+export function parseNullableNumber(val: unknown): number | null {
+  if (val == null || typeof val === "boolean") return null;
+  if (typeof val === "string" && val.trim() === "") return null;
+  const n = Number(val);
+  return Number.isFinite(n) ? n : null;
+}
+
 export function mapObservedFare(row: Record<string, any>): Deal {
-  const score = Math.max(0, Math.min(100, Number(row.deal_score) || 0));
-  const sampleSize = Math.max(0, Number(row.sample_size) || 0);
-  const confidencePercent = Math.max(0, Math.min(100, Number(row.confidence_percent) || Math.min(100, (sampleSize / 12) * 100)));
-  const discount = row.discount_percent == null ? 0 : Math.max(0, Number(row.discount_percent));
-  const baseline = row.baseline_price == null ? Number(row.price) : Number(row.baseline_price);
+  const score = Math.max(0, Math.min(100, parseNullableNumber(row.deal_score) ?? 0));
+  const sampleSize = Math.max(0, parseNullableNumber(row.sample_size) ?? 0);
+  const confidencePercent = Math.max(0, Math.min(100, parseNullableNumber(row.confidence_percent) ?? Math.min(100, (sampleSize / 12) * 100)));
+  const discount = row.discount_percent == null ? 0 : Math.max(0, parseNullableNumber(row.discount_percent) ?? 0);
+  const basePrice = parseNullableNumber(row.price) ?? 0;
+  const baseline = row.baseline_price == null ? basePrice : (parseNullableNumber(row.baseline_price) ?? basePrice);
   const safeLabel = evidenceGatedDealLabel(score, confidencePercent);
   const isBudgetAirline = ["VJ", "AK", "FD", "TR", "5J", "SL"].includes(String(row.airline_code || "").toUpperCase());
   const estimatedBaggage = isBudgetAirline ? (row.region === "domestic" ? 280000 : 550000) : 0;
@@ -205,8 +214,13 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     amount: estimatedBaggage,
     note: "Hãng bay giá rẻ thường chưa bao gồm kiện ký gửi tiêu chuẩn",
   }] : [];
-  const basePrice = Number(row.price);
-  const realTotal = basePrice + estimatedBaggage;
+  const costEval = evaluateTrueCost({
+    basePrice,
+    airlineCode: row.airline_code,
+    region: row.region,
+    providedHiddenCosts: hiddenCosts,
+  });
+  const realTotal = costEval.estimatedTotal;
   const opportunityId = String(row.opportunity_id || [
     row.origin_code,
     row.destination_code,
@@ -235,7 +249,7 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     departDate: row.date,
     returnDate: row.return_date ?? undefined,
     duration: row.duration,
-    stops: row.stops == null || isNaN(Number(row.stops)) ? null : Number(row.stops),
+    stops: parseNullableNumber(row.stops),
     stopCity: null,
     seatsLeft: 0,
     expiresIn: row.freshness_minutes <= 60 ? "Quan sát trong 1 giờ" : `Quan sát ${Math.max(1, Math.round(Number(row.freshness_minutes) / 60))} giờ trước`,
@@ -255,6 +269,10 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     hiddenCosts,
     advertisedTotal: basePrice,
     realTotal,
+    costBreakdown: costEval,
+    priceBasis: "OBSERVED_BASE_FARE",
+    verifiedTotal: costEval.hasUnknownMandatoryCost ? null : costEval.minVerifiableTotal,
+    hasUnknownMandatoryCost: costEval.hasUnknownMandatoryCost,
     isTrending: score >= 70 && confidencePercent >= 50,
     isFlashDeal: discount >= 30 && confidencePercent >= 65,
     tripType: row.region === "domestic" ? "domestic" : "international",
@@ -443,6 +461,10 @@ export async function getHistoricalDeals(): Promise<Deal[]> {
 }
 
 export function mapDealRow(row: Record<string, any>): Deal {
+  const basePrice = parseNullableNumber(row.price) ?? 0;
+  const normalPrice = parseNullableNumber(row.normal_price) ?? basePrice;
+  const advertisedTotal = parseNullableNumber(row.advertised_total) ?? basePrice;
+  const realTotal = parseNullableNumber(row.real_total) ?? advertisedTotal;
   return {
     id: row.id,
     from: row.from,
@@ -451,30 +473,30 @@ export function mapDealRow(row: Record<string, any>): Deal {
     toCode: row.to_code,
     country: row.country,
     region: row.region,
-    price: Number(row.price),
-    normalPrice: Number(row.normal_price),
-    discount: Number(row.discount),
+    price: basePrice,
+    normalPrice,
+    discount: parseNullableNumber(row.discount) ?? 0,
     currency: row.currency,
     airline: row.airline,
     airlineCode: row.airline_code,
     departDate: row.depart_date,
     returnDate: row.return_date ?? undefined,
     duration: row.duration,
-    stops: row.stops == null || isNaN(Number(row.stops)) ? null : Number(row.stops),
-    stopCity: row.stop_city,
-    seatsLeft: Number(row.seats_left),
+    stops: parseNullableNumber(row.stops),
+    stopCity: row.stop_city ?? null,
+    seatsLeft: parseNullableNumber(row.seats_left) ?? 0,
     expiresIn: row.expires_in,
     image: row.image,
     flightNumber: row.flight_number ?? "",
     aiInsight: normalizeAIInsight(row.ai_insight),
-    hiddenCosts: row.hidden_costs,
-    advertisedTotal: Number(row.advertised_total),
-    realTotal: Number(row.real_total),
+    hiddenCosts: row.hidden_costs ?? [],
+    advertisedTotal,
+    realTotal,
     isTrending: row.is_trending,
     isFlashDeal: row.is_flash_deal,
     tripType: row.trip_type,
-    confidence: row.confidence == null ? undefined : Number(row.confidence),
-    dealScore: row.deal_score == null ? undefined : Number(row.deal_score),
+    confidence: parseNullableNumber(row.confidence) ?? undefined,
+    dealScore: parseNullableNumber(row.deal_score) ?? undefined,
     aiReasoning: row.ai_reasoning ?? undefined,
     bookingUrl: sanitizeBookingUrl(row.booking_url),
     affiliateUrl: sanitizeBookingUrl(row.affiliate_url),
@@ -548,7 +570,6 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
           (f as any).dedupe_key === rawId
       );
       if (matching) return matching;
-      if (page.fares.length > 0 && page.total === 1) return page.fares[0];
     } catch {
       // Fall through to database queries
     }

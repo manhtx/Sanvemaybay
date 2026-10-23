@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterDeals, isActiveFeedDeal, mapDealRow, mapObservedFare, mapPriceHistoryRows, parseFeedEnvelope, sanitizeBookingUrl, sortDeals } from "./api";
+import { filterDeals, isActiveFeedDeal, mapDealRow, mapObservedFare, mapPriceHistoryRows, parseFeedEnvelope, parseNullableNumber, sanitizeBookingUrl, sortDeals } from "./api";
 import { normalizeAIInsight } from "./deals";
 
 describe("mapDealRow", () => {
@@ -323,4 +323,66 @@ describe("sortDeals (RC-01, F31, F76: Merged Candidate Objective Sorting)", () =
     ]);
   });
 });
+
+describe("E01: parseNullableNumber and null preservation", () => {
+  it("preserves null and undefined as null without coercing to 0", () => {
+    expect(parseNullableNumber(null)).toBeNull();
+    expect(parseNullableNumber(undefined)).toBeNull();
+    expect(parseNullableNumber("")).toBeNull();
+    expect(parseNullableNumber("   ")).toBeNull();
+    expect(parseNullableNumber("invalid")).toBeNull();
+    expect(parseNullableNumber(NaN)).toBeNull();
+    expect(parseNullableNumber(Infinity)).toBeNull();
+    expect(parseNullableNumber(true)).toBeNull();
+    expect(parseNullableNumber(false)).toBeNull();
+  });
+
+  it("parses valid numbers and zero accurately", () => {
+    expect(parseNullableNumber(0)).toBe(0);
+    expect(parseNullableNumber("0")).toBe(0);
+    expect(parseNullableNumber(280000)).toBe(280000);
+    expect(parseNullableNumber("1500000")).toBe(1500000);
+  });
+
+  it("preserves stops: null in mapDealRow and mapObservedFare", () => {
+    const row = {
+      id: "row-null-stops",
+      from: "HAN",
+      to: "SGN",
+      price: 1500000,
+      stops: null,
+      airline_code: "VN",
+      depart_date: "2026-11-01",
+    };
+
+    const dealRow = mapDealRow(row);
+    expect(dealRow.stops).toBeNull();
+
+    const observedFare = mapObservedFare(row);
+    expect(observedFare.stops).toBeNull();
+  });
+});
+
+describe("E02: True-cost epistemics and cost breakdown integrity", () => {
+  it("attaches typed CostBreakdown and isolates basePrice from estimated fees", () => {
+    const row = {
+      id: "vj-observed",
+      from: "HAN",
+      to: "SGN",
+      price: 1200000,
+      airline_code: "VJ",
+      region: "domestic",
+      date: "2026-11-01",
+    };
+
+    const deal = mapObservedFare(row);
+    expect(deal.advertisedTotal).toBe(1200000);
+    expect(deal.costBreakdown).toBeDefined();
+    expect(deal.costBreakdown?.basePrice).toBe(1200000);
+    expect(deal.costBreakdown?.estimatedTotal).toBe(1200000 + 280000);
+    expect(deal.realTotal).toBe(deal.costBreakdown?.estimatedTotal);
+    expect(deal.priceBasis).toBe("OBSERVED_BASE_FARE");
+  });
+});
+
 

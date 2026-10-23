@@ -53,7 +53,7 @@ export function matchLocationScope(targetCode: string | null | undefined, dealCo
   return false;
 }
 
-export function matchesAlertIntent(alert: AlertMatchInput, deal: AlertDealInput): boolean {
+export function matchesAlertRouteIntent(alert: AlertMatchInput, deal: AlertDealInput): boolean {
   const destinationMatches = alert.destination_code
     ? matchLocationScope(alert.destination_code, deal.to_code, alert.location_scope)
     : alert.destination === deal.to;
@@ -67,9 +67,6 @@ export function matchesAlertIntent(alert: AlertMatchInput, deal: AlertDealInput)
     (!alert.date_from || (deal.depart_date ?? "") >= alert.date_from) &&
     (!alert.date_to || (deal.depart_date ?? "") <= alert.date_to);
 
-  // Stops constraint
-  const stopsMatches = alert.max_stops == null || (deal.stops != null && Number(deal.stops) <= Number(alert.max_stops));
-
   // Return date constraint: if alert specifies return_date, candidate must match it exactly (RC-14, D12)
   const returnDateMatches = !alert.return_date || deal.return_date === alert.return_date;
 
@@ -81,7 +78,13 @@ export function matchesAlertIntent(alert: AlertMatchInput, deal: AlertDealInput)
     tripTypeMatches = !deal.return_date;
   }
 
-  return destinationMatches && originMatches && regionMatches && dateMatches && stopsMatches && returnDateMatches && tripTypeMatches;
+  return destinationMatches && originMatches && regionMatches && dateMatches && returnDateMatches && tripTypeMatches;
+}
+
+export function matchesAlertIntent(alert: AlertMatchInput, deal: AlertDealInput): boolean {
+  const routeMatches = matchesAlertRouteIntent(alert, deal);
+  const stopsMatches = alert.max_stops == null || (deal.stops != null && Number(deal.stops) <= Number(alert.max_stops));
+  return routeMatches && stopsMatches;
 }
 
 export function matchesAlertThreshold(alert: AlertMatchInput, deal: AlertDealInput): boolean {

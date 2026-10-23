@@ -1,3 +1,5 @@
+import type { TrueCostEvaluation } from "../../domain/farely/costEpistemics";
+
 export interface Deal {
   id: string;
   opportunityId?: string;
@@ -53,6 +55,10 @@ export interface Deal {
   refundPolicy?: string;
   observedAt?: string;
   validUntil?: string;
+  costBreakdown?: TrueCostEvaluation;
+  priceBasis?: string;
+  verifiedTotal?: number | null;
+  hasUnknownMandatoryCost?: boolean;
   isSponsored?: boolean;
   sponsorName?: string;
   referralRevenueVND?: number;

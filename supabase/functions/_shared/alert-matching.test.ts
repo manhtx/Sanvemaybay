@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { isValidDateOnly, matchesAlert, matchesAlertIntent, matchesAlertThreshold, selectDailyDeal } from "./alert-matching.ts";
+import { isValidDateOnly, matchesAlert, matchesAlertIntent, matchesAlertRouteIntent, matchesAlertThreshold, selectDailyDeal } from "./alert-matching.ts";
 
 Deno.test("matches alert filters by route, price, discount and region", () => {
   const alert = {
@@ -113,6 +113,51 @@ Deno.test("RC-01: matchesAlertIntent matches structural criteria even when price
   assert(!matchesAlertThreshold(alert, aboveBudgetCandidate));
   // Full composite matcher returns false
   assert(!matchesAlert(alert, aboveBudgetCandidate));
+});
+
+Deno.test("E07 & H15: Stop-constraint alert safety and route intent decoupling", () => {
+  const directAlert = {
+    origin_code: "SGN",
+    destination_code: "BKK",
+    budget: 3000000,
+    max_stops: 0,
+  };
+
+  const unknownStopsCandidate = {
+    from_code: "SGN",
+    to_code: "BKK",
+    price: 2000000,
+    stops: null,
+  };
+
+  const directCandidate = {
+    from_code: "SGN",
+    to_code: "BKK",
+    price: 2000000,
+    stops: 0,
+  };
+
+  const connectingCandidate = {
+    from_code: "SGN",
+    to_code: "BKK",
+    price: 2000000,
+    stops: 1,
+  };
+
+  // Route intent matches all candidates on the physical route
+  assert(matchesAlertRouteIntent(directAlert, unknownStopsCandidate));
+  assert(matchesAlertRouteIntent(directAlert, directCandidate));
+  assert(matchesAlertRouteIntent(directAlert, connectingCandidate));
+
+  // Stops constraint: stops=0 is eligible, stops=null and stops=1 are NOT eligible
+  assert(matchesAlertIntent(directAlert, directCandidate));
+  assert(!matchesAlertIntent(directAlert, unknownStopsCandidate));
+  assert(!matchesAlertIntent(directAlert, connectingCandidate));
+
+  // Full match requires both intent and threshold
+  assert(matchesAlert(directAlert, directCandidate));
+  assert(!matchesAlert(directAlert, unknownStopsCandidate));
+  assert(!matchesAlert(directAlert, connectingCandidate));
 });
 
 

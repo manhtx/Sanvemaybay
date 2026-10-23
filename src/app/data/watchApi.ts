@@ -281,8 +281,14 @@ export async function createWatch(
       }
       if (Array.isArray(data.alert_ids) && data.alert_ids[0]) {
         newWatch.id = data.alert_ids[0];
+        newWatch.status = "monitoring";
+      } else {
+        reportClientIssue("watch_anonymous_activation_missing_id");
+        newWatch.status = "sync_failed";
+        const locals = getLocalWatches();
+        saveLocalWatches([newWatch, ...locals.filter((w) => w.id !== newWatch.id)]);
+        return { success: false, watchId: newWatch.id, error: "Máy chủ không xác nhận mã theo dõi hợp lệ." };
       }
-      newWatch.status = "monitoring";
     } else {
       // Anonymous without turnstile cannot claim active server monitoring
       newWatch.status = "local_draft";
