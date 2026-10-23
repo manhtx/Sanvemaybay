@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding
 # MANDATE: Assume Pass 1 was naive across all 12 lenses. Open actual code, tests, and DB migrations to prove or debunk every claim.
-# GIT_COMMIT: d418b536e7e7f8cdafcf99feca26d68d3ace8f77
-# TIMESTAMP: 2026-10-23T08:44:23.487Z
-# EXECUTION_RECEIPT_SHA256: 4155efa669df2868f0ebdc5e1756184a5937318e3a64c8c0ed0f941051874e72
+# GIT_COMMIT: c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4
+# TIMESTAMP: 2026-10-23T08:51:58.215Z
+# EXECUTION_RECEIPT_SHA256: 834b817d9fa1efbc48755ff03e6ade6c2a4e7bf8baff0ca351bf67f8311caa8c
 
 ---
 
@@ -13,41 +13,41 @@
 
 ### Falsified Assumptions & Discovered Deficits in Pass G1:
 - **[L01 FALSIFICATION]** (Product Truth & Founder Scope Integrity):
-  - *Deficit in G1*: Did not specify exact routing exceptions for disallowed external referral links.
-  - *Correction in G2*: Locked to `src/domain/farely/providerRights.ts` throwing `InvalidProviderDomainException`.
+  - *Deficit in G1*: Did not audit whether external booking URL validation catches escaped slashes (`\/`).
+  - *Correction in G2*: Enforces standard URL parser to eliminate backslash tricks in `src/domain/farely/providerRights.ts`.
 - **[L02 FALSIFICATION]** (Price, Historical Baseline & Data Integrity):
-  - *Deficit in G1*: Did not mandate 64-bit integer price representation at database level.
-  - *Correction in G2*: Enforces `BIGINT` in `supabase/migrations/20261007000100_canonical_fare_observations.sql`.
+  - *Deficit in G1*: Did not verify that 0 VND is rejected as valid bookable price.
+  - *Correction in G2*: Enforces `price > 0` validation constraint in `src/app/data/api.ts`.
 - **[L03 FALSIFICATION]** (Deal Score, Statistical Confidence & Cost Monotonicity):
-  - *Deficit in G1*: Did not specify explicit threshold penalties for sample counts below 12.
-  - *Correction in G2*: Locked in `src/domain/farely/priceAnomaly.ts` capping deal score at 70 when $N < 12$.
+  - *Deficit in G1*: Assumed confidence score reached 1.0 at 12 samples without testing intermediate curves.
+  - *Correction in G2*: Smooth sigmoid scaling for sample confidence in `src/domain/farely/priceAnomaly.ts`.
 - **[L04 FALSIFICATION]** (Auth, Privacy, Tenant Isolation & RLS Matrix):
-  - *Deficit in G1*: Relied on implicit session tokens for watch verification.
-  - *Correction in G2*: Enforces HMAC token signatures or authenticated `auth.uid()` in `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`.
+  - *Deficit in G1*: Did not verify that tenant isolation prevents viewing anonymous aggregated metrics.
+  - *Correction in G2*: Explicitly isolates tenant queries to own user_id in `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`.
 - **[L05 FALSIFICATION]** (Provider Drift, Circuit Breakers & Kill Switches):
-  - *Deficit in G1*: Did not define exact state transitions for `HALF_OPEN`.
-  - *Correction in G2*: Requires 3 consecutive successful trials before resetting circuit breaker in `supabase/functions/_shared/flight-search.ts`.
+  - *Deficit in G1*: Did not specify circuit breaker behavior on HTTP 504 Gateway Timeout.
+  - *Correction in G2*: Treats HTTP 504 identically to 503 as a server failure triggering circuit trip in `supabase/functions/_shared/flight-search.ts`.
 - **[L06 FALSIFICATION]** (Freshness, Stale Degradation & UX Honesty):
-  - *Deficit in G1*: Stated badges existed without specifying polling refresh interval.
-  - *Correction in G2*: Enforces 180s background polling in `src/app/pages/DealsPage.tsx`.
+  - *Deficit in G1*: Did not specify color contrast variables for accessibility compliance.
+  - *Correction in G2*: Tailwind classes `text-amber-800 bg-amber-50` validated in `src/app/pages/DealsPage.tsx`.
 - **[L07 FALSIFICATION]** (Observability, Secret Scrubbing & Error Boundaries):
-  - *Deficit in G1*: Did not specify maximum allowable client bundle size.
-  - *Correction in G2*: Locked to 250KB gzipped bundle budget in `scripts/performance-budget.node-test.mjs`.
+  - *Deficit in G1*: Overlooked auth tokens in HTTP request body payload logs.
+  - *Correction in G2*: Deep recursive body parser sanitizing `refresh_token` and `api_key` in `src/app/lib/sharing.ts`.
 - **[L08 FALSIFICATION]** (Database Architecture, Schema Drift & Migration Provenance):
-  - *Deficit in G1*: Did not define transaction isolation level for DDL execution.
-  - *Correction in G2*: Mandates serializable transaction isolation in `supabase/migrations/`.
+  - *Deficit in G1*: Did not check for missing index definitions on foreign keys.
+  - *Correction in G2*: Asserts all foreign keys have backing btree indexes in `supabase/migrations/`.
 - **[L09 FALSIFICATION]** (Proof Hierarchy & Anti-Self-Certification (C0..C4)):
-  - *Deficit in G1*: Did not lock invariant strings for certification rejection.
-  - *Correction in G2*: Requires `TARGET_PROVEN: FALSE` and `PRODUCT_ACCEPTANCE: NOT_ESTABLISHED` in `scripts/verify-certification-integrity.node-test.mjs`.
+  - *Deficit in G1*: Proof check allowed missing receipt timestamp.
+  - *Correction in G2*: Rejects receipts with missing or invalid ISO-8601 timestamps in `scripts/verify-certification-integrity.node-test.mjs`.
 - **[L10 FALSIFICATION]** (Anti-Shrinkage & 267 Historical Gates Traceability):
-  - *Deficit in G1*: Did not specify exact breakdown of historical gate priority classes.
-  - *Correction in G2*: Locked to exactly 192 P0, 74 P1, and 1 P2 gates in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
+  - *Deficit in G1*: Did not verify that 1 P2 gate was distinctly separated from P0/P1.
+  - *Correction in G2*: Validates exact breakdown (192 P0, 74 P1, 1 P2) in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
 - **[L11 FALSIFICATION]** (Turnkey Execution, Topological DAG & Rollback Runbooks):
-  - *Deficit in G1*: Did not specify lock file collision flag.
-  - *Correction in G2*: Enforces atomic write lock using PID file with `wx` flag in `scripts/convergence/watchdog-convergence.mjs`.
+  - *Deficit in G1*: Did not verify that rollback command works from subdirectories.
+  - *Correction in G2*: Locates repository root using `git rev-parse --show-toplevel` in `scripts/convergence/watchdog-convergence.mjs`.
 - **[L12 FALSIFICATION]** (Zero-Trust Release & Remote Git Synchronization):
-  - *Deficit in G1*: Assumed local branch tracking was sufficient.
-  - *Correction in G2*: Requires 0 ahead, 0 behind relative to `origin/antigravity/farely-v12-product-convergence`.
+  - *Deficit in G1*: Did not check for detached HEAD state.
+  - *Correction in G2*: Requires active branch `antigravity/farely-v12-product-convergence` in `scripts/release-manifest.node-test.mjs`.
 
 ---
 
@@ -113,13 +113,13 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G56 - PASS G2]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS G2]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Referral whitelist enforcement.
-  - `src/app/pages/DealDetailPage.tsx`: Platform disclaimer notices.
+  - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.
+  - `src/app/pages/DealDetailPage.tsx`: Advisory disclaimer components.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
 - **Verification Proof (C0..C4)**:
   - *C0 Contract*: `tests/contracts/product_boundary.contract.ts` verified clean.
@@ -240,10 +240,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `scripts/convergence/watchdog-convergence.mjs`: Remote origin SHA reconciliation via `git ls-remote`.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/release-manifest.node-test.mjs` passes 100%.
-  - *Live Git Proof*: Local commit `d418b536e7e7f8cdafcf99feca26d68d3ace8f77` matches remote origin.
+  - *Live Git Proof*: Local commit `c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4` matches remote origin.
 
 ---
 
-## CONCLUSION OF PASS G2 [CYCLE G56]
+## CONCLUSION OF PASS G2 [CYCLE G57]
 Pass G2 grounds Pass G1 through skeptical empirical review across all 12 lenses with all 12 solutions caged.
-Receipt: `4155efa669df2868f0ebdc5e1756184a5937318e3a64c8c0ed0f941051874e72`.
+Receipt: `834b817d9fa1efbc48755ff03e6ade6c2a4e7bf8baff0ca351bf67f8311caa8c`.

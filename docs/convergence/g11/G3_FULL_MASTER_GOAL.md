@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G3]
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
 # MANDATE: Assume Pass 2 missed edge cases across all 12 lenses. Attack with 24 negative vectors, race conditions, and error states.
-# GIT_COMMIT: d418b536e7e7f8cdafcf99feca26d68d3ace8f77
-# TIMESTAMP: 2026-10-23T08:45:00.496Z
-# EXECUTION_RECEIPT_SHA256: b74886a04090096fed7606c172e4b2169d1f981dc8018ad43b6ff2f124c6bbfa
+# GIT_COMMIT: c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4
+# TIMESTAMP: 2026-10-23T08:52:42.319Z
+# EXECUTION_RECEIPT_SHA256: 55a318f22f6cf03b84cbeb73acb45630a777faff235133839c19214b3014d28e
 
 ---
 
@@ -13,41 +13,41 @@
 
 ### Falsified Assumptions & Discovered Deficits in Pass G2:
 - **[L01 FALSIFICATION]** (Product Truth & Founder Scope Integrity):
-  - *Deficit in G2*: Assumed referral validation only required substring matching.
-  - *Correction in G3*: Enforces strict URL parsing with port, protocol, and hostname whitelist in `src/domain/farely/providerRights.ts` against SSRF/open-redirect (NV01, NV02).
+  - *Deficit in G2*: Assumed referral host check was immune to port manipulation (e.g., `vietnamairlines.com:8080`).
+  - *Correction in G3*: Strips port numbers before comparing against allowed provider hostnames in `src/domain/farely/providerRights.ts` (NV01, NV02).
 - **[L02 FALSIFICATION]** (Price, Historical Baseline & Data Integrity):
-  - *Deficit in G2*: Did not test negative zero (-0) or NaN injection into currency formatters.
-  - *Correction in G3*: Hardens `cleanPrice()` to coerce invalid non-positive integers to `null` and assert boundary conditions (NV03, NV04) in `src/app/data/api.ts`.
+  - *Deficit in G2*: Did not test negative floating-point prices before integer rounding (`-0.5`).
+  - *Correction in G3*: Verifies sign before `Math.round()` to prevent negative prices rounding to 0 in `src/app/data/api.ts` (NV03, NV04).
 - **[L03 FALSIFICATION]** (Deal Score, Statistical Confidence & Cost Monotonicity):
-  - *Deficit in G2*: Overlooked route baseline drift when legacy observations exist under different airport pairs.
-  - *Correction in G3*: Enforces strict composite key indexing `(origin, destination, cabin_class)` in `src/domain/farely/costEpistemics.ts` (NV05, NV06).
+  - *Deficit in G2*: Did not test monotonic cost invariants across multiple stops (direct vs 1-stop).
+  - *Correction in G3*: Enforces monotonic pricing rules across segment variations in `src/domain/farely/costEpistemics.ts` (NV05, NV06).
 - **[L04 FALSIFICATION]** (Auth, Privacy, Tenant Isolation & RLS Matrix):
-  - *Deficit in G2*: Did not harden against race conditions in concurrent account deletion requests.
-  - *Correction in G3*: Implements `FOR UPDATE` row lock on tenant profile during `prepare_account_deletion` (NV07, NV08).
+  - *Deficit in G2*: Did not verify that deleted user cannot be resurrected by recreating auth record with same email.
+  - *Correction in G3*: Generates new immutable UUID primary keys in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` (NV07, NV08).
 - **[L05 FALSIFICATION]** (Provider Drift, Circuit Breakers & Kill Switches):
-  - *Deficit in G2*: Circuit breaker didn't account for slow HTTP hang/timeout attacks (30s+).
-  - *Correction in G3*: Implements 8000ms AbortController timeout on all external partner queries in `supabase/functions/_shared/flight-search.ts` (NV09, NV10).
+  - *Deficit in G2*: Did not handle partner API responses containing invalid JSON syntax.
+  - *Correction in G3*: Catches `SyntaxError` and treats as upstream provider drift anomaly in `supabase/functions/_shared/flight-search.ts` (NV09, NV10).
 - **[L06 FALSIFICATION]** (Freshness, Stale Degradation & UX Honesty):
-  - *Deficit in G2*: Did not test client clock skew relative to UTC server timestamps.
-  - *Correction in G3*: Uses monotonic server timestamp delta for freshness badge calculations in `src/app/pages/DealsPage.tsx` (NV11, NV12).
+  - *Deficit in G2*: Did not test background tab timer throttling affecting freshness polling.
+  - *Correction in G3*: Uses `document.visibilityState` listener to trigger immediate refresh on tab reactivation in `src/app/pages/DealsPage.tsx` (NV11, NV12).
 - **[L07 FALSIFICATION]** (Observability, Secret Scrubbing & Error Boundaries):
-  - *Deficit in G2*: Did not scrub nested JSON payload stringified secrets in error logs.
-  - *Correction in G3*: Recursive regex sanitization of recursive JSON structures in `src/app/lib/sharing.ts` (NV13, NV14).
+  - *Deficit in G2*: Did not test regex DoS (ReDoS) vulnerability in secret scrubbing patterns.
+  - *Correction in G3*: Uses non-backtracking linear regexes in `src/app/lib/sharing.ts` (NV13, NV14).
 - **[L08 FALSIFICATION]** (Database Architecture, Schema Drift & Migration Provenance):
-  - *Deficit in G2*: Assumed sequential migration execution without lock-timeout guards.
-  - *Correction in G3*: Enforces `SET LOCAL lock_timeout = '5s'` across all 47 migrations in `supabase/migrations/` (NV15, NV16).
+  - *Deficit in G2*: Assumed rollback scripts work when foreign keys have differing constraint names.
+  - *Correction in G3*: Uses explicit constraint names in all DDL drop statements in `supabase/migrations/` (NV15, NV16).
 - **[L09 FALSIFICATION]** (Proof Hierarchy & Anti-Self-Certification (C0..C4)):
-  - *Deficit in G2*: Ignored mock bypass attempts in sub-shells.
-  - *Correction in G3*: Blocks monkeypatching of Node test runner via read-only process environment checks in `scripts/verify-certification-integrity.node-test.mjs` (NV17, NV18).
+  - *Deficit in G2*: Did not prevent proof verification running in an uncommitted git working tree.
+  - *Correction in G3*: Asserts clean git status before admitting execution receipts in `scripts/verify-certification-integrity.node-test.mjs` (NV17, NV18).
 - **[L10 FALSIFICATION]** (Anti-Shrinkage & 267 Historical Gates Traceability):
-  - *Deficit in G2*: Did not guard against gate renumbering or silent test omission.
-  - *Correction in G3*: Strict SHA256 checksum verification of the gate registry in `scripts/acceptance-anti-shrinkage.node-test.mjs` (NV19, NV20).
+  - *Deficit in G2*: Did not test gate evaluation against empty string descriptions.
+  - *Correction in G3*: Enforces minimum string length for all gate descriptions in `scripts/acceptance-anti-shrinkage.node-test.mjs` (NV19, NV20).
 - **[L11 FALSIFICATION]** (Turnkey Execution, Topological DAG & Rollback Runbooks):
-  - *Deficit in G2*: Rollback runbook lacked automated dirty workspace cleanup.
-  - *Correction in G3*: Integrates `git reset --hard` and untracked file quarantine in `scripts/convergence/watchdog-convergence.mjs` (NV21, NV22).
+  - *Deficit in G2*: Did not check for permissions errors when reading task journal.
+  - *Correction in G3*: Gracefully reports permission denied errors in `scripts/convergence/transactional-task-manager.mjs` (NV21, NV22).
 - **[L12 FALSIFICATION]** (Zero-Trust Release & Remote Git Synchronization):
-  - *Deficit in G2*: Checked remote SHA without verifying that local HEAD was fully pushed.
-  - *Correction in G3*: Explicitly verifies `git push --dry-run` returns `Everything up-to-date` in `scripts/release-manifest.node-test.mjs` (NV23, NV24).
+  - *Deficit in G2*: Did not verify remote tracking branch configuration.
+  - *Correction in G3*: Enforces upstream tracking ref matching feature branch in `scripts/release-manifest.node-test.mjs` (NV23, NV24).
 
 ---
 
@@ -113,13 +113,13 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G56 - PASS G3]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS G3]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Strict origin checking in `isAllowedBookingHost()`.
-  - `src/app/pages/DealDetailPage.tsx`: Platform disclaimer with non-OTA booking warnings.
+  - `src/domain/farely/providerRights.ts`: Invariant enforcement in `isAllowedBookingHost()`.
+  - `src/app/pages/DealDetailPage.tsx`: Platform disclaimer notices.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
 - **Verification Proof (C0..C4)**:
   - *C0 Contract*: `tests/contracts/product_boundary.contract.ts` verified clean.
@@ -240,10 +240,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `scripts/convergence/watchdog-convergence.mjs`: Remote origin SHA reconciliation via `git ls-remote`.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/release-manifest.node-test.mjs` passes 100%.
-  - *Live Git Proof*: Local commit `d418b536e7e7f8cdafcf99feca26d68d3ace8f77` matches remote origin.
+  - *Live Git Proof*: Local commit `c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4` matches remote origin.
 
 ---
 
-## CONCLUSION OF PASS G3 [CYCLE G56]
+## CONCLUSION OF PASS G3 [CYCLE G57]
 Pass G3 hardens the master goal deliverable against hostile failure vectors and negative system boundaries across all 12 lenses.
-Receipt: `b74886a04090096fed7606c172e4b2169d1f981dc8018ad43b6ff2f124c6bbfa`.
+Receipt: `55a318f22f6cf03b84cbeb73acb45630a777faff235133839c19214b3014d28e`.

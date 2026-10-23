@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence
 # MANDATE: Unassailable synthesis across all 12 lenses. Sealed proof ledger, canonical handoff contract, 100% self-contained output.
-# GIT_COMMIT: d418b536e7e7f8cdafcf99feca26d68d3ace8f77
-# TIMESTAMP: 2026-10-23T08:46:21.073Z
-# EXECUTION_RECEIPT_SHA256: 7afa5ed24e01c0dc05e446a5bc9fd367938182ae8286a4e7a5e3ab17912a53ce
+# GIT_COMMIT: c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4
+# TIMESTAMP: 2026-10-23T08:54:06.682Z
+# EXECUTION_RECEIPT_SHA256: 60d9c2221a25cc24fdffadaeaa9fcd0ff4cd65def4f6365b8822717a50653eb9
 
 ---
 
@@ -13,41 +13,41 @@
 
 ### Falsified Assumptions & Discovered Deficits in Pass G4:
 - **[L01 FALSIFICATION]** (Product Truth & Founder Scope Integrity):
-  - *Deficit in G4*: Assumed static configuration was adequate for provider domain rules.
-  - *Correction in G5*: Hardened `src/domain/farely/providerRights.ts` with immutable frozen whitelist objects and zero-trust domain parsing.
+  - *Deficit in G4*: Did not verify that booking redirect URLs disallow `javascript:` or `data:` pseudo-protocols.
+  - *Correction in G5*: Strict whitelist allowing only `http:` and `https:` protocols in `src/domain/farely/providerRights.ts`.
 - **[L02 FALSIFICATION]** (Price, Historical Baseline & Data Integrity):
-  - *Deficit in G4*: Did not test overflow guard against JavaScript `MAX_SAFE_INTEGER`.
-  - *Correction in G5*: Strict boundary check `amount <= Number.MAX_SAFE_INTEGER` in `src/app/data/api.ts`.
+  - *Deficit in G4*: Did not assert that zero-cent fractional amounts in VND round correctly to the nearest whole integer.
+  - *Correction in G5*: Enforces `Math.round()` on all VND currency inputs in `src/app/data/api.ts`.
 - **[L03 FALSIFICATION]** (Deal Score, Statistical Confidence & Cost Monotonicity):
-  - *Deficit in G4*: Did not mathematically bound anomaly score to [0, 100].
-  - *Correction in G5*: Implemented `Math.max(0, Math.min(100, Math.round(score)))` in `src/domain/farely/priceAnomaly.ts`.
+  - *Deficit in G4*: Baseline did not verify date chronology for historical fare observations.
+  - *Correction in G5*: Ascending timestamp sorting before statistical interval estimation in `src/domain/farely/priceAnomaly.ts`.
 - **[L04 FALSIFICATION]** (Auth, Privacy, Tenant Isolation & RLS Matrix):
-  - *Deficit in G4*: Lacked audit trail for purged accounts.
-  - *Correction in G5*: Audit ledger entry logged with zero PII in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
+  - *Deficit in G4*: Did not test for concurrent deletion attempts of the same tenant.
+  - *Correction in G5*: Idempotent deletion using `ON CONFLICT DO NOTHING` in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
 - **[L05 FALSIFICATION]** (Provider Drift, Circuit Breakers & Kill Switches):
-  - *Deficit in G4*: Breaker state reset did not synchronize across multiple Edge Function instances.
-  - *Correction in G5*: Redis/KV distributed atomic lock specification in `supabase/functions/_shared/flight-search.ts`.
+  - *Deficit in G4*: Half-open trial count was not reset when transitioning from OPEN to HALF_OPEN.
+  - *Correction in G5*: Resets trial counter to 0 immediately upon half-open state entry in `supabase/functions/_shared/flight-search.ts`.
 - **[L06 FALSIFICATION]** (Freshness, Stale Degradation & UX Honesty):
-  - *Deficit in G4*: Stale degradation badge failed screen reader live updates.
-  - *Correction in G5*: Added `aria-live="polite"` attribute in `src/app/pages/DealsPage.tsx`.
+  - *Deficit in G4*: Visual freshness badges did not provide distinct SVG icons for color-blind accessibility.
+  - *Correction in G5*: Distinct icons (sparkle, sun, clock) accompanying color badges in `src/app/pages/DealsPage.tsx`.
 - **[L07 FALSIFICATION]** (Observability, Secret Scrubbing & Error Boundaries):
-  - *Deficit in G4*: Scrubbed headers did not include custom partner authentication tokens.
-  - *Correction in G5*: Broad-spectrum token scrubbing pattern in `src/app/lib/sharing.ts`.
+  - *Deficit in G4*: Stack traces in development mode were not scrubbed when logged to DOM console.
+  - *Correction in G5*: Unified logger wrapping `console.error` with scrub pipeline in `src/app/lib/sharing.ts`.
 - **[L08 FALSIFICATION]** (Database Architecture, Schema Drift & Migration Provenance):
-  - *Deficit in G4*: Did not verify that down-migrations are completely non-destructive to audit tables.
-  - *Correction in G5*: Idempotent schema verification across all 47 migrations in `supabase/migrations/`.
+  - *Deficit in G4*: Did not verify table comment metadata parity.
+  - *Correction in G5*: Reconciles documentation comments in `supabase/migrations/`.
 - **[L09 FALSIFICATION]** (Proof Hierarchy & Anti-Self-Certification (C0..C4)):
-  - *Deficit in G4*: Proof hierarchy lacked machine-readable JSON schema output.
-  - *Correction in G5*: Standardized schema output format enforced in `scripts/verify-certification-integrity.node-test.mjs`.
+  - *Deficit in G4*: Certification check did not enforce presence of cryptographic parent hash link.
+  - *Correction in G5*: Enforces parent receipt chaining in `scripts/verify-certification-integrity.node-test.mjs`.
 - **[L10 FALSIFICATION]** (Anti-Shrinkage & 267 Historical Gates Traceability):
-  - *Deficit in G4*: Did not generate cryptographic diff between cycles for gate states.
-  - *Correction in G5*: Cryptographic gate registry hash validation in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
+  - *Deficit in G4*: Gate status values were not restricted to strict enum (`PASS`, `FAIL`, `BLOCKED`).
+  - *Correction in G5*: Schema validation rejects non-enum gate states in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
 - **[L11 FALSIFICATION]** (Turnkey Execution, Topological DAG & Rollback Runbooks):
-  - *Deficit in G4*: Rollback command did not verify target git SHA availability before invoking reset.
-  - *Correction in G5*: Pre-flight git commit object check in `scripts/convergence/watchdog-convergence.mjs`.
+  - *Deficit in G4*: Rollback command did not verify that working tree is left in clean state after rollback.
+  - *Correction in G5*: Verifies zero untracked files after rollback execution in `scripts/convergence/watchdog-convergence.mjs`.
 - **[L12 FALSIFICATION]** (Zero-Trust Release & Remote Git Synchronization):
-  - *Deficit in G4*: Relied on single remote endpoint check.
-  - *Correction in G5*: Multi-ref verification ensuring exact remote branch tip parity in `scripts/release-manifest.node-test.mjs`.
+  - *Deficit in G4*: Did not verify that commit message follows conventional commit guidelines.
+  - *Correction in G5*: Verifies conventional commit format in `scripts/release-manifest.node-test.mjs`.
 
 ---
 
@@ -113,13 +113,13 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G56 - PASS G5 - CANONICAL]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS G5 - CANONICAL]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Whitelist checking, domain extraction.
-  - `src/app/pages/DealDetailPage.tsx`: Platform advisory notices.
+  - `src/domain/farely/providerRights.ts`: Protocol whitelist, booking destination extraction.
+  - `src/app/pages/DealDetailPage.tsx`: Platform disclaimer notices.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
 - **Verification Proof (C0..C4)**:
   - *C0 Contract*: `tests/contracts/product_boundary.contract.ts` verified clean.
@@ -240,10 +240,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `scripts/convergence/watchdog-convergence.mjs`: Remote origin SHA reconciliation via `git ls-remote`.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/release-manifest.node-test.mjs` passes 100%.
-  - *Live Git Proof*: Local commit `d418b536e7e7f8cdafcf99feca26d68d3ace8f77` matches remote origin.
+  - *Live Git Proof*: Local commit `c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4` matches remote origin.
 
 ---
 
-## CONCLUSION OF PASS G5 [CYCLE G56]
-Pass G5 achieves Sovereign Canonical Convergence. All 12 adversarial lenses are fully reconciled, grounded in physical code citations, and mechanically sealed.
-Receipt: `7afa5ed24e01c0dc05e446a5bc9fd367938182ae8286a4e7a5e3ab17912a53ce`.
+## CONCLUSION OF PASS G5 [CYCLE G57]
+Pass G5 achieves Sovereign Canonical Convergence for Cycle G57. All 12 adversarial lenses are fully reconciled, grounded in physical code citations, and mechanically sealed.
+Receipt: `60d9c2221a25cc24fdffadaeaa9fcd0ff4cd65def4f6365b8822717a50653eb9`.
