@@ -55,7 +55,11 @@ Every pass is automatically audited by the deterministic linters:
 2. `node scripts/convergence/validate-research-probes.mjs <currentPass.md>`:
    - Validates that TypeScript imports match `package.json` dependencies.
    - Validates that SQL table queries match existing tables in `supabase/migrations/`.
-3. `node scripts/convergence/continuous_5x5_orchestrator.mjs`:
+3. **Solution Cage & Anti-Wiggle-Room Linter**:
+   - For Master Goal passes, enforces mechanical 1:1 binding of all Research solutions.
+   - Mandates `INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION`.
+   - Rejects any vague task directives (e.g. `to be determined`, `decide during implementation`, `choose best approach`).
+4. `node scripts/convergence/continuous_5x5_orchestrator.mjs`:
    - Coordinates pass tracking, SHA-256 calculation, and canonical export.
 
 ---

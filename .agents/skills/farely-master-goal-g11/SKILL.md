@@ -100,6 +100,38 @@ To ensure the compiled Master Goal Prompt cannot be gamed or executed with super
 3. **Turnkey Test Commands**: Every task in Section E (Step-by-Step Task Execution Order) MUST contain an executable shell verification command. Tasks with only descriptive acceptance criteria are rejected.
 4. **Chat Canvas Injection**: Pass G5 MUST be rendered verbatim into the chat canvas inside a fenced `markdown` block, followed by autonomous continuation of execution.
 
+## G11.17 — Solution Cage Protocol: Absolute Mechanical Binding of Research Solutions
+
+The Master Goal Compiler G11 is an assembly compiler, not an improvising designer. It MUST mechanically bind and enforce all solutions vetted by Research R10:
+1. **1:1 Solution Projection**: Every concrete architectural decision (`DEC-[ID]`) and technical solution (`SOL-[ID]`) established in Research R10 (Sections III, IV, V) MUST be directly embedded into Section D (Architecture) and Section E (Execution Tasks) of the compiled Master Goal Prompt. The compiler is strictly forbidden from summarizing, diluting, or replacing Research solutions with high-level descriptions.
+2. **The "Executor Cage" Invariant**: Every compiled Master Goal Prompt MUST contain the following immutable binding clause in Section B:
+   ```text
+   INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION
+   The executor is strictly bound to the locked technical solutions detailed in Section D & E.
+   The executor is FORBIDDEN from inventing new architectures, introducing alternative algorithms,
+   changing database schemas, or deviating from the specified file/function diffs.
+   Any deviation is a critical contract breach and will be rejected closed by the Evidence Admission Controller.
+   ```
+3. **Prevention of Rogue AI Improvisation**: The downstream executing agent (Antigravity/Codex) must have zero degrees of freedom to alter the technical direction. If a problem arises during execution, the executor must fail closed and trigger `RESEARCH_RECOVERY` rather than improvising an unvetted alternative.
+
+## G11.18 — Strict Anti-Wiggle-Room Enforcement & Multi-Lens Pass Deepening
+
+To guarantee that the Master Goal Prompt is airtight across all 12 Adversarial Lenses:
+1. **Zero Wiggle-Room Lexicon**: The compiler is strictly forbidden from generating tasks containing ambiguous phrases such as:
+   `TBD`, `to be determined`, `as appropriate`, `decide during implementation`, `choose best approach`, `explore options`, `implement as needed`.
+   Every task in Section E MUST specify:
+   - `EXACT_TARGET_FILE`: Concrete file path on disk.
+   - `BEFORE_SPECIFICATION`: Current file/function/schema state.
+   - `AFTER_SPECIFICATION`: Exact code diff, function signature, or SQL DDL to land.
+   - `VERIFIABLE_TERMINAL_COMMAND`: Turnkey shell command exiting with code 0.
+   - `ROLLBACK_ACTION`: Turnkey shell command to restore pristine state on failure.
+2. **5-Pass Deepening Across ALL 12 Lenses**:
+   - **Pass G1**: Full-Battery Projection: Embeds all Research SOLs into an 11-section A–K Goal across all 12 lenses.
+   - **Pass G2**: Wiggle-Room Elimination: Evaluates all 12 lenses; converts every high-level instruction into explicit file-level before/after diffs.
+   - **Pass G3**: Anti-Fake-Done Hardening: Evaluates all 12 lenses; injects negative test controls, assertion probes, and independent oracles to prevent self-certification.
+   - **Pass G4**: Turnkey Execution & DAG Verification: Evaluates all 12 lenses; validates topological task sequence and turnkey CLI commands.
+   - **Pass G5**: Sovereign Canonical Convergence: The final, unassailable, 100% locked Master Goal Prompt.
+
 ## FARELY-XFER/6 — CANONICAL SHARED HANDOFF (EXACT SAME WORDS IN R10 AND G11)
 
 `CONTRACT_ID=FARELY-XFER/6; PROJECT=Farely; PRODUCER=Research R10; CONSUMER=Master Goal G11; AUTHORITY=Founder-held approved source; CERTIFICATION and AUTHORABILITY are distinct. No single ready flag is sufficient.`

@@ -109,7 +109,30 @@ export function auditPassAgainstEvasion(currentPassPath, previousPassPath = null
     }
   }
 
-  // 5. Anti-Parroting Check (for Pass >= 2 against Pass N-1)
+  // 5. Anti-Wiggle-Room & Solution Cage Enforcement for Master Goal (passType === 'G')
+  if (passType === 'G') {
+    const wiggleRoomPhrases = [
+      'to be determined',
+      'as appropriate',
+      'decide during implementation',
+      'choose best approach',
+      'explore options',
+      'implement as needed',
+      'tùy ý quyết định',
+      'tự chọn giải pháp'
+    ];
+    for (const w of wiggleRoomPhrases) {
+      if (content.toLowerCase().includes(w)) {
+        issues.push(`[WIGGLE_ROOM_DETECTED] Master Goal Prompt contains forbidden ambiguous phrase: "${w}". Tasks must specify exact target files, before/after diffs, and turnkey verification commands.`);
+      }
+    }
+
+    if (!content.includes('INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION') && !content.includes('STRICT_NO_DEVIATION')) {
+      issues.push(`[EXECUTOR_CAGE_MISSING] Master Goal Prompt is missing mandatory 'INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION'. The prompt must strictly forbid the downstream executing AI from improvising or introducing unverified architectures.`);
+    }
+  }
+
+  // 6. Anti-Parroting Check (for Pass >= 2 against Pass N-1)
   if (previousPassPath && fs.existsSync(previousPassPath)) {
     const prevContent = fs.readFileSync(previousPassPath, 'utf8');
     const prevWords = new Set(prevContent.toLowerCase().split(/\s+/).filter(w => w.length > 4));
