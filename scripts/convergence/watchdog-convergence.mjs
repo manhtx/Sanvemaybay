@@ -11,6 +11,7 @@ import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { loadState } from './continuous_5x5_orchestrator.mjs';
 import { loadJournal, sanitizeAndRecoverTask } from './transactional-task-manager.mjs';
+import { auditPassAgainstEvasion } from './anti-evasion-linter.mjs';
 
 const ROOT_DIR = process.cwd();
 const STATE_DIR = path.join(ROOT_DIR, 'docs/convergence/state');
@@ -110,8 +111,50 @@ export function runWatchdogAudit() {
   return report;
 }
 
+export function checkPassesIntegrity() {
+  const r10Dir = path.join(ROOT_DIR, 'docs/convergence/r10');
+  const g11Dir = path.join(ROOT_DIR, 'docs/convergence/g11');
+  
+  const results = {
+    research: {},
+    masterGoal: {}
+  };
+
+  if (fs.existsSync(r10Dir)) {
+    for (const f of fs.readdirSync(r10Dir)) {
+      if (f.endsWith('.md')) {
+        const full = path.join(r10Dir, f);
+        const match = f.match(/R(\d+)_/);
+        const passNum = match ? parseInt(match[1], 10) : 1;
+        const prevFile = passNum > 1 ? path.join(r10Dir, `R${passNum - 1}_FULL_RESEARCH.md`) : null;
+        results.research[f] = auditPassAgainstEvasion(full, prevFile);
+      }
+    }
+  }
+
+  if (fs.existsSync(g11Dir)) {
+    for (const f of fs.readdirSync(g11Dir)) {
+      if (f.endsWith('.md')) {
+        const full = path.join(g11Dir, f);
+        const match = f.match(/G(\d+)_/);
+        const passNum = match ? parseInt(match[1], 10) : 1;
+        const prevFile = passNum > 1 ? path.join(g11Dir, `G${passNum - 1}_FULL_MASTER_GOAL.md`) : null;
+        results.masterGoal[f] = auditPassAgainstEvasion(full, prevFile);
+      }
+    }
+  }
+
+  return results;
+}
+
 // CLI handler
 if (process.argv[1] && process.argv[1].endsWith('watchdog-convergence.mjs')) {
-  const audit = runWatchdogAudit();
-  console.log(JSON.stringify(audit, null, 2));
+  const cmd = process.argv[2] || 'status';
+  if (cmd === 'status') {
+    const audit = runWatchdogAudit();
+    console.log(JSON.stringify(audit, null, 2));
+  } else if (cmd === 'integrity') {
+    const integrity = checkPassesIntegrity();
+    console.log(JSON.stringify(integrity, null, 2));
+  }
 }

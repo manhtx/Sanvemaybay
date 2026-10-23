@@ -40,6 +40,7 @@ To prevent AI complacency, evasion, and unfeasible hallucinations:
 5. **Non-OTA Product Invariants**: Strictly enforce `NO_DIRECT_TICKETING`, `NO_PASSENGER_CHECKOUT`, `NO_PAYMENT_COLLECTION`, `NO_UNAUTHORIZED_SCRAPING`. Any research attempting to turn Farely into an OTA ticketing agent is rejected immediately.
 6. **Executable Spike Probe Requirement**: For Pass R4/R5 and G4/G5, architectural claims must be backed by an executable probe or actual terminal test run (e.g. `npx deno check`, `npm test`) embedded directly into the research packet.
 7. **Cryptographic Proof-of-Execution (PoE) Mandate**: Prior to drafting any pass, the agent MUST execute `node scripts/convergence/generate-execution-receipt.mjs` and include the live `EXECUTION_RECEIPT_SHA256: <hash>` token. Drafting without live pre-flight codebase telemetry is strictly rejected by the linter.
+8. **Multi-Lens Falsification Matrix**: For Pass N >= 2, the `## AUDIT & FALSIFICATION OF PASS N-1` section MUST actively critique and challenge at least 3 distinct adversarial lenses (`L01..L12`) from the prior pass. Shallow or generic praise is rejected.
 
 ## 5. CONTINUOUS LOOP & HANDOVER MECHANISM
 1. **Chat Canvas Injection**: Render the verbatim Pass G5 Master Goal Prompt into the chat canvas inside a fenced `markdown` block.
@@ -50,10 +51,12 @@ To prevent AI complacency, evasion, and unfeasible hallucinations:
 1. **1:1 Research-to-Goal Binding**: Every single solution identified in Research R5 (`SOL-[ID]`) must be mechanically incorporated into Section D & E of Master Goal G5. The linter enforces 100% presence; any dropped solution causes immediate `BLOCKED_BY_LINTER: SOLUTION_CAGE_LEAKAGE`.
 2. **Invariant Executor Lock**: Downstream executing AI is legally and architecturally prohibited from improvising alternative solutions or changing the agreed technical trajectory. Section B of Master Goal Prompt must embed `INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION`.
 3. **Anti-Wiggle-Room Mandate**: Prompts must contain zero ambiguity. Phrases like "to be determined", "as appropriate", "decide during implementation" are strictly banned. Every task must specify exact target files, before/after diffs, and turnkey verification commands.
+4. **Target File Invariant & Specification Locking**: The linter audits that every target file identified in Research R5 (`TARGET_FILES`) is explicitly preserved in the Master Goal Prompt; any silent omission or file drift causes `BLOCKED_BY_LINTER: SOLUTION_SPEC_DRIFT`.
 
 ## 7. TOKEN EXHAUSTION RESILIENCE & ACID TRANSACTIONAL PROTOCOL
 1. **Pre-Task Snapshot**: Before modifying any repository files during Goal execution, the task must run `node scripts/convergence/transactional-task-manager.mjs begin <task_id> <files...>`.
-2. **Post-Task Commit**: Upon running verification tests and confirming syntax/test integrity, the task runs `node scripts/convergence/transactional-task-manager.mjs commit <task_id> <test_command>`.
+2. **Post-Task Commit & Push**: Upon running verification tests and confirming syntax/test integrity, the task runs `node scripts/convergence/transactional-task-manager.mjs commit <task_id> <test_command> --push` to checkpoint permanently to remote GitHub.
 3. **Syntax-Check & Auto-Rollback on Crash**: If token limits (e.g. `MAX_TOKEN_BUDGET_EXCEEDED` or rate limit) interrupt an edit mid-file, the `PreInvocation` and `SessionStart` hooks run `sanitizeAndRecoverTask()`. Any files with syntax errors are automatically rolled back to their pre-task clean snapshot.
 4. **Resumption Without Rerun**: The agent never restarts a Goal or Research pass from scratch. Resumption resumes from the exact unfinished checkpoint.
-5. **Goal Completion Verification**: Marking a Goal complete requires `node scripts/convergence/continuous_5x5_orchestrator.mjs complete-goal <cycleId>`, which enforces clean git status, git remote push verification, and fresh execution receipts before auto-transitioning to the next cycle.
+5. **Incremental Lens Checkpointing**: Long passes can save individual lenses incrementally via `saveLensCheckpoint`, allowing resumption at the exact unfinished lens without re-generating prior lenses.
+6. **Goal Completion Verification**: Marking a Goal complete requires `node scripts/convergence/continuous_5x5_orchestrator.mjs complete-goal <cycleId>`, which enforces clean git status, git remote push verification, and fresh execution receipts before auto-transitioning to the next cycle.

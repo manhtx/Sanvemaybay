@@ -49,6 +49,15 @@ export function auditPassAgainstEvasion(currentPassPath, previousPassPath = null
 
     if (!hasFalsificationSection) {
       issues.push(`[EVASION_CRITICAL] Pass ${passNum} is missing a mandatory FALSIFICATION & AUDIT section that explicitly challenges and dismantles Pass ${passNum - 1}.`);
+    } else {
+      // Must actively critique at least 3 distinct adversarial lenses from the prior pass
+      const lensIds = ['L01', 'L02', 'L03', 'L04', 'L05', 'L06', 'L07', 'L08', 'L09', 'L10', 'L11', 'L12'];
+      const falsificationIdx = content.toLowerCase().search(/falsification|deficits identified|audit of pass|flaws in pass|phản biện pass|lỗ hổng/);
+      const falsificationSnippet = falsificationIdx !== -1 ? content.slice(falsificationIdx, falsificationIdx + 3000) : '';
+      const critiquedLenses = lensIds.filter(lid => falsificationSnippet.includes(lid));
+      if (critiquedLenses.length < 3) {
+        warnings.push(`[FALSIFICATION_SHALLOW] Falsification section in Pass ${passNum} only cites ${critiquedLenses.length} lens(es) (${critiquedLenses.join(', ')}). High-rigor passes must actively critique ≥3 lenses from the prior pass.`);
+      }
     }
   }
 
@@ -151,6 +160,21 @@ export function auditPassAgainstEvasion(currentPassPath, previousPassPath = null
         }
         if (missingSolutions.length > 0) {
           issues.push(`[SOLUTION_CAGE_LEAKAGE] Master Goal omitted verified solutions from Research R5: ${missingSolutions.join(', ')}. All verified research solutions must be mechanically caged into Section D/E!`);
+        }
+
+        // Solution Target File Integrity
+        for (const sol of r5Solutions) {
+          const solIdx = r5Content.indexOf(sol);
+          if (solIdx !== -1) {
+            const solBlock = r5Content.slice(solIdx, solIdx + 800);
+            const fileMatch = solBlock.match(/`((?:src|supabase|scripts|docs)\/[a-zA-Z0-9_\-./]+\.[a-zA-Z0-9]+)`/);
+            if (fileMatch && fileMatch[1]) {
+              const expectedFile = fileMatch[1];
+              if (!content.includes(expectedFile)) {
+                issues.push(`[SOLUTION_SPEC_DRIFT] Solution ${sol} in Research specified target file \`${expectedFile}\`, but this file is missing in Master Goal!`);
+              }
+            }
+          }
         }
       }
     }

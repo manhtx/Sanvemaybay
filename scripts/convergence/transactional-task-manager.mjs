@@ -70,18 +70,35 @@ export function beginTask(taskId, targetFiles = []) {
   return journal.active_transaction;
 }
 
-export function commitTask(taskId, verificationOutput = '') {
+export function commitTask(taskId, verificationOutput = '', shouldPush = false) {
   const journal = loadJournal();
   if (journal.active_transaction && journal.active_transaction.task_id === taskId) {
-    journal.active_transaction.status = 'COMMITTED';
-    journal.active_transaction.committed_at = new Date().toISOString();
-    journal.active_transaction.verification_output = verificationOutput.slice(0, 500);
-    journal.history.push(journal.active_transaction);
+    const tx = journal.active_transaction;
+    tx.status = 'COMMITTED';
+    tx.committed_at = new Date().toISOString();
+    tx.verification_output = verificationOutput.slice(0, 500);
+
+    let gitPushResult = null;
+    if (shouldPush) {
+      try {
+        const filesToAdd = tx.target_files && tx.target_files.length > 0 ? tx.target_files.join(' ') : '.';
+        run(`git add ${filesToAdd} docs/convergence/state/`);
+        const commitMsg = `feat(task): [${taskId}] verified and committed\n\nProof: ${verificationOutput.slice(0, 100)}`;
+        run(`git commit -m "${commitMsg.replace(/"/g, '\\"')}"`);
+        run(`git push origin antigravity/farely-v12-product-convergence`);
+        gitPushResult = run('git rev-parse HEAD');
+      } catch (e) {
+        gitPushResult = `PUSH_FAILED: ${e.message}`;
+      }
+    }
+    tx.git_commit = gitPushResult;
+
+    journal.history.push(tx);
     journal.active_transaction = null;
     saveJournal(journal);
-    return true;
+    return { success: true, taskId, gitCommit: gitPushResult };
   }
-  return false;
+  return { success: false, note: 'No active transaction matching taskId' };
 }
 
 export function sanitizeAndRecoverTask() {
@@ -159,12 +176,14 @@ if (process.argv[1] && process.argv[1].endsWith('transactional-task-manager.mjs'
     console.log(JSON.stringify({ status: 'TRANSACTION_STARTED', tx }, null, 2));
   } else if (cmd === 'commit') {
     const taskId = process.argv[3];
-    const verifCmd = process.argv.slice(4).join(' ') || 'Manual verify';
+    const shouldPush = process.argv.includes('--push');
+    const verifArgs = process.argv.slice(4).filter(a => a !== '--push');
+    const verifCmd = verifArgs.join(' ') || 'Manual verify';
     if (!taskId) {
-      console.error('Usage: node transactional-task-manager.mjs commit <task_id> [verification_cmd]');
+      console.error('Usage: node transactional-task-manager.mjs commit <task_id> [verification_cmd] [--push]');
       process.exit(1);
     }
-    const success = commitTask(taskId, verifCmd);
-    console.log(JSON.stringify({ status: success ? 'TRANSACTION_COMMITTED' : 'COMMIT_FAILED', taskId }, null, 2));
+    const res = commitTask(taskId, verifCmd, shouldPush);
+    console.log(JSON.stringify(res, null, 2));
   }
 }

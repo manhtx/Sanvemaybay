@@ -23,6 +23,7 @@
     "supabase:push": "npx supabase db push",
     "supabase:functions": "npx supabase functions deploy flight-ingest && npx supabase functions deploy analyze-price && npx supabase functions deploy ai-explainer && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert && npx supabase functions deploy manage-user-data && npx supabase functions deploy feed-snapshot && npx supabase functions deploy refresh-observed-fares && npx supabase functions deploy observed-fares && npx supabase functions deploy deal-redirect && npx supabase functions deploy flight-search && npx supabase functions deploy track-event && npx supabase functions deploy retention-cleanup",
     "convergence:status": "node scripts/convergence/watchdog-convergence.mjs",
+    "convergence:integrity": "node scripts/convergence/watchdog-convergence.mjs integrity",
     "convergence:recover": "node scripts/convergence/transactional-task-manager.mjs recover",
     "convergence:receipt": "node scripts/convergence/generate-execution-receipt.mjs",
     "convergence:prompt": "node scripts/convergence/continuous_5x5_orchestrator.mjs print-prompt"

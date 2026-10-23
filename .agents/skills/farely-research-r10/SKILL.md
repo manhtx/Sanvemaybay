@@ -99,6 +99,7 @@ To guarantee zero loss of research or state under token exhaustion, rate limitin
 1. **Durable Pass Checkpointing**: Every single completed pass ($R_1 \dots R_5$) is materialized to `docs/convergence/r10/` and its cryptographic hash recorded in `docs/convergence/state/loop_state.json`.
 2. **Zero-Rerun Resumption**: When execution resumes after token replenishment or session restart, the `PreInvocation` and `SessionStart` hooks read `loop_state.json` and inject the exact pending pass. Never rerun completed passes.
 3. **ACID Task Isolation**: When researching via code/query execution spikes, state snapshots are tracked via `transactional-task-manager.mjs`. Corrupted half-written files are restored to clean snapshots automatically before execution resumes.
+4. **Incremental Lens Checkpointing**: Research passes support saving partial lenses via `saveLensCheckpoint`. If a generation is interrupted, resumption picks up at the exact pending lens without rewriting previously completed lenses.
 
 ## FARELY-XFER/6 — CANONICAL SHARED HANDOFF (EXACT SAME WORDS IN R10 AND G11)
 

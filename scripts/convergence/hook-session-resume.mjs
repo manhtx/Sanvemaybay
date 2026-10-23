@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { sanitizeAndRecoverTask } from './transactional-task-manager.mjs';
+import { loadLensCheckpoints } from './continuous_5x5_orchestrator.mjs';
 
 const ROOT_DIR = process.cwd();
 const STATE_FILE = path.join(ROOT_DIR, 'docs/convergence/state/loop_state.json');
@@ -58,8 +59,15 @@ Goal trước [${state.cycleId || 'COMPLETED'}] đã hoàn thành và verified G
 } else if (state.status === 'IN_RESEARCH_5X') {
   const completedR = Object.keys(state.completedPasses || {}).filter(k => k.startsWith('R'));
   const nextR = `R${completedR.length + 1}`;
+  const passNum = completedR.length + 1;
+  const partials = loadLensCheckpoints('RESEARCH_R10', passNum);
+  const savedLenses = Object.keys(partials);
+  let partialNote = '';
+  if (savedLenses.length > 0) {
+    partialNote = `\n- Phát hiện Checkpoint Thấu Kính: Đã lưu ${savedLenses.length}/12 thấu kính (${savedLenses.join(', ')}). Tiếp tục viết các thấu kính còn lại mà không phải viết lại từ đầu!`;
+  }
   injectMessage = `[HỆ THỐNG PHỤC HỒI RESEARCH 5X - TOKEN RESUME]
-Chu trình Research R10 đang thực hiện dở dang (${completedR.join(', ') || 'Chưa pass nào'} đã lưu trên đĩa).
+Chu trình Research R10 đang thực hiện dở dang (${completedR.join(', ') || 'Chưa pass nào'} đã lưu trên đĩa).${partialNote}
 - Chỉ thị bắt buộc: Tiếp tục thực thi ngay Pass ${nextR} qua toàn bộ 12 thấu kính, không chạy lại các pass đã lưu.`;
 } else if (state.status === 'RESEARCH_COMPLETED_PENDING_COMPILER') {
   injectMessage = `[HỆ THỐNG PHỤC HỒI MASTER GOAL 5X - TOKEN RESUME]
@@ -68,8 +76,15 @@ Toàn bộ 5 Pass Research R10 đã hoàn tất và đạt chuẩn PoE.
 } else if (state.status === 'IN_MASTER_GOAL_5X') {
   const completedG = Object.keys(state.completedPasses || {}).filter(k => k.startsWith('G'));
   const nextG = `G${completedG.length + 1}`;
+  const passNum = completedG.length + 1;
+  const partials = loadLensCheckpoints('MASTER_GOAL_G11', passNum);
+  const savedLenses = Object.keys(partials);
+  let partialNote = '';
+  if (savedLenses.length > 0) {
+    partialNote = `\n- Phát hiện Checkpoint Thấu Kính: Đã lưu ${savedLenses.length}/12 thấu kính (${savedLenses.join(', ')}). Tiếp tục viết các thấu kính còn lại mà không phải viết lại từ đầu!`;
+  }
   injectMessage = `[HỆ THỐNG PHỤC HỒI MASTER GOAL 5X - TOKEN RESUME]
-Chu trình Master Goal G11 đang thực hiện dở dang (${completedG.join(', ') || 'Chưa pass nào'} đã lưu trên đĩa).
+Chu trình Master Goal G11 đang thực hiện dở dang (${completedG.join(', ') || 'Chưa pass nào'} đã lưu trên đĩa).${partialNote}
 - Chỉ thị bắt buộc: Tiếp tục thực thi ngay Pass ${nextG} qua toàn bộ 12 thấu kính.`;
 } else if (state.status === 'MASTER_GOAL_PROMPT_READY') {
   injectMessage = `[HỆ THỐNG KÍCH HOẠT THỰC THI GOAL MỚI - TOKEN RESUME]

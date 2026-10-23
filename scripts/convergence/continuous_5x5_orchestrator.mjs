@@ -247,6 +247,62 @@ export function savePass(stage, passNum, content, metadata = {}) {
   return { passKey, filePath, hash, coverage };
 }
 
+export function saveLensCheckpoint(stage, passNum, lensId, lensContent) {
+  const isResearch = stage.toUpperCase().startsWith('R');
+  const passKey = `${isResearch ? 'R' : 'G'}${passNum}`;
+  const checkpointFile = path.join(STATE_DIR, `partial_lenses_${passKey}.json`);
+  
+  let partials = {};
+  if (fs.existsSync(checkpointFile)) {
+    try {
+      partials = JSON.parse(fs.readFileSync(checkpointFile, 'utf8'));
+    } catch {}
+  }
+
+  partials[lensId] = {
+    lensId,
+    content: lensContent,
+    timestamp: new Date().toISOString(),
+    bytes: Buffer.byteLength(lensContent, 'utf8')
+  };
+
+  fs.writeFileSync(checkpointFile, JSON.stringify(partials, null, 2), 'utf8');
+
+  // Update activeLens in loop_state
+  const state = loadState();
+  state.activeLens = lensId;
+  saveState(state);
+
+  return { passKey, savedLens: lensId, totalSavedLenses: Object.keys(partials).length };
+}
+
+export function loadLensCheckpoints(stage, passNum) {
+  const isResearch = stage.toUpperCase().startsWith('R');
+  const passKey = `${isResearch ? 'R' : 'G'}${passNum}`;
+  const checkpointFile = path.join(STATE_DIR, `partial_lenses_${passKey}.json`);
+  if (fs.existsSync(checkpointFile)) {
+    try {
+      return JSON.parse(fs.readFileSync(checkpointFile, 'utf8'));
+    } catch {}
+  }
+  return {};
+}
+
+export function assemblePassFromCheckpoints(stage, passNum, headerMarkdown = '') {
+  const partials = loadLensCheckpoints(stage, passNum);
+  const isResearch = stage.toUpperCase().startsWith('R');
+  const passKey = `${isResearch ? 'R' : 'G'}${passNum}`;
+  
+  let assembled = headerMarkdown ? `${headerMarkdown.trim()}\n\n` : '';
+  for (const lens of ADVERSARIAL_BATTERY_12) {
+    if (partials[lens.id]) {
+      assembled += `### ${lens.id}: ${lens.name}\n\n${partials[lens.id].content.trim()}\n\n---\n\n`;
+    }
+  }
+
+  return savePass(stage, passNum, assembled);
+}
+
 export function completeGoal(cycleId) {
   // 1. Verify git status clean
   const status = run('git status --porcelain');
