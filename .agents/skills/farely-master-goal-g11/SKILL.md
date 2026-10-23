@@ -132,6 +132,15 @@ To guarantee that the Master Goal Prompt is airtight across all 12 Adversarial L
    - **Pass G4**: Turnkey Execution & DAG Verification: Evaluates all 12 lenses; validates topological task sequence and turnkey CLI commands.
    - **Pass G5**: Sovereign Canonical Convergence: The final, unassailable, 100% locked Master Goal Prompt.
 
+## G11.19 — Token Exhaustion & ACID Transactional Resilience Protocol
+
+To guarantee continuous progress and zero lost engineering work during Goal execution:
+1. **Pre-Task Snapshots**: Downstream executor must invoke `node scripts/convergence/transactional-task-manager.mjs begin <task_id> <files...>` before touching code.
+2. **Post-Task Commits**: Upon running verification tests and verifying syntax/test passing, invoke `node scripts/convergence/transactional-task-manager.mjs commit <task_id> <test_command>`.
+3. **Automated Crash Rollback**: If token limits (e.g. `MAX_TOKEN_BUDGET_EXCEEDED` or rate limits) interrupt an edit mid-file, the session-resume hook runs `sanitizeAndRecoverTask()`. Any files with syntax errors are automatically restored to their clean pre-task snapshot so execution resumes from a clean compile state.
+4. **Resumption Without Rerun**: The agent never restarts a Goal from scratch; resumption resumes the exact pending task checkpoint.
+5. **Zero-Fake Goal Completion**: Goals can only be completed via `node scripts/convergence/continuous_5x5_orchestrator.mjs complete-goal <cycleId>`, which enforces clean git status, remote push verification, and fresh execution receipts before auto-transitioning to the next cycle.
+
 ## FARELY-XFER/6 — CANONICAL SHARED HANDOFF (EXACT SAME WORDS IN R10 AND G11)
 
 `CONTRACT_ID=FARELY-XFER/6; PROJECT=Farely; PRODUCER=Research R10; CONSUMER=Master Goal G11; AUTHORITY=Founder-held approved source; CERTIFICATION and AUTHORABILITY are distinct. No single ready flag is sufficient.`

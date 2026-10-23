@@ -119,6 +119,14 @@ export const PASS_DEPTH_LEVELS = {
   }
 };
 
+function run(cmd) {
+  try {
+    return execSync(cmd, { cwd: ROOT_DIR, encoding: 'utf8' }).trim();
+  } catch (e) {
+    return null;
+  }
+}
+
 function computeSha256(content) {
   return crypto.createHash('sha256').update(content, 'utf8').digest('hex');
 }
@@ -210,14 +218,83 @@ export function savePass(stage, passNum, content, metadata = {}) {
     throw new Error(`[ANTI_EVASION_FAILED] Pass ${passKey} rejected by deterministic linters:\n${combinedIssues.join('\n')}`);
   }
 
-  if (passKey === 'G5') {
-    const canonicalPath = path.join(G11_DIR, 'LATEST_MASTER_GOAL_PROMPT.md');
-    fs.writeFileSync(canonicalPath, content, 'utf8');
-    state.status = 'MASTER_GOAL_PROMPT_READY';
+  // Autonomous state progression across 5x5 matrix
+  if (isResearch) {
+    if (passNum < 5) {
+      state.status = 'IN_RESEARCH_5X';
+      state.currentStage = 'RESEARCH_R10';
+      state.currentPass = `R${passNum + 1}`;
+    } else {
+      state.status = 'RESEARCH_COMPLETED_PENDING_COMPILER';
+      state.currentStage = 'MASTER_GOAL_G11';
+      state.currentPass = 'G1';
+    }
+  } else {
+    if (passNum < 5) {
+      state.status = 'IN_MASTER_GOAL_5X';
+      state.currentStage = 'MASTER_GOAL_G11';
+      state.currentPass = `G${passNum + 1}`;
+    } else {
+      const canonicalPath = path.join(G11_DIR, 'LATEST_MASTER_GOAL_PROMPT.md');
+      fs.writeFileSync(canonicalPath, content, 'utf8');
+      state.status = 'MASTER_GOAL_PROMPT_READY';
+      state.currentStage = 'EXECUTION';
+      state.currentPass = 'G5';
+    }
   }
 
   saveState(state);
   return { passKey, filePath, hash, coverage };
+}
+
+export function completeGoal(cycleId) {
+  // 1. Verify git status clean
+  const status = run('git status --porcelain');
+  if (status && status.length > 0) {
+    throw new Error(`[GOAL_COMPLETION_REJECTED] Working tree is dirty. All changes must be committed before marking goal complete:\n${status}`);
+  }
+
+  // 2. Verify git pushed to remote
+  const localSha = run('git rev-parse HEAD');
+  const remoteSha = run('git ls-remote origin antigravity/farely-v12-product-convergence') || '';
+  if (!remoteSha.includes(localSha)) {
+    throw new Error(`[GOAL_COMPLETION_REJECTED] Local commit ${localSha} is not pushed to origin/antigravity/farely-v12-product-convergence! Remote SHA mismatch.`);
+  }
+
+  // 3. Verify execution receipt exists and is recent
+  const RECEIPT_FILE = path.join(STATE_DIR, 'CURRENT_EXECUTION_RECEIPT.json');
+  if (!fs.existsSync(RECEIPT_FILE)) {
+    throw new Error(`[GOAL_COMPLETION_REJECTED] Missing CURRENT_EXECUTION_RECEIPT.json. You must run generate-execution-receipt.mjs with passing tests before completion.`);
+  }
+
+  // 4. Advance state
+  const state = loadState();
+  const currentGoalId = cycleId || state.cycleId || 'G52';
+  const matchNum = currentGoalId.match(/\d+/);
+  const nextNum = matchNum ? parseInt(matchNum[0], 10) + 1 : 53;
+  const nextCycleId = `G${nextNum}`;
+  
+  state.history.push({
+    completedCycle: currentGoalId,
+    completedAt: new Date().toISOString(),
+    gitCommit: localSha
+  });
+  
+  state.cycleId = nextCycleId;
+  state.status = 'GOAL_COMPLETED';
+  state.currentStage = 'RESEARCH_R10';
+  state.currentPass = 'R1';
+  state.completedPasses = {};
+  state.active_task = null;
+  saveState(state);
+
+  return {
+    success: true,
+    completedCycle: currentGoalId,
+    nextCycleId,
+    status: 'GOAL_COMPLETED',
+    message: `Goal ${currentGoalId} successfully completed and verified! Auto-transitioned state to GOAL_COMPLETED. Chu trình Hội tụ 5x5 sẵn sàng khởi động cho ${nextCycleId}!`
+  };
 }
 
 export function generateEvolutionAudit(stage, currentPassNum) {
@@ -270,6 +347,15 @@ if (process.argv[1] && process.argv[1].endsWith('continuous_5x5_orchestrator.mjs
     console.log(JSON.stringify(ADVERSARIAL_BATTERY_12, null, 2));
   } else if (command === 'depths') {
     console.log(JSON.stringify(PASS_DEPTH_LEVELS, null, 2));
+  } else if (command === 'complete-goal') {
+    const cycleId = process.argv[3];
+    try {
+      const res = completeGoal(cycleId);
+      console.log(JSON.stringify(res, null, 2));
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
+    }
   } else if (command === 'print-prompt') {
     const prompt = printLatestPrompt();
     if (prompt) {

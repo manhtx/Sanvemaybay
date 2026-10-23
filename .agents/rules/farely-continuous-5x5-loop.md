@@ -45,3 +45,15 @@ To prevent AI complacency, evasion, and unfeasible hallucinations:
 1. **Chat Canvas Injection**: Render the verbatim Pass G5 Master Goal Prompt into the chat canvas inside a fenced `markdown` block.
 2. **Autonomous Continuation**: Automatically begin task execution of the new Goal without waiting for external prompting.
 3. **Loop Persistence**: When Goal N completes and tests pass with remote Git verification, the 5x5 convergence cycle automatically triggers for Goal N+1.
+
+## 6. SOLUTION CAGE PROTOCOL 2.0 (STRICT ZERO-DEVIATION LOCK)
+1. **1:1 Research-to-Goal Binding**: Every single solution identified in Research R5 (`SOL-[ID]`) must be mechanically incorporated into Section D & E of Master Goal G5. The linter enforces 100% presence; any dropped solution causes immediate `BLOCKED_BY_LINTER: SOLUTION_CAGE_LEAKAGE`.
+2. **Invariant Executor Lock**: Downstream executing AI is legally and architecturally prohibited from improvising alternative solutions or changing the agreed technical trajectory. Section B of Master Goal Prompt must embed `INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION`.
+3. **Anti-Wiggle-Room Mandate**: Prompts must contain zero ambiguity. Phrases like "to be determined", "as appropriate", "decide during implementation" are strictly banned. Every task must specify exact target files, before/after diffs, and turnkey verification commands.
+
+## 7. TOKEN EXHAUSTION RESILIENCE & ACID TRANSACTIONAL PROTOCOL
+1. **Pre-Task Snapshot**: Before modifying any repository files during Goal execution, the task must run `node scripts/convergence/transactional-task-manager.mjs begin <task_id> <files...>`.
+2. **Post-Task Commit**: Upon running verification tests and confirming syntax/test integrity, the task runs `node scripts/convergence/transactional-task-manager.mjs commit <task_id> <test_command>`.
+3. **Syntax-Check & Auto-Rollback on Crash**: If token limits (e.g. `MAX_TOKEN_BUDGET_EXCEEDED` or rate limit) interrupt an edit mid-file, the `PreInvocation` and `SessionStart` hooks run `sanitizeAndRecoverTask()`. Any files with syntax errors are automatically rolled back to their pre-task clean snapshot.
+4. **Resumption Without Rerun**: The agent never restarts a Goal or Research pass from scratch. Resumption resumes from the exact unfinished checkpoint.
+5. **Goal Completion Verification**: Marking a Goal complete requires `node scripts/convergence/continuous_5x5_orchestrator.mjs complete-goal <cycleId>`, which enforces clean git status, git remote push verification, and fresh execution receipts before auto-transitioning to the next cycle.

@@ -130,6 +130,30 @@ export function auditPassAgainstEvasion(currentPassPath, previousPassPath = null
     if (!content.includes('INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION') && !content.includes('STRICT_NO_DEVIATION')) {
       issues.push(`[EXECUTOR_CAGE_MISSING] Master Goal Prompt is missing mandatory 'INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION'. The prompt must strictly forbid the downstream executing AI from improvising or introducing unverified architectures.`);
     }
+
+    // Solution Cage Cross-Verification against R5 Full Research
+    const r5Path = path.join(ROOT_DIR, 'docs/convergence/r10/R5_FULL_RESEARCH.md');
+    if (fs.existsSync(r5Path)) {
+      const r5Content = fs.readFileSync(r5Path, 'utf8');
+      const solRegex = /\b(SOL-[A-Z0-9_\-]+)\b/g;
+      const r5Solutions = new Set();
+      let matchSol;
+      while ((matchSol = solRegex.exec(r5Content)) !== null) {
+        r5Solutions.add(matchSol[1]);
+      }
+
+      if (r5Solutions.size > 0) {
+        const missingSolutions = [];
+        for (const sol of r5Solutions) {
+          if (!content.includes(sol)) {
+            missingSolutions.push(sol);
+          }
+        }
+        if (missingSolutions.length > 0) {
+          issues.push(`[SOLUTION_CAGE_LEAKAGE] Master Goal omitted verified solutions from Research R5: ${missingSolutions.join(', ')}. All verified research solutions must be mechanically caged into Section D/E!`);
+        }
+      }
+    }
   }
 
   // 6. Anti-Parroting Check (for Pass >= 2 against Pass N-1)

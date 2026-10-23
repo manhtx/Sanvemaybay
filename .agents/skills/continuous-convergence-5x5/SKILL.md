@@ -68,3 +68,12 @@ Every pass is automatically audited by the deterministic linters:
 1. Output Pass G5 verbatim into the chat canvas inside a fenced `markdown` code block.
 2. Advance execution state to the new Goal tasks without requiring user intervention.
 3. Automatically re-trigger the 5x5 cycle upon verified goal completion and remote Git push.
+
+---
+
+## Token Exhaustion & ACID Transactional Resilience Protocol
+1. **Pre-Task Snapshots**: Before editing repository files, tasks run `node scripts/convergence/transactional-task-manager.mjs begin <task_id> <files...>`.
+2. **Post-Task Commits**: Following verified test execution, tasks run `node scripts/convergence/transactional-task-manager.mjs commit <task_id> <test_cmd>`.
+3. **Automatic Crash Rollback**: If token limits or network interruptions occur mid-edit, the `PreInvocation` and `SessionStart` hooks run `sanitizeAndRecoverTask()`. Any files with syntax errors are automatically restored to their clean pre-task snapshot.
+4. **Watchdog Health Audit**: At any time, run `npm run convergence:status` (`node scripts/convergence/watchdog-convergence.mjs`) to inspect state, git parity, receipt age, and determine the exact next deterministic action.
+5. **Zero-Fake Goal Completion**: Goals can only be marked complete via `node scripts/convergence/continuous_5x5_orchestrator.mjs complete-goal <cycleId>`, which cryptographically verifies clean git status, remote push parity, and passing tests before advancing the cycle.

@@ -93,6 +93,13 @@ To guarantee that Research is grounded in physical repository reality and cannot
 4. **Zero-Uninstalled Dependencies**: Any proposed TypeScript/JavaScript import must match installed packages in `package.json` or Deno standard libraries. Proposing uninstalled packages without bundle/license justification causes fail-closed rejection.
 5. **Non-OTA Product Boundaries**: Strictly enforce `NO_DIRECT_TICKETING`, `NO_PASSENGER_CHECKOUT`, `NO_PAYMENT_COLLECTION`, `NO_UNAUTHORIZED_SCRAPING`. Any research drifting into checkout or OTA ticketing is rejected immediately.
 
+## R10.16 — Token Exhaustion & ACID Transactional Resilience Protocol
+
+To guarantee zero loss of research or state under token exhaustion, rate limiting (HTTP 429), or context truncation:
+1. **Durable Pass Checkpointing**: Every single completed pass ($R_1 \dots R_5$) is materialized to `docs/convergence/r10/` and its cryptographic hash recorded in `docs/convergence/state/loop_state.json`.
+2. **Zero-Rerun Resumption**: When execution resumes after token replenishment or session restart, the `PreInvocation` and `SessionStart` hooks read `loop_state.json` and inject the exact pending pass. Never rerun completed passes.
+3. **ACID Task Isolation**: When researching via code/query execution spikes, state snapshots are tracked via `transactional-task-manager.mjs`. Corrupted half-written files are restored to clean snapshots automatically before execution resumes.
+
 ## FARELY-XFER/6 — CANONICAL SHARED HANDOFF (EXACT SAME WORDS IN R10 AND G11)
 
 `CONTRACT_ID=FARELY-XFER/6; PROJECT=Farely; PRODUCER=Research R10; CONSUMER=Master Goal G11; AUTHORITY=Founder-held approved source; CERTIFICATION and AUTHORABILITY are distinct. No single ready flag is sufficient.`
