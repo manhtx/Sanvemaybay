@@ -15,15 +15,6 @@ import { loadLensCheckpoints } from './continuous_5x5_orchestrator.mjs';
 
 const ROOT_DIR = process.cwd();
 const STATE_FILE = path.join(ROOT_DIR, 'docs/convergence/state/loop_state.json');
-const LATEST_PROMPT_FILE = path.join(ROOT_DIR, 'docs/convergence/g11/LATEST_MASTER_GOAL_PROMPT.md');
-
-function readStdin() {
-  try {
-    return fs.readFileSync(0, 'utf8');
-  } catch {
-    return '{}';
-  }
-}
 
 let state = { status: 'IDLE' };
 if (fs.existsSync(STATE_FILE)) {

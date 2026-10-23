@@ -144,7 +144,7 @@ export function auditPassAgainstEvasion(currentPassPath, previousPassPath = null
     const r5Path = path.join(ROOT_DIR, 'docs/convergence/r10/R5_FULL_RESEARCH.md');
     if (fs.existsSync(r5Path)) {
       const r5Content = fs.readFileSync(r5Path, 'utf8');
-      const solRegex = /\b(SOL-[A-Z0-9_\-]+)\b/g;
+      const solRegex = /\b(SOL-[A-Z0-9_-]+)\b/g;
       const r5Solutions = new Set();
       let matchSol;
       while ((matchSol = solRegex.exec(r5Content)) !== null) {

@@ -20,7 +20,7 @@ const RECEIPT_FILE = path.join(STATE_DIR, 'CURRENT_EXECUTION_RECEIPT.json');
 function run(cmd) {
   try {
     return execSync(cmd, { cwd: ROOT_DIR, encoding: 'utf8' }).trim();
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -38,7 +38,9 @@ export function scaffoldPass(stage, passNum) {
   if (fs.existsSync(RECEIPT_FILE)) {
     try {
       receiptSha = JSON.parse(fs.readFileSync(RECEIPT_FILE, 'utf8')).receipt_sha256;
-    } catch {}
+    } catch {
+      // ignore parse error
+    }
   }
 
   const gitHead = run('git rev-parse HEAD');
@@ -78,7 +80,7 @@ export function scaffoldPass(stage, passNum) {
     let r5Solutions = [];
     if (fs.existsSync(r5Path)) {
       const r5Content = fs.readFileSync(r5Path, 'utf8');
-      const solRegex = /\b(SOL-[A-Z0-9_\-]+)\b/g;
+      const solRegex = /\b(SOL-[A-Z0-9_-]+)\b/g;
       let m;
       const seen = new Set();
       while ((m = solRegex.exec(r5Content)) !== null) {

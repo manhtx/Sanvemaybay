@@ -122,7 +122,7 @@ export const PASS_DEPTH_LEVELS = {
 function run(cmd) {
   try {
     return execSync(cmd, { cwd: ROOT_DIR, encoding: 'utf8' }).trim();
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -256,7 +256,9 @@ export function recordLensEvolution(passKey, content) {
   if (fs.existsSync(LEDGER_FILE)) {
     try {
       ledger = JSON.parse(fs.readFileSync(LEDGER_FILE, 'utf8'));
-    } catch {}
+    } catch {
+      // ignore corrupt ledger on read
+    }
   }
 
   for (const lens of ADVERSARIAL_BATTERY_12) {
@@ -291,7 +293,9 @@ export function saveLensCheckpoint(stage, passNum, lensId, lensContent) {
   if (fs.existsSync(checkpointFile)) {
     try {
       partials = JSON.parse(fs.readFileSync(checkpointFile, 'utf8'));
-    } catch {}
+    } catch {
+      // ignore corrupt checkpoint on read
+    }
   }
 
   partials[lensId] = {
@@ -318,15 +322,15 @@ export function loadLensCheckpoints(stage, passNum) {
   if (fs.existsSync(checkpointFile)) {
     try {
       return JSON.parse(fs.readFileSync(checkpointFile, 'utf8'));
-    } catch {}
+    } catch {
+      // ignore corrupt checkpoint on read
+    }
   }
   return {};
 }
 
 export function assemblePassFromCheckpoints(stage, passNum, headerMarkdown = '') {
   const partials = loadLensCheckpoints(stage, passNum);
-  const isResearch = stage.toUpperCase().startsWith('R');
-  const passKey = `${isResearch ? 'R' : 'G'}${passNum}`;
   
   let assembled = headerMarkdown ? `${headerMarkdown.trim()}\n\n` : '';
   for (const lens of ADVERSARIAL_BATTERY_12) {
@@ -434,6 +438,22 @@ if (process.argv[1] && process.argv[1].endsWith('continuous_5x5_orchestrator.mjs
   if (command === 'status') {
     const state = loadState();
     console.log(JSON.stringify(state, null, 2));
+  } else if (command === 'save-pass') {
+    const stage = process.argv[3];
+    const passNum = parseInt(process.argv[4], 10);
+    const file = process.argv[5];
+    if (!stage || !passNum || !file) {
+      console.error('Usage: continuous_5x5_orchestrator.mjs save-pass <R|G> <passNum> <filePath>');
+      process.exit(1);
+    }
+    const content = fs.readFileSync(file, 'utf8');
+    try {
+      const res = savePass(stage, passNum, content);
+      console.log(JSON.stringify(res, null, 2));
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
+    }
   } else if (command === 'battery') {
     console.log(JSON.stringify(ADVERSARIAL_BATTERY_12, null, 2));
   } else if (command === 'depths') {

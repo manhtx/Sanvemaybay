@@ -19,7 +19,7 @@ const JOURNAL_FILE = path.join(ROOT_DIR, 'docs/convergence/state/transaction_jou
 function run(cmd) {
   try {
     return execSync(cmd, { cwd: ROOT_DIR, encoding: 'utf8' }).trim();
-  } catch (e) {
+  } catch {
     return null;
   }
 }

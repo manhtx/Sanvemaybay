@@ -20,7 +20,7 @@ const RECEIPT_FILE = path.join(STATE_DIR, 'CURRENT_EXECUTION_RECEIPT.json');
 function run(cmd) {
   try {
     return execSync(cmd, { cwd: ROOT_DIR, encoding: 'utf8' }).trim();
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -60,20 +60,22 @@ export function runWatchdogAudit() {
       nextAction = 'Execute Pass R1 of Research R10 across all 12 Adversarial Lenses.';
       recommendedCommand = 'npm run convergence:scaffold R 1 -- --write';
       break;
-    case 'IN_RESEARCH_5X':
+    case 'IN_RESEARCH_5X': {
       nextAction = `Execute pending Pass ${state.currentPass} of Research R10.`;
       const rNum = (state.currentPass || 'R1').replace('R', '');
       recommendedCommand = `npm run convergence:scaffold R ${rNum} -- --write`;
       break;
+    }
     case 'RESEARCH_COMPLETED_PENDING_COMPILER':
       nextAction = 'Execute Pass G1 of Master Goal Compiler G11 with Solution Cage Protocol.';
       recommendedCommand = 'npm run convergence:scaffold G 1 -- --write';
       break;
-    case 'IN_MASTER_GOAL_5X':
+    case 'IN_MASTER_GOAL_5X': {
       nextAction = `Execute pending Pass ${state.currentPass} of Master Goal Compiler G11.`;
       const gNum = (state.currentPass || 'G1').replace('G', '');
       recommendedCommand = `npm run convergence:scaffold G ${gNum} -- --write`;
       break;
+    }
     case 'MASTER_GOAL_PROMPT_READY':
       nextAction = 'Pump canonical G5 prompt to chat canvas and begin Goal execution.';
       recommendedCommand = 'npm run convergence:prompt';
