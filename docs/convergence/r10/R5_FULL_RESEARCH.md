@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence
 # MANDATE: Unassailable synthesis across all 12 lenses. Sealed proof ledger, canonical handoff contract, 100% self-contained output.
-# GIT_COMMIT: 844196b36f91bf02d84c8521e414df7992068c2b
-# TIMESTAMP: 2026-10-23T09:16:55.000Z
-# EXECUTION_RECEIPT_SHA256: 07bc74fbbbadcd986ebdd558a401673464494aa61c205c3d6ff991c531bc102a
+# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
+# TIMESTAMP: 2026-10-23T09:26:35.000Z
+# EXECUTION_RECEIPT_SHA256: e7b0af4061a02faff29f90ce4988f880945c87f694ee7464a959397b15a4434b
 
 ---
 
@@ -27,7 +27,7 @@
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G59 - PASS R5]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS R5]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -38,6 +38,7 @@
   - `src/domain/farely/travelIntent.ts`: Explores flight discovery intent without holding passenger payment info.
   - `src/domain/farely/vietnamTravelContext.ts`: Localized airport and route definitions.
   - `src/domain/farely/locationScope.ts`: Geographic origin and destination boundaries.
+  - `src/domain/farely/airportAlternatives.ts`: Nearby secondary aerodrome suggestions.
   - `src/app/pages/DealDetailPage.tsx`: External booking redirection disclaimer.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
 - **Adversarial Vector Defense**: Defends against spoofed partner URLs, domain hijacks, and unauthorized checkout promises.
@@ -70,6 +71,7 @@
   - `src/domain/farely/buyWaitGuidance.ts`: Empirical buy vs wait recommendation based on price velocity.
   - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
   - `src/domain/farely/groupFarePlanner.ts`: Aggregated group seating cost calculations.
+  - `src/domain/farely/multiCityItinerary.ts`: Multi-leg journey routing evaluations.
   - `src/domain/farely/editorialCollections.ts`: Verified deal curations.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Adversarial Vector Defense**: Suppresses deals with insufficient statistical baseline ($N < 12$) to avoid false discounts.
@@ -163,6 +165,8 @@
 - **Physical Code Citations**:
   - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.
   - `scripts/verify-farely-v17-contract.node-test.mjs`: Validates V17 locked capability matrix.
+  - `scripts/verify-farely-v14-contract.node-test.mjs`: Validates V14 contracts.
+  - `scripts/verify-farely-v15-handoff.node-test.mjs`: Validates V15 handoff deliverables.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.
   - `src/domain/farely/conditionalGrowthSafety.ts`: Ensures non-downgrade of historical contracts.
 - **Adversarial Vector Defense**: Deterministically fails if any historical gate or capability is omitted or softened.

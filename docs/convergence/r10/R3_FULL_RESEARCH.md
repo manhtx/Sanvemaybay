@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R3]
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
 # MANDATE: Attack the deliverable with hostile adversarial scenarios. Stress-test all 12 lenses against failure modes.
-# GIT_COMMIT: 844196b36f91bf02d84c8521e414df7992068c2b
-# TIMESTAMP: 2026-10-23T09:15:15.000Z
-# EXECUTION_RECEIPT_SHA256: bc5b2c2f5e9dd2ea6e8077cd56e9980c7891fa26782a927f150b8dee4765a04b
+# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
+# TIMESTAMP: 2026-10-23T09:25:05.000Z
+# EXECUTION_RECEIPT_SHA256: 38c9723d457947f73dceabb8e2830012c33b841e5b51a30dc9d41f2632ea7d6f
 
 ---
 
@@ -27,7 +27,7 @@
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G59 - PASS R3]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS R3]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -36,6 +36,7 @@
   - `src/domain/farely/providerRights.test.ts`: Rejects spoofed domains like `vietnamairlines.com.evil.co`.
   - `src/domain/farely/directAffiliateComparison.ts`: Transparent affiliate link disclosures.
   - `src/domain/farely/travelIntent.ts`: Explores flight discovery intent without holding passenger payment info.
+  - `src/domain/farely/groupFarePlanner.ts`: Multi-passenger seat request estimations.
   - `src/app/pages/DealDetailPage.tsx`: External booking redirection disclaimer.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
 - **Adversarial Vector Defense**: Defends against spoofed partner URLs, domain hijacks, and unauthorized checkout promises.
@@ -66,7 +67,7 @@
   - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
   - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
   - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
-  - `src/domain/farely/groupFarePlanner.ts`: Aggregated group seating cost calculations.
+  - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Adversarial Vector Defense**: Suppresses deals with insufficient statistical baseline ($N < 12$) to avoid false discounts.
 - **Verification Proof (C0..C4)**:

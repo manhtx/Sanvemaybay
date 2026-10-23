@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
 # MANDATE: Enforce zero-mock verification, SRE resilience, and fail-safe production invariants across all 12 lenses.
-# GIT_COMMIT: 844196b36f91bf02d84c8521e414df7992068c2b
-# TIMESTAMP: 2026-10-23T09:19:55.000Z
-# EXECUTION_RECEIPT_SHA256: 8906dec4a190915a2d6c21196d27592d44e3dca4098025bfeee1f42fa6d3ce4b
+# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
+# TIMESTAMP: 2026-10-23T09:30:05.000Z
+# EXECUTION_RECEIPT_SHA256: 631258d1a3a4d74f38b45cd7b39c360c4fff7bd448d576778ed4da7af2d24a5e
 
 ---
 
@@ -92,7 +92,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G59 - PASS G4]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS G4]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -129,7 +129,8 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.
   - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
   - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
-  - `src/domain/farely/groupFarePlanner.ts`: Aggregated group seating cost calculations.
+  - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
+  - `src/domain/farely/editorialCollections.ts`: Curated thematic flight collections.
   - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Verification Proof (C0..C4)**:
@@ -171,6 +172,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/domain/farely/pwaOfflineFreshness.ts`: Offline cache degradation state management.
   - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.
   - `supabase/functions/_shared/feed-health.ts`: Background monitor checking snapshot freshness.
+  - `supabase/functions/_shared/feed-snapshot.ts`: Snapshot generation and freshness metrics.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/app/lib/feedCache.test.ts` passes 100%.
 

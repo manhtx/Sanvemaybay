@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding
 # MANDATE: Re-examine deliverable with aggressive skepticism. Challenge assumptions in R1 across all 12 lenses.
-# GIT_COMMIT: 844196b36f91bf02d84c8521e414df7992068c2b
-# TIMESTAMP: 2026-10-23T09:14:35.000Z
-# EXECUTION_RECEIPT_SHA256: 1bc1948943eb02a0db3ea52efc2a7e967ade4179b9311c8bd9eaaed5d36a37fc
+# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
+# TIMESTAMP: 2026-10-23T09:24:20.000Z
+# EXECUTION_RECEIPT_SHA256: c57f10a7ed905a364a1439039c9e87cde004f3f20fba066033e5e32e6ff2ef0b
 
 ---
 
@@ -27,7 +27,7 @@
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G59 - PASS R2]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS R2]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -35,6 +35,7 @@
   - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.
   - `src/domain/farely/providerRights.test.ts`: Rejects spoofed domains like `vietnamairlines.com.evil.co`.
   - `src/domain/farely/directAffiliateComparison.ts`: Transparent affiliate link disclosures.
+  - `src/domain/farely/airportAlternatives.ts`: Nearby secondary aerodrome discovery.
   - `src/app/pages/DealDetailPage.tsx`: External booking redirection disclaimer.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
 - **Adversarial Vector Defense**: Defends against spoofed partner URLs, domain hijacks, and unauthorized checkout promises.
@@ -64,6 +65,7 @@
   - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.
   - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
   - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
+  - `src/domain/farely/multiCityItinerary.ts`: Multi-destination journey cost aggregation.
   - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Adversarial Vector Defense**: Suppresses deals with insufficient statistical baseline ($N < 12$) to avoid false discounts.

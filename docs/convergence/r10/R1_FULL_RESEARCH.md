@@ -1,21 +1,25 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 844196b36f91bf02d84c8521e414df7992068c2b
-# TIMESTAMP: 2026-10-23T09:13:30.000Z
-# EXECUTION_RECEIPT_SHA256: 552b721df2cb06a95c394f4f3ce9ff930deb6773ad36f383a274c6d0225c6f8f
+# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
+# TIMESTAMP: 2026-10-23T09:23:15.000Z
+# EXECUTION_RECEIPT_SHA256: df1521fbed54525af8324658cde2e9a75431381f01c00408d373136d51ef111b
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G59 - PASS R1]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS R1]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
 - **Physical Code Citations**:
   - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.
-  - `src/app/pages/DealDetailPage.tsx`: External booking disclaimer.
+  - `src/domain/farely/providerRights.test.ts`: Rejects spoofed domains like `vietnamairlines.com.evil.co`.
+  - `src/domain/farely/directAffiliateComparison.ts`: Transparent affiliate link disclosures.
+  - `src/domain/farely/travelIntent.ts`: Explores flight discovery intent without holding passenger payment info.
+  - `src/domain/farely/vietnamTravelContext.ts`: Localized airport and route definitions.
+  - `src/app/pages/DealDetailPage.tsx`: External booking redirection disclaimer.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
-- **Adversarial Vector Defense**: Defends against spoofed partner URLs and unauthorized ticket purchase promises.
+- **Adversarial Vector Defense**: Defends against spoofed partner URLs, domain hijacks, and unauthorized checkout promises.
 - **Verification Proof (C0..C4)**:
   - *C0 Contract*: `tests/contracts/product_boundary.contract.ts` verified clean.
   - *C1 Code Test*: `scripts/deployment-boundary.node-test.mjs` passes 100%.
@@ -26,9 +30,11 @@
 - **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).
 - **Physical Code Citations**:
   - `src/app/data/api.ts`: Functions `parseNullableNumber()` and `cleanPrice()`.
+  - `src/app/data/api.test.ts`: Tests edge case inputs like `null`, `undefined`, empty string, and corrupted floats.
   - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: `observed_fares` BIGINT check constraint.
+  - `supabase/functions/_shared/flight-normalization.ts`: Validates price bounds during supplier aggregation.
   - `scripts/price-truth-harness.node-test.mjs`: Tests 24 price conditions.
-- **Adversarial Vector Defense**: Rejects corrupted numerical strings, zero-division discounts, and negative fares.
+- **Adversarial Vector Defense**: Rejects corrupted numerical strings, zero-division discounts, floating inaccuracies, and negative fares.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/price-truth-harness.node-test.mjs` passes 100%.
 
@@ -37,9 +43,13 @@
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
 - **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.
 - **Physical Code Citations**:
-  - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage.
-  - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
+  - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.
   - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
+  - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
+  - `src/domain/farely/buyWaitGuidance.ts`: Empirical buy vs wait recommendation based on price velocity.
+  - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
+  - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
+  - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Adversarial Vector Defense**: Suppresses deals with insufficient statistical baseline ($N < 12$) to avoid false discounts.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/domain/farely/domainKernel.test.ts` passes 100%.
@@ -51,6 +61,9 @@
 - **Physical Code Citations**:
   - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: RLS policies.
   - `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`: `prepare_account_deletion`.
+  - `supabase/functions/_shared/user-data.ts`: Explicit user identity sanitization.
+  - `supabase/functions/_shared/turnstile.ts`: Bot defense for alert subscriptions.
+  - `src/domain/farely/personalizedFeedPrivacy.ts`: Ephemeral client preferences.
   - `scripts/account-deletion-contract.node-test.mjs`: Cascading user data deletion within 60s.
 - **Adversarial Vector Defense**: Blocks cross-tenant data leakage and asserts synchronous erasure of user watches on deletion.
 - **Verification Proof (C0..C4)**:
@@ -62,6 +75,9 @@
 - **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.
 - **Physical Code Citations**:
   - `supabase/functions/_shared/flight-search.ts`: Circuit breaker pattern (`CLOSED`, `OPEN`, `HALF_OPEN`).
+  - `supabase/functions/_shared/amadeus-provider.ts`: Upstream connection adapter with status isolation.
+  - `supabase/functions/_shared/retry-policy.ts`: Exponential backoff with full jitter formula.
+  - `supabase/functions/_shared/abuse-protection.ts`: Quotas preventing downstream upstream overload.
   - `scripts/provider-drift-and-killswitch.node-test.mjs`: Injects simulated 503 HTTP errors.
 - **Adversarial Vector Defense**: Isolates failing supplier gateways and prevents downstream cascade via circuit tripping.
 - **Verification Proof (C0..C4)**:
@@ -73,7 +89,9 @@
 - **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.
 - **Physical Code Citations**:
   - `src/app/pages/DealsPage.tsx`: Freshness badges (`FRESH`, `WARM`, `STALE`).
+  - `src/domain/farely/pwaOfflineFreshness.ts`: Offline cache degradation state management.
   - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.
+  - `supabase/functions/_shared/feed-health.ts`: Background monitor checking snapshot freshness.
 - **Adversarial Vector Defense**: Visually flags outdated intelligence and explicitly discloses observation timestamps.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/app/lib/feedCache.test.ts` passes 100%.
@@ -84,8 +102,9 @@
 - **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.
 - **Physical Code Citations**:
   - `src/app/lib/sharing.ts`: Sanitization of URLs and scrubbing of session tokens.
+  - `supabase/functions/_shared/observability.ts`: Server-side structured logger stripping PII.
   - `scripts/client-error-boundary.node-test.mjs`: Tests error boundary containment.
-  - `scripts/security-smoke.node-test.mjs`: Secret scanner.
+  - `scripts/security-smoke.node-test.mjs`: Secret scanner inspecting all commits.
 - **Adversarial Vector Defense**: Prevents sensitive auth tokens from leaking into shared query links or error telemetry.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/security-smoke.node-test.mjs` and `scripts/client-error-boundary.node-test.mjs` pass 100%.
@@ -109,6 +128,7 @@
 - **Physical Code Citations**:
   - `scripts/verify-certification-integrity.node-test.mjs`: Audit script for proof claims.
   - `docs/convergence/PROOF_INDEX.json`: Ground truth registry.
+  - `src/domain/farely/productionSmokeTruth.ts`: Non-fabrication truth validator.
 - **Adversarial Vector Defense**: Rejects unauthorized promotion of contract tests (C0/C1) to runtime proof (C3/C4).
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/verify-certification-integrity.node-test.mjs` passes 100%.
@@ -120,6 +140,7 @@
 - **Physical Code Citations**:
   - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.
+  - `src/domain/farely/conditionalGrowthSafety.ts`: Ensures non-downgrade of historical contracts.
 - **Adversarial Vector Defense**: Deterministically fails if any historical gate or capability is omitted or softened.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/acceptance-anti-shrinkage.node-test.mjs` passes 100%.
@@ -131,6 +152,7 @@
 - **Physical Code Citations**:
   - `scripts/convergence/transactional-task-manager.mjs`: Concurrency locks.
   - `scripts/convergence/watchdog-convergence.mjs`: Recovery workflows.
+  - `scripts/verify-production-live.mjs`: Pre-flight environment assertions.
 - **Adversarial Vector Defense**: Guarantees atomic task locking and immediate fallback on transaction crash.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/convergence/transactional-task-manager.mjs` status returns clean.
@@ -142,6 +164,7 @@
 - **Physical Code Citations**:
   - `scripts/convergence/watchdog-convergence.mjs`: Git status inspection.
   - `.github/workflows/ci.yml`: Continuous integration pipeline.
+  - `src/domain/farely/releaseTuple.ts`: SHA parity checker.
 - **Adversarial Vector Defense**: Prevents false completion claims when local commits diverge from remote origin.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: Remote SHA equality verification passes.

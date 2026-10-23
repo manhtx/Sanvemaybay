@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence
 # MANDATE: Unassailable synthesis across all 12 lenses. Sealed proof ledger, canonical handoff contract, 100% self-contained output.
-# GIT_COMMIT: 844196b36f91bf02d84c8521e414df7992068c2b
-# TIMESTAMP: 2026-10-23T09:21:05.000Z
-# EXECUTION_RECEIPT_SHA256: 4204be291e8050855014f5500dc51f94a0d87dab3a975a684fa0b3a3cfda46b0
+# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
+# TIMESTAMP: 2026-10-23T09:30:45.000Z
+# EXECUTION_RECEIPT_SHA256: bc3ac8e7095d0b9b137832643a8ebeb3e1fe0d938d1289014d4485d9098148a6
 
 ---
 
@@ -89,7 +89,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G59 - PASS G5]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS G5]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -131,7 +131,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/domain/farely/buyWaitGuidance.ts`: Empirical buy vs wait recommendation based on price velocity.
   - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
   - `src/domain/farely/groupFarePlanner.ts`: Aggregated group seating cost calculations.
-  - `src/domain/farely/multiCityItinerary.ts`: Multi-leg flight routing cost aggregation.
+  - `src/domain/farely/multiCityItinerary.ts`: Multi-leg journey routing evaluations.
   - `src/domain/farely/editorialCollections.ts`: Curated thematic flight collections.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Verification Proof (C0..C4)**:

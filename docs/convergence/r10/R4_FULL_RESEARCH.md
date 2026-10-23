@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
 # MANDATE: Enforce zero-mock verification, SRE resilience, and fail-safe production invariants across all 12 lenses.
-# GIT_COMMIT: 844196b36f91bf02d84c8521e414df7992068c2b
-# TIMESTAMP: 2026-10-23T09:16:15.000Z
-# EXECUTION_RECEIPT_SHA256: 444c248f3d085d140c434db420b7ce349ef2462b14925e636595be0414e4c4bf
+# GIT_COMMIT: 8f21e39de17310d2c4a2fd39d3c6718822a14827
+# TIMESTAMP: 2026-10-23T09:25:50.000Z
+# EXECUTION_RECEIPT_SHA256: b6b8267bd09ec30e6e4e49a4386a1fe9eec2b9c1d47fa04ace9346795cac3227
 
 ---
 
@@ -27,7 +27,7 @@
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G59 - PASS R4]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G60 - PASS R4]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -67,8 +67,8 @@
   - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
   - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
   - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
-  - `src/domain/farely/groupFarePlanner.ts`: Aggregated group seating cost calculations.
   - `src/domain/farely/editorialCollections.ts`: Verified deal curations.
+  - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Adversarial Vector Defense**: Suppresses deals with insufficient statistical baseline ($N < 12$) to avoid false discounts.
 - **Verification Proof (C0..C4)**:
