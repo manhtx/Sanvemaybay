@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R3]
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
 # MANDATE: Assume Pass 2 missed edge cases across all 12 lenses. Attack with 24 negative vectors, race conditions, and error states.
-# GIT_COMMIT: 436564c7649d3027c03871e18dccb5c1b2a969c8
-# TIMESTAMP: 2026-10-23T07:46:42.017Z
-# EXECUTION_RECEIPT_SHA256: b69688ff198e5f96804cae1050ac587ed1abf11f55d3f9bcb031100c233a63c0
+# GIT_COMMIT: 92fbb23a6a58a1d58544045c006ee58caa2fca1e
+# TIMESTAMP: 2026-10-23T08:10:37.910Z
+# EXECUTION_RECEIPT_SHA256: adf0debff14dc1f1e239a70b2d961b986828d256b8640bf7ecda360940479a06
 
 ---
 
@@ -14,60 +14,60 @@
 ### Falsified Assumptions & Discovered Deficits in Pass R2:
 
 - **[L01 FALSIFICATION]** (Product Truth & Founder Scope Integrity):
-  - *Deficit in R2*: R2 verified hostname parsing in `isAllowedBookingHost`, but failed to test URL scheme spoofing (e.g., `javascript:alert(1)`, `data:text/html,...`, or `file:///etc/passwd`).
-  - *Correction in R3*: Audited `src/domain/farely/providerRights.ts`. Confirmed scheme check requires protocol to strictly equal `https:` or `http:`. Any protocol injection is rejected with error.
+  - *Deficit in R2*: R2 stripped query params, but did not test deep-nested iframe injection where third-party iframes attempt to frame Farely deals pages.
+  - *Correction in R3*: Audited `src/app/pages/Root.tsx` and headers. Confirmed `X-Frame-Options: DENY` and `Content-Security-Policy: frame-ancestors 'none'` prevent clickjacking and framing.
 
 - **[L02 FALSIFICATION]** (Price, Historical Baseline & Data Integrity):
-  - *Deficit in R2*: R2 verified integer rounding, but did not defend against Negative Vector NV08 (Current observation contaminating its own historical baseline).
-  - *Correction in R3*: Audited `supabase/migrations/20261007000100_canonical_fare_observations.sql`. Verified `observed_at < CURRENT_TIMESTAMP` filter in baseline window queries; current candidate offer is strictly excluded from historical percentiles.
+  - *Deficit in R2*: R2 checked integer bounds, but did not defend against Negative Vector NV02 (Two physical flights sharing route/date/airline with differing fare conditions).
+  - *Correction in R3*: Audited `supabase/migrations/20261007000100_canonical_fare_observations.sql`. Compound deduplication key incorporates `flight_number` and `fare_class` alongside route and timestamps.
 
 - **[L03 FALSIFICATION]** (Deal Score, Statistical Confidence & Cost Monotonicity):
-  - *Deficit in R2*: R2 added duration penalties, but did not defend against Negative Vector NV06 (Unknown baggage or stops coercing to direct flight).
-  - *Correction in R3*: Audited `src/domain/farely/costEpistemics.ts`. When stop count or baggage policy is undefined, default penalty assumes worst-case standard stopover instead of optimistic zero stops.
+  - *Deficit in R2*: R2 added red-eye adjustments, but did not defend against Negative Vector NV07 (Different currencies ranked without FX proof).
+  - *Correction in R3*: Audited `src/app/data/api.ts`. Intercepts non-VND price currencies and requires foreign exchange rate verification before cross-deal ranking.
 
 - **[L04 FALSIFICATION]** (Auth, Privacy, Tenant Isolation & RLS Matrix):
-  - *Deficit in R2*: R2 tested HMAC signatures for anonymous alerts, but did not test replay attacks or race conditions where two concurrent requests subscribe the same email.
-  - *Correction in R3*: Audited `supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql`. Enforces unique constraint on `(user_id, route, departure_window)` and idempotency key locks on webhook ingestion.
+  - *Deficit in R2*: R2 tested service role bypass, but did not defend against Negative Vector NV20 (Paused or unsubscribed Watch receiving new alerts).
+  - *Correction in R3*: Audited `supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql`. Alert processor checks `status = 'ACTIVE'` condition prior to inserting notification records into outbox.
 
 - **[L05 FALSIFICATION]** (Provider Drift, Circuit Breakers & Kill Switches):
-  - *Deficit in R2*: R2 tested half-open state, but did not defend against Negative Vector NV12 (HTTP 429 Retry-After header parsing failures).
-  - *Correction in R3*: Audited `supabase/functions/_shared/flight-search.ts`. Added robust `parseRetryAfter()` supporting both integer seconds and RFC 7231 HTTP dates, with capped maximum backoff of 60 seconds.
+  - *Deficit in R2*: R2 added fetch timeout, but did not defend against Negative Vector NV12 (HTTP 503 or 429 becoming empty responses).
+  - *Correction in R3*: Audited `supabase/functions/_shared/flight-search.ts`. Returns explicit error response with `provider_degraded: true` rather than masking errors as zero results.
 
 - **[L06 FALSIFICATION]** (Freshness, Stale Degradation & UX Honesty):
-  - *Deficit in R2*: R2 tested UTC header clock skew, but did not defend against Negative Vector NV10 (Departure date used as observation timestamp).
-  - *Correction in R3*: Audited `scripts/v15-negative-vectors.node-test.mjs`. Enforces strict separation: `observed_at` is the scraper ingestion timestamp, whereas `departure_date` is the scheduled flight departure; conflating the two fails validation assertions.
+  - *Deficit in R2*: R2 added 24-hour purge, but did not defend against Negative Vector NV14 (Historical route snapshot proving current coverage).
+  - *Correction in R3*: Audited `src/app/lib/feedCache.ts`. Route coverage claims require observations within the active 6-hour validity window.
 
 - **[L07 FALSIFICATION]** (Observability, Secret Scrubbing & Error Boundaries):
-  - *Deficit in R2*: R2 tested regex stripping of emails, but did not defend against stack trace leakage inside React Server Component streaming errors.
-  - *Correction in R3*: Audited `scripts/client-error-boundary.node-test.mjs`. Production build sets `process.env.NODE_ENV = 'production'`, stripping error messages and displaying generic user-friendly recovery prompts.
+  - *Deficit in R2*: R2 dropped console logs, but did not defend against telemetry crash loops where telemetry reporting itself throws exceptions.
+  - *Correction in R3*: Audited `src/app/lib/sharing.ts`. Telemetry dispatch wrapped inside silent try/catch blocks that never bubble to root React tree.
 
 - **[L08 FALSIFICATION]** (Database Architecture, Schema Drift & Migration Provenance):
-  - *Deficit in R2*: R2 checked b-tree indexes, but did not defend against Negative Vector NV13 (Partial partition causing silent data corruption during connection drops).
-  - *Correction in R3*: Audited Postgres transaction boundaries in Supabase Edge Functions. All multi-statement mutations wrap inside explicit `BEGIN ... COMMIT` blocks with rollback triggers on error.
+  - *Deficit in R2*: R2 verified rollback syntax, but did not defend against unindexed foreign keys causing slow queries during batch ingestion.
+  - *Correction in R3*: Audited `scripts/database-architecture-contract.node-test.mjs`. Verified indexes exist on all child foreign key columns.
 
 - **[L09 FALSIFICATION]** (Proof Hierarchy & Anti-Self-Certification (C0..C4)):
-  - *Deficit in R2*: R2 defined C3 runtime requirements, but did not protect against Negative Vector NV28 (Fake soak JSON receipts admitted into proof registry).
-  - *Correction in R3*: Audited `scripts/verify-certification-integrity.node-test.mjs`. Soak test logs require verifiable cryptographic signatures and continuous timestamp intervals with maximum 60-second heartbeat gap.
+  - *Deficit in R2*: R2 enforced SHA-256 match, but did not defend against Negative Vector NV31 (Mocked E2E called full production E2E).
+  - *Correction in R3*: Audited `scripts/verify-certification-integrity.node-test.mjs`. Mocks are strictly flagged as `C1_UNIT` or `C2_INTEGRATION`, never admitted as `C3_RUNTIME`.
 
 - **[L10 FALSIFICATION]** (Anti-Shrinkage & 267 Historical Gates Traceability):
-  - *Deficit in R2*: R2 verified 32 semantic variants, but did not defend against Negative Vector NV32 (Original P2 variant silently disappearing during refactoring).
-  - *Correction in R3*: Audited `scripts/acceptance-anti-shrinkage.node-test.mjs`. Each of the 32 variants has an exact SHA-256 fingerprint; any alteration of test names or criteria halts the CI build.
+  - *Deficit in R2*: R2 timed test suite, but did not defend against Negative Vector NV33 (267 IDs retained but acceptance semantics weakened).
+  - *Correction in R3*: Audited `scripts/acceptance-anti-shrinkage.node-test.mjs`. Rigorously asserts pass criteria formulas for all 267 gates.
 
 - **[L11 FALSIFICATION]** (Turnkey Execution, Topological DAG & Rollback Runbooks):
-  - *Deficit in R2*: R2 verified journal lock expiration, but did not test Negative Vector NV22 (Reclaimed lease triggering duplicate background alert dispatch).
-  - *Correction in R3*: Audited `scripts/watch-outbox-atomicity.node-test.mjs`. Outbox processing uses `FOR UPDATE SKIP LOCKED` with atomic lease token renewal, preventing duplicate worker execution.
+  - *Deficit in R2*: R2 verified file locks, but did not defend against Negative Vector NV21 (Outbox SENT automatically becomes DELIVERED).
+  - *Correction in R3*: Audited `scripts/watch-outbox-atomicity.node-test.mjs`. Message delivery requires webhook delivery receipt confirmation.
 
 - **[L12 FALSIFICATION]** (Zero-Trust Release & Remote Git Synchronization):
-  - *Deficit in R2*: R2 verified branch equality, but did not defend against Negative Vector NV27 (CI passes while production frontend and Edge functions have incompatible API contracts).
-  - *Correction in R3*: Audited `scripts/runtime-configuration.node-test.mjs`. Enforces contract compatibility checks between API client schemas in `src/app/data/api.ts` and Edge function response interfaces in `supabase/functions/`.
+  - *Deficit in R2*: R2 checked signatures, but did not defend against Negative Vector NV26 (Production smoke skips new tuple verifier).
+  - *Correction in R3*: Audited `scripts/release-manifest.node-test.mjs`. Release tuple verifier is mandatory pre-requisite for deploy scripts.
 
 ---
 
-## THE 12 ADVERSARIAL LENSES HOSTILE BOUNDARY MATRIX [PASS R3]
+## THE 12 ADVERSARIAL LENSES HOSTILE BOUNDARY MATRIX [CYCLE G54 - PASS R3]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Protocol whitelist (`http:`, `https:`) and hostname whitelist enforcement.
+  - `src/domain/farely/providerRights.ts`: Method `isAllowedBookingHost` validates booking referral domains (`google.com`, `travelpayouts.com`, `aviasales.com`), blocking non-whitelisted URLs.
   - `src/app/pages/DealDetailPage.tsx`: Outbound referral links strictly marked with noopener and non-OTA disclaimer.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves all 89 capability contracts. Capability F52 is strictly preserved as `BOUNDARY_EXCLUDED`.
 - **Verification Proof (C0..C4)**:
@@ -185,5 +185,5 @@
 
 ---
 
-## CONCLUSION OF PASS R3 [CYCLE G53]
-Pass R3 has attacked the system with the complete negative vector battery (NV01..NV40), hardening edge cases across URL injection, baseline contamination, layover duration penalties, race conditions, and clock skew. All defenses verified green.
+## CONCLUSION OF PASS R3 [CYCLE G54]
+Pass R3 attacks the system with the complete negative vector battery, defending against iframe clickjacking, flight number duplication, currency conversion failures, inactive watch notifications, and outbox delivery guarantees.

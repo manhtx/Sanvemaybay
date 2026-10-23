@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G3]
 # LEVEL: Pass 3: Negative Vector Hardening & Adversarial Cage Proofing
 # MANDATE: Attack the compiled prompt with negative vectors, hostile inputs, and invariant tests to prevent downstream executor degradation.
-# GIT_COMMIT: 436564c7649d3027c03871e18dccb5c1b2a969c8
-# TIMESTAMP: 2026-10-23T07:52:27.621Z
-# EXECUTION_RECEIPT_SHA256: db1557d2208a2f8875eac626b2265be83a3c86d2a067e17105d373fd6b9c4905
+# GIT_COMMIT: 92fbb23a6a58a1d58544045c006ee58caa2fca1e
+# TIMESTAMP: 2026-10-23T08:15:59.047Z
+# EXECUTION_RECEIPT_SHA256: 4a2b42e2fc62b2528bb34fc8774ee54b3d001f2302e3d5a962237657ca72cdba
 
 ---
 
@@ -112,19 +112,19 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-04: SOL-AUTH-01 (Tenant Isolation & Synchronous Account Eradication)
 - **Target File**: `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`
-- **Specification**: Stored procedure `public.prepare_account_deletion` purges user data synchronously within 60s with cascading foreign key deletions.
+- **Specification**: Stored procedure `public.prepare_account_deletion` purges user data synchronously within 60s with cascading foreign key deletions and session token revocation.
 
 ### SOL-05: SOL-CIRCUIT-01 (Adaptive Circuit Breaker & Quarantine)
 - **Target File**: `supabase/functions/_shared/flight-search.ts`
-- **Specification**: 3 failures within 300s trip breaker to `OPEN` with exponential backoff and jitter. In `HALF_OPEN`, 3 consecutive successful trials restore to `CLOSED`.
+- **Specification**: 3 failures within 300s trip breaker to `OPEN`. Uses full-jitter exponential backoff. In `HALF_OPEN`, 3 consecutive successful trials restore to `CLOSED`.
 
 ### SOL-06: SOL-STALE-01 (Triple Visual Freshness Badges)
 - **Target File**: `src/app/pages/DealsPage.tsx`
-- **Specification**: Renders `FRESH` (<120m), `WARM` (120m–360m), and `STALE` (>360m) with accessibility aria-labels.
+- **Specification**: Renders `FRESH` (<120m), `WARM` (120m–360m), and `STALE` (>360m) with accessibility aria-labels and 180s polling.
 
 ### SOL-07: SOL-TELEMETRY-01 (Zero-Secret Client Scrubbing)
 - **Target File**: `src/app/lib/sharing.ts`
-- **Specification**: Strips email addresses, auth bearer tokens, query param API keys, and session cookies from client events.
+- **Specification**: Strips email addresses, auth bearer tokens, query param API keys, and session cookies from client events. Enforces 250KB gzipped bundle budget.
 
 ### SOL-08: SOL-MIGRATION-01 (47-Migration Bidirectional Lineage)
 - **Target File**: `supabase/migrations/`
@@ -132,7 +132,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-09: SOL-PROOF-01 (C0..C4 Proof Hierarchy & Anti-Self-Certification)
 - **Target File**: `scripts/verify-certification-integrity.node-test.mjs`
-- **Specification**: `TARGET_PROVEN: FALSE`, `PRODUCT_ACCEPTANCE: NOT_ESTABLISHED`.
+- **Specification**: `TARGET_PROVEN: FALSE`, `PRODUCT_ACCEPTANCE: NOT_ESTABLISHED`. Tree hash parity enforced.
 
 ### SOL-10: SOL-SHRINK-01 (267 Historical Gates & 32 P2 Semantic Variants)
 - **Target File**: `scripts/acceptance-anti-shrinkage.node-test.mjs`
@@ -148,7 +148,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [PASS G3]
+## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G54 - PASS G3]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
@@ -282,5 +282,5 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## CONCLUSION OF PASS G3 [CYCLE G53]
-Pass G3 hardens the Solution Cage against negative vectors and downstream modifications, forbidding alterations to test suites and locking foreign key cascades, half-open trials, and scrub regexes.
+## CONCLUSION OF PASS G3 [CYCLE G54]
+Pass G3 hardens the Solution Cage for Cycle G54 against negative vectors and downstream modifications, forbidding alterations to test suites and locking foreign key cascades, half-open trials, and scrub regexes.

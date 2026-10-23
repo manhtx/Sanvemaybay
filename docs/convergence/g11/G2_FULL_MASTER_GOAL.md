@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding & Cage Tightening
 # MANDATE: Assume Pass G1 was naive across all 12 lenses. Enforce concrete code diffs and eliminate wiggle room.
-# GIT_COMMIT: 436564c7649d3027c03871e18dccb5c1b2a969c8
-# TIMESTAMP: 2026-10-23T07:50:58.257Z
-# EXECUTION_RECEIPT_SHA256: 3eafac04f9ea4e795d72220f0eb03cc4e6b31295557b09aa2f623978a23804c3
+# GIT_COMMIT: 92fbb23a6a58a1d58544045c006ee58caa2fca1e
+# TIMESTAMP: 2026-10-23T08:14:46.959Z
+# EXECUTION_RECEIPT_SHA256: 05f99d712ccf97b7180445833d8b4e83e4f7bf173e01af161b22c902a8ba749d
 
 ---
 
@@ -81,6 +81,7 @@ INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION
 The executor is strictly bound to the locked technical solutions detailed in Section D & E.
 The executor is FORBIDDEN from inventing new architectures, introducing alternative algorithms,
 changing database schemas, or deviating from the specified file/function diffs.
+The executor is strictly forbidden from modifying any file under tests/ or scripts/*.node-test.mjs.
 Any deviation is a critical contract breach and will be rejected closed by the Evidence Admission Controller.
 ```
 
@@ -99,7 +100,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 ### SOL-01: SOL-DATA-01 (Null & Unknown Numeric Preservation)
 - **Target File**: `src/app/data/api.ts`
-- **Specification**: In `parseNullableNumber()`, missing, empty, or unparseable fields must return `null`. Never default to `0`.
+- **Specification**: In `parseNullableNumber()`, missing, empty, or unparseable fields must return `null`. Never default to `0`. Currency conversions multiply float rate then execute `Math.round()`.
 
 ### SOL-02: SOL-PRICE-01 (Price State Machine & Semantics)
 - **Target File**: `src/app/data/api.ts`
@@ -111,27 +112,27 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-04: SOL-AUTH-01 (Tenant Isolation & Synchronous Account Eradication)
 - **Target File**: `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`
-- **Specification**: Stored procedure `public.prepare_account_deletion` purges user data synchronously within 60s.
+- **Specification**: Stored procedure `public.prepare_account_deletion` purges user data synchronously within 60s with cascading foreign key deletions and session token revocation.
 
 ### SOL-05: SOL-CIRCUIT-01 (Adaptive Circuit Breaker & Quarantine)
 - **Target File**: `supabase/functions/_shared/flight-search.ts`
-- **Specification**: 3 failures within 300s trip breaker to `OPEN` with exponential backoff and jitter.
+- **Specification**: 3 failures within 300s trip breaker to `OPEN`. Uses full-jitter exponential backoff. In `HALF_OPEN`, 3 consecutive successful trials restore to `CLOSED`.
 
 ### SOL-06: SOL-STALE-01 (Triple Visual Freshness Badges)
 - **Target File**: `src/app/pages/DealsPage.tsx`
-- **Specification**: Renders `FRESH` (<120m), `WARM` (120m–360m), and `STALE` (>360m).
+- **Specification**: Renders `FRESH` (<120m), `WARM` (120m–360m), and `STALE` (>360m) with accessibility aria-labels and 180s polling.
 
 ### SOL-07: SOL-TELEMETRY-01 (Zero-Secret Client Scrubbing)
 - **Target File**: `src/app/lib/sharing.ts`
-- **Specification**: Strips email addresses, auth bearer tokens, and session cookies from client events.
+- **Specification**: Strips email addresses, auth bearer tokens, query param API keys, and session cookies from client events. Enforces 250KB gzipped bundle budget.
 
 ### SOL-08: SOL-MIGRATION-01 (47-Migration Bidirectional Lineage)
 - **Target File**: `supabase/migrations/`
-- **Specification**: Exactly 47 canonical migrations sealed with immutable chronological timestamps.
+- **Specification**: Exactly 47 canonical migrations sealed with immutable chronological timestamps. Validated via `scripts/database-backup-restore-drill.node-test.mjs`.
 
 ### SOL-09: SOL-PROOF-01 (C0..C4 Proof Hierarchy & Anti-Self-Certification)
 - **Target File**: `scripts/verify-certification-integrity.node-test.mjs`
-- **Specification**: `TARGET_PROVEN: FALSE`, `PRODUCT_ACCEPTANCE: NOT_ESTABLISHED`.
+- **Specification**: `TARGET_PROVEN: FALSE`, `PRODUCT_ACCEPTANCE: NOT_ESTABLISHED`. Tree hash parity enforced.
 
 ### SOL-10: SOL-SHRINK-01 (267 Historical Gates & 32 P2 Semantic Variants)
 - **Target File**: `scripts/acceptance-anti-shrinkage.node-test.mjs`
@@ -139,15 +140,15 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-11: SOL-TURNKEY-01 (Watchdog Health Monitoring & Automated Rollback)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs`
-- **Specification**: Deterministic diagnosis and turnkey recovery scripts (`npm run convergence:rollback`).
+- **Specification**: Deterministic diagnosis and turnkey recovery scripts (`npm run convergence:rollback`). Tasks acquire atomic write lock using PID file with `wx` flag.
 
 ### SOL-12: SOL-RELEASE-01 (Git Remote Reconciliation & Zero-Untracked Verifier)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs`
-- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence`.
+- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind.
 
 ---
 
-## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [PASS G2]
+## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G54 - PASS G2]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
@@ -218,10 +219,11 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry.
 - **Physical Code Citations**:
   - `src/app/lib/sharing.ts`: Telemetry scrubbing.
+  - `scripts/performance-budget.node-test.mjs`: Performance budget testing.
   - `scripts/client-error-boundary.node-test.mjs`: React error boundary resilience.
   - `scripts/security-smoke.node-test.mjs`: Secret scanner.
 - **Verification Proof (C0..C4)**:
-  - *C1 Code Test*: `scripts/security-smoke.node-test.mjs` passes 100%.
+  - *C1 Code Test*: `scripts/performance-budget.node-test.mjs` and `scripts/security-smoke.node-test.mjs` pass 100%.
 
 ---
 
@@ -281,5 +283,5 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## CONCLUSION OF PASS G2 [CYCLE G53]
-Pass G2 tightens the Solution Cage, eliminating ambiguities in whitespace parsing, baggage distance bands, account deletion RPCs, and circuit cooldowns. All 12 lenses defended.
+## CONCLUSION OF PASS G2 [CYCLE G54]
+Pass G2 tightens the Solution Cage for Cycle G54, eliminating ambiguities in whitespace parsing, baggage distance bands, account deletion RPCs, and circuit cooldowns. All 12 lenses defended.
