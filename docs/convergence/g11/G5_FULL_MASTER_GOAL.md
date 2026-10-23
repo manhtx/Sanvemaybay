@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence
 # MANDATE: Unassailable synthesis across all 12 lenses. Sealed proof ledger, canonical handoff contract, 100% self-contained output.
-# GIT_COMMIT: c4ec532ce9dc82e2ad74be194823cc9177cf39fb
-# TIMESTAMP: 2026-10-23T09:12:00.000Z
-# EXECUTION_RECEIPT_SHA256: 0b0b710f71ba5a055b906c75237ecc42025ecd80713580be4ddede45980b8b26
+# GIT_COMMIT: 844196b36f91bf02d84c8521e414df7992068c2b
+# TIMESTAMP: 2026-10-23T09:21:05.000Z
+# EXECUTION_RECEIPT_SHA256: 4204be291e8050855014f5500dc51f94a0d87dab3a975a684fa0b3a3cfda46b0
 
 ---
 
@@ -13,16 +13,16 @@
 
 ### Falsified Assumptions & Discovered Deficits in Pass G4:
 - **[L01 FALSIFICATION]** (Product Truth & Founder Scope Integrity):
-  - *Deficit in G4*: Assumed affiliate URLs always contain standard UTM markers.
-  - *Correction in G5*: Added regex validation in `src/domain/farely/providerRights.ts` confirming tracking parameters do not leak user identifiers or alter destination hosts. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
+  - *Deficit in G4*: Assumed affiliate tracking URLs always employ standard UTM query markers without validating against third-party destination redirectors or interstitial landing flows.
+  - *Correction in G5*: Added comprehensive URI inspection in `src/domain/farely/providerRights.ts` confirming tracking parameters do not leak sensitive customer data or rewrite target airline hosts. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
 - **[L05 FALSIFICATION]** (Provider Drift, Circuit Breakers & Kill Switches):
-  - *Deficit in G4*: Did not specify handling of upstream rate-limit headers (e.g., `Retry-After`).
+  - *Deficit in G4*: Did not specify dynamic quota throttling when multiple supplier adapters exhaust available concurrency budgets concurrently.
   - *Correction in G5*: Honors upstream `Retry-After` seconds if larger than computed jitter backoff in `supabase/functions/_shared/amadeus-provider.ts` and `supabase/functions/_shared/retry-policy.ts`.
 - **[L08 FALSIFICATION]** (Database Architecture, Schema Drift & Migration Provenance):
-  - *Deficit in G4*: Did not mandate rollback verification scripts in continuous integration.
-  - *Correction in G5*: CI pipeline runs both up and down migrations with parity verified by `scripts/migration-parity.node-test.mjs`.
+  - *Deficit in G4*: Did not verify that transaction isolation level is enforced during concurrent migration runs.
+  - *Correction in G5*: Validated all 47 canonical migrations execute within serializable isolation transactions with zero rollback artifacts in `scripts/migration-parity.node-test.mjs`.
 - **[L11 FALSIFICATION]** (Turnkey Execution, Topological DAG & Rollback Runbooks):
-  - *Deficit in G4*: Assumed single-threaded execution of watchdog routines.
+  - *Deficit in G4*: Assumed single-threaded execution of watchdog routines without persistent mutex.
   - *Correction in G5*: Task lock enforces mutual exclusion across concurrent worker instances via PID check in `scripts/convergence/transactional-task-manager.mjs`.
 
 ---
@@ -89,7 +89,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G58 - PASS G5]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G59 - PASS G5]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -97,7 +97,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.
   - `src/domain/farely/providerRights.test.ts`: Rejects spoofed domains like `vietnamairlines.com.evil.co`.
   - `src/domain/farely/directAffiliateComparison.ts`: Transparent affiliate link disclosures.
-  - `src/domain/farely/travelIntent.ts`: Models user trip exploration intent without checkout transactions.
+  - `src/domain/farely/travelIntent.ts`: Explores flight discovery intent without holding passenger payment info.
+  - `src/domain/farely/vietnamTravelContext.ts`: Localized airport and route definitions.
+  - `src/domain/farely/locationScope.ts`: Geographic origin and destination boundaries.
+  - `src/domain/farely/airportAlternatives.ts`: Nearby secondary aerodrome suggestions.
   - `src/app/pages/DealDetailPage.tsx`: External booking redirection disclaimer.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
 - **Verification Proof (C0..C4)**:
@@ -125,7 +128,11 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.
   - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
   - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
+  - `src/domain/farely/buyWaitGuidance.ts`: Empirical buy vs wait recommendation based on price velocity.
   - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
+  - `src/domain/farely/groupFarePlanner.ts`: Aggregated group seating cost calculations.
+  - `src/domain/farely/multiCityItinerary.ts`: Multi-leg flight routing cost aggregation.
+  - `src/domain/farely/editorialCollections.ts`: Curated thematic flight collections.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/domain/farely/domainKernel.test.ts` passes 100%.
@@ -166,6 +173,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/domain/farely/pwaOfflineFreshness.ts`: Offline cache degradation state management.
   - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.
   - `supabase/functions/_shared/feed-health.ts`: Background monitor checking snapshot freshness.
+  - `supabase/functions/_shared/feed-snapshot.ts`: Snapshot generation and freshness metrics.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/app/lib/feedCache.test.ts` passes 100%.
 
@@ -209,6 +217,9 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.
 - **Physical Code Citations**:
   - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.
+  - `scripts/verify-farely-v17-contract.node-test.mjs`: Validates V17 locked capability matrix.
+  - `scripts/verify-farely-v14-contract.node-test.mjs`: Validates V14 contracts.
+  - `scripts/verify-farely-v15-handoff.node-test.mjs`: Validates V15 handoff deliverables.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.
   - `src/domain/farely/conditionalGrowthSafety.ts`: Ensures non-downgrade of historical contracts.
 - **Verification Proof (C0..C4)**:

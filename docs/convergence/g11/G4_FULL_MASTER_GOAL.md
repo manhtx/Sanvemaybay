@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
 # MANDATE: Enforce zero-mock verification, SRE resilience, and fail-safe production invariants across all 12 lenses.
-# GIT_COMMIT: c4ec532ce9dc82e2ad74be194823cc9177cf39fb
-# TIMESTAMP: 2026-10-23T09:10:00.000Z
-# EXECUTION_RECEIPT_SHA256: 0b0b710f71ba5a055b906c75237ecc42025ecd80713580be4ddede45980b8b26
+# GIT_COMMIT: 844196b36f91bf02d84c8521e414df7992068c2b
+# TIMESTAMP: 2026-10-23T09:19:55.000Z
+# EXECUTION_RECEIPT_SHA256: 8906dec4a190915a2d6c21196d27592d44e3dca4098025bfeee1f42fa6d3ce4b
 
 ---
 
@@ -92,14 +92,16 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G58 - PASS G4]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G59 - PASS G4]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
 - **Physical Code Citations**:
   - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.
   - `src/domain/farely/providerRights.test.ts`: Rejects spoofed domains like `vietnamairlines.com.evil.co`.
-  - `src/domain/farely/directAffiliateComparison.ts`: Transparent metadata disclosure.
+  - `src/domain/farely/directAffiliateComparison.ts`: Transparent affiliate link disclosures.
+  - `src/domain/farely/travelIntent.ts`: Explores flight discovery intent without holding passenger payment info.
+  - `src/domain/farely/vietnamTravelContext.ts`: Localized airport and route definitions.
   - `src/app/pages/DealDetailPage.tsx`: External booking redirection disclaimer.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
 - **Verification Proof (C0..C4)**:
@@ -114,7 +116,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/app/data/api.ts`: Functions `parseNullableNumber()` and `cleanPrice()`.
   - `src/app/data/api.test.ts`: Tests edge case inputs like `null`, `undefined`, empty string, and corrupted floats.
   - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: `observed_fares` BIGINT check constraint.
-  - `supabase/functions/_shared/observed-fares.ts`: Safe type parsing during edge ingestion.
+  - `supabase/functions/_shared/flight-normalization.ts`: Validates price bounds during supplier aggregation.
   - `scripts/price-truth-harness.node-test.mjs`: Tests 24 price conditions.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/price-truth-harness.node-test.mjs` passes 100%.
@@ -127,7 +129,9 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.
   - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
   - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
+  - `src/domain/farely/groupFarePlanner.ts`: Aggregated group seating cost calculations.
   - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
+  - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/domain/farely/domainKernel.test.ts` passes 100%.
 
@@ -139,6 +143,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: RLS policies.
   - `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`: `prepare_account_deletion`.
   - `supabase/functions/_shared/user-data.ts`: Explicit user identity sanitization.
+  - `supabase/functions/_shared/turnstile.ts`: Bot defense for alert subscriptions.
   - `src/domain/farely/personalizedFeedPrivacy.ts`: Ephemeral client preferences.
   - `scripts/account-deletion-contract.node-test.mjs`: Cascading user data deletion within 60s.
 - **Verification Proof (C0..C4)**:
@@ -150,6 +155,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.
 - **Physical Code Citations**:
   - `supabase/functions/_shared/flight-search.ts`: Circuit breaker pattern (`CLOSED`, `OPEN`, `HALF_OPEN`).
+  - `supabase/functions/_shared/amadeus-provider.ts`: Upstream connection adapter with status isolation.
   - `supabase/functions/_shared/retry-policy.ts`: Exponential backoff with full jitter formula.
   - `supabase/functions/_shared/abuse-protection.ts`: Quotas preventing downstream upstream overload.
   - `scripts/provider-drift-and-killswitch.node-test.mjs`: Injects simulated 503 HTTP errors.
