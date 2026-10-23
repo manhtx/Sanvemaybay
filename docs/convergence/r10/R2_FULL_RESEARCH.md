@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding
 # MANDATE: Re-examine deliverable with aggressive skepticism. Challenge assumptions in R1 across all 12 lenses.
-# GIT_COMMIT: 760fb27ac03c28f4952000a4f0e47a61f6f30ddd
-# TIMESTAMP: 2026-10-23T09:34:25.000Z
-# EXECUTION_RECEIPT_SHA256: 5228283f5f9b43d695cf0753d9888e7abb396eb8500ee18e7320265b3987bd38
+# GIT_COMMIT: 0f86415a1e6c8b9f580499ae71883015c963d5b8
+# TIMESTAMP: 2026-10-23T09:48:15.000Z
+# EXECUTION_RECEIPT_SHA256: 4ba55957e5ce90fb6a10c985201b1a123cf7ed2b420eb19a7adaca34305e275c
 
 ---
 
@@ -13,7 +13,7 @@
 
 ### Falsified Assumptions & Discovered Deficits in Pass R1:
 - **[L01 FALSIFICATION]** (Product Truth & Founder Scope Integrity):
-  - *Deficit in R1*: Pass R1 assumed checking domain suffixes was sufficient to prevent spoofed OTA links.
+  - *Deficit in R1*: Pass R1 assumed simple domain whitelist check was sufficient to prevent spoofed outbound redirects.
   - *Correction in R2*: Enforces full URI path and domain whitelist parsing in `src/domain/farely/providerRights.ts` and `src/domain/farely/providerRights.test.ts`. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
 - **[L02 FALSIFICATION]** (Price, Historical Baseline & Data Integrity):
   - *Deficit in R1*: Pass R1 did not explicitly guard against scientific notation prices (e.g., `1e7`) or decimal precision loss in raw JSON streams.
@@ -27,7 +27,7 @@
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G61 - PASS R2]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G62 - PASS R2]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
@@ -65,7 +65,8 @@
   - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.
   - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
   - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
-  - `src/domain/farely/multiCityItinerary.ts`: Multi-destination journey cost aggregation.
+  - `src/domain/farely/buyWaitGuidance.ts`: Empirical buy vs wait recommendation based on price velocity.
+  - `src/domain/farely/tripBudgetEstimator.ts`: Multi-factor expenditure modeling.
   - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
   - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
 - **Adversarial Vector Defense**: Suppresses deals with insufficient statistical baseline ($N < 12$) to avoid false discounts.
@@ -194,10 +195,10 @@
 ```json
 {
   "pass": "R2",
-  "cycleId": "G61",
+  "cycleId": "G62",
   "auditResult": "VERIFIED_FALSIFIED_HARDENED",
-  "timestamp": "2026-10-23T09:34:25.000Z",
-  "gitHead": "760fb27ac03c28f4952000a4f0e47a61f6f30ddd",
-  "executionReceipt": "5228283f5f9b43d695cf0753d9888e7abb396eb8500ee18e7320265b3987bd38"
+  "timestamp": "2026-10-23T09:48:15.000Z",
+  "gitHead": "0f86415a1e6c8b9f580499ae71883015c963d5b8",
+  "executionReceipt": "4ba55957e5ce90fb6a10c985201b1a123cf7ed2b420eb19a7adaca34305e275c"
 }
 ```
