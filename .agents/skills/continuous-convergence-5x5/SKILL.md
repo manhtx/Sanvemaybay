@@ -78,3 +78,5 @@ Every pass is automatically audited by the deterministic linters:
 4. **Incremental Lens Checkpoints**: Long passes can save lenses incrementally via `saveLensCheckpoint`, allowing zero-token-waste resumption.
 5. **Watchdog Health Audit**: At any time, run `npm run convergence:status` (`node scripts/convergence/watchdog-convergence.mjs`) to inspect state, git parity, receipt age, and determine the exact next deterministic action.
 6. **Zero-Fake Goal Completion**: Goals can only be marked complete via `node scripts/convergence/continuous_5x5_orchestrator.mjs complete-goal <cycleId>`, which cryptographically verifies clean git status, remote push parity, and passing tests before advancing the cycle.
+7. **Regression Detection & Clean Rollback**: On test failure, `npm run convergence:rollback <task_id>` instantly restores target files to pre-task snapshots, guaranteeing the repository never stays in a broken state.
+8. **Deterministic Pass Scaffolding**: Passes are initialized with `npm run convergence:scaffold <R|G> <passNum> -- --write`, pre-populating live PoE receipts, 12-lens battery structures, and falsification matrices.

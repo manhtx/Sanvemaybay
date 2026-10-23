@@ -158,6 +158,39 @@ export function sanitizeAndRecoverTask() {
   };
 }
 
+export function rollbackTask(taskId, reason = 'Regression or test failure') {
+  const journal = loadJournal();
+  const tx = journal.active_transaction;
+
+  if (!tx || tx.task_id !== taskId) {
+    return { status: 'NO_ACTIVE_TX', note: `No active transaction matching taskId ${taskId}` };
+  }
+
+  // Restore snapshots to clean state before this task began
+  for (const [relPath, originalContent] of Object.entries(tx.snapshots || {})) {
+    const fullPath = path.join(ROOT_DIR, relPath);
+    if (originalContent === null) {
+      if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+    } else {
+      fs.writeFileSync(fullPath, originalContent, 'utf8');
+    }
+  }
+
+  tx.status = 'EXPLICIT_ROLLBACK';
+  tx.rolled_back_at = new Date().toISOString();
+  tx.rollback_reason = reason;
+  journal.history.push(tx);
+  journal.active_transaction = null;
+  saveJournal(journal);
+
+  return {
+    status: 'ROLLED_BACK_CLEAN',
+    taskId,
+    restoredFiles: Object.keys(tx.snapshots || {}),
+    reason
+  };
+}
+
 // CLI handler
 if (process.argv[1] && process.argv[1].endsWith('transactional-task-manager.mjs')) {
   const cmd = process.argv[2] || 'status';
@@ -184,6 +217,15 @@ if (process.argv[1] && process.argv[1].endsWith('transactional-task-manager.mjs'
       process.exit(1);
     }
     const res = commitTask(taskId, verifCmd, shouldPush);
+    console.log(JSON.stringify(res, null, 2));
+  } else if (cmd === 'rollback') {
+    const taskId = process.argv[3];
+    const reason = process.argv.slice(4).join(' ') || 'Manual rollback';
+    if (!taskId) {
+      console.error('Usage: node transactional-task-manager.mjs rollback <task_id> [reason]');
+      process.exit(1);
+    }
+    const res = rollbackTask(taskId, reason);
     console.log(JSON.stringify(res, null, 2));
   }
 }

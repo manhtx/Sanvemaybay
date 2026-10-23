@@ -54,33 +54,45 @@ export function runWatchdogAudit() {
 
   // Determine next imperative action
   let nextAction = '';
+  let recommendedCommand = '';
   switch (state.status) {
     case 'INITIALIZED':
       nextAction = 'Execute Pass R1 of Research R10 across all 12 Adversarial Lenses.';
+      recommendedCommand = 'npm run convergence:scaffold R 1 -- --write';
       break;
     case 'IN_RESEARCH_5X':
       nextAction = `Execute pending Pass ${state.currentPass} of Research R10.`;
+      const rNum = (state.currentPass || 'R1').replace('R', '');
+      recommendedCommand = `npm run convergence:scaffold R ${rNum} -- --write`;
       break;
     case 'RESEARCH_COMPLETED_PENDING_COMPILER':
       nextAction = 'Execute Pass G1 of Master Goal Compiler G11 with Solution Cage Protocol.';
+      recommendedCommand = 'npm run convergence:scaffold G 1 -- --write';
       break;
     case 'IN_MASTER_GOAL_5X':
       nextAction = `Execute pending Pass ${state.currentPass} of Master Goal Compiler G11.`;
+      const gNum = (state.currentPass || 'G1').replace('G', '');
+      recommendedCommand = `npm run convergence:scaffold G ${gNum} -- --write`;
       break;
     case 'MASTER_GOAL_PROMPT_READY':
       nextAction = 'Pump canonical G5 prompt to chat canvas and begin Goal execution.';
+      recommendedCommand = 'npm run convergence:prompt';
       break;
     case 'EXECUTING_GOAL':
       nextAction = `Continue execution of task [${state.active_task || 'next task'}].`;
+      recommendedCommand = 'node scripts/convergence/transactional-task-manager.mjs status';
       break;
     case 'GOAL_COMPLETED':
       nextAction = `Trigger 5x5 Research R10 battery for cycle [${state.cycleId}].`;
+      recommendedCommand = 'npm run convergence:scaffold R 1 -- --write';
       break;
     case 'BLOCKED_BY_LINTER':
       nextAction = 'Fix linter violations cited in loop_state.json and re-run savePass.';
+      recommendedCommand = 'npm run convergence:integrity';
       break;
     default:
       nextAction = 'Inspect loop_state.json and initialize state.';
+      recommendedCommand = 'npm run convergence:status';
   }
 
   const report = {
@@ -90,6 +102,7 @@ export function runWatchdogAudit() {
     currentStage: state.currentStage,
     currentPass: state.currentPass,
     nextImperativeAction: nextAction,
+    recommendedCommand,
     git: {
       branch: gitBranch,
       head: gitHead,

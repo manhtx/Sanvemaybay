@@ -142,6 +142,7 @@ To guarantee continuous progress and zero lost engineering work during Goal exec
 5. **Incremental Lens Checkpointing**: Long compiler passes support saving partial lenses via `saveLensCheckpoint`, eliminating token loss upon mid-pass interruptions.
 6. **Zero-Fake Goal Completion**: Goals can only be completed via `node scripts/convergence/continuous_5x5_orchestrator.mjs complete-goal <cycleId>`, which enforces clean git status, remote push verification, and fresh execution receipts before auto-transitioning to the next cycle.
 7. **12-Lens Evolution Ledger**: Each pass logs per-lens coverage and byte density into `docs/convergence/state/12_LENS_EVOLUTION_LEDGER.json`, establishing mathematical proof of anti-evasion.
+8. **Regression Detection & Clean Rollback**: On test failure, `npm run convergence:rollback <task_id>` instantly restores target files to pre-task snapshots, guaranteeing the repository never stays in a broken state.
 
 ## FARELY-XFER/6 — CANONICAL SHARED HANDOFF (EXACT SAME WORDS IN R10 AND G11)
 
