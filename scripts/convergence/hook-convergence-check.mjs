@@ -40,6 +40,18 @@ if (fs.existsSync(STATE_FILE)) {
 // Check termination reason
 const terminationReason = payload.terminationReason || 'NO_TOOL_CALL';
 
+if (terminationReason === 'MAX_TOKEN_BUDGET_EXCEEDED' || terminationReason === 'MAX_INVOCATIONS') {
+  state.pausedReason = terminationReason;
+  state.interruptedAt = new Date().toISOString();
+  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2), 'utf8');
+
+  console.log(JSON.stringify({
+    decision: 'continue',
+    reason: `Token budget or invocation limit reached (${terminationReason}). Durable state saved to docs/convergence/state/loop_state.json. If quota is available, resume from exact checkpoint immediately; otherwise pause for quota refresh.`
+  }));
+  process.exit(0);
+}
+
 if (terminationReason === 'NO_TOOL_CALL') {
   if (state.status === 'GOAL_COMPLETED') {
     state.status = 'IN_RESEARCH_5X';
