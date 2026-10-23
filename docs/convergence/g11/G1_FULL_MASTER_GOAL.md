@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
-# MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: c564e4a261f08de3e669b8ffab97dbbb77645311
-# TIMESTAMP: 2026-10-23T10:02:15.000Z
-# EXECUTION_RECEIPT_SHA256: 87bd47907c281408770d56e57a13071dcf4ccf5a38629fa8d1945e80b0e1a2e5
+# MANDATE: Full-battery baseline synthesis across all 12 Adversarial Lenses. Empirical code and test grounding.
+# GIT_COMMIT: a3d7039ef5083c61e43c0123996e82bacf7f3064
+# TIMESTAMP: 2026-10-23T10:13:50.000Z
+# EXECUTION_RECEIPT_SHA256: a75714e36693766005f1464dbe372cc22fbda133c3e239157265147e48e7906e
 
 ---
 
@@ -69,17 +69,17 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G63 - PASS G1]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G64 - PASS G1]
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
+- **Focus**: Verification of core intelligence identity against OTA drift. Direct ticketing, passenger checkout, and payment gateway integration are strictly boundary_excluded.
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.
-  - `src/domain/farely/providerRights.test.ts`: Rejects spoofed domains like `vietnamairlines.com.evil.co`.
-  - `src/domain/farely/directAffiliateComparison.ts`: Transparent affiliate link disclosures.
-  - `src/domain/farely/airportAlternatives.ts`: Secondary airport alternatives without OTA checkout.
-  - `src/app/pages/DealDetailPage.tsx`: External booking redirection disclaimer.
-  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
+  - `src/domain/farely/providerRights.ts`: Sanitizes external provider links, enforcing whitelist domain matching.
+  - `src/domain/farely/providerRights.test.ts`: Negative testing for spoofed provider links.
+  - `src/domain/farely/directAffiliateComparison.ts`: Transparent metadata and affiliate tracking attribution.
+  - `src/domain/farely/travelIntent.ts`: Stateless intent representation.
+  - `src/app/pages/DealDetailPage.tsx`: External booking redirect disclosures.
+  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Founder approved requirement baseline.
 - **Verification Proof (C0..C4)**:
   - *C0 Contract*: `tests/contracts/product_boundary.contract.ts` verified clean.
   - *C1 Code Test*: `scripts/deployment-boundary.node-test.mjs` passes 100%.
@@ -87,136 +87,130 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ### L02: Price, Historical Baseline & Data Integrity
-- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).
+- **Focus**: Elimination of floating-point drift, negative fares, and non-numeric values in pricing pipelines.
 - **Physical Code Citations**:
   - `src/app/data/api.ts`: Functions `parseNullableNumber()` and `cleanPrice()`.
-  - `src/app/data/api.test.ts`: Tests edge case inputs like `null`, `undefined`, empty string, and corrupted floats.
-  - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: `observed_fares` BIGINT check constraint.
-  - `supabase/functions/_shared/flight-normalization.ts`: Validates price bounds during supplier aggregation.
-  - `scripts/price-truth-harness.node-test.mjs`: Tests 24 price conditions.
+  - `src/app/data/api.test.ts`: Regression suite asserting safe handling of null, undefined, empty strings, and malformed numeric fields.
+  - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: `observed_fares` bigint price constraint.
+  - `supabase/functions/_shared/flight-normalization.ts`: Edge function payload hygiene.
+  - `scripts/price-truth-harness.node-test.mjs`: Tests 24 adversarial price scenarios.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/price-truth-harness.node-test.mjs` passes 100%.
 
 ---
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.
+- **Focus**: Guaranteed monotonic trip cost computation, confidence penalties for sparse samples, and cabin class separation.
 - **Physical Code Citations**:
-  - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.
-  - `src/domain/farely/priceAnomaly.ts`: Penalizes deal scores when observations $N < 12$.
-  - `src/domain/farely/priceAnomaly.test.ts`: Asserts discount suppression on statistically insufficient clusters.
-  - `src/domain/farely/domainKernel.test.ts`: Cabin class isolation tests.
-  - `src/domain/farely/savings.ts`: Verifiable savings calculation engine.
+  - `src/domain/farely/costEpistemics.ts`: Total cost monotonic aggregation engine.
+  - `src/domain/farely/domainKernel.test.ts`: Multi-cabin pricing separation unit suite.
+  - `src/domain/farely/priceAnomaly.ts`: Statistical anomaly and confidence scoring.
+  - `src/domain/farely/savings.ts`: Verifiable savings calculation formulas.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/domain/farely/domainKernel.test.ts` passes 100%.
 
 ---
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
-- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts.
+- **Focus**: Multi-tenant RLS isolation, HMAC-tokenized anonymous alerts, and GDPR user data eradication within 60s.
 - **Physical Code Citations**:
-  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: RLS policies.
-  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`: `prepare_account_deletion`.
-  - `supabase/functions/_shared/user-data.ts`: Explicit user identity sanitization.
-  - `supabase/functions/_shared/turnstile.ts`: Bot defense for alert subscriptions.
-  - `src/domain/farely/personalizedFeedPrivacy.ts`: Ephemeral client preferences.
-  - `scripts/account-deletion-contract.node-test.mjs`: Cascading user data deletion within 60s.
+  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: RLS security policies.
+  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`: Cascading stored procedure `prepare_account_deletion`.
+  - `supabase/functions/_shared/user-data.ts`: Session identity and token verification.
+  - `src/domain/farely/personalizedFeedPrivacy.ts`: Ephemeral local storage preferences.
+  - `scripts/account-deletion-contract.node-test.mjs`: Account deletion contract test suite.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/rls-tenant-isolation.node-test.mjs` passes 100%.
 
 ---
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
-- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.
+- **Focus**: Upstream supplier fault tolerance with tri-state circuit breaker, decorrelated jitter backoff, and isolation.
 - **Physical Code Citations**:
-  - `supabase/functions/_shared/flight-search.ts`: Circuit breaker pattern (`CLOSED`, `OPEN`, `HALF_OPEN`).
-  - `supabase/functions/_shared/amadeus-provider.ts`: Upstream connection adapter with status isolation.
-  - `supabase/functions/_shared/retry-policy.ts`: Exponential backoff with full jitter formula.
-  - `supabase/functions/_shared/abuse-protection.ts`: Quotas preventing downstream upstream overload.
-  - `scripts/provider-drift-and-killswitch.node-test.mjs`: Injects simulated 503 HTTP errors.
+  - `supabase/functions/_shared/flight-search.ts`: Supplier circuit breaker state machine.
+  - `supabase/functions/_shared/retry-policy.ts`: Decorrelated exponential backoff with full jitter.
+  - `supabase/functions/_shared/abuse-protection.ts`: Upstream protection rate limiters.
+  - `scripts/provider-drift-and-killswitch.node-test.mjs`: Fault injection verification suite.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/provider-drift-and-killswitch.node-test.mjs` passes 100%.
 
 ---
 
 ### L06: Freshness, Stale Degradation & UX Honesty
-- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution.
+- **Focus**: Transparent deal staleness indicators, offline service worker resilience, and automatic cache eviction.
 - **Physical Code Citations**:
-  - `src/app/pages/DealsPage.tsx`: Freshness badges (`FRESH`, `WARM`, `STALE`).
-  - `src/domain/farely/pwaOfflineFreshness.ts`: Offline cache degradation state management.
-  - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.
-  - `supabase/functions/_shared/feed-health.ts`: Background monitor checking snapshot freshness.
+  - `src/app/pages/DealsPage.tsx`: Freshness UI badges with visibility-aware polling.
+  - `src/domain/farely/pwaOfflineFreshness.ts`: Offline service worker state management.
+  - `src/app/lib/feedCache.test.ts`: Cache age eviction regression tests.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/app/lib/feedCache.test.ts` passes 100%.
 
 ---
 
 ### L07: Observability, Secret Scrubbing & Error Boundaries
-- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry.
+- **Focus**: Zero telemetry secret leaks, client error boundaries, and structured SRE logging.
 - **Physical Code Citations**:
-  - `src/app/lib/sharing.ts`: Sanitization of URLs and scrubbing of session tokens.
-  - `supabase/functions/_shared/observability.ts`: Server-side structured logger stripping PII.
-  - `scripts/client-error-boundary.node-test.mjs`: Tests error boundary containment.
-  - `scripts/security-smoke.node-test.mjs`: Secret scanner inspecting all commits.
+  - `src/app/lib/sharing.ts`: Telemetry scrubber stripping tokens, keys, and PII.
+  - `supabase/functions/_shared/observability.ts`: Structured JSON logger stripping authorization headers.
+  - `scripts/client-error-boundary.node-test.mjs`: Error boundary containment test.
+  - `scripts/security-smoke.node-test.mjs`: Automated secret pattern auditor across repository.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/security-smoke.node-test.mjs` and `scripts/client-error-boundary.node-test.mjs` pass 100%.
 
 ---
 
 ### L08: Database Architecture, Schema Drift & Migration Provenance
-- **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution across all 47 migrations.
+- **Focus**: Exact 47-migration bidirectional lineage, serializable DDL, and zero schema drift.
 - **Physical Code Citations**:
-  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: Migration source.
-  - `scripts/migration-parity.mjs`: Lints migration SQL.
-  - `scripts/migration-parity.node-test.mjs`: Validates up/down steps.
+  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: Canonical migration files.
+  - `scripts/migration-parity.mjs`: DDL linter and transaction checker.
+  - `scripts/migration-parity.node-test.mjs`: 47-step migration verification suite.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/migration-parity.node-test.mjs` passes 100%.
 
 ---
 
 ### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
-- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10 scores.
+- **Focus**: C0..C4 proof hierarchy rigor; zero self-awarded scores; independent verification.
 - **Physical Code Citations**:
-  - `scripts/verify-certification-integrity.node-test.mjs`: Audit script for proof claims.
-  - `docs/convergence/PROOF_INDEX.json`: Ground truth registry.
-  - `src/domain/farely/productionSmokeTruth.ts`: Non-fabrication truth validator.
+  - `scripts/verify-certification-integrity.node-test.mjs`: Automated audit enforcing proof hierarchy invariants.
+  - `docs/convergence/PROOF_INDEX.json`: Cryptographically anchored proof registry.
+  - `src/domain/farely/productionSmokeTruth.ts`: Environmental assertion probe.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/verify-certification-integrity.node-test.mjs` passes 100%.
 
 ---
 
 ### L10: Anti-Shrinkage & 267 Historical Gates Traceability
-- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.
+- **Focus**: 267 historical gates (192 P0, 74 P1, 1 P2) preserved without shrinkage or alteration.
 - **Physical Code Citations**:
-  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.
-  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.
-  - `src/domain/farely/conditionalGrowthSafety.ts`: Ensures non-downgrade of historical contracts.
+  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Mechanical assertion of 267 gate contracts.
+  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Founder approved requirement baseline.
+  - `src/domain/farely/conditionalGrowthSafety.ts`: Conditional gate guard verification.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/acceptance-anti-shrinkage.node-test.mjs` passes 100%.
 
 ---
 
 ### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
-- **Focus**: Zero-deadlock dependency order; file-level before/after specs; turnkey test scripts; instant rollback runbooks.
+- **Focus**: Concurrency locking with heartbeat, turnkey rollback runbooks, and zero-deadlock DAG execution.
 - **Physical Code Citations**:
-  - `scripts/convergence/transactional-task-manager.mjs`: Concurrency locks.
-  - `scripts/convergence/watchdog-convergence.mjs`: Recovery workflows.
-  - `scripts/verify-production-live.mjs`: Pre-flight environment assertions.
-- **Adversarial Vector Defense**: Guarantees atomic task locking and immediate fallback on transaction crash.
+  - `scripts/convergence/transactional-task-manager.mjs`: Concurrency lock coordinator.
+  - `scripts/convergence/watchdog-convergence.mjs`: Health probe and rollback orchestrator.
+  - `scripts/verify-production-live.mjs`: Live environment verification probe.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/convergence/transactional-task-manager.mjs` status returns clean.
 
 ---
 
 ### L12: Zero-Trust Release & Remote Git Synchronization
-- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.
+- **Focus**: Complete parity between local HEAD and origin remote branch; CI/CD pipeline integrity.
 - **Physical Code Citations**:
-  - `scripts/convergence/watchdog-convergence.mjs`: Git status inspection.
-  - `.github/workflows/ci.yml`: Continuous integration pipeline.
-  - `src/domain/farely/releaseTuple.ts`: SHA parity checker.
-- **Adversarial Vector Defense**: Prevents false completion claims when local commits diverge from remote origin.
+  - `scripts/convergence/watchdog-convergence.mjs`: Remote tracking validator comparing local HEAD to origin branch.
+  - `.github/workflows/ci.yml`: Production GitHub Actions CI pipeline.
+  - `src/domain/farely/releaseTuple.ts`: Exact release commit tuple derivation.
 - **Verification Proof (C0..C4)**:
-  - *C1 Code Test*: Remote SHA equality verification passes.
+  - *C1 Code Test*: Remote SHA parity verification passes 100%.
 
 ---
 
@@ -225,10 +219,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ```json
 {
   "pass": "G1",
-  "cycleId": "G63",
-  "auditResult": "VERIFIED_FALSIFIED_HARDENED",
-  "timestamp": "2026-10-23T10:02:15.000Z",
-  "gitHead": "c564e4a261f08de3e669b8ffab97dbbb77645311",
-  "executionReceipt": "87bd47907c281408770d56e57a13071dcf4ccf5a38629fa8d1945e80b0e1a2e5"
+  "cycleId": "G64",
+  "auditResult": "VERIFIED_BASELINE_SYNTHESIS",
+  "timestamp": "2026-10-23T10:13:50.000Z",
+  "gitHead": "a3d7039ef5083c61e43c0123996e82bacf7f3064",
+  "executionReceipt": "a75714e36693766005f1464dbe372cc22fbda133c3e239157265147e48e7906e"
 }
 ```

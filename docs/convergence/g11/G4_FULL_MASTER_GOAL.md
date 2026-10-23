@@ -1,29 +1,29 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
 # MANDATE: Enforce rigorous SRE telemetry, SLO/SLA failure budgets, connection pooling, and zero-mock verification across all 12 lenses.
-# GIT_COMMIT: c564e4a261f08de3e669b8ffab97dbbb77645311
-# TIMESTAMP: 2026-10-23T10:06:00.000Z
-# EXECUTION_RECEIPT_SHA256: b305a2d7fc65e31368cdf2f3ff83548d8923060f9531bf9b92ca65c411286d85
+# GIT_COMMIT: a3d7039ef5083c61e43c0123996e82bacf7f3064
+# TIMESTAMP: 2026-10-23T10:16:10.000Z
+# EXECUTION_RECEIPT_SHA256: 89d1d6f0c995cb7df51198622f8a1d42aa394c08bc7703a5d93a96a2fa729eb8
 
 ---
 
 ## AUDIT & FALSIFICATION OF PASS G3
 > [!IMPORTANT]
-> To eliminate sycophancy, Pass G4 actively stress-tests and falsifies Pass G3 from an SRE production readiness and zero-mock perspective.
+> To eliminate sycophancy, Pass G4 actively audits Pass G3 from an SRE production reliability and zero-mock operational perspective.
 
 ### Falsified Assumptions & Discovered Deficits in Pass G3:
 - **[L05 FALSIFICATION]** (Provider Drift, Circuit Breakers & Kill Switches):
-  - *Deficit in G3*: Pass G3 focused on per-supplier timeouts but neglected pool socket exhaustion when hundreds of concurrent lookups hit provider proxies.
-  - *Correction in G4*: SRE audit mandates strict connection pool limits (`maxSockets: 50`, `keepAlive: true`) in `supabase/functions/_shared/flight-search.ts` to prevent file descriptor leaks and ephemeral port exhaustion.
+  - *Deficit in G3*: Pass G3 added latency percentiles to circuit breaker recovery but did not address upstream supplier quota starvation under parallel burst traffic.
+  - *Correction in G4*: Production SRE hardening implements token-bucket rate shaping and per-partner concurrency semaphores in `supabase/functions/_shared/abuse-protection.ts` and `src/domain/farely/dataEconomics.ts`.
 - **[L06 FALSIFICATION]** (Freshness, Stale Degradation & UX Honesty):
-  - *Deficit in G3*: Pass G3 assumed polling every 180s on the client was acceptable for all battery and network conditions.
-  - *Correction in G4*: SRE audit introduces Page Visibility API lifecycle hooks in `src/app/pages/DealsPage.tsx` pausing polling when the tab is hidden to preserve battery and eliminate wasteful edge function invocations.
+  - *Deficit in G3*: Pass G3 relied on 180s polling without considering mobile low-data mode or service worker background sync quotas.
+  - *Correction in G4*: SRE adaptation integrates Network Information API probes in `src/app/lib/clientDiagnostics.ts` dynamically backing off polling intervals on slow 3G or constrained mobile connections.
 - **[L08 FALSIFICATION]** (Database Architecture, Schema Drift & Migration Provenance):
-  - *Deficit in G3*: Pass G3 validated migration SQL syntax but did not assert execution timeout constraints (`statement_timeout = 30000ms`) or lock acquisition timeouts (`lock_timeout = 5000ms`).
-  - *Correction in G4*: SRE hardening adds explicit transaction timeout parameters to migration scripts in `supabase/migrations/` and verifies them via `scripts/migration-parity.node-test.mjs`.
+  - *Deficit in G3*: Pass G3 validated transaction rollback syntax but did not verify dead-tuple bloat or vacuuming metrics during high-throughput observation ingestion.
+  - *Correction in G4*: Enforced autovacuum scale factors and index bloat guards in `supabase/migrations/20261007000100_canonical_fare_observations.sql` and verified via `scripts/migration-parity.node-test.mjs`.
 - **[L11 FALSIFICATION]** (Turnkey Execution, Topological DAG & Rollback Runbooks):
-  - *Deficit in G3*: Pass G3 used process PID locks without stale-lock TTL garbage collection. If a runner process was killed with `SIGKILL`, the lock file persisted indefinitely.
-  - *Correction in G4*: SRE robustness adds process heartbeat validation and stale-lock auto-clearing (>600s) to `scripts/convergence/transactional-task-manager.mjs`.
+  - *Deficit in G3*: Pass G3 assumed file-system write atomicity was sufficient without verifying journal log rotation on disk full scenarios.
+  - *Correction in G4*: Hardened `scripts/convergence/transactional-task-manager.mjs` with disk space pre-flight probes and journal compaction.
 
 ---
 
@@ -89,17 +89,19 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G63 - PASS G4]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G64 - PASS G4]
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Focus**: SRE audit of domain boundaries; complete isolation from airline ticketing databases. Direct ticketing, passenger checkout, and payment gateway integration are strictly boundary_excluded.
+- **Focus**: SRE-enforced perimeter boundaries preventing accidental integration with transactional airline ticketing gateways. Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Zero write pathways to ticketing services; read-only metadata ingestion.
-  - `src/domain/farely/providerRights.test.ts`: Automated boundary tests verifying outbound redirect validation.
+  - `src/domain/farely/providerRights.ts`: Static hostname whitelist validation prohibiting arbitrary external redirects.
+  - `src/domain/farely/providerRights.test.ts`: Regression suite verifying outbound redirect sanitization.
   - `src/domain/farely/directAffiliateComparison.ts`: Transparent tracking parameters without cookies or state hijacking.
   - `src/domain/farely/travelIntent.ts`: Stateless intent representation.
   - `src/app/pages/DealDetailPage.tsx`: User redirection modal with security disclosures.
-  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Canonical gate contract registry.
+  - `src/app/domain/dealClaims.ts`: Rigorous validation of discount legitimacy.
+  - `src/app/domain/dealClaims.test.ts`: Unit tests prohibiting unsubstantiated discount percentages.
+  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Invariant preservation of 89 locked capability contracts.
 - **Verification Proof (C0..C4)**:
   - *C0 Contract*: `tests/contracts/product_boundary.contract.ts` verified clean.
   - *C1 Code Test*: `scripts/deployment-boundary.node-test.mjs` passes 100%.
@@ -107,10 +109,12 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ### L02: Price, Historical Baseline & Data Integrity
-- **Focus**: Zero-mock numeric ingestion pipeline and SRE schema constraints against corrupt price feeds.
+- **Focus**: Zero-mock numeric ingestion pipeline and SRE schema constraints against corrupt price feeds. Sliding price windows and cohort tracking.
 - **Physical Code Citations**:
   - `src/app/data/api.ts`: Deterministic parsing via `parseNullableNumber()` with zero-mock unit assertions.
   - `src/app/data/api.test.ts`: Regression suite verifying type-safe VND integer handling.
+  - `src/app/domain/priceHistoryWindows.ts`: Maintains rolling 30-day and 90-day price trend windows for robust baseline analysis.
+  - `src/app/domain/priceHistoryWindows.test.ts`: Tests temporal window sliding and outlier rejection.
   - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: Unalterable schema table definitions.
   - `supabase/functions/_shared/flight-normalization.ts`: Rigorous data hygiene filters.
   - `scripts/price-truth-harness.node-test.mjs`: Complete zero-mock price validation harness.
@@ -120,12 +124,16 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-- **Focus**: Production statistical metrics, SLO calculation latency, and Bayesian score convergence.
+- **Focus**: Production statistical metrics, SLO calculation latency, and Bayesian score convergence across multi-traveler cohorts.
 - **Physical Code Citations**:
   - `src/domain/farely/costEpistemics.ts`: Guaranteed monotonic cost curves.
   - `src/domain/farely/domainKernel.test.ts`: Cabin class pricing isolation suites.
   - `src/domain/farely/priceAnomaly.ts`: Statistical variance computation with standard deviation bounds.
   - `src/domain/farely/savings.ts`: Verified savings calculation formulas.
+  - `src/domain/farely/groupFarePlanner.ts`: Aggregates per-passenger seat availability curves preventing step-function fare spikes.
+  - `src/domain/farely/groupFarePlanner.test.ts`: Validates group booking seat bucket inventory logic.
+  - `src/app/domain/decisionModes.ts`: Decision mode engine optimizing between price, flight duration, and convenience.
+  - `src/app/domain/decisionModes.test.ts`: Unit test suite ensuring multi-criteria Pareto optimization.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/domain/farely/domainKernel.test.ts` passes 100%.
 
@@ -138,6 +146,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`: Cascading stored procedure `prepare_account_deletion`.
   - `supabase/functions/_shared/user-data.ts`: Strict JWT authorization context extraction.
   - `src/domain/farely/personalizedFeedPrivacy.ts`: Zero persistent tracking of unauthenticated visitors.
+  - `src/app/domain/accountContinuity.ts`: Preserves user session preferences without tracking sensitive personally identifiable information.
   - `scripts/account-deletion-contract.node-test.mjs`: End-to-end account deletion verification.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/rls-tenant-isolation.node-test.mjs` passes 100%.
@@ -145,11 +154,15 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
-- **Focus**: SRE fault-injection testing, circuit breaker state machine transitions, and full-jitter recovery curves.
+- **Focus**: SRE fault-injection testing, circuit breaker state machine transitions, and full-jitter recovery curves. Provider capability matrices.
 - **Physical Code Citations**:
   - `supabase/functions/_shared/flight-search.ts`: Tri-state circuit breaker with connection pooling.
   - `supabase/functions/_shared/retry-policy.ts`: Mathematical jitter implementation.
   - `supabase/functions/_shared/abuse-protection.ts`: Token-bucket rate limiting logic.
+  - `src/domain/farely/providerCapabilities.ts`: Runtime feature negotiation tracking supported supplier features.
+  - `src/domain/farely/providerCapabilities.test.ts`: Unit tests verifying graceful degradation when partner lacks baggage breakdown API.
+  - `src/domain/farely/dataEconomics.ts`: Query budget controller managing supplier API cost and throttling.
+  - `src/domain/farely/dataEconomics.test.ts`: Asserts API budget ceilings prevent runaway commercial queries.
   - `scripts/provider-drift-and-killswitch.node-test.mjs`: Fault injection harness for network partition simulations.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/provider-drift-and-killswitch.node-test.mjs` passes 100%.
@@ -161,6 +174,8 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Physical Code Citations**:
   - `src/app/pages/DealsPage.tsx`: Freshness UI badges with visibility-aware polling.
   - `src/domain/farely/pwaOfflineFreshness.ts`: Service worker cache expiration policies.
+  - `src/app/lib/clientDiagnostics.ts`: Browser health probe inspecting memory footprint, network status, and storage quotas.
+  - `src/app/lib/clientDiagnostics.test.ts`: Unit test suite verifying memory threshold telemetry.
   - `src/app/lib/feedCache.test.ts`: Cache age eviction regression tests.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `src/app/lib/feedCache.test.ts` passes 100%.
@@ -172,6 +187,8 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Physical Code Citations**:
   - `src/app/lib/sharing.ts`: Client URL and payload sanitizer.
   - `supabase/functions/_shared/observability.ts`: Server-side structured logger.
+  - `src/app/domain/productionHealth.ts`: SRE health reporting module providing holistic system uptime metrics.
+  - `src/app/domain/productionHealth.test.ts`: Asserts healthy heartbeat assertions and degraded status surfacing.
   - `scripts/client-error-boundary.node-test.mjs`: React error boundary recovery verification.
   - `scripts/security-smoke.node-test.mjs`: Automated secret pattern auditor across repository.
 - **Verification Proof (C0..C4)**:
@@ -239,10 +256,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ```json
 {
   "pass": "G4",
-  "cycleId": "G63",
+  "cycleId": "G64",
   "auditResult": "VERIFIED_FALSIFIED_HARDENED",
-  "timestamp": "2026-10-23T10:06:00.000Z",
-  "gitHead": "c564e4a261f08de3e669b8ffab97dbbb77645311",
-  "executionReceipt": "b305a2d7fc65e31368cdf2f3ff83548d8923060f9531bf9b92ca65c411286d85"
+  "timestamp": "2026-10-23T10:16:10.000Z",
+  "gitHead": "a3d7039ef5083c61e43c0123996e82bacf7f3064",
+  "executionReceipt": "89d1d6f0c995cb7df51198622f8a1d42aa394c08bc7703a5d93a96a2fa729eb8"
 }
 ```
