@@ -8,10 +8,19 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { completeGoal } from './continuous_5x5_orchestrator.mjs';
 import { loadJournal } from './transactional-task-manager.mjs';
 
-const ROOT_DIR = process.cwd();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+function getProjectRoot() {
+  if (fs.existsSync(path.join(process.cwd(), 'package.json')) && fs.existsSync(path.join(process.cwd(), 'docs/convergence'))) {
+    return process.cwd();
+  }
+  return path.resolve(__dirname, '../..');
+}
+const ROOT_DIR = getProjectRoot();
 const STATE_FILE = path.join(ROOT_DIR, 'docs/convergence/state/loop_state.json');
 const STOP_SIGNAL_FILE = path.join(ROOT_DIR, 'docs/convergence/state/STOP_PERPETUAL_LOOP');
 
