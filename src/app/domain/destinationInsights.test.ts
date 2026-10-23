@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildDestinationInsights } from "./destinationInsights";
+import { buildDestinationInsights, isWeekendFlightDate } from "./destinationInsights";
 import { Deal } from "../data/deals";
 
 const deal = (overrides: Partial<Deal>): Deal => ({
@@ -20,4 +20,18 @@ describe("destination insights", () => {
     expect(insights).toHaveLength(2);
     expect(insights[0]).toMatchObject({ destinationCode: "BKK", dealCount: 2, cheapestPrice: 1_600_000, bestDealScore: 90, hasWeekendDeal: true, topDealId: "b" });
   });
+
+  it("accurately classifies weekend flight dates in UTC without timezone shifting", () => {
+    // 2026-10-03 is Saturday
+    expect(isWeekendFlightDate("2026-10-03")).toBe(true);
+    // 2026-10-04 is Sunday
+    expect(isWeekendFlightDate("2026-10-04")).toBe(true);
+    // 2026-10-05 is Monday
+    expect(isWeekendFlightDate("2026-10-05")).toBe(false);
+    // 2026-10-06 is Tuesday
+    expect(isWeekendFlightDate("2026-10-06")).toBe(false);
+    // Empty or invalid
+    expect(isWeekendFlightDate("")).toBe(false);
+  });
 });
+

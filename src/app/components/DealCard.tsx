@@ -1,9 +1,10 @@
 import { Link } from "react-router";
-import { Clock, AlertTriangle, Calendar, Bookmark, ShieldCheck } from "lucide-react";
-import { Deal, formatVND, regionFlag } from "../data/deals";
+import { Clock, AlertTriangle, Calendar, Bookmark } from "lucide-react";
+import { Deal, formatStops, formatVND, regionFlag } from "../data/deals";
 import { isBookmarkedDeal, mutateBookmarkOptimistic, createOpportunitySnapshot } from "../lib/bookmarks";
 import { useState } from "react";
 import { trackProductEvent } from "../lib/analytics";
+import { ProvenanceBadge } from "./ProvenanceBadge";
 
 interface DealCardProps {
   deal: Deal;
@@ -78,12 +79,9 @@ export function DealCard({ deal }: DealCardProps) {
                     </div>
                   )}
                 </div>
-                {deal.confidence !== undefined && (
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 bg-white/[0.03] border border-white/[0.06] px-2 py-1 rounded-md">
-                    <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-                    <span>{deal.confidence >= 0.8 ? "Bằng chứng cao" : deal.confidence >= 0.5 ? "Bằng chứng vừa" : "Đang tích luỹ"}</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <ProvenanceBadge deal={deal} />
+                </div>
               </div>
             </div>
 
@@ -96,7 +94,7 @@ export function DealCard({ deal }: DealCardProps) {
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <span className="truncate">
-                  {deal.duration} · {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
+                  {deal.duration} · {formatStops(deal.stops)}
                 </span>
               </div>
             </div>
@@ -117,7 +115,7 @@ export function DealCard({ deal }: DealCardProps) {
                 </span>
               ) : (
                 <span className="text-slate-400 truncate text-[11px]">
-                  Đã gồm thuế sân bay
+                  Giá cơ bản
                 </span>
               )}
             </div>

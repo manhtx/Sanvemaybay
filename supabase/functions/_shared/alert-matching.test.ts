@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { isValidDateOnly, matchesAlert, selectDailyDeal } from "./alert-matching.ts";
+import { isValidDateOnly, matchesAlert, matchesAlertIntent, matchesAlertRouteIntent, matchesAlertThreshold, selectDailyDeal } from "./alert-matching.ts";
 
 Deno.test("matches alert filters by route, price, discount and region", () => {
   const alert = {
@@ -85,4 +85,79 @@ Deno.test("stops and trip-type constraints in alert matching", () => {
   assert(matchesAlert(onewayAlert, { to_code: "SIN", depart_date: "2026-11-01" }));
   assert(!matchesAlert(onewayAlert, { to_code: "SIN", depart_date: "2026-11-01", return_date: "2026-11-05" }));
 });
+
+Deno.test("RC-14 & D12: Watcher with specific return date rejects candidate whose return date is missing", () => {
+  const alertWithReturn = { destination_code: "SIN", return_date: "2026-11-05" };
+  assert(matchesAlert(alertWithReturn, { to_code: "SIN", return_date: "2026-11-05" }));
+  assert(!matchesAlert(alertWithReturn, { to_code: "SIN", return_date: null }));
+  assert(!matchesAlert(alertWithReturn, { to_code: "SIN", return_date: undefined }));
+  assert(!matchesAlert(alertWithReturn, { to_code: "SIN", return_date: "2026-11-06" }));
+});
+
+Deno.test("RC-01: matchesAlertIntent matches structural criteria even when price exceeds budget", () => {
+  const alert = {
+    origin_code: "SGN",
+    destination_code: "BKK",
+    budget: 2000000,
+    discount_threshold: 20,
+  };
+  const aboveBudgetCandidate = {
+    from_code: "SGN",
+    to_code: "BKK",
+    price: 3500000,
+    discount: 5,
+  };
+  // Structural matcher MUST return true so candidate reaches episode exit evaluator
+  assert(matchesAlertIntent(alert, aboveBudgetCandidate));
+  // Threshold matcher returns false because price > budget
+  assert(!matchesAlertThreshold(alert, aboveBudgetCandidate));
+  // Full composite matcher returns false
+  assert(!matchesAlert(alert, aboveBudgetCandidate));
+});
+
+Deno.test("E07 & H15: Stop-constraint alert safety and route intent decoupling", () => {
+  const directAlert = {
+    origin_code: "SGN",
+    destination_code: "BKK",
+    budget: 3000000,
+    max_stops: 0,
+  };
+
+  const unknownStopsCandidate = {
+    from_code: "SGN",
+    to_code: "BKK",
+    price: 2000000,
+    stops: null,
+  };
+
+  const directCandidate = {
+    from_code: "SGN",
+    to_code: "BKK",
+    price: 2000000,
+    stops: 0,
+  };
+
+  const connectingCandidate = {
+    from_code: "SGN",
+    to_code: "BKK",
+    price: 2000000,
+    stops: 1,
+  };
+
+  // Route intent matches all candidates on the physical route
+  assert(matchesAlertRouteIntent(directAlert, unknownStopsCandidate));
+  assert(matchesAlertRouteIntent(directAlert, directCandidate));
+  assert(matchesAlertRouteIntent(directAlert, connectingCandidate));
+
+  // Stops constraint: stops=0 is eligible, stops=null and stops=1 are NOT eligible
+  assert(matchesAlertIntent(directAlert, directCandidate));
+  assert(!matchesAlertIntent(directAlert, unknownStopsCandidate));
+  assert(!matchesAlertIntent(directAlert, connectingCandidate));
+
+  // Full match requires both intent and threshold
+  assert(matchesAlert(directAlert, directCandidate));
+  assert(!matchesAlert(directAlert, unknownStopsCandidate));
+  assert(!matchesAlert(directAlert, connectingCandidate));
+});
+
 

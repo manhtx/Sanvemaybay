@@ -1,0 +1,33 @@
+{
+  "continuous-convergence-loop": {
+    "enabled": true,
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "node scripts/convergence/hook-session-resume.mjs 2>/dev/null || node ../scripts/convergence/hook-session-resume.mjs",
+        "timeout": 15
+      }
+    ],
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "node scripts/convergence/hook-session-resume.mjs 2>/dev/null || node ../scripts/convergence/hook-session-resume.mjs",
+        "timeout": 15
+      }
+    ],
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "node scripts/convergence/hook-post-invocation.mjs 2>/dev/null || node ../scripts/convergence/hook-post-invocation.mjs",
+        "timeout": 15
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node scripts/convergence/hook-convergence-check.mjs 2>/dev/null || node ../scripts/convergence/hook-convergence-check.mjs",
+        "timeout": 30
+      }
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "checkpoint_id": "CHECKPOINT-G11-20261022-R2-CONVERGENCE",
+  "timestamp": "2026-10-22T03:17:00.000Z",
+  "mission_id": "FARELY-G11-20261022-R2",
+  "branch": "antigravity/farely-v12-product-convergence",
+  "head_sha": "0885d3ffcac2974df7fd07c8b4c61d986f567161",
+  "base_sha": "084025b1f58a98655222ee4f8fc82461b286dd6a",
+  "pr_number": 1,
+  "pr_status": "OPEN",
+  "pr_mergeable": "MERGEABLE",
+  "delivery_class": "GATED_UNCERTIFIED_EXECUTION_DRAFT",
+  "terminal_state": "TECHNICAL_VERIFIED_IMPLEMENTATION_DRAFT",
+  "research_full_certification": "0/20 PROVEN",
+  "compiler_full_certification": "0/20 PROVEN",
+  "target_proven": false,
+  "permission_state": "SAFE_ENGINEERING_REPAIR_AUTHORIZED",
+  "verified_test_counts": {
+    "vitest": 324,
+    "node": 382,
+    "deno": 70,
+    "playwright": 74,
+    "total_passing": 850,
+    "failures": 0
+  },
+  "root_cause_repairs_verified": {
+    "RC-01": "Separated matchesAlertIntent (structural) from matchesAlertThreshold (budget) in alert-matching.ts & alert-processor to preserve Watch EXIT evaluation",
+    "RC-03": "Replaced array-index live search ID with deterministic typed flight identity in api.ts",
+    "RC-04": "Unified null-stops representation to 'UNKNOWN' in alert-processor/index.ts matching observed-fares",
+    "RC-05": "Eliminated departure date fallback for observation timestamp in getPriceHistory in api.ts",
+    "RC-06": "Eliminated synthetic Date().toISOString() fallback for observedAt in DealDetailPage.tsx",
+    "RC-07": "Preserved nullable stops in getFareObservations in api.ts instead of coercing to 0",
+    "RC-08": "Removed unevidenced 'Đã gồm thuế sân bay' claim in DealCard.tsx and normalized HiddenCostAnalyzer claims",
+    "RC-10": "Quarantined provider rows missing departure date provenance in flight-search.ts",
+    "RC-11": "Caught provider error / malformed payloads as HTTP 502 schema drift instead of converting to false empty in flight-search/index.ts",
+    "RC-12": "Eliminated current-time email fallback when observation time is unknown in alert-processor/index.ts"
+  },
+  "scope_preservation": {
+    "total_capabilities": 89,
+    "p0_count": 40,
+    "p1_count": 26,
+    "p2_count": 16,
+    "p2_semantic_variants": 32,
+    "p3_count": 7,
+    "p3_excluded": 1,
+    "canonical_fly_requirements": 34,
+    "historical_acceptance_gates": 267,
+    "adversarial_outcome_gates": 186,
+    "mandatory_falsifiers": 35
+  },
+  "owner_frontier": {
+    "unresolved_strategic_decisions": 4,
+    "decision_sheet": "docs/convergence/v52/FOUNDER_STRATEGIC_DECISION_SHEET.md"
+  },
+  "gap_classification": {
+    "A_recoverable_sources": "RESOLVED",
+    "B_research_owned_engineering_decisions": "RESOLVED_AND_IMPLEMENTED",
+    "C_bounded_runtime_unknowns": "CONTAINED_IN_SOURCE_DESIGN",
+    "D_genuine_founder_strategy": "ISOLATED_IN_DECISION_SHEET",
+    "E_provider_production_permissions": "GATED_HELD",
+    "F_final_acceptance": "PENDING_OUTCOME_EVIDENCE",
+    "G_context_capacity": "DURABLE_CHECKPOINTED",
+    "H_truly_unavailable": "NONE"
+  }
+}

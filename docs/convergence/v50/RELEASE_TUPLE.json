@@ -1,0 +1,12 @@
+{
+  "tuple_id": "tuple_v50_authority_and_design_closure",
+  "timestamp": "2026-10-20T04:04:08.493Z",
+  "frontend_release_sha": "6665afe8d8414f4dc0c1e3e9b62f7d4be723535f",
+  "edge_runtime_sha": "6665afe8d8414f4dc0c1e3e9b62f7d4be723535f",
+  "convergence_target_sha": "6665afe8d8414f4dc0c1e3e9b62f7d4be723535f",
+  "db_migration_head": "20261016_v35_canonical_convergence",
+  "parity_mode": "COMPATIBLE_TUPLE",
+  "worker_revision": "worker-v50.1",
+  "audit_verdict": "TECHNICAL_VERIFIED",
+  "target_proven": false
+}

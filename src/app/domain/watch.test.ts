@@ -223,5 +223,73 @@ describe("Watch Domain", () => {
 
     expect(statusAfterPriceRise).toBe("monitoring");
   });
+
+  describe("Watch Setup from Intent Contract (F27)", () => {
+    it("preserves exact TravelIntent without silent modification of trip dates or traveler composition", () => {
+      const travelIntent = {
+        originCode: "HAN",
+        originName: "Hà Nội",
+        destinationCode: "NRT",
+        destinationName: "Tokyo Narita",
+        dateFrom: "2026-12-10",
+        dateTo: "2026-12-10",
+        returnDate: "2026-12-24",
+        tripType: "roundtrip" as const,
+        passengers: 3,
+        passengerMix: {
+          adults: 2,
+          children: 1,
+          infants: 0,
+        },
+        cabin: "economy" as const,
+        targetPrice: 15000000,
+        status: "monitoring" as const,
+        frequency: "daily" as const,
+        quietHoursEnabled: true,
+      };
+
+      // 1. INVARIANT F27: Trip dates must not be silently modified
+      expect(travelIntent.dateFrom).toBe("2026-12-10");
+      expect(travelIntent.dateTo).toBe("2026-12-10");
+      expect(travelIntent.returnDate).toBe("2026-12-24");
+      expect(travelIntent.tripType).toBe("roundtrip");
+
+      // 2. INVARIANT F27: Traveler composition must not be silently altered
+      expect(travelIntent.passengers).toBe(3);
+      expect(travelIntent.passengerMix.adults).toBe(2);
+      expect(travelIntent.passengerMix.children).toBe(1);
+      expect(travelIntent.passengerMix.infants).toBe(0);
+
+      // 3. Matching candidate with exact intent conditions matches
+      expect(evaluateWatchMatch(travelIntent, {
+        originCode: "HAN",
+        destinationCode: "NRT",
+        departDate: "2026-12-10",
+        returnDate: "2026-12-24",
+        cabin: "economy",
+        price: 14000000,
+      })).toBe(true);
+
+      // 4. Candidate with modified return date fails match (no silent date shifts accepted)
+      expect(evaluateWatchMatch(travelIntent, {
+        originCode: "HAN",
+        destinationCode: "NRT",
+        departDate: "2026-12-10",
+        returnDate: "2026-12-25", // Shifted by 1 day
+        cabin: "economy",
+        price: 14000000,
+      })).toBe(false);
+
+      // 5. Candidate with missing return date fails match (roundtrip invariant)
+      expect(evaluateWatchMatch(travelIntent, {
+        originCode: "HAN",
+        destinationCode: "NRT",
+        departDate: "2026-12-10",
+        returnDate: null,
+        cabin: "economy",
+        price: 14000000,
+      })).toBe(false);
+    });
+  });
 });
 

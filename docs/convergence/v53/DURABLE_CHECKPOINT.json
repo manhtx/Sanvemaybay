@@ -1,0 +1,130 @@
+{
+  "checkpoint_id": "FARELY-20261023-VERIFIED-RECOVERY-CP01",
+  "mission_id": "FARELY-20261023-VERIFIED-RECOVERY",
+  "timestamp": "2026-10-23T09:42:00+07:00",
+  "delivery_class": "RECOVERY_INSTRUCTION_ISSUED__MASTER_GOAL_UNFULFILLED",
+  "terminal_state": "SAFE_ENGINEERING_RECOVERY_COMPLETE + FOUNDER_AUTHORITY_PENDING + FULL_MASTER_GOAL_UNFULFILLED",
+  "target_proven": false,
+  "product_acceptance": "NOT_ESTABLISHED",
+  "production_authorization": "NOT_GRANTED",
+  "product_boundary": {
+    "platform_type": "Flight Opportunity Intelligence",
+    "non_ota_invariants": [
+      "NO_DIRECT_TICKETING",
+      "NO_PASSENGER_CHECKOUT",
+      "NO_PAYMENT_COLLECTION",
+      "NO_REFUND_HANDLING",
+      "NO_UNAUTHORIZED_SCRAPING"
+    ],
+    "historical_f52_checkout": "BOUNDARY_EXCLUDED"
+  },
+  "repositories": {
+    "product_repo": "https://github.com/manhtx/Sanvemaybay",
+    "target_branch": "antigravity/farely-v12-product-convergence",
+    "reference_main_sha": "084025b1f58a98655222ee4f8fc82461b286dd6a",
+    "pr_1": {
+      "number": 1,
+      "state": "OPEN",
+      "mergeable": "MERGEABLE"
+    },
+    "pr_2": {
+      "number": 2,
+      "state": "OPEN",
+      "mergeable": "CONFLICTING"
+    }
+  },
+  "scope_preservation": {
+    "canonical_fly_requirements": 34,
+    "historical_capabilities_f00_f88": 89,
+    "priority_distribution": {
+      "P0": 40,
+      "P1": 26,
+      "P2": 16,
+      "P3": 7
+    },
+    "historical_acceptance_gates": 267,
+    "p2_semantic_pairs": 16,
+    "p2_variants_total": 32,
+    "f38_semantic_preservation": {
+      "v13_canonical": "Personalized travel feed (privacy-first preference scoring)",
+      "v47_v1_reexpression": "Price confidence bounds",
+      "v2_alternative": "Nearby Destination Finder (300km radius discovery)"
+    },
+    "p3_candidates": [
+      "F49 AI Travel Copilot",
+      "F50 Historical Fare Forecasting",
+      "F51 Premium Watch",
+      "F52 Full Ticket Checkout [BOUNDARY_EXCLUDED]",
+      "F53 B2B Fare Intelligence API",
+      "F54 Credit-card/Promotion Optimization",
+      "F55 International Expansion"
+    ]
+  },
+  "defects_remediated": [
+    {
+      "id": "DEF-01 / E11",
+      "description": "Release identity mismatch between frontend and edge runtime",
+      "status": "RECONCILED_WITH_TUPLE_EVALUATOR",
+      "files": ["src/domain/farely/releaseTuple.ts", "scripts/generate-release-metadata.mjs"]
+    },
+    {
+      "id": "DEF-02 / E01",
+      "description": "Null numeric parser prevents Number(null) coercion to 0 for stops and prices",
+      "status": "VERIFIED_PASSING",
+      "files": ["src/app/data/api.ts", "src/app/data/api.test.ts"]
+    },
+    {
+      "id": "DEF-03 / E02",
+      "description": "True-cost epistemics separates base fare from estimated baggage and preserves verified total honesty",
+      "status": "VERIFIED_PASSING",
+      "files": ["src/app/data/api.ts", "src/app/data/deals.ts", "src/domain/farely/costEpistemics.ts"]
+    },
+    {
+      "id": "DEF-04 / E03",
+      "description": "Eliminated unverified page.total === 1 singleton fallback in getDealById",
+      "status": "VERIFIED_PASSING",
+      "files": ["src/app/data/api.ts"]
+    },
+    {
+      "id": "DEF-05 & DEF-06 / E06 & E07",
+      "description": "Watch mutation verification with server ACK and stop-constraint alert safety",
+      "status": "VERIFIED_PASSING",
+      "files": ["src/app/data/watchApi.ts", "supabase/functions/_shared/alert-matching.ts", "supabase/functions/alert-processor/index.ts"]
+    },
+    {
+      "id": "DEF-07 / E05",
+      "description": "Scan-aware zero result prevents unmonitored scope from declaring valid_zero without coverage evidence",
+      "status": "VERIFIED_PASSING",
+      "files": ["supabase/functions/observed-fares/index.ts"]
+    },
+    {
+      "id": "DEF-08 & DEF-09 / E09",
+      "description": "Price history and forecast truth: requires comparable cohorts and minimum sample sizes",
+      "status": "VERIFIED_PASSING",
+      "files": ["src/app/components/PriceHistoryChart.tsx", "src/app/domain/priceAnalytics.ts", "src/app/domain/priceForecast.ts"]
+    },
+    {
+      "id": "DEF-10 / E10",
+      "description": "Provider rights and RLS tenant isolation verified fail-closed",
+      "status": "VERIFIED_PASSING",
+      "files": ["supabase/migrations/", "src/domain/farely/providerRights.ts"]
+    }
+  ],
+  "test_evidence": {
+    "vitest_passed": 328,
+    "node_contracts_passed": 382,
+    "deno_functions_passed": 71,
+    "playwright_e2e_ci": 32,
+    "total_automated_tests": 813,
+    "total_failures": 0,
+    "typecheck_errors": 0,
+    "eslint_warnings_or_errors": 0,
+    "production_build_exit": 0
+  },
+  "founder_decision_frontier": {
+    "FND-DEC-01": "Commercial Provider Agreement - Awaiting Founder authorization",
+    "FND-DEC-02": "P2 Scope Commitment - Preserving all 32 variants; safe default no unapproved promotion",
+    "FND-DEC-03": "Monetization & B2B Boundary - Awaiting Founder authorization",
+    "FND-DEC-04": "Production Promotion - PR #1 held pending explicit Founder signoff"
+  }
+}

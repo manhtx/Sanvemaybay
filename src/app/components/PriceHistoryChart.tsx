@@ -11,7 +11,12 @@ import {
 import { PricePoint } from "../data/deals";
 import { buildPriceAnalytics } from "../domain/priceAnalytics";
 import { forecastPrice } from "../domain/priceForecast";
-import { filterPriceHistoryByDays, PRICE_HISTORY_WINDOWS, PriceHistoryWindow } from "../domain/priceHistoryWindows";
+import {
+  filterPriceHistoryByDays,
+  PRICE_HISTORY_WINDOWS,
+  PriceHistoryWindow,
+  detectPriceHistoryGaps,
+} from "../domain/priceHistoryWindows";
 import { useMemo, useState } from "react";
 
 interface PriceHistoryChartProps {
@@ -43,6 +48,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function PriceHistoryChart({ data, currentPrice, normalPrice }: PriceHistoryChartProps) {
   const [windowDays, setWindowDays] = useState<PriceHistoryWindow>(30);
   const visibleData = useMemo(() => filterPriceHistoryByDays(data, windowDays), [data, windowDays]);
+  const gaps = useMemo(() => detectPriceHistoryGaps(visibleData), [visibleData]);
   const analytics = buildPriceAnalytics(visibleData, currentPrice);
   const forecast = forecastPrice(visibleData);
   const hasSufficientData = visibleData.length >= 5;
@@ -155,6 +161,15 @@ export function PriceHistoryChart({ data, currentPrice, normalPrice }: PriceHist
           <div><p className="text-stone-500 text-[11px]">Biến động giá</p><p className="text-stone-900 text-sm font-semibold tabular-nums font-mono">{analytics.volatilityPercent.toFixed(1)}%</p></div>
           <div><p className="text-stone-500 text-[11px]">Vị thế percentile</p><p className="text-stone-900 text-sm font-semibold tabular-nums font-mono">{analytics.currentPercentile ?? "—"}%</p></div>
           <div><p className="text-stone-500 text-[11px]">Mẫu quan sát</p><p className="text-stone-900 text-sm font-semibold tabular-nums font-mono">{visibleData.length} điểm giá</p></div>
+        </div>
+      )}
+
+      {gaps.length > 0 && (
+        <div className="mt-3 p-2.5 rounded-lg border border-amber-200/80 bg-amber-50/50 text-[11px] text-amber-900 flex items-start gap-2">
+          <span className="font-semibold shrink-0">Khoảng trống quan sát (F29):</span>
+          <span>
+            Hệ thống phát hiện {gaps.length} giai đoạn không có dữ liệu quét (&gt; 3 ngày). Farely hiển thị trung thực các mốc thời gian thực tế và tuyệt đối không chèn điểm dữ liệu nội suy giả mạo.
+          </span>
         </div>
       )}
 

@@ -17,6 +17,12 @@ export interface BookingParams {
   airlineCode?: string;
   tripType?: string;    // "domestic" | "international"
   price?: number;
+  passengers?: number;
+  passengerMix?: {
+    adults: number;
+    children?: number;
+    infants?: number;
+  };
 }
 
 /**
@@ -46,21 +52,33 @@ export function buildSkyscannerUrl(p: BookingParams): string {
   const dep = toSkyDate(p.departDate);
   const from = p.fromCode.toLowerCase();
   const to = p.toCode.toLowerCase();
+  const adults = p.passengerMix?.adults ?? p.passengers ?? 1;
+  const children = p.passengerMix?.children ?? 0;
+  const infants = p.passengerMix?.infants ?? 0;
+  let passParams = `adults=${adults}`;
+  if (children > 0) passParams += `&children=${children}`;
+  if (infants > 0) passParams += `&infants=${infants}`;
+
   if (p.returnDate) {
     const ret = toSkyDate(p.returnDate);
-    return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/${ret}/?adults=1&cabinclass=economy&currency=vnd`;
+    return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/${ret}/?${passParams}&cabinclass=economy&currency=vnd`;
   }
-  return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/?adults=1&cabinclass=economy&currency=vnd`;
+  return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/?${passParams}&cabinclass=economy&currency=vnd`;
 }
 
 /**
  * Kayak — reliable international aggregator
  */
 export function buildKayakUrl(p: BookingParams): string {
+  const adults = p.passengerMix?.adults ?? p.passengers ?? 1;
+  const children = p.passengerMix?.children ?? 0;
+  let passParams = `adults=${adults}`;
+  if (children > 0) passParams += `&children=${children}`;
+
   if (p.returnDate) {
-    return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}/${p.returnDate}?adults=1&currency=VND`;
+    return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}/${p.returnDate}?${passParams}&currency=VND`;
   }
-  return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}?adults=1&currency=VND`;
+  return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}?${passParams}&currency=VND`;
 }
 
 /**

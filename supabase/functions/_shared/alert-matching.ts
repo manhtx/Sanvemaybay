@@ -53,14 +53,11 @@ export function matchLocationScope(targetCode: string | null | undefined, dealCo
   return false;
 }
 
-export function matchesAlert(alert: AlertMatchInput, deal: AlertDealInput): boolean {
+export function matchesAlertRouteIntent(alert: AlertMatchInput, deal: AlertDealInput): boolean {
   const destinationMatches = alert.destination_code
     ? matchLocationScope(alert.destination_code, deal.to_code, alert.location_scope)
     : alert.destination === deal.to;
   const originMatches = !alert.origin_code || matchLocationScope(alert.origin_code, deal.from_code, alert.location_scope);
-  const budgetMatches = !alert.budget || Number(deal.price) <= Number(alert.budget);
-  const hasExplicitDiscount = alert.discount_threshold != null && Number(alert.discount_threshold) > 0;
-  const discountMatches = !hasExplicitDiscount || Number(deal.discount ?? 0) >= Number(alert.discount_threshold);
   const regionMatches =
     !alert.preferred_regions?.length ||
     (deal.trip_type === "domestic"
@@ -70,11 +67,8 @@ export function matchesAlert(alert: AlertMatchInput, deal: AlertDealInput): bool
     (!alert.date_from || (deal.depart_date ?? "") >= alert.date_from) &&
     (!alert.date_to || (deal.depart_date ?? "") <= alert.date_to);
 
-  // Stops constraint
-  const stopsMatches = alert.max_stops == null || (deal.stops != null && Number(deal.stops) <= Number(alert.max_stops));
-
-  // Return date constraint
-  const returnDateMatches = !alert.return_date || !deal.return_date || deal.return_date === alert.return_date;
+  // Return date constraint: if alert specifies return_date, candidate must match it exactly (RC-14, D12)
+  const returnDateMatches = !alert.return_date || deal.return_date === alert.return_date;
 
   // Trip type constraint (roundtrip requires return_date, oneway requires absence of return_date)
   let tripTypeMatches = true;
@@ -84,7 +78,24 @@ export function matchesAlert(alert: AlertMatchInput, deal: AlertDealInput): bool
     tripTypeMatches = !deal.return_date;
   }
 
-  return destinationMatches && originMatches && budgetMatches && discountMatches && regionMatches && dateMatches && stopsMatches && returnDateMatches && tripTypeMatches;
+  return destinationMatches && originMatches && regionMatches && dateMatches && returnDateMatches && tripTypeMatches;
+}
+
+export function matchesAlertIntent(alert: AlertMatchInput, deal: AlertDealInput): boolean {
+  const routeMatches = matchesAlertRouteIntent(alert, deal);
+  const stopsMatches = alert.max_stops == null || (deal.stops != null && Number(deal.stops) <= Number(alert.max_stops));
+  return routeMatches && stopsMatches;
+}
+
+export function matchesAlertThreshold(alert: AlertMatchInput, deal: AlertDealInput): boolean {
+  const budgetMatches = !alert.budget || Number(deal.price) <= Number(alert.budget);
+  const hasExplicitDiscount = alert.discount_threshold != null && Number(alert.discount_threshold) > 0;
+  const discountMatches = !hasExplicitDiscount || Number(deal.discount ?? 0) >= Number(alert.discount_threshold);
+  return budgetMatches && discountMatches;
+}
+
+export function matchesAlert(alert: AlertMatchInput, deal: AlertDealInput): boolean {
+  return matchesAlertIntent(alert, deal) && matchesAlertThreshold(alert, deal);
 }
 
 export function selectDailyDeal<T extends AlertDealInput>(deals: T[]): T[] {

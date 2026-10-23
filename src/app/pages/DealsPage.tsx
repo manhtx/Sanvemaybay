@@ -10,15 +10,21 @@ import {
   Bookmark,
   ChevronLeft,
   ChevronRight,
+  RefreshCw,
+  AlertTriangle,
+  AlertCircle,
+  Compass,
+  Filter,
 } from "lucide-react";
-import { Deal, formatVND } from "../data/deals";
-import { getObservedFares, getDealsResult } from "../data/api";
+import { Deal, formatStops, formatVND } from "../data/deals";
+import { getObservedFares, getDealsResult, ObservedFarePage } from "../data/api";
 import {
   isBookmarkedDeal,
   mutateBookmarkOptimistic,
   createOpportunitySnapshot,
 } from "../lib/bookmarks";
 import { WatchModal } from "../components/WatchModal";
+import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { trackProductEvent } from "../lib/analytics";
 
 type SortType = "discount" | "price_asc" | "date_near";
@@ -42,8 +48,35 @@ export function DealsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedWatchDeal, setSelectedWatchDeal] = useState<Deal | null>(null);
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<"all" | "by_destination">("all");
+  const [feedStatus, setFeedStatus] = useState<ObservedFarePage["status"]>("healthy");
 
   const pageSize = 60;
+
+  // REQ-FEAT-007: Budget Explore Capability - group observed fares by destination
+  const destinationExploreGroups = useMemo(() => {
+    const map = new Map<string, { destinationName: string; destinationCode: string; lowestPrice: number; count: number; deals: Deal[] }>();
+    for (const deal of opportunities) {
+      const code = deal.toCode;
+      const existing = map.get(code);
+      if (!existing) {
+        map.set(code, {
+          destinationName: deal.to,
+          destinationCode: code,
+          lowestPrice: deal.price,
+          count: 1,
+          deals: [deal],
+        });
+      } else {
+        existing.count++;
+        if (deal.price < existing.lowestPrice) {
+          existing.lowestPrice = deal.price;
+        }
+        existing.deals.push(deal);
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => a.lowestPrice - b.lowestPrice);
+  }, [opportunities]);
 
   // Global server-side filtering: FILTER -> SORT -> PAGINATE
   const loadOpportunities = useCallback(async () => {
@@ -59,6 +92,8 @@ export function DealsPage() {
         directOnly: directOnly ? true : undefined,
       });
 
+      setFeedStatus(observed.status);
+
       if (observed.fares.length > 0 || observed.status !== "provider_unavailable") {
         setOpportunities(observed.fares);
         setTotalCount(observed.total);
@@ -70,9 +105,12 @@ export function DealsPage() {
         if (typeof maxBudget === "number") fallback = fallback.filter((d) => d.price <= maxBudget);
         setOpportunities(fallback.slice((currentPage - 1) * pageSize, currentPage * pageSize));
         setTotalCount(fallback.length);
+        if (fallback.length === 0) {
+          setFeedStatus("provider_unavailable");
+        }
       }
     } catch {
-      // Keep existing state
+      setFeedStatus("provider_unavailable");
     } finally {
       setIsLoading(false);
     }
@@ -295,16 +333,45 @@ export function DealsPage() {
           </div>
         </div>
 
-        {/* Counter and Page indicator */}
-        <div className="flex items-center justify-between text-xs text-stone-600">
-          <div>
+        {/* REQ-A11Y-007: Async Live Region Announcements */}
+        <div className="sr-only" aria-live="polite" aria-atomic="true">
+          {isLoading
+            ? "Đang đối chiếu mức giá quan sát từ các chu kỳ quét gần nhất…"
+            : `Đã tải ${opportunities.length} trên tổng số ${totalCount} cơ hội bay.`}
+        </div>
+
+        {/* Counter, Explore Toggle and Page indicator */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-stone-600">
+          <div className="flex items-center gap-4">
             {totalCount > 0 && (
               <span>
                 Hiển thị {startIdx} – {endIdx} trên tổng số {totalCount} cơ hội
               </span>
             )}
+
+            {/* REQ-FEAT-007: View Mode Toggle */}
+            <div className="inline-flex rounded-lg border border-stone-300 bg-stone-100 p-0.5">
+              <button
+                type="button"
+                onClick={() => setViewMode("all")}
+                className={`px-2.5 py-1 rounded-md font-medium text-xs transition ${
+                  viewMode === "all" ? "bg-white text-stone-900 shadow-xs font-bold" : "text-stone-600 hover:text-stone-900"
+                }`}
+              >
+                Tất cả chặng bay
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("by_destination")}
+                className={`px-2.5 py-1 rounded-md font-medium text-xs transition ${
+                  viewMode === "by_destination" ? "bg-white text-stone-900 shadow-xs font-bold" : "text-stone-600 hover:text-stone-900"
+                }`}
+              >
+                Khám phá theo điểm đến
+              </button>
+            </div>
           </div>
-          {totalPages > 1 && (
+          {totalPages > 1 && viewMode === "all" && (
             <div className="flex items-center gap-2">
               <span>
                 Trang {currentPage} / {totalPages}
@@ -320,13 +387,135 @@ export function DealsPage() {
             <span>Đang nạp dữ liệu quan sát…</span>
           </div>
         ) : opportunities.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-stone-300 bg-white p-12 text-center space-y-3 shadow-sm">
-            <p className="text-stone-700 font-semibold text-sm">
-              Không có cơ hội nào khớp với điều kiện lọc hiện tại.
-            </p>
-            <p className="text-stone-500 text-xs max-w-md mx-auto">
-              Thử điều chỉnh lại điểm khởi hành, tháng bay hoặc mở rộng ngân sách để xem thêm các chặng bay quan sát.
-            </p>
+          <div className="rounded-xl border border-stone-200 bg-white p-10 text-center space-y-3 shadow-sm">
+            {feedStatus === "provider_unavailable" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-2 border border-rose-200">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Dịch vụ quan sát vé tạm thời gián đoạn kết nối (HTTP 503).
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Máy chủ đối tác hoặc nguồn dữ liệu vé máy bay hiện không phản hồi. Đây là sự cố kết nối, không phải chặng bay không có vé.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void loadOpportunities()}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Thử lại kết nối</span>
+                  </button>
+                </div>
+              </>
+            ) : feedStatus === "valid_zero" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Filter className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Đã quét hoàn chỉnh nhưng không có chuyến bay nào trong mức ngân sách này.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Phạm vi theo dõi đã được đối chiếu toàn bộ các hãng. Hãy thử nâng mức ngân sách hoặc chuyển sang tháng bay khác.
+                </p>
+                {typeof maxBudget === "number" && (
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => handleBudgetChange("all")}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                    >
+                      <span>Bỏ giới hạn ngân sách</span>
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : feedStatus === "unmonitored" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-2 border border-blue-200">
+                  <Compass className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Chặng bay này chưa nằm trong phạm vi quét tự động định kỳ của Farely.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Hệ thống đang mở rộng dần phạm vi theo dõi sang các tuyến bổ sung.
+                </p>
+              </>
+            ) : feedStatus === "stale_only" || feedStatus === "degraded_freshness" ? (
+              <>
+                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-2 border border-amber-200">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <p className="text-stone-900 font-bold text-sm">
+                  Dữ liệu quan sát hiện tại đang tạm ngừng cập nhật chu kỳ mới.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Vui lòng thử lại sau ít phút hoặc bấm làm mới bên dưới để nạp lại dữ liệu quan sát.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => void loadOpportunities()}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Làm mới dữ liệu</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-500 flex items-center justify-center mx-auto mb-2 border border-stone-200">
+                  <Filter className="w-5 h-5" />
+                </div>
+                <p className="text-stone-700 font-semibold text-sm">
+                  Không có cơ hội nào khớp với điều kiện lọc hiện tại.
+                </p>
+                <p className="text-stone-500 text-xs max-w-md mx-auto">
+                  Thử điều chỉnh lại điểm khởi hành, tháng bay hoặc mở rộng ngân sách để xem thêm các chặng bay quan sát.
+                </p>
+              </>
+            )}
+          </div>
+        ) : viewMode === "by_destination" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {destinationExploreGroups.map((group) => (
+              <div
+                key={group.destinationCode}
+                className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm space-y-3 hover:border-blue-300 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-xs text-stone-500">
+                    <span className="font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                      {group.destinationCode}
+                    </span>
+                    <span>{group.count} chuyến quan sát</span>
+                  </div>
+                  <h3 className="text-base font-bold text-stone-900 mt-2">
+                    {group.destinationName}
+                  </h3>
+                  <div className="mt-2 text-xs text-stone-600">
+                    <span>Giá quan sát thấp nhất: </span>
+                    <strong className="text-emerald-700 font-mono font-bold text-sm">
+                      {formatVND(group.lowestPrice)}
+                    </strong>
+                  </div>
+                </div>
+                <div className="pt-2 border-t border-stone-100 flex items-center justify-between">
+                  <Link
+                    to={`/search?dest=${encodeURIComponent(group.destinationCode)}`}
+                    className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline inline-flex items-center gap-1"
+                  >
+                    <span>Xem các chuyến đi {group.destinationCode}</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -409,7 +598,11 @@ export function DealsPage() {
                         {new Date(deal.departDate).toLocaleDateString("vi-VN")}
                       </span>
                       <span>·</span>
-                      <span>{deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}</span>
+                      <span>{formatStops(deal.stops)}</span>
+                    </div>
+
+                    <div className="pt-2">
+                      <ProvenanceBadge deal={deal} />
                     </div>
                   </div>
 

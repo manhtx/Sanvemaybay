@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "updated_at": "2026-10-08T08:33:04.562Z",
-  "tested_sha": "3a9beb29401ab5f55c8e355c615d102773f4b193",
+  "updated_at": "2026-10-19T03:33:33.030Z",
+  "tested_sha": "9aba47a222295373e83c5d854f95301cc7072ccc",
   "summary": {
-    "vitest_test_files": 36,
-    "node_test_files": 35,
-    "deno_test_files": 18,
-    "total_test_suites": 89,
+    "vitest_test_files": 41,
+    "node_test_files": 47,
+    "deno_test_files": 19,
+    "total_test_suites": 107,
     "status": "PASS"
   },
   "layers": [
@@ -14,10 +14,12 @@
       "layer": "domain_and_property",
       "runner": "vitest run",
       "files": [
+        "src/app/domain/accountContinuity.test.ts",
         "src/app/domain/authPolicy.test.ts",
         "src/app/domain/costEpistemic.test.ts",
         "src/app/domain/dealClaims.test.ts",
         "src/app/domain/dealComparison.test.ts",
+        "src/app/domain/decisionModes.test.ts",
         "src/app/domain/destinationInsights.test.ts",
         "src/app/domain/differentialAndMetamorphic.test.ts",
         "src/app/domain/exhaustiveAnalyzer.test.ts",
@@ -30,6 +32,8 @@
         "src/app/domain/priceHistoryWindows.test.ts",
         "src/app/domain/productionHealth.test.ts",
         "src/app/domain/promotionMatching.test.ts",
+        "src/app/domain/provenance.test.ts",
+        "src/app/domain/recheckFeedback.test.ts",
         "src/app/domain/routeOptimization.test.ts",
         "src/app/domain/snapshotAtomicity.test.ts",
         "src/app/domain/travelEntities.test.ts",
@@ -40,6 +44,7 @@
         "src/app/domain/watch.test.ts",
         "src/app/data/api.test.ts",
         "src/app/data/origins.test.ts",
+        "src/app/data/watchApi.test.ts",
         "src/app/lib/analytics.test.ts",
         "src/app/lib/bookingUrls.test.ts",
         "src/app/lib/bookmarks.test.ts",
@@ -51,7 +56,7 @@
         "src/app/lib/sharing.test.ts",
         "src/domain/farely/domainKernel.test.ts"
       ],
-      "test_file_count": 36,
+      "test_file_count": 41,
       "verdict": "PASS"
     },
     {
@@ -59,12 +64,14 @@
       "runner": "node --test scripts/*.node-test.mjs",
       "files": [
         "scripts/acceptance-anti-shrinkage.node-test.mjs",
+        "scripts/acceptance-matrix-a01-a34.node-test.mjs",
         "scripts/account-deletion-contract.node-test.mjs",
         "scripts/adversarial-corpus-a01-a24.node-test.mjs",
         "scripts/canonical-data-idempotency.node-test.mjs",
         "scripts/certifier-sabotage.node-test.mjs",
         "scripts/client-error-boundary.node-test.mjs",
         "scripts/clock-timezone-adversarial.node-test.mjs",
+        "scripts/database-architecture-contract.node-test.mjs",
         "scripts/database-backup-restore-drill.node-test.mjs",
         "scripts/database-ci-contract.node-test.mjs",
         "scripts/deployment-boundary.node-test.mjs",
@@ -91,10 +98,20 @@
         "scripts/schedule-durable-occurrences.node-test.mjs",
         "scripts/security-smoke.node-test.mjs",
         "scripts/synthetic-health-check.node-test.mjs",
+        "scripts/v15-negative-vectors.node-test.mjs",
+        "scripts/v17-adversarial-challenges.node-test.mjs",
+        "scripts/v22-vertical-journeys.node-test.mjs",
+        "scripts/v32-adversarial-requirements.node-test.mjs",
+        "scripts/v34-adversarial-requirements.node-test.mjs",
+        "scripts/v35-production-smoke-requirements.node-test.mjs",
+        "scripts/v37-adversarial-negative-matrix.node-test.mjs",
         "scripts/verify-certification-integrity.node-test.mjs",
+        "scripts/verify-farely-v14-contract.node-test.mjs",
+        "scripts/verify-farely-v15-handoff.node-test.mjs",
+        "scripts/verify-farely-v17-contract.node-test.mjs",
         "scripts/watch-outbox-atomicity.node-test.mjs"
       ],
-      "test_file_count": 35,
+      "test_file_count": 47,
       "verdict": "PASS"
     },
     {
@@ -113,6 +130,7 @@
         "supabase/functions/_shared/live-deal.test.ts",
         "supabase/functions/_shared/observability.test.ts",
         "supabase/functions/_shared/observed-fares.test.ts",
+        "supabase/functions/_shared/observed-scope.test.ts",
         "supabase/functions/_shared/price-history.test.ts",
         "supabase/functions/_shared/product-event.test.ts",
         "supabase/functions/_shared/retry-policy.test.ts",
@@ -120,7 +138,7 @@
         "supabase/functions/_shared/user-data.test.ts",
         "supabase/functions/_shared/watch-condition.test.ts"
       ],
-      "test_file_count": 18,
+      "test_file_count": 19,
       "verdict": "PASS"
     }
   ]

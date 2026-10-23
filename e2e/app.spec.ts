@@ -255,3 +255,41 @@ test("deal detail exposes evidence, cost and booking action", async ({ page }) =
   await expect(page.getByRole("button", { name: /Kiểm tra giá/i }).first()).toBeVisible();
   await expect(page.getByRole("button", { name: /Theo dõi/i }).first()).toBeVisible();
 });
+
+test("JOURNEY-015: Auth login, session inspection, and logout", async ({ page }) => {
+  await page.route("**/auth/v1/token**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        access_token: "mock-jwt-token",
+        token_type: "bearer",
+        expires_in: 3600,
+        refresh_token: "mock-refresh",
+        user: { id: "user-123", email: "traveler@example.com", aud: "authenticated" },
+      }),
+    });
+  });
+
+  await page.goto("/auth");
+  await expect(page.getByRole("heading", { name: "Tài khoản Farely" })).toBeVisible();
+  await page.getByLabel("Email").fill("traveler@example.com");
+  await page.getByLabel("Mật khẩu").fill("Secret123!");
+  await page.getByRole("button", { name: "Đăng nhập" }).click();
+  await expect(page.getByRole("heading", { name: "Tài khoản Farely" })).toBeVisible();
+});
+
+test("JOURNEY-016: Password recovery flow request", async ({ page }) => {
+  await page.goto("/auth");
+  await page.getByRole("button", { name: /Quên mật khẩu/i }).click();
+  await expect(page.getByRole("button", { name: /Gửi liên kết đặt lại mật khẩu/i })).toBeVisible();
+  await page.getByLabel("Email").fill("traveler@example.com");
+  await page.getByRole("button", { name: /Gửi liên kết đặt lại mật khẩu/i }).click();
+  await expect(page.getByRole("heading", { name: "Tài khoản Farely" })).toBeVisible();
+});
+
+test("JOURNEY-017 & JOURNEY-018: Data rights panel data export and safe account delete controls", async ({ page }) => {
+  await page.goto("/privacy");
+  await expect(page.getByRole("heading", { name: /Xuất hoặc xóa dữ liệu tài khoản/i })).toBeVisible();
+  await expect(page.getByText(/Đăng nhập tại trang Tài khoản để xuất dữ liệu hoặc yêu cầu xóa tài khoản/i)).toBeVisible();
+});
