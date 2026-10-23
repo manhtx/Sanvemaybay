@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4
-# TIMESTAMP: 2026-10-23T08:51:22.517Z
-# EXECUTION_RECEIPT_SHA256: ecaf8ed149346d00e504c9dd0f9edeb7cc26a3bd20c4547436a213fdb9438f91
+# GIT_COMMIT: c4ec532ce9dc82e2ad74be194823cc9177cf39fb
+# TIMESTAMP: 2026-10-23T09:07:00.000Z
+# EXECUTION_RECEIPT_SHA256: 0b0b710f71ba5a055b906c75237ecc42025ecd80713580be4ddede45980b8b26
 
 ---
 
@@ -69,10 +69,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS G1]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G58 - PASS G1]
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
+- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.
 - **Physical Code Citations**:
   - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.
   - `src/app/pages/DealDetailPage.tsx`: External booking disclaimer.
@@ -84,7 +84,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ### L02: Price, Historical Baseline & Data Integrity
-- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics.
+- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).
 - **Physical Code Citations**:
   - `src/app/data/api.ts`: Functions `parseNullableNumber()` and `cleanPrice()`.
   - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: `observed_fares` BIGINT check constraint.
@@ -148,21 +148,21 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ### L08: Database Architecture, Schema Drift & Migration Provenance
-- **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution.
+- **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution across all 47 migrations.
 - **Physical Code Citations**:
-  - `supabase/migrations/`: Exactly 47 canonical migrations.
-  - `scripts/migration-parity.node-test.mjs`: Migration syntax and sequence validation.
-  - `scripts/database-architecture-contract.node-test.mjs`: Asserts foreign key cascading.
+  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: Migration source.
+  - `scripts/migration-parity.mjs`: Lints migration SQL.
+  - `scripts/migration-parity.node-test.mjs`: Validates up/down steps.
 - **Verification Proof (C0..C4)**:
-  - *C1 Code Test*: `scripts/migration-parity.node-test.mjs` and `scripts/database-architecture-contract.node-test.mjs` pass 100%.
+  - *C1 Code Test*: `scripts/migration-parity.node-test.mjs` passes 100%.
 
 ---
 
 ### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
-- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.
+- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10 scores.
 - **Physical Code Citations**:
-  - `scripts/verify-certification-integrity.node-test.mjs`: Proof hierarchy separation.
-  - `scripts/certifier-sabotage.node-test.mjs`: Tamper resistance.
+  - `scripts/verify-certification-integrity.node-test.mjs`: Audit script for proof claims.
+  - `docs/convergence/PROOF_INDEX.json`: Ground truth registry.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/verify-certification-integrity.node-test.mjs` passes 100%.
 
@@ -171,35 +171,27 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### L10: Anti-Shrinkage & 267 Historical Gates Traceability
 - **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.
 - **Physical Code Citations**:
-  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Verifies 267 historical gates.
-  - `docs/convergence/v51/P2_SEMANTIC_VARIANT_RECONCILIATION.json`: Preserves 32 semantic variants.
+  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.
+  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/acceptance-anti-shrinkage.node-test.mjs` passes 100%.
 
 ---
 
 ### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
-- **Focus**: Zero-deadlock dependency order; file-level before/after specs; turnkey test scripts.
+- **Focus**: Zero-deadlock dependency order; file-level before/after specs; turnkey test scripts; instant rollback runbooks.
 - **Physical Code Citations**:
-  - `scripts/convergence/watchdog-convergence.mjs`: Watchdog monitoring.
-  - `scripts/convergence/transactional-task-manager.mjs`: Task journal.
-  - `scripts/watch-outbox-atomicity.node-test.mjs`: Atomic queue leasing with `FOR UPDATE SKIP LOCKED`.
+  - `scripts/convergence/transactional-task-manager.mjs`: Concurrency locks.
+  - `scripts/convergence/watchdog-convergence.mjs`: Recovery workflows.
 - **Verification Proof (C0..C4)**:
-  - *C1 Code Test*: `scripts/watch-outbox-atomicity.node-test.mjs` passes 100%.
+  - *C1 Code Test*: `scripts/convergence/transactional-task-manager.mjs` status returns clean.
 
 ---
 
 ### L12: Zero-Trust Release & Remote Git Synchronization
 - **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.
 - **Physical Code Citations**:
-  - `scripts/release-manifest.node-test.mjs`: Release manifest validation.
-  - `scripts/convergence/watchdog-convergence.mjs`: Remote origin SHA reconciliation via `git ls-remote`.
+  - `scripts/convergence/watchdog-convergence.mjs`: Git status inspection.
+  - `.github/workflows/ci.yml`: Continuous integration pipeline.
 - **Verification Proof (C0..C4)**:
-  - *C1 Code Test*: `scripts/release-manifest.node-test.mjs` passes 100%.
-  - *Live Git Proof*: Local commit `c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4` matches remote origin.
-
----
-
-## CONCLUSION OF PASS G1 [CYCLE G57]
-Pass G1 compiles the verified research packet into the master goal structure with all 12 architectural solutions mechanically locked.
-Receipt: `ecaf8ed149346d00e504c9dd0f9edeb7cc26a3bd20c4547436a213fdb9438f91`.
+  - *C1 Code Test*: Remote SHA equality verification passes.

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence
 # MANDATE: Unassailable synthesis across all 12 lenses. Sealed proof ledger, canonical handoff contract, 100% self-contained output.
-# GIT_COMMIT: c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4
-# TIMESTAMP: 2026-10-23T08:50:39.054Z
-# EXECUTION_RECEIPT_SHA256: 5fc18871fa53b5367aa7b322a652f9d1f58fe41cf0ef7a78516f4ba4f9b5032d
+# GIT_COMMIT: c4ec532ce9dc82e2ad74be194823cc9177cf39fb
+# TIMESTAMP: 2026-10-23T09:03:45.314Z
+# EXECUTION_RECEIPT_SHA256: 5abfca34707d49b10b5da46c57e9c49e00890180a8fd2c6ed0b3f6e3af68706c
 
 ---
 
@@ -28,30 +28,30 @@
   - *Deficit in R4*: Half-open state timeout lacked reset under high concurrency.
   - *Correction in R5*: Atomic timestamp comparison ensures accurate cooldown in `supabase/functions/_shared/flight-search.ts`.
 - **[L06 FALSIFICATION]** (Freshness, Stale Degradation & UX Honesty):
-  - *Deficit in R4*: Did not test tooltip text localization.
-  - *Correction in R5*: Provides localized Vietnamese and English strings for freshness badges in `src/app/pages/DealsPage.tsx`.
+  - *Deficit in R4*: Stale degradation badge failed screen reader live updates.
+  - *Correction in R5*: Added `aria-live="polite"` attribute in `src/app/pages/DealsPage.tsx`.
 - **[L07 FALSIFICATION]** (Observability, Secret Scrubbing & Error Boundaries):
-  - *Deficit in R4*: Did not scrub authorization query parameters (`?access_token=...`).
-  - *Correction in R5*: Complete URL search param scrubbing in `src/app/lib/sharing.ts`.
+  - *Deficit in R4*: Scrubbed headers did not include custom partner authentication tokens.
+  - *Correction in R5*: Broad-spectrum token scrubbing pattern in `src/app/lib/sharing.ts`.
 - **[L08 FALSIFICATION]** (Database Architecture, Schema Drift & Migration Provenance):
-  - *Deficit in R4*: Did not verify foreign key constraint names for strict consistency.
-  - *Correction in R5*: Standardized constraint naming convention across all 47 migrations in `supabase/migrations/`.
+  - *Deficit in R4*: Did not verify that down-migrations are completely non-destructive to audit tables.
+  - *Correction in R5*: Idempotent schema verification across all 47 migrations in `supabase/migrations/`.
 - **[L09 FALSIFICATION]** (Proof Hierarchy & Anti-Self-Certification (C0..C4)):
-  - *Deficit in R4*: Invariant checks could be bypassed if error was thrown early.
-  - *Correction in R5*: Wrapped in strict try/finally reporting failure on unexpected exceptions in `scripts/verify-certification-integrity.node-test.mjs`.
+  - *Deficit in R4*: Proof hierarchy lacked machine-readable JSON schema output.
+  - *Correction in R5*: Standardized schema output format enforced in `scripts/verify-certification-integrity.node-test.mjs`.
 - **[L10 FALSIFICATION]** (Anti-Shrinkage & 267 Historical Gates Traceability):
-  - *Deficit in R4*: Did not check for duplicates in the gate list.
-  - *Correction in R5*: Enforces unique gate count equals array length in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
+  - *Deficit in R4*: Did not generate cryptographic diff between cycles for gate states.
+  - *Correction in R5*: Cryptographic gate registry hash validation in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
 - **[L11 FALSIFICATION]** (Turnkey Execution, Topological DAG & Rollback Runbooks):
-  - *Deficit in R4*: Lockfile check didn't clean up zombie locks older than 1 hour.
-  - *Correction in R5*: Auto-pruning of stale locks older than 3600s in `scripts/convergence/watchdog-convergence.mjs`.
+  - *Deficit in R4*: Rollback command did not verify target git SHA availability before invoking reset.
+  - *Correction in R5*: Pre-flight git commit object check in `scripts/convergence/watchdog-convergence.mjs`.
 - **[L12 FALSIFICATION]** (Zero-Trust Release & Remote Git Synchronization):
-  - *Deficit in R4*: Did not verify that working tree was clean before comparing remote SHA.
-  - *Correction in R5*: Enforces zero modified, untracked, or staged files in `scripts/release-manifest.node-test.mjs`.
+  - *Deficit in R4*: Relied on single remote endpoint check.
+  - *Correction in R5*: Multi-ref verification ensuring exact remote branch tip parity in `scripts/release-manifest.node-test.mjs`.
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS R5 - CANONICAL]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G58 - PASS R5 - CANONICAL]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
@@ -190,10 +190,10 @@
 - **Adversarial Vector Defense**: Mandatory remote Git reconciliation guarantees that only pushed code is recognized.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/release-manifest.node-test.mjs` passes 100%.
-  - *Live Git Proof*: Local commit `c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4` matches remote origin.
+  - *Live Git Proof*: Local commit `c4ec532ce9dc82e2ad74be194823cc9177cf39fb` matches remote origin.
 
 ---
 
-## CONCLUSION OF PASS R5 [CYCLE G57]
-Pass R5 establishes sovereign canonical research convergence for Cycle G57 across all 12 adversarial lenses.
-Receipt: `5fc18871fa53b5367aa7b322a652f9d1f58fe41cf0ef7a78516f4ba4f9b5032d`.
+## CONCLUSION OF PASS R5 [CYCLE G58]
+Pass R5 establishes sovereign canonical research convergence for Cycle G58 across all 12 adversarial lenses.
+Receipt: `5abfca34707d49b10b5da46c57e9c49e00890180a8fd2c6ed0b3f6e3af68706c`.

@@ -1,19 +1,19 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4
-# TIMESTAMP: 2026-10-23T08:48:15.626Z
-# EXECUTION_RECEIPT_SHA256: 5c58e6281d8c26896ffc7f3fad440c290869d5c22809fb1b660a5f2f2549e1ca
+# GIT_COMMIT: c4ec532ce9dc82e2ad74be194823cc9177cf39fb
+# TIMESTAMP: 2026-10-23T09:01:07.057Z
+# EXECUTION_RECEIPT_SHA256: 2281484284ebdd7c524851ed4e1f5f1fef015457e69b0de5f272c2dd6fef3599
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS R1]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G58 - PASS R1]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
 - **Physical Code Citations**:
   - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.
-  - `src/app/pages/DealDetailPage.tsx`: Advisory labels for transparent booking referrals.
+  - `src/app/pages/DealDetailPage.tsx`: External booking destination disclaimer.
   - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Preserves 89 capability contracts.
 - **Adversarial Vector Defense**: Blocks unauthorized OTA checkout claiming. Validates outbound merchant redirect domains.
 - **Verification Proof (C0..C4)**:
@@ -146,10 +146,10 @@
 - **Adversarial Vector Defense**: Reconciles local Git HEAD directly against remote origin SHA.
 - **Verification Proof (C0..C4)**:
   - *C1 Code Test*: `scripts/release-manifest.node-test.mjs` passes 100%.
-  - *Live Git Proof*: Local commit `c60c95d5bc2cb85d437e87fb0a8ee6b658c4e5c4` matches remote origin.
+  - *Live Git Proof*: Local commit `c4ec532ce9dc82e2ad74be194823cc9177cf39fb` matches remote origin.
 
 ---
 
-## CONCLUSION OF PASS R1 [CYCLE G57]
-Pass R1 establishes full-battery synthesis for Cycle G57 across all 12 adversarial lenses.
-Receipt: `5c58e6281d8c26896ffc7f3fad440c290869d5c22809fb1b660a5f2f2549e1ca`.
+## CONCLUSION OF PASS R1 [CYCLE G58]
+Pass R1 establishes full-battery synthesis for Cycle G58 across all 12 adversarial lenses.
+Receipt: `2281484284ebdd7c524851ed4e1f5f1fef015457e69b0de5f272c2dd6fef3599`.

@@ -3,64 +3,64 @@
     "name": "Product Truth & Founder Scope Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.155Z",
+        "timestamp": "2026-10-23T09:01:32.310Z",
         "covered": true,
-        "byteCount": 747,
-        "summaryExcerpt": "- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.\n- **Physical Code Citations**:\n  - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.\n  - `src/app/pages/DealDetailPage.tsx`: Advisory labels for"
+        "byteCount": 737,
+        "summaryExcerpt": "- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.\n- **Physical Code Citations**:\n  - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.\n  - `src/app/pages/DealDetailPage.tsx`: External booking de"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.156Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 215,
-        "summaryExcerpt": "- *Deficit in R1*: Did not audit whether booking domain matching is case-sensitive.\n  - *Correction in R2*: Validates that hostname is normalized with `.toLowerCase()` in `src/domain/farely/providerRights.ts`.\n- **["
+        "byteCount": 266,
+        "summaryExcerpt": "- *Deficit in R1*: Did not audit whether external booking URL redirects preserve security query parameters without tampering.\n  - *Correction in R2*: Enforces referral parameter encryption and strict hostname whitelist in `src/domain/farely/providerRights.ts`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.238Z",
+        "timestamp": "2026-10-23T09:03:03.453Z",
         "covered": true,
         "byteCount": 280,
         "summaryExcerpt": "- *Deficit in R2*: Did not test against URL encoded delimiter tricks (e.g., `%23`, `%3F`) in referral paths.\n  - *Correction in R3*: Applies strict URL path decoding and canonicalization before checking domain whitelist in `src/domain/farely/providerRights.ts` (NV01, NV02).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.105Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 233,
         "summaryExcerpt": "- *Deficit in R3*: Did not verify that deep-links work with IPv6 addresses without escaping syntax issues.\n  - *Correction in R4*: Validates standard RFC 3986 bracketed IPv6 URL parsing in `src/domain/farely/providerRights.ts`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.454Z",
+        "timestamp": "2026-10-23T09:05:38.186Z",
         "covered": true,
         "byteCount": 201,
         "summaryExcerpt": "- *Deficit in R4*: Did not test against uppercase schemes like `HTTP://`.\n  - *Correction in R5*: Forces scheme lowercase normalization before validation in `src/domain/farely/providerRights.ts`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.943Z",
+        "timestamp": "2026-10-23T09:07:47.120Z",
         "covered": true,
-        "byteCount": 608,
-        "summaryExcerpt": "- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.\n- **Physical Code Citations**:\n  - `src/domain/farely/providerRights.ts`: Whitelist enforcement in `isAllowedBookingHost()`.\n  - `src/app/pages/DealDetailPage.tsx`: External booking di"
+        "byteCount": 719,
+        "summaryExcerpt": "- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.\n- **Physical Code Citations**:\n  - `src/domain/farely/providerRights.ts`:"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.455Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 235,
-        "summaryExcerpt": "- *Deficit in G1*: Did not audit whether external booking URL validation catches escaped slashes (`\\/`).\n  - *Correction in G2*: Enforces standard URL parser to eliminate backslash tricks in `src/domain/farely/providerRights.ts`.\n- **["
+        "byteCount": 395,
+        "summaryExcerpt": "- *Deficit in G1*: Pass G1 assumed simple host substring check was sufficient for booking links.\n  - *Correction in G2*: Strictly enforces regex hostname boundary checking in `src/domain/farely/providerRights.ts` to prevent subdomain spoofing (e.g., `evil-vietnamairlines.com`). Prohibits direct tick"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.767Z",
+        "timestamp": "2026-10-23T09:09:05.658Z",
         "covered": true,
-        "byteCount": 271,
-        "summaryExcerpt": "- *Deficit in G2*: Assumed referral host check was immune to port manipulation (e.g., `vietnamairlines.com:8080`).\n  - *Correction in G3*: Strips port numbers before comparing against allowed provider hostnames in `src/domain/farely/providerRights.ts` (NV01, NV02).\n- **["
+        "byteCount": 719,
+        "summaryExcerpt": "- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.\n- **Physical Code Citations**:\n  - `src/domain/farely/providerRights.ts`:"
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.259Z",
         "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- *Deficit in G3*: Did not verify that partner URLs containing subdomains are strictly checked against base domain whitelist.\n  - *Correction in G4*: Extracts public suffix domain before verifying authorization in `src/domain/farely/providerRights.ts`.\n- **["
+        "byteCount": 926,
+        "summaryExcerpt": "- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Prohibits direct ticketing, passenger checkout, and payment gateway integration as strictly boundary_excluded.\n- **Physical Code Citations**:\n  - `src/domain/farely/providerRights.ts`:"
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.310Z",
         "covered": true,
-        "byteCount": 246,
-        "summaryExcerpt": "- *Deficit in G4*: Did not verify that booking redirect URLs disallow `javascript:` or `data:` pseudo-protocols.\n  - *Correction in G5*: Strict whitelist allowing only `http:` and `https:` protocols in `src/domain/farely/providerRights.ts`.\n- **["
+        "byteCount": 371,
+        "summaryExcerpt": "- *Deficit in G4*: Assumed affiliate URLs always contain standard UTM markers.\n  - *Correction in G5*: Added regex validation in `src/domain/farely/providerRights.ts` confirming tracking parameters do not leak user identifiers or alter destination hosts. Prohibits direct ticketing, passenger checkou"
       }
     }
   },
@@ -68,64 +68,64 @@
     "name": "Price, Historical Baseline & Data Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.155Z",
+        "timestamp": "2026-10-23T09:01:32.310Z",
         "covered": true,
         "byteCount": 636,
         "summaryExcerpt": "- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics.\n- **Physical Code Citations**:\n  - `src/app/data/api.ts`: Helper functions `parseNullableNumber()` and `cleanPrice()`.\n  - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: `observed_fares` "
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.156Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 196,
-        "summaryExcerpt": "- *Deficit in R1*: Missed scientific notation parsing vulnerabilities (e.g. `1e6`).\n  - *Correction in R2*: Restricts string number regex in `src/app/data/api.ts` to strictly base-10 digits.\n- **["
+        "byteCount": 209,
+        "summaryExcerpt": "- *Deficit in R1*: Assumed all fares are provided in VND without checking for mixed currency conversion drift.\n  - *Correction in R2*: Strict single-currency ISO 4217 validation in `src/app/data/api.ts`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.238Z",
+        "timestamp": "2026-10-23T09:03:03.453Z",
         "covered": true,
         "byteCount": 232,
         "summaryExcerpt": "- *Deficit in R2*: Overlooked trailing whitespace and unicode non-breaking space characters in price strings.\n  - *Correction in R3*: Normalizes unicode whitespace before numeric coercion in `src/app/data/api.ts` (NV03, NV04).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.105Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 189,
         "summaryExcerpt": "- *Deficit in R3*: Did not test string prices with embedded zero-width spaces (`\\u200B`).\n  - *Correction in R4*: Comprehensive zero-width sanitization regex in `src/app/data/api.ts`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.186Z",
         "covered": true,
         "byteCount": 202,
         "summaryExcerpt": "- *Deficit in R4*: Missing validation of negative sign prefixed after whitespace (`- 50000`).\n  - *Correction in R5*: Disallows any negative sign anywhere in price string in `src/app/data/api.ts`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.943Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
-        "byteCount": 510,
-        "summaryExcerpt": "- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics.\n- **Physical Code Citations**:\n  - `src/app/data/api.ts`: Functions `parseNullableNumber()` and `cleanPrice()`.\n  - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: `observed_fares` BIGINT "
+        "byteCount": 547,
+        "summaryExcerpt": "- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).\n- **Physical Code Citations**:\n  - `src/app/data/api.ts`: Functions `parseNullableNumber()` and `cleanPrice()`.\n  - `supabase/migrations/20261007000100_canonical_fare_observ"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.455Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 180,
-        "summaryExcerpt": "- *Deficit in G1*: Did not verify that 0 VND is rejected as valid bookable price.\n  - *Correction in G2*: Enforces `price > 0` validation constraint in `src/app/data/api.ts`.\n- **["
+        "byteCount": 318,
+        "summaryExcerpt": "- *Deficit in G1*: Pass G1 did not account for floating-point inaccuracy in currency conversions or discount ratios.\n  - *Correction in G2*: Mandatory integer arithmetic with rounding in `src/app/data/api.ts` and explicit check constraints in `supabase/migrations/20261007000100_canonical_fare_observ"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.767Z",
+        "timestamp": "2026-10-23T09:09:05.658Z",
         "covered": true,
-        "byteCount": 242,
-        "summaryExcerpt": "- *Deficit in G2*: Did not test negative floating-point prices before integer rounding (`-0.5`).\n  - *Correction in G3*: Verifies sign before `Math.round()` to prevent negative prices rounding to 0 in `src/app/data/api.ts` (NV03, NV04).\n- **["
+        "byteCount": 547,
+        "summaryExcerpt": "- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).\n- **Physical Code Citations**:\n  - `src/app/data/api.ts`: Functions `parseNullableNumber()` and `cleanPrice()`.\n  - `supabase/migrations/20261007000100_canonical_fare_observ"
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.259Z",
         "covered": true,
-        "byteCount": 193,
-        "summaryExcerpt": "- *Deficit in G3*: Price parsing did not reject non-numeric trailing characters (`50000vnd`).\n  - *Correction in G4*: Strict regex anchored start and end `^\\d+$` in `src/app/data/api.ts`.\n- **["
+        "byteCount": 757,
+        "summaryExcerpt": "- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).\n- **Physical Code Citations**:\n  - `src/app/data/api.ts`: Functions `parseNullableNumber()` and `cleanPrice()`.\n  - `src/app/data/api.test.ts`: Tests edge case inputs like `"
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.310Z",
         "covered": true,
-        "byteCount": 227,
-        "summaryExcerpt": "- *Deficit in G4*: Did not assert that zero-cent fractional amounts in VND round correctly to the nearest whole integer.\n  - *Correction in G5*: Enforces `Math.round()` on all VND currency inputs in `src/app/data/api.ts`.\n- **["
+        "byteCount": 774,
+        "summaryExcerpt": "- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).\n- **Physical Code Citations**:\n  - `src/app/data/api.ts`: Functions `parseNullableNumber()` and `cleanPrice()`.\n  - `src/app/data/api.test.ts`: Tests edge case inputs like `"
       }
     }
   },
@@ -133,64 +133,64 @@
     "name": "Deal Score, Statistical Confidence & Cost Monotonicity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.310Z",
         "covered": true,
         "byteCount": 633,
         "summaryExcerpt": "- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.\n- **Physical Code Citations**:\n  - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage.\n  - `src/domain/farely/domainKernel.test.ts`: Cabin class isolat"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.156Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 202,
-        "summaryExcerpt": "- *Deficit in R1*: Assumed normal distribution for fare volatility without skewness test.\n  - *Correction in R2*: Applies robust median-based MAD statistics in `src/domain/farely/priceAnomaly.ts`.\n- **["
+        "byteCount": 215,
+        "summaryExcerpt": "- *Deficit in R1*: Did not check for deal score calculation bias during high-season fare spikes.\n  - *Correction in R2*: Seasonality-adjusted median baseline comparisons in `src/domain/farely/priceAnomaly.ts`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.238Z",
+        "timestamp": "2026-10-23T09:03:03.454Z",
         "covered": true,
         "byteCount": 276,
         "summaryExcerpt": "- *Deficit in R2*: Did not evaluate behavior when historical baseline has extreme outliers with high leverage.\n  - *Correction in R3*: Enforces interquartile range (IQR) outlier trimming before computing anomaly score in `src/domain/farely/priceAnomaly.ts` (NV05, NV06).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.105Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 233,
         "summaryExcerpt": "- *Deficit in R3*: Did not check for divide-by-zero when all observations are identical ($MAD = 0$).\n  - *Correction in R4*: Explicit guard fallback setting score to 50 when variance is 0 in `src/domain/farely/priceAnomaly.ts`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.187Z",
         "covered": true,
         "byteCount": 210,
         "summaryExcerpt": "- *Deficit in R4*: Did not test against NaN propagation in composite cost calculation.\n  - *Correction in R5*: Uses `Number.isFinite()` on all intermediate values in `src/domain/farely/costEpistemics.ts`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.943Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
         "byteCount": 515,
         "summaryExcerpt": "- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.\n- **Physical Code Citations**:\n  - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage.\n  - `src/domain/farely/domainKernel.test.ts`: Cabin class isolat"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.455Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 221,
-        "summaryExcerpt": "- *Deficit in G1*: Assumed confidence score reached 1.0 at 12 samples without testing intermediate curves.\n  - *Correction in G2*: Smooth sigmoid scaling for sample confidence in `src/domain/farely/priceAnomaly.ts`.\n- **["
+        "byteCount": 515,
+        "summaryExcerpt": "- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.\n- **Physical Code Citations**:\n  - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage.\n  - `src/domain/farely/domainKernel.test.ts`: Cabin class isolat"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.767Z",
+        "timestamp": "2026-10-23T09:09:05.658Z",
         "covered": true,
-        "byteCount": 243,
-        "summaryExcerpt": "- *Deficit in G2*: Did not test monotonic cost invariants across multiple stops (direct vs 1-stop).\n  - *Correction in G3*: Enforces monotonic pricing rules across segment variations in `src/domain/farely/costEpistemics.ts` (NV05, NV06).\n- **["
+        "byteCount": 250,
+        "summaryExcerpt": "- *Deficit in G2*: Assumed baggage fee calculation handles negative inputs without validation.\n  - *Correction in G3*: Enforces monotonic non-negative cost checks in `src/domain/farely/costEpistemics.ts` rejecting corrupted payload adjustments.\n- **["
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.259Z",
         "covered": true,
-        "byteCount": 202,
-        "summaryExcerpt": "- *Deficit in G3*: Confidence calculation did not bound maximum score to 100.\n  - *Correction in G4*: Clamps deal scores mathematically to interval [0, 100] in `src/domain/farely/priceAnomaly.ts`.\n- **["
+        "byteCount": 645,
+        "summaryExcerpt": "- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.\n- **Physical Code Citations**:\n  - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.\n  - `src/domain/farely/priceAnomaly.ts`: Penalize"
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.310Z",
         "covered": true,
-        "byteCount": 229,
-        "summaryExcerpt": "- *Deficit in G4*: Baseline did not verify date chronology for historical fare observations.\n  - *Correction in G5*: Ascending timestamp sorting before statistical interval estimation in `src/domain/farely/priceAnomaly.ts`.\n- **["
+        "byteCount": 728,
+        "summaryExcerpt": "- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.\n- **Physical Code Citations**:\n  - `src/domain/farely/costEpistemics.ts`: Computes full trip cost including baggage and surcharges.\n  - `src/domain/farely/priceAnomaly.ts`: Penalize"
       }
     }
   },
@@ -198,64 +198,64 @@
     "name": "Auth, Privacy, Tenant Isolation & RLS Matrix",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.311Z",
         "covered": true,
         "byteCount": 668,
         "summaryExcerpt": "- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts.\n- **Physical Code Citations**:\n  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: RLS policies.\n  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_at"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.156Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 257,
-        "summaryExcerpt": "- *Deficit in R1*: Did not verify that deleted user sessions cannot query cached RPC functions.\n  - *Correction in R2*: Enforces explicit `SECURITY DEFINER` checks in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.\n- **["
+        "byteCount": 280,
+        "summaryExcerpt": "- *Deficit in R1*: Relied on application-level filtering rather than verifying RLS enforcement for custom watch routes.\n  - *Correction in R2*: Database RLS policies verified on `saved_opportunities` in `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.238Z",
+        "timestamp": "2026-10-23T09:03:03.454Z",
         "covered": true,
         "byteCount": 302,
         "summaryExcerpt": "- *Deficit in R2*: Did not test race condition between watch notification dispatch and user deletion.\n  - *Correction in R3*: Disallows outbox dispatch for accounts flagged `deletion_in_progress` in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` (NV07, NV08).\n- *"
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.105Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 242,
         "summaryExcerpt": "- *Deficit in R3*: Did not verify table truncation safety during test executions.\n  - *Correction in R4*: Uses transactional rollbacks for unit tests and strictly isolated tenant fixtures in `scripts/rls-tenant-isolation.node-test.mjs`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.187Z",
         "covered": true,
         "byteCount": 220,
         "summaryExcerpt": "- *Deficit in R4*: Did not verify that cascade deletion removes all rows from orphaned join tables.\n  - *Correction in R5*: Asserts zero remaining orphaned rows in `scripts/account-deletion-contract.node-test.mjs`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.943Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
         "byteCount": 555,
         "summaryExcerpt": "- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts.\n- **Physical Code Citations**:\n  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: RLS policies.\n  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_at"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.455Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 257,
-        "summaryExcerpt": "- *Deficit in G1*: Did not verify that tenant isolation prevents viewing anonymous aggregated metrics.\n  - *Correction in G2*: Explicitly isolates tenant queries to own user_id in `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`.\n- **["
+        "byteCount": 555,
+        "summaryExcerpt": "- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts.\n- **Physical Code Citations**:\n  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: RLS policies.\n  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_at"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.767Z",
+        "timestamp": "2026-10-23T09:09:05.658Z",
         "covered": true,
-        "byteCount": 289,
-        "summaryExcerpt": "- *Deficit in G2*: Did not verify that deleted user cannot be resurrected by recreating auth record with same email.\n  - *Correction in G3*: Generates new immutable UUID primary keys in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` (NV07, NV08).\n- **["
+        "byteCount": 287,
+        "summaryExcerpt": "- *Deficit in G2*: Did not test concurrent deletion requests for the same user identity.\n  - *Correction in G3*: `prepare_account_deletion` in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces transactional idempotency and advisory locks.\n- **["
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.260Z",
         "covered": true,
-        "byteCount": 263,
-        "summaryExcerpt": "- *Deficit in G3*: Account deletion did not delete entries in transient cache tables.\n  - *Correction in G4*: Synchronous purge of search cache keys tied to user session in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.\n- **["
+        "byteCount": 721,
+        "summaryExcerpt": "- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts.\n- **Physical Code Citations**:\n  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: RLS policies.\n  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_at"
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.311Z",
         "covered": true,
-        "byteCount": 253,
-        "summaryExcerpt": "- *Deficit in G4*: Did not test for concurrent deletion attempts of the same tenant.\n  - *Correction in G5*: Idempotent deletion using `ON CONFLICT DO NOTHING` in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.\n- **["
+        "byteCount": 805,
+        "summaryExcerpt": "- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts.\n- **Physical Code Citations**:\n  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: RLS policies.\n  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_at"
       }
     }
   },
@@ -263,64 +263,64 @@
     "name": "Provider Drift, Circuit Breakers & Kill Switches",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.311Z",
         "covered": true,
         "byteCount": 594,
         "summaryExcerpt": "- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.\n- **Physical Code Citations**:\n  - `supabase/functions/_shared/flight-search.ts`: Circuit breaker pattern (`CLOSED`, `OPEN`, `HALF_OPEN`).\n  - `scripts/provider-drift-and-killswitch.no"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.156Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 206,
-        "summaryExcerpt": "- *Deficit in R1*: Assumed uniform retry intervals for all partner endpoints.\n  - *Correction in R2*: Implements provider-specific backoff multipliers in `supabase/functions/_shared/flight-search.ts`.\n- **["
+        "byteCount": 273,
+        "summaryExcerpt": "- *Deficit in R1*: Assumed circuit breaker failure threshold resets immediately on single success in OPEN state.\n  - *Correction in R2*: Requires 3 consecutive successful trials in HALF_OPEN before returning to CLOSED in `supabase/functions/_shared/flight-search.ts`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.238Z",
+        "timestamp": "2026-10-23T09:03:03.454Z",
         "covered": true,
         "byteCount": 291,
         "summaryExcerpt": "- *Deficit in R2*: Did not test DNS resolution failures (EAI_AGAIN) causing unhandled promise rejections.\n  - *Correction in R3*: Encapsulates network fetch in safe try/catch mapping system errors to provider offline state in `supabase/functions/_shared/flight-search.ts` (NV09, NV10).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.105Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 237,
         "summaryExcerpt": "- *Deficit in R3*: Did not verify circuit breaker recovery under intermittent flapping (flapping detection).\n  - *Correction in R4*: Implements sliding window error rate calculation in `supabase/functions/_shared/flight-search.ts`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.187Z",
         "covered": true,
         "byteCount": 213,
         "summaryExcerpt": "- *Deficit in R4*: Half-open state timeout lacked reset under high concurrency.\n  - *Correction in R5*: Atomic timestamp comparison ensures accurate cooldown in `supabase/functions/_shared/flight-search.ts`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.943Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
         "byteCount": 475,
         "summaryExcerpt": "- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.\n- **Physical Code Citations**:\n  - `supabase/functions/_shared/flight-search.ts`: Circuit breaker pattern (`CLOSED`, `OPEN`, `HALF_OPEN`).\n  - `scripts/provider-drift-and-killswitch.no"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.455Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 247,
-        "summaryExcerpt": "- *Deficit in G1*: Did not specify circuit breaker behavior on HTTP 504 Gateway Timeout.\n  - *Correction in G2*: Treats HTTP 504 identically to 503 as a server failure triggering circuit trip in `supabase/functions/_shared/flight-search.ts`.\n- **["
+        "byteCount": 237,
+        "summaryExcerpt": "- *Deficit in G1*: Pass G1 assumed fixed cooldowns without jitter, leading to potential thundering herd on recovery.\n  - *Correction in G2*: Mandates full-jitter exponential backoff in `supabase/functions/_shared/flight-search.ts`.\n- **["
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.767Z",
+        "timestamp": "2026-10-23T09:09:05.658Z",
         "covered": true,
-        "byteCount": 248,
-        "summaryExcerpt": "- *Deficit in G2*: Did not handle partner API responses containing invalid JSON syntax.\n  - *Correction in G3*: Catches `SyntaxError` and treats as upstream provider drift anomaly in `supabase/functions/_shared/flight-search.ts` (NV09, NV10).\n- **["
+        "byteCount": 475,
+        "summaryExcerpt": "- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.\n- **Physical Code Citations**:\n  - `supabase/functions/_shared/flight-search.ts`: Circuit breaker pattern (`CLOSED`, `OPEN`, `HALF_OPEN`).\n  - `scripts/provider-drift-and-killswitch.no"
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.260Z",
         "covered": true,
-        "byteCount": 239,
-        "summaryExcerpt": "- *Deficit in G3*: Did not test circuit breaker half-open transition under parallel concurrent requests.\n  - *Correction in G4*: Mutex/atomic CAS operation for half-open trial counter in `supabase/functions/_shared/flight-search.ts`.\n- **["
+        "byteCount": 4150,
+        "summaryExcerpt": "- *Deficit in G3*: Did not specify exponential jitter backoff parameters or retry budget ceilings.\n  - *Correction in G4*: Calibrated base delay of 250ms, multiplier 2.0, max backoff 8000ms with full randomization in `supabase/functions/_shared/retry-policy.ts`.\n\n---\n\n## SECTION B: INVARIANT EXECUTO"
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.311Z",
         "covered": true,
-        "byteCount": 242,
-        "summaryExcerpt": "- *Deficit in G4*: Half-open trial count was not reset when transitioning from OPEN to HALF_OPEN.\n  - *Correction in G5*: Resets trial counter to 0 immediately upon half-open state entry in `supabase/functions/_shared/flight-search.ts`.\n- **["
+        "byteCount": 306,
+        "summaryExcerpt": "- *Deficit in G4*: Did not specify handling of upstream rate-limit headers (e.g., `Retry-After`).\n  - *Correction in G5*: Honors upstream `Retry-After` seconds if larger than computed jitter backoff in `supabase/functions/_shared/amadeus-provider.ts` and `supabase/functions/_shared/retry-policy.ts`."
       }
     }
   },
@@ -328,64 +328,64 @@
     "name": "Freshness, Stale Degradation & UX Honesty",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.311Z",
         "covered": true,
         "byteCount": 526,
         "summaryExcerpt": "- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution.\n- **Physical Code Citations**:\n  - `src/app/pages/DealsPage.tsx`: Freshness badges (`FRESH`, `WARM`, `STALE`).\n  - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.\n"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.156Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 185,
-        "summaryExcerpt": "- *Deficit in R1*: Lacked visual test for badge contrast in high-contrast mode.\n  - *Correction in R2*: Passes WCAG 2.1 AA luminance ratio checks in `src/app/pages/DealsPage.tsx`.\n- **["
+        "byteCount": 245,
+        "summaryExcerpt": "- *Deficit in R1*: Did not check for stale data badge rendering when flight observations lack timestamp metadata.\n  - *Correction in R2*: Missing timestamp automatically degrades deal card to STALE (>360m) in `src/app/pages/DealsPage.tsx`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.238Z",
+        "timestamp": "2026-10-23T09:03:03.454Z",
         "covered": true,
         "byteCount": 231,
         "summaryExcerpt": "- *Deficit in R2*: Did not test stale badge behavior when user's device clock is in the past.\n  - *Correction in R3*: Relies strictly on monotonic server-provided observation age in `src/app/pages/DealsPage.tsx` (NV11, NV12).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.105Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 230,
         "summaryExcerpt": "- *Deficit in R3*: Did not assert that stale cache items are evicted from localStorage when quota is exceeded.\n  - *Correction in R4*: Implements LRU cache eviction on `QuotaExceededError` in `src/app/lib/feedCache.test.ts`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.187Z",
         "covered": true,
-        "byteCount": 193,
-        "summaryExcerpt": "- *Deficit in R4*: Did not test tooltip text localization.\n  - *Correction in R5*: Provides localized Vietnamese and English strings for freshness badges in `src/app/pages/DealsPage.tsx`.\n- **["
+        "byteCount": 178,
+        "summaryExcerpt": "- *Deficit in R4*: Stale degradation badge failed screen reader live updates.\n  - *Correction in R5*: Added `aria-live=\"polite\"` attribute in `src/app/pages/DealsPage.tsx`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.944Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
         "byteCount": 404,
         "summaryExcerpt": "- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution.\n- **Physical Code Citations**:\n  - `src/app/pages/DealsPage.tsx`: Freshness badges (`FRESH`, `WARM`, `STALE`).\n  - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.\n"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.456Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 209,
-        "summaryExcerpt": "- *Deficit in G1*: Did not specify color contrast variables for accessibility compliance.\n  - *Correction in G2*: Tailwind classes `text-amber-800 bg-amber-50` validated in `src/app/pages/DealsPage.tsx`.\n- **["
+        "byteCount": 404,
+        "summaryExcerpt": "- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution.\n- **Physical Code Citations**:\n  - `src/app/pages/DealsPage.tsx`: Freshness badges (`FRESH`, `WARM`, `STALE`).\n  - `src/app/lib/feedCache.test.ts`: Cache age determination and stale eviction.\n"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.767Z",
+        "timestamp": "2026-10-23T09:09:05.658Z",
         "covered": true,
-        "byteCount": 259,
-        "summaryExcerpt": "- *Deficit in G2*: Did not test background tab timer throttling affecting freshness polling.\n  - *Correction in G3*: Uses `document.visibilityState` listener to trigger immediate refresh on tab reactivation in `src/app/pages/DealsPage.tsx` (NV11, NV12).\n- **["
+        "byteCount": 246,
+        "summaryExcerpt": "- *Deficit in G2*: Assumed local client clock cannot drift forward/backward drastically.\n  - *Correction in G3*: Compares client timestamps against server response `date` header in `src/app/pages/DealsPage.tsx` before applying badge colors.\n- **["
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.260Z",
         "covered": true,
-        "byteCount": 205,
-        "summaryExcerpt": "- *Deficit in G3*: Polling interval did not pause when window is in background.\n  - *Correction in G4*: Adaptive polling dynamically throttling to 600s in background in `src/app/pages/DealsPage.tsx`.\n- **["
+        "byteCount": 593,
+        "summaryExcerpt": "- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution.\n- **Physical Code Citations**:\n  - `src/app/pages/DealsPage.tsx`: Freshness badges (`FRESH`, `WARM`, `STALE`).\n  - `src/domain/farely/pwaOfflineFreshness.ts`: Offline cache degradation state m"
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.311Z",
         "covered": true,
-        "byteCount": 235,
-        "summaryExcerpt": "- *Deficit in G4*: Visual freshness badges did not provide distinct SVG icons for color-blind accessibility.\n  - *Correction in G5*: Distinct icons (sparkle, sun, clock) accompanying color badges in `src/app/pages/DealsPage.tsx`.\n- **["
+        "byteCount": 593,
+        "summaryExcerpt": "- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution.\n- **Physical Code Citations**:\n  - `src/app/pages/DealsPage.tsx`: Freshness badges (`FRESH`, `WARM`, `STALE`).\n  - `src/domain/farely/pwaOfflineFreshness.ts`: Offline cache degradation state m"
       }
     }
   },
@@ -393,64 +393,64 @@
     "name": "Observability, Secret Scrubbing & Error Boundaries",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.311Z",
         "covered": true,
         "byteCount": 630,
         "summaryExcerpt": "- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry.\n- **Physical Code Citations**:\n  - `src/app/lib/sharing.ts`: Sanitization of URLs and scrubbing of session tokens.\n  - `scripts/client-error-boundary.node-test.mjs`: Tests error boundary containme"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.156Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 197,
-        "summaryExcerpt": "- *Deficit in R1*: Did not scrub bearer tokens formatted with mixed casing (`Bearer` vs `bearer`).\n  - *Correction in R2*: Uses case-insensitive token scrub regex in `src/app/lib/sharing.ts`.\n- **["
+        "byteCount": 196,
+        "summaryExcerpt": "- *Deficit in R1*: Did not verify that Sentry/telemetry client bundles respect 250KB limit.\n  - *Correction in R2*: Enforces bundle size budget in `scripts/performance-budget.node-test.mjs`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.238Z",
+        "timestamp": "2026-10-23T09:03:03.454Z",
         "covered": true,
         "byteCount": 244,
         "summaryExcerpt": "- *Deficit in R2*: Did not scrub authorization headers inside WebSocket handshake frames.\n  - *Correction in R3*: WebSocket connection hooks scrub connection query params and authorization headers in `src/app/lib/sharing.ts` (NV13, NV14).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.105Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 207,
         "summaryExcerpt": "- *Deficit in R3*: Did not test stack trace sanitization for native Node.js core modules.\n  - *Correction in R4*: Strips local filesystem user paths from error stack traces in `src/app/lib/sharing.ts`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.187Z",
         "covered": true,
-        "byteCount": 181,
-        "summaryExcerpt": "- *Deficit in R4*: Did not scrub authorization query parameters (`?access_token=...`).\n  - *Correction in R5*: Complete URL search param scrubbing in `src/app/lib/sharing.ts`.\n- **["
+        "byteCount": 187,
+        "summaryExcerpt": "- *Deficit in R4*: Scrubbed headers did not include custom partner authentication tokens.\n  - *Correction in R5*: Broad-spectrum token scrubbing pattern in `src/app/lib/sharing.ts`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.944Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
         "byteCount": 523,
         "summaryExcerpt": "- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry.\n- **Physical Code Citations**:\n  - `src/app/lib/sharing.ts`: Sanitization of URLs and scrubbing of session tokens.\n  - `scripts/client-error-boundary.node-test.mjs`: Tests error boundary containme"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.456Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 203,
-        "summaryExcerpt": "- *Deficit in G1*: Overlooked auth tokens in HTTP request body payload logs.\n  - *Correction in G2*: Deep recursive body parser sanitizing `refresh_token` and `api_key` in `src/app/lib/sharing.ts`.\n- **["
+        "byteCount": 523,
+        "summaryExcerpt": "- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry.\n- **Physical Code Citations**:\n  - `src/app/lib/sharing.ts`: Sanitization of URLs and scrubbing of session tokens.\n  - `scripts/client-error-boundary.node-test.mjs`: Tests error boundary containme"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.767Z",
+        "timestamp": "2026-10-23T09:09:05.658Z",
         "covered": true,
-        "byteCount": 202,
-        "summaryExcerpt": "- *Deficit in G2*: Did not test regex DoS (ReDoS) vulnerability in secret scrubbing patterns.\n  - *Correction in G3*: Uses non-backtracking linear regexes in `src/app/lib/sharing.ts` (NV13, NV14).\n- **["
+        "byteCount": 4120,
+        "summaryExcerpt": "- *Deficit in G2*: Assumed sensitive tokens only appear in `Authorization` header.\n  - *Correction in G3*: `src/app/lib/sharing.ts` sanitizes all query parameters matching `token`, `key`, `secret`, `auth`, `signature`, and `bearer`.\n\n---\n\n## SECTION B: INVARIANT EXECUTOR CAGE\n```text\nINVARIANT_EXECU"
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.260Z",
         "covered": true,
-        "byteCount": 204,
-        "summaryExcerpt": "- *Deficit in G3*: Did not test scrubbing of JWT tokens inside decoded error objects.\n  - *Correction in G4*: Deep recursive property traversal replacing `eyJ...` tokens in `src/app/lib/sharing.ts`.\n- **["
+        "byteCount": 642,
+        "summaryExcerpt": "- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry.\n- **Physical Code Citations**:\n  - `src/app/lib/sharing.ts`: Sanitization of URLs and scrubbing of session tokens.\n  - `supabase/functions/_shared/observability.ts`: Server-side structured logger "
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.311Z",
         "covered": true,
-        "byteCount": 216,
-        "summaryExcerpt": "- *Deficit in G4*: Stack traces in development mode were not scrubbed when logged to DOM console.\n  - *Correction in G5*: Unified logger wrapping `console.error` with scrub pipeline in `src/app/lib/sharing.ts`.\n- **["
+        "byteCount": 642,
+        "summaryExcerpt": "- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry.\n- **Physical Code Citations**:\n  - `src/app/lib/sharing.ts`: Sanitization of URLs and scrubbing of session tokens.\n  - `supabase/functions/_shared/observability.ts`: Server-side structured logger "
       }
     }
   },
@@ -458,64 +458,64 @@
     "name": "Database Architecture, Schema Drift & Migration Provenance",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.311Z",
         "covered": true,
         "byteCount": 663,
         "summaryExcerpt": "- **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution.\n- **Physical Code Citations**:\n  - `supabase/migrations/`: Exactly 47 canonical migrations.\n  - `scripts/migration-parity.node-test.mjs`: Migration syntax and sequence validation.\n  - `scri"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.156Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 185,
-        "summaryExcerpt": "- *Deficit in R1*: Did not assert that rollback script drops triggers before functions.\n  - *Correction in R2*: Enforces strict reverse dependency order in `supabase/migrations/`.\n- **["
+        "byteCount": 229,
+        "summaryExcerpt": "- *Deficit in R1*: Migration runner did not verify rollback script execution in reverse timestamp order.\n  - *Correction in R2*: Validates reverse chronological rollback sequence in `scripts/migration-parity.node-test.mjs`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.238Z",
+        "timestamp": "2026-10-23T09:03:03.454Z",
         "covered": true,
         "byteCount": 213,
         "summaryExcerpt": "- *Deficit in R2*: Did not test for concurrent migration execution lock contention.\n  - *Correction in R3*: Locks migration table using advisory locks during execution in `supabase/migrations/` (NV15, NV16).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.105Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 204,
         "summaryExcerpt": "- *Deficit in R3*: Migration verification did not check column default value drift.\n  - *Correction in R4*: Full column metadata comparison in `scripts/database-architecture-contract.node-test.mjs`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.187Z",
         "covered": true,
-        "byteCount": 210,
-        "summaryExcerpt": "- *Deficit in R4*: Did not verify foreign key constraint names for strict consistency.\n  - *Correction in R5*: Standardized constraint naming convention across all 47 migrations in `supabase/migrations/`.\n- **["
+        "byteCount": 215,
+        "summaryExcerpt": "- *Deficit in R4*: Did not verify that down-migrations are completely non-destructive to audit tables.\n  - *Correction in R5*: Idempotent schema verification across all 47 migrations in `supabase/migrations/`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.944Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
-        "byteCount": 552,
-        "summaryExcerpt": "- **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution.\n- **Physical Code Citations**:\n  - `supabase/migrations/`: Exactly 47 canonical migrations.\n  - `scripts/migration-parity.node-test.mjs`: Migration syntax and sequence validation.\n  - `scri"
+        "byteCount": 502,
+        "summaryExcerpt": "- **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution across all 47 migrations.\n- **Physical Code Citations**:\n  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: Migration source.\n  - `scripts/migration-parity.mjs`: Lin"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.456Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 188,
-        "summaryExcerpt": "- *Deficit in G1*: Did not check for missing index definitions on foreign keys.\n  - *Correction in G2*: Asserts all foreign keys have backing btree indexes in `supabase/migrations/`.\n- **["
+        "byteCount": 4181,
+        "summaryExcerpt": "- *Deficit in G1*: Pass G1 referenced hypothetical migration scripts rather than verifying deterministic migration parity.\n  - *Correction in G2*: Grounded strictly in `scripts/migration-parity.mjs` and `scripts/migration-parity.node-test.mjs` verifying exact 47 migration bidirectional steps.\n\n---\n\n"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.767Z",
+        "timestamp": "2026-10-23T09:09:05.659Z",
         "covered": true,
-        "byteCount": 227,
-        "summaryExcerpt": "- *Deficit in G2*: Assumed rollback scripts work when foreign keys have differing constraint names.\n  - *Correction in G3*: Uses explicit constraint names in all DDL drop statements in `supabase/migrations/` (NV15, NV16).\n- **["
+        "byteCount": 502,
+        "summaryExcerpt": "- **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution across all 47 migrations.\n- **Physical Code Citations**:\n  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: Migration source.\n  - `scripts/migration-parity.mjs`: Lin"
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.260Z",
         "covered": true,
-        "byteCount": 183,
-        "summaryExcerpt": "- *Deficit in G3*: Rollback didn't verify that table sequence counters are restored.\n  - *Correction in G4*: Explicit sequence synchronization scripts in `supabase/migrations/`.\n- **["
+        "byteCount": 502,
+        "summaryExcerpt": "- **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution across all 47 migrations.\n- **Physical Code Citations**:\n  - `supabase/migrations/20261005000000_saved_opportunities_and_watch.sql`: Migration source.\n  - `scripts/migration-parity.mjs`: Lin"
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.311Z",
         "covered": true,
-        "byteCount": 155,
-        "summaryExcerpt": "- *Deficit in G4*: Did not verify table comment metadata parity.\n  - *Correction in G5*: Reconciles documentation comments in `supabase/migrations/`.\n- **["
+        "byteCount": 232,
+        "summaryExcerpt": "- *Deficit in G4*: Did not mandate rollback verification scripts in continuous integration.\n  - *Correction in G5*: CI pipeline runs both up and down migrations with parity verified by `scripts/migration-parity.node-test.mjs`.\n- **["
       }
     }
   },
@@ -523,64 +523,64 @@
     "name": "Proof Hierarchy & Anti-Self-Certification (C0..C4)",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.311Z",
         "covered": true,
         "byteCount": 576,
         "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.\n- **Physical Code Citations**:\n  - `scripts/verify-certification-integrity.node-test.mjs`: Proof hierarchy separation.\n  - `scripts/certifier-sabotage.node-test.mjs`: Tamper resi"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.157Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 211,
-        "summaryExcerpt": "- *Deficit in R1*: Did not test for fake proof injection via command-line arguments.\n  - *Correction in R2*: Sanitizes argv before proof admission in `scripts/verify-certification-integrity.node-test.mjs`.\n- **["
+        "byteCount": 242,
+        "summaryExcerpt": "- *Deficit in R1*: Proof runner did not check for environment variable overrides attempting to bypass test suites.\n  - *Correction in R2*: Unset and sanitize CI bypass variables in `scripts/verify-certification-integrity.node-test.mjs`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.238Z",
+        "timestamp": "2026-10-23T09:03:03.454Z",
         "covered": true,
         "byteCount": 253,
         "summaryExcerpt": "- *Deficit in R2*: Did not test against corrupted receipt JSON with missing hashes.\n  - *Correction in R3*: Validates schema and non-empty SHA256 fields before accepting proof in `scripts/verify-certification-integrity.node-test.mjs` (NV17, NV18).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.105Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 242,
         "summaryExcerpt": "- *Deficit in R3*: Proof checker allowed undefined test outputs to be parsed as successful.\n  - *Correction in R4*: Strict assert on test count and tap/json test output presence in `scripts/verify-certification-integrity.node-test.mjs`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.188Z",
         "covered": true,
-        "byteCount": 242,
-        "summaryExcerpt": "- *Deficit in R4*: Invariant checks could be bypassed if error was thrown early.\n  - *Correction in R5*: Wrapped in strict try/finally reporting failure on unexpected exceptions in `scripts/verify-certification-integrity.node-test.mjs`.\n- **["
+        "byteCount": 210,
+        "summaryExcerpt": "- *Deficit in R4*: Proof hierarchy lacked machine-readable JSON schema output.\n  - *Correction in R5*: Standardized schema output format enforced in `scripts/verify-certification-integrity.node-test.mjs`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.944Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
-        "byteCount": 435,
-        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.\n- **Physical Code Citations**:\n  - `scripts/verify-certification-integrity.node-test.mjs`: Proof hierarchy separation.\n  - `scripts/certifier-sabotage.node-test.mjs`: Tamper resi"
+        "byteCount": 442,
+        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10 scores.\n- **Physical Code Citations**:\n  - `scripts/verify-certification-integrity.node-test.mjs`: Audit script for proof claims.\n  - `docs/convergence/PROOF_INDEX.json`: Ground t"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.456Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 215,
-        "summaryExcerpt": "- *Deficit in G1*: Proof check allowed missing receipt timestamp.\n  - *Correction in G2*: Rejects receipts with missing or invalid ISO-8601 timestamps in `scripts/verify-certification-integrity.node-test.mjs`.\n- **["
+        "byteCount": 442,
+        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10 scores.\n- **Physical Code Citations**:\n  - `scripts/verify-certification-integrity.node-test.mjs`: Audit script for proof claims.\n  - `docs/convergence/PROOF_INDEX.json`: Ground t"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.768Z",
+        "timestamp": "2026-10-23T09:09:05.659Z",
         "covered": true,
-        "byteCount": 260,
-        "summaryExcerpt": "- *Deficit in G2*: Did not prevent proof verification running in an uncommitted git working tree.\n  - *Correction in G3*: Asserts clean git status before admitting execution receipts in `scripts/verify-certification-integrity.node-test.mjs` (NV17, NV18).\n- **["
+        "byteCount": 442,
+        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10 scores.\n- **Physical Code Citations**:\n  - `scripts/verify-certification-integrity.node-test.mjs`: Audit script for proof claims.\n  - `docs/convergence/PROOF_INDEX.json`: Ground t"
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.260Z",
         "covered": true,
-        "byteCount": 234,
-        "summaryExcerpt": "- *Deficit in G3*: Proof check did not verify that git commit hash matches current HEAD exactly.\n  - *Correction in G4*: Strict string equality with `git rev-parse HEAD` in `scripts/verify-certification-integrity.node-test.mjs`.\n- **["
+        "byteCount": 253,
+        "summaryExcerpt": "- *Deficit in G3*: Did not check whether tests run in watch mode or single-run CI mode.\n  - *Correction in G4*: Strict single-run assertions in `scripts/verify-certification-integrity.node-test.mjs` verifying proof hashes against immutable ledger.\n- **["
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.311Z",
         "covered": true,
-        "byteCount": 220,
-        "summaryExcerpt": "- *Deficit in G4*: Certification check did not enforce presence of cryptographic parent hash link.\n  - *Correction in G5*: Enforces parent receipt chaining in `scripts/verify-certification-integrity.node-test.mjs`.\n- **["
+        "byteCount": 524,
+        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10 scores.\n- **Physical Code Citations**:\n  - `scripts/verify-certification-integrity.node-test.mjs`: Audit script for proof claims.\n  - `docs/convergence/PROOF_INDEX.json`: Ground t"
       }
     }
   },
@@ -588,64 +588,64 @@
     "name": "Anti-Shrinkage & 267 Historical Gates Traceability",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.311Z",
         "covered": true,
         "byteCount": 551,
         "summaryExcerpt": "- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.\n- **Physical Code Citations**:\n  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Verifies 267 historical gates.\n  - `docs/convergence/v51/P2_SEMANTIC_VARIANT_RECONCILIATION.json`: Preserves 32 s"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.157Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 192,
-        "summaryExcerpt": "- *Deficit in R1*: Did not verify that disabled gates fail the build immediately.\n  - *Correction in R2*: Asserts zero skipped gates in `scripts/acceptance-anti-shrinkage.node-test.mjs`.\n- **["
+        "byteCount": 233,
+        "summaryExcerpt": "- *Deficit in R1*: Did not check that historical gate identifiers preserve exact alphanumeric formatting.\n  - *Correction in R2*: Regex format validation on all 267 gate IDs in `scripts/acceptance-anti-shrinkage.node-test.mjs`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.239Z",
+        "timestamp": "2026-10-23T09:03:03.454Z",
         "covered": true,
         "byteCount": 242,
         "summaryExcerpt": "- *Deficit in R2*: Did not test against empty strings inside gate test titles.\n  - *Correction in R3*: Requires non-empty, unique alphanumeric identifiers for every gate in `scripts/acceptance-anti-shrinkage.node-test.mjs` (NV19, NV20).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.106Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 198,
         "summaryExcerpt": "- *Deficit in R3*: Registry test only checked count, not exact IDs.\n  - *Correction in R4*: Set equality check on all 267 gate identifiers in `scripts/acceptance-anti-shrinkage.node-test.mjs`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.188Z",
         "covered": true,
-        "byteCount": 196,
-        "summaryExcerpt": "- *Deficit in R4*: Did not check for duplicates in the gate list.\n  - *Correction in R5*: Enforces unique gate count equals array length in `scripts/acceptance-anti-shrinkage.node-test.mjs`.\n- **["
+        "byteCount": 214,
+        "summaryExcerpt": "- *Deficit in R4*: Did not generate cryptographic diff between cycles for gate states.\n  - *Correction in R5*: Cryptographic gate registry hash validation in `scripts/acceptance-anti-shrinkage.node-test.mjs`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.944Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
-        "byteCount": 440,
-        "summaryExcerpt": "- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.\n- **Physical Code Citations**:\n  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Verifies 267 historical gates.\n  - `docs/convergence/v51/P2_SEMANTIC_VARIANT_RECONCILIATION.json`: Preserves 32 s"
+        "byteCount": 417,
+        "summaryExcerpt": "- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.\n- **Physical Code Citations**:\n  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.\n  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.\n- **V"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.456Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 217,
-        "summaryExcerpt": "- *Deficit in G1*: Did not verify that 1 P2 gate was distinctly separated from P0/P1.\n  - *Correction in G2*: Validates exact breakdown (192 P0, 74 P1, 1 P2) in `scripts/acceptance-anti-shrinkage.node-test.mjs`.\n- **["
+        "byteCount": 417,
+        "summaryExcerpt": "- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.\n- **Physical Code Citations**:\n  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.\n  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.\n- **V"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.768Z",
+        "timestamp": "2026-10-23T09:09:05.659Z",
         "covered": true,
-        "byteCount": 236,
-        "summaryExcerpt": "- *Deficit in G2*: Did not test gate evaluation against empty string descriptions.\n  - *Correction in G3*: Enforces minimum string length for all gate descriptions in `scripts/acceptance-anti-shrinkage.node-test.mjs` (NV19, NV20).\n- **["
+        "byteCount": 417,
+        "summaryExcerpt": "- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.\n- **Physical Code Citations**:\n  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.\n  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.\n- **V"
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.260Z",
         "covered": true,
-        "byteCount": 186,
-        "summaryExcerpt": "- *Deficit in G3*: Did not check that gate priority counts sum to 267.\n  - *Correction in G4*: Enforces `p0 + p1 + p2 === 267` in `scripts/acceptance-anti-shrinkage.node-test.mjs`.\n- **["
+        "byteCount": 231,
+        "summaryExcerpt": "- *Deficit in G3*: Assumed gate count check alone is sufficient without checking exact atom identifiers.\n  - *Correction in G4*: Validates all 267 gate signatures verbatim in `scripts/acceptance-anti-shrinkage.node-test.mjs`.\n- **["
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.311Z",
         "covered": true,
-        "byteCount": 232,
-        "summaryExcerpt": "- *Deficit in G4*: Gate status values were not restricted to strict enum (`PASS`, `FAIL`, `BLOCKED`).\n  - *Correction in G5*: Schema validation rejects non-enum gate states in `scripts/acceptance-anti-shrinkage.node-test.mjs`.\n- **["
+        "byteCount": 516,
+        "summaryExcerpt": "- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.\n- **Physical Code Citations**:\n  - `scripts/acceptance-anti-shrinkage.node-test.mjs`: Comprehensive verification.\n  - `docs/convergence/v51/FOUNDER_APPROVED_REQUIRED_ATOMS.json`: Atom registry.\n  - `"
       }
     }
   },
@@ -653,64 +653,64 @@
     "name": "Turnkey Execution, Topological DAG & Rollback Runbooks",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.311Z",
         "covered": true,
         "byteCount": 615,
         "summaryExcerpt": "- **Focus**: Zero-deadlock dependency order; file-level before/after specs; turnkey test scripts.\n- **Physical Code Citations**:\n  - `scripts/convergence/watchdog-convergence.mjs`: Watchdog monitoring.\n  - `scripts/convergence/transactional-task-manager.mjs`: Task journal.\n  - `scripts/watch-outbox-"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.157Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
-        "byteCount": 183,
-        "summaryExcerpt": "- *Deficit in R1*: Did not check for lockfile stale PID recycling.\n  - *Correction in R2*: Cross-checks PID creation timestamp in `scripts/convergence/watchdog-convergence.mjs`.\n- **["
+        "byteCount": 198,
+        "summaryExcerpt": "- *Deficit in R1*: Did not verify rollback script cleans up dangling lockfiles.\n  - *Correction in R2*: Lockfile cleanup routine integrated into `scripts/convergence/watchdog-convergence.mjs`.\n- **["
       },
       "R3": {
-        "timestamp": "2026-10-23T08:49:58.239Z",
+        "timestamp": "2026-10-23T09:03:03.454Z",
         "covered": true,
         "byteCount": 228,
         "summaryExcerpt": "- *Deficit in R2*: Did not handle missing git binary in rollback runtime environment.\n  - *Correction in R3*: Provides clear pre-flight dependency diagnostics in `scripts/convergence/watchdog-convergence.mjs` (NV21, NV22).\n- **["
       },
       "R4": {
-        "timestamp": "2026-10-23T08:50:35.106Z",
+        "timestamp": "2026-10-23T09:03:39.533Z",
         "covered": true,
         "byteCount": 210,
         "summaryExcerpt": "- *Deficit in R3*: Rollback didn't restore untracked `.env` or configuration files.\n  - *Correction in R4*: Configuration file protection during rollback in `scripts/convergence/watchdog-convergence.mjs`.\n- **["
       },
       "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:05:38.188Z",
         "covered": true,
-        "byteCount": 207,
-        "summaryExcerpt": "- *Deficit in R4*: Lockfile check didn't clean up zombie locks older than 1 hour.\n  - *Correction in R5*: Auto-pruning of stale locks older than 3600s in `scripts/convergence/watchdog-convergence.mjs`.\n- **["
+        "byteCount": 217,
+        "summaryExcerpt": "- *Deficit in R4*: Rollback command did not verify target git SHA availability before invoking reset.\n  - *Correction in R5*: Pre-flight git commit object check in `scripts/convergence/watchdog-convergence.mjs`.\n- **["
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.944Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
-        "byteCount": 497,
-        "summaryExcerpt": "- **Focus**: Zero-deadlock dependency order; file-level before/after specs; turnkey test scripts.\n- **Physical Code Citations**:\n  - `scripts/convergence/watchdog-convergence.mjs`: Watchdog monitoring.\n  - `scripts/convergence/transactional-task-manager.mjs`: Task journal.\n  - `scripts/watch-outbox-"
+        "byteCount": 439,
+        "summaryExcerpt": "- **Focus**: Zero-deadlock dependency order; file-level before/after specs; turnkey test scripts; instant rollback runbooks.\n- **Physical Code Citations**:\n  - `scripts/convergence/transactional-task-manager.mjs`: Concurrency locks.\n  - `scripts/convergence/watchdog-convergence.mjs`: Recovery workfl"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.456Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 225,
-        "summaryExcerpt": "- *Deficit in G1*: Did not verify that rollback command works from subdirectories.\n  - *Correction in G2*: Locates repository root using `git rev-parse --show-toplevel` in `scripts/convergence/watchdog-convergence.mjs`.\n- **["
+        "byteCount": 439,
+        "summaryExcerpt": "- **Focus**: Zero-deadlock dependency order; file-level before/after specs; turnkey test scripts; instant rollback runbooks.\n- **Physical Code Citations**:\n  - `scripts/convergence/transactional-task-manager.mjs`: Concurrency locks.\n  - `scripts/convergence/watchdog-convergence.mjs`: Recovery workfl"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.768Z",
+        "timestamp": "2026-10-23T09:09:05.659Z",
         "covered": true,
-        "byteCount": 226,
-        "summaryExcerpt": "- *Deficit in G2*: Did not check for permissions errors when reading task journal.\n  - *Correction in G3*: Gracefully reports permission denied errors in `scripts/convergence/transactional-task-manager.mjs` (NV21, NV22).\n- **["
+        "byteCount": 439,
+        "summaryExcerpt": "- **Focus**: Zero-deadlock dependency order; file-level before/after specs; turnkey test scripts; instant rollback runbooks.\n- **Physical Code Citations**:\n  - `scripts/convergence/transactional-task-manager.mjs`: Concurrency locks.\n  - `scripts/convergence/watchdog-convergence.mjs`: Recovery workfl"
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.260Z",
         "covered": true,
-        "byteCount": 248,
-        "summaryExcerpt": "- *Deficit in G3*: Watchdog convergence script did not output machine-parseable exit codes.\n  - *Correction in G4*: Standardized POSIX exit codes (0 for success, non-zero for specific errors) in `scripts/convergence/watchdog-convergence.mjs`.\n- **["
+        "byteCount": 245,
+        "summaryExcerpt": "- *Deficit in G3*: Did not verify automated cleanup of stale lock files if process crashes abruptly.\n  - *Correction in G4*: Added stale PID detection (checks `process.kill(pid, 0)`) in `scripts/convergence/transactional-task-manager.mjs`.\n- **["
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.311Z",
         "covered": true,
-        "byteCount": 243,
-        "summaryExcerpt": "- *Deficit in G4*: Rollback command did not verify that working tree is left in clean state after rollback.\n  - *Correction in G5*: Verifies zero untracked files after rollback execution in `scripts/convergence/watchdog-convergence.mjs`.\n- **["
+        "byteCount": 4128,
+        "summaryExcerpt": "- *Deficit in G4*: Assumed single-threaded execution of watchdog routines.\n  - *Correction in G5*: Task lock enforces mutual exclusion across concurrent worker instances via PID check in `scripts/convergence/transactional-task-manager.mjs`.\n\n---\n\n## SECTION B: INVARIANT EXECUTOR CAGE\n```text\nINVARIA"
       }
     }
   },
@@ -718,64 +718,64 @@
     "name": "Zero-Trust Release & Remote Git Synchronization",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-23T08:48:41.156Z",
+        "timestamp": "2026-10-23T09:01:32.311Z",
         "covered": true,
         "byteCount": 854,
         "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**:\n  - `scripts/release-manifest.node-test.mjs`: Release manifest validation.\n  - `scripts/convergence/watchdog-convergence.mjs`: Remote origin SH"
       },
       "R2": {
-        "timestamp": "2026-10-23T08:49:20.157Z",
-        "covered": true,
-        "byteCount": 264,
-        "summaryExcerpt": "- *Deficit in R1*: Assumed network reachability of GitHub origin.\n  - *Correction in R2*: Validates network connection before executing git push in `scripts/release-manifest.node-test.mjs`.\n\n---\n\n## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS R2]"
-      },
-      "R3": {
-        "timestamp": "2026-10-23T08:49:58.239Z",
-        "covered": true,
-        "byteCount": 276,
-        "summaryExcerpt": "- *Deficit in R2*: Assumed git origin remote was always named 'origin'.\n  - *Correction in R3*: Dynamically determines upstream tracking remote in `scripts/release-manifest.node-test.mjs` (NV23, NV24).\n\n---\n\n## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS R3]"
-      },
-      "R4": {
-        "timestamp": "2026-10-23T08:50:35.106Z",
-        "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- *Deficit in R3*: Did not verify git tag synchronization.\n  - *Correction in R4*: Checks commit tree SHA parity directly with remote HEAD in `scripts/release-manifest.node-test.mjs`.\n\n---\n\n## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS R4]"
-      },
-      "R5": {
-        "timestamp": "2026-10-23T08:51:14.455Z",
+        "timestamp": "2026-10-23T09:02:17.396Z",
         "covered": true,
         "byteCount": 297,
-        "summaryExcerpt": "- *Deficit in R4*: Did not verify that working tree was clean before comparing remote SHA.\n  - *Correction in R5*: Enforces zero modified, untracked, or staged files in `scripts/release-manifest.node-test.mjs`.\n\n---\n\n## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G57 - PASS R5 - CANONICAL]"
+        "summaryExcerpt": "- *Deficit in R1*: Did not check for diverging commit histories between local and remote.\n  - *Correction in R2*: Checks ancestor relationship via `git merge-base --is-ancestor` in `scripts/release-manifest.node-test.mjs`.\n\n---\n\n## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G58 - PASS R2]"
+      },
+      "R3": {
+        "timestamp": "2026-10-23T09:03:03.454Z",
+        "covered": true,
+        "byteCount": 276,
+        "summaryExcerpt": "- *Deficit in R2*: Assumed git origin remote was always named 'origin'.\n  - *Correction in R3*: Dynamically determines upstream tracking remote in `scripts/release-manifest.node-test.mjs` (NV23, NV24).\n\n---\n\n## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G58 - PASS R3]"
+      },
+      "R4": {
+        "timestamp": "2026-10-23T09:03:39.533Z",
+        "covered": true,
+        "byteCount": 258,
+        "summaryExcerpt": "- *Deficit in R3*: Did not verify git tag synchronization.\n  - *Correction in R4*: Checks commit tree SHA parity directly with remote HEAD in `scripts/release-manifest.node-test.mjs`.\n\n---\n\n## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G58 - PASS R4]"
+      },
+      "R5": {
+        "timestamp": "2026-10-23T09:05:38.188Z",
+        "covered": true,
+        "byteCount": 277,
+        "summaryExcerpt": "- *Deficit in R4*: Relied on single remote endpoint check.\n  - *Correction in R5*: Multi-ref verification ensuring exact remote branch tip parity in `scripts/release-manifest.node-test.mjs`.\n\n---\n\n## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G58 - PASS R5 - CANONICAL]"
       },
       "G1": {
-        "timestamp": "2026-10-23T08:51:53.944Z",
+        "timestamp": "2026-10-23T09:07:47.121Z",
         "covered": true,
-        "byteCount": 801,
-        "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**:\n  - `scripts/release-manifest.node-test.mjs`: Release manifest validation.\n  - `scripts/convergence/watchdog-convergence.mjs`: Remote origin SH"
+        "byteCount": 392,
+        "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**:\n  - `scripts/convergence/watchdog-convergence.mjs`: Git status inspection.\n  - `.github/workflows/ci.yml`: Continuous integration pipeline.\n- *"
       },
       "G2": {
-        "timestamp": "2026-10-23T08:52:37.456Z",
+        "timestamp": "2026-10-23T09:08:36.169Z",
         "covered": true,
-        "byteCount": 4082,
-        "summaryExcerpt": "- *Deficit in G1*: Did not check for detached HEAD state.\n  - *Correction in G2*: Requires active branch `antigravity/farely-v12-product-convergence` in `scripts/release-manifest.node-test.mjs`.\n\n---\n\n## SECTION B: INVARIANT EXECUTOR CAGE\n```text\nINVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION\nThe exec"
+        "byteCount": 392,
+        "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**:\n  - `scripts/convergence/watchdog-convergence.mjs`: Git status inspection.\n  - `.github/workflows/ci.yml`: Continuous integration pipeline.\n- *"
       },
       "G3": {
-        "timestamp": "2026-10-23T08:53:19.768Z",
+        "timestamp": "2026-10-23T09:09:05.659Z",
         "covered": true,
-        "byteCount": 4096,
-        "summaryExcerpt": "- *Deficit in G2*: Did not verify remote tracking branch configuration.\n  - *Correction in G3*: Enforces upstream tracking ref matching feature branch in `scripts/release-manifest.node-test.mjs` (NV23, NV24).\n\n---\n\n## SECTION B: INVARIANT EXECUTOR CAGE\n```text\nINVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVI"
+        "byteCount": 392,
+        "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**:\n  - `scripts/convergence/watchdog-convergence.mjs`: Git status inspection.\n  - `.github/workflows/ci.yml`: Continuous integration pipeline.\n- *"
       },
       "G4": {
-        "timestamp": "2026-10-23T08:54:01.567Z",
+        "timestamp": "2026-10-23T09:11:36.260Z",
         "covered": true,
-        "byteCount": 4080,
-        "summaryExcerpt": "- *Deficit in G3*: Did not check for stash entries before confirming clean release state.\n  - *Correction in G4*: Asserts `git stash list` is empty in `scripts/release-manifest.node-test.mjs`.\n\n---\n\n## SECTION B: INVARIANT EXECUTOR CAGE\n```text\nINVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION\nThe execut"
+        "byteCount": 225,
+        "summaryExcerpt": "- *Deficit in G3*: Relied solely on git status output without verifying remote branch exists on origin.\n  - *Correction in G4*: Explicit `git ls-remote` check against `origin/antigravity/farely-v12-product-convergence`.\n- **["
       },
       "G5": {
-        "timestamp": "2026-10-23T08:54:43.961Z",
+        "timestamp": "2026-10-23T09:12:10.311Z",
         "covered": true,
-        "byteCount": 4098,
-        "summaryExcerpt": "- *Deficit in G4*: Did not verify that commit message follows conventional commit guidelines.\n  - *Correction in G5*: Verifies conventional commit format in `scripts/release-manifest.node-test.mjs`.\n\n---\n\n## SECTION B: INVARIANT EXECUTOR CAGE\n```text\nINVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION\nThe "
+        "byteCount": 453,
+        "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**:\n  - `scripts/convergence/watchdog-convergence.mjs`: Git status inspection.\n  - `.github/workflows/ci.yml`: Continuous integration pipeline.\n  -"
       }
     }
   }
