@@ -53,6 +53,34 @@ if (terminationReason === 'MAX_TOKEN_BUDGET_EXCEEDED' || terminationReason === '
 }
 
 if (terminationReason === 'NO_TOOL_CALL') {
+  if (state.status === 'INITIALIZED') {
+    state.status = 'IN_RESEARCH_5X';
+    state.currentStage = 'RESEARCH_R10';
+    state.currentPass = 'R1';
+    state.lastUpdated = new Date().toISOString();
+    fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2), 'utf8');
+
+    console.log(JSON.stringify({
+      decision: 'continue',
+      reason: 'Chu trình hội tụ 5x5 vừa được khởi tạo. Tự động kích hoạt Pass R1 của Research R10 qua 12 thấu kính phản biện!'
+    }));
+    process.exit(0);
+  }
+
+  if (state.status === 'RESEARCH_COMPLETED_PENDING_COMPILER') {
+    state.status = 'IN_MASTER_GOAL_5X';
+    state.currentStage = 'MASTER_GOAL_G11';
+    state.currentPass = 'G1';
+    state.lastUpdated = new Date().toISOString();
+    fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2), 'utf8');
+
+    console.log(JSON.stringify({
+      decision: 'continue',
+      reason: '5 Pass Research R10 đã hoàn tất. Tự động kích hoạt Pass G1 của Master Goal Compiler G11 áp dụng Solution Cage Protocol!'
+    }));
+    process.exit(0);
+  }
+
   if (state.status === 'GOAL_COMPLETED') {
     state.status = 'IN_RESEARCH_5X';
     state.lastUpdated = new Date().toISOString();

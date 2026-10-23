@@ -243,8 +243,43 @@ export function savePass(stage, passNum, content, metadata = {}) {
     }
   }
 
+  // Record granular lens evolution in durable ledger
+  recordLensEvolution(passKey, content);
+
   saveState(state);
   return { passKey, filePath, hash, coverage };
+}
+
+export function recordLensEvolution(passKey, content) {
+  const LEDGER_FILE = path.join(STATE_DIR, '12_LENS_EVOLUTION_LEDGER.json');
+  let ledger = {};
+  if (fs.existsSync(LEDGER_FILE)) {
+    try {
+      ledger = JSON.parse(fs.readFileSync(LEDGER_FILE, 'utf8'));
+    } catch {}
+  }
+
+  for (const lens of ADVERSARIAL_BATTERY_12) {
+    if (!ledger[lens.id]) {
+      ledger[lens.id] = {
+        name: lens.name,
+        passes: {}
+      };
+    }
+
+    const lensRegex = new RegExp(`(?:###|##)?\\s*${lens.id}[^\\n]*\\n([\\s\\S]*?)(?=(?:###|##)?\\s*L\\d{2}|$)`, 'i');
+    const match = lensRegex.exec(content);
+    const snippet = match ? match[1].trim() : '';
+
+    ledger[lens.id].passes[passKey] = {
+      timestamp: new Date().toISOString(),
+      covered: snippet.length > 50,
+      byteCount: Buffer.byteLength(snippet, 'utf8'),
+      summaryExcerpt: snippet.slice(0, 300)
+    };
+  }
+
+  fs.writeFileSync(LEDGER_FILE, JSON.stringify(ledger, null, 2), 'utf8');
 }
 
 export function saveLensCheckpoint(stage, passNum, lensId, lensContent) {
@@ -411,6 +446,13 @@ if (process.argv[1] && process.argv[1].endsWith('continuous_5x5_orchestrator.mjs
     } catch (e) {
       console.error(e.message);
       process.exit(1);
+    }
+  } else if (command === 'ledger') {
+    const LEDGER_FILE = path.join(STATE_DIR, '12_LENS_EVOLUTION_LEDGER.json');
+    if (fs.existsSync(LEDGER_FILE)) {
+      console.log(fs.readFileSync(LEDGER_FILE, 'utf8'));
+    } else {
+      console.log(JSON.stringify({ note: 'No passes recorded in ledger yet.' }, null, 2));
     }
   } else if (command === 'print-prompt') {
     const prompt = printLatestPrompt();

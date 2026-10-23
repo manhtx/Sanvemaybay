@@ -156,5 +156,12 @@ if (process.argv[1] && process.argv[1].endsWith('watchdog-convergence.mjs')) {
   } else if (cmd === 'integrity') {
     const integrity = checkPassesIntegrity();
     console.log(JSON.stringify(integrity, null, 2));
+  } else if (cmd === 'ledger') {
+    const LEDGER_FILE = path.join(STATE_DIR, '12_LENS_EVOLUTION_LEDGER.json');
+    if (fs.existsSync(LEDGER_FILE)) {
+      console.log(fs.readFileSync(LEDGER_FILE, 'utf8'));
+    } else {
+      console.log(JSON.stringify({ note: 'No passes recorded in ledger yet.' }, null, 2));
+    }
   }
 }
