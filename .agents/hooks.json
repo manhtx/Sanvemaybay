@@ -15,6 +15,13 @@
         "timeout": 15
       }
     ],
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "node scripts/convergence/hook-post-invocation.mjs",
+        "timeout": 15
+      }
+    ],
     "Stop": [
       {
         "type": "command",
