@@ -8,6 +8,8 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { completeGoal } from './continuous_5x5_orchestrator.mjs';
+import { loadJournal } from './transactional-task-manager.mjs';
 
 const ROOT_DIR = process.cwd();
 const STATE_FILE = path.join(ROOT_DIR, 'docs/convergence/state/loop_state.json');
@@ -103,6 +105,32 @@ if (terminationReason === 'NO_TOOL_CALL') {
       reason: 'Master Goal Prompt G5 has been compiled and injected into chat. Automatically advancing execution of the new Master Goal tasks.'
     }));
     process.exit(0);
+  }
+
+  if (state.status === 'EXECUTING_GOAL') {
+    const journal = loadJournal();
+    if (journal.active_transaction) {
+      console.log(JSON.stringify({
+        decision: 'continue',
+        reason: `Goal [${state.cycleId || 'ACTIVE'}] is actively executing task [${journal.active_transaction.task_id}]. Continue autonomous execution without stopping.`
+      }));
+      process.exit(0);
+    }
+
+    try {
+      const completion = completeGoal(state.cycleId);
+      console.log(JSON.stringify({
+        decision: 'continue',
+        reason: `[TỰ ĐỘNG CHUYỂN GIAO CHU KỲ] Goal [${completion.completedCycle}] đã hoàn thành và verified Git remote. Lập tức tự động kích hoạt Chu trình Hội tụ 5x5: Pass R1 Research R10 cho chu kỳ [${completion.nextCycleId}]!`
+      }));
+      process.exit(0);
+    } catch (err) {
+      console.log(JSON.stringify({
+        decision: 'continue',
+        reason: `[TỰ ĐỘNG THỰC THI GOAL] Goal [${state.cycleId || 'ACTIVE'}] đang trong quá trình thực thi nhiệm vụ (${err.message}). Lập tức tiếp tục thực thi các nhiệm vụ tiếp theo từ LATEST_MASTER_GOAL_PROMPT.md qua transactional-task-manager mà không được dừng lại!`
+      }));
+      process.exit(0);
+    }
   }
 }
 
