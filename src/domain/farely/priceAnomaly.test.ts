@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   detectPriceAnomaly,
   calculateSampleStandardDeviation,
+  hasZeroDispersion,
 } from "./priceAnomaly";
 
 describe("Price Anomaly Detection (F37)", () => {
@@ -144,6 +145,13 @@ describe("Price Anomaly Detection (F37)", () => {
       expect(mean).toBe(1_500_000);
       expect(sampleVariance).toBe(0);
       expect(sampleStdDev).toBe(0);
+    });
+
+    it("evaluates hasZeroDispersion helper accurately for identical prices", () => {
+      expect(hasZeroDispersion([1_200_000, 1_200_000, 1_200_000])).toBe(true);
+      expect(hasZeroDispersion([1_200_000, 1_250_000])).toBe(false);
+      expect(hasZeroDispersion([1_200_000])).toBe(true);
+      expect(hasZeroDispersion([])).toBe(true);
     });
   });
 });

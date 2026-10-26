@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
-# LEVEL: Pass 5: Locked Sovereign Master Goal Prompt
-# MANDATE: Final unassailable synthesis across all 12 lenses. 100% self-contained, turnkey Master Goal Prompt with invariant executor lock.
-# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
-# TIMESTAMP: 2026-10-26T07:50:00.000Z
-# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
+# LEVEL: Pass 5: Sovereign Locked Master Goal Prompt & Canonical Convergence
+# MANDATE: Final synthesis of passes G1..G4 into a hermetically sealed, executable Master Goal prompt with invariant locks.
+# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
+# TIMESTAMP: 2026-10-26T09:56:56.280Z
+# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
 
 ---
 
@@ -18,26 +18,26 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## REFUTATION MATRIX & AUDIT OF PASS G4
+## REFUTATION MATRIX & FALSIFICATION OF PASS G4
 
-### Falsification 1: L01 Sovereign Contract Enforcement & OTA Boundary Exclusion
-- *Deficit in G4*: Pass G4 reiterated domain rights rules, but omitted explicit structural validation verifying that outbound redirect links cannot inject hidden transaction fees.
-- *Falsification & Falsification Vector*: Without URL query sanitization, malicious or corrupted partner URLs could append query flags simulating affiliate checkout, confusing end users.
-- *Correction in G5*: In `src/domain/farely/providerRights.ts`, enforce strict whitelist URL query generation: outbound deep-links strictly pass origin, destination, departDate, and adult passengers, stripping all experimental or transaction-related query parameters.
+### Falsification 1: L01 Scope Conflation on Self-Transfer Warning Terminology
+- *Deficits Identified in G4*: Pass G4 scheduled multi-city itinerary changes, but used colloquial phraseology that blurred the line between intelligence alerts and third-party warranty promises.
+- *Adversarial Invariant Falsification*: In `src/domain/farely/providerRights.ts`, Farely must never imply that it provides travel protection or interline guarantees. Phrases like "guaranteed connection" violate the product boundary invariant.
+- *Correction in G5*: In `src/domain/farely/multiCityItinerary.ts`, enforce explicit disclaimer strings emphasizing that Farely provides information only (`SELF_TRANSFER_UNPROTECTED`), and passengers are solely responsible for re-checking baggage.
 
-### Falsification 2: L09 Strict Anti-Self-Certification Proof Level Distinction
-- *Deficit in G4*: Pass G4 mandated C1 test verification, but left open the potential for an executor to conflate unit test success with deployed production outcome proof.
-- *Falsification & Falsification Vector*: A passing vitest suite does not prove live carrier API uptime or real-world network resilience.
-- *Correction in G5*: In `src/domain/farely/productionSmokeTruth.ts`, lock the proof hierarchy: C0 (Contract) -> C1 (Code) -> C2 (Integration) -> C3 (Runtime Smoke) -> C4 (Longitudinal Soak). Executors are programmatically barred from marking C3/C4 proven solely on local C1/C2 passes.
+### Falsification 2: L04 Migration Downgrade Vulnerability Under Concurrent Session Reset
+- *Deficits Identified in G4*: Pass G4 mapped outbox queue concurrency, but failed to assert session state cleanup in client local storage during authentication invalidation.
+- *Adversarial Invariant Falsification*: If an anonymous user converts to an authenticated user while offline alerts are pending, stale session keys in `localStorage` can lead to cross-account telemetry leak.
+- *Correction in G5*: In `src/app/lib/analytics.ts`, ensure that local product events are partitioned and sanitized against tenant boundary leaks before queue persistence.
 
-### Falsification 3: L11 Cryptographic Digest Checksum Verification on Recovery
-- *Deficit in G4*: Pass G4 addressed file permission restoration, but omitted pre-rollback byte comparison to detect manual file edits during active transactions.
-- *Falsification & Falsification Vector*: If an external editor modifies a file while a transaction is running, an unverified rollback silently overwrites external modifications without warning.
-- *Correction in G5*: In `scripts/convergence/transactional-task-manager.mjs`, calculate SHA-256 digests before restoring files, recording exact before-and-after hashes in `transaction_journal.json`.
+### Falsification 3: L12 Remote Branch Desynchronization Detection
+- *Deficits Identified in G4*: Pass G4 checked remote branch equality via simple `git push`, but did not mandate strict commit SHA verification between local `HEAD` and remote branch before declaring cycle completion.
+- *Adversarial Invariant Falsification*: If network timeouts occur during push, a local script might assume completion while remote GitHub repository remains un-updated, violating the zero-trust release contract.
+- *Correction in G5*: In `scripts/convergence/watchdog-convergence.mjs`, require live `git ls-remote` verification asserting identical 40-character commit hashes between local HEAD and remote origin before goal completion.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73 CANONICAL SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -54,7 +54,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
-- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers.
+- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; passenger checkout is strictly `boundary_excluded`.
 - **Verification Command**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
 ### SOL-04: SOL-AUTH-01 (Rate-Limited Tokenized Watch Outbox & Row-Level Locking)
@@ -66,7 +66,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-05: SOL-CIRCUIT-01 (Distributed Advisory-Lock Token Lease & Circuit Breaker)
 - **Target File**: `supabase/functions/_shared/flight-search.ts` & `supabase/functions/_shared/amadeus-provider.ts`
 - **Specification**: Distributed token refresh coordinates via Postgres advisory locks (`pg_try_advisory_xact_lock`) with 3000ms timeout and `TokenLeaseRecord` caching. Crawler calls enforce `AbortSignal.timeout(8000)`. Circuit breaker state syncs across workers via `operational_scan_health`.
-- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches.
+- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Ticketing fulfillment is strictly `boundary_excluded`.
 - **Verification Command**: `node scripts/provider-drift-and-killswitch.node-test.mjs`
 
 ### SOL-06: SOL-STALE-01 (Storage Exception Shield & 14-Day Eviction)
@@ -82,7 +82,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Verification Command**: `node scripts/client-error-boundary.node-test.mjs`
 
 ### SOL-08: SOL-MIGRATION-01 (ForeignKey Index Parity & 47-Migration Parity)
-- **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `supabase/migrations/`
+- **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `scripts/migration-parity.node-test.mjs`
 - **Specification**: Exactly 47 canonical migrations verified. Ensures all foreign key constraints are indexed (`idx_watch_notifications_watch_id`, `idx_user_watches_user_id`) to prevent table-level share locks during cascade deletions.
 - **Forbidden Deviations**: No sequential full-table scans on search queries; no unindexed foreign keys.
 - **Verification Command**: `node scripts/migration-parity.node-test.mjs`
@@ -107,73 +107,75 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-12: SOL-RELEASE-01 (Git Remote Fast-Forward & SHA Parity)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs` & `package.json`
-- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts.
+- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts. Payment gateway integration is strictly `boundary_excluded`.
 - **Forbidden Deviations**: No completion declaration with unpushed commits or untracked changes.
 - **Verification Command**: `git ls-remote origin antigravity/farely-v12-product-convergence`
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G5 CANONICAL)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G5 CANONICAL SEALED)
 
 ### L01: Product Truth & Founder Scope Integrity
-Strict non-OTA intelligence platform. Merchant flight booking execution is prohibited. All provider source declarations clearly differentiate indicative consumer discovery from syndicated feeds in `src/domain/farely/providerRights.ts`.
+Strict non-OTA intelligence platform. Direct booking fulfillment and payment gateways are excluded. `src/domain/farely/providerRights.ts` enforces boundaries.
 
 ### L02: Price, Historical Baseline & Data Integrity
-Enforces zero tolerance for negative prices or NaN. Seasonal Tết epochs prevent false discount alerts in `src/domain/farely/priceAnomaly.ts`.
+In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors.
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-Landed cost includes domestic carrier ancillary surcharges. Self-transfer penalties ensure that multi-carrier connections under 180 minutes are penalized by 25 points in `src/domain/farely/tripBudgetEstimator.ts`.
+In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity.
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
-`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces strict tenant isolation and non-blocking outbox processing via `FOR UPDATE SKIP LOCKED`.
+`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues.
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
-`src/domain/farely/providerCapabilities.ts` defines explicit rate limits and circuit breaker trip thresholds for all integrated providers.
+`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters.
 
 ### L06: Freshness, Stale Degradation & UX Honesty
-`src/domain/farely/pwaOfflineFreshness.ts` implements 14-day cache eviction and Vietnamese degradation banners on `src/app/pages/DealsPage.tsx`.
+`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`.
 
 ### L07: Observability, Secret Scrubbing & Error Boundaries
-`src/app/lib/analytics.ts` uses circular-tolerant traversal to serialize diagnostic telemetry safely.
+`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking.
 
 ### L08: Database Architecture, Schema Drift & Migration Provenance
-47 canonical migrations verified in `scripts/verify-certification-integrity.node-test.mjs`.
+47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`.
 
 ### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
-`src/domain/farely/productionSmokeTruth.ts` tracks verification tiers with zero self-awarded perfect scores.
+`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications.
 
 ### L10: Anti-Shrinkage & 267 Historical Gates Traceability
-`scripts/acceptance-anti-shrinkage.node-test.mjs` locks all 267 acceptance criteria against regression.
+`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression.
 
 ### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
-`scripts/convergence/transactional-task-manager.mjs` enforces atomic pre-task snapshots and byte-for-byte rollback.
+`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback.
 
 ### L12: Zero-Trust Release & Remote Git Synchronization
-`scripts/convergence/watchdog-convergence.mjs` mandates fast-forward parity against remote branch `antigravity/farely-v12-product-convergence`.
+`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.
 
 ---
 
-## SECTION E: TURNKEY EXECUTION TASKS FOR CYCLE G73
+## SECTION E: COMPLETE WORK PACKAGE SPECIFICATIONS FOR CYCLE G74
 
-### TASK 1: WP01-BESSEL-VARIANCE-ANOMALY
-- **Target**: `src/domain/farely/priceAnomaly.ts` & `src/domain/farely/priceAnomaly.test.ts`
-- **Actions**:
-  1. Add `calculateSampleStandardDeviation()` with Bessel's correction $(N - 1)$ for $N \ge 2$, with zero variance guard when $N \le 1$.
-  2. Export function and integrate into variance tests.
-  3. Add unit test asserting correct variance on 5-element cohort.
-- **Verification**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+### WP01-SAFE-ANALYTICS-DEPTH-GUARD
+- **Target File**: `src/app/lib/analytics.ts`
+- **Scope**:
+  - Implement depth tracking in `safeSerializeError(err: unknown, maxDepth = 3): string`.
+  - Replace subtrees exceeding `maxDepth` with `"[MaxDepthExceeded]"`.
+  - Guard `seen.has()` and `seen.add()` with `typeof value === "object" && value !== null`.
+  - Add unit tests in `src/app/lib/analytics.test.ts`.
+- **Verification**: `npm test src/app/lib/analytics.test.ts`
 
-### TASK 2: WP02-METRO-TRANSFER-RISK
-- **Target**: `src/domain/farely/multiCityItinerary.ts` & `src/domain/farely/multiCityItinerary.test.ts`
-- **Actions**:
-  1. Define `METROPOLITAN_AIRPORT_PAIRS` set containing Tokyo (HND-NRT), Bangkok (DMK-BKK), Seoul (GMP-ICN), London (LHR-LGW), New York (JFK-EWR).
-  2. Implement `isMetropolitanAirportChange(fromAirport, toAirport)` with uppercase normalization.
-  3. Add unit test asserting accurate identification of metropolitan transfer pairs.
-- **Verification**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
+### WP02-METRO-MINIMUM-TRANSIT-BUFFER
+- **Target File**: `src/domain/farely/multiCityItinerary.ts`
+- **Scope**:
+  - Implement `getMetropolitanMinimumTransitMinutes(fromAirport: string, toAirport: string): number` returning 210 for `METROPOLITAN_AIRPORT_PAIRS` and 0 otherwise.
+  - In `validateMultiCityItinerary`, if an open-jaw segment between consecutive slices is a recognized metropolitan airport change, attach explicit warning notice regarding ground transfer time.
+  - Add unit tests in `src/domain/farely/multiCityItinerary.test.ts`.
+- **Verification**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
-### TASK 3: WP03-ANCILLARY-SURCHARGE-EXPANSION
-- **Target**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/tripBudgetEstimator.test.ts`
-- **Actions**:
-  1. Implement `estimateRoundTripBaggageCost(airlineCode, checkedBags)` returning total baggage fee for round-trip travel.
-  2. Export function and add unit tests.
-- **Verification**: `npx vitest run src/domain/farely/tripBudgetEstimator.test.ts`
+### WP03-ZERO-DISPERSION-ABSTENTION
+- **Target File**: `src/domain/farely/priceAnomaly.ts`
+- **Scope**:
+  - In `detectPriceAnomaly`, check if `rawMad < 1e-6` when evaluating historical cohort.
+  - Return `classification: "INSUFFICIENT_DISPERSION_ABSTENTION"` with zero z-score and clear Vietnamese explanation.
+  - Add unit tests in `src/domain/farely/priceAnomaly.test.ts`.
+- **Verification**: `npm test src/domain/farely/priceAnomaly.test.ts`

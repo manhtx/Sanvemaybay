@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
-# TIMESTAMP: 2026-10-26T07:44:15.584Z
-# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
+# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
+# TIMESTAMP: 2026-10-26T09:56:56.280Z
+# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
 
 ---
 
@@ -18,11 +18,11 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73 CANONICAL SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74 CANONICAL SEALED)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
-- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `src/domain/farely/priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return neutral anomaly rating (0).
+- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `src/domain/farely/priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ using Bessel's correction $(N - 1)$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return neutral anomaly rating (0).
 - **Forbidden Deviations**: No anomaly extrapolation on micro-samples ($N < 5$); no float math for currency.
 - **Verification Command**: `npm test src/app/domain/differentialAndMetamorphic.test.ts`
 
@@ -94,22 +94,22 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G73 BASELINE)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G74 BASELINE)
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Focus**: Anti-OTA boundary enforcement; non-commercial indicative flight intelligence; exact boundary exclusion of merchant booking, end-user checkout flow, and payment collection.
+- **Focus**: Pure flight opportunity intelligence; strict exclusion of merchant ticket booking execution, end-user checkout funnel, and payment collection.
 - **Physical Citations**: `src/domain/farely/providerRights.ts`, `src/domain/farely/providerCapabilities.ts`, `src/app/pages/DealDetailPage.tsx`.
 - **Adversarial Vector Defense**: Defends against NV01 (OTA role creep) and NV02 (false deal booking claims). Deep-links include visual carrier disclaimer.
 - **Verification Proof (C0..C4)**: C0 contract tests in `scripts/adversarial-corpus-a01-a24.node-test.mjs`.
 
 ### L02: Price, Historical Baseline & Data Integrity
-- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).
+- **Focus**: Integer VND currency mathematics without floating point drift; Bessel-corrected sample standard deviation $(N - 1)$ for sample sizes $N \ge 5$; Tet holiday baseline scaling.
 - **Physical Citations**: `src/domain/farely/money.ts`, `src/domain/farely/priceAnomaly.ts`, `src/app/data/api.ts`.
 - **Adversarial Vector Defense**: Defends against NV03 (negative or zero prices) and NV04 (small-sample anomaly hallucination).
-- **Verification Proof (C0..C4)**: C1 unit tests in `src/app/domain/differentialAndMetamorphic.test.ts`.
+- **Verification Proof (C0..C4)**: C1 unit tests in `src/app/domain/differentialAndMetamorphic.test.ts` and `src/domain/farely/priceAnomaly.test.ts`.
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-- **Focus**: Comprehensive landed cost transparency including domestic ancillary surcharges (VietJet, Bamboo, Vietravel Airlines); penalties for high-risk self-transfers (<180m).
+- **Focus**: Transparent landed costs including carrier baggage and transaction fees; detection of metropolitan inter-airport transfers (HND-NRT, DMK-BKK) with minimum 360m buffer and 25-point penalty.
 - **Physical Citations**: `src/domain/farely/tripBudgetEstimator.ts`, `src/domain/farely/multiCityItinerary.ts`, `src/app/domain/dealComparison.ts`.
 - **Adversarial Vector Defense**: Defends against NV05 (unrecorded ancillary costs) and NV06 (unprotected self-transfers).
 - **Verification Proof (C0..C4)**: C1 unit tests in `src/domain/farely/multiCityItinerary.test.ts` and `src/app/domain/dealComparison.test.ts`.
@@ -171,7 +171,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- **Cycle**: `G73`
+- **Cycle**: `G74`
 - **Pass**: `R1` (Full-Battery Baseline Synthesis)
-- **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites and 382 native node tests.
+- **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites (899 tests) and 382 native node tests.
 - **Handoff Target**: Pass R2 (Skeptical Grounding across 12 Lenses).

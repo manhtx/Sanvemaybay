@@ -67,19 +67,31 @@ export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
  */
 export function safeSerializeError(err: unknown, maxDepth = 3): string {
   const seen = new WeakSet();
+
+  function replacer(this: any, key: string, value: any, depth = 0): any {
+    if (typeof value === "string" && value.length > 1000) {
+      return value.slice(0, 1000) + "...[TRUNCATED]";
+    }
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return "[Circular]";
+      }
+      if (depth >= maxDepth) {
+        return "[MaxDepthExceeded]";
+      }
+      seen.add(value);
+      const isArr = Array.isArray(value);
+      const out: any = isArr ? [] : {};
+      for (const k of Object.keys(value)) {
+        out[k] = replacer.call(out, k, value[k], depth + 1);
+      }
+      return out;
+    }
+    return value;
+  }
+
   try {
-    return JSON.stringify(err, (key, value) => {
-      if (typeof value === "string" && value.length > 1000) {
-        return value.slice(0, 1000) + "...[TRUNCATED]";
-      }
-      if (typeof value === "object" && value !== null) {
-        if (seen.has(value)) {
-          return "[Circular]";
-        }
-        seen.add(value);
-      }
-      return value;
-    });
+    return JSON.stringify(replacer.call({ "": err }, "", err, 0));
   } catch {
     return JSON.stringify({ message: String(err) });
   }

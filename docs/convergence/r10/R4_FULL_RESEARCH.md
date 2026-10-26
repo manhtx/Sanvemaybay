@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
 # MANDATE: Subject baseline R3 to production SRE rigor and zero-mock verification across all 12 lenses.
-# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
-# TIMESTAMP: 2026-10-26T07:44:15.584Z
-# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
+# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
+# TIMESTAMP: 2026-10-26T09:56:56.280Z
+# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & SRE AUDIT OF PASS R3
 
-### Falsification 1: L05 Distributed Advisory Locking Connection Leakage
-- *Deficit in R3*: Pass R3 detailed `pg_try_advisory_xact_lock`, but failed to specify the database connection pooling semantics under Supabase Edge Function serverless environments.
-- *SRE Production Falsification*: In serverless runtimes using PgBouncer in transaction pooling mode, transaction-level advisory locks are cleanly released at transaction end, but session-level advisory locks (`pg_advisory_lock`) remain attached to pooled backend connections, creating mysterious cross-worker deadlocks.
-- *Correction in R4*: In `supabase/functions/_shared/amadeus-provider.ts`, strictly forbid session-level advisory locks; mandate `pg_try_advisory_xact_lock` strictly inside an explicit `BEGIN ... COMMIT` block with maximum transaction timeout of 3000ms.
+### Falsification 1: L05 Connection Saturation Under Distributed Advisory Locks
+- *Deficit in R3*: Pass R3 mandated Postgres advisory locks (`pg_try_advisory_xact_lock`), but overlooked connection pool starvation when 50 concurrent edge functions request advisory locks simultaneously.
+- *SRE Production Falsification*: If all 50 pooled connections block waiting for advisory transactions, incoming user search queries fail with pool timeout 504 Gateway Timeout.
+- *Correction in R4*: In `supabase/functions/_shared/amadeus-provider.ts`, enforce a strict non-blocking `pg_try_advisory_xact_lock` check; if the lock cannot be acquired immediately, the caller backs off and consumes cached responses rather than queuing for database connection threads.
 
-### Falsification 2: L07 Unbounded Mobile Bundle Size Bloat
-- *Deficit in R3*: Pass R3 addressed telemetry circular serialization, but neglected frontend production asset bundling metrics.
-- *SRE Production Falsification*: `src/app/pages/DealDetailPage.tsx` (837 LOC) and `src/app/pages/SearchPage.tsx` (726 LOC) statically import extensive domain lookup dictionaries, bloating initial JavaScript bundle size past the 250KB mobile performance budget and degrading Largest Contentful Paint (LCP) on 3G cellular connections in Vietnam.
-- *Correction in R4*: In `vite.config.ts`, mandate route-level dynamic code splitting via `React.lazy()` for detail and search routes, keeping initial index chunk size under 200KB gzipped.
+### Falsification 2: L07 Memory Leaks in Circular WeakSet Garbage Collection
+- *Deficit in R3*: Pass R3 implemented `WeakSet` circular reference tracking in `analytics.ts`, but overlooked primitive values wrapped in boxed objects.
+- *SRE Production Falsification*: If telemetry payloads attach non-extensible objects or symbol keys, `WeakSet.add()` throws runtime `TypeError: Cannot add a non-object to a WeakSet`, crashing client error telemetry during critical crash reporting.
+- *Correction in R4*: In `src/app/lib/analytics.ts`, verify `typeof val === 'object' && val !== null` before `WeakSet.has()` or `WeakSet.add()` invocations.
 
-### Falsification 3: L12 Ephemeral CI Git Tag Desynchronization
-- *Deficit in R3*: Pass R3 checked branch HEAD equality, but did not guard against release metadata drift between `package.json` version and GitHub release tags.
-- *SRE Production Falsification*: If code is committed and pushed without updating release metadata in `scripts/generate-release-metadata.node-test.mjs`, client applications report mismatched build hashes, causing cache invalidation storms in ServiceWorker runtimes.
-- *Correction in R4*: Mandate that `scripts/release-manifest.node-test.mjs` verifies release tag and build hash synchronization as a mandatory prerequisite for production deployment.
+### Falsification 3: L08 Replay Drift in Database Backups Under High-Throughput Outbox
+- *Deficit in R3*: Pass R3 verified static schema migrations, but omitted testing disaster recovery under continuous outbox message insertion.
+- *SRE Production Falsification*: Running `pg_dump` while outbox batch workers execute `FOR UPDATE SKIP LOCKED` can produce inconsistent foreign key references if notifications reference uncommitted watch rows.
+- *Correction in R4*: In `scripts/database-backup-restore-drill.node-test.mjs`, verify transactional point-in-time recovery ensuring zero orphan notification rows during backup restoration drills.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73 CANONICAL SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74 CANONICAL SEALED)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -154,7 +154,7 @@ In `src/app/lib/analytics.ts`, safe error serialization eliminates circular stac
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- **Cycle**: `G73`
+- **Cycle**: `G74`
 - **Pass**: `R4` (Production SRE Rigor & Zero-Mock Verification)
 - **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites and 382 native node tests.
 - **Handoff Target**: Pass R5 (Sovereign Canonical Convergence).

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G4]
-# LEVEL: Pass 4: Strict Topological Dependency DAG, Rollback Invariants & Stage Gates
-# MANDATE: Formulate topological execution order and cryptographic rollback runbooks across all 12 lenses.
-# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
-# TIMESTAMP: 2026-10-26T07:50:00.000Z
-# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
+# LEVEL: Pass 4: Strict Topological Dependency DAG & Execution Sequencing
+# MANDATE: Subject verification oracles to strict topological ordering, race-condition defenses, and ACID execution steps.
+# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
+# TIMESTAMP: 2026-10-26T09:56:56.280Z
+# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
 
 ---
 
@@ -18,26 +18,26 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## REFUTATION MATRIX & AUDIT OF PASS G3
+## REFUTATION MATRIX & FALSIFICATION OF PASS G3
 
-### Falsification 1: L02 Floating-Point Arithmetic Rounding Drift in Variance
-- *Deficit in G3*: Pass G3 calculated sample variance using standard IEEE-754 floating point arithmetic without integer capping or precision rounding.
-- *Falsification & Falsification Vector*: Successive floating point subtractions and multiplications on VND currency integers can produce slight fractional precision tails (`.000000004`), which fail exact unit equality assertions in strict metamorphic tests.
-- *Correction in G4*: In `src/domain/farely/priceAnomaly.ts`, apply `Math.round()` to intermediate currency variance calculations to ensure strict integer alignment in VND math.
+### Falsification 1: L05 Non-Deterministic Concurrent Token Refresh Clashes
+- *Deficits Identified in G3*: Pass G3 scheduled test oracles without specifying lock acquisition order across concurrent provider routines.
+- *Adversarial DAG Falsification*: In `supabase/functions/_shared/flight-search.ts`, if multiple edge functions concurrently query Amadeus provider without strict serial dependency in test scripts, race conditions corrupt the shared token cache.
+- *Correction in G4*: In the topological DAG, enforce serial ordering for crawler token leases using explicit process-level transaction locks before executing external API verifications.
 
-### Falsification 2: L08 Migration Sequence Invariance Under Partial Schema State
-- *Deficit in G3*: Pass G3 verified migration parity, but did not guard against partial schema apply if a migration script fails mid-execution.
-- *Falsification & Falsification Vector*: Without explicit transactional wrapping (`BEGIN ... COMMIT`) around schema DDL, a failed `CREATE INDEX` statement leaves earlier table mutations applied, corrupting local migration replay.
-- *Correction in G4*: Mandate that all migration DDL files in `supabase/migrations/` execute within atomic transaction blocks.
+### Falsification 2: L07 Subtree Circular Tracking Across Multiple Object Roots
+- *Deficits Identified in G3*: Pass G3 checked circular references using a local replacer closure, but failed to address multi-rooted objects sharing common sub-references (directed acyclic graphs that are not true cycles).
+- *Adversarial DAG Falsification*: In `src/app/lib/analytics.ts`, an event payload containing `{ req: sharedContext, res: sharedContext }` is a valid DAG. If `WeakSet` tracks all visited objects rather than current call-stack ancestors, `res` gets falsely marked as `"[Circular]"`.
+- *Correction in G4*: In `src/app/lib/analytics.ts`, maintain an active ancestry stack to only detect real recursive cycles, or document bounded shared-node serialization in unit test assertions.
 
-### Falsification 3: L11 File System Permission Invariance on Task Snapshots
-- *Deficit in G3*: Pass G3 recorded snapshot files, but did not verify file permissions when restoring modified scripts.
-- *Falsification & Falsification Vector*: Restoring a file using standard `fs.writeFileSync` can strip the executable bit (`chmod +x`) from scripts like `transactional-task-manager.mjs`, breaking subsequent CLI executions.
-- *Correction in G4*: In `scripts/convergence/transactional-task-manager.mjs`, capture `fs.statSync(file).mode` during pre-task snapshotting and restore matching file mode bits during rollback.
+### Falsification 3: L11 Unchecked Parallel Rollback Cascade in Multi-Task Execution
+- *Deficits Identified in G3*: Pass G3 specified independent test commands, but omitted atomic transaction rollback isolation between consecutive tasks.
+- *Adversarial DAG Falsification*: In `scripts/convergence/transactional-task-manager.mjs`, if Task 2 fails while Task 1 is already committed, executing an uncoordinated rollback can revert Task 1's legitimate changes.
+- *Correction in G4*: In the topological execution graph, mandate discrete, atomic task transactions: Task 1 must be committed and verified before Task 2 begins, with separate rollback checkpoints recorded in `transaction_journal.json`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -54,7 +54,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
-- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers.
+- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; passenger checkout is strictly `boundary_excluded`.
 - **Verification Command**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
 ### SOL-04: SOL-AUTH-01 (Rate-Limited Tokenized Watch Outbox & Row-Level Locking)
@@ -66,7 +66,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-05: SOL-CIRCUIT-01 (Distributed Advisory-Lock Token Lease & Circuit Breaker)
 - **Target File**: `supabase/functions/_shared/flight-search.ts` & `supabase/functions/_shared/amadeus-provider.ts`
 - **Specification**: Distributed token refresh coordinates via Postgres advisory locks (`pg_try_advisory_xact_lock`) with 3000ms timeout and `TokenLeaseRecord` caching. Crawler calls enforce `AbortSignal.timeout(8000)`. Circuit breaker state syncs across workers via `operational_scan_health`.
-- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches.
+- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Ticketing fulfillment is strictly `boundary_excluded`.
 - **Verification Command**: `node scripts/provider-drift-and-killswitch.node-test.mjs`
 
 ### SOL-06: SOL-STALE-01 (Storage Exception Shield & 14-Day Eviction)
@@ -82,7 +82,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Verification Command**: `node scripts/client-error-boundary.node-test.mjs`
 
 ### SOL-08: SOL-MIGRATION-01 (ForeignKey Index Parity & 47-Migration Parity)
-- **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `supabase/migrations/`
+- **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `scripts/migration-parity.node-test.mjs`
 - **Specification**: Exactly 47 canonical migrations verified. Ensures all foreign key constraints are indexed (`idx_watch_notifications_watch_id`, `idx_user_watches_user_id`) to prevent table-level share locks during cascade deletions.
 - **Forbidden Deviations**: No sequential full-table scans on search queries; no unindexed foreign keys.
 - **Verification Command**: `node scripts/migration-parity.node-test.mjs`
@@ -107,77 +107,83 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-12: SOL-RELEASE-01 (Git Remote Fast-Forward & SHA Parity)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs` & `package.json`
-- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts.
+- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts. Payment gateway integration is strictly `boundary_excluded`.
 - **Forbidden Deviations**: No completion declaration with unpushed commits or untracked changes.
 - **Verification Command**: `git ls-remote origin antigravity/farely-v12-product-convergence`
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G4 TOPOLOGY & GATES)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G4 TOPOLOGICAL DAG)
 
 ### L01: Product Truth & Founder Scope Integrity
-Topological prerequisite: Pure domain rights rules in `src/domain/farely/providerRights.ts` must pass static contract verification before any downstream UI links are validated.
+Strict non-OTA intelligence platform. Direct booking fulfillment and payment gateways are excluded. `src/domain/farely/providerRights.ts` enforces boundaries.
 
 ### L02: Price, Historical Baseline & Data Integrity
-Topological prerequisite: Anomaly thresholds and Tet lookup tables in `src/domain/farely/priceAnomaly.ts` must be immutable before statistical test runs execute.
+In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors.
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-Topological prerequisite: Monotonic comparison logic in `src/app/domain/dealComparison.ts` depends directly on data model stability from `tripBudgetEstimator.ts`.
+In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity.
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
-Stage gate: Database migrations in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` must verify isolation prior to testing client outbox listeners.
+`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues.
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
-Stage gate: Capability fallback definitions in `src/domain/farely/providerCapabilities.ts` must execute before synthetic circuit-breaker trip tests.
+`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters.
 
 ### L06: Freshness, Stale Degradation & UX Honesty
-Stage gate: Offline cache eviction in `src/domain/farely/pwaOfflineFreshness.ts` must pass unit assertions before verifying page renderers in `src/app/pages/DealsPage.tsx`.
+`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`.
 
 ### L07: Observability, Secret Scrubbing & Error Boundaries
-Stage gate: Recursive serializer safety in `src/app/lib/analytics.ts` must prove zero uncaught exceptions across circular inputs before production event logging.
+`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking.
 
 ### L08: Database Architecture, Schema Drift & Migration Provenance
-Topology validation: `scripts/verify-certification-integrity.node-test.mjs` runs to confirm that migration sequence remains gap-free.
+47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`.
 
 ### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
-Stage gate: Local verification reports emit C1 proof identifiers only, blocking synthetic elevation to C3 runtime truth in `src/domain/farely/productionSmokeTruth.ts`.
+`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications.
 
 ### L10: Anti-Shrinkage & 267 Historical Gates Traceability
-Gate: `scripts/acceptance-anti-shrinkage.node-test.mjs` acts as an absolute blocker before any task commit.
+`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression.
 
 ### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
-Turnkey harness: `scripts/convergence/transactional-task-manager.mjs` executes rollback and restores original disk bytes if any gate in the DAG fails.
+`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback.
 
 ### L12: Zero-Trust Release & Remote Git Synchronization
-Release barrier: `scripts/convergence/watchdog-convergence.mjs` validates remote fast-forward branch parity.
+`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.
 
 ---
 
-## TOPOLOGICAL DAG & ROLLBACK RUNBOOK FOR CYCLE G73
+## TOPOLOGICAL EXECUTION DEPENDENCY DAG (CYCLE G74)
 
-```mermaid
-flowchart TD
-  Phase1["Phase 1: Pure Domain Kernel Hardening"]
-  WP01["WP01: Bessel Sample Variance (priceAnomaly.ts)"]
-  WP02["WP02: Metropolitan Airport Change Risk (multiCityItinerary.ts)"]
-  Phase2["Phase 2: Budget & Ancillary Surcharges"]
-  WP03["WP03: Round-Trip Baggage Estimation (tripBudgetEstimator.ts)"]
-  Phase3["Phase 3: Turnkey Test Suite & Cryptographic Commit"]
-  Verification["Run npm test: 58 Vitest suites + 382 node tests"]
-  Commit["Transactional Commit to Git & Remote Push"]
-
-  Phase1 --> WP01
-  Phase1 --> WP02
-  WP01 --> Phase2
-  WP02 --> Phase2
-  Phase2 --> WP03
-  WP03 --> Phase3
-  Phase3 --> Verification
-  Verification --> Commit
+```text
+[STAGE 0: PRE-FLIGHT SNAPSHOT & PID LOCK]
+   │
+   ▼
+[TASK 1: WP01-SAFE-ANALYTICS-DEPTH-GUARD]
+   │   Target: src/app/lib/analytics.ts
+   │   Verification: npm test src/app/lib/analytics.test.ts
+   │   Commit Task via transactional-task-manager.mjs
+   │
+   ▼
+[TASK 2: WP02-METRO-MINIMUM-TRANSIT-BUFFER]
+   │   Target: src/domain/farely/multiCityItinerary.ts
+   │   Verification: npm test src/domain/farely/multiCityItinerary.test.ts
+   │   Commit Task via transactional-task-manager.mjs
+   │
+   ▼
+[TASK 3: WP03-ZERO-DISPERSION-ABSTENTION]
+   │   Target: src/domain/farely/priceAnomaly.ts
+   │   Verification: npm test src/domain/farely/priceAnomaly.test.ts
+   │   Commit Task via transactional-task-manager.mjs
+   │
+   ▼
+[STAGE 4: FULL REPOSITORY REGRESSION SUITE]
+   │   Run all 58 vitest suites + 382 node native tests
+   │   npm test && npm run test:node
+   │
+   ▼
+[STAGE 5: ZERO-TRUST REMOTE RECONCILIATION]
+   │   git commit -m "feat(convergence): execute G74 work packages WP01-WP03"
+   │   git push origin antigravity/farely-v12-product-convergence
+   │   git ls-remote verification
 ```
-
-### ROLLBACK RUNBOOK (DISASTER RECOVERY)
-1. **Trigger Condition**: Any test suite failure during Phase 3 verification (`npm test` returns non-zero exit code).
-2. **Action 1**: Invoke `node scripts/convergence/transactional-task-manager.mjs rollback` to revert modified files from pre-task SHA-256 snapshots.
-3. **Action 2**: Run `git checkout -- .` to clean any modified working tree files.
-4. **Action 3**: Verify clean repository state with `git status --porcelain`.

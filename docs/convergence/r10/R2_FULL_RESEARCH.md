@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding
 # MANDATE: Subject baseline R1 to empirical adversarial audits. Refute unverified assumptions across all 12 lenses.
-# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
-# TIMESTAMP: 2026-10-26T07:44:15.584Z
-# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
+# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
+# TIMESTAMP: 2026-10-26T09:56:56.280Z
+# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & SKEPTICAL AUDIT OF PASS R1
 
-### Falsification 1: L02 Historical Route Baseline Variance Under Small Sample Bias
-- *Deficit in R1*: Pass R1 asserted sample size threshold $N \ge 5$, but failed to specify whether sample standard deviation should use Bessel's sample correction factor $(N - 1)$ or population formula $N$.
-- *Empirical Falsification*: For small samples ($N = 5$), using population standard deviation underestimates variance by $\sqrt{4/5} \approx 10.5\%$, artificially inflating z-scores and triggering false positive anomaly alerts on moderately discounted flights.
-- *Correction in R2*: In `src/domain/farely/priceAnomaly.ts`, mandate sample variance calculation strictly using Bessel's correction with denominator $(N - 1)$ when $N \ge 5$.
+### Falsification 1: L02 Historical Baseline Trend Stagnation
+- *Deficit in R1*: Pass R1 asserted robust statistics for anomalies, but evaluated cohorts as static distributions without time-decay weighting.
+- *Empirical Falsification*: A flight observation from 90 days ago carries equal weight to an observation from yesterday if all valid prices are unweighted in the cohort. If post-pandemic airline yield management permanently raised ticket baselines, 90-day-old fares trigger false positive drop anomalies.
+- *Correction in R2*: In `src/domain/farely/priceAnomaly.ts`, introduce exponential moving baseline windows or partition observations into recent (<= 30 days) versus macro (<= 90 days) cohorts.
 
-### Falsification 2: L05 External Provider Throttling Under Clustered Bursts
-- *Deficit in R1*: Pass R1 registered static `rateLimitPerMinute: 60`, but overlooked transient sub-second burst concurrency.
-- *Empirical Falsification*: If an upstream cron sweeps 60 route searches in the first 2 seconds of a minute window, remote GDS endpoints return HTTP 429 Too Many Requests despite total hourly request count remaining well within contractual limits.
-- *Correction in R2*: In `src/domain/farely/providerCapabilities.ts`, define leaky bucket burst capacities with a minimum interval spacing of 250ms between consecutive outbound requests per provider.
+### Falsification 2: L03 Baggage Fee Surcharge Non-Additivity in Split Bookings
+- *Deficit in R1*: Pass R1 modeled ancillary surcharges per airline independently, but did not handle itineraries where outbound is VietJet (350k VND bag fee) and return is Vietnam Airlines (included bag).
+- *Empirical Falsification*: Naively doubling outbound baggage surcharge for the entire round trip overcharges the passenger by 350,000 VND, misleading the user on true landed cost comparison.
+- *Correction in R2*: In `src/domain/farely/tripBudgetEstimator.ts`, evaluate outbound and inbound legs separately using carrier-specific slice parameters before summing total round-trip baggage cost.
 
-### Falsification 3: L07 Large Monolithic Data API Risk
-- *Deficit in R1*: Pass R1 omitted analysis of file size complexity in the data access layer.
-- *Empirical Falsification*: `src/app/data/api.ts` spans 1,049 lines of code, tightly coupling network requests, caching, client diagnostics, and type coercion. A single unhandled syntax or runtime mutation in `api.ts` cascades across 28 dependent modules.
-- *Correction in R2*: In `src/app/data/api.ts`, mandate modular decoupling of data fetch adapters and pure parsers into independent functional submodules.
+### Falsification 3: L01 Indicative Link Deep-Linking Expiration & Stale Session Tokens
+- *Deficit in R1*: Pass R1 defined static URL query mapping, but ignored upstream provider session token expirations.
+- *Empirical Falsification*: Generating deep-links containing pre-baked session IDs or search hashes leads to HTTP 410 Gone or search expiration error pages when the user clicks the link 15 minutes after initial discovery.
+- *Correction in R2*: In `src/domain/farely/providerRights.ts`, enforce that generated referral URLs only contain canonical flight query primitives (origin, destination, date, passengers) and never embed ephemeral search session identifiers.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73 CANONICAL SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74 CANONICAL SEALED)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -116,13 +116,13 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (SKEPTICAL GROUNDING)
 
 ### L01: Product Truth & Founder Scope Integrity
-In `src/domain/farely/providerRights.ts`, verify that `isCommercialContractRequired()` accurately blocks commercial execution for staged providers without active legal credentials.
+In `src/domain/farely/providerRights.ts`, ensure that referral URL construction strips invalid session cookies and preserves pure indicative intent.
 
 ### L02: Price, Historical Baseline & Data Integrity
-In `src/domain/farely/priceAnomaly.ts`, mandate that `calculateAnomalyScore()` employs Bessel-corrected variance $(N-1)$ to ensure that small sample sets do not underestimate underlying price variance.
+In `src/domain/farely/priceAnomaly.ts`, ensure that `detectPriceAnomaly()` handles cohorts spanning diverse time intervals without conflating historical promotional fares with permanent shifts.
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-In `src/domain/farely/tripBudgetEstimator.ts`, confirm that ancillary baggage estimates correctly map low-cost carriers (VietJet, Bamboo, Vietravel Airlines) without collapsing unannounced fees into zero.
+In `src/domain/farely/tripBudgetEstimator.ts`, confirm that mixed-carrier roundtrip itineraries compute exact asymmetric baggage fees.
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
 `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces that `user_watches` queries restrict updates exclusively to authenticated row owners.
@@ -154,7 +154,7 @@ In `src/app/lib/analytics.ts`, safe error serialization tracks visited instances
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- **Cycle**: `G73`
+- **Cycle**: `G74`
 - **Pass**: `R2` (Skeptical Empirical Grounding)
 - **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites and 382 native node tests.
 - **Handoff Target**: Pass R3 (Hostile Boundary & Negative Vector Hardening).

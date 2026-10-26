@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G3]
-# LEVEL: Pass 3: Anti-Fake-Done Turnkey Verification Oracles & Defense Matrix
-# MANDATE: Subject AST diffs from G2 to automated adversarial verification oracles. Design deterministic negative vector tests.
-# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
-# TIMESTAMP: 2026-10-26T07:50:00.000Z
-# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
+# LEVEL: Pass 3: Anti-Fake-Done Turnkey Verification Oracles
+# MANDATE: Subject AST transformations to turnkey verification oracles, empirical assertions, and strict exit code validations.
+# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
+# TIMESTAMP: 2026-10-26T09:56:56.280Z
+# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
 
 ---
 
@@ -18,26 +18,26 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## REFUTATION MATRIX & AUDIT OF PASS G2
+## REFUTATION MATRIX & FALSIFICATION OF PASS G2
 
-### Falsification 1: L02 Single-Observation Standard Deviation Degeneracy
-- *Deficit in G2*: Pass G2 introduced `calculateSampleStandardDeviation()`, but did not specify behavior when an array contains exactly 1 element ($N = 1$).
-- *Falsification & Falsification Vector*: Under Bessel's formula with denominator $(N - 1)$, for $N = 1$ the denominator is $0$, resulting in division by zero (`0 / 0 = NaN`).
-- *Correction in G3*: In `src/domain/farely/priceAnomaly.ts`, explicitly guard $N \le 1$: if $N \le 1$, return `sampleVariance: 0` and `sampleStdDev: 0` with zero division bypass.
+### Falsification 1: L02 Mocked Sample Variance in Test Oracles
+- *Deficits Identified in G2*: Pass G2 specified AST transformations for zero-variance anomaly detection, but the proposed verification oracle relied on static mock arrays rather than metamorphic perturbations.
+- *Adversarial Verification Falsification*: In `src/domain/farely/priceAnomaly.ts`, if tests only verify a constant 5-element array `[100, 100, 100, 100, 100]`, they fail to catch cases where an array contains 100 identical prices alongside `NaN` or non-numeric types injected by dirty scraper feeds.
+- *Correction in G3*: In `src/domain/farely/priceAnomaly.test.ts`, mandate metamorphic property tests that inject `null`, `undefined`, and large homogeneous cohorts verifying that `classification === "INSUFFICIENT_DISPERSION_ABSTENTION"` holds deterministically.
 
-### Falsification 2: L03 Case-Sensitivity in Metropolitan Airport Code Matching
-- *Deficit in G2*: Pass G2 specified uppercase airport codes in `METROPOLITAN_AIRPORT_PAIRS`, but failed to normalize lowercase or whitespace-padded inputs.
-- *Falsification & Falsification Vector*: If a feed parses an airport code as `"hnd"` or `"NRT "`, string lookup in the Set fails, omitting the critical 360-minute layover warning.
-- *Correction in G3*: In `src/domain/farely/multiCityItinerary.ts`, normalize all input airport codes with `trim().toUpperCase()` before evaluating set containment.
+### Falsification 2: L06 Client Eviction Timing Drifts Across Timezones
+- *Deficits Identified in G2*: Pass G2 verified offline deal cache purging at 14 days ($20,160$ minutes), but omitted validating client-side system clock skew and local timezone shifts.
+- *Adversarial Verification Falsification*: If a user travels across timezones (e.g. UTC+7 to UTC-5) or adjusts their device clock, simple timestamp subtraction `Date.now() - cachedAt` can yield negative age or premature purge.
+- *Correction in G3*: In `src/domain/farely/pwaOfflineFreshness.ts`, enforce monotonic clamp `Math.max(0, now - cachedAt)` and verify that negative age is gracefully normalized to zero age (`FRESH`) rather than throwing an eviction exception.
 
-### Falsification 3: L05 Unhandled Carrier Surcharge Fallback Invariance
-- *Deficit in G2*: Pass G2 proposed roundtrip baggage estimation, but returned raw 0 when an unknown carrier code was provided without flagging the unverified state.
-- *Falsification & Falsification Vector*: Returning 0 without a caveat leads the user to assume baggage is free, rather than acknowledging that carrier fees are unverified.
-- *Correction in G3*: In `src/domain/farely/tripBudgetEstimator.ts`, return `{ estimatedCost: number; isKnownCarrier: boolean }` so caller components can render an unverified fee disclosure when carrier baggage policies are unlisted.
+### Falsification 3: L09 Conflation of Unit Assertion Exit Codes with Operational Readiness
+- *Deficits Identified in G2*: Pass G2 treated test suite completion (`npm test` exit code 0) as sufficient proof of system convergence.
+- *Adversarial Verification Falsification*: In `scripts/verify-certification-integrity.node-test.mjs`, unit tests can pass 100% while production smoke verification remains unexecuted. A green test runner is strictly Proof Level C1 (Code), never C3 (Runtime) or C4 (Outcome).
+- *Correction in G3*: In `src/domain/farely/productionSmokeTruth.ts` and `scripts/verify-certification-integrity.node-test.mjs`, explicitly assert that C1 passes do not increment C3/C4 certification gates.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -54,7 +54,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
-- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers.
+- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; passenger checkout is strictly `boundary_excluded`.
 - **Verification Command**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
 ### SOL-04: SOL-AUTH-01 (Rate-Limited Tokenized Watch Outbox & Row-Level Locking)
@@ -66,7 +66,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-05: SOL-CIRCUIT-01 (Distributed Advisory-Lock Token Lease & Circuit Breaker)
 - **Target File**: `supabase/functions/_shared/flight-search.ts` & `supabase/functions/_shared/amadeus-provider.ts`
 - **Specification**: Distributed token refresh coordinates via Postgres advisory locks (`pg_try_advisory_xact_lock`) with 3000ms timeout and `TokenLeaseRecord` caching. Crawler calls enforce `AbortSignal.timeout(8000)`. Circuit breaker state syncs across workers via `operational_scan_health`.
-- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches.
+- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Ticketing fulfillment is strictly `boundary_excluded`.
 - **Verification Command**: `node scripts/provider-drift-and-killswitch.node-test.mjs`
 
 ### SOL-06: SOL-STALE-01 (Storage Exception Shield & 14-Day Eviction)
@@ -82,7 +82,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Verification Command**: `node scripts/client-error-boundary.node-test.mjs`
 
 ### SOL-08: SOL-MIGRATION-01 (ForeignKey Index Parity & 47-Migration Parity)
-- **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `supabase/migrations/`
+- **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `scripts/migration-parity.node-test.mjs`
 - **Specification**: Exactly 47 canonical migrations verified. Ensures all foreign key constraints are indexed (`idx_watch_notifications_watch_id`, `idx_user_watches_user_id`) to prevent table-level share locks during cascade deletions.
 - **Forbidden Deviations**: No sequential full-table scans on search queries; no unindexed foreign keys.
 - **Verification Command**: `node scripts/migration-parity.node-test.mjs`
@@ -107,78 +107,75 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-12: SOL-RELEASE-01 (Git Remote Fast-Forward & SHA Parity)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs` & `package.json`
-- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts.
+- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts. Payment gateway integration is strictly `boundary_excluded`.
 - **Forbidden Deviations**: No completion declaration with unpushed commits or untracked changes.
 - **Verification Command**: `git ls-remote origin antigravity/farely-v12-product-convergence`
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G3 ORACLES)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G3 ORACLE AUDIT)
 
 ### L01: Product Truth & Founder Scope Integrity
-Oracle validates that `src/domain/farely/providerRights.ts` never marks unverified indicative sources as certified live bookable feeds.
+Non-OTA verified flight opportunity intelligence. Excludes all transactional booking engines. Handled via `src/domain/farely/providerRights.ts`.
 
 ### L02: Price, Historical Baseline & Data Integrity
-Oracle in `src/domain/farely/priceAnomaly.ts` asserts that Bessel-corrected standard deviation matches exact mathematical calculations across test cohorts.
+In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors.
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-Oracle in `src/domain/farely/multiCityItinerary.ts` verifies that itineraries with inter-airport transfers trigger `METRO_AIRPORT_CHANGE_HIGH_RISK` and 25-point score penalty.
+In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity.
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
-Oracle in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` verifies that multi-tenant watch alert queues cannot leak cross-account recipient emails.
+`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues.
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
-Oracle in `src/domain/farely/providerCapabilities.ts` asserts that rate limit tripwires transition to backoff status upon receiving consecutive 429 or 503 response codes.
+`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters.
 
 ### L06: Freshness, Stale Degradation & UX Honesty
-Oracle in `src/domain/farely/pwaOfflineFreshness.ts` verifies that expired records older than 14 days are completely omitted from the UI model on `src/app/pages/DealsPage.tsx`.
+`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`.
 
 ### L07: Observability, Secret Scrubbing & Error Boundaries
-Oracle in `src/app/lib/analytics.ts` runs deeply nested and circular error objects through serialization, verifying zero memory leaks or unhandled exceptions.
+`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking.
 
 ### L08: Database Architecture, Schema Drift & Migration Provenance
-Oracle in `scripts/verify-certification-integrity.node-test.mjs` verifies that every migration checksum matches git provenance history.
+47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`.
 
 ### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
-Oracle in `src/domain/farely/productionSmokeTruth.ts` programmatically blocks marking any capability `TARGET_PROVEN` solely from C1 unit test runs.
+`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications.
 
 ### L10: Anti-Shrinkage & 267 Historical Gates Traceability
-Oracle in `scripts/acceptance-anti-shrinkage.node-test.mjs` enforces invariant check across all 267 acceptance gates.
+`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression.
 
 ### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
-Oracle in `scripts/convergence/transactional-task-manager.mjs` verifies snapshot restoration parity upon synthetic task failure injection.
+`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback.
 
 ### L12: Zero-Trust Release & Remote Git Synchronization
-Oracle in `scripts/convergence/watchdog-convergence.mjs` continuously asserts fast-forward parity against remote branch.
+`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.
 
 ---
 
-## TURNKEY VERIFICATION TEST SUITE SPECIFICATION
+## TURNKEY VERIFICATION ORACLES (CYCLE G74)
 
-### ORACLE-01: Bessel-Corrected Sample Standard Deviation (`src/domain/farely/priceAnomaly.test.ts`)
-```typescript
-it('calculates unbiased Bessel-corrected sample standard deviation for N >= 2', () => {
-  const prices = [1000000, 1200000, 1100000, 1300000, 1400000];
-  const { mean, sampleVariance, sampleStdDev } = calculateSampleStandardDeviation(prices);
-  expect(mean).toBe(1200000);
-  expect(sampleVariance).toBe(25000000000); // sum diffs sq / 4 = 100e9 / 4
-  expect(sampleStdDev).toBeCloseTo(158113.88, 1);
-});
+### Oracle 1: Safe Error Serialization Depth Capping
+```bash
+npm test src/app/lib/analytics.test.ts
 ```
+Expected output: All test cases pass, verifying:
+1. `maxDepth = 3` replaces deeply nested subtrees with `"[MaxDepthExceeded]"`.
+2. Circular object cycles are safely replaced with `"[Circular]"`.
+3. Long strings over 1000 chars are truncated with `"...[TRUNCATED]"`.
 
-### ORACLE-02: Metropolitan Split-Airport Detection (`src/domain/farely/multiCityItinerary.test.ts`)
-```typescript
-it('identifies inter-airport transfers across metropolitan airport pairs', () => {
-  expect(isMetropolitanAirportChange('HND', 'NRT')).toBe(true);
-  expect(isMetropolitanAirportChange('DMK', 'BKK')).toBe(true);
-  expect(isMetropolitanAirportChange('HAN', 'SGN')).toBe(false);
-});
+### Oracle 2: Metropolitan Minimum Ground Transit Buffer
+```bash
+npm test src/domain/farely/multiCityItinerary.test.ts
 ```
+Expected output: All test cases pass, verifying:
+1. `getMetropolitanMinimumTransitMinutes` returns 210 for `HND-NRT`, `DMK-BKK`, `GMP-ICN`, `LHR-LGW`, `JFK-EWR`.
+2. Surface connections under 210 minutes receive high connection risk.
 
-### ORACLE-03: Round-Trip Baggage Calculation (`src/domain/farely/tripBudgetEstimator.test.ts`)
-```typescript
-it('calculates round-trip baggage estimates for domestic carriers', () => {
-  expect(estimateRoundTripBaggageCost('VJ', 1)).toBe(700000);
-  expect(estimateRoundTripBaggageCost('VN', 1)).toBe(0);
-});
+### Oracle 3: Zero-Dispersion Abstention Defense
+```bash
+npm test src/domain/farely/priceAnomaly.test.ts
 ```
+Expected output: All test cases pass, verifying:
+1. Cohorts of identical prices trigger `INSUFFICIENT_DISPERSION_ABSTENTION`.
+2. No division by zero or NaN propagation.

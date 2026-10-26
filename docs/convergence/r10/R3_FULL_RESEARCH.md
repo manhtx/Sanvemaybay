@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R3]
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
 # MANDATE: Subject baseline R2 to hostile boundary fuzzing and active defense against negative vectors NV01..NV24.
-# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
-# TIMESTAMP: 2026-10-26T07:44:15.584Z
-# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
+# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
+# TIMESTAMP: 2026-10-26T09:56:56.280Z
+# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & HOSTILE AUDIT OF PASS R2
 
-### Falsification 1: L03 Multi-City Layover Terminal Confusion
-- *Deficit in R2*: Pass R2 established minimum connection times (150m domestic, 240m international), but overlooked multi-airport or split-terminal metropolitan transfers.
-- *Hostile Falsification*: In Tokyo (HND to NRT) or London (LHR to LGW), a 240-minute transfer buffer is insufficient if ground transit across terminals takes 180 minutes. The traveler misses the flight due to surface transit overhead.
-- *Correction in R3*: In `src/domain/farely/multiCityItinerary.ts`, flag metropolitan inter-airport transfers (`HND` -> `NRT`, `DMK` -> `BKK`) with `METRO_AIRPORT_CHANGE_HIGH_RISK` and require a minimum buffer of 360 minutes.
+### Falsification 1: L04 Cross-Tenant Notification Collision in Redis Channels
+- *Deficit in R2*: Pass R2 examined PostgreSQL row-level locks on `user_watches`, but overlooked transient Pub/Sub or websocket fanout channels.
+- *Hostile Falsification*: If websocket notifications broadcast to topic `watch_updates` without user token scoping, client browsers receive opportunistic price drops for rival accounts, leaking sensitive destinations.
+- *Correction in R3*: In `supabase/functions/_shared/flight-search.ts`, mandate per-user encrypted channel names (`watch:user_{uuid}`) with ephemeral HMAC tokens verified on socket connection.
 
-### Falsification 2: L04 Cross-Tenant Ephemeral Watch Collision
-- *Deficit in R2*: Pass R2 audited row-level security on watch tables, but ignored anonymous watch drafts stored in browser localStorage.
-- *Hostile Falsification*: If multiple users share a shared kiosk workstation or family browser profile, draft watch subscriptions stored in un-namespaced `localStorage` keys leak prior search criteria and target prices to subsequent users.
-- *Correction in R3*: In `src/domain/farely/personalizedFeedPrivacy.ts`, mandate tenant-isolated cryptographic session salting for all client-side draft stores, with auto-eviction upon window closure.
+### Falsification 2: L05 Circuit Breaker Half-Open State Oscillation
+- *Deficit in R2*: Pass R2 specified circuit breaker backoff, but failed to define the transition thresholds from OPEN back to HALF_OPEN and CLOSED.
+- *Hostile Falsification*: Without an explicit cooldown window and sample probe count, a recovering remote endpoint that succeeds on 1 probe but fails on the second can trigger endless state flapping, overloading logging telemetry.
+- *Correction in R3*: In `src/domain/farely/providerCapabilities.ts`, mandate a minimum 60-second cooldown in OPEN state followed by a 3-consecutive-success requirement in HALF_OPEN before returning to CLOSED.
 
-### Falsification 3: L11 Rollback Lock Contention Under Deadlocks
-- *Deficit in R2*: Pass R2 outlined pre-task file snapshotting, but did not handle concurrent task invocations competing for the PID lock file.
-- *Hostile Falsification*: If two parallel background processes attempt simultaneous transaction rollback, uncoordinated file unlinking causes race conditions and partial restores.
-- *Correction in R3*: In `scripts/convergence/transactional-task-manager.mjs`, implement atomic flock or exclusive file handle locking on `transaction_journal.json` to prevent concurrent rollback corruption.
+### Falsification 3: L06 Offline Cache Poisoning via Malicious Storage Mutation
+- *Deficit in R2*: Pass R2 detailed 14-day eviction, but did not guard against tampered `isOfflineCached` flags injected directly via DevTools console into IndexedDB.
+- *Hostile Falsification*: A user modifying `isOfflineCached: false` and `isLiveVerified: true` in local browser storage could trick client-side validation into rendering unverified fares as live deals.
+- *Correction in R3*: In `src/domain/farely/pwaOfflineFreshness.ts`, enforce cryptographic signature hashing (HMAC-SHA256) on cached deal records, invalidating any tampered offline records upon deserialization.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73 CANONICAL SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74 CANONICAL SEALED)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -154,7 +154,7 @@ In `src/domain/farely/providerCapabilities.ts`, assert that rate limit configura
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- **Cycle**: `G73`
+- **Cycle**: `G74`
 - **Pass**: `R3` (Hostile Boundary & Negative Vector Hardening)
 - **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites and 382 native node tests.
 - **Handoff Target**: Pass R4 (Production SRE Rigor & Zero-Mock Verification).

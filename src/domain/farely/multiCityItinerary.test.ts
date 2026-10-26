@@ -5,6 +5,7 @@ import {
   InvalidMultiCitySequenceError,
   ItinerarySlice,
   isMetropolitanAirportChange,
+  getMetropolitanMinimumTransitMinutes,
 } from "./multiCityItinerary";
 
 describe("Multi-City Itinerary Coherence (F41)", () => {
@@ -152,6 +153,40 @@ describe("Multi-City Itinerary Coherence (F41)", () => {
       expect(isMetropolitanAirportChange("DMK", "BKK")).toBe(true);
       expect(isMetropolitanAirportChange("hnd", "nrt")).toBe(true); // Case-insensitive
       expect(isMetropolitanAirportChange("HAN", "SGN")).toBe(false);
+    });
+
+    it("evaluates required ground transit minutes and flags metropolitan transfer warnings", () => {
+      expect(getMetropolitanMinimumTransitMinutes("HND", "NRT")).toBe(210);
+      expect(getMetropolitanMinimumTransitMinutes("DMK", "BKK")).toBe(210);
+      expect(getMetropolitanMinimumTransitMinutes("HAN", "SGN")).toBe(0);
+
+      const metroSlices: ItinerarySlice[] = [
+        {
+          sliceIndex: 0,
+          originCode: "HAN",
+          destinationCode: "HND",
+          departDate: "2026-11-01",
+          airlineCode: "VN",
+          airlineName: "Vietnam Airlines",
+          price: 5_000_000,
+        },
+        {
+          sliceIndex: 1,
+          originCode: "NRT", // Metropolitan transfer Tokyo HND -> NRT
+          destinationCode: "HAN",
+          departDate: "2026-11-05",
+          airlineCode: "VN",
+          airlineName: "Vietnam Airlines",
+          price: 5_000_000,
+        },
+      ];
+
+      const validation = validateMultiCityItinerary({ slices: metroSlices });
+      expect(validation.isValid).toBe(true);
+      expect(validation.hasOpenJawSurfaceSegment).toBe(true);
+      expect(validation.connectionRisk).toBe("HIGH");
+      expect(validation.openJawNotices[0]).toContain("Metropolitan transfer: HND → NRT");
+      expect(validation.openJawNotices[0]).toContain("210 phút");
     });
   });
 });

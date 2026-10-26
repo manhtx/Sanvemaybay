@@ -136,9 +136,9 @@ export function detectPriceAnomaly(params: {
   const deviations = validCohort.map((p) => Math.abs(p - median));
   const rawMad = calculateMedian(deviations);
 
-  // AUD-12: If the historical cohort is homogeneous (rawMad === 0), there is zero empirical dispersion.
-  // Invariant: Do NOT fabricate synthetic dispersion (e.g. median * 0.05). Classify as NORMAL_FLUCTUATION without synthetic Z-score.
-  if (rawMad === 0) {
+  // AUD-12: If the historical cohort is homogeneous (rawMad < 1e-6), there is zero empirical dispersion.
+  // Invariant: Do NOT fabricate synthetic dispersion (e.g. median * 0.05). Classify as NORMAL_FLUCTUATION or INSUFFICIENT_DISPERSION_ABSTENTION without synthetic Z-score.
+  if (rawMad < 1e-6) {
     const discountVsMedianPercent = median > 0 ? Math.round(((median - currentPrice) / median) * 100) : 0;
     // EV-22: If MAD = 0 and price differs materially (>= 25%), do NOT automatically classify as NORMAL_FLUCTUATION
     if (Math.abs(discountVsMedianPercent) >= 25) {
@@ -255,5 +255,14 @@ export function calculateSampleStandardDeviation(prices: number[]): {
     sampleVariance,
     sampleStdDev: Math.sqrt(sampleVariance),
   };
+}
+
+/**
+ * Checks whether a series of observed historical prices exhibits zero empirical dispersion (sample variance < 1e-6).
+ */
+export function hasZeroDispersion(prices: number[]): boolean {
+  if (!prices || prices.length <= 1) return true;
+  const { sampleVariance } = calculateSampleStandardDeviation(prices);
+  return sampleVariance < 1e-6;
 }
 

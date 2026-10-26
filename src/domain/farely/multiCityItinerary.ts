@@ -98,9 +98,17 @@ export function validateMultiCityItinerary(params: {
 
       // Open-jaw check: prev.destination != current.origin
       if (prev.destinationCode.toUpperCase() !== current.originCode.toUpperCase()) {
-        openJawNotices.push(
-          `Chặng di chuyển tự túc trên mặt đất (Open-jaw): ${prev.destinationCode} → ${current.originCode}. Hành khách tự chịu trách nhiệm di chuyển giữa 2 điểm này.`
-        );
+        const isMetro = isMetropolitanAirportChange(prev.destinationCode, current.originCode);
+        if (isMetro) {
+          const minMinutes = getMetropolitanMinimumTransitMinutes(prev.destinationCode, current.originCode);
+          openJawNotices.push(
+            `Chuyển sân bay trong cùng đô thị (Metropolitan transfer: ${prev.destinationCode} → ${current.originCode}): Yêu cầu tối thiểu ${minMinutes} phút trung chuyển mặt đất.`
+          );
+        } else {
+          openJawNotices.push(
+            `Chặng di chuyển tự túc trên mặt đất (Open-jaw): ${prev.destinationCode} → ${current.originCode}. Hành khách tự chịu trách nhiệm di chuyển giữa 2 điểm này.`
+          );
+        }
       }
     }
   }
@@ -123,6 +131,7 @@ export function validateMultiCityItinerary(params: {
       : undefined;
 
   const isSelfTransfer = coherenceType === "SELF_TRANSFER_UNPROTECTED";
+  const hasMetroTransit = sorted.some((slice, i) => i > 0 && isMetropolitanAirportChange(sorted[i - 1].destinationCode, slice.originCode));
 
   return {
     isValid: true,
@@ -133,8 +142,8 @@ export function validateMultiCityItinerary(params: {
     openJawNotices,
     selfTransferWarningVi,
     isFictitiousJoinedOffer: false,
-    connectionRisk: isSelfTransfer ? "HIGH" : "NONE",
-    dealScorePenalty: isSelfTransfer ? 25 : 0,
+    connectionRisk: (isSelfTransfer || hasMetroTransit) ? "HIGH" : "NONE",
+    dealScorePenalty: (isSelfTransfer || hasMetroTransit) ? 25 : 0,
   };
 }
 
@@ -157,5 +166,12 @@ export function isMetropolitanAirportChange(fromAirport: string, toAirport: stri
   if (!fromAirport || !toAirport) return false;
   const key = `${fromAirport.trim().toUpperCase()}-${toAirport.trim().toUpperCase()}`;
   return METROPOLITAN_AIRPORT_PAIRS.has(key);
+}
+
+/**
+ * Returns required ground transit buffer in minutes for inter-airport metropolitan transfers.
+ */
+export function getMetropolitanMinimumTransitMinutes(fromAirport: string, toAirport: string): number {
+  return isMetropolitanAirportChange(fromAirport, toAirport) ? 210 : 0;
 }
 

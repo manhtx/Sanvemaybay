@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis & Scope Decomposition
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
-# TIMESTAMP: 2026-10-26T07:50:00.000Z
-# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
+# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
+# TIMESTAMP: 2026-10-26T09:56:56.280Z
+# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
 
 ---
 
@@ -18,7 +18,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -35,7 +35,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
-- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers.
+- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; commercial passenger checkout is strictly `boundary_excluded`.
 - **Verification Command**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
 ### SOL-04: SOL-AUTH-01 (Rate-Limited Tokenized Watch Outbox & Row-Level Locking)
@@ -47,7 +47,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-05: SOL-CIRCUIT-01 (Distributed Advisory-Lock Token Lease & Circuit Breaker)
 - **Target File**: `supabase/functions/_shared/flight-search.ts` & `supabase/functions/_shared/amadeus-provider.ts`
 - **Specification**: Distributed token refresh coordinates via Postgres advisory locks (`pg_try_advisory_xact_lock`) with 3000ms timeout and `TokenLeaseRecord` caching. Crawler calls enforce `AbortSignal.timeout(8000)`. Circuit breaker state syncs across workers via `operational_scan_health`.
-- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches.
+- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Commercial direct ticketing fulfillment is strictly `boundary_excluded`.
 - **Verification Command**: `node scripts/provider-drift-and-killswitch.node-test.mjs`
 
 ### SOL-06: SOL-STALE-01 (Storage Exception Shield & 14-Day Eviction)
@@ -63,7 +63,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Verification Command**: `node scripts/client-error-boundary.node-test.mjs`
 
 ### SOL-08: SOL-MIGRATION-01 (ForeignKey Index Parity & 47-Migration Parity)
-- **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `supabase/migrations/`
+- **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `scripts/migration-parity.node-test.mjs`
 - **Specification**: Exactly 47 canonical migrations verified. Ensures all foreign key constraints are indexed (`idx_watch_notifications_watch_id`, `idx_user_watches_user_id`) to prevent table-level share locks during cascade deletions.
 - **Forbidden Deviations**: No sequential full-table scans on search queries; no unindexed foreign keys.
 - **Verification Command**: `node scripts/migration-parity.node-test.mjs`
@@ -88,7 +88,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-12: SOL-RELEASE-01 (Git Remote Fast-Forward & SHA Parity)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs` & `package.json`
-- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts.
+- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts. Payment gateway integration is strictly `boundary_excluded`.
 - **Forbidden Deviations**: No completion declaration with unpushed commits or untracked changes.
 - **Verification Command**: `git ls-remote origin antigravity/farely-v12-product-convergence`
 
@@ -109,7 +109,7 @@ In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEs
 `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues.
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
-`src/domain/farely/providerCapabilities.ts` maintains rate limit tripwires and backoff parameters.
+`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters.
 
 ### L06: Freshness, Stale Degradation & UX Honesty
 `src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`.
@@ -134,19 +134,19 @@ In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEs
 
 ---
 
-## WORK PACKAGE SPECIFICATION FOR CYCLE G73
+## WORK PACKAGE SPECIFICATION FOR CYCLE G74
 
-### WP01-BESSEL-VARIANCE-ANOMALY (SOL-01)
-- **Target File**: `src/domain/farely/priceAnomaly.ts`
-- **Scope**: Implement Bessel-corrected sample variance $(N-1)$ when evaluating standard deviation for sample sizes $N \ge 5$.
-- **Verification**: `npm test src/domain/farely/priceAnomaly.test.ts`
+### WP01-SAFE-ANALYTICS-DEPTH-GUARD (SOL-07)
+- **Target File**: `src/app/lib/analytics.ts`
+- **Scope**: In `safeSerializeError`, implement strict recursion depth capping (`maxDepth = 3`) to replace exceeded subtrees with `"[MaxDepthExceeded]"`, while verifying object types before `WeakSet` operations.
+- **Verification**: `npm test src/app/lib/analytics.test.ts`
 
-### WP02-METRO-TRANSFER-RISK (SOL-03)
+### WP02-METRO-MINIMUM-TRANSIT-BUFFER (SOL-03)
 - **Target File**: `src/domain/farely/multiCityItinerary.ts`
-- **Scope**: Identify inter-airport transfers in multi-city itineraries (e.g. HND-NRT, DMK-BKK) requiring $\ge 360$ minutes buffer, applying high-risk penalty.
+- **Scope**: Implement `getMetropolitanMinimumTransitMinutes` returning 210 minutes for `METROPOLITAN_AIRPORT_PAIRS`. In `validateMultiCityItinerary`, flag high risk if ground transfer window is below buffer.
 - **Verification**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
-### WP03-ANCILLARY-SURCHARGE-EXPANSION (SOL-03)
-- **Target File**: `src/domain/farely/tripBudgetEstimator.ts`
-- **Scope**: Add round-trip baggage calculation helper and full surcharge coverage for Vietravel Airlines (VU).
-- **Verification**: `npm test src/domain/farely/tripBudgetEstimator.test.ts`
+### WP03-ZERO-DISPERSION-ABSTENTION (SOL-01)
+- **Target File**: `src/domain/farely/priceAnomaly.ts`
+- **Scope**: In `detectPriceAnomaly`, guard against division by zero when standard deviation or MAD is 0 across homogeneous historical observations, returning `INSUFFICIENT_DISPERSION_ABSTENTION`.
+- **Verification**: `npm test src/domain/farely/priceAnomaly.test.ts`
