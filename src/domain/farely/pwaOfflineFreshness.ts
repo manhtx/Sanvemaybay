@@ -101,7 +101,9 @@ export function resolveDealsForPwaClient(params: {
   return validDeals.map((deal) => {
     const _cachedMs = new Date(deal.cachedAt).getTime();
     const observedMs = new Date(deal.observedAt).getTime();
-    const stalenessMinutes = Math.max(0, Math.round((nowMs - observedMs) / (1000 * 60)));
+    const safeObservedMs = Number.isFinite(observedMs) ? observedMs : nowMs;
+    const stalenessMinutes = Math.max(0, Math.round((nowMs - safeObservedMs) / (1000 * 60)));
+    const isPriceValid = typeof deal.priceVND === 'number' && Number.isFinite(deal.priceVND) && deal.priceVND > 0;
 
     if (isDeviceOffline) {
       // Invariant: In offline mode, the deal can NEVER be live verified or directly bookable
@@ -109,33 +111,42 @@ export function resolveDealsForPwaClient(params: {
         id: deal.id,
         route: deal.route,
         airlineCode: deal.airlineCode,
-        priceVND: deal.priceVND,
+        priceVND: isPriceValid ? deal.priceVND : 0,
         observedAt: deal.observedAt,
         isOfflineCached: true,
         offlineStalenessMinutes: stalenessMinutes,
         isLiveVerified: false,
         canDirectBook: false,
-        offlineBadgeLabelVi: 'Dữ liệu lưu tạm ngoại tuyến (Offline)',
-        disclosureNoticeVi:
-          'Bạn đang xem dữ liệu lưu tạm khi mất kết nối mạng. Giá vé và tình trạng chỗ có thể đã thay đổi. Vui lòng kết nối Internet để xác minh lại trước khi đặt vé.',
+        offlineBadgeLabelVi: isPriceValid
+          ? 'Dữ liệu lưu tạm ngoại tuyến (Offline)'
+          : 'Dữ liệu giá ngoại tuyến không hợp lệ',
+        disclosureNoticeVi: isPriceValid
+          ? 'Bạn đang xem dữ liệu lưu tạm khi mất kết nối mạng. Giá vé và tình trạng chỗ có thể đã thay đổi. Vui lòng kết nối Internet để xác minh lại trước khi đặt vé.'
+          : 'Giá vé lưu tạm không hợp lệ hoặc bị lỗi dữ liệu. Vui lòng kết nối Internet để làm mới dữ liệu.',
       };
     }
 
     // In online mode, cached records can be used for initial render if within 30 min,
     // but still clearly indicate cache status until background revalidation completes.
-    const isLive = stalenessMinutes <= 120; // 2 hours
+    const isLive = isPriceValid && stalenessMinutes <= 120; // 2 hours
     return {
       id: deal.id,
       route: deal.route,
       airlineCode: deal.airlineCode,
-      priceVND: deal.priceVND,
+      priceVND: isPriceValid ? deal.priceVND : 0,
       observedAt: deal.observedAt,
       isOfflineCached: false,
       offlineStalenessMinutes: stalenessMinutes,
       isLiveVerified: isLive,
       canDirectBook: isLive,
-      offlineBadgeLabelVi: isLive ? 'Giá trực tuyến đã xác minh' : 'Dữ liệu chờ cập nhật',
-      disclosureNoticeVi: isLive
+      offlineBadgeLabelVi: !isPriceValid
+        ? 'Dữ liệu giá không hợp lệ'
+        : isLive
+        ? 'Giá trực tuyến đã xác minh'
+        : 'Dữ liệu chờ cập nhật',
+      disclosureNoticeVi: !isPriceValid
+        ? 'Giá vé quan sát không hợp lệ hoặc đã bị lỗi dữ liệu, không thể chuyển tiếp đặt vé.'
+        : isLive
         ? 'Dữ liệu trực tuyến đã được đối sánh gần nhất.'
         : 'Quan sát đã cũ, hệ thống đang làm mới dữ liệu từ nhà cung cấp.',
     };

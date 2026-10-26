@@ -66,47 +66,56 @@ export function validateMultiCityItinerary(params: {
   slices: ItinerarySlice[];
   claimedAsSingleTicket?: boolean;
 }): MultiCityItineraryValidation {
-  if (!params.slices || params.slices.length < 2) {
+  const validSlices = (params?.slices || []).filter(Boolean);
+  if (validSlices.length < 2) {
     throw new InvalidMultiCitySequenceError("Hành trình nhiều chặng (Multi-city) phải có ít nhất 2 chặng bay.");
   }
 
-  const sorted = [...params.slices].sort((a, b) => a.sliceIndex - b.sliceIndex);
+  const sorted = [...validSlices].sort(
+    (a, b) => (a.sliceIndex ?? 0) - (b.sliceIndex ?? 0) || (a.departDate || "").localeCompare(b.departDate || "")
+  );
   let totalPrice = 0;
   const openJawNotices: string[] = [];
   let hasInterlineCoherence = true;
-  const primaryCarrier = sorted[0].airlineCode.toUpperCase();
+  const primaryCarrier = (sorted[0].airlineCode || "").trim().toUpperCase();
   const allowedPartners = ALLIANCE_PARTNERS[primaryCarrier] || new Set([primaryCarrier]);
 
   for (let i = 0; i < sorted.length; i++) {
     const current = sorted[i];
-    totalPrice += current.price;
+    const safePrice = Number.isFinite(current.price) && current.price > 0 ? current.price : 0;
+    totalPrice += Math.round(safePrice);
 
     // Check interline partner compatibility
-    if (!allowedPartners.has(current.airlineCode.toUpperCase())) {
+    const currentCarrier = (current.airlineCode || "").trim().toUpperCase();
+    if (!allowedPartners.has(currentCarrier)) {
       hasInterlineCoherence = false;
     }
 
     if (i > 0) {
       const prev = sorted[i - 1];
+      const currDate = (current.departDate || "").slice(0, 10);
+      const prevDate = (prev.departDate || "").slice(0, 10);
 
       // Chronological check
-      if (current.departDate < prev.departDate) {
+      if (currDate < prevDate) {
         throw new InvalidMultiCitySequenceError(
           `Chặng ${current.sliceIndex + 1} (${current.departDate}) không thể khởi hành trước chặng ${prev.sliceIndex + 1} (${prev.departDate}).`
         );
       }
 
       // Open-jaw check: prev.destination != current.origin
-      if (prev.destinationCode.toUpperCase() !== current.originCode.toUpperCase()) {
-        const isMetro = isMetropolitanAirportChange(prev.destinationCode, current.originCode);
+      const prevDest = (prev.destinationCode || "").trim().toUpperCase();
+      const currOrig = (current.originCode || "").trim().toUpperCase();
+      if (prevDest !== currOrig) {
+        const isMetro = isMetropolitanAirportChange(prevDest, currOrig);
         if (isMetro) {
-          const minMinutes = getMetropolitanMinimumTransitMinutes(prev.destinationCode, current.originCode);
+          const minMinutes = getMetropolitanMinimumTransitMinutes(prevDest, currOrig);
           openJawNotices.push(
-            `Chuyển sân bay trong cùng đô thị (Metropolitan transfer: ${prev.destinationCode} → ${current.originCode}): Yêu cầu tối thiểu ${minMinutes} phút trung chuyển mặt đất.`
+            `Chuyển sân bay trong cùng đô thị (Metropolitan transfer: ${prevDest} → ${currOrig}): Yêu cầu tối thiểu ${minMinutes} phút trung chuyển mặt đất.`
           );
         } else {
           openJawNotices.push(
-            `Chặng di chuyển tự túc trên mặt đất (Open-jaw): ${prev.destinationCode} → ${current.originCode}. Hành khách tự chịu trách nhiệm di chuyển giữa 2 điểm này.`
+            `Chặng di chuyển tự túc trên mặt đất (Open-jaw): ${prevDest} → ${currOrig}. Hành khách tự chịu trách nhiệm di chuyển giữa 2 điểm này.`
           );
         }
       }

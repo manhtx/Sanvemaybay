@@ -171,5 +171,37 @@ describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
       expect(resolved).toHaveLength(1);
       expect(resolved[0].id).toBe('active_cached');
     });
+
+    it('sanitizes non-positive prices and prevents direct booking on invalid price data', () => {
+      const corruptPriceDeal: CachedDealRecord = {
+        id: 'corrupt_price_deal',
+        route: 'HAN-DAD',
+        airlineCode: 'VN',
+        priceVND: -500000,
+        observedAt: '2026-10-26T11:58:00.000Z', // 2 minutes ago
+        cachedAt: '2026-10-26T11:58:00.000Z',
+      };
+
+      const resolvedOffline = resolveDealsForPwaClient({
+        cachedDeals: [corruptPriceDeal],
+        isDeviceOffline: true,
+        nowIsoString: baseNow,
+      });
+
+      expect(resolvedOffline[0].priceVND).toBe(0);
+      expect(resolvedOffline[0].canDirectBook).toBe(false);
+      expect(resolvedOffline[0].offlineBadgeLabelVi).toContain('không hợp lệ');
+
+      const resolvedOnline = resolveDealsForPwaClient({
+        cachedDeals: [corruptPriceDeal],
+        isDeviceOffline: false,
+        nowIsoString: baseNow,
+      });
+
+      expect(resolvedOnline[0].priceVND).toBe(0);
+      expect(resolvedOnline[0].canDirectBook).toBe(false);
+      expect(resolvedOnline[0].isLiveVerified).toBe(false);
+      expect(resolvedOnline[0].offlineBadgeLabelVi).toBe('Dữ liệu giá không hợp lệ');
+    });
   });
 });

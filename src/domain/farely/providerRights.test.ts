@@ -143,5 +143,20 @@ describe('Provider Source Rights Registry (F85)', () => {
       expect(isProviderQueryPermitted('vietjet_direct', 'B2B_SYNDICATION')).toBe(false);
       expect(isProviderQueryPermitted('amadeus_commercial_gds', 'B2B_SYNDICATION')).toBe(true);
     });
+
+    it('deduplicates, trims, and normalizes provider IDs and denies staged contracts under requireExecutedContract', () => {
+      const scopeCheck = validateB2BRedistributionScope(
+        ['  vietjet_direct  ', 'VIETJET_DIRECT', 'amadeus_commercial_gds', ''],
+        { requireExecutedContract: true }
+      );
+
+      // amadeus is staged, so denied under requireExecutedContract
+      expect(scopeCheck.authorized).toHaveLength(0);
+      expect(scopeCheck.denied).toHaveLength(2); // vietjet_direct deduplicated into 1, amadeus is 2nd
+
+      const amadeusDenial = scopeCheck.denied.find((d) => d.providerId === 'amadeus_commercial_gds');
+      expect(amadeusDenial?.reason).toContain('yêu cầu hợp đồng thương mại có hiệu lực');
+      expect(amadeusDenial?.reason).toContain('COMMERCIAL_STAGED_CONTRACT_REQUIRED');
+    });
   });
 });

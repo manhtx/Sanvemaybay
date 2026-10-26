@@ -188,5 +188,33 @@ describe("Multi-City Itinerary Coherence (F41)", () => {
       expect(validation.openJawNotices[0]).toContain("Metropolitan transfer: HND → NRT");
       expect(validation.openJawNotices[0]).toContain("210 phút");
     });
+
+    it("normalizes ISO date formats and handles whitespace in airline codes cleanly", () => {
+      const slices: ItinerarySlice[] = [
+        {
+          sliceIndex: 0,
+          originCode: "HAN ",
+          destinationCode: "SIN",
+          departDate: "2026-11-01T08:30:00Z",
+          airlineCode: "vn ",
+          airlineName: "Vietnam Airlines",
+          price: 2_500_000.4,
+        },
+        {
+          sliceIndex: 1,
+          originCode: "SIN",
+          destinationCode: "DPS",
+          departDate: "2026-11-03",
+          airlineCode: " AF ", // SkyTeam partner with VN
+          airlineName: "Air France",
+          price: -100, // Non-positive price clamped
+        },
+      ];
+
+      const validation = validateMultiCityItinerary({ slices, claimedAsSingleTicket: true });
+      expect(validation.isValid).toBe(true);
+      expect(validation.coherenceType).toBe("SINGLE_THROUGH_TICKET");
+      expect(validation.totalPrice).toBe(2_500_000);
+    });
   });
 });

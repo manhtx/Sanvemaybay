@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence & Adversarial Closure
 # MANDATE: Synthesize passes R1..R4 into a locked, definitive research foundation with adversarial refutation of R4 across all 12 lenses.
-# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
-# TIMESTAMP: 2026-10-26T10:45:15.000Z
-# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
+# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
+# TIMESTAMP: 2026-10-26T10:56:15.000Z
+# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
 
 ---
 
@@ -20,72 +20,72 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS R4
 
-### Falsification 1: L01 Symmetrical Identity Mapping in Airport Alternatives
-- *Deficits Identified in Pass R4*: Pass R4 introduced identical airport code checks, but did not handle whitespace padding or case sensitivity variations prior to the identity equality check (`"han "` vs `"HAN"`).
-- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, comparing `"HAN"` and `"han "` without prior trimming and upper-casing allows self-comparisons to slip past `baseCode === altCode`.
-- *Correction in R5*: In `src/domain/farely/airportAlternatives.ts`, normalize both codes strictly before identity check: `const baseCode = (params.baselineAirportCode || "").trim().toUpperCase(); const altCode = (params.alternativeAirportCode || "").trim().toUpperCase(); if (baseCode === altCode) return { verdict: "NOT_RECOMMENDED", netSavingsVND: 0, isWorthwhile: false, explanationVi: "Sân bay so sánh trùng khớp với sân bay gốc." };`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Single-Slice Array Bypass in Multi-City Sequence Validation
+- *Deficits Identified in Pass R4*: Pass R4 verified date slicing, but overlooked that if a caller passes `slices: []` or an array with 1 slice, `validateMultiCityItinerary` must cleanly throw `InvalidMultiCitySequenceError` with descriptive Vietnamese localization.
+- *Empirical Code Evidence*: In `src/domain/farely/multiCityItinerary.ts`, `if (!params.slices || params.slices.length < 2)` throws, but does not assert that slices containing `undefined` or `null` objects are filtered out before sorting.
+- *Correction in R5*: In `src/domain/farely/multiCityItinerary.ts`, validate and filter slices: `const validSlices = (params.slices || []).filter(Boolean); if (validSlices.length < 2) throw new InvalidMultiCitySequenceError("Hành trình nhiều chặng (Multi-city) phải có ít nhất 2 chặng bay.");`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Negative Variance Suppression via Array Sanitization
-- *Deficits Identified in Pass R4*: Pass R4 guarded against division-by-zero on empty arrays, but did not assert that negative numbers must be explicitly rejected during price filtering.
-- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, if `prices` includes negative numbers like `[-100, 200, 300]`, the negative value artificially drags down the cohort mean, creating false positive anomaly triggers for normal fares.
-- *Correction in R5*: In `src/domain/farely/priceAnomaly.ts`, enforce positive finite bounds: `const validPrices = (prices || []).filter(p => typeof p === "number" && Number.isFinite(p) && p > 0);`.
+### Falsification 2: L02 Duplicate Id Accumulation in B2B Scope Evaluation
+- *Deficits Identified in Pass R4*: Pass R4 pruned empty strings, but did not guarantee uniqueness across returned `authorized` IDs when the caller passes duplicates (e.g. `["vietjet_direct", "vietjet_direct"]`).
+- *Empirical Code Evidence*: In `src/domain/farely/providerRights.ts`, if duplicate IDs are passed, `authorized.push(id)` produces duplicates in the returned list, violating set semantics in downstream B2B licensing audits.
+- *Correction in R5*: In `src/domain/farely/providerRights.ts`, deduplicate inputs prior to validation using `Array.from(new Set(...))`.
 
-### Falsification 3: L03 Compact Hours and Minutes Parsing Discrepancies
-- *Deficits Identified in Pass R4*: Pass R4 suggested regex expansion for Vietnamese tokens, but did not account for pure numeric minute strings (e.g. `"90m"`, `"90 phút"`) or pure hour strings (`"2h"`, `"2 tiếng"`).
-- *Empirical Code Evidence*: In `src/app/domain/dealComparison.ts`, passing `"90 phút"` without an hour token should correctly resolve to 90 minutes. A rigid sequence expectation `(\d+)h\s*(\d+)m` would fail pure minute or pure hour inputs.
-- *Correction in R5*: In `src/app/domain/dealComparison.ts`, parse hours and minutes independently with non-capturing unit groups: `const hours = duration.match(/(\d+)\s*(?:h|giờ|tiếng|g)/i)?.[1]; const minutes = duration.match(/(\d+)\s*(?:m|phút|p)/i)?.[1];` and handle pure compact notation `"1h30"`. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 Stale Badge Formatting Drift on Fractional Minute Rounding
+- *Deficits Identified in Pass R4*: Pass R4 clamped staleness minutes, but did not assert that `offlineBadgeLabelVi` must accurately switch between minutes (`"X phút trước"`) and hours (`"X giờ trước"`) without emitting floating-point decimals (`"1.5 giờ trước"`).
+- *Empirical Code Evidence*: In `src/domain/farely/pwaOfflineFreshness.ts`, badge text formatting should round hours with `Math.floor(offlineStalenessMinutes / 60)` to keep badges clean and professional on mobile viewport constraints.
+- *Correction in R5*: In `src/domain/farely/pwaOfflineFreshness.ts`, ensure whole integer conversions across all staleness badge text. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
 ## SECTION III: 12 ADVERSARIAL LENSES DEFINITIVE SYNTHESIS
 
 ### L01: Ingestion & Live Schema Integrity
-- **Final Audit**: `src/domain/farely/airportAlternatives.ts` must defensively sanitize all inputs with `(code || "").trim().toUpperCase()` and positive price checks.
-- **Defensive Boundary**: Enforce complete identity validation and safe fallback defaults.
+- **Final Audit**: `src/domain/farely/multiCityItinerary.ts` must filter falsy slices, normalize departure dates with `.slice(0, 10)`, and sanitize slice pricing with positive integer rounding.
+- **Defensive Boundary**: Slices are strictly ordered by `sliceIndex` and departure date with zero sequence corruption.
 
 ### L02: Price Anomaly & Statistical Rigor
-- **Final Audit**: `src/domain/farely/priceAnomaly.ts` must reject all non-positive, non-finite cohort prices before computing sample statistics.
-- **Defensive Boundary**: Bessel's sample variance $(N - 1)$ strictly applied on sanitized positive finite arrays with zero-dispersion abstention.
+- **Final Audit**: `src/domain/farely/providerRights.ts` must deduplicate, trim, and lowercase all provider queries.
+- **Defensive Boundary**: Commercial staged contracts are gated strictly, preventing unauthorized B2B syndication.
 
 ### L03: True-Cost & Ancillary Transparency
-- **Final Audit**: `src/app/domain/dealComparison.ts` must parse multilingual duration tokens robustly.
-- **Defensive Boundary**: Support English and Vietnamese flight duration strings without unverified field degradation. Credit card processing and passenger checkout are strictly `boundary_excluded`.
+- **Final Audit**: `src/domain/farely/pwaOfflineFreshness.ts` must validate offline cached deal prices, timestamp freshness, and integer badge labels.
+- **Defensive Boundary**: Corrupted or negative price fares are marked non-bookable. Credit card processing and passenger checkout are strictly `boundary_excluded`.
 
 ### L04: Authentication & Rate Limiting
-- **Final Audit**: Database-level rate limiting in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
-- **Defensive Boundary**: Prevent abuse via row-level token verification. Unauthorized scraping is strictly `boundary_excluded`.
+- **Final Audit**: Database rate limiting via `check_watch_rate_limit` in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
+- **Defensive Boundary**: Transactional locking via `FOR UPDATE SKIP LOCKED`. Unauthorized scraping is strictly `boundary_excluded`.
 
 ### L05: Concurrency & Resilience
 - **Final Audit**: Tri-state circuit breaker protection in `supabase/functions/_shared/flight-search.ts`.
-- **Defensive Boundary**: Protect backend microservices from cascading provider timeouts (> 8000ms).
+- **Defensive Boundary**: Automatic fail-fast prevents thread exhaustion during upstream outages.
 
 ### L06: PWA Offline Freshness
-- **Final Audit**: Client cache eviction policy in `src/domain/farely/pwaOfflineFreshness.ts` and `src/app/pages/DealsPage.tsx`.
-- **Defensive Boundary**: 14-day LRU purge and 6-hour snapshot staleness tags.
+- **Final Audit**: 14-day LRU cache eviction and monotonic sorting in `src/domain/farely/pwaOfflineFreshness.ts` and `src/app/pages/DealsPage.tsx`.
+- **Defensive Boundary**: Bounded client-side storage overhead.
 
 ### L07: Observability & Production SRE
 - **Final Audit**: Safe error serialization in `src/app/lib/analytics.ts`.
-- **Defensive Boundary**: Recursive depth capping at `maxDepth = 3`, key bounding at `maxKeysPerLevel = 50`, and WeakSet memoization.
+- **Defensive Boundary**: WeakSet cycle detection, `maxDepth = 3`, and `maxKeysPerLevel = 50`.
 
 ### L08: Zero-Downtime Database Migrations
-- **Final Audit**: Schema evolution verification in `scripts/verify-certification-integrity.node-test.mjs`.
-- **Defensive Boundary**: Idempotent DDL without destructive alterations.
+- **Final Audit**: Idempotent DDL verified via `scripts/verify-certification-integrity.node-test.mjs`.
+- **Defensive Boundary**: Absolute rejection of destructive database mutations.
 
 ### L09: Zero-Mock Testing & Proof Hierarchy
 - **Final Audit**: 58 Vitest suites and 382 Node native tests executing real production logic.
-- **Defensive Boundary**: Zero mocks for pure domain modules; distinct proof tiers (C0 -> C4).
+- **Defensive Boundary**: Strict separation of proof tiers (C0 -> C4).
 
 ### L10: Contract Immutability & Anti-Shrinkage
 - **Final Audit**: 89 capability contracts (F00..F88) verified in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
-- **Defensive Boundary**: Absolute preservation of all 267 acceptance criteria.
+- **Defensive Boundary**: 267 acceptance gates permanently preserved.
 
 ### L11: Transactional Safety & Journal Integrity
-- **Final Audit**: ACID transaction journal in `scripts/convergence/transactional-task-manager.mjs`.
-- **Defensive Boundary**: Pre-image snapshots in `docs/convergence/state/transaction_journal.json`.
+- **Final Audit**: Pre-image rollback journal in `scripts/convergence/transactional-task-manager.mjs`.
+- **Defensive Boundary**: Zero uncommitted files outside active transaction records.
 
 ### L12: Autonomous Audit & Parity Watchdog
-- **Final Audit**: Automated git tracking in `scripts/convergence/watchdog-convergence.mjs`.
-- **Defensive Boundary**: Verification of remote SHA equality via `git ls-remote`.
+- **Final Audit**: Git remote tracking parity in `scripts/convergence/watchdog-convergence.mjs`.
+- **Defensive Boundary**: SHA equality verified via `git ls-remote`.
 
 ---
 

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G3]
 # LEVEL: Pass 3: Anti-Fake-Done Turnkey Verification Oracles & Boundary Hardening
 # MANDATE: Define concrete, zero-mock turnkey test oracles that fail closed on any fraudulent or incomplete implementation.
-# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
-# TIMESTAMP: 2026-10-26T10:47:15.000Z
-# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
+# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
+# TIMESTAMP: 2026-10-26T10:59:45.000Z
+# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G2
 
-### Falsification 1: L01 Missing Verification for Empty String Fallback Names
-- *Deficits Identified in Pass G2*: Pass G2 added code checks for empty strings, but did not assert that `baselineAirportName` displays `"UNKNOWN"` rather than `undefined` when empty codes are passed.
-- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, if `baseCode === ""` and the fallback doesn't specify `"UNKNOWN"`, `AIRPORT_CATALOG[""]?.name` is undefined, leading to blank UI headers.
-- *Oracle Specification in G3*: In `src/domain/farely/airportAlternatives.test.ts`, test explicitly with empty strings `""` and ensure `result.baselineAirportCode === "UNKNOWN"` and `result.baselineAirportName === "UNKNOWN"`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Missing Verification for Negative Slices Pricing in Multi-City Itinerary
+- *Deficits Identified in Pass G2*: Pass G2 added `safePrice` calculation, but did not mandate an automated test oracle asserting that negative slice prices (`price: -500_000`) are coerced to 0 rather than subtracted from `totalPrice`.
+- *Empirical Code Evidence*: If a dirty slice with `-500_000` is accepted, `totalPrice` would artificially drop, creating phantom cheap multi-city combinations.
+- *Oracle Specification in G3*: In `src/domain/farely/multiCityItinerary.test.ts`, the oracle MUST explicitly test slices containing negative and non-finite numbers, asserting that `totalPrice` matches the sum of positive slice prices only. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Single NaN Element Cohort Variance Invariant
-- *Deficits Identified in Pass G2*: Pass G2 specified array filtering, but did not mandate a test case where an array contains mixed valid and invalid types: `[1_000_000, NaN, null, "invalid", -500_000, 2_000_000]`.
-- *Empirical Code Evidence*: If the filter only checks `typeof p === "number"` without `Number.isFinite(p)`, `NaN` slips through. If it doesn't check `p > 0`, negative numbers slip through.
-- *Oracle Specification in G3*: In `src/domain/farely/priceAnomaly.test.ts`, the oracle MUST assert that `calculateSampleStandardDeviation([1_000_000, NaN, null as any, "foo" as any, -500_000, 2_000_000])` computes variance strictly over the two valid positive numbers `[1_000_000, 2_000_000]`.
+### Falsification 2: L02 Provider Rights Mixed Casing & Duplicate Deduplication Oracle
+- *Deficits Identified in Pass G2*: Pass G2 specified Set-based deduplication, but did not create an oracle testing both upper/lowercase casing and duplicates in a single input array (`["VIETJET_DIRECT", "vietjet_direct", "  vietjet_direct  "]`).
+- *Empirical Code Evidence*: Without automated assertions, future refactorings could inadvertently revert to case-sensitive array loops.
+- *Oracle Specification in G3*: In `src/domain/farely/providerRights.test.ts`, the oracle MUST assert that `validateB2BRedistributionScope(["VIETJET_DIRECT", "vietjet_direct", "  vietjet_direct  "])` returns `authorized: ["vietjet_direct"]` with exact length 1.
 
-### Falsification 3: L03 Vietnamese Compact Duration Edge Cases
-- *Deficits Identified in Pass G2*: Pass G2 tested standard Vietnamese durations, but did not assert compact representations like `"2h15"` without space, or `"45p"` without hour specifier.
-- *Empirical Code Evidence*: In OTA feeds, airlines frequently display flight times as `"2h15"` or `"45p"`.
-- *Oracle Specification in G3*: In `src/app/domain/dealComparison.test.ts`, test `"2h15"` (135m), `"45p"` (45m), and `"1 tiếng 30 phút"` (90m). Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 Offline Freshness Price Corruption Disclosure Oracle
+- *Deficits Identified in Pass G2*: Pass G2 defined price validity checks, but did not assert that `disclosureNoticeVi` contains the explicit error string when `priceVND <= 0` in offline mode.
+- *Empirical Code Evidence*: If `disclosureNoticeVi` silently remains the standard offline notice, users are not warned about invalid local data.
+- *Oracle Specification in G3*: In `src/domain/farely/pwaOfflineFreshness.test.ts`, the oracle MUST pass `priceVND: 0` and `priceVND: -100`, asserting that `deal.canDirectBook === false` and `deal.disclosureNoticeVi` contains `"không hợp lệ"`. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G77)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G78)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -113,95 +113,80 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION E: TURNKEY VERIFICATION ORACLES FOR CYCLE G77
+## SECTION E: TURNKEY VERIFICATION ORACLES FOR CYCLE G78
 
-### Oracle WP01: `src/domain/farely/airportAlternatives.test.ts`
+### Oracle WP01: `src/domain/farely/multiCityItinerary.test.ts`
 ```typescript
-it("rejects identical airport comparisons and invalid prices safely", () => {
-  const identical = evaluateAirportAlternative({
-    baselineAirportCode: "HAN",
-    baselinePrice: 1_200_000,
-    alternativeAirportCode: "han ",
-    alternativePrice: 1_100_000,
+it("sanitizes slice prices and handles date format normalization", () => {
+  const result = validateMultiCityItinerary({
+    slices: [
+      {
+        sliceIndex: 0,
+        originCode: "han ",
+        destinationCode: " DAD",
+        departDate: "2026-10-01T08:00:00Z",
+        airlineCode: "vn ",
+        airlineName: "Vietnam Airlines",
+        price: -100000,
+      },
+      {
+        sliceIndex: 1,
+        originCode: "DAD",
+        destinationCode: "SGN",
+        departDate: "2026-10-05",
+        airlineCode: "VN",
+        airlineName: "Vietnam Airlines",
+        price: 1500000,
+      },
+    ],
   });
-  expect(identical.verdict).toBe("NOT_RECOMMENDED");
-  expect(identical.netSavingsVND).toBe(0);
-  expect(identical.explanationVi).toContain("trùng khớp");
-
-  const invalidPrice = evaluateAirportAlternative({
-    baselineAirportCode: "HAN",
-    baselinePrice: NaN,
-    alternativeAirportCode: "VDO",
-    alternativePrice: -500_000,
-  });
-  expect(invalidPrice.verdict).toBe("NOT_RECOMMENDED");
-  expect(invalidPrice.isWorthwhile).toBe(false);
+  expect(result.isValid).toBe(true);
+  expect(result.totalPrice).toBe(1500000); // Negative price clamped to 0
 });
 ```
 
-### Oracle WP02: `src/domain/farely/priceAnomaly.test.ts`
+### Oracle WP02: `src/domain/farely/providerRights.test.ts`
 ```typescript
-it("sanitizes dirty cohort price arrays and guards Bessel variance", () => {
-  const dirtyPrices = [1_000_000, NaN, null as any, "bad" as any, -100, 2_000_000];
-  const { mean, sampleVariance, sampleStdDev } = calculateSampleStandardDeviation(dirtyPrices);
-  expect(mean).toBe(1_500_000);
-  expect(sampleVariance).toBe(500000000000);
-  expect(sampleStdDev).toBeGreaterThan(0);
-
-  const emptyResult = calculateSampleStandardDeviation([NaN, -1, 0]);
-  expect(emptyResult.sampleVariance).toBe(0);
-  expect(emptyResult.sampleStdDev).toBe(0);
+it("deduplicates and normalizes casing for B2B redistribution provider IDs", () => {
+  const check = validateB2BRedistributionScope([
+    "VIETJET_DIRECT",
+    "vietjet_direct",
+    "  vietjet_direct  ",
+    "",
+  ]);
+  expect(check.authorized).toEqual(["vietjet_direct"]);
+  expect(check.denied).toHaveLength(0);
 });
 ```
 
-### Oracle WP03: `src/app/domain/dealComparison.test.ts`
+### Oracle WP03: `src/domain/farely/pwaOfflineFreshness.test.ts`
 ```typescript
-it("parses Vietnamese and compact duration strings robustly", () => {
-  const deals = [
-    {
-      id: "d1",
-      route: "HAN-SGN",
-      price: 1_200_000,
-      airline: "VN",
-      duration: "2 giờ 15 phút",
-      stops: 0,
-      refundPolicy: "Có hoàn vé",
-      aiInsight: { risk: "low" as const },
-    },
-    {
-      id: "d2",
-      route: "HAN-SGN",
-      price: 1_100_000,
-      airline: "VJ",
-      duration: "1h30",
-      stops: 0,
-      refundPolicy: "Không hoàn vé",
-      aiInsight: { risk: "low" as const },
-    },
-    {
-      id: "d3",
-      route: "HAN-DAD",
-      price: 800_000,
-      airline: "QH",
-      duration: "45p",
-      stops: 0,
-      refundPolicy: "Đổi vé có phí",
-      aiInsight: { risk: "low" as const },
-    },
-  ];
-  const compared = compareDeals(deals as any);
-  expect(compared[0].durationMinutes).toBe(135);
-  expect(compared[1].durationMinutes).toBe(90);
-  expect(compared[2].durationMinutes).toBe(45);
+it("flags corrupted offline deal prices and prevents direct booking", () => {
+  const result = resolveDealsForPwaClient({
+    cachedDeals: [
+      {
+        id: "corrupt-1",
+        route: "HAN-SGN",
+        airlineCode: "VJ",
+        priceVND: -500000,
+        observedAt: "invalid-date",
+        cachedAt: "2026-10-01T00:00:00Z",
+      },
+    ],
+    isDeviceOffline: true,
+  });
+  expect(result[0].canDirectBook).toBe(false);
+  expect(result[0].priceVND).toBe(0);
+  expect(result[0].disclosureNoticeVi).toContain("không hợp lệ");
 });
 ```
 
 ---
 
 ## SECTION K: 12-LENS CONVERGENCE MATRIX
-- **L01 (Ingestion & Schema Integrity)**: Verified by `src/domain/farely/airportAlternatives.test.ts`.
-- **L02 (Price Anomaly & Algorithmic Rigor)**: Verified by `src/domain/farely/priceAnomaly.test.ts`.
-- **L03 (True-Cost & Ancillary Transparency)**: Verified by `src/app/domain/dealComparison.test.ts`.
+- **L01 (Ingestion & Schema Integrity)**: Verified by `src/domain/farely/multiCityItinerary.test.ts`.
+- **L02 (Price Anomaly & Algorithmic Rigor)**: Verified by `src/domain/farely/providerRights.test.ts`.
+- **L03 (True-Cost & Ancillary Transparency)**: Verified by `src/domain/farely/pwaOfflineFreshness.test.ts`.
 - **L04 (Anti-Abuse & Rate Limiting)**: Verified by `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
 - **L05 (High Concurrency & Resilience)**: Verified by `supabase/functions/_shared/flight-search.ts`.
 - **L06 (PWA Offline & Client Freshness)**: Verified by `src/app/pages/DealsPage.tsx` and `src/domain/farely/pwaOfflineFreshness.ts`.

@@ -166,28 +166,48 @@ export function getProviderSourceRights(providerId: string): ProviderSourceRight
  * Checks whether a specific provider has rights for B2B redistribution.
  * INVARIANT F85: No premium/B2B redistribution without actual rights.
  */
-export function hasB2BRedistributionRights(providerId: string): boolean {
+export function hasB2BRedistributionRights(
+  providerId: string,
+  options: { requireExecutedContract?: boolean } = {}
+): boolean {
   const rights = getProviderSourceRights(providerId);
   if (!rights) return false;
+  if (options.requireExecutedContract && rights.declarationStatus === 'COMMERCIAL_STAGED_CONTRACT_REQUIRED') {
+    return false;
+  }
   return rights.canRedistributeB2B && rights.authorizedScopes.includes('B2B_SYNDICATION');
 }
 
 /**
  * Validates a list of provider IDs against B2B redistribution rights.
  */
-export function validateB2BRedistributionScope(providerIds: string[]): {
+export function validateB2BRedistributionScope(
+  providerIds: string[],
+  options: { requireExecutedContract?: boolean } = {}
+): {
   authorized: string[];
   denied: { providerId: string; reason: string }[];
 } {
   const authorized: string[] = [];
   const denied: { providerId: string; reason: string }[] = [];
+  const cleanedIds = Array.from(
+    new Set((providerIds || []).map((id) => (id || '').trim().toLowerCase()).filter(Boolean))
+  );
 
-  for (const id of providerIds) {
+  for (const id of cleanedIds) {
     const rights = getProviderSourceRights(id);
     if (!rights) {
       denied.push({
         providerId: id,
         reason: `Nguồn dữ liệu '${id}' chưa được đăng ký trong Provider Rights Registry.`,
+      });
+    } else if (
+      options.requireExecutedContract &&
+      rights.declarationStatus === 'COMMERCIAL_STAGED_CONTRACT_REQUIRED'
+    ) {
+      denied.push({
+        providerId: id,
+        reason: `Nguồn '${rights.sourceName}' yêu cầu hợp đồng thương mại có hiệu lực trước khi phân phối B2B (COMMERCIAL_STAGED_CONTRACT_REQUIRED).`,
       });
     } else if (!rights.canRedistributeB2B || !rights.authorizedScopes.includes('B2B_SYNDICATION')) {
       denied.push({
@@ -209,7 +229,7 @@ export function validateB2BRedistributionScope(providerIds: string[]): {
  */
 export function filterRecordsForB2BExport<T extends { providerId?: string }>(
   records: T[],
-  options: { strict?: boolean } = {}
+  options: { strict?: boolean; requireExecutedContract?: boolean } = {}
 ): {
   permittedRecords: T[];
   rejectedRecords: T[];
@@ -221,14 +241,22 @@ export function filterRecordsForB2BExport<T extends { providerId?: string }>(
 
   for (const record of records) {
     const pId = record.providerId || 'unknown';
-    if (hasB2BRedistributionRights(pId)) {
+    if (hasB2BRedistributionRights(pId, options)) {
       permittedRecords.push(record);
     } else {
       rejectedRecords.push(record);
       const rights = getProviderSourceRights(pId);
-      const reason = rights
-        ? `Nguồn '${rights.sourceName}' không có quyền B2B syndication.`
-        : `Nguồn '${pId}' không xác định trong registry.`;
+      let reason: string;
+      if (!rights) {
+        reason = `Nguồn '${pId}' không xác định trong registry.`;
+      } else if (
+        options.requireExecutedContract &&
+        rights.declarationStatus === 'COMMERCIAL_STAGED_CONTRACT_REQUIRED'
+      ) {
+        reason = `Nguồn '${rights.sourceName}' yêu cầu hợp đồng thương mại có hiệu lực trước khi phân phối B2B (COMMERCIAL_STAGED_CONTRACT_REQUIRED).`;
+      } else {
+        reason = `Nguồn '${rights.sourceName}' không có quyền B2B syndication.`;
+      }
       rejectedReasons.push({ providerId: pId, reason });
 
       if (options.strict) {

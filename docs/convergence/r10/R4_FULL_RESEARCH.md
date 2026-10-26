@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
 # MANDATE: Subject the system to real-world production site reliability engineering (SRE) scrutiny, zero-mock invariants, and OS-level telemetry verification.
-# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
-# TIMESTAMP: 2026-10-26T10:44:30.000Z
-# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
+# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
+# TIMESTAMP: 2026-10-26T10:55:35.000Z
+# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
 
 ---
 
@@ -20,72 +20,72 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS R3
 
-### Falsification 1: L01 Self-Comparison Identity Bypass in Airport Alternatives
-- *Deficits Identified in Pass R3*: Pass R3 checked positive finite prices, but failed to address self-comparison where `baselineAirportCode === alternativeAirportCode` (e.g. evaluating SGN vs SGN).
-- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, evaluating identical airport codes triggers `findGroundTransfer('SGN', 'SGN')`, which returns undefined and falls back to a heuristic transfer estimate (50km, 60 minutes, 200k VND). This falsely deducts 200,000 VND from an identical route flight, showing a spurious 200k loss instead of a 0-delta identity match.
-- *Production SRE Fix in R4*: In `src/domain/farely/airportAlternatives.ts`, check `if (baseCode === altCode) return { verdict: "NOT_RECOMMENDED", netSavingsVND: 0, isWorthwhile: false, explanationVi: "Sân bay so sánh trùng khớp với sân bay gốc." };`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 ISO Timestamp Date Normalization in Multi-City Chronology
+- *Deficits Identified in Pass R3*: Pass R3 checked slice ordering, but overlooked mixed ISO format strings where one slice has YYYY-MM-DD (`"2026-10-01"`) and the subsequent leg has a full UTC timestamp (`"2026-10-01T08:00:00Z"`).
+- *Empirical Code Evidence*: In `src/domain/farely/multiCityItinerary.ts`, comparing `"2026-10-01T08:00:00Z" < "2026-10-01"` in JavaScript string lexicographical ordering evaluates to `false`, but vice versa (`"2026-10-01" < "2026-10-01T08:00:00Z"`) evaluates to `true` even when both represent the identical calendar day!
+- *Production SRE Fix in R4*: In `src/domain/farely/multiCityItinerary.ts`, normalize dates to 10-character YYYY-MM-DD format before comparison: `const currDate = (current.departDate || "").slice(0, 10); const prevDate = (prev.departDate || "").slice(0, 10); if (currDate < prevDate) ...`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Empty Filtered Array Panic in Cohort Price Variance
-- *Deficits Identified in Pass R3*: Pass R3 added array filtering for positive numbers, but did not assert behavior when all elements in `prices` are non-positive or non-finite, yielding an empty array `[]`.
-- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, if `validPrices.length === 0`, `mean` evaluates to `0 / 0 = NaN`. The function must explicitly short-circuit when `validPrices.length <= 1`, returning `{ mean: validPrices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 }`.
-- *Production SRE Fix in R4*: In `src/domain/farely/priceAnomaly.ts`, check `if (validPrices.length <= 1) return { mean: validPrices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };`.
+### Falsification 2: L02 Empty String Poisoning in Authorized B2B Provider Lists
+- *Deficits Identified in Pass R3*: Pass R3 handled ID lowercasing, but did not assert that empty string elements `""` must be pruned before accumulating into the `authorized` return array.
+- *Empirical Code Evidence*: In `src/domain/farely/providerRights.ts`, if a caller supplies an array with empty or undefined elements like `["vietjet_direct", "", null as any]`, the function could allow an empty string entry into `authorized` if registry keys are misconfigured.
+- *Production SRE Fix in R4*: In `src/domain/farely/providerRights.ts`, enforce strict validation: `const cleanId = (id || "").trim().toLowerCase(); if (!cleanId) continue;`.
 
-### Falsification 3: L03 Compound Duration Regex Backtracking & Boundary Failures
-- *Deficits Identified in Pass R3*: Pass R3 proposed multilingual duration tokens, but didn't address compound duration strings where hours and minutes appear without whitespace or with compact punctuation (`"1h30"`, `"2g15p"`).
-- *Empirical Code Evidence*: In `src/app/domain/dealComparison.ts`, strings like `"1h30"` fail standard word boundary regexes if the minute specifier `m` or `p` is omitted.
-- *Production SRE Fix in R4*: In `src/app/domain/dealComparison.ts`, construct a robust parser matching optional hours and minutes with compact abbreviation support. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 Missing ObservedAt Fallback in Offline Deal Resolution
+- *Deficits Identified in Pass R3*: Pass R3 clamped negative staleness, but did not handle completely undefined or empty `observedAt` timestamps in `resolveOfflineDealFreshness`.
+- *Empirical Code Evidence*: In `src/domain/farely/pwaOfflineFreshness.ts`, calling `Date.parse(deal.observedAt)` when `deal.observedAt` is undefined results in `NaN`, which bubbles up to corrupt downstream PWA freshness badges.
+- *Production SRE Fix in R4*: In `src/domain/farely/pwaOfflineFreshness.ts`, enforce fallback: `const validObservedAt = deal.observedAt && !isNaN(Date.parse(deal.observedAt)) ? deal.observedAt : new Date().toISOString();`. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
 ## SECTION III: 12 ADVERSARIAL LENSES SRE RIGOR AUDIT
 
 ### L01: Ingestion & Live Schema Integrity
-- **SRE Audit**: Validate airport self-comparison short-circuiting in `src/domain/farely/airportAlternatives.ts`.
-- **System Defense**: Identity checks ensure that comparisons between identical nodes yield 0 net delta without ground transport overhead.
+- **SRE Audit**: Date format normalization in `src/domain/farely/multiCityItinerary.ts`.
+- **System Defense**: Standardize on YYYY-MM-DD representations across multi-city slices to prevent timezone lexicographical bugs.
 
 ### L02: Price Anomaly & Statistical Rigor
-- **SRE Audit**: Zero-sample array defense in `src/domain/farely/priceAnomaly.ts`.
-- **System Defense**: Guarantee mathematical closure over the empty set, preventing IEEE 754 `NaN` propagation into telemetry dashboards.
+- **SRE Audit**: B2B provider scope filtering in `src/domain/farely/providerRights.ts`.
+- **System Defense**: Input sanitization prevents spurious empty string provider authorization.
 
 ### L03: True-Cost & Ancillary Transparency
-- **SRE Audit**: Compound duration parsing in `src/app/domain/dealComparison.ts`.
-- **System Defense**: Support localized Vietnamese travel notation across OTA search listings. Credit card processing and passenger checkout are strictly `boundary_excluded`.
+- **SRE Audit**: PWA offline staleness timestamp fallbacks in `src/domain/farely/pwaOfflineFreshness.ts`.
+- **System Defense**: Bulletproof timestamp resolution prevents `NaN` badge corruption. Credit card processing and passenger checkout are strictly `boundary_excluded`.
 
 ### L04: Authentication & Rate Limiting
-- **SRE Audit**: SRE socket connection exhaustion traps and PostgreSQL connection pool limits (`max_connections = 100`).
-- **System Defense**: Transactional row claim semantics (`FOR UPDATE SKIP LOCKED`) in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`. Unauthorized scraping is strictly `boundary_excluded`.
+- **SRE Audit**: PostgreSQL connection pooling under heavy load (`max_connections = 100`).
+- **System Defense**: Database rate-limiting triggers in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`. Unauthorized scraping is strictly `boundary_excluded`.
 
 ### L05: Concurrency & Resilience
-- **SRE Audit**: Kernel-level process isolation and socket timeout limits (8000ms).
+- **SRE Audit**: Upstream provider socket timeout limits (8000ms).
 - **System Defense**: Tri-state circuit breaker protection in `supabase/functions/_shared/flight-search.ts`.
 
 ### L06: PWA Offline Freshness
-- **SRE Audit**: IndexedDB and localStorage quota pressure under mobile browser constraints (50MB storage ceiling).
-- **System Defense**: 14-day LRU eviction and 100-item caps in `src/domain/farely/pwaOfflineFreshness.ts` and `src/app/pages/DealsPage.tsx`.
+- **SRE Audit**: Mobile browser storage quota limits and 14-day LRU cache eviction.
+- **System Defense**: Enforce strict cache boundaries in `src/domain/farely/pwaOfflineFreshness.ts` and monotonic sorting in `src/app/pages/DealsPage.tsx`.
 
 ### L07: Observability & Production SRE
-- **SRE Audit**: V8 heap memory footprint and recursion depth limits (`maxDepth = 3`, `maxKeysPerLevel = 50`).
-- **System Defense**: Safe circular error serialization in `src/app/lib/analytics.ts`.
+- **SRE Audit**: V8 heap isolate memory protection during exception logging.
+- **System Defense**: Recursion depth capping (`maxDepth = 3`) and key limiting (`maxKeysPerLevel = 50`) in `src/app/lib/analytics.ts`.
 
 ### L08: Zero-Downtime Database Migrations
-- **SRE Audit**: PostgreSQL lock queue delays and schema migration deadlocks.
-- **System Defense**: Idempotent DDL verified via `scripts/verify-certification-integrity.node-test.mjs`.
+- **SRE Audit**: Migration lock timeout configuration and schema evolution safety.
+- **System Defense**: Non-destructive DDL verified via `scripts/verify-certification-integrity.node-test.mjs`.
 
 ### L09: Zero-Mock Testing & Proof Hierarchy
-- **SRE Audit**: CI test execution reliability across Vitest and Node native runners.
-- **System Defense**: Deterministic test suites verified via `scripts/verify-certification-integrity.node-test.mjs`.
+- **SRE Audit**: Production verification across Vitest and Node native test suites.
+- **System Defense**: Real-world execution verified via `scripts/verify-certification-integrity.node-test.mjs`.
 
 ### L10: Contract Immutability & Anti-Shrinkage
-- **SRE Audit**: Traceability of all 267 historical acceptance gates.
-- **System Defense**: Automated verification in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
+- **SRE Audit**: Permanent preservation of 89 capability contracts.
+- **System Defense**: Gate preservation verified via `scripts/acceptance-anti-shrinkage.node-test.mjs`.
 
 ### L11: Transactional Safety & Journal Integrity
-- **SRE Audit**: Process crash resilience during task execution.
-- **System Defense**: Pre-image journal snapshots in `scripts/convergence/transactional-task-manager.mjs`.
+- **SRE Audit**: Transaction rollback journal integrity under process interruption.
+- **System Defense**: Pre-image state management in `scripts/convergence/transactional-task-manager.mjs`.
 
 ### L12: Autonomous Audit & Parity Watchdog
-- **SRE Audit**: Automated reconciliation against origin git commit.
-- **System Defense**: Remote parity verification in `scripts/convergence/watchdog-convergence.mjs`.
+- **SRE Audit**: Automatic git remote tracking parity verification.
+- **System Defense**: Remote equality verified via `scripts/convergence/watchdog-convergence.mjs`.
 
 ---
 

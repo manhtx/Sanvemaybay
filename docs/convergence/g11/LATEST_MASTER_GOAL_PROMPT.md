@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence & Hermetic Master Goal Lock
 # MANDATE: Synthesize passes G1..G4 into the hermetically locked, definitive Master Goal prompt with zero tolerance for executor improvisation.
-# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
-# TIMESTAMP: 2026-10-26T10:48:15.000Z
-# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
+# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
+# TIMESTAMP: 2026-10-26T11:01:05.000Z
+# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G4
 
-### Falsification 1: L01 Airport Name Localization Consistency
-- *Deficits Identified in Pass G4*: Pass G4 returned generic `"UNKNOWN"` fallback airport names, but overlooked that `AIRPORT_CATALOG` provides Vietnamese names for all major regional and domestic airports (`HAN`: "Hà Nội", `SGN`: "TP. Hồ Chí Minh").
-- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, using `AIRPORT_CATALOG[code]?.name || code` ensures that whenever a recognized 3-letter IATA code is provided, the Vietnamese metropolitan label is preserved, avoiding confusing English or unmapped tokens.
-- *Locked Invariant in G5*: In `src/domain/farely/airportAlternatives.ts`, fallback resolution always preserves catalog names: `baselineAirportName: AIRPORT_CATALOG[baseCode]?.name || baseCode || "UNKNOWN"`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Single Carrier Case Sensitivity in Interline Alliances
+- *Deficits Identified in Pass G4*: Pass G4 normalized slice airline codes, but did not assert that `primaryCarrier` must be trimmed and upper-cased before querying `ALLIANCE_PARTNERS`.
+- *Empirical Code Evidence*: In `src/domain/farely/multiCityItinerary.ts`, if `sorted[0].airlineCode` has trailing spaces (`"vn "`), `ALLIANCE_PARTNERS["vn "]` evaluates to undefined.
+- *Locked Invariant in G5*: In `src/domain/farely/multiCityItinerary.ts`, enforce `const primaryCarrier = (sorted[0].airlineCode || "").trim().toUpperCase();`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Precision Rounding in Bessel Variance Multiplier
-- *Deficits Identified in Pass G4*: Pass G4 verified array sanitization, but did not assert that `sampleVariance` is rounded to an integer to prevent sub-VND fractional currency values in intermediate variance arrays.
-- *Empirical Code Evidence*: In Vietnamese Dong, variance can be a large number (e.g. $10^{11}$). Floating-point division by $(n - 1)$ can create decimal fractions.
-- *Locked Invariant in G5*: In `src/domain/farely/priceAnomaly.ts`, `sampleVariance = Math.round(sumSquaredDiffs / (n - 1))` is strictly maintained.
+### Falsification 2: L02 Denial Reason Localization in B2B Syndication Scope
+- *Deficits Identified in Pass G4*: Pass G4 blocked staged commercial contracts, but did not guarantee informative Vietnamese error explanations explaining that live commercial contracts require founder authorization.
+- *Empirical Code Evidence*: In `src/domain/farely/providerRights.ts`, the denial message must cite `COMMERCIAL_STAGED_CONTRACT_REQUIRED` to preserve audit traceability.
+- *Locked Invariant in G5*: In `src/domain/farely/providerRights.ts`, return explicit denial notice: `Nguồn '${rights.sourceName}' yêu cầu hợp đồng thương mại có hiệu lực trước khi phân phối B2B.`.
 
-### Falsification 3: L03 Whitespace-Insensitive Vietnamese Duration Matching
-- *Deficits Identified in Pass G4*: Pass G4 addressed minute tokens, but did not assert that extraneous spaces or uppercase characters (e.g. `"2 Giờ 30 Phút"`, `"1H 45M"`) must be parsed case-insensitively.
-- *Empirical Code Evidence*: Scraped OTA feeds use varied casing across carrier interfaces.
-- *Locked Invariant in G5*: In `src/app/domain/dealComparison.ts`, duration regex flags must include `/i` to ensure seamless case-insensitive parsing across English and Vietnamese tokens. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 Zero Staleness Under Clock Synchronization Inconsistencies
+- *Deficits Identified in Pass G4*: Pass G4 clamped negative staleness, but did not assert that `stalenessMinutes` should evaluate to 0 when `observedMs > nowMs` due to slight NTP clock skew.
+- *Empirical Code Evidence*: Mobile devices often have clocks that differ by a few seconds from the backend server.
+- *Locked Invariant in G5*: In `src/domain/farely/pwaOfflineFreshness.ts`, `Math.max(0, Math.round((nowMs - safeObservedMs) / (1000 * 60)))` guarantees non-negative staleness across any client clock skew. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G77)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G78)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -115,27 +115,27 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## SECTION E: HERMETIC WORK PACKAGES (WP01..WP03)
 
-### WP01: `WP01-AIRPORT-ALT-INPUT-SANITIZATION`
-- **Files**: `src/domain/farely/airportAlternatives.ts`, `src/domain/farely/airportAlternatives.test.ts`
-- **Action**: Check `!baseCode || !altCode || baseCode === altCode` and positive finite price bounds.
-- **Command**: `npx vitest run src/domain/farely/airportAlternatives.test.ts`
+### WP01: `WP01-MULTI-CITY-SLICE-STABILIZATION`
+- **Files**: `src/domain/farely/multiCityItinerary.ts`, `src/domain/farely/multiCityItinerary.test.ts`
+- **Action**: Normalize departure dates (`.slice(0, 10)`), airport codes (`.trim().toUpperCase()`), and sanitize slice prices to non-negative whole VND.
+- **Command**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### WP02: `WP02-PRICE-ANOMALY-ARRAY-DEFENSE`
-- **Files**: `src/domain/farely/priceAnomaly.ts`, `src/domain/farely/priceAnomaly.test.ts`
-- **Action**: Filter `validPrices` with `typeof p === "number" && Number.isFinite(p) && p > 0` and guard $N \le 1$.
-- **Command**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+### WP02: `WP02-PROVIDER-RIGHTS-B2B-SCOPE-DEDUP`
+- **Files**: `src/domain/farely/providerRights.ts`, `src/domain/farely/providerRights.test.ts`
+- **Action**: Deduplicate, trim, and lowercase provider IDs; deny staged commercial contracts.
+- **Command**: `npx vitest run src/domain/farely/providerRights.test.ts`
 
-### WP03: `WP03-DEAL-COMPARISON-VIETNAMESE-DURATION`
-- **Files**: `src/app/domain/dealComparison.ts`, `src/app/domain/dealComparison.test.ts`
-- **Action**: Parse Vietnamese tokens (`giờ`, `tiếng`, `g`, `phút`, `p`) and compact duration strings (`1h30`).
-- **Command**: `npx vitest run src/app/domain/dealComparison.test.ts`
+### WP03: `WP03-PWA-OFFLINE-PRICE-SANITY`
+- **Files**: `src/domain/farely/pwaOfflineFreshness.ts`, `src/domain/farely/pwaOfflineFreshness.test.ts`
+- **Action**: Clamp staleness minutes, validate observed timestamps, and flag non-positive offline prices as non-bookable.
+- **Command**: `npx vitest run src/domain/farely/pwaOfflineFreshness.test.ts`
 
 ---
 
 ## SECTION K: 12-LENS CONVERGENCE MATRIX
-- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/domain/farely/airportAlternatives.ts`.
-- **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `src/domain/farely/priceAnomaly.ts`.
-- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/app/domain/dealComparison.ts`.
+- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/domain/farely/multiCityItinerary.ts`.
+- **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `src/domain/farely/providerRights.ts`.
+- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/domain/farely/pwaOfflineFreshness.ts`.
 - **L04 (Anti-Abuse & Rate Limiting)**: Enforced via `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
 - **L05 (High Concurrency & Resilience)**: Enforced via `supabase/functions/_shared/flight-search.ts`.
 - **L06 (PWA Offline & Client Freshness)**: Enforced via `src/app/pages/DealsPage.tsx` and `src/domain/farely/pwaOfflineFreshness.ts`.

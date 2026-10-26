@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G4]
 # LEVEL: Pass 4: Strict Topological Dependency DAG & Execution Order Invariants
 # MANDATE: Define deterministic execution order, dependency graph, and atomic transaction rollback boundaries.
-# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
-# TIMESTAMP: 2026-10-26T10:47:45.000Z
-# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
+# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
+# TIMESTAMP: 2026-10-26T11:00:20.000Z
+# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G3
 
-### Falsification 1: L01 Concurrent Modification Deadlocks in Airport Alternative Evaluations
-- *Deficits Identified in Pass G3*: Pass G3 outlined test oracles, but did not sequence execution safely before domain consumers are updated. Modifying `airportAlternatives.ts` without isolating its unit test run first risks polluting downstream integration test runs.
-- *Empirical Code Evidence*: `airportAlternatives.ts` is consumed by search handlers and multi-city route optimizers. If modified concurrently with other domain modules without atomic commits, syntax errors block all vitest execution.
-- *DAG Invariant in G4*: WP01 must run as the first isolated transaction and pass `airportAlternatives.test.ts` before WP02 begins. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Multi-City Transaction Boundary Sequencing
+- *Deficits Identified in Pass G3*: Pass G3 established test cases for multi-city itineraries, but did not assert transaction journal isolation. If multi-city modifications trigger unexpected errors during active transactions in other modules, rolling back becomes ambiguous.
+- *Empirical Code Evidence*: `multiCityItinerary.ts` is central to journey planning. It must be executed in its own atomic transaction with a pre-image snapshot before downstream modules run.
+- *DAG Invariant in G4*: WP01 must precede WP02 in the DAG and verify `npx vitest run src/domain/farely/multiCityItinerary.test.ts`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Cohort Dispersion Sequence Interdependence
-- *Deficits Identified in Pass G3*: Pass G3 specified array defense in `priceAnomaly.ts`, but did not specify order relative to `dealComparison.ts`. Since deal comparison rows contain `aiInsight.risk` which relies on anomaly assessments, any unstabilized change in `priceAnomaly.ts` corrupts deal comparisons.
-- *Empirical Code Evidence*: `dealComparison.ts` imports from `deals.ts`, which uses anomaly flags.
-- *DAG Invariant in G4*: WP02 (`priceAnomaly.ts`) must precede WP03 (`dealComparison.ts`) to ensure downstream deal ranking consumes pristine sample statistics.
+### Falsification 2: L02 Provider Rights Syndication Boundary Sequencing
+- *Deficits Identified in Pass G3*: Pass G3 isolated B2B provider scope, but did not guard against uncommitted edits while running integration suites that check provider licensing.
+- *Empirical Code Evidence*: `verify-certification-integrity.node-test.mjs` checks provider declarations. If `providerRights.ts` is uncommitted or has syntax discrepancies, whole test runs fail.
+- *DAG Invariant in G4*: WP02 must execute after WP01 commit and complete its own turnkey test before WP03 starts.
 
-### Falsification 3: L03 Deal Comparison Mock Isolation Requirement
-- *Deficits Identified in Pass G3*: Pass G3 used mock deal objects in test oracles without verifying that all required fields in `Deal` interface are present or properly cast.
-- *Empirical Code Evidence*: If a test deal lacks `origin`, `destination`, or `date`, TypeScript compiler throws strict type errors.
-- *DAG Invariant in G4*: WP03 test cases must cast objects safely using `as any` or provide complete mock shapes, verifying both `dealComparison.test.ts` and UI feed rendering. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 PWA Freshness Offline Resolver Terminal Isolation
+- *Deficits Identified in Pass G3*: Pass G3 targeted offline resolution, but did not sequence it as the final package before full regression.
+- *Empirical Code Evidence*: Modifying client-side freshness policies affects PWA offline integration suites.
+- *DAG Invariant in G4*: WP03 is the terminal package in the DAG, followed by the complete 58-suite vitest regression and node native tests. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G77)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G78)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -117,30 +117,30 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ```mermaid
 flowchart TD
-  PRE["Pre-Condition: Transaction Journal Idle & Clean"] --> WP01["WP01: Airport Alternatives Sanitization (src/domain/farely/airportAlternatives.ts)"]
-  WP01 --> V01["Verify WP01: npx vitest run src/domain/farely/airportAlternatives.test.ts"]
+  PRE["Pre-Condition: Transaction Journal Idle & Clean"] --> WP01["WP01: Multi-City Slice Stabilization (src/domain/farely/multiCityItinerary.ts)"]
+  WP01 --> V01["Verify WP01: npx vitest run src/domain/farely/multiCityItinerary.test.ts"]
   V01 --> C01["Commit WP01 Transaction"]
   
-  C01 --> WP02["WP02: Price Anomaly Array Defense (src/domain/farely/priceAnomaly.ts)"]
-  WP02 --> V02["Verify WP02: npx vitest run src/domain/farely/priceAnomaly.test.ts"]
+  C01 --> WP02["WP02: Provider Rights B2B Scope Normalization (src/domain/farely/providerRights.ts)"]
+  WP02 --> V02["Verify WP02: npx vitest run src/domain/farely/providerRights.test.ts"]
   V02 --> C02["Commit WP02 Transaction"]
   
-  C02 --> WP03["WP03: Deal Comparison Vietnamese Duration (src/app/domain/dealComparison.ts)"]
-  WP03 --> V03["Verify WP03: npx vitest run src/app/domain/dealComparison.test.ts"]
+  C02 --> WP03["WP03: PWA Offline Freshness Price Sanity (src/domain/farely/pwaOfflineFreshness.ts)"]
+  WP03 --> V03["Verify WP03: npx vitest run src/domain/farely/pwaOfflineFreshness.test.ts"]
   V03 --> C03["Commit WP03 Transaction"]
   
   C03 --> FULL_REG["Full Regression: npm test (58 Vitest Suites + 382 Node Native Tests)"]
   FULL_REG --> GIT_PUSH["Git Commit & Remote Push to antigravity/farely-v12-product-convergence"]
   GIT_PUSH --> PARITY["Remote Parity Check via git ls-remote"]
-  PARITY --> DONE["Cycle G77 Complete"]
+  PARITY --> DONE["Cycle G78 Complete"]
 ```
 
 ---
 
 ## SECTION K: 12-LENS CONVERGENCE MATRIX
-- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/domain/farely/airportAlternatives.ts`.
-- **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `src/domain/farely/priceAnomaly.ts`.
-- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/app/domain/dealComparison.ts`.
+- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/domain/farely/multiCityItinerary.ts`.
+- **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `src/domain/farely/providerRights.ts`.
+- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/domain/farely/pwaOfflineFreshness.ts`.
 - **L04 (Anti-Abuse & Rate Limiting)**: Enforced via `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
 - **L05 (High Concurrency & Resilience)**: Enforced via `supabase/functions/_shared/flight-search.ts`.
 - **L06 (PWA Offline & Client Freshness)**: Enforced via `src/app/pages/DealsPage.tsx` and `src/domain/farely/pwaOfflineFreshness.ts`.

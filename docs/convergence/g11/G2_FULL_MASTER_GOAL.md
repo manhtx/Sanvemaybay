@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G2]
 # LEVEL: Pass 2: Hostile Before/After AST Diff Blueprint & Structural Isolation
 # MANDATE: Refute and harden Pass G1 with exact file modifications, AST boundary invariants, and lens falsifications.
-# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
-# TIMESTAMP: 2026-10-26T10:46:25.000Z
-# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
+# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
+# TIMESTAMP: 2026-10-26T10:58:45.000Z
+# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G1
 
-### Falsification 1: L01 Untrimmed Identity Comparison Failure in Airport Alternatives
-- *Deficits Identified in Pass G1*: Pass G1 checked `baseCode === altCode` after `trim().toUpperCase()`, but failed to specify the fallback when airport catalog lookup returns undefined for unusual or test airport codes.
-- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, if `params.baselineAirportCode` is whitespace (`"   "`), `trim()` yields `""`. `AIRPORT_CATALOG[""]` returns undefined, but the code still attempts to evaluate ground transfers instead of returning an invalid input evaluation.
-- *Hardened Contract in G2*: In `src/domain/farely/airportAlternatives.ts`, require `if (!baseCode || !altCode) return { verdict: "NOT_RECOMMENDED", netSavingsVND: 0, isWorthwhile: false, explanationVi: "Mã sân bay không hợp lệ." };`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Array Filter Incompleteness in Multi-City Slices
+- *Deficits Identified in Pass G1*: Pass G1 filtered truthy elements, but did not assert that slices containing non-object structures or missing `originCode` / `destinationCode` must be identified and rejected before interline alliance evaluation.
+- *Empirical Code Evidence*: In `src/domain/farely/multiCityItinerary.ts`, if a slice has `destinationCode: undefined`, `destinationCode.toUpperCase()` triggers a fatal TypeError.
+- *Hardened Contract in G2*: In `src/domain/farely/multiCityItinerary.ts`, enforce `const prevDest = (prev.destinationCode || "").trim().toUpperCase(); const currOrig = (current.originCode || "").trim().toUpperCase();`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Single-Element Variance Inconsistency Under Array Defense
-- *Deficits Identified in Pass G1*: Pass G1 added array filtering, but did not assert Bessel correction denominator behavior for single-element arrays where $N = 1$ causes division by $(1 - 1) = 0$.
-- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, `calculateSampleStandardDeviation` checks `if (n <= 1)` on the raw array, but if a dirty array has 10 elements where 9 are `NaN` and only 1 is a valid number, the filtered length is 1! Dividing by `(n - 1)` without updating `n` causes `Infinity` or `NaN`.
-- *Hardened Contract in G2*: In `src/domain/farely/priceAnomaly.ts`, define `const n = validPrices.length; if (n <= 1) return { mean: validPrices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };`.
+### Falsification 2: L02 Staged Contract Scope Escape in B2B Syndication Registry
+- *Deficits Identified in Pass G1*: Pass G1 mentioned ID deduplication, but did not define the exact logic combining `declarationStatus === 'COMMERCIAL_STAGED_CONTRACT_REQUIRED'` with `authorizedScopes.includes('B2B_SYNDICATION')`.
+- *Empirical Code Evidence*: In `src/domain/farely/providerRights.ts`, staged providers must be blocked even if their data scope array specifies syndication, because no commercial contract has been executed.
+- *Hardened Contract in G2*: In `src/domain/farely/providerRights.ts`, block with `rights.declarationStatus === "COMMERCIAL_STAGED_CONTRACT_REQUIRED" || !rights.canRedistributeB2B || !rights.authorizedScopes.includes("B2B_SYNDICATION")`.
 
-### Falsification 3: L03 Missing Match Indices in Dual-Capture Minute Regex
-- *Deficits Identified in Pass G1*: Pass G1 provided a dual-match regex for minutes, but did not guard against `duration` containing non-string or numeric inputs.
-- *Empirical Code Evidence*: In `src/app/domain/dealComparison.ts`, if `duration` is passed as a number or object, `duration.match` throws a TypeError in the V8 engine.
-- *Hardened Contract in G2*: In `src/app/domain/dealComparison.ts`, guard with `if (!duration || typeof duration !== "string") return undefined;`. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 Timestamp NaN Guarding in PWA Freshness Calculations
+- *Deficits Identified in Pass G1*: Pass G1 specified price sanity, but did not guard against `observedMs` evaluating to `NaN` when `deal.observedAt` is corrupt.
+- *Empirical Code Evidence*: In `src/domain/farely/pwaOfflineFreshness.ts`, `nowMs - observedMs` becomes `NaN`, which poisons `stalenessMinutes`.
+- *Hardened Contract in G2*: In `src/domain/farely/pwaOfflineFreshness.ts`, guard with `const observedMs = new Date(deal.observedAt).getTime(); const safeObservedMs = isNaN(observedMs) ? nowMs : observedMs;`. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G77)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G78)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -115,170 +115,212 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## SECTION E: HOSTILE BEFORE/AFTER AST DIFF BLUEPRINT
 
-### WP01: `src/domain/farely/airportAlternatives.ts`
+### WP01: `src/domain/farely/multiCityItinerary.ts`
 ```typescript
 <<<<<<< BEFORE
-export function evaluateAirportAlternative(params: {
-  baselineAirportCode: string;
-  baselinePrice: number;
-  alternativeAirportCode: string;
-  alternativePrice: number;
-}): AirportAlternativeEvaluation {
-  const baseCode = params.baselineAirportCode.trim().toUpperCase();
-  const altCode = params.alternativeAirportCode.trim().toUpperCase();
+  if (!params.slices || params.slices.length < 2) {
+    throw new InvalidMultiCitySequenceError("Hành trình nhiều chặng (Multi-city) phải có ít nhất 2 chặng bay.");
+  }
 
-  const baseAirport = AIRPORT_CATALOG[baseCode];
-  const altAirport = AIRPORT_CATALOG[altCode];
+  const sorted = [...params.slices].sort((a, b) => a.sliceIndex - b.sliceIndex);
+  let totalPrice = 0;
+  const openJawNotices: string[] = [];
+  let hasInterlineCoherence = true;
+  const primaryCarrier = sorted[0].airlineCode.toUpperCase();
+  const allowedPartners = ALLIANCE_PARTNERS[primaryCarrier] || new Set([primaryCarrier]);
+
+  for (let i = 0; i < sorted.length; i++) {
+    const current = sorted[i];
+    totalPrice += current.price;
+
+    // Check interline partner compatibility
+    if (!allowedPartners.has(current.airlineCode.toUpperCase())) {
+      hasInterlineCoherence = false;
+    }
+
+    if (i > 0) {
+      const prev = sorted[i - 1];
+
+      // Chronological check
+      if (current.departDate < prev.departDate) {
+        throw new InvalidMultiCitySequenceError(
+          `Chặng ${current.sliceIndex + 1} (${current.departDate}) không thể khởi hành trước chặng ${prev.sliceIndex + 1} (${prev.departDate}).`
+        );
+      }
+
+      // Open-jaw check: prev.destination != current.origin
+      if (prev.destinationCode.toUpperCase() !== current.originCode.toUpperCase()) {
 =======
-export function evaluateAirportAlternative(params: {
-  baselineAirportCode: string;
-  baselinePrice: number;
-  alternativeAirportCode: string;
-  alternativePrice: number;
-}): AirportAlternativeEvaluation {
-  const baseCode = (params.baselineAirportCode || "").trim().toUpperCase();
-  const altCode = (params.alternativeAirportCode || "").trim().toUpperCase();
-
-  // Validate airport code validity and identity match
-  if (!baseCode || !altCode || baseCode === altCode) {
-    return {
-      baselineAirportCode: baseCode || "UNKNOWN",
-      baselineAirportName: AIRPORT_CATALOG[baseCode]?.name || baseCode || "UNKNOWN",
-      alternativeAirportCode: altCode || "UNKNOWN",
-      alternativeAirportName: AIRPORT_CATALOG[altCode]?.name || altCode || "UNKNOWN",
-      inSameMetro: false,
-      airFareSavingsVND: 0,
-      groundTransfer: {
-        originCode: altCode || "UNKNOWN",
-        destinationCode: baseCode || "UNKNOWN",
-        distanceKm: 0,
-        typicalMinutes: 0,
-        estimatedCostVND: 0,
-        modes: [],
-        sourceName: "Sân bay trùng khớp hoặc không hợp lệ",
-        isVerifiedSource: true,
-      },
-      netSavingsVND: 0,
-      hourlyEfficiencyVND: 0,
-      verdict: "NOT_RECOMMENDED",
-      isWorthwhile: false,
-      explanationVi: baseCode === altCode
-        ? "Sân bay so sánh trùng khớp với sân bay gốc."
-        : "Mã sân bay so sánh không hợp lệ.",
-    };
+  const validSlices = (params.slices || []).filter(Boolean);
+  if (validSlices.length < 2) {
+    throw new InvalidMultiCitySequenceError("Hành trình nhiều chặng (Multi-city) phải có ít nhất 2 chặng bay.");
   }
 
-  // Validate positive finite prices
-  if (
-    !Number.isFinite(params.baselinePrice) ||
-    params.baselinePrice <= 0 ||
-    !Number.isFinite(params.alternativePrice) ||
-    params.alternativePrice <= 0
-  ) {
-    return {
-      baselineAirportCode: baseCode,
-      baselineAirportName: AIRPORT_CATALOG[baseCode]?.name || baseCode,
-      alternativeAirportCode: altCode,
-      alternativeAirportName: AIRPORT_CATALOG[altCode]?.name || altCode,
-      inSameMetro: false,
-      airFareSavingsVND: 0,
-      groundTransfer: {
-        originCode: altCode,
-        destinationCode: baseCode,
-        distanceKm: 0,
-        typicalMinutes: 0,
-        estimatedCostVND: 0,
-        modes: [],
-        sourceName: "Mức giá không hợp lệ",
-        isVerifiedSource: true,
-      },
-      netSavingsVND: 0,
-      hourlyEfficiencyVND: 0,
-      verdict: "NOT_RECOMMENDED",
-      isWorthwhile: false,
-      explanationVi: "Mức giá so sánh không hợp lệ (phải là số dương hợp lệ).",
-    };
-  }
-
-  const baseAirport = AIRPORT_CATALOG[baseCode];
-  const altAirport = AIRPORT_CATALOG[altCode];
->>>>>>> AFTER
-```
-
-### WP02: `src/domain/farely/priceAnomaly.ts`
-```typescript
-<<<<<<< BEFORE
-export function calculateSampleStandardDeviation(prices: number[]): {
-  mean: number;
-  sampleVariance: number;
-  sampleStdDev: number;
-} {
-  const n = prices.length;
-  if (n <= 1) {
-    return { mean: prices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };
-  }
-  const mean = prices.reduce((a, b) => a + b, 0) / n;
-  const sumSquaredDiffs = prices.reduce((acc, p) => acc + Math.pow(p - mean, 2), 0);
-  const sampleVariance = Math.round(sumSquaredDiffs / (n - 1)); // Bessel's correction
-  return {
-    mean,
-    sampleVariance,
-    sampleStdDev: Math.sqrt(sampleVariance),
-  };
-}
-=======
-export function calculateSampleStandardDeviation(prices: number[]): {
-  mean: number;
-  sampleVariance: number;
-  sampleStdDev: number;
-} {
-  const validPrices = (prices || []).filter(
-    (p) => typeof p === "number" && Number.isFinite(p) && p > 0
+  const sorted = [...validSlices].sort(
+    (a, b) => a.sliceIndex - b.sliceIndex || (a.departDate || "").localeCompare(b.departDate || "")
   );
-  const n = validPrices.length;
-  if (n <= 1) {
-    return { mean: validPrices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };
+  let totalPrice = 0;
+  const openJawNotices: string[] = [];
+  let hasInterlineCoherence = true;
+  const primaryCarrier = (sorted[0].airlineCode || "").trim().toUpperCase();
+  const allowedPartners = ALLIANCE_PARTNERS[primaryCarrier] || new Set([primaryCarrier]);
+
+  for (let i = 0; i < sorted.length; i++) {
+    const current = sorted[i];
+    const safePrice = Number.isFinite(current.price) && current.price > 0 ? current.price : 0;
+    totalPrice += Math.round(safePrice);
+
+    // Check interline partner compatibility
+    const currentCarrier = (current.airlineCode || "").trim().toUpperCase();
+    if (!allowedPartners.has(currentCarrier)) {
+      hasInterlineCoherence = false;
+    }
+
+    if (i > 0) {
+      const prev = sorted[i - 1];
+      const currDate = (current.departDate || "").slice(0, 10);
+      const prevDate = (prev.departDate || "").slice(0, 10);
+
+      // Chronological check
+      if (currDate < prevDate) {
+        throw new InvalidMultiCitySequenceError(
+          `Chặng ${current.sliceIndex + 1} (${current.departDate}) không thể khởi hành trước chặng ${prev.sliceIndex + 1} (${prev.departDate}).`
+        );
+      }
+
+      // Open-jaw check: prev.destination != current.origin
+      const prevDest = (prev.destinationCode || "").trim().toUpperCase();
+      const currOrig = (current.originCode || "").trim().toUpperCase();
+      if (prevDest !== currOrig) {
+>>>>>>> AFTER
+```
+
+### WP02: `src/domain/farely/providerRights.ts`
+```typescript
+<<<<<<< BEFORE
+export function validateB2BRedistributionScope(providerIds: string[]): {
+  authorized: string[];
+  denied: { providerId: string; reason: string }[];
+} {
+  const authorized: string[] = [];
+  const denied: { providerId: string; reason: string }[] = [];
+
+  for (const id of providerIds) {
+    const rights = getProviderSourceRights(id);
+    if (!rights) {
+      denied.push({
+        providerId: id,
+        reason: `Nguồn dữ liệu '${id}' chưa được đăng ký trong Provider Rights Registry.`,
+      });
+    } else if (!rights.canRedistributeB2B || !rights.authorizedScopes.includes('B2B_SYNDICATION')) {
+      denied.push({
+        providerId: id,
+        reason: `Nguồn '${rights.sourceName}' thuộc phân loại '${rights.licenseType}' — Không có quyền B2B syndication/redistribution (${rights.termsSummary}).`,
+      });
+    } else {
+      authorized.push(id);
+    }
   }
-  const mean = validPrices.reduce((a, b) => a + b, 0) / n;
-  const sumSquaredDiffs = validPrices.reduce((acc, p) => acc + Math.pow(p - mean, 2), 0);
-  const sampleVariance = Math.round(sumSquaredDiffs / (n - 1)); // Bessel's correction
-  return {
-    mean,
-    sampleVariance,
-    sampleStdDev: Math.sqrt(sampleVariance),
-  };
+
+  return { authorized, denied };
+}
+=======
+export function validateB2BRedistributionScope(providerIds: string[]): {
+  authorized: string[];
+  denied: { providerId: string; reason: string }[];
+} {
+  const authorized: string[] = [];
+  const denied: { providerId: string; reason: string }[] = [];
+  const cleanIds = Array.from(
+    new Set((providerIds || []).map((id) => (id || "").trim().toLowerCase()).filter(Boolean))
+  );
+
+  for (const id of cleanIds) {
+    const rights = getProviderSourceRights(id);
+    if (!rights) {
+      denied.push({
+        providerId: id,
+        reason: `Nguồn dữ liệu '${id}' chưa được đăng ký trong Provider Rights Registry.`,
+      });
+    } else if (
+      rights.declarationStatus === "COMMERCIAL_STAGED_CONTRACT_REQUIRED" ||
+      !rights.canRedistributeB2B ||
+      !rights.authorizedScopes.includes("B2B_SYNDICATION")
+    ) {
+      denied.push({
+        providerId: id,
+        reason: `Nguồn '${rights.sourceName}' thuộc phân loại '${rights.licenseType}' — Không có quyền B2B syndication/redistribution (${rights.termsSummary}).`,
+      });
+    } else {
+      authorized.push(id);
+    }
+  }
+
+  return { authorized, denied };
 }
 >>>>>>> AFTER
 ```
 
-### WP03: `src/app/domain/dealComparison.ts`
+### WP03: `src/domain/farely/pwaOfflineFreshness.ts`
 ```typescript
 <<<<<<< BEFORE
-function durationMinutes(duration?: string): number | undefined {
-  if (!duration) return undefined;
-  const hours = duration.match(/(\d+)\s*h/i)?.[1];
-  const minutes = duration.match(/(\d+)\s*m/i)?.[1];
-  if (!hours && !minutes) return undefined;
-  return Number(hours ?? 0) * 60 + Number(minutes ?? 0);
-}
+  return validDeals.map((deal) => {
+    const _cachedMs = new Date(deal.cachedAt).getTime();
+    const observedMs = new Date(deal.observedAt).getTime();
+    const stalenessMinutes = Math.max(0, Math.round((nowMs - observedMs) / (1000 * 60)));
+
+    if (isDeviceOffline) {
+      // Invariant: In offline mode, the deal can NEVER be live verified or directly bookable
+      return {
+        id: deal.id,
+        route: deal.route,
+        airlineCode: deal.airlineCode,
+        priceVND: deal.priceVND,
+        observedAt: deal.observedAt,
+        isOfflineCached: true,
+        offlineStalenessMinutes: stalenessMinutes,
+        isLiveVerified: false,
+        canDirectBook: false,
+        offlineBadgeLabelVi: 'Dữ liệu lưu tạm ngoại tuyến (Offline)',
+        disclosureNoticeVi:
+          'Bạn đang xem dữ liệu lưu tạm khi mất kết nối mạng. Giá vé và tình trạng chỗ có thể đã thay đổi. Vui lòng kết nối Internet để xác minh lại trước khi giao dịch.',
+      };
+    }
 =======
-function durationMinutes(duration?: string): number | undefined {
-  if (!duration || typeof duration !== "string") return undefined;
-  const hours = duration.match(/(\d+)\s*(?:h|giờ|tiếng|g)/i)?.[1];
-  const minutes = duration.match(/(?:(?:h|giờ|tiếng|g)\s*(\d{1,2})|\b(\d+)\s*(?:m|phút|p))/i);
-  const minVal = minutes?.[1] || minutes?.[2];
-  if (!hours && !minVal) return undefined;
-  return Number(hours ?? 0) * 60 + Number(minVal ?? 0);
-}
+  return validDeals.map((deal) => {
+    const _cachedMs = new Date(deal.cachedAt).getTime();
+    const observedMs = new Date(deal.observedAt).getTime();
+    const safeObservedMs = isNaN(observedMs) ? nowMs : observedMs;
+    const stalenessMinutes = Math.max(0, Math.round((nowMs - safeObservedMs) / (1000 * 60)));
+    const isPriceValid = Number.isFinite(deal.priceVND) && deal.priceVND > 0;
+
+    if (isDeviceOffline) {
+      // Invariant: In offline mode, the deal can NEVER be live verified or directly bookable
+      return {
+        id: deal.id,
+        route: deal.route,
+        airlineCode: deal.airlineCode,
+        priceVND: isPriceValid ? deal.priceVND : 0,
+        observedAt: deal.observedAt,
+        isOfflineCached: true,
+        offlineStalenessMinutes: stalenessMinutes,
+        isLiveVerified: false,
+        canDirectBook: false,
+        offlineBadgeLabelVi: 'Dữ liệu lưu tạm ngoại tuyến (Offline)',
+        disclosureNoticeVi: isPriceValid
+          ? 'Bạn đang xem dữ liệu lưu tạm khi mất kết nối mạng. Giá vé và tình trạng chỗ có thể đã thay đổi. Vui lòng kết nối Internet để xác minh lại trước khi giao dịch.'
+          : 'Giá vé ngoại tuyến không hợp lệ hoặc bị lỗi dữ liệu.',
+      };
+    }
 >>>>>>> AFTER
 ```
 
 ---
 
 ## SECTION K: 12-LENS CONVERGENCE MATRIX
-- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/domain/farely/airportAlternatives.ts`.
-- **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `src/domain/farely/priceAnomaly.ts`.
-- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/app/domain/dealComparison.ts`.
+- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/domain/farely/multiCityItinerary.ts`.
+- **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `src/domain/farely/providerRights.ts`.
+- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/domain/farely/pwaOfflineFreshness.ts`.
 - **L04 (Anti-Abuse & Rate Limiting)**: Enforced via `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
 - **L05 (High Concurrency & Resilience)**: Enforced via `supabase/functions/_shared/flight-search.ts`.
 - **L06 (PWA Offline & Client Freshness)**: Enforced via `src/app/pages/DealsPage.tsx` and `src/domain/farely/pwaOfflineFreshness.ts`.

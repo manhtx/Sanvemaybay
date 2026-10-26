@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G1]
 # LEVEL: Pass 1: Work Packages Architecture & Scope Decomposition
 # MANDATE: Synthesize research R1..R5 into a locked Master Goal plan evaluating all 12 lenses simultaneously.
-# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
-# TIMESTAMP: 2026-10-26T10:45:45.000Z
-# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
+# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
+# TIMESTAMP: 2026-10-26T10:57:15.000Z
+# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
 
 ---
 
@@ -18,7 +18,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G77)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G78)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -94,58 +94,56 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION E: CONCRETE WORK PACKAGES (WP01..WP03) FOR CYCLE G77
+## SECTION E: CONCRETE WORK PACKAGES (WP01..WP03) FOR CYCLE G78
 
-### Work Package WP01: Airport Alternatives Defensive Input Sanitization & Identity Short-Circuit
-- **Work Package ID**: `WP01-AIRPORT-ALT-INPUT-SANITIZATION`
+### Work Package WP01: Multi-City Itinerary Slice Stabilization & Positive Price Guard
+- **Work Package ID**: `WP01-MULTI-CITY-SLICE-STABILIZATION`
 - **Target Files**:
-  - `src/domain/farely/airportAlternatives.ts`
-  - `src/domain/farely/airportAlternatives.test.ts`
+  - `src/domain/farely/multiCityItinerary.ts`
+  - `src/domain/farely/multiCityItinerary.test.ts`
 - **Locked Solution**:
-  In `src/domain/farely/airportAlternatives.ts`:
-  1. Wrap airport codes: `const baseCode = (params.baselineAirportCode || "").trim().toUpperCase(); const altCode = (params.alternativeAirportCode || "").trim().toUpperCase();`
-  2. If `baseCode === altCode`, immediately return `{ verdict: "NOT_RECOMMENDED", netSavingsVND: 0, isWorthwhile: false, explanationVi: "Sân bay so sánh trùng khớp với sân bay gốc." }`.
-  3. Validate prices: If `!Number.isFinite(params.baselinePrice) || params.baselinePrice <= 0 || !Number.isFinite(params.alternativePrice) || params.alternativePrice <= 0`, return `{ verdict: "NOT_RECOMMENDED", netSavingsVND: 0, isWorthwhile: false, explanationVi: "Mức giá so sánh không hợp lệ." }`.
+  In `src/domain/farely/multiCityItinerary.ts`:
+  1. Filter out nullish/falsy slice elements.
+  2. Normalize airport and airline codes: `(s.originCode || "").trim().toUpperCase()`.
+  3. Normalize departure dates with `.slice(0, 10)` before chronological checks.
+  4. Ensure slice prices are non-negative finite numbers: `const safePrice = Number.isFinite(current.price) && current.price > 0 ? current.price : 0; totalPrice += Math.round(safePrice);`.
+  5. Apply secondary tie-break sort: `(a, b) => a.sliceIndex - b.sliceIndex || (a.departDate || "").localeCompare(b.departDate || "")`.
 - **Turnkey Verification**:
-  `npx vitest run src/domain/farely/airportAlternatives.test.ts`
+  `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### Work Package WP02: Price Anomaly Cohort Array Sanitization & Empty Set Defense
-- **Work Package ID**: `WP02-PRICE-ANOMALY-ARRAY-DEFENSE`
+### Work Package WP02: Provider Rights B2B Scope Normalization & Deduplication
+- **Work Package ID**: `WP02-PROVIDER-RIGHTS-B2B-SCOPE-DEDUP`
 - **Target Files**:
-  - `src/domain/farely/priceAnomaly.ts`
-  - `src/domain/farely/priceAnomaly.test.ts`
+  - `src/domain/farely/providerRights.ts`
+  - `src/domain/farely/providerRights.test.ts`
 - **Locked Solution**:
-  In `src/domain/farely/priceAnomaly.ts`:
-  In `calculateSampleStandardDeviation(prices: number[])`:
-  1. Filter valid prices: `const validPrices = (prices || []).filter(p => typeof p === "number" && Number.isFinite(p) && p > 0);`
-  2. If `validPrices.length <= 1`, return `{ mean: validPrices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 }`.
-  3. Perform Bessel calculation on `validPrices`.
+  In `src/domain/farely/providerRights.ts`:
+  In `validateB2BRedistributionScope(providerIds: string[])`:
+  1. Deduplicate and clean IDs: `const cleanIds = Array.from(new Set((providerIds || []).map(id => (id || "").trim().toLowerCase()).filter(Boolean)));`.
+  2. Explicitly reject providers with `declarationStatus === "COMMERCIAL_STAGED_CONTRACT_REQUIRED"`.
 - **Turnkey Verification**:
-  `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+  `npx vitest run src/domain/farely/providerRights.test.ts`
 
-### Work Package WP03: Deal Comparison Multilingual & Vietnamese Duration Parser
-- **Work Package ID**: `WP03-DEAL-COMPARISON-VIETNAMESE-DURATION`
+### Work Package WP03: PWA Offline Freshness Deal Price Sanity & Timestamp Validation
+- **Work Package ID**: `WP03-PWA-OFFLINE-PRICE-SANITY`
 - **Target Files**:
-  - `src/app/domain/dealComparison.ts`
-  - `src/app/domain/dealComparison.test.ts`
+  - `src/domain/farely/pwaOfflineFreshness.ts`
+  - `src/domain/farely/pwaOfflineFreshness.test.ts`
 - **Locked Solution**:
-  In `src/app/domain/dealComparison.ts`:
-  In `durationMinutes(duration?: string): number | undefined`:
-  Extend parsing logic to handle Vietnamese tokens (`giờ`, `tiếng`, `g`, `phút`, `p`) and compact strings (`1h30`):
-  ```typescript
-  const hours = duration.match(/(\d+)\s*(?:h|giờ|tiếng|g)/i)?.[1];
-  const minutes = duration.match(/(?:(?:h|giờ|tiếng|g)\s*(\d{1,2})|\b(\d+)\s*(?:m|phút|p))/i);
-  const minVal = minutes?.[1] || minutes?.[2];
-  ```
+  In `src/domain/farely/pwaOfflineFreshness.ts`:
+  In `resolveOfflineDealFreshness(deal, nowIso)`:
+  1. Validate `deal.observedAt`: fallback to `nowIso` if missing or unparseable.
+  2. Clamp `offlineStalenessMinutes = Math.max(0, Math.floor((now - observedTime) / 60000));`.
+  3. Validate `priceVND`: if `!Number.isFinite(deal.priceVND) || deal.priceVND <= 0`, flag `canDirectBook = false` and set `disclosureNoticeVi = "Giá vé ngoại tuyến không hợp lệ hoặc bị lỗi dữ liệu."`.
 - **Turnkey Verification**:
-  `npx vitest run src/app/domain/dealComparison.test.ts`
+  `npx vitest run src/domain/farely/pwaOfflineFreshness.test.ts`
 
 ---
 
 ## SECTION K: 12-LENS CONVERGENCE MATRIX
-- **L01 (Ingestion & Schema Integrity)**: Enforced via `WP01-AIRPORT-ALT-INPUT-SANITIZATION` in `src/domain/farely/airportAlternatives.ts`.
-- **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `WP02-PRICE-ANOMALY-ARRAY-DEFENSE` in `src/domain/farely/priceAnomaly.ts`.
-- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `WP03-DEAL-COMPARISON-VIETNAMESE-DURATION` in `src/app/domain/dealComparison.ts`.
+- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/domain/farely/multiCityItinerary.ts`.
+- **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `src/domain/farely/providerRights.ts`.
+- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/domain/farely/pwaOfflineFreshness.ts`.
 - **L04 (Anti-Abuse & Rate Limiting)**: Enforced via `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
 - **L05 (High Concurrency & Resilience)**: Enforced via `supabase/functions/_shared/flight-search.ts`.
 - **L06 (PWA Offline & Client Freshness)**: Enforced via `src/app/pages/DealsPage.tsx` and `src/domain/farely/pwaOfflineFreshness.ts`.

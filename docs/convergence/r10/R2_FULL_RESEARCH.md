@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding & Adversarial Falsification
 # MANDATE: Dismantle naive baseline assumptions from Pass R1 with empirical code verification and mathematical stress testing across all 12 lenses.
-# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
-# TIMESTAMP: 2026-10-26T10:42:45.000Z
-# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
+# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
+# TIMESTAMP: 2026-10-26T10:54:15.000Z
+# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
 
 ---
 
@@ -20,72 +20,72 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS R1
 
-### Falsification 1: L01 Undefined Airport Code String Manipulation Crash
-- *Deficits Identified in Pass R1*: Pass R1 highlighted `NaN` prices in `evaluateAirportAlternative`, but overlooked uncaught TypeError exceptions when `baselineAirportCode` or `alternativeAirportCode` is `undefined` or `null`.
-- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, line `params.baselineAirportCode.trim().toUpperCase()` executes directly on the parameter object without a defensive nullish fallback `(params.baselineAirportCode || "")`. If an empty payload arrives from a partial UI state, the entire React component tree crashes unhandled.
-- *Correction in Pass R2*: In `src/domain/farely/airportAlternatives.ts`, wrap input strings defensively: `const baseCode = (params.baselineAirportCode || "").trim().toUpperCase();`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Slice Index Collision & Unstable Sort in Multi-City Slices
+- *Deficits Identified in Pass R1*: Pass R1 highlighted non-positive slice prices, but overlooked collisions where two slices in `slices` share the identical `sliceIndex` (e.g. two legs both indexed as `0`).
+- *Empirical Code Evidence*: In `src/domain/farely/multiCityItinerary.ts`, sorting slices via `[...params.slices].sort((a, b) => a.sliceIndex - b.sliceIndex)` produces non-deterministic leg sequences when `a.sliceIndex === b.sliceIndex`. Chronological date comparison then checks arbitrary slices, triggering spurious `InvalidMultiCitySequenceError` exceptions.
+- *Correction in Pass R2*: In `src/domain/farely/multiCityItinerary.ts`, assert duplicate slice index detection or secondary sort tie-breaking by `departDate`: `sort((a, b) => a.sliceIndex - b.sliceIndex || a.departDate.localeCompare(b.departDate));`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 NaN Contamination in Sample Standard Deviation & Bessel Variance
-- *Deficits Identified in Pass R1*: Pass R1 assumed cohort prices were always pure numbers, but did not guard against array corruption where elements are `NaN`, `null`, or negative strings parsed via loose casting.
-- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, `calculateSampleStandardDeviation(prices)` uses raw `prices.reduce((a, b) => a + b, 0)`. A single `NaN` in a 250-element array causes `mean` and `sampleVariance` to evaluate to `NaN`, defeating anomaly detection and returning corrupt z-scores.
-- *Correction in Pass R2*: In `src/domain/farely/priceAnomaly.ts`, filter prices strictly before reduction: `const validPrices = prices.filter(p => typeof p === "number" && Number.isFinite(p) && p > 0);`.
+### Falsification 2: L02 Provider Registry Key Casing Mismatch in B2B Scope Validation
+- *Deficits Identified in Pass R1*: Pass R1 trimmed whitespace, but did not enforce lowercasing on input `providerIds` when querying `PROVIDER_SOURCE_RIGHTS_REGISTRY`.
+- *Empirical Code Evidence*: In `src/domain/farely/providerRights.ts`, registry keys are lowercase snake_case (e.g. `vietjet_direct`, `travelpayouts_flight_data`). If a caller passes `"VIETJET_DIRECT"`, `getProviderSourceRights("VIETJET_DIRECT")` returns `undefined`, incorrectly placing an authorized provider into the `denied` array.
+- *Correction in Pass R2*: In `src/domain/farely/providerRights.ts`, normalize IDs with `.toLowerCase()`: `const cleanId = (id || "").trim().toLowerCase();`.
 
-### Falsification 3: L03 Division-by-Zero and Negative Transfer Hours in Efficiency Ranking
-- *Deficits Identified in Pass R1*: Pass R1 noted negative net savings, but ignored edge cases where `transfer.typicalMinutes` is 0 or negative due to corrupt catalog entries.
-- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, `transferHours = Math.max(0.25, transfer.typicalMinutes / 60)`. If `transfer.typicalMinutes` is `NaN`, `transferHours` evaluates to `NaN`, leading to `hourlyEfficiencyVND = NaN`.
-- *Correction in Pass R2*: In `src/domain/farely/airportAlternatives.ts`, assert `const safeMinutes = Number.isFinite(transfer.typicalMinutes) && transfer.typicalMinutes > 0 ? transfer.typicalMinutes : 60; const transferHours = Math.max(0.25, safeMinutes / 60);`. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 IEEE 754 Non-Finite and Negative Zero in Offline Fares
+- *Deficits Identified in Pass R1*: Pass R1 checked `priceVND <= 0`, but did not assert that `Number.isFinite(deal.priceVND)` must precede comparison to catch `Infinity` and `NaN`.
+- *Empirical Code Evidence*: In `src/domain/farely/pwaOfflineFreshness.ts`, if `deal.priceVND` is `Infinity`, `deal.priceVND <= 0` evaluates to `false`, allowing infinite price observations to slip through to the user interface.
+- *Correction in Pass R2*: In `src/domain/farely/pwaOfflineFreshness.ts`, enforce `const isPriceValid = Number.isFinite(deal.priceVND) && deal.priceVND > 0; if (!isPriceValid) ...`. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
 ## SECTION III: 12 ADVERSARIAL LENSES SKEPTICAL AUDIT
 
 ### L01: Ingestion & Live Schema Integrity
-- **Audit Findings**: `src/app/data/api.ts` enforces non-null typing. `src/domain/farely/airportAlternatives.ts` must defensively sanitize all string and numeric inputs.
-- **Defensive Boundary**: Enforce null-safe airport code normalization and positive finite price assertions.
+- **Audit Findings**: Multi-city slice validation in `src/domain/farely/multiCityItinerary.ts` must defensively sort slices by index and departure date, sanitizing slice pricing and carrier codes.
+- **Defensive Boundary**: Slices with invalid pricing or colliding indices are handled deterministically without sequence corruption.
 
 ### L02: Price Anomaly & Statistical Rigor
-- **Audit Findings**: `src/domain/farely/priceAnomaly.ts` implements Bessel's sample variance. It must be fortified against `NaN` array element propagation.
-- **Defensive Boundary**: Bounded cohort array filtering with `Number.isFinite(p) && p > 0`.
+- **Audit Findings**: B2B provider scope validation in `src/domain/farely/providerRights.ts` requires case-insensitive and whitespace-trimmed registry lookup.
+- **Defensive Boundary**: Normalization prevents spurious denial of legitimate provider syndication claims.
 
 ### L03: True-Cost & Ancillary Transparency
-- **Audit Findings**: `src/domain/farely/tripBudgetEstimator.ts` correctly handles integer passengers and legs. `src/domain/farely/airportAlternatives.ts` must guarantee non-negative transfer durations and integer hourly savings metrics.
-- **Defensive Boundary**: Credit card processing and passenger checkout are strictly `boundary_excluded`.
+- **Audit Findings**: Offline deal freshness in `src/domain/farely/pwaOfflineFreshness.ts` must validate that cached fares contain strictly positive finite prices.
+- **Defensive Boundary**: Non-finite and negative prices are flagged as unverified offline anomalies. Credit card processing and passenger checkout are strictly `boundary_excluded`.
 
 ### L04: Authentication & Rate Limiting
-- **Audit Findings**: `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces transactional locking (`FOR UPDATE SKIP LOCKED`) and rate limiting. Unauthorized scraping is strictly `boundary_excluded`.
-- **Defensive Boundary**: Retain immutable database rate-limiting procedures.
+- **Audit Findings**: Database rate-limiting triggers in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` protect notification pipelines.
+- **Defensive Boundary**: Enforce row-level locking via `FOR UPDATE SKIP LOCKED`. Unauthorized scraping is strictly `boundary_excluded`.
 
 ### L05: Concurrency & Resilience
-- **Audit Findings**: `supabase/functions/_shared/flight-search.ts` maintains tri-state circuit breaker protection.
-- **Defensive Boundary**: Ensure deterministic timeout thresholds (> 8000ms).
+- **Audit Findings**: Tri-state circuit breaker logic in `supabase/functions/_shared/flight-search.ts` isolates downstream microservices.
+- **Defensive Boundary**: Bounded partner timeouts prevent thread pool depletion.
 
 ### L06: PWA Offline Freshness
-- **Audit Findings**: `src/domain/farely/pwaOfflineFreshness.ts` applies 14-day LRU evictions. `src/app/pages/DealsPage.tsx` sorts feeds monotonically.
-- **Defensive Boundary**: Prevent unbounded storage consumption.
+- **Audit Findings**: Client storage retention policies in `src/domain/farely/pwaOfflineFreshness.ts` enforce 14-day LRU evictions.
+- **Defensive Boundary**: Monotonic sorting in `src/app/pages/DealsPage.tsx` prevents stale quote rendering.
 
 ### L07: Observability & Production SRE
-- **Audit Findings**: `src/app/lib/analytics.ts` features recursive depth capping and pristine array handling.
-- **Defensive Boundary**: Retain 100-event ring buffer in local storage.
+- **Audit Findings**: `src/app/lib/analytics.ts` isolates complex object graphs and arrays with recursion guards.
+- **Defensive Boundary**: Capped error serialization prevents memory leaks in high-throughput production environments.
 
 ### L08: Zero-Downtime Database Migrations
-- **Audit Findings**: `scripts/verify-certification-integrity.node-test.mjs` verifies non-destructive schema evolution.
-- **Defensive Boundary**: Disallow destructive DDL operations.
+- **Audit Findings**: Idempotent DDL scripts in `scripts/verify-certification-integrity.node-test.mjs`.
+- **Defensive Boundary**: Strict rejection of non-concurrent index creation and destructive column removals.
 
 ### L09: Zero-Mock Testing & Proof Hierarchy
-- **Audit Findings**: 58 Vitest suites and 382 Node native tests provide 100% real-code execution.
-- **Defensive Boundary**: Maintain strict separation between C1 unit proofs and C3/C4 operational certifications.
+- **Audit Findings**: Full regression harness across Vitest and Node native runners.
+- **Defensive Boundary**: No synthetic mocks in domain logic; strict preservation of proof tiers (C0 -> C4).
 
 ### L10: Contract Immutability & Anti-Shrinkage
-- **Audit Findings**: `scripts/acceptance-anti-shrinkage.node-test.mjs` asserts full preservation of all 89 capability contracts.
-- **Defensive Boundary**: Zero contract deletions or semantic downgrades.
+- **Audit Findings**: Verification of 89 capability contracts in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
+- **Defensive Boundary**: Total preservation of all 267 historical acceptance gates.
 
 ### L11: Transactional Safety & Journal Integrity
-- **Audit Findings**: `scripts/convergence/transactional-task-manager.mjs` manages ACID lifecycle with pre-image snapshots.
-- **Defensive Boundary**: Never edit repository files without an active transaction journal record.
+- **Audit Findings**: ACID state lifecycle in `scripts/convergence/transactional-task-manager.mjs`.
+- **Defensive Boundary**: Mandatory task recording in `docs/convergence/state/transaction_journal.json`.
 
 ### L12: Autonomous Audit & Parity Watchdog
-- **Audit Findings**: `scripts/convergence/watchdog-convergence.mjs` checks remote tracking on `antigravity/farely-v12-product-convergence`.
-- **Defensive Boundary**: Verify remote SHA matching via `git ls-remote`.
+- **Audit Findings**: Autonomous git verification in `scripts/convergence/watchdog-convergence.mjs`.
+- **Defensive Boundary**: Remote tracking parity on `antigravity/farely-v12-product-convergence`.
 
 ---
 

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R3]
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
 # MANDATE: Subject system architecture to extreme negative vectors, edge cases, and adversarial input attacks across all 12 lenses.
-# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
-# TIMESTAMP: 2026-10-26T10:43:35.000Z
-# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
+# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
+# TIMESTAMP: 2026-10-26T10:55:00.000Z
+# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
 
 ---
 
@@ -20,71 +20,71 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS R2
 
-### Falsification 1: L01 Negative Price Inversion Exploitation in Airport Savings
-- *Deficits Identified in Pass R2*: Pass R2 clamped prices with `Math.max(0, ...)`, but overlooked negative price payloads from corrupted scraper outputs (`alternativePrice: -500000`).
-- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, subtracting a negative alternative price mathematically increases net savings (`baselinePrice - (-500000) = baselinePrice + 500000`). This produces synthetic phantom savings, misleading users into booking invalid offers.
-- *Hardened Contract in R3*: In `src/domain/farely/airportAlternatives.ts`, prices $\le 0$ or non-finite numbers must trigger an immediate invalid evaluation with `verdict: "NOT_RECOMMENDED"`, `netSavingsVND: 0`, and `isWorthwhile: false`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Untrimmed and Mixed-Case Open-Jaw Segment Detection
+- *Deficits Identified in Pass R2*: Pass R2 solved slice index collisions, but ignored mixed-case and untrimmed airport code comparisons during open-jaw detection (`"han "` vs `"HAN"`).
+- *Empirical Code Evidence*: In `src/domain/farely/multiCityItinerary.ts`, `prev.destinationCode.toUpperCase() !== current.originCode.toUpperCase()` fails if leading or trailing whitespace exists, generating phantom surface segment warnings.
+- *Hardened Contract in R3*: In `src/domain/farely/multiCityItinerary.ts`, enforce `const prevDest = (prev.destinationCode || "").trim().toUpperCase(); const currOrig = (current.originCode || "").trim().toUpperCase(); if (prevDest !== currOrig) ...`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Subnormal Variance Under Identical Price Flooding
-- *Deficits Identified in Pass R2*: Pass R2 filtered non-finite cohort prices, but did not address cohorts containing identical prices (e.g. 50 samples of exactly 1,200,000 VND).
-- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, calculating sample variance on identical prices yields exact 0. If a small floating-point rounding artifact occurs (`1e-18`), dividing by `sampleStdDev` triggers catastrophic float instability.
-- *Hardened Contract in R3*: In `src/domain/farely/priceAnomaly.ts`, `hasZeroDispersion(prices)` explicitly abstains when `sampleVariance < 1e-6`, guaranteeing zero division-by-zero occurrences.
+### Falsification 2: L02 Staged Commercial Contract Leaks in B2B Syndication
+- *Deficits Identified in Pass R2*: Pass R2 focused on ID casing, but failed to assert that providers marked as `COMMERCIAL_STAGED_CONTRACT_REQUIRED` must be explicitly rejected from B2B export until executed commercial agreements exist.
+- *Empirical Code Evidence*: In `src/domain/farely/providerRights.ts`, if a staged commercial provider happens to list `B2B_SYNDICATION` in its staging template, `validateB2BRedistributionScope` would approve it without an active agreement.
+- *Hardened Contract in R3*: In `src/domain/farely/providerRights.ts`, assert `if (rights.declarationStatus === "COMMERCIAL_STAGED_CONTRACT_REQUIRED")` must be added to `denied` with explicit contract disclaimer.
 
-### Falsification 3: L03 Vietnamese Localized Duration String Parsing Blindspots
-- *Deficits Identified in Pass R2*: Pass R2 analyzed numerical transfer durations, but overlooked duration text parsing in `src/app/domain/dealComparison.ts`.
-- *Empirical Code Evidence*: In `src/app/domain/dealComparison.ts`, regex matches English patterns `(\d+)\s*h` and `(\d+)\s*m`. For Vietnamese domestic OTA strings such as `"2 giờ 15 phút"` or `"1 tiếng 45p"`, the regex returns `undefined`, misclassifying the deal duration as unverified.
-- *Hardened Contract in R3*: In `src/app/domain/dealComparison.ts`, extend duration parser regex to support Vietnamese tokens: `(\d+)\s*(?:h|giờ|tiếng)` and `(\d+)\s*(?:m|phút|p)`. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 Future Observation Timestamp Manipulation in PWA Freshness
+- *Deficits Identified in Pass R2*: Pass R2 sanitized prices, but did not handle corrupted `observedAt` timestamps with future dates (clock drift or malicious client injection).
+- *Empirical Code Evidence*: In `src/domain/farely/pwaOfflineFreshness.ts`, computing `(now - observedTime) / 60000` on a future date yields negative staleness minutes, breaking cache ordering.
+- *Hardened Contract in R3*: In `src/domain/farely/pwaOfflineFreshness.ts`, clamp `offlineStalenessMinutes = Math.max(0, Math.floor((now - observedTime) / 60000))` and reject unparseable timestamps. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
 ## SECTION III: 12 ADVERSARIAL LENSES NEGATIVE VECTOR AUDIT
 
 ### L01: Ingestion & Live Schema Integrity
-- **Negative Vector**: Negative price inversion and undefined airport codes.
-- **Defensive Boundary**: Enforce positive finite price constraints in `src/domain/farely/airportAlternatives.ts`.
+- **Negative Vector**: Whitespace padding and mixed-case open-jaw airport codes.
+- **Defensive Boundary**: Trim and uppercase normalization in `src/domain/farely/multiCityItinerary.ts`.
 
 ### L02: Price Anomaly & Statistical Rigor
-- **Negative Vector**: Zero-variance flat cohorts and subnormal floating-point divisions.
-- **Defensive Boundary**: Enforce sample dispersion thresholding (`rawMad < 1e-6`) in `src/domain/farely/priceAnomaly.ts`.
+- **Negative Vector**: Staged commercial contracts inadvertently syndicated without legal clearance.
+- **Defensive Boundary**: Gate verification in `src/domain/farely/providerRights.ts`.
 
 ### L03: True-Cost & Ancillary Transparency
-- **Negative Vector**: Non-English flight duration parsing omissions creating phantom unverified field warnings.
-- **Defensive Boundary**: Support multilingual duration tokens in `src/app/domain/dealComparison.ts`. Credit card processing and passenger checkout are strictly `boundary_excluded`.
+- **Negative Vector**: Negative staleness minutes and unparseable ISO strings in client storage.
+- **Defensive Boundary**: Bounded timestamp calculations in `src/domain/farely/pwaOfflineFreshness.ts`. Credit card processing and passenger checkout are strictly `boundary_excluded`.
 
 ### L04: Authentication & Rate Limiting
-- **Negative Vector**: High-frequency IP rotation attempting to overwhelm watch notification queues.
-- **Defensive Boundary**: Database-level rate limiting (`check_watch_rate_limit`) in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`. Unauthorized scraping is strictly `boundary_excluded`.
+- **Negative Vector**: Distributed alert scraping flooding webhook dispatchers.
+- **Defensive Boundary**: Database rate-limiting triggers in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`. Unauthorized scraping is strictly `boundary_excluded`.
 
 ### L05: Concurrency & Resilience
-- **Negative Vector**: Cascading partner timeout storms during flight searches.
-- **Defensive Boundary**: Strict circuit breaker state management in `supabase/functions/_shared/flight-search.ts`.
+- **Negative Vector**: Upstream microservice socket hangs under high load.
+- **Defensive Boundary**: Circuit breaker failure isolation in `supabase/functions/_shared/flight-search.ts`.
 
 ### L06: PWA Offline Freshness
-- **Negative Vector**: Stale flight cache resurrection after network reconnection.
-- **Defensive Boundary**: 14-day eviction and 6-hour snapshot staleness flags in `src/domain/farely/pwaOfflineFreshness.ts` and `src/app/pages/DealsPage.tsx`.
+- **Negative Vector**: Malformed deal records resurrecting dead IndexedDB nodes.
+- **Defensive Boundary**: 14-day eviction in `src/domain/farely/pwaOfflineFreshness.ts` and monotonic sorting in `src/app/pages/DealsPage.tsx`.
 
 ### L07: Observability & Production SRE
-- **Negative Vector**: Massive circular error objects exhausting isolate heap memory during telemetry ingestion.
-- **Defensive Boundary**: Enforce WeakSet object memoization and depth limiting in `src/app/lib/analytics.ts`.
+- **Negative Vector**: Deeply nested composite error payloads triggering node crash.
+- **Defensive Boundary**: Bounded serializer depth in `src/app/lib/analytics.ts`.
 
 ### L08: Zero-Downtime Database Migrations
-- **Negative Vector**: DDL locks blocking concurrent table reads.
-- **Defensive Boundary**: Require `CONCURRENTLY` index creation and non-destructive columns in `scripts/verify-certification-integrity.node-test.mjs`.
+- **Negative Vector**: DDL locks blocking production reads during table migration.
+- **Defensive Boundary**: Concurrent index verification in `scripts/verify-certification-integrity.node-test.mjs`.
 
 ### L09: Zero-Mock Testing & Proof Hierarchy
-- **Negative Vector**: Test suite pollution via synthetic mock bypasses.
-- **Defensive Boundary**: Pure domain verification in `scripts/verify-certification-integrity.node-test.mjs`.
+- **Negative Vector**: Fictitious mock assertions masquerading as production readiness.
+- **Defensive Boundary**: Real domain execution verified via `scripts/verify-certification-integrity.node-test.mjs`.
 
 ### L10: Contract Immutability & Anti-Shrinkage
-- **Negative Vector**: Silent deprecation or shrinkage of legacy P0/P1 acceptance gates.
-- **Defensive Boundary**: Automated gate count assertions in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
+- **Negative Vector**: Deletion or softening of foundational P0/P1 capabilities.
+- **Defensive Boundary**: Gate verification in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
 
 ### L11: Transactional Safety & Journal Integrity
-- **Negative Vector**: Uncommitted filesystem modifications left in a dirty state.
-- **Defensive Boundary**: Strict atomic boundaries in `scripts/convergence/transactional-task-manager.mjs`.
+- **Negative Vector**: Partial task updates leading to out-of-sync git indexes.
+- **Defensive Boundary**: Pre-image state snapshots in `scripts/convergence/transactional-task-manager.mjs`.
 
 ### L12: Autonomous Audit & Parity Watchdog
-- **Negative Vector**: Git local/remote drift on `antigravity/farely-v12-product-convergence`.
+- **Negative Vector**: Silent local divergence from remote origin feature branch.
 - **Defensive Boundary**: Autonomous verification in `scripts/convergence/watchdog-convergence.mjs`.
 
 ---
