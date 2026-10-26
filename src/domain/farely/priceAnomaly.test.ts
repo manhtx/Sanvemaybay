@@ -148,6 +148,18 @@ describe("Price Anomaly Detection (F37)", () => {
       expect(sampleStdDev).toBe(0);
     });
 
+    it("sanitizes dirty cohort price arrays and guards Bessel variance", () => {
+      const dirtyPrices = [1_000_000, NaN, null as any, "bad" as any, -100, 2_000_000];
+      const { mean, sampleVariance, sampleStdDev } = calculateSampleStandardDeviation(dirtyPrices);
+      expect(mean).toBe(1_500_000);
+      expect(sampleVariance).toBe(500000000000);
+      expect(sampleStdDev).toBeGreaterThan(0);
+
+      const emptyResult = calculateSampleStandardDeviation([NaN, -1, 0]);
+      expect(emptyResult.sampleVariance).toBe(0);
+      expect(emptyResult.sampleStdDev).toBe(0);
+    });
+
     it("evaluates hasZeroDispersion helper accurately for identical prices", () => {
       expect(hasZeroDispersion([1_200_000, 1_200_000, 1_200_000])).toBe(true);
       expect(hasZeroDispersion([1_200_000, 1_250_000])).toBe(false);

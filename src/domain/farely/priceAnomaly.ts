@@ -245,12 +245,15 @@ export function calculateSampleStandardDeviation(prices: number[]): {
   sampleVariance: number;
   sampleStdDev: number;
 } {
-  const n = prices.length;
+  const validPrices = (prices || []).filter(
+    (p) => typeof p === "number" && Number.isFinite(p) && p > 0
+  );
+  const n = validPrices.length;
   if (n <= 1) {
-    return { mean: prices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };
+    return { mean: validPrices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };
   }
-  const mean = prices.reduce((a, b) => a + b, 0) / n;
-  const sumSquaredDiffs = prices.reduce((acc, p) => acc + Math.pow(p - mean, 2), 0);
+  const mean = validPrices.reduce((a, b) => a + b, 0) / n;
+  const sumSquaredDiffs = validPrices.reduce((acc, p) => acc + Math.pow(p - mean, 2), 0);
   const sampleVariance = Math.round(sumSquaredDiffs / (n - 1)); // Bessel's correction
   return {
     mean,

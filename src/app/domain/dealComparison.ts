@@ -20,11 +20,12 @@ export interface DealComparisonRow {
 }
 
 function durationMinutes(duration?: string): number | undefined {
-  if (!duration) return undefined;
-  const hours = duration.match(/(\d+)\s*h/i)?.[1];
-  const minutes = duration.match(/(\d+)\s*m/i)?.[1];
-  if (!hours && !minutes) return undefined;
-  return Number(hours ?? 0) * 60 + Number(minutes ?? 0);
+  if (!duration || typeof duration !== "string") return undefined;
+  const hours = duration.match(/(\d+)\s*(?:h|giờ|tiếng|g)/i)?.[1];
+  const minutes = duration.match(/(?:(?:h|giờ|tiếng|g)\s*(\d{1,2})|\b(\d+)\s*(?:m|phút|p))/i);
+  const minVal = minutes?.[1] || minutes?.[2];
+  if (!hours && !minVal) return undefined;
+  return Number(hours ?? 0) * 60 + Number(minVal ?? 0);
 }
 
 export function compareDeals(deals: Deal[]): DealComparisonRow[] {

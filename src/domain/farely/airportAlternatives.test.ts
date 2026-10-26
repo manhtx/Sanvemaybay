@@ -92,6 +92,29 @@ describe('F23: Airport Alternatives with Ground Transfer Time and Cost', () => {
     expect(evaluation.groundTransfer.isVerifiedSource).toBe(false);
     expect(evaluation.groundTransfer.sourceName).toContain('Ước tính thuật toán');
   });
+
+  it('rejects identical airport comparisons and invalid prices safely', () => {
+    const identical = evaluateAirportAlternative({
+      baselineAirportCode: 'HAN',
+      baselinePrice: 1200000,
+      alternativeAirportCode: 'han ',
+      alternativePrice: 1100000,
+    });
+    expect(identical.verdict).toBe('NOT_RECOMMENDED');
+    expect(identical.netSavingsVND).toBe(0);
+    expect(identical.worthwhile).toBe(false);
+    expect(identical.tradeoffExplanation).toContain('trùng khớp');
+
+    const invalidPrice = evaluateAirportAlternative({
+      baselineAirportCode: 'HAN',
+      baselinePrice: NaN,
+      alternativeAirportCode: 'VDO',
+      alternativePrice: -500000,
+    });
+    expect(invalidPrice.verdict).toBe('NOT_RECOMMENDED');
+    expect(invalidPrice.worthwhile).toBe(false);
+    expect(invalidPrice.tradeoffExplanation).toContain('không hợp lệ');
+  });
 });
 
 describe('F68: Airport and Local Datetime Correctness across Timezones & Overnight', () => {

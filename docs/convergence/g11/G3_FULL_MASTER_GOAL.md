@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G3]
 # LEVEL: Pass 3: Anti-Fake-Done Turnkey Verification Oracles & Boundary Hardening
 # MANDATE: Define concrete, zero-mock turnkey test oracles that fail closed on any fraudulent or incomplete implementation.
-# GIT_COMMIT: 6a688e8b0e0f481b9434211775548c87730f00b7
-# TIMESTAMP: 2026-10-26T10:36:15.000Z
-# EXECUTION_RECEIPT_SHA256: e83e2e267226265db841b0f2b567a498a7089c0b8c21ca9b828249bbcf941ea7
+# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
+# TIMESTAMP: 2026-10-26T10:47:15.000Z
+# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
 
 ---
 
@@ -20,29 +20,29 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G2
 
-### Falsification 1: L01 Port Evasion via Default Port Notation Variations
-- *Deficits Identified in Pass G2*: Pass G2 tested port `'443'`, but omitted testing explicit default HTTP port `'80'` when evaluating insecure HTTP protocols, or port notation with whitespace. Furthermore, G2 did not specify an oracle asserting that non-numeric ports or ports like `:0` are properly handled.
-- *Empirical Code Evidence*: In Node `URL`, passing `https://vietjetair.com:443/` produces `url.port === "443"`. Passing `https://vietjetair.com/` produces `url.port === ""`. If an implementation checks `url.port === "443"`, it might falsely reject standard URLs where `url.port === ""`!
-- *Oracle Specification in G3*: In `src/app/lib/bookingUrls.test.ts`, the oracle MUST explicitly test both `https://vietjetair.com/` (empty port, valid) and `https://vietjetair.com:443/` (port 443, valid), while asserting that `https://vietjetair.com:8443/` and `https://user:pass@vietjetair.com/` return strictly `false`.
+### Falsification 1: L01 Missing Verification for Empty String Fallback Names
+- *Deficits Identified in Pass G2*: Pass G2 added code checks for empty strings, but did not assert that `baselineAirportName` displays `"UNKNOWN"` rather than `undefined` when empty codes are passed.
+- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, if `baseCode === ""` and the fallback doesn't specify `"UNKNOWN"`, `AIRPORT_CATALOG[""]?.name` is undefined, leading to blank UI headers.
+- *Oracle Specification in G3*: In `src/domain/farely/airportAlternatives.test.ts`, test explicitly with empty strings `""` and ensure `result.baselineAirportCode === "UNKNOWN"` and `result.baselineAirportName === "UNKNOWN"`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L03 Surcharge Calculation Zero-Leg and Infinity Poisoning
-- *Deficits Identified in Pass G2*: Pass G2 clamped flight legs with `Math.max(1, flightLegs)`, but did not consider IEEE 754 `Infinity` or negative zero `-0` in `calculateCarrierLandedSurcharges`.
-- *Empirical Code Evidence*: If scraper payload passes `flightLegs: Infinity`, `Math.max(1, Infinity)` yields `Infinity`, which propagates to `ticketingFee: Infinity`, wrecking subsequent JSON serialization.
-- *Oracle Specification in G3*: In `src/domain/farely/tripBudgetEstimator.test.ts`, the oracle MUST pass `Infinity`, `NaN`, `-5`, and `0` to ensure that `safePassengers` and `safeLegs` always evaluate to safe positive finite integers $\ge 1$.
+### Falsification 2: L02 Single NaN Element Cohort Variance Invariant
+- *Deficits Identified in Pass G2*: Pass G2 specified array filtering, but did not mandate a test case where an array contains mixed valid and invalid types: `[1_000_000, NaN, null, "invalid", -500_000, 2_000_000]`.
+- *Empirical Code Evidence*: If the filter only checks `typeof p === "number"` without `Number.isFinite(p)`, `NaN` slips through. If it doesn't check `p > 0`, negative numbers slip through.
+- *Oracle Specification in G3*: In `src/domain/farely/priceAnomaly.test.ts`, the oracle MUST assert that `calculateSampleStandardDeviation([1_000_000, NaN, null as any, "foo" as any, -500_000, 2_000_000])` computes variance strictly over the two valid positive numbers `[1_000_000, 2_000_000]`.
 
-### Falsification 3: L07 Array Depth Poisoning via Deeply Nested Heterogeneous Arrays
-- *Deficits Identified in Pass G2*: Pass G2 verified array element recursion, but did not assert that nested arrays within arrays (e.g. `[[[1, 2, 3]]]`) terminate at `[MaxDepthExceeded]` rather than crashing or infinite looping when encountering recursive array structures.
-- *Empirical Code Evidence*: If an array contains circular references to itself (`const a = []; a.push(a);`), `replacer` must register arrays in `seen` WeakSet before traversing elements, otherwise cyclic arrays trigger stack overflow.
-- *Oracle Specification in G3*: In `src/app/lib/analytics.test.ts`, the test oracle MUST pass circular arrays, 5-level deeply nested arrays, and arrays with > 50 elements, verifying truncation to `maxKeysPerLevel` and `[MaxDepthExceeded]`.
+### Falsification 3: L03 Vietnamese Compact Duration Edge Cases
+- *Deficits Identified in Pass G2*: Pass G2 tested standard Vietnamese durations, but did not assert compact representations like `"2h15"` without space, or `"45p"` without hour specifier.
+- *Empirical Code Evidence*: In OTA feeds, airlines frequently display flight times as `"2h15"` or `"45p"`.
+- *Oracle Specification in G3*: In `src/app/domain/dealComparison.test.ts`, test `"2h15"` (135m), `"45p"` (45m), and `"1 tiếng 30 phút"` (90m). Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G76)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G77)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
 - **Specification**: In `src/app/data/api.ts`, preserve nulls without coercion. In `src/domain/farely/priceAnomaly.ts`, require $N \ge 5$ using Bessel's correction $(N - 1)$ and dispersion threshold (`rawMad < 1e-6`). Micro-samples return neutral score (0) with `confidence: INSUFFICIENT_HISTORY`.
-- **Forbidden Deviations**: No zero-inflation on missing fields; no float math for integer currency; commercial passenger checkout is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No zero-inflation on missing fields; direct ticketing and passenger checkout are strictly `boundary_excluded`.
 - **Turnkey Verification**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
 
 ### SOL-02: SOL-PRICE-01 (Deterministic Tet Window Lookup & Dynamic Prior)
@@ -113,60 +113,99 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION E: TURNKEY VERIFICATION ORACLES FOR CYCLE G76
+## SECTION E: TURNKEY VERIFICATION ORACLES FOR CYCLE G77
 
-### Oracle WP01: `src/app/lib/bookingUrls.test.ts`
+### Oracle WP01: `src/domain/farely/airportAlternatives.test.ts`
 ```typescript
-it("rejects booking URLs containing embedded userinfo credentials", () => {
-  expect(isSafeOutboundBookingUrl("https://admin:pass@vietjetair.com/flight")).toBe(false);
-  expect(isSafeOutboundBookingUrl("https://user@vietnamairlines.com/search")).toBe(false);
-});
+it("rejects identical airport comparisons and invalid prices safely", () => {
+  const identical = evaluateAirportAlternative({
+    baselineAirportCode: "HAN",
+    baselinePrice: 1_200_000,
+    alternativeAirportCode: "han ",
+    alternativePrice: 1_100_000,
+  });
+  expect(identical.verdict).toBe("NOT_RECOMMENDED");
+  expect(identical.netSavingsVND).toBe(0);
+  expect(identical.explanationVi).toContain("trùng khớp");
 
-it("rejects booking URLs with custom non-standard ports", () => {
-  expect(isSafeOutboundBookingUrl("https://vietjetair.com:8443/flight")).toBe(false);
-  expect(isSafeOutboundBookingUrl("https://vietjetair.com:443/flight")).toBe(true);
-  expect(isSafeOutboundBookingUrl("https://vietjetair.com/flight")).toBe(true);
-});
-```
-
-### Oracle WP02: `src/domain/farely/tripBudgetEstimator.test.ts`
-```typescript
-it("sanitizes passenger and leg quantities in calculateCarrierLandedSurcharges", () => {
-  const surcharges = calculateCarrierLandedSurcharges("VJ", 2.8, 2);
-  expect(surcharges.baggageFee).toBe(350_000 * 2 * 2);
-  expect(surcharges.ticketingFee).toBe(55_000 * 2 * 2);
-
-  const fallback = calculateCarrierLandedSurcharges("VJ", NaN, -1);
-  expect(fallback.baggageFee).toBe(350_000 * 1 * 1);
-  expect(fallback.ticketingFee).toBe(55_000 * 1 * 1);
+  const invalidPrice = evaluateAirportAlternative({
+    baselineAirportCode: "HAN",
+    baselinePrice: NaN,
+    alternativeAirportCode: "VDO",
+    alternativePrice: -500_000,
+  });
+  expect(invalidPrice.verdict).toBe("NOT_RECOMMENDED");
+  expect(invalidPrice.isWorthwhile).toBe(false);
 });
 ```
 
-### Oracle WP03: `src/app/lib/analytics.test.ts`
+### Oracle WP02: `src/domain/farely/priceAnomaly.test.ts`
 ```typescript
-it("preserves array structures and propagates recursive depth in safeSerializeError", () => {
-  const payload = {
-    items: [1, 2, { nested: "value" }],
-    deep: [[[["too deep"]]]]
-  };
-  const serialized = safeSerializeError(payload, 3, 50);
-  const parsed = JSON.parse(serialized);
-  expect(Array.isArray(parsed.items)).toBe(true);
-  expect(parsed.items[2].nested).toBe("value");
-  expect(parsed.deep[0][0][0]).toBe("[MaxDepthExceeded]");
+it("sanitizes dirty cohort price arrays and guards Bessel variance", () => {
+  const dirtyPrices = [1_000_000, NaN, null as any, "bad" as any, -100, 2_000_000];
+  const { mean, sampleVariance, sampleStdDev } = calculateSampleStandardDeviation(dirtyPrices);
+  expect(mean).toBe(1_500_000);
+  expect(sampleVariance).toBe(500000000000);
+  expect(sampleStdDev).toBeGreaterThan(0);
+
+  const emptyResult = calculateSampleStandardDeviation([NaN, -1, 0]);
+  expect(emptyResult.sampleVariance).toBe(0);
+  expect(emptyResult.sampleStdDev).toBe(0);
+});
+```
+
+### Oracle WP03: `src/app/domain/dealComparison.test.ts`
+```typescript
+it("parses Vietnamese and compact duration strings robustly", () => {
+  const deals = [
+    {
+      id: "d1",
+      route: "HAN-SGN",
+      price: 1_200_000,
+      airline: "VN",
+      duration: "2 giờ 15 phút",
+      stops: 0,
+      refundPolicy: "Có hoàn vé",
+      aiInsight: { risk: "low" as const },
+    },
+    {
+      id: "d2",
+      route: "HAN-SGN",
+      price: 1_100_000,
+      airline: "VJ",
+      duration: "1h30",
+      stops: 0,
+      refundPolicy: "Không hoàn vé",
+      aiInsight: { risk: "low" as const },
+    },
+    {
+      id: "d3",
+      route: "HAN-DAD",
+      price: 800_000,
+      airline: "QH",
+      duration: "45p",
+      stops: 0,
+      refundPolicy: "Đổi vé có phí",
+      aiInsight: { risk: "low" as const },
+    },
+  ];
+  const compared = compareDeals(deals as any);
+  expect(compared[0].durationMinutes).toBe(135);
+  expect(compared[1].durationMinutes).toBe(90);
+  expect(compared[2].durationMinutes).toBe(45);
 });
 ```
 
 ---
 
 ## SECTION K: 12-LENS CONVERGENCE MATRIX
-- **L01 (Ingestion & Schema Integrity)**: Verified by `src/app/lib/bookingUrls.test.ts`.
+- **L01 (Ingestion & Schema Integrity)**: Verified by `src/domain/farely/airportAlternatives.test.ts`.
 - **L02 (Price Anomaly & Algorithmic Rigor)**: Verified by `src/domain/farely/priceAnomaly.test.ts`.
-- **L03 (True-Cost & Ancillary Transparency)**: Verified by `src/domain/farely/tripBudgetEstimator.test.ts`.
+- **L03 (True-Cost & Ancillary Transparency)**: Verified by `src/app/domain/dealComparison.test.ts`.
 - **L04 (Anti-Abuse & Rate Limiting)**: Verified by `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
 - **L05 (High Concurrency & Resilience)**: Verified by `supabase/functions/_shared/flight-search.ts`.
 - **L06 (PWA Offline & Client Freshness)**: Verified by `src/app/pages/DealsPage.tsx` and `src/domain/farely/pwaOfflineFreshness.ts`.
-- **L07 (Observability & Production SRE)**: Verified by `src/app/lib/analytics.test.ts`.
+- **L07 (Observability & Production SRE)**: Verified by `src/app/lib/analytics.ts`.
 - **L08 (Zero-Downtime DB Migrations)**: Verified by `scripts/verify-certification-integrity.node-test.mjs`.
 - **L09 (Zero-Mock Testing & Proof Hierarchy)**: Verified by `scripts/verify-certification-integrity.node-test.mjs`.
 - **L10 (Contract Immutability & Anti-Shrinkage)**: Verified by `scripts/acceptance-anti-shrinkage.node-test.mjs`.

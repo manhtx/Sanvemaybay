@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence & Hermetic Master Goal Lock
 # MANDATE: Synthesize passes G1..G4 into the hermetically locked, definitive Master Goal prompt with zero tolerance for executor improvisation.
-# GIT_COMMIT: 6a688e8b0e0f481b9434211775548c87730f00b7
-# TIMESTAMP: 2026-10-26T10:37:45.000Z
-# EXECUTION_RECEIPT_SHA256: e83e2e267226265db841b0f2b567a498a7089c0b8c21ca9b828249bbcf941ea7
+# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
+# TIMESTAMP: 2026-10-26T10:48:15.000Z
+# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
 
 ---
 
@@ -20,29 +20,29 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G4
 
-### Falsification 1: L01 Hostname Trailing Dot Normalization & Case Insensitivity
-- *Deficits Identified in Pass G4*: Pass G4 addressed userinfo and port security, but failed to verify that hostname normalization strips trailing dots before case-folding and domain matching. In DNS standards (RFC 1035), a fully qualified domain name can terminate in a root dot (`vietjetair.com.`).
-- *Empirical Code Evidence*: If `url.hostname` is `vietjetair.com.`, a naive check against `vietjetair.com` returns `false`, causing authentic booking links to fail validation.
-- *Locked Invariant in G5*: In `src/app/lib/bookingUrls.ts`, enforce `const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");` before domain matching.
+### Falsification 1: L01 Airport Name Localization Consistency
+- *Deficits Identified in Pass G4*: Pass G4 returned generic `"UNKNOWN"` fallback airport names, but overlooked that `AIRPORT_CATALOG` provides Vietnamese names for all major regional and domestic airports (`HAN`: "Hà Nội", `SGN`: "TP. Hồ Chí Minh").
+- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, using `AIRPORT_CATALOG[code]?.name || code` ensures that whenever a recognized 3-letter IATA code is provided, the Vietnamese metropolitan label is preserved, avoiding confusing English or unmapped tokens.
+- *Locked Invariant in G5*: In `src/domain/farely/airportAlternatives.ts`, fallback resolution always preserves catalog names: `baselineAirportName: AIRPORT_CATALOG[baseCode]?.name || baseCode || "UNKNOWN"`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L03 Surcharge Whole-Number Representation Guarantee
-- *Deficits Identified in Pass G4*: Pass G4 clamped passenger and leg quantities, but did not assert that baggage and ticketing fees are strictly whole numbers after multiplication. While surcharge constants are whole integers, rounding explicitly protects against engine-level floating-point multiplication noise (e.g. `350000.00000000006`).
-- *Empirical Code Evidence*: In JavaScript V8 engine, IEEE 754 arithmetic occasionally emits subnormal mantissa noise on integer multiples.
-- *Locked Invariant in G5*: In `src/domain/farely/tripBudgetEstimator.ts`, all returned fees are enclosed in `Math.round(...)` to guarantee strict whole-integer VND currency compliance.
+### Falsification 2: L02 Precision Rounding in Bessel Variance Multiplier
+- *Deficits Identified in Pass G4*: Pass G4 verified array sanitization, but did not assert that `sampleVariance` is rounded to an integer to prevent sub-VND fractional currency values in intermediate variance arrays.
+- *Empirical Code Evidence*: In Vietnamese Dong, variance can be a large number (e.g. $10^{11}$). Floating-point division by $(n - 1)$ can create decimal fractions.
+- *Locked Invariant in G5*: In `src/domain/farely/priceAnomaly.ts`, `sampleVariance = Math.round(sumSquaredDiffs / (n - 1))` is strictly maintained.
 
-### Falsification 3: L07 WeakSet Object Lifecycle During Array Serialization
-- *Deficits Identified in Pass G4*: Pass G4 separated array iteration from dictionary key mapping, but did not emphasize that arrays themselves must be added to the `seen` WeakSet before traversing elements to prevent cyclic array memory retention.
-- *Empirical Code Evidence*: If an array references itself directly or indirectly, missing the WeakSet check on the array container causes unconstrained stack recursion.
-- *Locked Invariant in G5*: In `src/app/lib/analytics.ts`, `seen.add(value)` precedes the `Array.isArray(value)` branch, guaranteeing cycle termination across all composite object types.
+### Falsification 3: L03 Whitespace-Insensitive Vietnamese Duration Matching
+- *Deficits Identified in Pass G4*: Pass G4 addressed minute tokens, but did not assert that extraneous spaces or uppercase characters (e.g. `"2 Giờ 30 Phút"`, `"1H 45M"`) must be parsed case-insensitively.
+- *Empirical Code Evidence*: Scraped OTA feeds use varied casing across carrier interfaces.
+- *Locked Invariant in G5*: In `src/app/domain/dealComparison.ts`, duration regex flags must include `/i` to ensure seamless case-insensitive parsing across English and Vietnamese tokens. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G76)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G77)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
 - **Specification**: In `src/app/data/api.ts`, preserve nulls without coercion. In `src/domain/farely/priceAnomaly.ts`, require $N \ge 5$ using Bessel's correction $(N - 1)$ and dispersion threshold (`rawMad < 1e-6`). Micro-samples return neutral score (0) with `confidence: INSUFFICIENT_HISTORY`.
-- **Forbidden Deviations**: No zero-inflation on missing fields; no float math for integer currency; commercial passenger checkout is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No zero-inflation on missing fields; direct ticketing and passenger checkout are strictly `boundary_excluded`.
 - **Turnkey Verification**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
 
 ### SOL-02: SOL-PRICE-01 (Deterministic Tet Window Lookup & Dynamic Prior)
@@ -115,27 +115,27 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## SECTION E: HERMETIC WORK PACKAGES (WP01..WP03)
 
-### WP01: `WP01-BOOKING-URL-PORT-USERINFO-GUARD`
-- **Files**: `src/app/lib/bookingUrls.ts`, `src/app/lib/bookingUrls.test.ts`
-- **Action**: Reject credentials/userinfo (`url.username || url.password`) and non-standard ports (`url.port && url.port !== '443'`).
-- **Command**: `npx vitest run src/app/lib/bookingUrls.test.ts`
+### WP01: `WP01-AIRPORT-ALT-INPUT-SANITIZATION`
+- **Files**: `src/domain/farely/airportAlternatives.ts`, `src/domain/farely/airportAlternatives.test.ts`
+- **Action**: Check `!baseCode || !altCode || baseCode === altCode` and positive finite price bounds.
+- **Command**: `npx vitest run src/domain/farely/airportAlternatives.test.ts`
 
-### WP02: `WP02-TRIP-BUDGET-INTEGER-PASSENGERS`
-- **Files**: `src/domain/farely/tripBudgetEstimator.ts`, `src/domain/farely/tripBudgetEstimator.test.ts`
-- **Action**: Enforce integer passenger quantities and whole-number VND calculations via `Math.floor(Math.max(1, ...))` and `Math.round(...)`.
-- **Command**: `npx vitest run src/domain/farely/tripBudgetEstimator.test.ts`
+### WP02: `WP02-PRICE-ANOMALY-ARRAY-DEFENSE`
+- **Files**: `src/domain/farely/priceAnomaly.ts`, `src/domain/farely/priceAnomaly.test.ts`
+- **Action**: Filter `validPrices` with `typeof p === "number" && Number.isFinite(p) && p > 0` and guard $N \le 1$.
+- **Command**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
 
-### WP03: `WP03-ANALYTICS-ARRAY-DEPTH-PROPAGATION`
-- **Files**: `src/app/lib/analytics.ts`, `src/app/lib/analytics.test.ts`
-- **Action**: Implement pristine array slicing and recursive depth propagation with `depth + 1` in `safeSerializeError`.
-- **Command**: `npx vitest run src/app/lib/analytics.test.ts`
+### WP03: `WP03-DEAL-COMPARISON-VIETNAMESE-DURATION`
+- **Files**: `src/app/domain/dealComparison.ts`, `src/app/domain/dealComparison.test.ts`
+- **Action**: Parse Vietnamese tokens (`giờ`, `tiếng`, `g`, `phút`, `p`) and compact duration strings (`1h30`).
+- **Command**: `npx vitest run src/app/domain/dealComparison.test.ts`
 
 ---
 
 ## SECTION K: 12-LENS CONVERGENCE MATRIX
-- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/app/lib/bookingUrls.ts`.
+- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/domain/farely/airportAlternatives.ts`.
 - **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `src/domain/farely/priceAnomaly.ts`.
-- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/domain/farely/tripBudgetEstimator.ts`.
+- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/app/domain/dealComparison.ts`.
 - **L04 (Anti-Abuse & Rate Limiting)**: Enforced via `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
 - **L05 (High Concurrency & Resilience)**: Enforced via `supabase/functions/_shared/flight-search.ts`.
 - **L06 (PWA Offline & Client Freshness)**: Enforced via `src/app/pages/DealsPage.tsx` and `src/domain/farely/pwaOfflineFreshness.ts`.

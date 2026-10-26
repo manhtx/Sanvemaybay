@@ -327,14 +327,71 @@ export function evaluateAirportAlternative(params: {
   alternativeAirportCode: string;
   alternativePrice: number;
 }): AirportAlternativeEvaluation {
-  const baseCode = params.baselineAirportCode.trim().toUpperCase();
-  const altCode = params.alternativeAirportCode.trim().toUpperCase();
+  const baseCode = (params.baselineAirportCode || "").trim().toUpperCase();
+  const altCode = (params.alternativeAirportCode || "").trim().toUpperCase();
 
   const baseAirport = AIRPORT_CATALOG[baseCode];
   const altAirport = AIRPORT_CATALOG[altCode];
 
-  const baseName = baseAirport?.name || baseCode;
-  const altName = altAirport?.name || altCode;
+  const baseName = baseAirport?.name || baseCode || "UNKNOWN";
+  const altName = altAirport?.name || altCode || "UNKNOWN";
+
+  if (!baseCode || !altCode || baseCode === altCode) {
+    return {
+      baselineAirportCode: baseCode || "UNKNOWN",
+      baselineAirportName: baseName,
+      baselinePrice: Number.isFinite(params.baselinePrice) ? params.baselinePrice : 0,
+      alternativeAirportCode: altCode || "UNKNOWN",
+      alternativeAirportName: altName,
+      alternativePrice: Number.isFinite(params.alternativePrice) ? params.alternativePrice : 0,
+      airFareSavingsVND: 0,
+      groundTransfer: {
+        distanceKm: 0,
+        typicalMinutes: 0,
+        estimatedCostVND: 0,
+        modes: [],
+        sourceName: "Sân bay trùng khớp hoặc không hợp lệ",
+        isVerifiedSource: true,
+      },
+      netSavingsVND: 0,
+      hourlyEfficiencyVND: 0,
+      verdict: "NOT_RECOMMENDED",
+      worthwhile: false,
+      tradeoffExplanation: baseCode === altCode
+        ? "Sân bay so sánh trùng khớp với sân bay gốc."
+        : "Mã sân bay so sánh không hợp lệ.",
+    };
+  }
+
+  if (
+    !Number.isFinite(params.baselinePrice) ||
+    params.baselinePrice <= 0 ||
+    !Number.isFinite(params.alternativePrice) ||
+    params.alternativePrice <= 0
+  ) {
+    return {
+      baselineAirportCode: baseCode,
+      baselineAirportName: baseName,
+      baselinePrice: Number.isFinite(params.baselinePrice) ? params.baselinePrice : 0,
+      alternativeAirportCode: altCode,
+      alternativeAirportName: altName,
+      alternativePrice: Number.isFinite(params.alternativePrice) ? params.alternativePrice : 0,
+      airFareSavingsVND: 0,
+      groundTransfer: {
+        distanceKm: 0,
+        typicalMinutes: 0,
+        estimatedCostVND: 0,
+        modes: [],
+        sourceName: "Mức giá không hợp lệ",
+        isVerifiedSource: true,
+      },
+      netSavingsVND: 0,
+      hourlyEfficiencyVND: 0,
+      verdict: "NOT_RECOMMENDED",
+      worthwhile: false,
+      tradeoffExplanation: "Mức giá so sánh không hợp lệ (phải là số dương hợp lệ).",
+    };
+  }
 
   const { inSameMetro, metroId } = areAirportsInSameMetro(baseCode, altCode);
 
@@ -357,7 +414,8 @@ export function evaluateAirportAlternative(params: {
 
   const airFareSavingsVND = params.baselinePrice - params.alternativePrice;
   const netSavingsVND = airFareSavingsVND - transfer.estimatedCostVND;
-  const transferHours = Math.max(0.25, transfer.typicalMinutes / 60);
+  const safeMinutes = Number.isFinite(transfer.typicalMinutes) && transfer.typicalMinutes > 0 ? transfer.typicalMinutes : 60;
+  const transferHours = Math.max(0.25, safeMinutes / 60);
   const hourlyEfficiencyVND = Math.round(netSavingsVND / transferHours);
 
   let verdict: AlternativeVerdict;

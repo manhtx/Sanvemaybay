@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G2]
 # LEVEL: Pass 2: Hostile Before/After AST Diff Blueprint & Structural Isolation
 # MANDATE: Refute and harden Pass G1 with exact file modifications, AST boundary invariants, and lens falsifications.
-# GIT_COMMIT: 6a688e8b0e0f481b9434211775548c87730f00b7
-# TIMESTAMP: 2026-10-26T10:35:10.000Z
-# EXECUTION_RECEIPT_SHA256: e83e2e267226265db841b0f2b567a498a7089c0b8c21ca9b828249bbcf941ea7
+# GIT_COMMIT: ed53cc39e6b3eb1f96b5f66cf017032b09bd55ac
+# TIMESTAMP: 2026-10-26T10:46:25.000Z
+# EXECUTION_RECEIPT_SHA256: 8d1a9b4346193f30aa03e57ed1e11bb87625d140618b00a287da74aed6142d41
 
 ---
 
@@ -20,29 +20,29 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G1
 
-### Falsification 1: L01 URL Parser Custom Port Bypass & Userinfo Attack Vectors
-- *Deficits Identified in Pass G1*: Pass G1 proposed basic port checking without explicitly specifying the exact AST guard for URL userinfo/credentials (`user:pass@host`) and empty port strings. In Node `URL`, `parsed.port` is an empty string for default ports (`80` or `443`), but if a URL contains `vietjetair.com:443`, `parsed.port` is `"443"`. G1 failed to test port normalization.
-- *Empirical Code Evidence*: In `src/app/lib/bookingUrls.ts`, an attacker crafting `https://attacker:secret@vietjetair.com:8443` would pass naive domain matching if port and userinfo are not explicitly stripped or rejected.
-- *Hardened Contract in G2*: In `src/app/lib/bookingUrls.ts`, assert `if (parsed.username || parsed.password) return false;` and `if (parsed.port && parsed.port !== "443" && parsed.port !== "80") return false;`.
+### Falsification 1: L01 Untrimmed Identity Comparison Failure in Airport Alternatives
+- *Deficits Identified in Pass G1*: Pass G1 checked `baseCode === altCode` after `trim().toUpperCase()`, but failed to specify the fallback when airport catalog lookup returns undefined for unusual or test airport codes.
+- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`, if `params.baselineAirportCode` is whitespace (`"   "`), `trim()` yields `""`. `AIRPORT_CATALOG[""]` returns undefined, but the code still attempts to evaluate ground transfers instead of returning an invalid input evaluation.
+- *Hardened Contract in G2*: In `src/domain/farely/airportAlternatives.ts`, require `if (!baseCode || !altCode) return { verdict: "NOT_RECOMMENDED", netSavingsVND: 0, isWorthwhile: false, explanationVi: "Mã sân bay không hợp lệ." };`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L03 Surcharge Computation Negative & Fractional Legs Vulnerability
-- *Deficits Identified in Pass G1*: Pass G1 targeted passenger count integer sanitization, but did not handle negative or `NaN` flight leg parameters in `estimateRoundTripBaggageCost` and `calculateCarrierLandedSurcharges`.
-- *Empirical Code Evidence*: In `src/domain/farely/tripBudgetEstimator.ts`, calling `estimateRoundTripBaggageCost("VJ", -1)` would yield negative baggage costs, deducting from the total trip budget and creating synthetic negative fares.
-- *Hardened Contract in G2*: In `src/domain/farely/tripBudgetEstimator.ts`, enforce `const safeBags = Math.floor(Math.max(1, Number.isFinite(checkedBags) ? checkedBags : 1));` and export `calculateCarrierLandedSurcharges` with full integer clamping.
+### Falsification 2: L02 Single-Element Variance Inconsistency Under Array Defense
+- *Deficits Identified in Pass G1*: Pass G1 added array filtering, but did not assert Bessel correction denominator behavior for single-element arrays where $N = 1$ causes division by $(1 - 1) = 0$.
+- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, `calculateSampleStandardDeviation` checks `if (n <= 1)` on the raw array, but if a dirty array has 10 elements where 9 are `NaN` and only 1 is a valid number, the filtered length is 1! Dividing by `(n - 1)` without updating `n` causes `Infinity` or `NaN`.
+- *Hardened Contract in G2*: In `src/domain/farely/priceAnomaly.ts`, define `const n = validPrices.length; if (n <= 1) return { mean: validPrices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };`.
 
-### Falsification 3: L07 Object Key Enumeration vs Array Index Slicing Discrepancy
-- *Deficits Identified in Pass G1*: Pass G1 recommended array depth propagation, but left `Object.keys(value)` handling arrays as generic dictionary objects.
-- *Empirical Code Evidence*: In `src/app/lib/analytics.ts`, `Object.keys([1, 2, 3])` yields `['0', '1', '2']`. When `maxKeysPerLevel` truncates an array, it creates a sparse array-like object `{ '0': ..., '1': ... }` instead of a true JavaScript Array instance, corrupting downstream JSON parsing.
-- *Hardened Contract in G2*: In `src/app/lib/analytics.ts`, branch explicitly on `Array.isArray(value)` to return a pristine `any[]` slice populated recursively with `depth + 1`.
+### Falsification 3: L03 Missing Match Indices in Dual-Capture Minute Regex
+- *Deficits Identified in Pass G1*: Pass G1 provided a dual-match regex for minutes, but did not guard against `duration` containing non-string or numeric inputs.
+- *Empirical Code Evidence*: In `src/app/domain/dealComparison.ts`, if `duration` is passed as a number or object, `duration.match` throws a TypeError in the V8 engine.
+- *Hardened Contract in G2*: In `src/app/domain/dealComparison.ts`, guard with `if (!duration || typeof duration !== "string") return undefined;`. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G76)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G77)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
 - **Specification**: In `src/app/data/api.ts`, preserve nulls without coercion. In `src/domain/farely/priceAnomaly.ts`, require $N \ge 5$ using Bessel's correction $(N - 1)$ and dispersion threshold (`rawMad < 1e-6`). Micro-samples return neutral score (0) with `confidence: INSUFFICIENT_HISTORY`.
-- **Forbidden Deviations**: No zero-inflation on missing fields; no float math for integer currency; commercial passenger checkout is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No zero-inflation on missing fields; direct ticketing and passenger checkout are strictly `boundary_excluded`.
 - **Turnkey Verification**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
 
 ### SOL-02: SOL-PRICE-01 (Deterministic Tet Window Lookup & Dynamic Prior)
@@ -115,112 +115,170 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## SECTION E: HOSTILE BEFORE/AFTER AST DIFF BLUEPRINT
 
-### WP01: `src/app/lib/bookingUrls.ts`
+### WP01: `src/domain/farely/airportAlternatives.ts`
 ```typescript
 <<<<<<< BEFORE
-export function isSafeOutboundBookingUrl(urlStr: string): boolean {
-  if (!urlStr || typeof urlStr !== "string") return false;
-  try {
-    const parsed = new URL(urlStr);
-    if (parsed.protocol !== "https:") return false;
-    const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
-    return Array.from(APPROVED_BOOKING_DOMAINS).some(
-      (domain) => hostname === domain || hostname.endsWith("." + domain)
-    );
-  } catch {
-    return false;
-  }
-}
+export function evaluateAirportAlternative(params: {
+  baselineAirportCode: string;
+  baselinePrice: number;
+  alternativeAirportCode: string;
+  alternativePrice: number;
+}): AirportAlternativeEvaluation {
+  const baseCode = params.baselineAirportCode.trim().toUpperCase();
+  const altCode = params.alternativeAirportCode.trim().toUpperCase();
+
+  const baseAirport = AIRPORT_CATALOG[baseCode];
+  const altAirport = AIRPORT_CATALOG[altCode];
 =======
-export function isSafeOutboundBookingUrl(urlStr: string): boolean {
-  if (!urlStr || typeof urlStr !== "string") return false;
-  try {
-    const parsed = new URL(urlStr);
-    if (parsed.protocol !== "https:") return false;
-    // Reject embedded credentials (userinfo) in outbound URLs
-    if (parsed.username || parsed.password) return false;
-    // Disallow non-standard ports (must be default HTTPS port 443 or empty)
-    if (parsed.port && parsed.port !== "443") return false;
-    const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
-    return Array.from(APPROVED_BOOKING_DOMAINS).some(
-      (domain) => hostname === domain || hostname.endsWith("." + domain)
-    );
-  } catch {
-    return false;
+export function evaluateAirportAlternative(params: {
+  baselineAirportCode: string;
+  baselinePrice: number;
+  alternativeAirportCode: string;
+  alternativePrice: number;
+}): AirportAlternativeEvaluation {
+  const baseCode = (params.baselineAirportCode || "").trim().toUpperCase();
+  const altCode = (params.alternativeAirportCode || "").trim().toUpperCase();
+
+  // Validate airport code validity and identity match
+  if (!baseCode || !altCode || baseCode === altCode) {
+    return {
+      baselineAirportCode: baseCode || "UNKNOWN",
+      baselineAirportName: AIRPORT_CATALOG[baseCode]?.name || baseCode || "UNKNOWN",
+      alternativeAirportCode: altCode || "UNKNOWN",
+      alternativeAirportName: AIRPORT_CATALOG[altCode]?.name || altCode || "UNKNOWN",
+      inSameMetro: false,
+      airFareSavingsVND: 0,
+      groundTransfer: {
+        originCode: altCode || "UNKNOWN",
+        destinationCode: baseCode || "UNKNOWN",
+        distanceKm: 0,
+        typicalMinutes: 0,
+        estimatedCostVND: 0,
+        modes: [],
+        sourceName: "Sân bay trùng khớp hoặc không hợp lệ",
+        isVerifiedSource: true,
+      },
+      netSavingsVND: 0,
+      hourlyEfficiencyVND: 0,
+      verdict: "NOT_RECOMMENDED",
+      isWorthwhile: false,
+      explanationVi: baseCode === altCode
+        ? "Sân bay so sánh trùng khớp với sân bay gốc."
+        : "Mã sân bay so sánh không hợp lệ.",
+    };
   }
-}
+
+  // Validate positive finite prices
+  if (
+    !Number.isFinite(params.baselinePrice) ||
+    params.baselinePrice <= 0 ||
+    !Number.isFinite(params.alternativePrice) ||
+    params.alternativePrice <= 0
+  ) {
+    return {
+      baselineAirportCode: baseCode,
+      baselineAirportName: AIRPORT_CATALOG[baseCode]?.name || baseCode,
+      alternativeAirportCode: altCode,
+      alternativeAirportName: AIRPORT_CATALOG[altCode]?.name || altCode,
+      inSameMetro: false,
+      airFareSavingsVND: 0,
+      groundTransfer: {
+        originCode: altCode,
+        destinationCode: baseCode,
+        distanceKm: 0,
+        typicalMinutes: 0,
+        estimatedCostVND: 0,
+        modes: [],
+        sourceName: "Mức giá không hợp lệ",
+        isVerifiedSource: true,
+      },
+      netSavingsVND: 0,
+      hourlyEfficiencyVND: 0,
+      verdict: "NOT_RECOMMENDED",
+      isWorthwhile: false,
+      explanationVi: "Mức giá so sánh không hợp lệ (phải là số dương hợp lệ).",
+    };
+  }
+
+  const baseAirport = AIRPORT_CATALOG[baseCode];
+  const altAirport = AIRPORT_CATALOG[altCode];
 >>>>>>> AFTER
 ```
 
-### WP02: `src/domain/farely/tripBudgetEstimator.ts`
+### WP02: `src/domain/farely/priceAnomaly.ts`
 ```typescript
 <<<<<<< BEFORE
-export function estimateRoundTripBaggageCost(airlineCode: string, checkedBags: number = 1): number {
-  const code = (airlineCode || "").toUpperCase();
-  const surcharges = DOMESTIC_ANCILLARY_SURCHARGES[code];
-  if (!surcharges) return 0;
-  return Math.round(surcharges.baggage20kg * checkedBags * 2);
+export function calculateSampleStandardDeviation(prices: number[]): {
+  mean: number;
+  sampleVariance: number;
+  sampleStdDev: number;
+} {
+  const n = prices.length;
+  if (n <= 1) {
+    return { mean: prices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };
+  }
+  const mean = prices.reduce((a, b) => a + b, 0) / n;
+  const sumSquaredDiffs = prices.reduce((acc, p) => acc + Math.pow(p - mean, 2), 0);
+  const sampleVariance = Math.round(sumSquaredDiffs / (n - 1)); // Bessel's correction
+  return {
+    mean,
+    sampleVariance,
+    sampleStdDev: Math.sqrt(sampleVariance),
+  };
 }
 =======
-export function estimateRoundTripBaggageCost(airlineCode: string, checkedBags: number = 1): number {
-  const code = (airlineCode || "").toUpperCase();
-  const surcharges = DOMESTIC_ANCILLARY_SURCHARGES[code];
-  if (!surcharges) return 0;
-  const safeBags = Math.floor(Math.max(1, Number.isFinite(checkedBags) ? checkedBags : 1));
-  return Math.round(surcharges.baggage20kg * safeBags * 2);
-}
-
-export function calculateCarrierLandedSurcharges(
-  airlineCode: string,
-  passengers: number = 1,
-  flightLegs: number = 1
-): { baggageFee: number; ticketingFee: number } {
-  const safePassengers = Math.floor(Math.max(1, Number.isFinite(passengers) ? passengers : 1));
-  const safeLegs = Math.floor(Math.max(1, Number.isFinite(flightLegs) ? flightLegs : 1));
-  const code = (airlineCode || "").toUpperCase();
-  const surcharges = DOMESTIC_ANCILLARY_SURCHARGES[code] || { baggage20kg: 0, fee: 0 };
+export function calculateSampleStandardDeviation(prices: number[]): {
+  mean: number;
+  sampleVariance: number;
+  sampleStdDev: number;
+} {
+  const validPrices = (prices || []).filter(
+    (p) => typeof p === "number" && Number.isFinite(p) && p > 0
+  );
+  const n = validPrices.length;
+  if (n <= 1) {
+    return { mean: validPrices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };
+  }
+  const mean = validPrices.reduce((a, b) => a + b, 0) / n;
+  const sumSquaredDiffs = validPrices.reduce((acc, p) => acc + Math.pow(p - mean, 2), 0);
+  const sampleVariance = Math.round(sumSquaredDiffs / (n - 1)); // Bessel's correction
   return {
-    baggageFee: Math.round(surcharges.baggage20kg * safePassengers * safeLegs),
-    ticketingFee: Math.round(surcharges.fee * safePassengers * safeLegs),
+    mean,
+    sampleVariance,
+    sampleStdDev: Math.sqrt(sampleVariance),
   };
 }
 >>>>>>> AFTER
 ```
 
-### WP03: `src/app/lib/analytics.ts`
+### WP03: `src/app/domain/dealComparison.ts`
 ```typescript
 <<<<<<< BEFORE
-      const isArr = Array.isArray(value);
-      const out: any = isArr ? [] : {};
-      const keys = Object.keys(value).slice(0, maxKeysPerLevel);
-      for (const k of keys) {
-        out[k] = replacer.call(out, k, value[k], depth + 1);
-      }
-      return out;
+function durationMinutes(duration?: string): number | undefined {
+  if (!duration) return undefined;
+  const hours = duration.match(/(\d+)\s*h/i)?.[1];
+  const minutes = duration.match(/(\d+)\s*m/i)?.[1];
+  if (!hours && !minutes) return undefined;
+  return Number(hours ?? 0) * 60 + Number(minutes ?? 0);
+}
 =======
-      if (Array.isArray(value)) {
-        const outArr: any[] = [];
-        const limit = Math.min(value.length, maxKeysPerLevel);
-        for (let i = 0; i < limit; i++) {
-          outArr.push(replacer.call(outArr, String(i), value[i], depth + 1));
-        }
-        return outArr;
-      }
-      const out: any = {};
-      const keys = Object.keys(value).slice(0, maxKeysPerLevel);
-      for (const k of keys) {
-        out[k] = replacer.call(out, k, value[k], depth + 1);
-      }
-      return out;
+function durationMinutes(duration?: string): number | undefined {
+  if (!duration || typeof duration !== "string") return undefined;
+  const hours = duration.match(/(\d+)\s*(?:h|giờ|tiếng|g)/i)?.[1];
+  const minutes = duration.match(/(?:(?:h|giờ|tiếng|g)\s*(\d{1,2})|\b(\d+)\s*(?:m|phút|p))/i);
+  const minVal = minutes?.[1] || minutes?.[2];
+  if (!hours && !minVal) return undefined;
+  return Number(hours ?? 0) * 60 + Number(minVal ?? 0);
+}
 >>>>>>> AFTER
 ```
 
 ---
 
 ## SECTION K: 12-LENS CONVERGENCE MATRIX
-- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/app/lib/bookingUrls.ts`.
+- **L01 (Ingestion & Schema Integrity)**: Enforced via `src/domain/farely/airportAlternatives.ts`.
 - **L02 (Price Anomaly & Algorithmic Rigor)**: Enforced via `src/domain/farely/priceAnomaly.ts`.
-- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/domain/farely/tripBudgetEstimator.ts`.
+- **L03 (True-Cost & Ancillary Transparency)**: Enforced via `src/app/domain/dealComparison.ts`.
 - **L04 (Anti-Abuse & Rate Limiting)**: Enforced via `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
 - **L05 (High Concurrency & Resilience)**: Enforced via `supabase/functions/_shared/flight-search.ts`.
 - **L06 (PWA Offline & Client Freshness)**: Enforced via `src/app/pages/DealsPage.tsx` and `src/domain/farely/pwaOfflineFreshness.ts`.

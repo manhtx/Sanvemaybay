@@ -266,6 +266,48 @@ describe("deal comparison", () => {
       const sorted = sortComparisonRowsMonotonically(rows as any);
       expect(sorted.map((r) => r.id)).toEqual(["deal-a", "deal-b"]);
     });
+
+    it("parses Vietnamese and compact duration strings robustly", () => {
+      const deals = [
+        {
+          id: "d1",
+          fromCode: "HAN",
+          toCode: "SGN",
+          price: 1_200_000,
+          airline: "VN",
+          duration: "2 giờ 15 phút",
+          stops: 0,
+          refundPolicy: "Có hoàn vé",
+          aiInsight: { risk: "low" as const },
+        },
+        {
+          id: "d2",
+          fromCode: "HAN",
+          toCode: "SGN",
+          price: 1_100_000,
+          airline: "VJ",
+          duration: "1h30",
+          stops: 0,
+          refundPolicy: "Không hoàn vé",
+          aiInsight: { risk: "low" as const },
+        },
+        {
+          id: "d3",
+          fromCode: "HAN",
+          toCode: "DAD",
+          price: 800_000,
+          airline: "QH",
+          duration: "45p",
+          stops: 0,
+          refundPolicy: "Đổi vé có phí",
+          aiInsight: { risk: "low" as const },
+        },
+      ];
+      const compared = compareDeals(deals as any);
+      expect(compared[0].durationMinutes).toBe(135);
+      expect(compared[1].durationMinutes).toBe(90);
+      expect(compared[2].durationMinutes).toBe(45);
+    });
   });
 });
 
