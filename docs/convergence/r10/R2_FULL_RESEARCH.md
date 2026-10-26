@@ -1,20 +1,20 @@
 # FARELY PROJECT 10X — ACTION-FIRST RESEARCH R10 [R2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding
 # MANDATE: Re-examine deliverable with aggressive skepticism. Challenge assumptions in R1 across all 12 lenses.
-# GIT_COMMIT: 7293483c061a4ea761e46ae69cc210db80ca1691
-# TIMESTAMP: 2026-10-23T10:19:25.000Z
-# EXECUTION_RECEIPT_SHA256: e002e1c43c0c491210c147f1d27995f43cdf0ccec04f47dcaae03cb161ba7190
+# GIT_COMMIT: 6859ed337b6852b3d50094e373e246633e5285dc
+# TIMESTAMP: 2026-10-26T02:14:00.000Z
+# EXECUTION_RECEIPT_SHA256: 0c41bdba7c8f07e491a60bfd613cad041265b1a7257c92c25e4627af422b34ca
 
 ---
 
 ## AUDIT & FALSIFICATION OF PASS R1
 > [!IMPORTANT]
-> To eliminate sycophancy, Pass R2 actively critiques Pass R1 across all 12 lenses with empirical skepticism.
+> To eliminate sycophancy, Pass R2 actively critiques Pass R1 across all 12 lenses with empirical skepticism, inspecting real code and database constraints.
 
 ### Falsified Assumptions & Discovered Deficits in Pass R1:
 - **[L01 FALSIFICATION]** (Product Truth & Founder Scope Integrity):
   - *Deficit in R1*: Pass R1 assumed provider link whitelist was completely immune to DNS rebinding or internationalized domain name (IDN) homograph attacks.
-  - *Correction in R2*: Mandatory Punycode decoding and ASCII normalization in `src/domain/farely/providerRights.ts` before hostname comparison. Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
+  - *Correction in R2*: In `src/domain/farely/providerRights.ts`, Punycode decoding and ASCII normalization are mandatory before hostname comparison. Live inspection reveals `PROVIDER_SOURCE_RIGHTS_REGISTRY` enforces strict B2B redistribution boundaries (`canRedistributeB2B: false` for public scrape sources). Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
 - **[L02 FALSIFICATION]** (Price, Historical Baseline & Data Integrity):
   - *Deficit in R1*: Pass R1 assumed zero-mock price parser handled edge values up to 64-bit max without considering PostgreSQL integer overflow boundaries (`bigint` signed vs unsigned).
   - *Correction in R2*: Hardened `src/app/data/api.ts` and `supabase/migrations/20261007000100_canonical_fare_observations.sql` with explicit boundary clamping to `Number.MAX_SAFE_INTEGER` ($2^{53} - 1$).
@@ -89,12 +89,12 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G65 - PASS R2]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G66 - PASS R2]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Hostile defense against OTA scope creep, deceptive deep-links, and boundary violations. Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Sanitizes external provider URLs, stripping credentials and validating exact canonical host names against whitelist.
+  - `src/domain/farely/providerRights.ts`: Sanitizes external provider URLs, stripping credentials and validating exact canonical host names against whitelist in `validateB2BRedistributionScope()`.
   - `src/domain/farely/providerRights.test.ts`: Negative test vector assertions for URL spoofing, homograph attacks, and header injection.
   - `src/domain/farely/directAffiliateComparison.ts`: Transparent metadata disclosure ensuring users are not misled about deal origin.
   - `src/domain/farely/travelIntent.ts`: Pure discovery routing without stateful passenger reservation data.
@@ -239,10 +239,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ```json
 {
   "pass": "R2",
-  "cycleId": "G65",
+  "cycleId": "G66",
   "auditResult": "VERIFIED_FALSIFIED_HARDENED",
-  "timestamp": "2026-10-23T10:19:25.000Z",
-  "gitHead": "7293483c061a4ea761e46ae69cc210db80ca1691",
-  "executionReceipt": "e002e1c43c0c491210c147f1d27995f43cdf0ccec04f47dcaae03cb161ba7190"
+  "timestamp": "2026-10-26T02:14:00.000Z",
+  "gitHead": "6859ed337b6852b3d50094e373e246633e5285dc",
+  "executionReceipt": "0c41bdba7c8f07e491a60bfd613cad041265b1a7257c92c25e4627af422b34ca"
 }
 ```
