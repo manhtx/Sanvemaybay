@@ -53,10 +53,28 @@ export function auditPassAgainstEvasion(currentPassPath, previousPassPath = null
       // Must actively critique at least 3 distinct adversarial lenses from the prior pass
       const lensIds = ['L01', 'L02', 'L03', 'L04', 'L05', 'L06', 'L07', 'L08', 'L09', 'L10', 'L11', 'L12'];
       const falsificationIdx = content.toLowerCase().search(/falsification|deficits identified|audit of pass|flaws in pass|phản biện pass|lỗ hổng/);
-      const falsificationSnippet = falsificationIdx !== -1 ? content.slice(falsificationIdx, falsificationIdx + 3000) : '';
+      const falsificationSnippet = falsificationIdx !== -1 ? content.slice(falsificationIdx, falsificationIdx + 6000) : '';
       const critiquedLenses = lensIds.filter(lid => falsificationSnippet.includes(lid));
       if (critiquedLenses.length < 3) {
-        warnings.push(`[FALSIFICATION_SHALLOW] Falsification section in Pass ${passNum} only cites ${critiquedLenses.length} lens(es) (${critiquedLenses.join(', ')}). High-rigor passes must actively critique ≥3 lenses from the prior pass.`);
+        issues.push(`[FALSIFICATION_SHALLOW] Falsification section in Pass ${passNum} only cites ${critiquedLenses.length} lens(es) (${critiquedLenses.join(', ')}). High-rigor passes must actively critique ≥3 lenses from the prior pass with concrete code evidence.`);
+      }
+    }
+
+    // 1b. Deterministic Sycophancy Detection ("Vòng sau gật đầu với vòng trước")
+    const sycophancyPhrases = [
+      `pass ${passNum - 1} is correct`,
+      `pass ${passNum - 1} was completely accurate`,
+      `agree with pass ${passNum - 1}`,
+      'prior pass is completely correct',
+      'vòng trước đã hoàn toàn đúng',
+      'vòng trước đã tối ưu',
+      'không có gì để chỉnh sửa',
+      'nhất trí với vòng trước',
+      'hoàn toàn đồng ý với pass trước'
+    ];
+    for (const phrase of sycophancyPhrases) {
+      if (content.toLowerCase().includes(phrase)) {
+        issues.push(`[SYCOPHANCY_DETECTED] Pass ${passNum} contains lazy agreement phrase: "${phrase}". Every subsequent pass must independently challenge, falsify, and harden the prior pass.`);
       }
     }
   }
@@ -190,8 +208,8 @@ export function auditPassAgainstEvasion(currentPassPath, previousPassPath = null
     const newWords = currWords.filter(w => !prevWords.has(w));
     const noveltyRatio = newWords.length / Math.max(currWords.length, 1);
 
-    if (noveltyRatio < 0.08 && passNum >= 2) {
-      issues.push(`[PARROTING_EVASION] Pass ${passNum} has less than 8% new vocabulary or code citations compared to Pass ${passNum - 1} (novelty: ${(noveltyRatio * 100).toFixed(1)}%). The agent is repeating previous text instead of conducting deeper research.`);
+    if (noveltyRatio < 0.15 && passNum >= 2) {
+      issues.push(`[PARROTING_EVASION] Pass ${passNum} has less than 15% new vocabulary or code citations compared to Pass ${passNum - 1} (novelty: ${(noveltyRatio * 100).toFixed(1)}%). The agent is repeating previous text instead of conducting deeper research.`);
     }
   }
 

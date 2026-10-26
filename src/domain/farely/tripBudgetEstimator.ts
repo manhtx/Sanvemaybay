@@ -67,6 +67,31 @@ export const DESTINATION_BENCHMARK_COSTS: Record<string, DestinationBenchmarkCos
   },
 };
 
+/**
+ * Domestic airline ancillary surcharges (checked baggage 20kg + payment fee in VND).
+ * Enables true landed cost monotonicity so low-cost carriers don't mislead users.
+ */
+export const DOMESTIC_ANCILLARY_SURCHARGES: Record<string, { baggage20kg: number; fee: number }> = {
+  VJ: { baggage20kg: 350_000, fee: 55_000 },
+  QH: { baggage20kg: 320_000, fee: 45_000 },
+  VU: { baggage20kg: 300_000, fee: 50_000 },
+  VN: { baggage20kg: 0, fee: 0 },
+};
+
+/**
+ * Calculates total landed flight cost including baggage and payment processing fees.
+ */
+export function calculateLandedFlightCost(params: {
+  airlineCode: string;
+  baseFare: number;
+  includeBaggage?: boolean;
+}): number {
+  const code = (params.airlineCode || "").toUpperCase();
+  const surcharges = DOMESTIC_ANCILLARY_SURCHARGES[code] || { baggage20kg: 0, fee: 0 };
+  const baggageCost = params.includeBaggage ? surcharges.baggage20kg : 0;
+  return Math.round(Number(params.baseFare) + baggageCost + surcharges.fee);
+}
+
 export interface TripBudgetEstimate {
   destinationCode: string;
   destinationName: string;

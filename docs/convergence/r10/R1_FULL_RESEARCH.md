@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 012a74aca3afb8c1c6acd9a1c20369b03fe6fbaf
-# TIMESTAMP: 2026-10-26T03:19:11.666Z
-# EXECUTION_RECEIPT_SHA256: dc347e350c6db5bd5177793c358b6d73410a1d606f6e6ac3a1502a1abeee125b
+# GIT_COMMIT: d1dd59cd30062e409f94bdf19f76adfe7b56bc23
+# TIMESTAMP: 2026-10-26T03:42:17.727Z
+# EXECUTION_RECEIPT_SHA256: 56ef15a7f34c96ec3f2c942286f6eed09ad3bb9ca9c33709f30eed2a56c9cb8a
 
 ---
 
@@ -98,7 +98,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Strictly restricts Farely to verified intelligence; direct ticketing, passenger checkout, and payment gateway integration are strictly boundary_excluded.
+  - `src/domain/farely/providerRights.ts`: Strictly restricts Farely to verified flight intelligence; direct ticketing, passenger checkout, and payment gateway integration are strictly boundary_excluded.
   - `src/domain/farely/editorialCollections.ts`: Curated deals with verified metadata, non-OTA outbound partner deep-links, and strict attribution.
   - `src/domain/farely/directAffiliateComparison.ts`: Price transparency comparing direct carrier rates with partner channels without native booking.
 - **Adversarial Vector Defense**: Defends against NV01 (OTA role creep) and NV02 (false deal representations). Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
@@ -223,7 +223,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- Full-battery baseline synthesis established for Cycle G70 Pass R1.
+- Full-battery baseline synthesis established for Cycle G71 Pass R1.
 - All 12 adversarial lenses evaluated simultaneously with real code verification.
 - Prohibited OTA functions (direct ticketing, passenger checkout, payment gateway integration) are confirmed strictly boundary_excluded.
 - Solutions locked without deviation: `SOL-DATA-01` through `SOL-RELEASE-01`.

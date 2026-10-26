@@ -34,6 +34,8 @@ export interface MultiCityItineraryValidation {
   openJawNotices: string[];
   selfTransferWarningVi?: string;
   isFictitiousJoinedOffer: boolean;
+  connectionRisk?: "NONE" | "MODERATE" | "HIGH";
+  dealScorePenalty?: number;
 }
 
 export class FictitiousSingleOfferError extends Error {
@@ -120,6 +122,8 @@ export function validateMultiCityItinerary(params: {
       ? "Lưu ý nối chuyến tự túc (Self-transfer): Các chặng bay thuộc các hãng độc lập không có thỏa thuận bảo lưu khi trễ chuyến. Bạn cần tự lấy hành lý và làm thủ tục lại cho từng chặng."
       : undefined;
 
+  const isSelfTransfer = coherenceType === "SELF_TRANSFER_UNPROTECTED";
+
   return {
     isValid: true,
     coherenceType,
@@ -129,5 +133,7 @@ export function validateMultiCityItinerary(params: {
     openJawNotices,
     selfTransferWarningVi,
     isFictitiousJoinedOffer: false,
+    connectionRisk: isSelfTransfer ? "HIGH" : "NONE",
+    dealScorePenalty: isSelfTransfer ? 25 : 0,
   };
 }

@@ -61,6 +61,30 @@ export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
   };
 }
 
+/**
+ * Safe circular-reference-tolerant serializer for client error logging and telemetry.
+ * Prevents TypeError crashes ("Converting circular structure to JSON") and caps deep structures.
+ */
+export function safeSerializeError(err: unknown, maxDepth = 3): string {
+  const seen = new WeakSet();
+  try {
+    return JSON.stringify(err, (key, value) => {
+      if (typeof value === "string" && value.length > 1000) {
+        return value.slice(0, 1000) + "...[TRUNCATED]";
+      }
+      if (typeof value === "object" && value !== null) {
+        if (seen.has(value)) {
+          return "[Circular]";
+        }
+        seen.add(value);
+      }
+      return value;
+    });
+  } catch {
+    return JSON.stringify({ message: String(err) });
+  }
+}
+
 export function readLocalProductEvents(storage: Storage | undefined = typeof window === "undefined" ? undefined : window.localStorage): ProductEvent[] {
   if (!storage) return [];
   try {

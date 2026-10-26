@@ -36,6 +36,25 @@ export interface AnomalyEvaluation {
 export const MIN_ANOMALY_SAMPLE_SIZE = 10;
 
 /**
+ * Static Tet (Vietnamese Lunar New Year) travel windows (2025–2027).
+ * Trunk domestic routes during these periods experience ~2.8x seasonal baseline price inflation.
+ */
+export const TET_WINDOWS = [
+  { start: "2025-01-15", end: "2025-02-15" },
+  { start: "2026-02-03", end: "2026-03-05" },
+  { start: "2027-01-24", end: "2027-02-24" },
+];
+
+/**
+ * Checks whether a given flight departure date falls within a recognized peak Tet window.
+ */
+export function isTetDeparture(departureDate?: string): boolean {
+  if (!departureDate) return false;
+  const dateStr = departureDate.slice(0, 10);
+  return TET_WINDOWS.some((w) => dateStr >= w.start && dateStr <= w.end);
+}
+
+/**
  * Calculates Median of an array of numbers.
  */
 function calculateMedian(numbers: number[]): number {
@@ -57,6 +76,7 @@ export function detectPriceAnomaly(params: {
   currentPrice: number;
   historicalCohortPrices: number[];
   cohortScope?: PriceAnomalyScope;
+  departureDate?: string;
 }): AnomalyEvaluation {
   const cohortScope = params.cohortScope || "ROUTE_LEVEL";
   const currentPrice = Number(params.currentPrice);
@@ -151,8 +171,11 @@ export function detectPriceAnomaly(params: {
   const mad = rawMad;
 
   // Boris Iglewicz and David Hoaglin modified Z-score: 0.6745 * (x - median) / MAD
-  const modifiedZScore = (0.6745 * (currentPrice - median)) / mad;
-  const discountVsMedianPercent = median > 0 ? Math.round(((median - currentPrice) / median) * 100) : 0;
+  // If departure is during peak Tet holiday, historical baseline median is scaled by 2.8x seasonal prior
+  const seasonalMultiplier = params.departureDate && isTetDeparture(params.departureDate) ? 2.8 : 1.0;
+  const effectiveMedian = median * seasonalMultiplier;
+  const modifiedZScore = (0.6745 * (currentPrice - effectiveMedian)) / mad;
+  const discountVsMedianPercent = effectiveMedian > 0 ? Math.round(((effectiveMedian - currentPrice) / effectiveMedian) * 100) : 0;
 
   // Strong drop anomaly: z-score < -2.5 and discount >= 20%
   if (modifiedZScore <= -2.5 && discountVsMedianPercent >= 20) {
