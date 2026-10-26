@@ -29,6 +29,7 @@
     "convergence:recover": "node scripts/convergence/transactional-task-manager.mjs recover",
     "convergence:rollback": "node scripts/convergence/transactional-task-manager.mjs rollback",
     "convergence:receipt": "node scripts/convergence/generate-execution-receipt.mjs",
+    "convergence:resume": "node scripts/convergence/resume-convergence.mjs",
     "convergence:prompt": "node scripts/convergence/continuous_5x5_orchestrator.mjs print-prompt"
   },
   "dependencies": {
