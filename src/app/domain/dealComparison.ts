@@ -242,3 +242,24 @@ export function identifyDominatedOptions(rows: DealComparisonRow[]): Set<string>
   return dominatedIds;
 }
 
+/**
+ * Sorts comparison rows monotonically and deterministically:
+ * 1. Primary: effective landed total cost (totalCost ?? ticketPrice) ascending.
+ * 2. Secondary: flight duration in minutes (durationMinutes ?? 9999) ascending.
+ * 3. Tertiary: deterministic tie-breaking by row ID.
+ */
+export function sortComparisonRowsMonotonically(rows: DealComparisonRow[]): DealComparisonRow[] {
+  return [...rows].sort((a, b) => {
+    const costA = a.totalCost ?? a.ticketPrice;
+    const costB = b.totalCost ?? b.ticketPrice;
+    if (costA !== costB) return costA - costB;
+
+    const durA = a.durationMinutes ?? 9999;
+    const durB = b.durationMinutes ?? 9999;
+    if (durA !== durB) return durA - durB;
+
+    return a.id.localeCompare(b.id);
+  });
+}
+
+

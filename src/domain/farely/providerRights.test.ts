@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   PROVIDER_SOURCE_RIGHTS_REGISTRY,
   getProviderSourceRights,
+  getSafeProviderRights,
+  isProviderQueryPermitted,
   validateB2BRedistributionScope,
   filterRecordsForB2BExport,
   DataRightsViolationError,
@@ -120,6 +122,26 @@ describe('Provider Source Rights Registry (F85)', () => {
       const sabre = getProviderSourceRights('sabre_enterprise_feed');
       expect(sabre?.declarationStatus).toBe('COMMERCIAL_STAGED_CONTRACT_REQUIRED');
       expect(isCommercialContractRequired('sabre_enterprise_feed')).toBe(true);
+    });
+  });
+
+  describe('Advisory Capacity & Scope Enforcement (SOL-05)', () => {
+    it('returns restricted safe fallback for unregistered providers', () => {
+      const fallback = getSafeProviderRights('unknown_random_crawler');
+      expect(fallback.providerId).toBe('unknown_random_crawler');
+      expect(fallback.licenseType).toBe('RESTRICTED');
+      expect(fallback.canDisplayDirectly).toBe(false);
+      expect(fallback.canRedistributeB2B).toBe(false);
+      expect(fallback.cacheTtlSeconds).toBe(0);
+      expect(fallback.authorizedScopes).toHaveLength(0);
+    });
+
+    it('validates provider query permissions accurately per scope', () => {
+      expect(isProviderQueryPermitted('unknown_random_crawler', 'CONSUMER_INDICATIVE')).toBe(false);
+      expect(isProviderQueryPermitted('unknown_random_crawler', 'B2B_SYNDICATION')).toBe(false);
+      expect(isProviderQueryPermitted('vietjet_direct', 'CONSUMER_INDICATIVE')).toBe(true);
+      expect(isProviderQueryPermitted('vietjet_direct', 'B2B_SYNDICATION')).toBe(false);
+      expect(isProviderQueryPermitted('amadeus_commercial_gds', 'B2B_SYNDICATION')).toBe(true);
     });
   });
 });

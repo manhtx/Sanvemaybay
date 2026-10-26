@@ -5,6 +5,7 @@ import {
   checkOpportunitiesCompatibility,
   explainTradeoff,
   identifyDominatedOptions,
+  sortComparisonRowsMonotonically,
 } from "./dealComparison";
 
 describe("deal comparison", () => {
@@ -231,6 +232,39 @@ describe("deal comparison", () => {
       // Flight with unknown duration cannot be definitively declared dominated
       expect(dominatedSet.has("flight-unknown-dur")).toBe(false);
       expect(dominatedSet.has("flight-known")).toBe(false);
+    });
+  });
+
+  describe("SOL-03: Monotonic Comparison Sorting & Tie-Breaking", () => {
+    it("sorts rows monotonically by total cost ascending", () => {
+      const rows = [
+        { id: "opt-2", route: "HAN → SGN", ticketPrice: 1_800_000, totalCost: 1_800_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+        { id: "opt-1", route: "HAN → SGN", ticketPrice: 1_200_000, totalCost: 1_200_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+        { id: "opt-3", route: "HAN → SGN", ticketPrice: 2_100_000, totalCost: 2_100_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+      ];
+
+      const sorted = sortComparisonRowsMonotonically(rows as any);
+      expect(sorted.map((r) => r.id)).toEqual(["opt-1", "opt-2", "opt-3"]);
+    });
+
+    it("breaks ties using duration when total costs are identical", () => {
+      const rows = [
+        { id: "slow-flight", route: "HAN → SGN", ticketPrice: 1_500_000, totalCost: 1_500_000, durationMinutes: 160, stops: 0, refundPolicy: undefined, risk: "low" as const },
+        { id: "fast-flight", route: "HAN → SGN", ticketPrice: 1_500_000, totalCost: 1_500_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+      ];
+
+      const sorted = sortComparisonRowsMonotonically(rows as any);
+      expect(sorted.map((r) => r.id)).toEqual(["fast-flight", "slow-flight"]);
+    });
+
+    it("breaks ties deterministically using ID when cost and duration are equal", () => {
+      const rows = [
+        { id: "deal-b", route: "HAN → SGN", ticketPrice: 1_500_000, totalCost: 1_500_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+        { id: "deal-a", route: "HAN → SGN", ticketPrice: 1_500_000, totalCost: 1_500_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+      ];
+
+      const sorted = sortComparisonRowsMonotonically(rows as any);
+      expect(sorted.map((r) => r.id)).toEqual(["deal-a", "deal-b"]);
     });
   });
 });

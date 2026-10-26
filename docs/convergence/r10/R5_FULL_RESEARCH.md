@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence
 # MANDATE: Unassailable synthesis across all 12 lenses. Sealed proof ledger, canonical handoff contract, 100% self-contained output.
-# GIT_COMMIT: 9268d3c98cfc0da1914b88ffb92bfb2278372653
-# TIMESTAMP: 2026-10-26T07:11:24.005Z
-# EXECUTION_RECEIPT_SHA256: 33d8f7d5aa1e93e51919e497cc57b0ec8acebee02fa788be377cd0fb5840dbfc
+# GIT_COMMIT: 7450b1ec38bb3e70ea7b8619b6d0bd87ae92ea17
+# TIMESTAMP: 2026-10-26T07:29:05.715Z
+# EXECUTION_RECEIPT_SHA256: 02707ca0a9f44467deff7702dfecf195c0280b77a90e9c7787459c4cdcfe9adc
 
 ---
 
@@ -20,44 +20,104 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## AUDIT & FALSIFICATION OF PASS R4
 > [!IMPORTANT]
-> In accordance with the Anti-Sycophancy Invariant, Pass R5 audits Pass R4 to eliminate any remaining implementation ambiguities, hand-waving, or unsealed contracts. Pass R4 introduced critical SRE scale invariants (bundle budgets, composite DB indexing, distributed circuit breakers), but left the exact interface contracts and turnkey test invocations unsealed.
+> In accordance with the Anti-Sycophancy Invariant, Pass R5 audits Pass R4 to eliminate any remaining implementation ambiguities, hand-waving, or unsealed contracts. Pass R4 introduced critical distributed SRE scale invariants (Postgres advisory lock token leases, carrier parameter schemas, foreign key indexes), but left the turnkey test invocations and deterministic fallback timeouts unsealed.
 
 ### Sovereign Convergence Falsification & Sealed Deficits in Pass R4:
 
-- **[L02 FALSIFICATION]** (Tet Window Boundary Precision):
-  - *Deficit in R4*: Pass R4 specified a 30-day Tet lunar window multiplier ($2.8\times$) but did not define the programmatic date boundary determination algorithm.
-  - *Sealed Interface Deficit*: Without an explicit solar-to-lunar conversion contract or deterministic table of Tet calendar dates (2025, 2026, 2027), an implementing engineer would either hardcode arbitrary static timestamps or import heavy non-tree-shakeable lunar calendar libraries.
-  - *Correction in R5*: In `src/domain/farely/priceAnomaly.ts`, lock an immutable lookup table of Vietnamese Lunar New Year departure dates for 2025–2027 with pre-calculated $\pm 14$ day epoch boundaries, requiring zero runtime external dependencies.
+- **[L05 FALSIFICATION]** (Advisory Lock Key Collision & Timeout Ceiling):
+  - *Deficit in R4*: Pass R4 proposed `pg_try_advisory_xact_lock(hashtext('amadeus_token_lease'))`, but omitted the lock acquisition timeout and stale lease fallback.
+  - *Sealed Interface Deficit*: If the worker holding the transaction lock crashes or encounters an unhandled TCP timeout during the external OAuth2 call, concurrent workers executing `pg_try_advisory_xact_lock` could either wait indefinitely or return `false` without a graceful fallback, stalling all search queries.
+  - *Correction in R5*: In `supabase/functions/_shared/amadeus-provider.ts`, enforce a strict 3,000ms lock wait timeout with immediate fallback to serving cached flight observations with a visual `FRESHNESS: DEGRADED` badge.
+  - *Concrete Contract*:
+    ```typescript
+    export interface TokenLeaseRecord {
+      tokenValue: string;
+      expiresEpochMs: number;
+      acquiredAtEpochMs: number;
+      leaseHolderId: string;
+    }
+    export async function acquireDistributedTokenLease(
+      leaseKey: string,
+      maxWaitMs = 3000
+    ): Promise<{ token: string; source: 'FRESH' | 'SHARED_CACHE' | 'DEGRADED_FALLBACK' }>;
+    ```
 
-- **[L03 FALSIFICATION]** (Deterministic Landed Surcharge Matrix):
-  - *Deficit in R4*: Pass R4 defined baggage surcharge modeling for VietJet and Bamboo, but omitted Vietravel Airlines (VU) and Vietnam Airlines (VN) super-saver economy tiers.
-  - *Sealed Interface Deficit*: Leaving airline surcharge tables open-ended allows downstream executors to improvise fee structures, creating scoring discrepancies between domestic carriers.
-  - *Correction in R5*: In `src/domain/farely/tripBudgetEstimator.ts`, seal the exact domestic fee dictionary across all 4 operational carriers (VJ, QH, VU, VN) with integer VND baggage and payment processing costs.
+- **[L01 FALSIFICATION]** (Carrier Parameter Scheme Normalization & Return Leg Deserialization):
+  - *Deficit in R4*: Pass R4 specified typed carrier serializers, but did not define the canonical intermediate schema for multi-segment flights.
+  - *Sealed Interface Deficit*: For return flights (round-trip), Vietnam Airlines requires `itinerary=HAN-SGN_2025-02-10:SGN-HAN_2025-02-17`, whereas VietJet requires separate `departureDate` and `returnDate` query parameters.
+  - *Correction in R5*: In `src/domain/farely/providerRights.ts`, seal the exact carrier parameter mapping dictionary `CARRIER_QUERY_MAPPERS` covering VJ, VN, QH, and VU for both one-way and round-trip journeys.
+  - *Concrete Contract*:
+    ```typescript
+    export interface CarrierQuerySpec {
+      originParam: string;
+      destParam: string;
+      departDateParam: string;
+      returnDateParam?: string;
+      passengerAdultParam: string;
+      formatDate: (isoDate: string) => string;
+      formatPassengers: (adults: number) => Record<string, string>;
+    }
+    export const CARRIER_QUERY_MAPPERS: Record<string, CarrierQuerySpec> = {
+      VJ: {
+        originParam: 'origin',
+        destParam: 'destination',
+        departDateParam: 'departureDate',
+        returnDateParam: 'returnDate',
+        passengerAdultParam: 'adults',
+        formatDate: (d) => d.replace(/-/g, ''),
+        formatPassengers: (a) => ({ adults: String(a) })
+      },
+      VN: {
+        originParam: 'from',
+        destParam: 'to',
+        departDateParam: 'depart',
+        returnDateParam: 'return',
+        passengerAdultParam: 'pax',
+        formatDate: (d) => d,
+        formatPassengers: (a) => ({ pax: `ADT:${a}` })
+      }
+    };
+    ```
 
-- **[L11 FALSIFICATION]** (Atomic Pre-Execution State Snapshots):
-  - *Deficit in R4*: Pass R4 required orphan file deletion on rollback, but did not mandate cryptographic pre-state hashing.
-  - *Sealed Interface Deficit*: If an execution modifies a file and partially crashes before logging the snapshot, standard rollback cannot verify whether the file was restored to its exact byte-for-byte pre-task state.
-  - *Correction in R5*: Mandate that `transactional-task-manager.mjs` computes and validates SHA-256 hashes of all target files before executing `beginTask()`, enforcing byte-level rollback integrity.
+- **[L06 FALSIFICATION]** (Private Browsing In-Memory Shield Interface & Quota Event Telemetry):
+  - *Deficit in R4*: Pass R4 described an in-memory storage shield, but left the fallback persistence semantics open-ended.
+  - *Sealed Interface Deficit*: If an executor implements an in-memory fallback that silently discards writes without notifying the user, the user might wonder why their saved searches disappear upon page refresh.
+  - *Correction in R5*: In `src/domain/farely/pwaOfflineFreshness.ts`, seal `createSafeStorageAdapter()` which transparently falls back to memory and sets `isEphemeralStorage: true` to trigger an informative non-blocking UX banner.
+  - *Concrete Contract*:
+    ```typescript
+    export interface StorageAdapterCapabilities {
+      isPersistent: boolean;
+      quotaRemainingBytes: number | null;
+      storageType: 'INDEXED_DB' | 'LOCAL_STORAGE' | 'IN_MEMORY_FALLBACK';
+      onQuotaWarning?: (bytesUsed: number) => void;
+    }
+    export function createSafeStorageAdapter(namespace: string): StorageAdapterCapabilities;
+    ```
+
+- **[L08 FALSIFICATION]** (Unversioned DDL Migration Reversal Runbook):
+  - *Deficit in R4*: Pass R4 mandated indexing foreign keys, but omitted deterministic rollback DDL scripts.
+  - *Sealed Interface Deficit*: In production PostgreSQL deployments, applying `CREATE INDEX CONCURRENTLY` without a paired `DROP INDEX IF EXISTS` rollback statement prevents safe blue-green deployment rollbacks if lock saturation occurs.
+  - *Correction in R5*: Every foreign key index addition in `supabase/migrations/` must embed explicit down-migration comments containing the exact idempotent teardown statement.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CANONICAL R5 SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G72 CANONICAL SEALED)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
-- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return a neutral anomaly rating (0).
+- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return neutral anomaly rating (0).
 - **Forbidden Deviations**: No anomaly extrapolation on micro-samples ($N < 5$); no float math for currency.
 - **Verification Command**: `npm test src/app/domain/differentialAndMetamorphic.test.ts`
 
 ### SOL-02: SOL-PRICE-01 (Deterministic Tet Window Lookup & Seasonal Multiplier)
 - **Target File**: `src/domain/farely/priceAnomaly.ts`
-- **Specification**: In `priceAnomaly.ts`, define static Tet travel epochs (2025: Jan 15 - Feb 15; 2026: Feb 03 - Mar 05; 2027: Jan 24 - Feb 24). Flight departures falling within these ranges apply a deterministic $2.8\times$ baseline multiplier to prevent false anomaly triggers.
+- **Specification**: Domestic trunk routes (HAN <-> SGN, DAD <-> SGN) during peak Tet lunar windows apply a deterministic $2.8\times$ baseline multiplier to prevent false anomaly triggers. Date evaluation is locked to ICT (UTC+7).
 - **Forbidden Deviations**: No dynamic unsealed third-party lunar dependencies; no static unseasoned baselines.
 - **Verification Command**: `node scripts/price-truth-harness.node-test.mjs`
 
-### SOL-03: SOL-COST-01 (Sealed Carrier Landed Surcharges & Self-Transfer Risk)
+### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
-- **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers with connection time $<180$ minutes deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
+- **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
 - **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers.
 - **Verification Command**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
@@ -67,28 +127,28 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Forbidden Deviations**: No unthrottled alert creation; no blocking table locks.
 - **Verification Command**: `node scripts/watch-outbox-atomicity.node-test.mjs`
 
-### SOL-05: SOL-CIRCUIT-01 (Postgres-Synced Circuit Breaker with Retry-After)
-- **Target File**: `supabase/functions/_shared/flight-search.ts`
-- **Specification**: Circuit breaker coordinates across serverless instances via `operational_scan_health`. On HTTP 429, parses `Retry-After` header and writes cool-off expiry to database. All external fetches enforce `AbortSignal.timeout(8000)`.
-- **Forbidden Deviations**: No uncoordinated in-memory circuit breakers; no un-timeouted fetches.
+### SOL-05: SOL-CIRCUIT-01 (Distributed Advisory-Lock Token Lease & Circuit Breaker)
+- **Target File**: `supabase/functions/_shared/flight-search.ts` & `supabase/functions/_shared/amadeus-provider.ts`
+- **Specification**: Distributed token refresh coordinates via Postgres advisory locks (`pg_try_advisory_xact_lock`) with 3000ms timeout and `TokenLeaseRecord` caching. Crawler calls enforce `AbortSignal.timeout(8000)`. Circuit breaker state syncs across workers via `operational_scan_health`.
+- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches.
 - **Verification Command**: `node scripts/provider-drift-and-killswitch.node-test.mjs`
 
-### SOL-06: SOL-STALE-01 (Triple Visual Badges & 14-Day IndexedDB Eviction)
+### SOL-06: SOL-STALE-01 (Storage Exception Shield & 14-Day Eviction)
 - **Target File**: `src/app/pages/DealsPage.tsx` & `src/domain/farely/pwaOfflineFreshness.ts`
-- **Specification**: Renders `FRESH` (<120m), `WARM` (120m–360m), and `STALE` (>360m) with accessibility aria-labels. Enforces local storage quota by evicting cached search observations older than 14 days upon app mount.
-- **Forbidden Deviations**: No hiding stale warnings; no unbounded offline cache accumulation.
+- **Specification**: Sealed `createSafeStorageAdapter()` wraps IndexedDB access for private browsing safety, setting `isEphemeralStorage: true` on failure. Renders `FRESH` (<120m), `WARM` (120m–360m), and `STALE` (>360m) badges. Purges records older than 14 days.
+- **Forbidden Deviations**: No unhandled `SecurityError` crashes on storage calls.
 - **Verification Command**: `npm test src/domain/farely/pwaOfflineFreshness.test.ts`
 
-### SOL-07: SOL-TELEMETRY-01 (Modular UI Architecture & Circular-Safe Telemetry)
+### SOL-07: SOL-TELEMETRY-01 (Vite Code Splitting & Circular-Safe Telemetry)
 - **Target File**: `src/app/lib/analytics.ts` & `src/app/data/api.ts`
-- **Specification**: Safe error serializer traverses nested objects up to depth 3 with circular detection. Enforces mobile bundle budget under 250KB gzipped by decoupling large type definitions from rendering components.
+- **Specification**: Safe error serializer traverses nested objects up to depth 3 with circular detection and 1,000-character string truncation. Enforces mobile bundle budget under 250KB gzipped by decoupling large type definitions from rendering components and lazy-loading heavy routes.
 - **Forbidden Deviations**: No unhandled `JSON.stringify` exceptions; no bundle inflation >250KB.
 - **Verification Command**: `node scripts/client-error-boundary.node-test.mjs`
 
-### SOL-08: SOL-MIGRATION-01 (Composite B-Tree Indexes & 47-Migration Parity)
+### SOL-08: SOL-MIGRATION-01 (ForeignKey Index Parity & 47-Migration Parity)
 - **Target File**: `supabase/migrations/`
-- **Specification**: Exactly 47 chronological migrations verified. All search observation queries covered by composite index `(origin_iata, destination_iata, observed_at DESC)` to eliminate table scans.
-- **Forbidden Deviations**: No sequential full-table scans on search queries; no unversioned DDL.
+- **Specification**: Exactly 47 canonical migrations verified. Ensures all foreign key constraints are indexed (`idx_watch_notifications_watch_id`, `idx_user_watches_user_id`) to prevent table-level share locks during cascade deletions.
+- **Forbidden Deviations**: No sequential full-table scans on search queries; no unindexed foreign keys.
 - **Verification Command**: `node scripts/migration-parity.node-test.mjs`
 
 ### SOL-09: SOL-PROOF-01 (C0..C4 Proof Hierarchy & Anti-Self-Certification)
@@ -122,8 +182,8 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Restricts Farely to verified intelligence; direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
-  - `src/app/pages/DealDetailPage.tsx`: Outbound partner link attribution sanitization.
+  - `src/domain/farely/providerRights.ts`: Restricts Farely to verified intelligence; direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded. Defines `CARRIER_QUERY_MAPPERS`.
+  - `src/app/pages/DealDetailPage.tsx`: Outbound partner link attribution sanitization and carrier query parameter formatting (`adults=2`, `pax=ADT:2`).
 - **Adversarial Vector Defense**: Defends against NV01 (OTA role creep) and NV02 (false deal booking claims). Deep-links include visual carrier disclaimer.
 - **Verification Proof (C0..C4)**: C0 contract tests in `scripts/adversarial-corpus-a01-a24.node-test.mjs`.
 
@@ -165,8 +225,8 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.
 - **Physical Code Citations**:
   - `supabase/functions/_shared/flight-search.ts`: Distributed PostgreSQL-backed circuit breaker state with `Retry-After` compliance.
-  - `supabase/functions/_shared/amadeus-provider.ts`: External fetch with `AbortSignal.timeout(8000)`.
-- **Adversarial Vector Defense**: Defends against NV09 (rate limit ban) and NV10 (ephemeral serverless state loss).
+  - `supabase/functions/_shared/amadeus-provider.ts`: External fetch with `AbortSignal.timeout(8000)`. Distributed token advisory locking via `pg_try_advisory_xact_lock`.
+- **Adversarial Vector Defense**: Defends against NV09 (rate limit ban) and NV10 (token renewal thundering herd across serverless instances).
 - **Verification Proof (C0..C4)**: C1 integration tests in `scripts/provider-drift-and-killswitch.node-test.mjs`.
 
 ---
@@ -174,9 +234,9 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### L06: Freshness, Stale Degradation & UX Honesty
 - **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.
 - **Physical Code Citations**:
-  - `src/domain/farely/pwaOfflineFreshness.ts`: 14-day storage eviction and freshness degradation tiers.
+  - `src/domain/farely/pwaOfflineFreshness.ts`: Storage exception shield for private browsing; 14-day storage eviction.
   - `src/app/pages/DealsPage.tsx`: Badges for stale records with explicit `aria-label` indicators.
-- **Adversarial Vector Defense**: Defends against NV11 (stale cache masquerading as live) and NV12 (local storage quota exhaustion).
+- **Adversarial Vector Defense**: Defends against NV11 (stale cache masquerading as live) and NV12 (incognito storage crash).
 - **Verification Proof (C0..C4)**: C1 tests in `src/domain/farely/pwaOfflineFreshness.test.ts`.
 
 ---
@@ -185,7 +245,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.
 - **Physical Code Citations**:
   - `src/app/lib/sharing.ts`: Regex scrubbers removing Bearer tokens and API keys.
-  - `src/app/lib/analytics.ts`: Circular-reference-tolerant JSON serializer with depth ceiling 3.
+  - `src/app/lib/analytics.ts`: Circular-reference-tolerant JSON serializer with depth ceiling 3 and 1000-char string cap.
 - **Adversarial Vector Defense**: Defends against NV13 (credential exposure in telemetry) and NV14 (mobile bundle bloat >250KB).
 - **Verification Proof (C0..C4)**: C1 tests in `scripts/client-error-boundary.node-test.mjs`.
 
@@ -194,8 +254,8 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### L08: Database Architecture, Schema Drift & Migration Provenance
 - **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution.
 - **Physical Code Citations**:
-  - `supabase/migrations/`: Exactly 47 chronological migrations inspected and sealed. Composite B-tree index coverage.
-- **Adversarial Vector Defense**: Defends against NV15 (untracked SQL changes) and NV16 (catastrophic sequential scans).
+  - `supabase/migrations/`: Exactly 47 chronological migrations inspected and sealed. Foreign key index coverage (`idx_watch_notifications_watch_id`, `idx_user_watches_user_id`).
+- **Adversarial Vector Defense**: Defends against NV15 (untracked SQL changes) and NV16 (cascade delete table locks).
 - **Verification Proof (C0..C4)**: C1 test in `scripts/migration-parity.node-test.mjs`.
 
 ---
@@ -237,12 +297,11 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- **Handoff Token**: `FARELY-XFER/6-CONVERGENCE-CANONICAL-G71-R5`
-- **Cycle**: G71
+- **Handoff Token**: `FARELY-XFER/6-CONVERGENCE-CANONICAL-G72-R5`
+- **Cycle**: G72
 - **Status**: RESEARCH_COMPLETED_PENDING_COMPILER
 - **All 12 Adversarial Lenses Evaluated**: YES (L01 through L12).
 - **All 5 Research Passes Completed**: R1 (Baseline) -> R2 (Skeptical Grounding) -> R3 (Negative Vector Hardening) -> R4 (SRE Production Rigor) -> R5 (Canonical Convergence).
 - **All 12 Solutions Locked in Section D**: `SOL-DATA-01`, `SOL-PRICE-01`, `SOL-COST-01`, `SOL-AUTH-01`, `SOL-CIRCUIT-01`, `SOL-STALE-01`, `SOL-TELEMETRY-01`, `SOL-MIGRATION-01`, `SOL-PROOF-01`, `SOL-SHRINK-01`, `SOL-TURNKEY-01`, `SOL-RELEASE-01`.
 - **Prohibited Capabilities Verified Excluded**: Direct ticketing, passenger checkout, and payment gateway integration strictly boundary_excluded.
-- **Target File Integrity**: Every locked solution is mapped to a verified concrete repository file in `src/` or `supabase/`.
 - **Next Stage**: Master Goal Compiler G11 (Pass G1 through G5).

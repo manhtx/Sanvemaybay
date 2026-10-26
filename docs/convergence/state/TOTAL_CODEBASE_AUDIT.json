@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-10-26T07:06:26.066Z",
+  "timestamp": "2026-10-26T07:23:53.834Z",
   "total_files_scanned": 313,
   "subsystems": {
     "farely_domain": {
       "path": "src/domain/farely",
       "file_count": 49,
-      "total_loc": 8575,
+      "total_loc": 8629,
       "files": [
         {
           "path": "src/domain/farely/airportAlternatives.test.ts",
@@ -97,7 +97,7 @@
         },
         {
           "path": "src/domain/farely/multiCityItinerary.ts",
-          "loc": 134
+          "loc": 140
         },
         {
           "path": "src/domain/farely/partnerIntegrations.test.ts",
@@ -121,7 +121,7 @@
         },
         {
           "path": "src/domain/farely/priceAnomaly.ts",
-          "loc": 213
+          "loc": 236
         },
         {
           "path": "src/domain/farely/priceScope.ts",
@@ -185,7 +185,7 @@
         },
         {
           "path": "src/domain/farely/tripBudgetEstimator.ts",
-          "loc": 135
+          "loc": 160
         },
         {
           "path": "src/domain/farely/truthKernelV2.test.ts",

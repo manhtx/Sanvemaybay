@@ -45,6 +45,45 @@ export interface OfflineActionQueueItem {
 }
 
 /**
+ * Maximum permitted retention age for offline cached deals (14 days = 14 * 24 * 60 minutes).
+ * Any observation older than 14 days is strictly evicted from local caches.
+ */
+export const MAX_OFFLINE_CACHE_AGE_MINUTES = 20160;
+
+/**
+ * Filters out expired or temporal-anomaly offline cached deals.
+ * - Evicts deals exceeding maxAgeMinutes (default 14 days).
+ * - Evicts deals with corrupt/unparseable timestamps.
+ * - Evicts deals with impossible future timestamps (> 5 minutes clock drift).
+ */
+export function evictExpiredOfflineDeals(
+  cachedDeals: CachedDealRecord[],
+  maxAgeMinutes: number = MAX_OFFLINE_CACHE_AGE_MINUTES,
+  nowIsoString: string = new Date().toISOString()
+): CachedDealRecord[] {
+  const nowMs = new Date(nowIsoString).getTime();
+
+  return cachedDeals.filter((deal) => {
+    const cachedTime = new Date(deal.cachedAt).getTime();
+    const observedTime = new Date(deal.observedAt).getTime();
+
+    if (Number.isNaN(cachedTime) || Number.isNaN(observedTime)) {
+      return false; // Corrupt timestamp
+    }
+
+    const stalenessMinutes = (nowMs - observedTime) / (60 * 1000);
+
+    // Reject impossible future observations (allowing up to 5 min clock skew)
+    if (stalenessMinutes < -5) {
+      return false;
+    }
+
+    // Reject observations older than maxAgeMinutes
+    return stalenessMinutes <= maxAgeMinutes;
+  });
+}
+
+/**
  * Resolves deals served from PWA offline cache.
  * Enforces strict invariant: Offline observed fares CANNOT appear as freshly available deals (F48).
  */
@@ -52,11 +91,14 @@ export function resolveDealsForPwaClient(params: {
   cachedDeals: CachedDealRecord[];
   isDeviceOffline: boolean;
   nowIsoString?: string;
+  maxAgeMinutes?: number;
 }): ResolvedOfflineDeal[] {
-  const { cachedDeals, isDeviceOffline, nowIsoString = new Date().toISOString() } = params;
+  const { cachedDeals, isDeviceOffline, nowIsoString = new Date().toISOString(), maxAgeMinutes = MAX_OFFLINE_CACHE_AGE_MINUTES } = params;
   const nowMs = new Date(nowIsoString).getTime();
 
-  return cachedDeals.map((deal) => {
+  const validDeals = evictExpiredOfflineDeals(cachedDeals, maxAgeMinutes, nowIsoString);
+
+  return validDeals.map((deal) => {
     const _cachedMs = new Date(deal.cachedAt).getTime();
     const observedMs = new Date(deal.observedAt).getTime();
     const stalenessMinutes = Math.max(0, Math.round((nowMs - observedMs) / (1000 * 60)));

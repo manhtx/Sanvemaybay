@@ -239,3 +239,38 @@ export function filterRecordsForB2BExport<T extends { providerId?: string }>(
 
   return { permittedRecords, rejectedRecords, rejectedReasons };
 }
+
+/**
+ * Safe retrieval of provider source rights.
+ * If the provider is not registered, returns a safe RESTRICTED dummy declaration
+ * preventing accidental scope leakage or runtime null pointer exceptions.
+ */
+export function getSafeProviderRights(providerId: string): ProviderSourceRights {
+  const existing = PROVIDER_SOURCE_RIGHTS_REGISTRY[providerId];
+  if (existing) return existing;
+  return {
+    providerId,
+    sourceName: `Unknown Provider (${providerId})`,
+    licenseType: 'RESTRICTED',
+    declarationStatus: 'INTERNAL_DECLARATION',
+    canScrape: false,
+    canDisplayDirectly: false,
+    canCache: false,
+    cacheTtlSeconds: 0,
+    canRedistributeB2B: false,
+    canMonetizeAffiliate: false,
+    attributionRequired: true,
+    termsSummary: 'Unregistered source; strictly denied for external display or distribution.',
+    authorizedScopes: [],
+  };
+}
+
+/**
+ * Validates whether a provider is permitted to execute queries for a given data scope.
+ */
+export function isProviderQueryPermitted(providerId: string, scope: AuthorizedDataScope): boolean {
+  const rights = getSafeProviderRights(providerId);
+  if (rights.licenseType === 'RESTRICTED') return false;
+  return rights.authorizedScopes.includes(scope);
+}
+
