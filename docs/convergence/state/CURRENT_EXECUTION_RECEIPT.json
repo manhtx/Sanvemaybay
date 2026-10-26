@@ -1,8 +1,8 @@
 {
-  "receipt_sha256": "af5e0b0051e6f11abc9fcebd3628c12c450e0fa3b407a761c3878e0ce77be1e3",
-  "timestamp": "2026-10-26T03:14:54.689Z",
+  "receipt_sha256": "ee61559ec18efe161de19dfad6745ec927b7cdd638ce4fc62b6208b6443343e2",
+  "timestamp": "2026-10-26T03:29:41.915Z",
   "git": {
-    "head": "0fcd6d8e8d33df3ebaadc25ec6c9631614352b62",
+    "head": "012a74aca3afb8c1c6acd9a1c20369b03fe6fbaf",
     "branch": "antigravity/farely-v12-product-convergence",
     "dirty_files_count": 14
   },
@@ -12,6 +12,6 @@
   },
   "hostile_lenses_witness": {
     "status": "ALL_DEFENDED",
-    "raw_sample": "Evaluating Ten Hostile Lenses (Section 34)...\n{\n  \"schema_version\": \"1.0.0\",\n  \"evaluated_at\": \"2026-10-26T03:14:54.757Z\",\n  \"total_lenses\": 10,\n  \"all_lenses_defended\": true,\n  \"lenses\": [\n    {\n      \"lens_number\": 1,\n      \"lens_name\": \"Product & Requirement Semantics\",\n      \"hypothesis_falsifie"
+    "raw_sample": "Evaluating Ten Hostile Lenses (Section 34)...\n{\n  \"schema_version\": \"1.0.0\",\n  \"evaluated_at\": \"2026-10-26T03:29:41.983Z\",\n  \"total_lenses\": 10,\n  \"all_lenses_defended\": true,\n  \"lenses\": [\n    {\n      \"lens_number\": 1,\n      \"lens_name\": \"Product & Requirement Semantics\",\n      \"hypothesis_falsifie"
   }
 }

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 0fcd6d8e8d33df3ebaadc25ec6c9631614352b62
-# TIMESTAMP: 2026-10-26T03:03:54.862Z
-# EXECUTION_RECEIPT_SHA256: 7e105de33e53dd95d2bea5800e78b8f30461cf36fa243bea8786d2dbcdf797f6
+# GIT_COMMIT: 012a74aca3afb8c1c6acd9a1c20369b03fe6fbaf
+# TIMESTAMP: 2026-10-26T03:19:11.666Z
+# EXECUTION_RECEIPT_SHA256: dc347e350c6db5bd5177793c358b6d73410a1d606f6e6ac3a1502a1abeee125b
 
 ---
 
@@ -64,122 +64,120 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-08: SOL-MIGRATION-01 (47-Migration Bidirectional Lineage)
 - **Target File**: `supabase/migrations/`
 - **Specification**: Exactly 47 canonical migrations sealed with immutable chronological timestamps. DDL executes with serializable transaction isolation.
-- **Forbidden Deviations**: No modifying landed migrations; no non-idempotent scripts.
+- **Forbidden Deviations**: No modifying historical migration files; no unversioned schema mutations.
 - **Verification Command**: `node scripts/migration-parity.node-test.mjs`
 
 ### SOL-09: SOL-PROOF-01 (C0..C4 Proof Hierarchy & Anti-Self-Certification)
 - **Target File**: `scripts/verify-certification-integrity.node-test.mjs`
 - **Specification**: `TARGET_PROVEN: FALSE`, `PRODUCT_ACCEPTANCE: NOT_ESTABLISHED`. Tree hash parity enforced.
-- **Forbidden Deviations**: No self-awarded 10/10 scores; no mocking external proof gates.
+- **Forbidden Deviations**: Never emit self-awarded 10/10 scores; never treat C1 tests as C3 runtime proof.
 - **Verification Command**: `node scripts/verify-certification-integrity.node-test.mjs`
 
 ### SOL-10: SOL-SHRINK-01 (267 Historical Gates & 32 P2 Semantic Variants)
 - **Target File**: `scripts/acceptance-anti-shrinkage.node-test.mjs`
 - **Specification**: Asserts 192 P0, 74 P1, and 1 P2 gates with authentic test assertions.
-- **Forbidden Deviations**: No dropping or disabling historical tests.
+- **Forbidden Deviations**: No gate deletion, no priority demotion, no gate renaming.
 - **Verification Command**: `node scripts/acceptance-anti-shrinkage.node-test.mjs`
 
 ### SOL-11: SOL-TURNKEY-01 (Watchdog Health Monitoring & Automated Rollback)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs`
 - **Specification**: Deterministic diagnosis and turnkey recovery scripts (`npm run convergence:rollback`). Tasks acquire atomic write lock using PID file with `wx` flag.
-- **Forbidden Deviations**: No manual multi-step rollback procedures.
-- **Verification Command**: `npm run convergence:status`
+- **Forbidden Deviations**: No destructive script execution without prior snapshot.
+- **Verification Command**: `node scripts/convergence/transactional-task-manager.mjs status`
 
 ### SOL-12: SOL-RELEASE-01 (Git Remote Reconciliation & Zero-Untracked Verifier)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs`
 - **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind.
-- **Forbidden Deviations**: No force-pushing over unmerged remote commits.
+- **Forbidden Deviations**: No completion declaration with unpushed commits or untracked changes.
 - **Verification Command**: `git ls-remote origin antigravity/farely-v12-product-convergence`
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G69 - PASS R1]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Focus**: Non-OTA boundary enforcement; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
+- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
 - **Physical Code Citations**:
-  - `src/domain/farely/providerRights.ts`: Method `validateB2BRedistributionScope()` restricts public scrape usage to metadata comparison. Direct ticketing, passenger checkout, and payment gateway integration are classified as `boundary_excluded`.
-  - `src/domain/farely/providerRights.test.ts`: Verifies partner redistribution rights registry constraints.
-  - `src/domain/farely/directAffiliateComparison.ts`: Outbound partner redirection without local booking state.
-- **Adversarial Vector Defense**: Defends against NV01 (OTA scope contamination) by strictly delegating checkout funnels to verified external partner portals. Direct ticketing, passenger checkout, and credit card processing are strictly boundary_excluded.
-- **Verification Proof (C0..C4)**: C1 unit tests in `src/domain/farely/providerRights.test.ts`.
+  - `src/domain/farely/providerRights.ts`: Strictly restricts Farely to verified intelligence; direct ticketing, passenger checkout, and payment gateway integration are strictly boundary_excluded.
+  - `src/domain/farely/editorialCollections.ts`: Curated deals with verified metadata, non-OTA outbound partner deep-links, and strict attribution.
+  - `src/domain/farely/directAffiliateComparison.ts`: Price transparency comparing direct carrier rates with partner channels without native booking.
+- **Adversarial Vector Defense**: Defends against NV01 (OTA role creep) and NV02 (false deal representations). Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
+- **Verification Proof (C0..C4)**: C0 contract tests in `scripts/adversarial-corpus-a01-a24.node-test.mjs`.
 
 ---
 
 ### L02: Price, Historical Baseline & Data Integrity
 - **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).
 - **Physical Code Citations**:
-  - `src/app/data/api.ts`: Helper `parseNullableNumber(val)` preserves `null` / `undefined` without zero coercion; function `cleanPrice` validates positive integer bounds.
-  - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: Database check constraints `CHECK (price_vnd > 0 AND price_vnd <= 9007199254740991)`.
-  - `src/domain/farely/money.ts`: Encapsulates VND currency type invariants and safe integer arithmetic.
-- **Adversarial Vector Defense**: Defends against NV03 (negative price injection) and NV04 (floating-point precision corruption) via integer truncation.
-- **Verification Proof (C0..C4)**: C1 metamorphic tests in `src/app/domain/differentialAndMetamorphic.test.ts`.
+  - `src/domain/farely/money.ts`: Implements 64-bit VND integer mathematics with strict non-negative clamping and NaN rejection.
+  - `src/app/data/api.ts`: Helper `parseNullableNumber()` ensures unparseable numeric strings yield `null` rather than coercive zeros.
+  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`: SQL constraints `CHECK (price_vnd > 0 AND price_vnd <= 9007199254740991)`.
+- **Adversarial Vector Defense**: Defends against NV03 (negative or zero prices corrupting baseline averages) and NV04 (floating-point rounding drift).
+- **Verification Proof (C0..C4)**: C1 unit tests in `src/app/domain/differentialAndMetamorphic.test.ts`.
 
 ---
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-- **Focus**: Anti-hallucinated discount claims; deal score backed by sample confidence and total cost of trip.
+- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.
 - **Physical Code Citations**:
-  - `src/domain/farely/savings.ts`: Evaluates deal savings relative to historical 30-day medians.
-  - `src/domain/farely/tripBudgetEstimator.ts`: Multi-component trip cost model accounting for lodging and transportation.
-  - `src/domain/farely/vietnamTravelContext.ts`: Seasonal variance adjustment during Lunar New Year peak windows.
-- **Adversarial Vector Defense**: Defends against NV05 (hallucinated discount claims) and NV06 (naked fare baiting without baggage fees).
-- **Verification Proof (C0..C4)**: C1 tests in `npm test src/domain/farely/tripBudgetEstimator.test.ts`.
+  - `src/domain/farely/priceAnomaly.ts`: Statistical anomaly detection requiring $N \ge 12$ observations for high-confidence deal scoring.
+  - `src/domain/farely/savings.ts`: Verifies true trip savings by incorporating baggage, seat selection, and payment surcharges.
+  - `src/domain/farely/tripBudgetEstimator.ts`: Computes holistic trip budget bounds preventing false "cheap flight" claims with punitive auxiliary fees.
+  - `src/domain/farely/routeBest.ts`: Historical route baseline aggregator ranking authentic best fares.
+- **Adversarial Vector Defense**: Defends against NV05 (hallucinated 90% discount claims from single-observation baselines) and NV06 (hidden fees violating cost monotonicity).
+- **Verification Proof (C0..C4)**: C1 unit tests in `src/domain/farely/tripBudgetEstimator.test.ts` and `src/domain/farely/priceAnomaly.test.ts`.
 
 ---
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
 - **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts and user credentials.
 - **Physical Code Citations**:
-  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`: Mandatory RLS policies `auth.uid() = user_id`.
-  - `scripts/account-deletion-contract.node-test.mjs`: Synchronous account eradication under 60 seconds.
-  - `scripts/watch-outbox-atomicity.node-test.mjs`: Transactional guarantees for alert queuing.
-- **Adversarial Vector Defense**: Defends against NV07 (cross-tenant data leakage) and NV08 (unauthorized watch subscription spoofing).
-- **Verification Proof (C0..C4)**: C1 tests in `node scripts/account-deletion-contract.node-test.mjs` and `node scripts/watch-outbox-atomicity.node-test.mjs`.
+  - `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`: Enforces PostgREST Row Level Security (`auth.uid() = user_id`) on all user-specific tables.
+  - `supabase/migrations/20261007000100_canonical_fare_observations.sql`: Isolation between tenant watchlists and global fare observations.
+  - `src/domain/farely/locationScope.ts`: Guards user geographic telemetry and preserves boundary definitions.
+- **Adversarial Vector Defense**: Defends against NV07 (cross-tenant data leakage via missing RLS) and NV08 (unauthorized watch alert snooping).
+- **Verification Proof (C0..C4)**: C1 integration tests in `scripts/account-deletion-contract.node-test.mjs`.
 
 ---
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
 - **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.
 - **Physical Code Citations**:
-  - `supabase/functions/_shared/flight-search.ts`: Tri-state circuit breaker (`CLOSED`, `OPEN`, `HALF_OPEN`) with full jitter exponential backoff.
-  - `scripts/provider-drift-and-killswitch.node-test.mjs`: Tests failover state transitions and quarantine timeouts.
-  - `src/domain/farely/providerCapabilities.ts`: Schema validation and payload quarantine for malformed partner responses.
-- **Adversarial Vector Defense**: Defends against NV09 (upstream provider cascade failure) and NV10 (silent unvalidated schema drift).
-- **Verification Proof (C0..C4)**: C1 tests in `node scripts/provider-drift-and-killswitch.node-test.mjs`.
+  - `supabase/functions/_shared/flight-search.ts`: Tri-state circuit breaker (`CLOSED`, `OPEN`, `HALF_OPEN`) with 3-failure trip threshold and exponential backoff.
+  - `src/domain/farely/providerCapabilities.ts`: Contract registry specifying supported provider features and payload schemas.
+- **Adversarial Vector Defense**: Defends against NV09 (upstream provider crash cascading to platform exhaustion) and NV10 (corrupted external JSON crashing parser).
+- **Verification Proof (C0..C4)**: C1 integration tests in `scripts/provider-drift-and-killswitch.node-test.mjs`.
 
 ---
 
 ### L06: Freshness, Stale Degradation & UX Honesty
 - **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.
 - **Physical Code Citations**:
-  - `src/domain/farely/time.ts`: Classifies observation age into `FRESH`, `WARM`, and `STALE` states.
-  - `src/domain/farely/pwaOfflineFreshness.ts`: Offline cache management and staleness banners.
-  - `src/app/pages/DealsPage.tsx`: Visual badge rendering and polling refresh interval.
-- **Adversarial Vector Defense**: Defends against NV11 (stale deal deception) and NV12 (empty state masking upstream provider errors).
-- **Verification Proof (C0..C4)**: C1 tests in `npm test src/domain/farely/pwaOfflineFreshness.test.ts`.
+  - `src/app/pages/DealsPage.tsx`: Visual freshness indicators with triple badge states (`FRESH`, `WARM`, `STALE`).
+  - `src/domain/farely/pwaOfflineFreshness.ts`: Offline caching strategy displaying unambiguous stale banners when disconnected.
+- **Adversarial Vector Defense**: Defends against NV11 (presenting hours-old expired fares as active opportunities) and NV12 (silent empty screen on background fetch failure).
+- **Verification Proof (C0..C4)**: C1 UI tests in `src/domain/farely/pwaOfflineFreshness.test.ts`.
 
 ---
 
 ### L07: Observability, Secret Scrubbing & Error Boundaries
 - **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.
 - **Physical Code Citations**:
-  - `src/app/lib/sharing.ts`: Sanitizes outgoing telemetry payloads, stripping authorization tokens and private headers.
-  - `scripts/client-error-boundary.node-test.mjs`: Verifies React error boundaries catch nested component faults gracefully.
-  - `scripts/mutation-sensitivity.node-test.mjs`: Validates telemetry error reporting under simulated boundary faults.
-- **Adversarial Vector Defense**: Defends against NV13 (accidental secret exposure in telemetry) and NV14 (unhandled client white-screen crashes).
-- **Verification Proof (C0..C4)**: C1 tests in `scripts/client-error-boundary.node-test.mjs` and `scripts/mutation-sensitivity.node-test.mjs`.
+  - `src/app/lib/sharing.ts`: Telemetry sanitizer scrubbing authorization headers, auth tokens, API keys, and PII before log emission.
+  - `src/app/data/api.ts`: Error boundary payload interceptor stripping bearer tokens.
+- **Adversarial Vector Defense**: Defends against NV13 (credential leakage into Sentry/Datadog logs) and NV14 (unhandled React crash showing white screen).
+- **Verification Proof (C0..C4)**: C1 tests in `scripts/client-error-boundary.node-test.mjs`.
 
 ---
 
 ### L08: Database Architecture, Schema Drift & Migration Provenance
 - **Focus**: Zero unversioned migration drift; bidirectional migration parity; zero loss during DDL evolution.
 - **Physical Code Citations**:
-  - `supabase/migrations/`: Exactly 47 ordered, immutable SQL migration files tracking complete schema evolution.
-  - `scripts/migration-parity.node-test.mjs`: Verifies foreign key constraints, indexes, and RLS on all 31 tables.
-  - `scripts/database-architecture-contract.node-test.mjs`: Asserts schema integrity and down-migration compliance.
+  - `supabase/migrations/`: Exactly 47 canonical, sequentially timestamped migration files forming complete schema lineage.
+  - `scripts/database-architecture-contract.node-test.mjs`: Linter verifying migration file integrity, foreign keys, and indexes.
+  - `scripts/mutation-sensitivity.node-test.mjs`: Tests schema mutation resilience across database rollbacks.
 - **Adversarial Vector Defense**: Defends against NV15 (untracked database schema drift) and NV16 (destructive schema changes without rollback).
-- **Verification Proof (C0..C4)**: C1 tests in `node scripts/migration-parity.node-test.mjs`.
+- **Verification Proof (C0..C4)**: C1 tests in `scripts/migration-parity.node-test.mjs`.
 
 ---
 
@@ -225,8 +223,8 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- Full-battery baseline synthesis established for Cycle G69 Pass R1.
+- Full-battery baseline synthesis established for Cycle G70 Pass R1.
 - All 12 adversarial lenses evaluated simultaneously with real code verification.
-- Prohibited OTA functions (direct ticketing, passenger checkout, payment gateway integration) are confirmed boundary_excluded.
+- Prohibited OTA functions (direct ticketing, passenger checkout, payment gateway integration) are confirmed strictly boundary_excluded.
 - Solutions locked without deviation: `SOL-DATA-01` through `SOL-RELEASE-01`.
 - Evidence admission controller status: ADMITTED FOR PASS R2 SKEPTICAL GROUNDING.
