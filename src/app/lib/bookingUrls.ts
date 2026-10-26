@@ -60,10 +60,23 @@ export function isSafeOutboundBookingUrl(urlStr: string): boolean {
 }
 
 /**
+ * Sanitizes and validates 3-letter IATA airport codes.
+ * Strips whitespace, uppercase converts, and ensures exactly 3 alphanumeric characters.
+ */
+export function sanitizeIataAirportCode(code: string): string {
+  const cleaned = (code || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3);
+  return cleaned.length === 3 ? cleaned : '';
+}
+
+/**
  * Converts YYYY-MM-DD → YYMMDD (Skyscanner URL format)
  */
 function toSkyDate(date: string): string {
-  return date.replace(/-/g, '').slice(2); // "2026-06-22" → "260622"
+  const digits = (date || '').replace(/\D/g, '');
+  if (digits.length >= 8) {
+    return digits.slice(2, 8); // YYMMDD
+  }
+  return digits;
 }
 
 /**
@@ -73,8 +86,13 @@ function toSkyDate(date: string): string {
  * Format: ?q=Flights to [DEST] from [ORIG] on [DEPART] through [RETURN]
  */
 export function buildGoogleFlightsUrl(p: BookingParams): string {
-  const parts = [`Flights to ${p.toCode} from ${p.fromCode} on ${p.departDate}`];
-  if (p.returnDate) parts.push(`through ${p.returnDate}`);
+  const from = sanitizeIataAirportCode(p.fromCode);
+  const to = sanitizeIataAirportCode(p.toCode);
+  if (!from || !to) {
+    return "https://www.google.com/travel/flights?hl=vi&curr=VND";
+  }
+  const parts = [`Flights to ${to} from ${from} on ${p.departDate}`];
+  if (p.returnDate && p.returnDate >= p.departDate) parts.push(`through ${p.returnDate}`);
   const query = encodeURIComponent(parts.join(' '));
   return `https://www.google.com/travel/flights?q=${query}&hl=vi&curr=VND`;
 }
@@ -83,17 +101,20 @@ export function buildGoogleFlightsUrl(p: BookingParams): string {
  * Skyscanner — format YYMMDD, stable API
  */
 export function buildSkyscannerUrl(p: BookingParams): string {
+  const from = sanitizeIataAirportCode(p.fromCode).toLowerCase();
+  const to = sanitizeIataAirportCode(p.toCode).toLowerCase();
+  if (!from || !to) {
+    return "";
+  }
   const dep = toSkyDate(p.departDate);
-  const from = p.fromCode.toLowerCase();
-  const to = p.toCode.toLowerCase();
-  const adults = p.passengerMix?.adults ?? p.passengers ?? 1;
-  const children = p.passengerMix?.children ?? 0;
-  const infants = p.passengerMix?.infants ?? 0;
+  const adults = Math.floor(Math.max(1, p.passengerMix?.adults ?? p.passengers ?? 1));
+  const children = Math.floor(Math.max(0, p.passengerMix?.children ?? 0));
+  const infants = Math.floor(Math.max(0, p.passengerMix?.infants ?? 0));
   let passParams = `adults=${adults}`;
   if (children > 0) passParams += `&children=${children}`;
   if (infants > 0) passParams += `&infants=${infants}`;
 
-  if (p.returnDate) {
+  if (p.returnDate && p.returnDate >= p.departDate) {
     const ret = toSkyDate(p.returnDate);
     return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/${ret}/?${passParams}&cabinclass=economy&currency=vnd`;
   }
@@ -104,15 +125,20 @@ export function buildSkyscannerUrl(p: BookingParams): string {
  * Kayak — reliable international aggregator
  */
 export function buildKayakUrl(p: BookingParams): string {
-  const adults = p.passengerMix?.adults ?? p.passengers ?? 1;
-  const children = p.passengerMix?.children ?? 0;
+  const from = sanitizeIataAirportCode(p.fromCode);
+  const to = sanitizeIataAirportCode(p.toCode);
+  if (!from || !to) {
+    return "";
+  }
+  const adults = Math.floor(Math.max(1, p.passengerMix?.adults ?? p.passengers ?? 1));
+  const children = Math.floor(Math.max(0, p.passengerMix?.children ?? 0));
   let passParams = `adults=${adults}`;
   if (children > 0) passParams += `&children=${children}`;
 
-  if (p.returnDate) {
-    return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}/${p.returnDate}?${passParams}&currency=VND`;
+  if (p.returnDate && p.returnDate >= p.departDate) {
+    return `https://www.kayak.com/flights/${from}-${to}/${p.departDate}/${p.returnDate}?${passParams}&currency=VND`;
   }
-  return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}?${passParams}&currency=VND`;
+  return `https://www.kayak.com/flights/${from}-${to}/${p.departDate}?${passParams}&currency=VND`;
 }
 
 /**

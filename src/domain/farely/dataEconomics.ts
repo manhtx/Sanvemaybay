@@ -60,11 +60,11 @@ export class UneconomicScanExpansionError extends Error {
  * Calculates historical unit economics across a scanned dataset.
  */
 export function calculateUnitEconomics(metrics: ScopeEconomicMetrics): UnitEconomicsSummary {
-  const scans = Math.max(1, metrics.scannedScopesCount);
-  const cost = Math.max(0, metrics.totalScanCostVnd);
-  const offers = Math.max(0, metrics.eligibleOffersFound);
-  const opps = Math.max(0, metrics.verifiedOpportunitiesFound);
-  const alerts = Math.max(0, metrics.usefulWatchEventsDispatched);
+  const scans = Math.floor(Math.max(1, Number.isFinite(metrics.scannedScopesCount) ? metrics.scannedScopesCount : 1));
+  const cost = Math.max(0, Number.isFinite(metrics.totalScanCostVnd) ? metrics.totalScanCostVnd : 0);
+  const offers = Math.max(0, Number.isFinite(metrics.eligibleOffersFound) ? metrics.eligibleOffersFound : 0);
+  const opps = Math.max(0, Number.isFinite(metrics.verifiedOpportunitiesFound) ? metrics.verifiedOpportunitiesFound : 0);
+  const alerts = Math.max(0, Number.isFinite(metrics.usefulWatchEventsDispatched) ? metrics.usefulWatchEventsDispatched : 0);
 
   return {
     costPerScannedScopeVnd: Math.round(cost / scans),
@@ -83,7 +83,19 @@ export function calculateUnitEconomics(metrics: ScopeEconomicMetrics): UnitEcono
 export function evaluateScanExpansionProposal(
   proposal: ScanExpansionProposal
 ): ScanExpansionDecision {
-  const marginalCostVnd = proposal.additionalScopesCount * proposal.estimatedCostPerScopeVnd;
+  const safeScopes = Math.floor(Math.max(0, proposal.additionalScopesCount || 0));
+  const safeCostPerScope = Math.max(0, proposal.estimatedCostPerScopeVnd || 0);
+  const marginalCostVnd = safeScopes * safeCostPerScope;
+
+  if (marginalCostVnd <= 0 || safeScopes <= 0) {
+    return {
+      status: "REJECTED_UNECONOMIC",
+      marginalCostVnd: 0,
+      estimatedMarginalValueVnd: 0,
+      marginalRoiRatio: 0,
+      rejectionReasonVi: "Chi phí mở rộng không hợp lệ hoặc số lượng phạm vi quét bổ sung bằng 0.",
+    };
+  }
 
   // AUD-13 & F88 Invariant: Reject scan expansion when marginal utility lacks measured empirical evidence.
   // Never inject default benchmark values (e.g. 20k/10k) to fabricate positive ROI without proof.
@@ -100,20 +112,22 @@ export function evaluateScanExpansionProposal(
     };
   }
 
-  const alertValue = proposal.estimatedUsefulAlertValueVnd ?? 0;
-  const opportunityValue = proposal.estimatedOpportunityValueVnd ?? 0;
+  const alertValue = Math.max(0, proposal.estimatedUsefulAlertValueVnd ?? 0);
+  const opportunityValue = Math.max(0, proposal.estimatedOpportunityValueVnd ?? 0);
+  const safeSubscribers = Math.floor(Math.max(0, proposal.activeWatchSubscribersCount || 0));
+  const safeYieldPercent = Math.min(100, Math.max(0, proposal.historicalOpportunityYieldPercent || 0));
 
   // Expected opportunities from new scans
-  const expectedNewOpps =
-    proposal.additionalScopesCount * (proposal.historicalOpportunityYieldPercent / 100);
+  const expectedNewOpps = safeScopes * (safeYieldPercent / 100);
 
   // Expected value = (active subscribers benefiting * alertValue) + (expected new opps * opportunityValue)
-  const estimatedMarginalValueVnd =
-    proposal.activeWatchSubscribersCount * alertValue + expectedNewOpps * opportunityValue;
+  const estimatedMarginalValueVnd = Math.round(
+    safeSubscribers * alertValue + expectedNewOpps * opportunityValue
+  );
 
   const marginalRoiRatio = marginalCostVnd > 0
     ? Math.round((estimatedMarginalValueVnd / marginalCostVnd) * 100) / 100
-    : 1.0;
+    : 0;
 
   if (marginalRoiRatio < 1.0) {
     return {
@@ -130,6 +144,6 @@ export function evaluateScanExpansionProposal(
     marginalCostVnd,
     estimatedMarginalValueVnd,
     marginalRoiRatio,
-    approvalJustificationVi: `Mở rộng quét mang lại giá trị gia tăng rõ rệt (ROI ${marginalRoiRatio} >= 1.0) với ${proposal.activeWatchSubscribersCount} người dùng đang chủ động theo dõi tuyến ${proposal.routeScope}.`,
+    approvalJustificationVi: `Mở rộng quét mang lại giá trị gia tăng rõ rệt (ROI ${marginalRoiRatio} >= 1.0) với ${safeSubscribers} người dùng đang chủ động theo dõi tuyến ${proposal.routeScope}.`,
   };
 }

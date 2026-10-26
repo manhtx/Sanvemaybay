@@ -81,5 +81,23 @@ describe("Data Economics Optimizer (F88)", () => {
       expect(decision.estimatedMarginalValueVnd).toBe(0);
       expect(decision.rejectionReasonVi).toContain("thiếu bằng chứng đo lường");
     });
+
+    it("rejects zero or negative scope expansions and clamps metrics defensively", () => {
+      const zeroScopeProposal: ScanExpansionProposal = {
+        routeScope: "HAN-CXR",
+        additionalScopesCount: 0,
+        estimatedCostPerScopeVnd: 500,
+        activeWatchSubscribersCount: 20,
+        estimatedUsefulAlertValueVnd: 20_000,
+        historicalOpportunityYieldPercent: 10,
+        estimatedOpportunityValueVnd: 10_000,
+      };
+
+      const decision = evaluateScanExpansionProposal(zeroScopeProposal);
+      expect(decision.status).toBe("REJECTED_UNECONOMIC");
+      expect(decision.marginalCostVnd).toBe(0);
+      expect(decision.marginalRoiRatio).toBe(0);
+      expect(decision.rejectionReasonVi).toContain("không hợp lệ hoặc số lượng phạm vi quét bổ sung bằng 0");
+    });
   });
 });

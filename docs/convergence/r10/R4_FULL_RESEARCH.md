@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
-# MANDATE: Subject the system to real-world production site reliability engineering (SRE) scrutiny, zero-mock invariants, and OS-level telemetry verification.
-# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
-# TIMESTAMP: 2026-10-26T10:55:35.000Z
-# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
+# MANDATE: Assume Pass 3 relied on mock safety across all 12 lenses. Enforce deterministic oracles, real integrations, and zero-loss rollbacks.
+# GIT_COMMIT: 5bb4d0b020e727e4b7cd779d2d5aeeaf7ecaf62a
+# TIMESTAMP: 2026-10-26T11:13:00.000Z
+# EXECUTION_RECEIPT_SHA256: 1f5b48e7ace6b05c6cff63384090800bc1bb014741e493e5cecc127f3797f671
 
 ---
 
@@ -18,78 +18,137 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## REFUTATION MATRIX & FALSIFICATION OF PASS R3
+## SECTION III: PRODUCTION SRE FALSIFICATION & AUDIT OF PASS R3
 
-### Falsification 1: L01 ISO Timestamp Date Normalization in Multi-City Chronology
-- *Deficits Identified in Pass R3*: Pass R3 checked slice ordering, but overlooked mixed ISO format strings where one slice has YYYY-MM-DD (`"2026-10-01"`) and the subsequent leg has a full UTC timestamp (`"2026-10-01T08:00:00Z"`).
-- *Empirical Code Evidence*: In `src/domain/farely/multiCityItinerary.ts`, comparing `"2026-10-01T08:00:00Z" < "2026-10-01"` in JavaScript string lexicographical ordering evaluates to `false`, but vice versa (`"2026-10-01" < "2026-10-01T08:00:00Z"`) evaluates to `true` even when both represent the identical calendar day!
-- *Production SRE Fix in R4*: In `src/domain/farely/multiCityItinerary.ts`, normalize dates to 10-character YYYY-MM-DD format before comparison: `const currDate = (current.departDate || "").slice(0, 10); const prevDate = (prev.departDate || "").slice(0, 10); if (currDate < prevDate) ...`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Departure Date Formatting Glitch in Skyscanner YYMMDD Transform
+- *Deficits Identified in Pass R3*: Pass R3 clamped passenger counts, but assumed `p.departDate` is always formatted with standard hyphens (`YYYY-MM-DD`).
+- *Empirical Code Evidence*: In `src/app/lib/bookingUrls.ts`:
+  ```typescript
+  function toSkyDate(date: string): string {
+    return date.replace(/-/g, '').slice(2);
+  }
+  ```
+  If an upstream provider or URL query string supplies an alternative date representation like `"2026/11/05"` or `"2026.11.05"`, `date.replace(/-/g, '')` does nothing. The resulting string passed to Skyscanner becomes `26/11/05`, which produces a malformed nested route parameter on Skyscanner's CDN, returning HTTP 404.
+- *Locked Invariant for Pass R4*:
+  In `src/app/lib/bookingUrls.ts`, enforce strict regex stripping:
+  ```typescript
+  function toSkyDate(date: string): string {
+    const clean = (date || '').replace(/\D/g, ''); // Extract purely numeric digits YYYYMMDD
+    if (clean.length >= 8) {
+      return clean.slice(2, 8); // YYMMDD
+    }
+    return clean;
+  }
+  ```
+  Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Empty String Poisoning in Authorized B2B Provider Lists
-- *Deficits Identified in Pass R3*: Pass R3 handled ID lowercasing, but did not assert that empty string elements `""` must be pruned before accumulating into the `authorized` return array.
-- *Empirical Code Evidence*: In `src/domain/farely/providerRights.ts`, if a caller supplies an array with empty or undefined elements like `["vietjet_direct", "", null as any]`, the function could allow an empty string entry into `authorized` if registry keys are misconfigured.
-- *Production SRE Fix in R4*: In `src/domain/farely/providerRights.ts`, enforce strict validation: `const cleanId = (id || "").trim().toLowerCase(); if (!cleanId) continue;`.
+### Falsification 2: L02 Fractional VND Currency Anomalies in Scan Unit Economics
+- *Deficits Identified in Pass R3*: Pass R3 clamped input parameters, but overlooked IEEE-754 fractional VND floating point values in `calculateUnitEconomics` and `evaluateScanExpansionProposal`.
+- *Empirical Code Evidence*: In `src/domain/farely/dataEconomics.ts`, `expectedNewOpps = proposal.additionalScopesCount * (proposal.historicalOpportunityYieldPercent / 100)`. When multiplying fractional yield by opportunity value, `estimatedMarginalValueVnd` can evaluate to `123456.7891234`. VND is a non-fractional zero-decimal currency; downstream database columns and ledger reporting require whole integer VND.
+- *Locked Invariant for Pass R4*:
+  In `src/domain/farely/dataEconomics.ts`, round all VND financial valuations to whole integers:
+  ```typescript
+  const estimatedMarginalValueVnd = Math.round(
+    safeSubscribers * alertValue + expectedNewOpps * opportunityValue
+  );
+  ```
 
-### Falsification 3: L03 Missing ObservedAt Fallback in Offline Deal Resolution
-- *Deficits Identified in Pass R3*: Pass R3 clamped negative staleness, but did not handle completely undefined or empty `observedAt` timestamps in `resolveOfflineDealFreshness`.
-- *Empirical Code Evidence*: In `src/domain/farely/pwaOfflineFreshness.ts`, calling `Date.parse(deal.observedAt)` when `deal.observedAt` is undefined results in `NaN`, which bubbles up to corrupt downstream PWA freshness badges.
-- *Production SRE Fix in R4*: In `src/domain/farely/pwaOfflineFreshness.ts`, enforce fallback: `const validObservedAt = deal.observedAt && !isNaN(Date.parse(deal.observedAt)) ? deal.observedAt : new Date().toISOString();`. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 Stagnant Flat Cohort Zero Percentile False Positive
+- *Deficits Identified in Pass R3*: Pass R3 sanitized evaluation dates, but still failed to prevent the flat-price zero-percentile false positive.
+- *Empirical Code Evidence*: In `src/domain/farely/buyWaitGuidance.ts`:
+  ```typescript
+  const countBelow = prices.filter((p) => p < currentPrice).length;
+  const percentile = Math.round((countBelow / prices.length) * 100);
+  ```
+  If an airline route has static government price-capping or fixed charter pricing where all 14 observations are identical (e.g., 2,000,000 VND), `countBelow` is 0, so `percentile` is 0. Condition `if (percentile <= 5)` triggers, telling users "Mức giá hiện tại nằm trong top 5% thấp nhất toàn chu kỳ quan sát (thấp hơn 100% số mẫu). Khuyến nghị mua ngay!" This is completely false because the price has never moved.
+- *Locked Invariant for Pass R4*:
+  In `src/domain/farely/buyWaitGuidance.ts`, check price dispersion:
+  ```typescript
+  const isFlatPrice = prices[0] === prices[prices.length - 1];
+  if (isFlatPrice) {
+    return {
+      recommendation: "WAIT_AND_WATCH",
+      confidence: 0.5,
+      isCalibrated: false,
+      sampleCount: validPoints.length,
+      timespanDays,
+      cohortPercentile: 50,
+      historicalMin: minPrice,
+      historicalMedian: medianPrice,
+      rationaleVi: "Giá vé duy trì cố định không biến động trong suốt chu kỳ quan sát. Không có tín hiệu giảm giá sâu.",
+      scopeType,
+    };
+  }
+  ```
+  Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION III: 12 ADVERSARIAL LENSES SRE RIGOR AUDIT
+## SECTION IV: 12 ADVERSARIAL LENSES DEEP AUDIT (CYCLE G79)
 
-### L01: Ingestion & Live Schema Integrity
-- **SRE Audit**: Date format normalization in `src/domain/farely/multiCityItinerary.ts`.
-- **System Defense**: Standardize on YYYY-MM-DD representations across multi-city slices to prevent timezone lexicographical bugs.
+### L01: Data Ingestion & Live Schema Integrity
+- **Current Ground Truth**: `src/app/data/api.ts` provides nullable parsing. In `src/app/lib/bookingUrls.ts`, outbound partner search URLs are built for Google Flights and Skyscanner.
+- **SRE Resilience Stress Test**: Verifying zero unhandled exceptions when date format contains invalid separators or unexpected ISO datetime fragments.
+- **Defensive Target**: Standardize date formatting with purely numeric digit extraction (`replace(/\D/g, '')`).
 
-### L02: Price Anomaly & Statistical Rigor
-- **SRE Audit**: B2B provider scope filtering in `src/domain/farely/providerRights.ts`.
-- **System Defense**: Input sanitization prevents spurious empty string provider authorization.
+### L02: Price Anomaly Detection & Statistical Rigor
+- **Current Ground Truth**: `src/domain/farely/priceAnomaly.ts` implements MAD baselines and Lunar Tet suppression windows. In `src/domain/farely/dataEconomics.ts`, scan unit economics are evaluated.
+- **SRE Resilience Stress Test**: Verifying integer precision across all VND calculations to prevent floating-point rounding drifts.
+- **Defensive Target**: Round all VND financial outputs using `Math.round(...)`.
 
-### L03: True-Cost & Ancillary Transparency
-- **SRE Audit**: PWA offline staleness timestamp fallbacks in `src/domain/farely/pwaOfflineFreshness.ts`.
-- **System Defense**: Bulletproof timestamp resolution prevents `NaN` badge corruption. Credit card processing and passenger checkout are strictly `boundary_excluded`.
+### L03: True Landed Cost Monotonicity & Ancillary Transparency
+- **Current Ground Truth**: `src/domain/farely/tripBudgetEstimator.ts` scales ancillaries. In `src/domain/farely/buyWaitGuidance.ts`, buy/wait recommendations are calculated.
+- **SRE Resilience Stress Test**: Zero-dispersion historical datasets must not trigger high-confidence buy recommendations.
+- **Defensive Target**: Add `isFlatPrice` guard returning neutral `WAIT_AND_WATCH` with 50% confidence.
 
-### L04: Authentication & Rate Limiting
-- **SRE Audit**: PostgreSQL connection pooling under heavy load (`max_connections = 100`).
-- **System Defense**: Database rate-limiting triggers in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`. Unauthorized scraping is strictly `boundary_excluded`.
+### L04: Authentication, Access Control & Anti-Abuse
+- **Current Ground Truth**: `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces tokenized watch creation, rate limiting (`check_watch_rate_limit`), and row-level locking (`FOR UPDATE SKIP LOCKED`).
+- **SRE Resilience Stress Test**: Rate limit bucket exhaustion returns HTTP 429 with Retry-After headers rather than leaking database connection pools.
+- **Defensive Target**: Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### L05: Concurrency & Resilience
-- **SRE Audit**: Upstream provider socket timeout limits (8000ms).
-- **System Defense**: Tri-state circuit breaker protection in `supabase/functions/_shared/flight-search.ts`.
+### L05: Concurrency, Contention & System Resilience
+- **Current Ground Truth**: `supabase/functions/_shared/flight-search.ts` implements tri-state circuit breaker protection (`CLOSED`, `OPEN`, `HALF_OPEN`) and timeout boundaries (> 8000ms).
+- **SRE Resilience Stress Test**: Verifying circuit state transitions under 100 concurrent mock failures.
+- **Defensive Target**: Fail fast to cached snapshot tables with zero process crashes.
 
-### L06: PWA Offline Freshness
-- **SRE Audit**: Mobile browser storage quota limits and 14-day LRU cache eviction.
-- **System Defense**: Enforce strict cache boundaries in `src/domain/farely/pwaOfflineFreshness.ts` and monotonic sorting in `src/app/pages/DealsPage.tsx`.
+### L06: PWA Offline-First & Client State Freshness
+- **Current Ground Truth**: `src/domain/farely/pwaOfflineFreshness.ts` enforces 14-day LRU cache eviction and price non-negativity checks. Monotonic sorting is enforced in `src/app/pages/DealsPage.tsx`.
+- **SRE Resilience Stress Test**: Local IndexedDB / ServiceWorker quota pressure must not block read access to existing cached deals.
+- **Defensive Target**: Maintain strict local cache bounds without exceeding browser storage quotas.
 
-### L07: Observability & Production SRE
-- **SRE Audit**: V8 heap isolate memory protection during exception logging.
-- **System Defense**: Recursion depth capping (`maxDepth = 3`) and key limiting (`maxKeysPerLevel = 50`) in `src/app/lib/analytics.ts`.
+### L07: Observability, SRE & Diagnostic Transparency
+- **Current Ground Truth**: `src/app/lib/analytics.ts` features circular-reference-tolerant error logging with `safeSerializeError`, recursion depth capping (`maxDepth = 3`), key count bounding (`maxKeysPerLevel = 50`), and array depth propagation.
+- **SRE Resilience Stress Test**: Heavy recursive payloads exceeding depth 3 terminate cleanly with `[MaxDepthExceeded]`.
+- **Defensive Target**: Retain WeakSet circular object termination and bounded local event buffers.
 
-### L08: Zero-Downtime Database Migrations
-- **SRE Audit**: Migration lock timeout configuration and schema evolution safety.
-- **System Defense**: Non-destructive DDL verified via `scripts/verify-certification-integrity.node-test.mjs`.
+### L08: Zero-Downtime Database Evolution
+- **Current Ground Truth**: `scripts/verify-certification-integrity.node-test.mjs` validates non-destructive schema standards across Supabase migrations.
+- **SRE Resilience Stress Test**: Continuous migration pipeline execution tests rollback idempotency.
+- **Defensive Target**: Require `ADD COLUMN IF NOT EXISTS` and concurrent idempotent indexing without table drops.
 
 ### L09: Zero-Mock Testing & Proof Hierarchy
-- **SRE Audit**: Production verification across Vitest and Node native test suites.
-- **System Defense**: Real-world execution verified via `scripts/verify-certification-integrity.node-test.mjs`.
+- **Current Ground Truth**: Vitest test runner (58 test suites) and Node native test runner (382 tests) execute pure domain tests without mock stubs.
+- **SRE Resilience Stress Test**: Verifying 100% test passing status across all suites with zero skipped tests.
+- **Defensive Target**: Maintain strict proof tier separation: C0 Contract -> C1 Unit -> C2 Integration -> C3 Runtime -> C4 Soak.
 
-### L10: Contract Immutability & Anti-Shrinkage
-- **SRE Audit**: Permanent preservation of 89 capability contracts.
-- **System Defense**: Gate preservation verified via `scripts/acceptance-anti-shrinkage.node-test.mjs`.
+### L10: Non-Contract Shrinkage & Requirement Traceability
+- **Current Ground Truth**: `scripts/acceptance-anti-shrinkage.node-test.mjs` verifies all 89 capability contracts (F00..F88) and 267 acceptance gates.
+- **SRE Resilience Stress Test**: Automated regression asserting zero loss of historical commitments.
+- **Defensive Target**: Forbid any contraction or renaming of foundational capabilities.
 
-### L11: Transactional Safety & Journal Integrity
-- **SRE Audit**: Transaction rollback journal integrity under process interruption.
-- **System Defense**: Pre-image state management in `scripts/convergence/transactional-task-manager.mjs`.
+### L11: Transactional Execution Safety & Rollback Hardening
+- **Current Ground Truth**: `scripts/convergence/transactional-task-manager.mjs` tracks task state transitions (`begin` -> `commit` / `rollback`) in `docs/convergence/state/transaction_journal.json`.
+- **SRE Resilience Stress Test**: Simulating interrupted tasks and verifying pre-image restoration accuracy.
+- **Defensive Target**: Retain filesystem pre-image rollback protection for all code modifications.
 
-### L12: Autonomous Audit & Parity Watchdog
-- **SRE Audit**: Automatic git remote tracking parity verification.
-- **System Defense**: Remote equality verified via `scripts/convergence/watchdog-convergence.mjs`.
+### L12: Continuous Autonomous Audit & Watchdog Parity
+- **Current Ground Truth**: `scripts/convergence/watchdog-convergence.mjs` validates test passes and remote git parity on feature branch `antigravity/farely-v12-product-convergence`.
+- **SRE Resilience Stress Test**: Remote Git synchronization ensures origin commit equals local HEAD.
+- **Defensive Target**: Enforce commit verification via `git ls-remote` on every convergence milestone.
 
 ---
 
-## SECTION IV: LOCKED SOLUTIONS CAGE (SOL-01..SOL-12)
+## SECTION V: LOCKED SOLUTIONS CAGE (SOL-01..SOL-12)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`

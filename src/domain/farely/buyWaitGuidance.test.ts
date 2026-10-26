@@ -166,4 +166,40 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
       expect(typeof backtest.epistemicNote).toBe("string");
     });
   });
+
+  describe("Temporal & Volatility Defenses", () => {
+    it("fails closed when departureDate is in the past", () => {
+      const history = generateSyntheticHistory(20, 20, 2_000_000);
+      const result = evaluateBuyWaitGuidance({
+        currentPrice: 2_000_000,
+        priceHistory: history,
+        departureDate: "2026-09-01", // Past relative to evaluationDate
+        evaluationDate: "2026-09-25",
+      });
+
+      expect(result.recommendation).toBe("INSUFFICIENT_DATA");
+      expect(result.rationaleVi).toContain("Chuyến bay đã khởi hành");
+    });
+
+    it("advises WAIT_AND_WATCH with neutral confidence when historical prices are flat/stagnant", () => {
+      // 20 points all exactly 2,000,000 VND (zero dispersion)
+      const flatHistory: PricePoint[] = [];
+      const baseDate = new Date("2026-09-01T00:00:00Z").getTime();
+      for (let i = 0; i < 20; i++) {
+        const d = new Date(baseDate + i * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+        flatHistory.push({ date: d, price: 2_000_000 });
+      }
+
+      const result = evaluateBuyWaitGuidance({
+        currentPrice: 2_000_000,
+        priceHistory: flatHistory,
+        departureDate: "2026-11-01",
+        evaluationDate: "2026-09-25",
+      });
+
+      expect(result.recommendation).toBe("WAIT_AND_WATCH");
+      expect(result.confidence).toBe(0.5);
+      expect(result.rationaleVi).toContain("duy trì cố định không biến động");
+    });
+  });
 });

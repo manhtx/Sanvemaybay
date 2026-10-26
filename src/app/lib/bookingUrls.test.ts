@@ -67,4 +67,20 @@ describe("booking URL builders", () => {
     expect(isSafeOutboundBookingUrl("https://vietjetair.com:443/flight")).toBe(true);
     expect(isSafeOutboundBookingUrl("https://vietjetair.com/flight")).toBe(true);
   });
+
+  it("sanitizes IATA airport codes and ignores inverted return dates", () => {
+    // Dirty airport codes with spaces and lowercase
+    const dirtyParams = {
+      fromCode: " han ",
+      toCode: "bkk",
+      departDate: "2026/09/10",
+      returnDate: "2026/09/01", // Earlier than departure!
+      passengers: 2.5, // Non-integer
+    };
+
+    const url = buildSkyscannerUrl(dirtyParams);
+    expect(url).toContain("/han/bkk/260910/");
+    expect(url).not.toContain("260901"); // Inverted date dropped!
+    expect(url).toContain("adults=2"); // Truncated to integer
+  });
 });

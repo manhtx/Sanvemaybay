@@ -101,14 +101,57 @@ export function evaluateBuyWaitGuidance(params: {
   const minPrice = prices[0];
   const medianPrice = prices[Math.floor(prices.length / 2)];
 
+  // Flat price cohort defense (zero variance)
+  const isFlatPrice = prices[0] === prices[prices.length - 1];
+  if (isFlatPrice) {
+    return {
+      recommendation: "WAIT_AND_WATCH",
+      confidence: 0.5,
+      isCalibrated: false,
+      sampleCount: validPoints.length,
+      timespanDays,
+      cohortPercentile: 50,
+      historicalMin: minPrice,
+      historicalMedian: medianPrice,
+      rationaleVi: "Giá vé duy trì cố định không biến động trong suốt chu kỳ quan sát. Không có tín hiệu giảm giá sâu.",
+      scopeType,
+    };
+  }
+
   // Calculate cohort percentile of current price
   const countBelow = prices.filter((p) => p < currentPrice).length;
   const percentile = Math.round((countBelow / prices.length) * 100);
 
   // Check days until flight departure
-  const evalDate = params.evaluationDate ? new Date(params.evaluationDate) : new Date();
+  const evalMs = params.evaluationDate ? Date.parse(params.evaluationDate) : Date.now();
+  const evalDate = Number.isFinite(evalMs) ? new Date(evalMs) : new Date();
   const depDate = new Date(params.departureDate);
+
+  if (!Number.isFinite(depDate.getTime())) {
+    return {
+      recommendation: "INSUFFICIENT_DATA",
+      confidence: 0,
+      isCalibrated: false,
+      sampleCount: validPoints.length,
+      timespanDays,
+      rationaleVi: "Ngày khởi hành không hợp lệ hoặc không thể phân tích.",
+      scopeType,
+    };
+  }
+
   const daysUntilDeparture = Math.round((depDate.getTime() - evalDate.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (daysUntilDeparture < 0) {
+    return {
+      recommendation: "INSUFFICIENT_DATA",
+      confidence: 0,
+      isCalibrated: false,
+      sampleCount: validPoints.length,
+      timespanDays,
+      rationaleVi: "Chuyến bay đã khởi hành, không thể phân tích khuyến nghị mua.",
+      scopeType,
+    };
+  }
 
   // AUD-V34-08 & EV34-23: Route-level historical samples feed Buy/Wait cannot claim calibrated offer-specific probability.
   // Calibration requires IDENTICAL_OFFER or COHORT scope with sufficient data.

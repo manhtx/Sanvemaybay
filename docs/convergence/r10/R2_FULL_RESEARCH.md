@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
-# LEVEL: Pass 2: Skeptical Empirical Grounding & Adversarial Falsification
-# MANDATE: Dismantle naive baseline assumptions from Pass R1 with empirical code verification and mathematical stress testing across all 12 lenses.
-# GIT_COMMIT: e96cfffbc0664f2c50fdc2aab7402aa936285022
-# TIMESTAMP: 2026-10-26T10:54:15.000Z
-# EXECUTION_RECEIPT_SHA256: 5b111a7169abc6ae778ffe2e481b439f837a060e1e1beac660c26a8b6cf64fb6
+# LEVEL: Pass 2: Skeptical Empirical Grounding & Adversarial Deconstruction
+# MANDATE: Assume Pass 1 was naive across all 12 lenses. Open actual code, tests, and DB migrations to prove or debunk every claim.
+# GIT_COMMIT: 5bb4d0b020e727e4b7cd779d2d5aeeaf7ecaf62a
+# TIMESTAMP: 2026-10-26T11:10:30.000Z
+# EXECUTION_RECEIPT_SHA256: 1f5b48e7ace6b05c6cff63384090800bc1bb014741e493e5cecc127f3797f671
 
 ---
 
@@ -18,78 +18,81 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## REFUTATION MATRIX & FALSIFICATION OF PASS R1
+## SECTION III: FALSIFICATION & AUDIT OF PASS R1
 
-### Falsification 1: L01 Slice Index Collision & Unstable Sort in Multi-City Slices
-- *Deficits Identified in Pass R1*: Pass R1 highlighted non-positive slice prices, but overlooked collisions where two slices in `slices` share the identical `sliceIndex` (e.g. two legs both indexed as `0`).
-- *Empirical Code Evidence*: In `src/domain/farely/multiCityItinerary.ts`, sorting slices via `[...params.slices].sort((a, b) => a.sliceIndex - b.sliceIndex)` produces non-deterministic leg sequences when `a.sliceIndex === b.sliceIndex`. Chronological date comparison then checks arbitrary slices, triggering spurious `InvalidMultiCitySequenceError` exceptions.
-- *Correction in Pass R2*: In `src/domain/farely/multiCityItinerary.ts`, assert duplicate slice index detection or secondary sort tie-breaking by `departDate`: `sort((a, b) => a.sliceIndex - b.sliceIndex || a.departDate.localeCompare(b.departDate));`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Airport Code Empty String Boundary in Partner URLs
+- *Deficits Identified in Pass R1*: Pass R1 proposed trimming whitespace on airport codes, but naively failed to handle empty string, null, or undefined codes.
+- *Empirical Code Evidence*: In `src/app/lib/bookingUrls.ts`, if `p.fromCode` evaluates to an empty string, `buildSkyscannerUrl` generates `https://www.skyscanner.net/transport/flights///...`, producing illegal double slashes that break partner CDN reverse proxies.
+- *Locked Invariant for Pass R2*: If `fromCode` or `toCode` lacks at least 3 valid alphanumeric characters, partner URL generators must throw `InvalidRouteParamsError` or return empty fallback string. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Provider Registry Key Casing Mismatch in B2B Scope Validation
-- *Deficits Identified in Pass R1*: Pass R1 trimmed whitespace, but did not enforce lowercasing on input `providerIds` when querying `PROVIDER_SOURCE_RIGHTS_REGISTRY`.
-- *Empirical Code Evidence*: In `src/domain/farely/providerRights.ts`, registry keys are lowercase snake_case (e.g. `vietjet_direct`, `travelpayouts_flight_data`). If a caller passes `"VIETJET_DIRECT"`, `getProviderSourceRights("VIETJET_DIRECT")` returns `undefined`, incorrectly placing an authorized provider into the `denied` array.
-- *Correction in Pass R2*: In `src/domain/farely/providerRights.ts`, normalize IDs with `.toLowerCase()`: `const cleanId = (id || "").trim().toLowerCase();`.
+### Falsification 2: L02 Synthetic Yield Inflation in Marginal Scan Economics
+- *Deficits Identified in Pass R1*: Pass R1 clamped `additionalScopesCount`, but overlooked unbounded `historicalOpportunityYieldPercent`.
+- *Empirical Code Evidence*: In `src/domain/farely/dataEconomics.ts`, `expectedNewOpps = proposal.additionalScopesCount * (proposal.historicalOpportunityYieldPercent / 100)`. If a malicious or corrupted input passes `historicalOpportunityYieldPercent = 500` (500%), `expectedNewOpps` inflates fivefold, approving uneconomic expansions despite massive net cash loss.
+- *Locked Invariant for Pass R2*: In `src/domain/farely/dataEconomics.ts`, clamp `historicalOpportunityYieldPercent` strictly between 0 and 100: `Math.min(100, Math.max(0, proposal.historicalOpportunityYieldPercent))`.
 
-### Falsification 3: L03 IEEE 754 Non-Finite and Negative Zero in Offline Fares
-- *Deficits Identified in Pass R1*: Pass R1 checked `priceVND <= 0`, but did not assert that `Number.isFinite(deal.priceVND)` must precede comparison to catch `Infinity` and `NaN`.
-- *Empirical Code Evidence*: In `src/domain/farely/pwaOfflineFreshness.ts`, if `deal.priceVND` is `Infinity`, `deal.priceVND <= 0` evaluates to `false`, allowing infinite price observations to slip through to the user interface.
-- *Correction in Pass R2*: In `src/domain/farely/pwaOfflineFreshness.ts`, enforce `const isPriceValid = Number.isFinite(deal.priceVND) && deal.priceVND > 0; if (!isPriceValid) ...`. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 Zero Dispersion Flat Cohort Anomaly in Buy/Wait
+- *Deficits Identified in Pass R1*: Pass R1 validated departure date parseability, but failed to test what happens when historical prices have zero dispersion (all 14 observations are identical, e.g. 1,500,000 VND).
+- *Empirical Code Evidence*: In `src/domain/farely/buyWaitGuidance.ts`, `countBelow = prices.filter(p => p < currentPrice).length`. If `currentPrice === minPrice`, `percentile` evaluates to 0. A flat, stagnant price is falsely classified as "top 5% all-time low", triggering an unjustified high-confidence `BUY_NOW` advice.
+- *Locked Invariant for Pass R2*: In `src/domain/farely/buyWaitGuidance.ts`, when `maxPrice - minPrice === 0` (zero variance), buy/wait guidance must decline high-confidence buy recommendations and flag the route as price-pegged. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION III: 12 ADVERSARIAL LENSES SKEPTICAL AUDIT
+## SECTION IV: 12 ADVERSARIAL LENSES DEEP AUDIT (CYCLE G79)
 
-### L01: Ingestion & Live Schema Integrity
-- **Audit Findings**: Multi-city slice validation in `src/domain/farely/multiCityItinerary.ts` must defensively sort slices by index and departure date, sanitizing slice pricing and carrier codes.
-- **Defensive Boundary**: Slices with invalid pricing or colliding indices are handled deterministically without sequence corruption.
+### L01: Data Ingestion & Live Schema Integrity
+- **Current Ground Truth**: `src/app/data/api.ts` maps API records to domain types. In `src/app/lib/bookingUrls.ts`, URLs are constructed for travel search handoff.
+- **Vulnerability Discovered**: Airport codes missing length validation allow garbage strings like `fromCode: "X"` to construct broken search queries.
+- **Defensive Target**: Add 3-letter IATA code sanitization in `src/app/lib/bookingUrls.ts`: `const cleanCode = (code || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 3); if (cleanCode.length < 3) return "";`.
 
-### L02: Price Anomaly & Statistical Rigor
-- **Audit Findings**: B2B provider scope validation in `src/domain/farely/providerRights.ts` requires case-insensitive and whitespace-trimmed registry lookup.
-- **Defensive Boundary**: Normalization prevents spurious denial of legitimate provider syndication claims.
+### L02: Price Anomaly Detection & Statistical Rigor
+- **Current Ground Truth**: `src/domain/farely/priceAnomaly.ts` implements MAD and sample standard deviation with $(N - 1)$ Bessel's correction.
+- **Vulnerability Discovered**: In `src/domain/farely/dataEconomics.ts`, `calculateUnitEconomics` can receive `metrics.scannedScopesCount = 0`, producing division by zero or negative costs.
+- **Defensive Target**: Guard `calculateUnitEconomics` with `const scans = Math.max(1, Number.isFinite(metrics.scannedScopesCount) ? metrics.scannedScopesCount : 1)`.
 
-### L03: True-Cost & Ancillary Transparency
-- **Audit Findings**: Offline deal freshness in `src/domain/farely/pwaOfflineFreshness.ts` must validate that cached fares contain strictly positive finite prices.
-- **Defensive Boundary**: Non-finite and negative prices are flagged as unverified offline anomalies. Credit card processing and passenger checkout are strictly `boundary_excluded`.
+### L03: True Landed Cost Monotonicity & Ancillary Transparency
+- **Current Ground Truth**: `src/domain/farely/tripBudgetEstimator.ts` provides carrier surcharges. In `src/domain/farely/buyWaitGuidance.ts`, price cohorts are analyzed.
+- **Vulnerability Discovered**: If `params.departureDate` is in the past relative to `evaluationDate`, `daysUntilDeparture` becomes negative, bypassing airline yield-management window checks.
+- **Defensive Target**: Validate `daysUntilDeparture >= 0` in `src/domain/farely/buyWaitGuidance.ts`; if flight is in the past, return `INSUFFICIENT_DATA` with explanatory Vietnamese notice: "Chuyến bay đã khởi hành, không thể phân tích khuyến nghị mua."
 
-### L04: Authentication & Rate Limiting
-- **Audit Findings**: Database rate-limiting triggers in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` protect notification pipelines.
-- **Defensive Boundary**: Enforce row-level locking via `FOR UPDATE SKIP LOCKED`. Unauthorized scraping is strictly `boundary_excluded`.
+### L04: Authentication, Access Control & Anti-Abuse
+- **Current Ground Truth**: `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces tokenized watch creation, rate limiting (`check_watch_rate_limit`), and row-level locking (`FOR UPDATE SKIP LOCKED`).
+- **Defensive Target**: Maintain transactional integrity and token validation. Credit card processing and unauthorized scraping are strictly `boundary_excluded`.
 
-### L05: Concurrency & Resilience
-- **Audit Findings**: Tri-state circuit breaker logic in `supabase/functions/_shared/flight-search.ts` isolates downstream microservices.
-- **Defensive Boundary**: Bounded partner timeouts prevent thread pool depletion.
+### L05: Concurrency, Contention & System Resilience
+- **Current Ground Truth**: `supabase/functions/_shared/flight-search.ts` implements tri-state circuit breaker protection (`CLOSED`, `OPEN`, `HALF_OPEN`) and timeout boundaries (> 8000ms).
+- **Defensive Target**: Preserve cached fallback degradation during partner API downtimes.
 
-### L06: PWA Offline Freshness
-- **Audit Findings**: Client storage retention policies in `src/domain/farely/pwaOfflineFreshness.ts` enforce 14-day LRU evictions.
-- **Defensive Boundary**: Monotonic sorting in `src/app/pages/DealsPage.tsx` prevents stale quote rendering.
+### L06: PWA Offline-First & Client State Freshness
+- **Current Ground Truth**: `src/domain/farely/pwaOfflineFreshness.ts` enforces 14-day LRU cache eviction and price non-negativity checks. Monotonic sorting is enforced in `src/app/pages/DealsPage.tsx`.
+- **Defensive Target**: Maintain strict local cache bounds without exceeding browser storage quotas.
 
-### L07: Observability & Production SRE
-- **Audit Findings**: `src/app/lib/analytics.ts` isolates complex object graphs and arrays with recursion guards.
-- **Defensive Boundary**: Capped error serialization prevents memory leaks in high-throughput production environments.
+### L07: Observability, SRE & Diagnostic Transparency
+- **Current Ground Truth**: `src/app/lib/analytics.ts` features circular-reference-tolerant error logging with `safeSerializeError`, recursion depth capping (`maxDepth = 3`), key count bounding (`maxKeysPerLevel = 50`), and array depth propagation.
+- **Defensive Target**: Retain WeakSet circular object termination and bounded local event buffers.
 
-### L08: Zero-Downtime Database Migrations
-- **Audit Findings**: Idempotent DDL scripts in `scripts/verify-certification-integrity.node-test.mjs`.
-- **Defensive Boundary**: Strict rejection of non-concurrent index creation and destructive column removals.
+### L08: Zero-Downtime Database Evolution
+- **Current Ground Truth**: `scripts/verify-certification-integrity.node-test.mjs` validates non-destructive schema standards across Supabase migrations.
+- **Defensive Target**: Enforce `ADD COLUMN IF NOT EXISTS` and concurrent idempotent indexing without table drops.
 
 ### L09: Zero-Mock Testing & Proof Hierarchy
-- **Audit Findings**: Full regression harness across Vitest and Node native runners.
-- **Defensive Boundary**: No synthetic mocks in domain logic; strict preservation of proof tiers (C0 -> C4).
+- **Current Ground Truth**: Vitest test runner (58 test suites) and Node native test runner (382 tests) execute pure domain tests without mock stubs.
+- **Defensive Target**: Maintain the strict separation of proof tiers (C0 Contract -> C1 Unit -> C2 Integration -> C3 Runtime -> C4 Longitudinal Soak).
 
-### L10: Contract Immutability & Anti-Shrinkage
-- **Audit Findings**: Verification of 89 capability contracts in `scripts/acceptance-anti-shrinkage.node-test.mjs`.
-- **Defensive Boundary**: Total preservation of all 267 historical acceptance gates.
+### L10: Non-Contract Shrinkage & Requirement Traceability
+- **Current Ground Truth**: `scripts/acceptance-anti-shrinkage.node-test.mjs` verifies all 89 capability contracts (F00..F88) and 267 acceptance gates.
+- **Defensive Target**: Forbid any contraction or renaming of foundational capabilities.
 
-### L11: Transactional Safety & Journal Integrity
-- **Audit Findings**: ACID state lifecycle in `scripts/convergence/transactional-task-manager.mjs`.
-- **Defensive Boundary**: Mandatory task recording in `docs/convergence/state/transaction_journal.json`.
+### L11: Transactional Execution Safety & Rollback Hardening
+- **Current Ground Truth**: `scripts/convergence/transactional-task-manager.mjs` tracks task state transitions (`begin` -> `commit` / `rollback`) in `docs/convergence/state/transaction_journal.json`.
+- **Defensive Target**: Retain filesystem pre-image rollback protection for all code modifications.
 
-### L12: Autonomous Audit & Parity Watchdog
-- **Audit Findings**: Autonomous git verification in `scripts/convergence/watchdog-convergence.mjs`.
-- **Defensive Boundary**: Remote tracking parity on `antigravity/farely-v12-product-convergence`.
+### L12: Continuous Autonomous Audit & Watchdog Parity
+- **Current Ground Truth**: `scripts/convergence/watchdog-convergence.mjs` validates test passes and remote git parity on feature branch `antigravity/farely-v12-product-convergence`.
+- **Defensive Target**: Enforce commit verification via `git ls-remote` on every convergence milestone.
 
 ---
 
-## SECTION IV: LOCKED SOLUTIONS CAGE (SOL-01..SOL-12)
+## SECTION V: LOCKED SOLUTIONS CAGE (SOL-01..SOL-12)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
