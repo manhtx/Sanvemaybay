@@ -3,64 +3,64 @@
     "name": "Product Truth & Founder Scope Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.773Z",
+        "timestamp": "2026-10-26T10:27:47.371Z",
         "covered": true,
-        "byteCount": 170,
-        "summaryExcerpt": "In `src/domain/farely/providerRights.ts`, enforce strict boundaries: Farely provides unbiased flight opportunity intelligence and never accepts booking fulfillment stubs."
+        "byteCount": 172,
+        "summaryExcerpt": "In `src/domain/farely/providerRights.ts` and `src/app/lib/bookingUrls.ts`, strict non-OTA boundary isolates flight opportunity intelligence from third-party checkout flows."
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.768Z",
+        "timestamp": "2026-10-26T10:28:29.001Z",
         "covered": true,
-        "byteCount": 141,
-        "summaryExcerpt": "`src/domain/farely/providerRights.ts` locks product boundaries. No transactional booking processing is admitted; Farely is pure intelligence."
+        "byteCount": 657,
+        "summaryExcerpt": "- *Deficits Identified in R1*: Pass R1 verified hostname suffix matching, but omitted checking for embedded user credentials or non-standard ports.\n- *Empirical Code Evidence*: In `src/app/lib/bookingUrls.ts`, an attacker crafting an outbound URL such as `https://attacker:secret@vietjetair.com:8443/"
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.070Z",
+        "timestamp": "2026-10-26T10:29:16.929Z",
         "covered": true,
-        "byteCount": 656,
-        "summaryExcerpt": "- *Deficits Identified in R2*: Pass R2 restricted the system from executing booking transactions, but omitted validating the integrity of outbound redirect URLs.\n- *Hostile Boundary Attack*: In `src/app/lib/bookingUrls.ts` and `src/domain/farely/providerRights.ts`, if partner query params pass unesc"
+        "byteCount": 811,
+        "summaryExcerpt": "- *Deficits Identified in R2*: Pass R2 specified checking `url.port === \"\" || url.port === \"443\"`, but did not address explicit default port normalization across varied Node.js and browser DOM URL parsers.\n- *Hostile Boundary Attack*: In `src/app/lib/bookingUrls.ts`, when a partner link is crafted a"
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.299Z",
+        "timestamp": "2026-10-26T10:30:00.310Z",
         "covered": true,
         "byteCount": 237,
         "summaryExcerpt": "In `src/domain/farely/providerRights.ts`, the software architecture rigidly quarantines discovery intelligence from checkout operations. No booking forms or ticketing reservation endpoints are allowed to exist in repository source trees."
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.533Z",
+        "timestamp": "2026-10-26T10:31:24.123Z",
         "covered": true,
-        "byteCount": 773,
-        "summaryExcerpt": "- *Deficits Identified in R4*: Pass R4 called for partner hostname whitelisting in `src/app/lib/bookingUrls.ts`, but did not specify strict URL origin parsing semantics.\n- *Empirical Code Evidence*: Using loose regular expressions like `/vietjetair\\.com/` matches malicious origins such as `https://v"
+        "byteCount": 704,
+        "summaryExcerpt": "- *Deficits Identified in R4*: Pass R4 mandated hostname validation, but omitted testing Internationalized Domain Names (IDN Punycode `xn--...`) and mixed-case URL schemes (`https://VietJetAir.com`).\n- *Empirical Code Evidence*: In `src/app/lib/bookingUrls.ts`, if URL parsing does not guarantee lowe"
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.254Z",
-        "covered": true,
-        "byteCount": 177,
-        "summaryExcerpt": "Strict non-OTA flight opportunity intelligence platform. Direct booking fulfillment and payment gateways are excluded. `src/domain/farely/providerRights.ts` enforces boundaries."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.260Z",
+        "timestamp": "2026-10-26T10:35:33.138Z",
         "covered": true,
-        "byteCount": 639,
-        "summaryExcerpt": "- *Deficits Identified in G1*: Pass G1 called for hostname verification, but overlooked non-standard ports (e.g. `vietjetair.com:8080`) or credential injection (`user@vietjetair.com`).\n- *Adversarial AST Falsification*: In `src/app/lib/bookingUrls.ts`, attackers crafting URLs with embedded user cred"
+        "byteCount": 843,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 proposed basic port checking without explicitly specifying the exact AST guard for URL userinfo/credentials (`user:pass@host`) and empty port strings. In Node `URL`, `parsed.port` is an empty string for default ports (`80` or `443`), but if a URL contains "
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.087Z",
+        "timestamp": "2026-10-26T10:36:15.927Z",
         "covered": true,
-        "byteCount": 658,
-        "summaryExcerpt": "- *Deficits Identified in G2*: Pass G2 tested URL hostname checking, but overlooked fully qualified domain names (FQDN) ending in a trailing dot (e.g. `https://google.com./flights`).\n- *Adversarial Verification Falsification*: Standard RFC 1034 DNS specifications treat `google.com.` as valid. In Jav"
+        "byteCount": 942,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 tested port `'443'`, but omitted testing explicit default HTTP port `'80'` when evaluating insecure HTTP protocols, or port notation with whitespace. Furthermore, G2 did not specify an oracle asserting that non-numeric ports or ports like `:0` are properly"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.942Z",
+        "timestamp": "2026-10-26T10:36:53.253Z",
         "covered": true,
-        "byteCount": 810,
-        "summaryExcerpt": "- *Deficits Identified in G3*: Pass G3 focused on hostname whitelisting, but overlooked potential parameter injection in URL query components.\n- *Adversarial DAG Falsification*: In `src/app/lib/bookingUrls.ts`, if airport codes or dates contain raw characters (e.g., spaces or ampersands) that are no"
+        "byteCount": 664,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 established test assertions for booking URLs, but did not enforce transaction isolation preconditions. If prior transactions in `transaction_journal.json` are uncommitted or corrupted, starting WP01 without journal sanitization causes inconsistent git inde"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.566Z",
+        "timestamp": "2026-10-26T10:37:30.917Z",
         "covered": true,
-        "byteCount": 742,
-        "summaryExcerpt": "- *Deficits Identified in G4*: Pass G4 secured outbound partner hostnames in `src/app/lib/bookingUrls.ts`, but failed to mandate consumer transparency disclosures regarding third-party merchant status.\n- *Adversarial Invariant Falsification*: Under consumer protection standards, if an intelligence e"
+        "byteCount": 661,
+        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 addressed userinfo and port security, but failed to verify that hostname normalization strips trailing dots before case-folding and domain matching. In DNS standards (RFC 1035), a fully qualified domain name can terminate in a root dot (`vietjetair.com.`)."
       }
     }
   },
@@ -68,64 +68,64 @@
     "name": "Price, Historical Baseline & Data Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.773Z",
+        "timestamp": "2026-10-26T10:27:47.371Z",
         "covered": true,
-        "byteCount": 201,
-        "summaryExcerpt": "In `src/domain/farely/priceAnomaly.ts`, robust outlier estimation requires sample sizes $N \\ge 5$ with Bessel's correction $(N-1)$, zero-dispersion abstention guards, and seasonal Tết holiday priors."
+        "byteCount": 226,
+        "summaryExcerpt": "In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \\ge 5$ with Bessel's correction $(N-1)$, capped sample windows (`MAX_COHORT_ANALYSIS_SIZE = 250`), and seasonal Tết holiday priors."
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.768Z",
+        "timestamp": "2026-10-26T10:28:29.001Z",
         "covered": true,
-        "byteCount": 687,
-        "summaryExcerpt": "- *Deficits Identified in R1*: Pass R1 verified sample variance and Bessel's correction for $N \\ge 5$, but left `historicalCohortPrices` unconstrained in maximum length.\n- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, if an upstream API or database scan injects 50,000 historical"
+        "byteCount": 167,
+        "summaryExcerpt": "In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \\ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors."
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.071Z",
+        "timestamp": "2026-10-26T10:29:16.929Z",
         "covered": true,
         "byteCount": 167,
         "summaryExcerpt": "In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \\ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors."
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.299Z",
+        "timestamp": "2026-10-26T10:30:00.310Z",
         "covered": true,
         "byteCount": 351,
         "summaryExcerpt": "In `src/domain/farely/priceAnomaly.ts`, telemetry indicates that price distributions across Vietnamese holiday trunk routes follow bimodal distributions rather than normal Gaussians. The application of Median Absolute Deviation (MAD) combined with Bessel's correction $(N - 1)$ effectively eliminates"
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.533Z",
+        "timestamp": "2026-10-26T10:31:24.123Z",
         "covered": true,
-        "byteCount": 720,
-        "summaryExcerpt": "- *Deficits Identified in R4*: Pass R4 mandated bounding cohort sizes to 250 elements to prevent CPU exhaustion, but suggested a naive tail slice (`prices.slice(-250)`).\n- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, if price observations arrive unordered from multiple crawling"
+        "byteCount": 265,
+        "summaryExcerpt": "In `src/domain/farely/priceAnomaly.ts`, robust statistics with Median Absolute Deviation (MAD) and Bessel's correction $(N - 1)$ for $N \\ge 2$ guard against false positive drop alerts. Zero-variance cohorts are safeguarded with `INSUFFICIENT_DISPERSION_ABSTENTION`."
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.254Z",
-        "covered": true,
-        "byteCount": 167,
-        "summaryExcerpt": "In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \\ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 642,
-        "summaryExcerpt": "- *Deficits Identified in G1*: Pass G1 specified capping historical cohort arrays, but did not specify whether truncation occurs before or after filtering non-finite values.\n- *Adversarial AST Falsification*: In `src/domain/farely/priceAnomaly.ts`, if truncation executes prior to filtering, an array"
+        "timestamp": "2026-10-26T10:35:33.138Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.087Z",
-        "covered": true,
-        "byteCount": 736,
-        "summaryExcerpt": "- *Deficits Identified in G2*: Pass G2 proposed slicing cohorts with `slice(0, MAX_COHORT_ANALYSIS_SIZE)`, but did not mandate boundary tests around $N = 250$ versus $N = 251$.\n- *Adversarial Verification Falsification*: In `src/domain/farely/priceAnomaly.ts`, if sample trimming is tested only on sm"
+        "timestamp": "2026-10-26T10:36:15.927Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.942Z",
-        "covered": true,
-        "byteCount": 167,
-        "summaryExcerpt": "In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \\ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors."
+        "timestamp": "2026-10-26T10:36:53.253Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.566Z",
-        "covered": true,
-        "byteCount": 684,
-        "summaryExcerpt": "- *Deficits Identified in G4*: Pass G4 capped cohort sample lengths, but did not assert currency unit consistency across scraped pricing feeds.\n- *Adversarial Invariant Falsification*: In `src/domain/farely/priceAnomaly.ts`, if international partner feeds emit fares in USD (e.g. 120 USD) while domes"
+        "timestamp": "2026-10-26T10:37:30.917Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -133,64 +133,64 @@
     "name": "Deal Score, Statistical Confidence & Cost Monotonicity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.773Z",
-        "covered": true,
-        "byteCount": 205,
-        "summaryExcerpt": "In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, total landed cost models include domestic ancillary baggage surcharges and metropolitan surface transit buffers."
-      },
-      "R2": {
-        "timestamp": "2026-10-26T10:13:51.768Z",
+        "timestamp": "2026-10-26T10:27:47.371Z",
         "covered": true,
         "byteCount": 155,
         "summaryExcerpt": "In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity."
       },
-      "R3": {
-        "timestamp": "2026-10-26T10:14:36.071Z",
+      "R2": {
+        "timestamp": "2026-10-26T10:28:29.001Z",
         "covered": true,
-        "byteCount": 670,
-        "summaryExcerpt": "- *Deficits Identified in R2*: Pass R2 calculated round-trip baggage surcharges uniformly across all traveler counts, without passenger age segmentation.\n- *Hostile Boundary Attack*: In `src/domain/farely/tripBudgetEstimator.ts`, if a family of 2 adults and 1 lap infant (under 2) searches flights, c"
+        "byteCount": 681,
+        "summaryExcerpt": "- *Deficits Identified in R1*: Pass R1 used a standard round-trip luggage estimator, assuming strictly one outbound and one inbound flight.\n- *Empirical Code Evidence*: In `src/domain/farely/tripBudgetEstimator.ts`, multi-city itineraries with 3 or 4 flight segments (e.g. HAN -> DAD -> SGN -> HAN) r"
+      },
+      "R3": {
+        "timestamp": "2026-10-26T10:29:16.929Z",
+        "covered": true,
+        "byteCount": 672,
+        "summaryExcerpt": "- *Deficits Identified in R2*: Pass R2 proposed parameterizing flight legs in baggage surcharge estimators, but failed to guard against negative or zero flight segment inputs.\n- *Hostile Boundary Attack*: In `src/domain/farely/tripBudgetEstimator.ts`, if dirty search parameters supply `legsCount: -1"
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.299Z",
+        "timestamp": "2026-10-26T10:30:00.310Z",
         "covered": true,
         "byteCount": 312,
         "summaryExcerpt": "In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, real-time benchmarking confirms that including domestic luggage surcharges (VJ 350k, QH 320k, VU 300k VND) prevents price rank inversion when comparing low-cost carriers with full-service carriers like Vietn"
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.533Z",
+        "timestamp": "2026-10-26T10:31:24.123Z",
         "covered": true,
-        "byteCount": 247,
-        "summaryExcerpt": "In `src/domain/farely/tripBudgetEstimator.ts` and `src/domain/farely/multiCityItinerary.ts`, total landed travel cost includes ancillary baggage surcharges and self-transfer connection penalties, guaranteeing monotonicity across provider displays."
+        "byteCount": 669,
+        "summaryExcerpt": "- *Deficits Identified in R4*: Pass R4 scaled baggage surcharges by flight leg counts, but overlooked fractional passenger quantities from dirty scraper data (e.g. `passengers: 1.5`).\n- *Empirical Code Evidence*: In `src/domain/farely/tripBudgetEstimator.ts`, multiplying 350,000 VND by 1.5 produces "
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.254Z",
-        "covered": true,
-        "byteCount": 155,
-        "summaryExcerpt": "In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
+        "timestamp": "2026-10-26T10:35:33.138Z",
         "covered": true,
-        "byteCount": 155,
-        "summaryExcerpt": "In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity."
+        "byteCount": 732,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 targeted passenger count integer sanitization, but did not handle negative or `NaN` flight leg parameters in `estimateRoundTripBaggageCost` and `calculateCarrierLandedSurcharges`.\n- *Empirical Code Evidence*: In `src/domain/farely/tripBudgetEstimator.ts`, "
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.087Z",
+        "timestamp": "2026-10-26T10:36:15.927Z",
         "covered": true,
-        "byteCount": 155,
-        "summaryExcerpt": "In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity."
+        "byteCount": 670,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 clamped flight legs with `Math.max(1, flightLegs)`, but did not consider IEEE 754 `Infinity` or negative zero `-0` in `calculateCarrierLandedSurcharges`.\n- *Empirical Code Evidence*: If scraper payload passes `flightLegs: Infinity`, `Math.max(1, Infinity)`"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.942Z",
+        "timestamp": "2026-10-26T10:36:53.253Z",
         "covered": true,
-        "byteCount": 155,
-        "summaryExcerpt": "In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity."
+        "byteCount": 770,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 specified unit tests for `calculateCarrierLandedSurcharges`, but did not sequence execution before or after multi-city transit tests. Since `multiCityItinerary.ts` imports from `tripBudgetEstimator.ts` indirectly or interacts with budget estimators, modify"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
+        "timestamp": "2026-10-26T10:37:30.918Z",
         "covered": true,
-        "byteCount": 155,
-        "summaryExcerpt": "In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity."
+        "byteCount": 690,
+        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 clamped passenger and leg quantities, but did not assert that baggage and ticketing fees are strictly whole numbers after multiplication. While surcharge constants are whole integers, rounding explicitly protects against engine-level floating-point multipl"
       }
     }
   },
@@ -198,64 +198,64 @@
     "name": "Auth, Privacy, Tenant Isolation & RLS Matrix",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.773Z",
+        "timestamp": "2026-10-26T10:27:47.371Z",
         "covered": true,
-        "byteCount": 166,
-        "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` guarantees atomic concurrency on user watch tables via PostgreSQL row-level locks."
+        "byteCount": 135,
+        "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues."
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.768Z",
+        "timestamp": "2026-10-26T10:28:29.001Z",
         "covered": true,
         "byteCount": 135,
         "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues."
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.071Z",
+        "timestamp": "2026-10-26T10:29:16.929Z",
         "covered": true,
         "byteCount": 135,
         "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues."
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.299Z",
+        "timestamp": "2026-10-26T10:30:00.310Z",
         "covered": true,
-        "byteCount": 975,
-        "summaryExcerpt": "- *Deficits Identified in R3*: Pass R3 validated rate-limiting functions, but overlooked full-table scan overhead on `watch_notifications` history during high-throughput alert evaluations.\n- *SRE Production Falsification*: In `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomi"
+        "byteCount": 879,
+        "summaryExcerpt": "- *Deficits Identified in R3*: Pass R3 verified database rate limits, but omitted analyzing transactional connection churn when 50 worker containers simultaneously run alert matching queries.\n- *SRE Production Falsification*: In `supabase/migrations/20261005010000_release_convergence_and_snapshot_at"
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.533Z",
+        "timestamp": "2026-10-26T10:31:24.123Z",
         "covered": true,
         "byteCount": 214,
         "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic transaction locking via Postgres RLS and `FOR UPDATE SKIP LOCKED` for outbox workers, preventing queue starvation."
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.254Z",
-        "covered": true,
-        "byteCount": 135,
-        "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 135,
-        "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues."
+        "timestamp": "2026-10-26T10:35:33.138Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.087Z",
-        "covered": true,
-        "byteCount": 135,
-        "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues."
+        "timestamp": "2026-10-26T10:36:15.927Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.942Z",
-        "covered": true,
-        "byteCount": 135,
-        "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues."
+        "timestamp": "2026-10-26T10:36:53.254Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
-        "covered": true,
-        "byteCount": 135,
-        "summaryExcerpt": "`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues."
+        "timestamp": "2026-10-26T10:37:30.918Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -263,64 +263,64 @@
     "name": "Provider Drift, Circuit Breakers & Kill Switches",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.774Z",
+        "timestamp": "2026-10-26T10:27:47.371Z",
         "covered": true,
-        "byteCount": 165,
-        "summaryExcerpt": "`supabase/functions/_shared/flight-search.ts` coordinates rate-limited token refreshes via Postgres advisory locks with 3000ms timeout and circuit-breaker telemetry."
+        "byteCount": 100,
+        "summaryExcerpt": "`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters."
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.768Z",
+        "timestamp": "2026-10-26T10:28:29.001Z",
         "covered": true,
-        "byteCount": 699,
-        "summaryExcerpt": "- *Deficits Identified in R1*: Pass R1 relied on static failure count tripwires in `supabase/functions/_shared/flight-search.ts`, assuming uniform upstream failure characteristics.\n- *Empirical Code Evidence*: Upstream GDS / Amadeus gateways frequently suffer transient 100ms TCP connection drops tha"
+        "byteCount": 100,
+        "summaryExcerpt": "`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters."
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.071Z",
+        "timestamp": "2026-10-26T10:29:16.929Z",
         "covered": true,
         "byteCount": 100,
         "summaryExcerpt": "`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters."
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.299Z",
+        "timestamp": "2026-10-26T10:30:00.310Z",
         "covered": true,
-        "byteCount": 222,
-        "summaryExcerpt": "In `supabase/functions/_shared/flight-search.ts`, distributed advisory locks (`pg_try_advisory_xact_lock`) with 3000ms acquisition timeouts prevent connection pool exhaustion during concurrent Amadeus OAuth token renewals."
+        "byteCount": 907,
+        "summaryExcerpt": "- *Deficits Identified in R3*: Pass R3 scheduled token refresh with a static 3000ms timeout, but ignored synchronized thundering herd spikes when an OAuth token expires simultaneously across distributed serverless edge instances.\n- *SRE Production Falsification*: In `supabase/functions/_shared/fligh"
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.533Z",
+        "timestamp": "2026-10-26T10:31:24.123Z",
         "covered": true,
         "byteCount": 238,
         "summaryExcerpt": "In `supabase/functions/_shared/flight-search.ts` and `supabase/functions/_shared/amadeus-provider.ts`, distributed advisory locks (`pg_try_advisory_xact_lock`) guarantee non-blocking token leases and resilient circuit-breaker trip states."
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.254Z",
-        "covered": true,
-        "byteCount": 100,
-        "summaryExcerpt": "`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 100,
-        "summaryExcerpt": "`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters."
+        "timestamp": "2026-10-26T10:35:33.138Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.087Z",
-        "covered": true,
-        "byteCount": 100,
-        "summaryExcerpt": "`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters."
+        "timestamp": "2026-10-26T10:36:15.927Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.942Z",
-        "covered": true,
-        "byteCount": 721,
-        "summaryExcerpt": "- *Deficits Identified in G3*: Pass G3 specified test commands without verifying that tests execute hermetically offline.\n- *Adversarial DAG Falsification*: If tests in `src/app/lib/bookingUrls.test.ts` or `src/domain/farely/priceAnomaly.test.ts` make outbound network socket connections, offline bui"
+        "timestamp": "2026-10-26T10:36:53.254Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
-        "covered": true,
-        "byteCount": 100,
-        "summaryExcerpt": "`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters."
+        "timestamp": "2026-10-26T10:37:30.918Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -328,64 +328,64 @@
     "name": "Freshness, Stale Degradation & UX Honesty",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.774Z",
-        "covered": true,
-        "byteCount": 166,
-        "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` validates client caching boundaries, evicting deals older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`."
-      },
-      "R2": {
-        "timestamp": "2026-10-26T10:13:51.769Z",
+        "timestamp": "2026-10-26T10:27:47.371Z",
         "covered": true,
         "byteCount": 136,
         "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`."
       },
+      "R2": {
+        "timestamp": "2026-10-26T10:28:29.002Z",
+        "covered": true,
+        "byteCount": 8232,
+        "summaryExcerpt": "- *Deficits Identified in R1*: Pass R1 tested 14-day deal eviction, but assumed `localStorage` writes succeed unimpeded.\n- *Empirical Code Evidence*: In iOS Safari Private Browsing mode, `localStorage.setItem` throws `DOMException: QuotaExceededError` immediately when storage quota is set to 0 bytes"
+      },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.071Z",
+        "timestamp": "2026-10-26T10:29:16.929Z",
         "covered": true,
         "byteCount": 136,
         "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`."
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.299Z",
+        "timestamp": "2026-10-26T10:30:00.311Z",
         "covered": true,
-        "byteCount": 858,
-        "summaryExcerpt": "- *Deficits Identified in R3*: Pass R3 checked 14-day deal eviction, but failed to test client-side clock adjustments where device time is set prior to cache creation.\n- *SRE Production Falsification*: In `src/domain/farely/pwaOfflineFreshness.ts`, computing `now - cachedAt` when `now < cachedAt` pr"
+        "byteCount": 223,
+        "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` enforces deterministic lifecycle management for cached flight records, executing automatic eviction when records exceed 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`."
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.534Z",
+        "timestamp": "2026-10-26T10:31:24.123Z",
         "covered": true,
         "byteCount": 232,
         "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` validates that cached deals older than 14 days ($20,160$ minutes) are immediately evicted, while `src/app/pages/DealsPage.tsx` displays transparent status badges (`FRESH`, `WARM`, `STALE`)."
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.254Z",
-        "covered": true,
-        "byteCount": 136,
-        "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 136,
-        "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`."
+        "timestamp": "2026-10-26T10:35:33.138Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.087Z",
-        "covered": true,
-        "byteCount": 136,
-        "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`."
+        "timestamp": "2026-10-26T10:36:15.927Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.942Z",
-        "covered": true,
-        "byteCount": 136,
-        "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`."
+        "timestamp": "2026-10-26T10:36:53.254Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
-        "covered": true,
-        "byteCount": 136,
-        "summaryExcerpt": "`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`."
+        "timestamp": "2026-10-26T10:37:30.918Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -393,64 +393,64 @@
     "name": "Observability, Secret Scrubbing & Error Boundaries",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.774Z",
+        "timestamp": "2026-10-26T10:27:47.371Z",
         "covered": true,
-        "byteCount": 149,
-        "summaryExcerpt": "In `src/app/lib/analytics.ts`, safe error serialization guards against recursion depth overflow (`maxDepth = 3`) and circular references via WeakSet."
+        "byteCount": 126,
+        "summaryExcerpt": "`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking and bounded key extraction."
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.769Z",
+        "timestamp": "2026-10-26T10:28:29.002Z",
         "covered": true,
-        "byteCount": 8205,
-        "summaryExcerpt": "- *Deficits Identified in R1*: Pass R1 implemented recursion depth capping in `src/app/lib/analytics.ts`, but did not audit behavior when `Object.freeze()` is applied to error telemetry payloads.\n- *Empirical Code Evidence*: When telemetry middleware freezes error objects, modifying properties or at"
+        "byteCount": 99,
+        "summaryExcerpt": "`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking."
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.071Z",
+        "timestamp": "2026-10-26T10:29:16.930Z",
         "covered": true,
-        "byteCount": 99,
-        "summaryExcerpt": "`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking."
+        "byteCount": 8336,
+        "summaryExcerpt": "- *Deficits Identified in R2*: Pass R2 specified slicing keys using `Object.keys(value).slice(0, maxKeysPerLevel)`, but did not address array index properties.\n- *Hostile Boundary Attack*: In `src/app/lib/analytics.ts`, when `value` is an array of 100 elements, iterating over `keys` (`\"0\"`, `\"1\"`, ."
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.299Z",
+        "timestamp": "2026-10-26T10:30:00.311Z",
         "covered": true,
-        "byteCount": 8322,
-        "summaryExcerpt": "- *Deficits Identified in R3*: Pass R3 proposed 1000-character string truncation in `safeSerializeError`, but failed to bound the number of object keys traversed per level.\n- *SRE Production Falsification*: In `src/app/lib/analytics.ts`, an error object containing a property with 10,000 array elemen"
+        "byteCount": 8230,
+        "summaryExcerpt": "- *Deficits Identified in R3*: Pass R3 applied key truncation per level, but did not handle deep prototype chains (`Object.getPrototypeOf()`).\n- *SRE Production Falsification*: In `src/app/lib/analytics.ts`, if an error object inherits through 10 prototype levels containing diagnostic methods and pr"
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.534Z",
-        "covered": true,
-        "byteCount": 8307,
-        "summaryExcerpt": "- *Deficits Identified in R4*: Pass R4 proposed injecting `\"[TruncatedKeys]\"` into arrays when element counts exceed the maximum safe threshold.\n- *Empirical Code Evidence*: In `src/app/lib/analytics.ts`, client telemetry pipelines and BigQuery ingestion schemas expect homogeneous array types (e.g.,"
-      },
-      "G1": {
-        "timestamp": "2026-10-26T10:17:36.254Z",
-        "covered": true,
-        "byteCount": 99,
-        "summaryExcerpt": "`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking."
-      },
-      "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 8187,
-        "summaryExcerpt": "- *Deficits Identified in G1*: Pass G1 proposed attaching `_truncatedKeys: true` directly to serialized objects, but this can overwrite an existing telemetry key of the same name.\n- *Adversarial AST Falsification*: In `src/app/lib/analytics.ts`, if an error telemetry payload already tracks a field n"
-      },
-      "G3": {
-        "timestamp": "2026-10-26T10:19:23.087Z",
+        "timestamp": "2026-10-26T10:31:24.123Z",
         "covered": true,
         "byteCount": 8229,
-        "summaryExcerpt": "- *Deficits Identified in G2*: Pass G2 capped keys per level, but omitted asserting whether key limits apply locally per object or globally across all nested objects.\n- *Adversarial Verification Falsification*: In `src/app/lib/analytics.ts`, if an error object contains a top-level property with 10 k"
+        "summaryExcerpt": "- *Deficits Identified in R4*: Pass R4 specified direct array slicing for `maxKeysPerLevel`, but did not assert recursive depth propagation across elements of the sliced array.\n- *Empirical Code Evidence*: In `src/app/lib/analytics.ts`, if an array slice simply returns values without advancing the `"
+      },
+      "G1": {
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
+      },
+      "G2": {
+        "timestamp": "2026-10-26T10:35:33.138Z",
+        "covered": true,
+        "byteCount": 11635,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 recommended array depth propagation, but left `Object.keys(value)` handling arrays as generic dictionary objects.\n- *Empirical Code Evidence*: In `src/app/lib/analytics.ts`, `Object.keys([1, 2, 3])` yields `['0', '1', '2']`. When `maxKeysPerLevel` truncate"
+      },
+      "G3": {
+        "timestamp": "2026-10-26T10:36:15.927Z",
+        "covered": true,
+        "byteCount": 9841,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 verified array element recursion, but did not assert that nested arrays within arrays (e.g. `[[[1, 2, 3]]]`) terminate at `[MaxDepthExceeded]` rather than crashing or infinite looping when encountering recursive array structures.\n- *Empirical Code Evidence"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.943Z",
+        "timestamp": "2026-10-26T10:36:53.254Z",
         "covered": true,
-        "byteCount": 8179,
-        "summaryExcerpt": "- *Deficits Identified in G3*: Pass G3 did not address operating system resource exhaustion when running rapid Vitest worker threads in tandem with native Node runner tasks.\n- *Adversarial DAG Falsification*: Spawning multiple parallel worker child processes on macOS systems with a low default `ulim"
+        "byteCount": 9089,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 isolated array recursion in `safeSerializeError`, but did not order its deployment after domain model updates. If logging in domain tests triggers `safeSerializeError` while it is in an uncommitted dirty state, all subsequent test runs fail with mysterious"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
+        "timestamp": "2026-10-26T10:37:30.918Z",
         "covered": true,
-        "byteCount": 99,
-        "summaryExcerpt": "`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking."
+        "byteCount": 8996,
+        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 separated array iteration from dictionary key mapping, but did not emphasize that arrays themselves must be added to the `seen` WeakSet before traversing elements to prevent cyclic array memory retention.\n- *Empirical Code Evidence*: If an array references"
       }
     }
   },
@@ -458,64 +458,64 @@
     "name": "Database Architecture, Schema Drift & Migration Provenance",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.774Z",
+        "timestamp": "2026-10-26T10:27:47.371Z",
         "covered": true,
-        "byteCount": 146,
-        "summaryExcerpt": "`scripts/migration-parity.node-test.mjs` verifies cryptographic checksums across all 47 canonical migrations, ensuring foreign key index coverage."
+        "byteCount": 110,
+        "summaryExcerpt": "47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`."
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.769Z",
+        "timestamp": "2026-10-26T10:28:29.002Z",
         "covered": true,
         "byteCount": 110,
         "summaryExcerpt": "47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`."
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.071Z",
+        "timestamp": "2026-10-26T10:29:16.930Z",
         "covered": true,
-        "byteCount": 8186,
-        "summaryExcerpt": "- *Deficits Identified in R2*: Pass R2 audited migration checksums, but did not enforce transaction isolation levels during DDL replay.\n- *Hostile Boundary Attack*: In `scripts/migration-parity.node-test.mjs`, applying migrations in non-serial order or concurrent worker threads can fail if trigger f"
+        "byteCount": 110,
+        "summaryExcerpt": "47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`."
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.299Z",
+        "timestamp": "2026-10-26T10:30:00.311Z",
         "covered": true,
-        "byteCount": 203,
-        "summaryExcerpt": "`scripts/migration-parity.node-test.mjs` executes automated SHA-256 integrity audits across all 47 canonical database migrations, verifying that zero untracked DDL schema modifications have been applied."
+        "byteCount": 750,
+        "summaryExcerpt": "- *Deficits Identified in R3*: Pass R3 audited cryptographic migration hashes, but assumed uniform UNIX LF line terminators across all contributor operating systems.\n- *SRE Production Falsification*: In `scripts/migration-parity.node-test.mjs`, if a developer clones the repository on a Windows works"
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.534Z",
+        "timestamp": "2026-10-26T10:31:24.124Z",
         "covered": true,
         "byteCount": 172,
         "summaryExcerpt": "`scripts/migration-parity.node-test.mjs` verifies cryptographic checksums for all 47 canonical migrations, ensuring zero untracked DDL drift and foreign key index coverage."
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.255Z",
-        "covered": true,
-        "byteCount": 110,
-        "summaryExcerpt": "47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 110,
-        "summaryExcerpt": "47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`."
+        "timestamp": "2026-10-26T10:35:33.138Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.087Z",
-        "covered": true,
-        "byteCount": 110,
-        "summaryExcerpt": "47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`."
+        "timestamp": "2026-10-26T10:36:15.927Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.943Z",
-        "covered": true,
-        "byteCount": 110,
-        "summaryExcerpt": "47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`."
+        "timestamp": "2026-10-26T10:36:53.254Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
-        "covered": true,
-        "byteCount": 110,
-        "summaryExcerpt": "47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`."
+        "timestamp": "2026-10-26T10:37:30.918Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -523,64 +523,64 @@
     "name": "Proof Hierarchy & Anti-Self-Certification (C0..C4)",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.774Z",
+        "timestamp": "2026-10-26T10:27:47.372Z",
         "covered": true,
-        "byteCount": 186,
-        "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` tracks certification tiers with zero synthetic 10/10 scores, enforcing strict separation between C1 code tests and C3 deployed runtime proofs."
+        "byteCount": 95,
+        "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications."
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.769Z",
+        "timestamp": "2026-10-26T10:28:29.002Z",
         "covered": true,
         "byteCount": 95,
         "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications."
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.071Z",
+        "timestamp": "2026-10-26T10:29:16.930Z",
         "covered": true,
         "byteCount": 95,
         "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications."
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.300Z",
+        "timestamp": "2026-10-26T10:30:00.311Z",
         "covered": true,
         "byteCount": 185,
         "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` tracks verification tiers with zero synthetic 10/10 scores, enforcing strict separation between C1 code tests and C3 deployed runtime proofs."
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.534Z",
+        "timestamp": "2026-10-26T10:31:24.124Z",
         "covered": true,
         "byteCount": 212,
         "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` and `scripts/verify-certification-integrity.node-test.mjs` enforce that C1 code proofs never masquerade as C3 deployed runtime or C4 longitudinal outcome verifications."
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.255Z",
-        "covered": true,
-        "byteCount": 95,
-        "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 95,
-        "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications."
+        "timestamp": "2026-10-26T10:35:33.138Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.088Z",
-        "covered": true,
-        "byteCount": 95,
-        "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications."
+        "timestamp": "2026-10-26T10:36:15.927Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.943Z",
-        "covered": true,
-        "byteCount": 95,
-        "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications."
+        "timestamp": "2026-10-26T10:36:53.254Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
-        "covered": true,
-        "byteCount": 95,
-        "summaryExcerpt": "`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications."
+        "timestamp": "2026-10-26T10:37:30.918Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -588,64 +588,64 @@
     "name": "Anti-Shrinkage & 267 Historical Gates Traceability",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.774Z",
+        "timestamp": "2026-10-26T10:27:47.372Z",
         "covered": true,
-        "byteCount": 165,
-        "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` and `scripts/convergence/anti-evasion-linter.mjs` safeguard all 267 historical acceptance gates against regression."
+        "byteCount": 104,
+        "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression."
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.769Z",
+        "timestamp": "2026-10-26T10:28:29.002Z",
         "covered": true,
         "byteCount": 104,
         "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression."
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.071Z",
+        "timestamp": "2026-10-26T10:29:16.930Z",
         "covered": true,
         "byteCount": 104,
         "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression."
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.300Z",
+        "timestamp": "2026-10-26T10:30:00.311Z",
         "covered": true,
         "byteCount": 173,
         "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` rigorously asserts all 267 historical acceptance gates across P0, P1, and P2 priority levels, preventing criteria dilution."
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.534Z",
+        "timestamp": "2026-10-26T10:31:24.124Z",
         "covered": true,
         "byteCount": 217,
         "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` and `scripts/convergence/anti-evasion-linter.mjs` safeguard all 267 historical acceptance gates (192 P0, 74 P1, 1 P2) against deletion, demotion, or semantic renaming."
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.255Z",
-        "covered": true,
-        "byteCount": 104,
-        "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 104,
-        "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression."
+        "timestamp": "2026-10-26T10:35:33.139Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.088Z",
-        "covered": true,
-        "byteCount": 104,
-        "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression."
+        "timestamp": "2026-10-26T10:36:15.928Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.943Z",
-        "covered": true,
-        "byteCount": 104,
-        "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression."
+        "timestamp": "2026-10-26T10:36:53.254Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
-        "covered": true,
-        "byteCount": 104,
-        "summaryExcerpt": "`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression."
+        "timestamp": "2026-10-26T10:37:30.918Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -653,64 +653,64 @@
     "name": "Turnkey Execution, Topological DAG & Rollback Runbooks",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.774Z",
+        "timestamp": "2026-10-26T10:27:47.372Z",
         "covered": true,
-        "byteCount": 141,
-        "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` enforces atomic snapshots, pre-task SHA-256 hashes, and deterministic rollback journals."
+        "byteCount": 117,
+        "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback."
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.769Z",
+        "timestamp": "2026-10-26T10:28:29.002Z",
         "covered": true,
         "byteCount": 117,
         "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback."
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.072Z",
+        "timestamp": "2026-10-26T10:29:16.930Z",
         "covered": true,
         "byteCount": 117,
         "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback."
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.300Z",
+        "timestamp": "2026-10-26T10:30:00.311Z",
         "covered": true,
-        "byteCount": 756,
-        "summaryExcerpt": "- *Deficits Identified in R3*: Pass R3 verified transactional file snapshots, but did not handle process termination via uncatchable `SIGKILL` signals.\n- *SRE Production Falsification*: In `scripts/convergence/transactional-task-manager.mjs`, if the execution runtime is forcefully killed, the active"
+        "byteCount": 194,
+        "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` guarantees atomic execution journals, pre-task SHA-256 snapshots, and byte-for-byte rollback capabilities for every engineering modification."
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.534Z",
+        "timestamp": "2026-10-26T10:31:24.124Z",
         "covered": true,
         "byteCount": 168,
         "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` enforces atomic snapshots, pre-task SHA-256 hashes, and deterministic rollback journals across all automated tasks."
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.255Z",
-        "covered": true,
-        "byteCount": 117,
-        "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback."
+        "timestamp": "2026-10-26T10:33:40.687Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 117,
-        "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback."
+        "timestamp": "2026-10-26T10:35:33.139Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.088Z",
-        "covered": true,
-        "byteCount": 117,
-        "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback."
+        "timestamp": "2026-10-26T10:36:15.928Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.943Z",
-        "covered": true,
-        "byteCount": 766,
-        "summaryExcerpt": "- *Deficits Identified in G3*: Pass G3 sequenced tasks WP01, WP02, and WP03 without enforcing independent rollback checkpoints between them.\n- *Adversarial DAG Falsification*: If WP02 encounters an assertion failure while WP01 is already committed, executing a broad rollback could accidentally rever"
+        "timestamp": "2026-10-26T10:36:53.254Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
-        "covered": true,
-        "byteCount": 117,
-        "summaryExcerpt": "`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback."
+        "timestamp": "2026-10-26T10:37:30.918Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -718,64 +718,64 @@
     "name": "Zero-Trust Release & Remote Git Synchronization",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-26T10:13:13.774Z",
+        "timestamp": "2026-10-26T10:27:47.372Z",
         "covered": true,
-        "byteCount": 469,
-        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates fast-forward branch parity with remote GitHub origin branch `antigravity/farely-v12-product-convergence`.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G75`\n- **Pass**: `R1` (Full-Battery Baseline Synthesis)\n- **Status*"
+        "byteCount": 392,
+        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G76`\n- **Pass**: `R1` (Full-Battery Baseline Synthesis)\n- **Status**: Codebase verified at 100% test pass rate across 58 Vitest suit"
       },
       "R2": {
-        "timestamp": "2026-10-26T10:13:51.769Z",
+        "timestamp": "2026-10-26T10:28:29.002Z",
         "covered": true,
         "byteCount": 387,
-        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G75`\n- **Pass**: `R2` (Skeptical Empirical Grounding)\n- **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites"
+        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G76`\n- **Pass**: `R2` (Skeptical Empirical Grounding)\n- **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites"
       },
       "R3": {
-        "timestamp": "2026-10-26T10:14:36.072Z",
+        "timestamp": "2026-10-26T10:29:16.930Z",
         "covered": true,
         "byteCount": 396,
-        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G75`\n- **Pass**: `R3` (Hostile Boundary & Negative Vector Hardening)\n- **Status**: Codebase verified at 100% test pass rate across 5"
+        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G76`\n- **Pass**: `R3` (Hostile Boundary & Negative Vector Hardening)\n- **Status**: Codebase verified at 100% test pass rate across 5"
       },
       "R4": {
-        "timestamp": "2026-10-26T10:15:56.300Z",
+        "timestamp": "2026-10-26T10:30:00.311Z",
         "covered": true,
         "byteCount": 502,
-        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates fast-forward parity against remote branch `antigravity/farely-v12-product-convergence` with matching SHA verified via `git ls-remote`.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G75`\n- **Pass**: `R4` (Production SRE "
+        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates fast-forward parity against remote branch `antigravity/farely-v12-product-convergence` with matching SHA verified via `git ls-remote`.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G76`\n- **Pass**: `R4` (Production SRE "
       },
       "R5": {
-        "timestamp": "2026-10-26T10:16:36.534Z",
+        "timestamp": "2026-10-26T10:31:24.124Z",
         "covered": true,
         "byteCount": 487,
-        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates fast-forward parity against remote branch `antigravity/farely-v12-product-convergence` with matching SHA verified via `git ls-remote`.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G75`\n- **Pass**: `R5` (Sovereign Canon"
+        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates fast-forward parity against remote branch `antigravity/farely-v12-product-convergence` with matching SHA verified via `git ls-remote`.\n\n---\n\n## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS\n- **Cycle**: `G76`\n- **Pass**: `R5` (Sovereign Canon"
       },
       "G1": {
-        "timestamp": "2026-10-26T10:17:36.255Z",
-        "covered": true,
-        "byteCount": 1094,
-        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.\n\n---\n\n## WORK PACKAGE SPECIFICATION FOR CYCLE G75\n\n### WP01-COHORT-SAMPLE-SIZE-CAP (SOL-01)\n- **Target File**: `src/domain/farely/priceAnomaly.ts`\n- **Scope**: Define `MAX_COHORT_ANALYSIS_SIZE = 250` and"
+        "timestamp": "2026-10-26T10:33:40.688Z",
+        "covered": false,
+        "byteCount": 0,
+        "summaryExcerpt": ""
       },
       "G2": {
-        "timestamp": "2026-10-26T10:18:36.261Z",
-        "covered": true,
-        "byteCount": 2608,
-        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.\n\n---\n\n## SECTION E: HOSTILE BEFORE/AFTER AST DIFF BLUEPRINT\n\n### Task 1: `WP01-COHORT-SAMPLE-SIZE-CAP`\n**File**: `src/domain/farely/priceAnomaly.ts`\n```diff\n--- a/src/domain/farely/priceAnomaly.ts\n+++ b/"
+        "timestamp": "2026-10-26T10:35:33.139Z",
+        "covered": false,
+        "byteCount": 0,
+        "summaryExcerpt": ""
       },
       "G3": {
-        "timestamp": "2026-10-26T10:19:23.088Z",
-        "covered": true,
-        "byteCount": 1322,
-        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.\n\n---\n\n## TURNKEY VERIFICATION ORACLES (CYCLE G75)\n\n### Oracle 1: Price Anomaly Historical Cohort Upper Bound Capping\n```bash\nnpx vitest run src/domain/farely/priceAnomaly.test.ts\n```\nExpected output: All"
+        "timestamp": "2026-10-26T10:36:15.928Z",
+        "covered": false,
+        "byteCount": 0,
+        "summaryExcerpt": ""
       },
       "G4": {
-        "timestamp": "2026-10-26T10:20:38.943Z",
-        "covered": true,
-        "byteCount": 1268,
-        "summaryExcerpt": "`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.\n\n---\n\n## TOPOLOGICAL EXECUTION DEPENDENCY DAG (CYCLE G75)\n\n```text\n[STAGE 0: PRE-FLIGHT SNAPSHOT & PID LOCK]\n   │\n   ▼\n[TASK 1: WP01-COHORT-SAMPLE-SIZE-CAP]\n   │   Target: src/domain/farely/priceAnomaly."
+        "timestamp": "2026-10-26T10:36:53.254Z",
+        "covered": false,
+        "byteCount": 0,
+        "summaryExcerpt": ""
       },
       "G5": {
-        "timestamp": "2026-10-26T10:21:22.567Z",
-        "covered": true,
-        "byteCount": 8198,
-        "summaryExcerpt": "- *Deficits Identified in G4*: Pass G4 compared local `HEAD` against `origin/antigravity/farely-v12-product-convergence` via `git ls-remote`, but did not require an explicit `git fetch` before status derivation.\n- *Adversarial Invariant Falsification*: If upstream commits are pushed from an alternat"
+        "timestamp": "2026-10-26T10:37:30.918Z",
+        "covered": false,
+        "byteCount": 0,
+        "summaryExcerpt": ""
       }
     }
   }

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence & Adversarial Closure
 # MANDATE: Synthesize passes R1..R4 into a locked, definitive research foundation with adversarial refutation of R4 across all 12 lenses.
-# GIT_COMMIT: 2d92b0c9a4e10a8550b0731dd52f6d06508807f5
-# TIMESTAMP: 2026-10-26T10:12:43.061Z
-# EXECUTION_RECEIPT_SHA256: 4ea46fc1fe5693531ebdb374317ff5e9e93b244b1863a77c07df9efdd108697c
+# GIT_COMMIT: 6a688e8b0e0f481b9434211775548c87730f00b7
+# TIMESTAMP: 2026-10-26T10:27:12.926Z
+# EXECUTION_RECEIPT_SHA256: e83e2e267226265db841b0f2b567a498a7089c0b8c21ca9b828249bbcf941ea7
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS R4
 
-### Falsification 1: L02 Temporal Inversion in Historical Cohort Truncation
-- *Deficits Identified in R4*: Pass R4 mandated bounding cohort sizes to 250 elements to prevent CPU exhaustion, but suggested a naive tail slice (`prices.slice(-250)`).
-- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, if price observations arrive unordered from multiple crawling nodes, a naive tail slice discards recent peak observations while retaining outdated baseline prices, systematically biasing Median Absolute Deviation calculations.
-- *Correction in R5*: In `src/domain/farely/priceAnomaly.ts`, mandate that cohorts must be filtered for valid positive numbers before statistical evaluation, asserting that bounds protection maintains deterministic sample selection.
+### Falsification 1: L01 Mixed-Case and Punycode Hostname Evasion in Partner URLs
+- *Deficits Identified in R4*: Pass R4 mandated hostname validation, but omitted testing Internationalized Domain Names (IDN Punycode `xn--...`) and mixed-case URL schemes (`https://VietJetAir.com`).
+- *Empirical Code Evidence*: In `src/app/lib/bookingUrls.ts`, if URL parsing does not guarantee lowercasing or if attackers pass Cyrillic homoglyphs (`vietjetаir.com` where 'а' is Cyrillic U+0430), the browser resolves a malicious external host while bypasses naive ASCII comparisons.
+- *Correction in R5*: In `src/app/lib/bookingUrls.ts`, enforce strict ASCII Punycode normalization and lowercase domain canonicalization before verifying membership in `APPROVED_BOOKING_DOMAINS`.
 
-### Falsification 2: L01 Domain Regex Anchor Vulnerabilities in Outbound Partner URLs
-- *Deficits Identified in R4*: Pass R4 called for partner hostname whitelisting in `src/app/lib/bookingUrls.ts`, but did not specify strict URL origin parsing semantics.
-- *Empirical Code Evidence*: Using loose regular expressions like `/vietjetair\.com/` matches malicious origins such as `https://vietjetair.com.phishing.io` or `https://attacker-vietjetair.com`. Attackers crafting malicious redirect payloads can exploit loose pattern matching to hijack outbound referral links.
-- *Correction in R5*: In `src/app/lib/bookingUrls.ts`, parse outbound URLs using standard `new URL(url).hostname` and match strictly against a sealed Set of exact canonical domains (`vietjetair.com`, `bambooairways.com`, `vietnamairlines.com`, `vietravelairlines.com`).
+### Falsification 2: L03 Fractional Passenger Quantities in Domestic Surcharges
+- *Deficits Identified in R4*: Pass R4 scaled baggage surcharges by flight leg counts, but overlooked fractional passenger quantities from dirty scraper data (e.g. `passengers: 1.5`).
+- *Empirical Code Evidence*: In `src/domain/farely/tripBudgetEstimator.ts`, multiplying 350,000 VND by 1.5 produces 525,000 VND, breaking whole-integer currency invariants in Vietnamese Dong (VND does not have fractional decimal currency units).
+- *Correction in R5*: In `src/domain/farely/tripBudgetEstimator.ts`, apply `Math.floor(Math.max(1, passengers))` and `Math.round()` to guarantee strictly integral currency representations across all surcharge outputs.
 
-### Falsification 3: L07 Heterogeneous Array Contamination During Serialization Capping
-- *Deficits Identified in R4*: Pass R4 proposed injecting `"[TruncatedKeys]"` into arrays when element counts exceed the maximum safe threshold.
-- *Empirical Code Evidence*: In `src/app/lib/analytics.ts`, client telemetry pipelines and BigQuery ingestion schemas expect homogeneous array types (e.g., array of numeric latency timestamps). Injecting a string marker into an array of integers causes downstream JSON schema validation to fail with `SchemaViolationException`.
-- *Correction in R5*: In `src/app/lib/analytics.ts`, truncate arrays cleanly via `Array.prototype.slice(0, maxElements)` and attach a top-level metadata property `_truncated: true` rather than poisoning typed array values.
+### Falsification 3: L07 Recursive Depth Preservation During Array Slice Iteration
+- *Deficits Identified in R4*: Pass R4 specified direct array slicing for `maxKeysPerLevel`, but did not assert recursive depth propagation across elements of the sliced array.
+- *Empirical Code Evidence*: In `src/app/lib/analytics.ts`, if an array slice simply returns values without advancing the `depth + 1` recursion counter, child objects inside the array bypass `maxDepth = 3` truncation, allowing nested payload memory leaks.
+- *Correction in R5*: In `src/app/lib/analytics.ts`, ensure that every element of a sliced array is recursively transformed via `replacer.call(out, String(index), element, depth + 1)`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G75 CANONICAL SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G76 CANONICAL SEALED)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -113,7 +113,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G75 SOVEREIGN SYNTHESIS)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G76 SOVEREIGN SYNTHESIS)
 
 ### L01: Product Truth & Founder Scope Integrity
 `src/domain/farely/providerRights.ts` enforces immutable non-OTA intelligence boundaries, eliminating all checkout transactions.
@@ -154,7 +154,7 @@ In `src/app/lib/analytics.ts`, safe error serialization guards against circular 
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- **Cycle**: `G75`
+- **Cycle**: `G76`
 - **Pass**: `R5` (Sovereign Canonical Convergence)
 - **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites and 382 native node tests.
 - **Handoff Target**: Master Goal Compiler G11 (Passes G1..G5).

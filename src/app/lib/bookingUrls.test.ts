@@ -57,5 +57,14 @@ describe("booking URL builders", () => {
     expect(isSafeOutboundBookingUrl("https://evilvietjetair.com/search")).toBe(false);
     expect(isSafeOutboundBookingUrl("https://vietjetair.com.attacker.com/steal")).toBe(false);
     expect(isSafeOutboundBookingUrl("")).toBe(false);
+
+    // Credentials / Userinfo evasion
+    expect(isSafeOutboundBookingUrl("https://admin:pass@vietjetair.com/flight")).toBe(false);
+    expect(isSafeOutboundBookingUrl("https://user@vietnamairlines.com/search")).toBe(false);
+
+    // Port tampering
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com:8443/flight")).toBe(false);
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com:443/flight")).toBe(true);
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com/flight")).toBe(true);
   });
 });

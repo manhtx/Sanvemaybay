@@ -3,6 +3,7 @@ import {
   estimateTotalTripCost,
   calculateLandedFlightCost,
   estimateRoundTripBaggageCost,
+  calculateCarrierLandedSurcharges,
 } from "./tripBudgetEstimator";
 
 describe("Trip Budget Estimator (F46)", () => {
@@ -84,6 +85,19 @@ describe("Trip Budget Estimator (F46)", () => {
       });
       // 1,000,000 + 350,000 + 55,000 = 1,405,000 VND
       expect(landedVJ).toBe(1_405_000);
+    });
+
+    it("sanitizes passenger and leg quantities in calculateCarrierLandedSurcharges", () => {
+      const surcharges = calculateCarrierLandedSurcharges("VJ", 2.8, 2);
+      expect(surcharges.baggageFee).toBe(350_000 * 2 * 2);
+      expect(surcharges.ticketingFee).toBe(55_000 * 2 * 2);
+
+      const fallback = calculateCarrierLandedSurcharges("VJ", NaN, -1);
+      expect(fallback.baggageFee).toBe(350_000 * 1 * 1);
+      expect(fallback.ticketingFee).toBe(55_000 * 1 * 1);
+
+      const roundTripSafe = estimateRoundTripBaggageCost("VJ", -3);
+      expect(roundTripSafe).toBe(350_000 * 1 * 2);
     });
   });
 });

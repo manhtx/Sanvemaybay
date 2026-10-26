@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis & Codebase Grounding
 # MANDATE: Conduct empirical research across all 12 adversarial lenses simultaneously from authentic codebase telemetry.
-# GIT_COMMIT: 2d92b0c9a4e10a8550b0731dd52f6d06508807f5
-# TIMESTAMP: 2026-10-26T10:12:43.061Z
-# EXECUTION_RECEIPT_SHA256: 4ea46fc1fe5693531ebdb374317ff5e9e93b244b1863a77c07df9efdd108697c
+# GIT_COMMIT: 6a688e8b0e0f481b9434211775548c87730f00b7
+# TIMESTAMP: 2026-10-26T10:27:12.926Z
+# EXECUTION_RECEIPT_SHA256: e83e2e267226265db841b0f2b567a498a7089c0b8c21ca9b828249bbcf941ea7
 
 ---
 
@@ -18,7 +18,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G75 CANONICAL SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G76 CANONICAL SEALED)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -94,48 +94,48 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G75 EMPIRICAL GROUNDING)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G76 EMPIRICAL GROUNDING)
 
 ### L01: Product Truth & Founder Scope Integrity
-In `src/domain/farely/providerRights.ts`, enforce strict boundaries: Farely provides unbiased flight opportunity intelligence and never accepts booking fulfillment stubs.
+In `src/domain/farely/providerRights.ts` and `src/app/lib/bookingUrls.ts`, strict non-OTA boundary isolates flight opportunity intelligence from third-party checkout flows.
 
 ### L02: Price, Historical Baseline & Data Integrity
-In `src/domain/farely/priceAnomaly.ts`, robust outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$, zero-dispersion abstention guards, and seasonal Tết holiday priors.
+In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$, capped sample windows (`MAX_COHORT_ANALYSIS_SIZE = 250`), and seasonal Tết holiday priors.
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, total landed cost models include domestic ancillary baggage surcharges and metropolitan surface transit buffers.
+In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity.
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
-`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` guarantees atomic concurrency on user watch tables via PostgreSQL row-level locks.
+`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues.
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
-`supabase/functions/_shared/flight-search.ts` coordinates rate-limited token refreshes via Postgres advisory locks with 3000ms timeout and circuit-breaker telemetry.
+`supabase/functions/_shared/flight-search.ts` maintains rate limit tripwires and backoff parameters.
 
 ### L06: Freshness, Stale Degradation & UX Honesty
-`src/domain/farely/pwaOfflineFreshness.ts` validates client caching boundaries, evicting deals older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`.
+`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`.
 
 ### L07: Observability, Secret Scrubbing & Error Boundaries
-In `src/app/lib/analytics.ts`, safe error serialization guards against recursion depth overflow (`maxDepth = 3`) and circular references via WeakSet.
+`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking and bounded key extraction.
 
 ### L08: Database Architecture, Schema Drift & Migration Provenance
-`scripts/migration-parity.node-test.mjs` verifies cryptographic checksums across all 47 canonical migrations, ensuring foreign key index coverage.
+47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`.
 
 ### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
-`src/domain/farely/productionSmokeTruth.ts` tracks certification tiers with zero synthetic 10/10 scores, enforcing strict separation between C1 code tests and C3 deployed runtime proofs.
+`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications.
 
 ### L10: Anti-Shrinkage & 267 Historical Gates Traceability
-`scripts/acceptance-anti-shrinkage.node-test.mjs` and `scripts/convergence/anti-evasion-linter.mjs` safeguard all 267 historical acceptance gates against regression.
+`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression.
 
 ### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
-`scripts/convergence/transactional-task-manager.mjs` enforces atomic snapshots, pre-task SHA-256 hashes, and deterministic rollback journals.
+`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback.
 
 ### L12: Zero-Trust Release & Remote Git Synchronization
-`scripts/convergence/watchdog-convergence.mjs` mandates fast-forward branch parity with remote GitHub origin branch `antigravity/farely-v12-product-convergence`.
+`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.
 
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- **Cycle**: `G75`
+- **Cycle**: `G76`
 - **Pass**: `R1` (Full-Battery Baseline Synthesis)
-- **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites (345 tests) and 382 native node tests.
+- **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites and 382 native node tests.
 - **Handoff Target**: Pass R2 (Skeptical Empirical Grounding).

@@ -99,7 +99,26 @@ export function estimateRoundTripBaggageCost(airlineCode: string, checkedBags: n
   const code = (airlineCode || "").toUpperCase();
   const surcharges = DOMESTIC_ANCILLARY_SURCHARGES[code];
   if (!surcharges) return 0;
-  return Math.round(surcharges.baggage20kg * checkedBags * 2);
+  const safeBags = Math.floor(Math.max(1, Number.isFinite(checkedBags) ? checkedBags : 1));
+  return Math.round(surcharges.baggage20kg * safeBags * 2);
+}
+
+/**
+ * Calculates carrier landed surcharges scaled by integer passenger and leg quantities.
+ */
+export function calculateCarrierLandedSurcharges(
+  airlineCode: string,
+  passengers: number = 1,
+  flightLegs: number = 1
+): { baggageFee: number; ticketingFee: number } {
+  const safePassengers = Math.floor(Math.max(1, Number.isFinite(passengers) ? passengers : 1));
+  const safeLegs = Math.floor(Math.max(1, Number.isFinite(flightLegs) ? flightLegs : 1));
+  const code = (airlineCode || "").toUpperCase();
+  const surcharges = DOMESTIC_ANCILLARY_SURCHARGES[code] || { baggage20kg: 0, fee: 0 };
+  return {
+    baggageFee: Math.round(surcharges.baggage20kg * safePassengers * safeLegs),
+    ticketingFee: Math.round(surcharges.fee * safePassengers * safeLegs),
+  };
 }
 
 

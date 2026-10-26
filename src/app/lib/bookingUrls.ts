@@ -46,6 +46,10 @@ export function isSafeOutboundBookingUrl(urlStr: string): boolean {
   try {
     const parsed = new URL(urlStr);
     if (parsed.protocol !== "https:") return false;
+    // Reject embedded credentials (userinfo) in outbound URLs
+    if (parsed.username || parsed.password) return false;
+    // Disallow non-standard ports (must be default HTTPS port 443 or empty)
+    if (parsed.port && parsed.port !== "443") return false;
     const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
     return Array.from(APPROVED_BOOKING_DOMAINS).some(
       (domain) => hostname === domain || hostname.endsWith("." + domain)

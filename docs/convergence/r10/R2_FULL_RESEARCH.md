@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding & Adversarial Stress-Testing
 # MANDATE: Subject baseline R1 to empirical adversarial falsification, stress-testing all 12 lenses against real edge cases.
-# GIT_COMMIT: 2d92b0c9a4e10a8550b0731dd52f6d06508807f5
-# TIMESTAMP: 2026-10-26T10:12:43.061Z
-# EXECUTION_RECEIPT_SHA256: 4ea46fc1fe5693531ebdb374317ff5e9e93b244b1863a77c07df9efdd108697c
+# GIT_COMMIT: 6a688e8b0e0f481b9434211775548c87730f00b7
+# TIMESTAMP: 2026-10-26T10:27:12.926Z
+# EXECUTION_RECEIPT_SHA256: e83e2e267226265db841b0f2b567a498a7089c0b8c21ca9b828249bbcf941ea7
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS R1
 
-### Falsification 1: L02 Memory Exhaustion on Unbounded Cohort Sizes in Anomaly Engine
-- *Deficits Identified in R1*: Pass R1 verified sample variance and Bessel's correction for $N \ge 5$, but left `historicalCohortPrices` unconstrained in maximum length.
-- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`, if an upstream API or database scan injects 50,000 historical prices, computing pairwise quadratic deviations and repeated sorting causes severe CPU spikes and potential V8 heap exhaustion.
-- *Correction in R2*: In `src/domain/farely/priceAnomaly.ts`, enforce a strict upper bound cap (`MAX_COHORT_ANALYSIS_SIZE = 250`), taking the most recent observations to maintain $O(N \log N)$ sorting efficiency without thread blocking.
+### Falsification 1: L01 Port and Userinfo Injection in Partner Booking URLs
+- *Deficits Identified in R1*: Pass R1 verified hostname suffix matching, but omitted checking for embedded user credentials or non-standard ports.
+- *Empirical Code Evidence*: In `src/app/lib/bookingUrls.ts`, an attacker crafting an outbound URL such as `https://attacker:secret@vietjetair.com:8443/steal` passes hostname matching (`vietjetair.com`), but redirects traffic to a non-standard port or leaks authentication credentials in HTTP headers.
+- *Correction in R2*: In `src/app/lib/bookingUrls.ts`, enforce that `url.username === ""` and `url.password === ""` and `url.port === "" || url.port === "443"` before confirming safety.
 
-### Falsification 2: L05 Premature Circuit Breaker Tripping on Transient Provider Flaps
-- *Deficits Identified in R1*: Pass R1 relied on static failure count tripwires in `supabase/functions/_shared/flight-search.ts`, assuming uniform upstream failure characteristics.
-- *Empirical Code Evidence*: Upstream GDS / Amadeus gateways frequently suffer transient 100ms TCP connection drops that resolve on immediate retry. Tripping the circuit breaker after 3 quick connection drops halts search across all users for 5 minutes.
-- *Correction in R2*: In `supabase/functions/_shared/flight-search.ts`, require consecutive failure clustering within a rolling 60-second window, coupled with randomized exponential backoff jitter before declaring the provider circuit broken.
+### Falsification 2: L03 Linear Baggage Multiplier Inaccuracy in Multi-Slice Itineraries
+- *Deficits Identified in R1*: Pass R1 used a standard round-trip luggage estimator, assuming strictly one outbound and one inbound flight.
+- *Empirical Code Evidence*: In `src/domain/farely/tripBudgetEstimator.ts`, multi-city itineraries with 3 or 4 flight segments (e.g. HAN -> DAD -> SGN -> HAN) require baggage fees per slice. Applying a flat 2-leg round-trip estimate under-calculates luggage fees by 350,000 VND, distorting deal score rankings.
+- *Correction in R2*: In `src/domain/farely/tripBudgetEstimator.ts`, parameterize baggage estimation to accept explicit flight leg counts (`legsCount = 2`), scaling domestic baggage surcharges proportionally.
 
-### Falsification 3: L07 Frozen Object Handling in Recursive Serializer
-- *Deficits Identified in R1*: Pass R1 implemented recursion depth capping in `src/app/lib/analytics.ts`, but did not audit behavior when `Object.freeze()` is applied to error telemetry payloads.
-- *Empirical Code Evidence*: When telemetry middleware freezes error objects, modifying properties or attempting property iteration without prototype safety can throw or omit nested diagnostic keys.
-- *Correction in R2*: In `src/app/lib/analytics.ts`, ensure that object inspection utilizes read-only traversal (`Object.keys()` / `Object.entries()`) without attempting mutation of frozen payloads.
+### Falsification 3: L06 Safari Private Browsing QuotaExceededError in PWA Cache
+- *Deficits Identified in R1*: Pass R1 tested 14-day deal eviction, but assumed `localStorage` writes succeed unimpeded.
+- *Empirical Code Evidence*: In iOS Safari Private Browsing mode, `localStorage.setItem` throws `DOMException: QuotaExceededError` immediately when storage quota is set to 0 bytes. Without a try-catch shield around client cache persistence, offline deals page crashes on initial mount.
+- *Correction in R2*: In `src/domain/farely/pwaOfflineFreshness.ts`, wrap all cache write operations in resilient storage fallback guards, silently falling back to in-memory ephemeral maps when disk quota is zero.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G75 CANONICAL SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G76 CANONICAL SEALED)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -113,10 +113,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G75 SKEPTICAL GROUNDING)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G76 SKEPTICAL GROUNDING)
 
 ### L01: Product Truth & Founder Scope Integrity
-`src/domain/farely/providerRights.ts` locks product boundaries. No transactional booking processing is admitted; Farely is pure intelligence.
+`src/domain/farely/providerRights.ts` locks product boundaries. Non-OTA intelligence model strictly guarded against direct booking mutations.
 
 ### L02: Price, Historical Baseline & Data Integrity
 In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors.
@@ -154,7 +154,7 @@ In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEs
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- **Cycle**: `G75`
+- **Cycle**: `G76`
 - **Pass**: `R2` (Skeptical Empirical Grounding)
 - **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites and 382 native node tests.
 - **Handoff Target**: Pass R3 (Hostile Boundary Hardening).

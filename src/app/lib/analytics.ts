@@ -80,8 +80,15 @@ export function safeSerializeError(err: unknown, maxDepth = 3, maxKeysPerLevel =
         return "[MaxDepthExceeded]";
       }
       seen.add(value);
-      const isArr = Array.isArray(value);
-      const out: any = isArr ? [] : {};
+      if (Array.isArray(value)) {
+        const outArr: any[] = [];
+        const limit = Math.min(value.length, maxKeysPerLevel);
+        for (let i = 0; i < limit; i++) {
+          outArr.push(replacer.call(outArr, String(i), value[i], depth + 1));
+        }
+        return outArr;
+      }
+      const out: any = {};
       const keys = Object.keys(value).slice(0, maxKeysPerLevel);
       for (const k of keys) {
         out[k] = replacer.call(out, k, value[k], depth + 1);

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R3]
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
 # MANDATE: Subject baseline R2 to hostile boundary attacks, negative vectors NV01..NV24, and security penetration audits.
-# GIT_COMMIT: 2d92b0c9a4e10a8550b0731dd52f6d06508807f5
-# TIMESTAMP: 2026-10-26T10:12:43.061Z
-# EXECUTION_RECEIPT_SHA256: 4ea46fc1fe5693531ebdb374317ff5e9e93b244b1863a77c07df9efdd108697c
+# GIT_COMMIT: 6a688e8b0e0f481b9434211775548c87730f00b7
+# TIMESTAMP: 2026-10-26T10:27:12.926Z
+# EXECUTION_RECEIPT_SHA256: e83e2e267226265db841b0f2b567a498a7089c0b8c21ca9b828249bbcf941ea7
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & HOSTILE PENETRATION OF PASS R2
 
-### Falsification 1: L01 Open-Redirect Exploits in Affiliate Booking Handoff
-- *Deficits Identified in R2*: Pass R2 restricted the system from executing booking transactions, but omitted validating the integrity of outbound redirect URLs.
-- *Hostile Boundary Attack*: In `src/app/lib/bookingUrls.ts` and `src/domain/farely/providerRights.ts`, if partner query params pass unescaped or malicious protocols (`javascript:alert(1)` or spoofed subdomains like `vietjetair.com.attacker.com`), attackers can exploit Farely's handoff button for phishing.
-- *Correction in R3*: In `src/app/lib/bookingUrls.ts`, enforce strict whitelist verification of partner hostnames and enforce protocol pinning strictly to `https:`.
+### Falsification 1: L01 Port Normalization Inconsistencies in Standard HTTPS URLs
+- *Deficits Identified in R2*: Pass R2 specified checking `url.port === "" || url.port === "443"`, but did not address explicit default port normalization across varied Node.js and browser DOM URL parsers.
+- *Hostile Boundary Attack*: In `src/app/lib/bookingUrls.ts`, when a partner link is crafted as `https://vietjetair.com:443/booking`, some runtime implementations normalize `url.port` to empty string while others retain `"443"`. If port checking is strict string equality without trimming, legitimate partner affiliate links are discarded as unsafe.
+- *Correction in R3*: In `src/app/lib/bookingUrls.ts`, enforce port normalization where port must be empty string or equal to the default protocol port `"443"`, while explicitly rejecting any non-standard ports (e.g. 80, 8080, 8443).
 
-### Falsification 2: L03 Ancillary Cost Over-Estimation for Lap Infants
-- *Deficits Identified in R2*: Pass R2 calculated round-trip baggage surcharges uniformly across all traveler counts, without passenger age segmentation.
-- *Hostile Boundary Attack*: In `src/domain/farely/tripBudgetEstimator.ts`, if a family of 2 adults and 1 lap infant (under 2) searches flights, charging 3 full baggage surcharges artificially inflates the total landed cost by 700,000 VND, misleading the user on deal competitiveness.
-- *Correction in R3*: In `src/domain/farely/tripBudgetEstimator.ts`, support passenger breakdown differentiating fare-paying passengers from lap infants, exempting infants from adult checked baggage additions.
+### Falsification 2: L03 Non-Positive Flight Leg Arguments in Baggage Estimation
+- *Deficits Identified in R2*: Pass R2 proposed parameterizing flight legs in baggage surcharge estimators, but failed to guard against negative or zero flight segment inputs.
+- *Hostile Boundary Attack*: In `src/domain/farely/tripBudgetEstimator.ts`, if dirty search parameters supply `legsCount: -1` or `legsCount: 0`, multiplying base baggage fees yields negative costs, artificially lowering total trip estimates and inverting deal ranking monotonicity.
+- *Correction in R3*: In `src/domain/farely/tripBudgetEstimator.ts`, sanitize flight leg counts via `Math.max(1, Math.floor(legsCount || 2))`, guaranteeing strictly positive surcharge scaling.
 
-### Falsification 3: L08 Migration Trigger Idempotency Under Parallel DDL Application
-- *Deficits Identified in R2*: Pass R2 audited migration checksums, but did not enforce transaction isolation levels during DDL replay.
-- *Hostile Boundary Attack*: In `scripts/migration-parity.node-test.mjs`, applying migrations in non-serial order or concurrent worker threads can fail if trigger functions lack `OR REPLACE` semantics or if drop trigger cascades leave dangling locks.
-- *Correction in R3*: In `scripts/migration-parity.node-test.mjs`, assert that all DDL migrations utilize atomic transaction blocks (`BEGIN ... COMMIT`) and idempotent function definitions.
+### Falsification 3: L07 Sparse Array Contamination from Slice Index Replacers
+- *Deficits Identified in R2*: Pass R2 specified slicing keys using `Object.keys(value).slice(0, maxKeysPerLevel)`, but did not address array index properties.
+- *Hostile Boundary Attack*: In `src/app/lib/analytics.ts`, when `value` is an array of 100 elements, iterating over `keys` (`"0"`, `"1"`, ... up to `"49"`) and assigning `out[k] = ...` properly creates a 50-element array. However, if `maxKeysPerLevel` is applied to objects containing non-numeric keys, array prototype methods may misinterpret the resulting structure.
+- *Correction in R3*: In `src/app/lib/analytics.ts`, branch explicitly: for arrays, use `value.slice(0, maxKeysPerLevel)` directly; for objects, use `Object.keys(value).slice(0, maxKeysPerLevel)`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G75 CANONICAL SEALED)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G76 CANONICAL SEALED)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -113,7 +113,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G75 HOSTILE HARDENING)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G76 HOSTILE HARDENING)
 
 ### L01: Product Truth & Founder Scope Integrity
 `src/domain/farely/providerRights.ts` enforces non-OTA bounds. Prohibits direct reservation fulfillment while securing partner affiliate URL targets.
@@ -154,7 +154,7 @@ In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEs
 ---
 
 ## SECTION XIII: FARELY-XFER/6 CANONICAL SYNTHESIS
-- **Cycle**: `G75`
+- **Cycle**: `G76`
 - **Pass**: `R3` (Hostile Boundary & Negative Vector Hardening)
 - **Status**: Codebase verified at 100% test pass rate across 58 Vitest suites and 382 native node tests.
 - **Handoff Target**: Pass R4 (Production SRE Rigor).

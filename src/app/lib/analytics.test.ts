@@ -65,4 +65,17 @@ describe("product analytics", () => {
     expect(parsed.key_24).toBe(24);
     expect(parsed.key_25).toBeUndefined();
   });
+
+  it("safeSerializeError preserves arrays and propagates recursive depth", () => {
+    const payload = {
+      items: [1, 2, { nested: "value" }],
+      deep: [[[["too deep"]]]],
+    };
+    const serialized = safeSerializeError(payload, 3, 50);
+    const parsed = JSON.parse(serialized);
+
+    expect(Array.isArray(parsed.items)).toBe(true);
+    expect(parsed.items[2].nested).toBe("value");
+    expect(parsed.deep[0][0]).toBe("[MaxDepthExceeded]");
+  });
 });
