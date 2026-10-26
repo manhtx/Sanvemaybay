@@ -362,6 +362,23 @@ export function completeGoal(cycleId) {
     throw new Error(`[GOAL_COMPLETION_REJECTED] Missing CURRENT_EXECUTION_RECEIPT.json. You must run generate-execution-receipt.mjs with passing tests before completion.`);
   }
 
+  // 3b. Anti-Skipping Invariant: Verify that at least one concrete engineering task was executed
+  const JOURNAL_FILE = path.join(STATE_DIR, 'transaction_journal.json');
+  if (fs.existsSync(JOURNAL_FILE)) {
+    try {
+      const journal = JSON.parse(fs.readFileSync(JOURNAL_FILE, 'utf8'));
+      const executedInCycle = (journal.history || []).filter(tx => 
+        tx.cycleId === (cycleId || state.cycleId) || 
+        (tx.committed_at && (Date.now() - new Date(tx.committed_at).getTime()) < 3600000)
+      );
+      if (executedInCycle.length === 0 && !process.env.FORCE_SKIP_TASK_CHECK) {
+        throw new Error(`[GOAL_COMPLETION_REJECTED] Anti-Skipping Invariant violated: No engineering tasks were executed for cycle ${cycleId || state.cycleId}! You cannot mark a goal completed without executing tasks from LATEST_MASTER_GOAL_PROMPT.md.`);
+      }
+    } catch (e) {
+      if (e.message.includes('Anti-Skipping Invariant')) throw e;
+    }
+  }
+
   // 4. Advance state
   const state = loadState();
   const currentGoalId = cycleId || state.cycleId || 'G52';

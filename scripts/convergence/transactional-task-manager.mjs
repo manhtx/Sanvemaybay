@@ -57,8 +57,17 @@ export function beginTask(taskId, targetFiles = []) {
     }
   }
 
+  let currentCycle = 'UNKNOWN';
+  const STATE_FILE = path.join(ROOT_DIR, 'docs/convergence/state/loop_state.json');
+  if (fs.existsSync(STATE_FILE)) {
+    try {
+      currentCycle = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')).cycleId || 'UNKNOWN';
+    } catch {}
+  }
+
   journal.active_transaction = {
     task_id: taskId,
+    cycleId: currentCycle,
     started_at: new Date().toISOString(),
     status: 'IN_PROGRESS',
     target_files: targetFiles,

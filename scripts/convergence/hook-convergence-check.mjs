@@ -189,11 +189,26 @@ if (state.status === 'EXECUTING_GOAL') {
     process.exit(0);
   }
 
+  // Check if at least one task was actually executed for current goal
+  const executedInCycle = (journal.history || []).filter(tx => 
+    tx.cycleId === state.cycleId || 
+    (tx.committed_at && (Date.now() - new Date(tx.committed_at).getTime()) < 3600000)
+  );
+
+  if (executedInCycle.length === 0) {
+    // Tasks have NOT been executed yet! DO NOT SKIP OR JUMP!
+    console.log(JSON.stringify({
+      decision: 'continue',
+      reason: `[PERPETUAL ENGINE - YÊU CẦU THỰC THI TASK] Goal [${state.cycleId || 'ACTIVE'}] có prompt nhưng CHƯA THỰC THI TASK NÀO! Tuyệt đối CẤM nhảy cóc. Lập tức đọc LATEST_MASTER_GOAL_PROMPT.md, khởi động transactional-task-manager.mjs beginTask, và thực thi các task sửa code trong dự án!`
+    }));
+    process.exit(0);
+  }
+
   try {
     const completion = completeGoal(state.cycleId);
     console.log(JSON.stringify({
       decision: 'continue',
-      reason: `[PERPETUAL ENGINE - CHUYỂN GIAO CHU KỲ VĨNH CỬU] Goal [${completion.completedCycle}] đã hoàn thành và verified Git remote. Lập tức tự động kích hoạt Chu trình Hội tụ 5x5: Pass R1 Research R10 cho chu kỳ tiếp theo [${completion.nextCycleId}]!`
+      reason: `[PERPETUAL ENGINE - CHUYỂN GIAO CHU KỲ VĨNH CỬU] Goal [${completion.completedCycle}] đã hoàn thành tất cả task và verified Git remote. Lập tức tự động kích hoạt Chu trình Hội tụ 5x5: Pass R1 Research R10 cho chu kỳ tiếp theo [${completion.nextCycleId}]!`
     }));
     process.exit(0);
   } catch (err) {
