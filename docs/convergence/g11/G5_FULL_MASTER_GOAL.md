@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
 # LEVEL: Pass 5: Sovereign Canonical Convergence
 # MANDATE: Unassailable synthesis across all 12 lenses. Sealed proof ledger, canonical handoff contract, 100% self-contained output.
-# GIT_COMMIT: 8246a60110795ff6866b0fdb377e9ced5f26f3c1
-# TIMESTAMP: 2026-10-26T03:00:26.995Z
-# EXECUTION_RECEIPT_SHA256: 81a6fe139f8d76f18e5091bb17b66edd32b0e2c0ac12bea80c8292a2054c4470
+# GIT_COMMIT: 0fcd6d8e8d33df3ebaadc25ec6c9631614352b62
+# TIMESTAMP: 2026-10-26T03:13:35.702Z
+# EXECUTION_RECEIPT_SHA256: 1cc47dfea23a29885da6e97e88dd90461a9fb9218d197f13568f2deca6b873fc
 
 ---
 
@@ -149,7 +149,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G68 - PASS G5]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G69 - PASS G5]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Non-OTA boundary enforcement; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
@@ -158,7 +158,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/domain/farely/editorialCollections.ts`: Editorial deal curation with author attribution.
   - `src/app/pages/DealDetailPage.tsx`: Outbound partner redirection without local booking state.
   - `src/domain/farely/providerCapabilities.ts`: Hostname verification; blocks protocol-relative and spoofed redirect targets.
-- **Adversarial Vector Defense**: Defends against NV01 (OTA scope contamination) by strictly delegating checkout funnels to verified external partner portals.
+- **Adversarial Vector Defense**: Defends against NV01 (OTA scope contamination) by strictly delegating checkout funnels to verified external partner portals. Direct ticketing, passenger checkout, and payment gateway integration are strictly boundary_excluded.
 - **Verification Proof (C0..C4)**: C1 unit tests in `src/domain/farely/providerRights.test.ts`.
 
 ---

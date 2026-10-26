@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 8246a60110795ff6866b0fdb377e9ced5f26f3c1
-# TIMESTAMP: 2026-10-26T02:55:35.632Z
-# EXECUTION_RECEIPT_SHA256: f0b1996aea929c8fb4b5fe970ffcf9e78bd015e15d360d6f4b955b95fa42d997
+# GIT_COMMIT: 0fcd6d8e8d33df3ebaadc25ec6c9631614352b62
+# TIMESTAMP: 2026-10-26T03:09:06.335Z
+# EXECUTION_RECEIPT_SHA256: 3ff852248f07a1c7048fbb498141ed2213174ec4fb91fe668b06819b522180e5
 
 ---
 
@@ -105,7 +105,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G68 - PASS G1]
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX [CYCLE G69 - PASS G1]
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Non-OTA boundary enforcement; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26. Direct ticketing, passenger checkout, and payment gateway integration remain strictly boundary_excluded.
@@ -113,7 +113,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
   - `src/domain/farely/providerRights.ts`: Restricts public scrape usage to metadata comparison. Direct ticketing, passenger checkout, and payment gateway integration are classified as `boundary_excluded`.
   - `src/domain/farely/directAffiliateComparison.ts`: Outbound partner redirection without local booking state.
   - `src/domain/farely/providerCapabilities.ts`: Hostname verification; blocks protocol-relative and spoofed redirect targets.
-- **Adversarial Vector Defense**: Defends against NV01 (OTA scope contamination) by strictly delegating checkout funnels to verified external partner portals.
+- **Adversarial Vector Defense**: Defends against NV01 (OTA scope contamination) by strictly delegating checkout funnels to verified external partner portals. Direct ticketing, passenger checkout, and payment gateway integration are strictly boundary_excluded.
 - **Verification Proof (C0..C4)**: C1 unit tests in `src/domain/farely/providerRights.test.ts`.
 
 ---
