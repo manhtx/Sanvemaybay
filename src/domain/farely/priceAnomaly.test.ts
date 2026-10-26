@@ -3,6 +3,7 @@ import {
   detectPriceAnomaly,
   calculateSampleStandardDeviation,
   hasZeroDispersion,
+  MAX_COHORT_ANALYSIS_SIZE,
 } from "./priceAnomaly";
 
 describe("Price Anomaly Detection (F37)", () => {
@@ -152,6 +153,17 @@ describe("Price Anomaly Detection (F37)", () => {
       expect(hasZeroDispersion([1_200_000, 1_250_000])).toBe(false);
       expect(hasZeroDispersion([1_200_000])).toBe(true);
       expect(hasZeroDispersion([])).toBe(true);
+    });
+
+    it("caps oversized cohorts to MAX_COHORT_ANALYSIS_SIZE (250) to preserve memory and latency", () => {
+      expect(MAX_COHORT_ANALYSIS_SIZE).toBe(250);
+      const largeCohort = Array.from({ length: 400 }, (_, i) => 2_000_000 + (i % 50) * 10_000);
+      const result = detectPriceAnomaly({
+        currentPrice: 1_400_000,
+        historicalCohortPrices: largeCohort,
+      });
+      expect(result.sampleSize).toBe(250);
+      expect(result.classification).toBe("STRONG_DROP_ANOMALY");
     });
   });
 });

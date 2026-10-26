@@ -65,7 +65,7 @@ export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
  * Safe circular-reference-tolerant serializer for client error logging and telemetry.
  * Prevents TypeError crashes ("Converting circular structure to JSON") and caps deep structures.
  */
-export function safeSerializeError(err: unknown, maxDepth = 3): string {
+export function safeSerializeError(err: unknown, maxDepth = 3, maxKeysPerLevel = 50): string {
   const seen = new WeakSet();
 
   function replacer(this: any, key: string, value: any, depth = 0): any {
@@ -82,7 +82,8 @@ export function safeSerializeError(err: unknown, maxDepth = 3): string {
       seen.add(value);
       const isArr = Array.isArray(value);
       const out: any = isArr ? [] : {};
-      for (const k of Object.keys(value)) {
+      const keys = Object.keys(value).slice(0, maxKeysPerLevel);
+      for (const k of keys) {
         out[k] = replacer.call(out, k, value[k], depth + 1);
       }
       return out;

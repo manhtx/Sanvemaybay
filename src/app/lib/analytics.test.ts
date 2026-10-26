@@ -50,4 +50,19 @@ describe("product analytics", () => {
     expect(parsed.longText).toContain("...[TRUNCATED]");
     expect(parsed.longText.length).toBeLessThan(1100);
   });
+
+  it("safeSerializeError bounds object keys per level with maxKeysPerLevel", () => {
+    const wideObj: Record<string, number> = {};
+    for (let i = 0; i < 100; i++) {
+      wideObj[`key_${i}`] = i;
+    }
+
+    const serialized = safeSerializeError(wideObj, 3, 25);
+    const parsed = JSON.parse(serialized);
+
+    expect(Object.keys(parsed)).toHaveLength(25);
+    expect(parsed.key_0).toBe(0);
+    expect(parsed.key_24).toBe(24);
+    expect(parsed.key_25).toBeUndefined();
+  });
 });

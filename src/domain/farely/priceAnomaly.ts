@@ -34,6 +34,7 @@ export interface AnomalyEvaluation {
 }
 
 export const MIN_ANOMALY_SAMPLE_SIZE = 10;
+export const MAX_COHORT_ANALYSIS_SIZE = 250;
 
 /**
  * Static Tet (Vietnamese Lunar New Year) travel windows (2025–2027).
@@ -96,9 +97,10 @@ export function detectPriceAnomaly(params: {
     };
   }
 
-  const validCohort = (params.historicalCohortPrices || []).filter(
+  const rawCohort = (params.historicalCohortPrices || []).filter(
     (p) => Number.isFinite(p) && p > 0
   );
+  const validCohort = rawCohort.slice(0, MAX_COHORT_ANALYSIS_SIZE);
 
   // F37 Invariant: Never make strong anomaly claims on insufficient sample
   if (validCohort.length < MIN_ANOMALY_SAMPLE_SIZE) {

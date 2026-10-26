@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G3]
 # LEVEL: Pass 3: Anti-Fake-Done Turnkey Verification Oracles
 # MANDATE: Subject AST transformations to turnkey verification oracles, empirical assertions, and strict exit code validations.
-# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
-# TIMESTAMP: 2026-10-26T09:56:56.280Z
-# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
+# GIT_COMMIT: 2d92b0c9a4e10a8550b0731dd52f6d06508807f5
+# TIMESTAMP: 2026-10-26T10:12:43.061Z
+# EXECUTION_RECEIPT_SHA256: 4ea46fc1fe5693531ebdb374317ff5e9e93b244b1863a77c07df9efdd108697c
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G2
 
-### Falsification 1: L02 Mocked Sample Variance in Test Oracles
-- *Deficits Identified in G2*: Pass G2 specified AST transformations for zero-variance anomaly detection, but the proposed verification oracle relied on static mock arrays rather than metamorphic perturbations.
-- *Adversarial Verification Falsification*: In `src/domain/farely/priceAnomaly.ts`, if tests only verify a constant 5-element array `[100, 100, 100, 100, 100]`, they fail to catch cases where an array contains 100 identical prices alongside `NaN` or non-numeric types injected by dirty scraper feeds.
-- *Correction in G3*: In `src/domain/farely/priceAnomaly.test.ts`, mandate metamorphic property tests that inject `null`, `undefined`, and large homogeneous cohorts verifying that `classification === "INSUFFICIENT_DISPERSION_ABSTENTION"` holds deterministically.
+### Falsification 1: L02 Off-By-One Boundary Conditions in Cohort Slicing
+- *Deficits Identified in G2*: Pass G2 proposed slicing cohorts with `slice(0, MAX_COHORT_ANALYSIS_SIZE)`, but did not mandate boundary tests around $N = 250$ versus $N = 251$.
+- *Adversarial Verification Falsification*: In `src/domain/farely/priceAnomaly.ts`, if sample trimming is tested only on small arrays ($N = 20$), edge-case off-by-one errors in median index computation (`mid = Math.floor(sorted.length / 2)`) during even/odd transitions go undetected.
+- *Correction in G3*: In `src/domain/farely/priceAnomaly.test.ts`, mandate automated property-based tests verifying that an array of 300 prices is capped at exactly 250 elements and computes identical median values as a pre-truncated 250-element array.
 
-### Falsification 2: L06 Client Eviction Timing Drifts Across Timezones
-- *Deficits Identified in G2*: Pass G2 verified offline deal cache purging at 14 days ($20,160$ minutes), but omitted validating client-side system clock skew and local timezone shifts.
-- *Adversarial Verification Falsification*: If a user travels across timezones (e.g. UTC+7 to UTC-5) or adjusts their device clock, simple timestamp subtraction `Date.now() - cachedAt` can yield negative age or premature purge.
-- *Correction in G3*: In `src/domain/farely/pwaOfflineFreshness.ts`, enforce monotonic clamp `Math.max(0, now - cachedAt)` and verify that negative age is gracefully normalized to zero age (`FRESH`) rather than throwing an eviction exception.
+### Falsification 2: L01 Trailing-Dot FQDN Vulnerability in Hostname Matching
+- *Deficits Identified in G2*: Pass G2 tested URL hostname checking, but overlooked fully qualified domain names (FQDN) ending in a trailing dot (e.g. `https://google.com./flights`).
+- *Adversarial Verification Falsification*: Standard RFC 1034 DNS specifications treat `google.com.` as valid. In JavaScript `new URL('https://google.com./flights').hostname` returns `'google.com.'`. Naive equality checks `hostname === 'google.com'` fail, rejecting legitimate partner URLs.
+- *Correction in G3*: In `src/app/lib/bookingUrls.ts`, normalize hostname by stripping any trailing dot: `hostname.replace(/\.$/, "")` prior to domain validation.
 
-### Falsification 3: L09 Conflation of Unit Assertion Exit Codes with Operational Readiness
-- *Deficits Identified in G2*: Pass G2 treated test suite completion (`npm test` exit code 0) as sufficient proof of system convergence.
-- *Adversarial Verification Falsification*: In `scripts/verify-certification-integrity.node-test.mjs`, unit tests can pass 100% while production smoke verification remains unexecuted. A green test runner is strictly Proof Level C1 (Code), never C3 (Runtime) or C4 (Outcome).
-- *Correction in G3*: In `src/domain/farely/productionSmokeTruth.ts` and `scripts/verify-certification-integrity.node-test.mjs`, explicitly assert that C1 passes do not increment C3/C4 certification gates.
+### Falsification 3: L07 Subtree Key Accumulation Across Recursive Depths
+- *Deficits Identified in G2*: Pass G2 capped keys per level, but omitted asserting whether key limits apply locally per object or globally across all nested objects.
+- *Adversarial Verification Falsification*: In `src/app/lib/analytics.ts`, if an error object contains a top-level property with 10 keys, each of which has 10 child keys (100 total keys across depth 2), a naive global counter would prematurely truncate lower levels.
+- *Correction in G3*: In `src/app/lib/analytics.test.ts`, verify that `maxKeysPerLevel = 50` is evaluated locally on each object instance, permitting nested trees while defending against wide collections.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G75)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -54,7 +54,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
-- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; passenger checkout is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; commercial passenger checkout is strictly `boundary_excluded`.
 - **Verification Command**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
 ### SOL-04: SOL-AUTH-01 (Rate-Limited Tokenized Watch Outbox & Row-Level Locking)
@@ -66,7 +66,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-05: SOL-CIRCUIT-01 (Distributed Advisory-Lock Token Lease & Circuit Breaker)
 - **Target File**: `supabase/functions/_shared/flight-search.ts` & `supabase/functions/_shared/amadeus-provider.ts`
 - **Specification**: Distributed token refresh coordinates via Postgres advisory locks (`pg_try_advisory_xact_lock`) with 3000ms timeout and `TokenLeaseRecord` caching. Crawler calls enforce `AbortSignal.timeout(8000)`. Circuit breaker state syncs across workers via `operational_scan_health`.
-- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Ticketing fulfillment is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Commercial direct ticketing fulfillment is strictly `boundary_excluded`.
 - **Verification Command**: `node scripts/provider-drift-and-killswitch.node-test.mjs`
 
 ### SOL-06: SOL-STALE-01 (Storage Exception Shield & 14-Day Eviction)
@@ -107,16 +107,16 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-12: SOL-RELEASE-01 (Git Remote Fast-Forward & SHA Parity)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs` & `package.json`
-- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts. Payment gateway integration is strictly `boundary_excluded`.
+- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts. Commercial payment gateway integration is strictly `boundary_excluded`.
 - **Forbidden Deviations**: No completion declaration with unpushed commits or untracked changes.
 - **Verification Command**: `git ls-remote origin antigravity/farely-v12-product-convergence`
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G3 ORACLE AUDIT)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G75 G3 ORACLE AUDIT)
 
 ### L01: Product Truth & Founder Scope Integrity
-Non-OTA verified flight opportunity intelligence. Excludes all transactional booking engines. Handled via `src/domain/farely/providerRights.ts`.
+Non-OTA verified flight opportunity intelligence. Excludes all transactional booking engines. Handled via `src/domain/farely/providerRights.ts` and `src/app/lib/bookingUrls.ts`.
 
 ### L02: Price, Historical Baseline & Data Integrity
 In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors.
@@ -153,29 +153,31 @@ In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEs
 
 ---
 
-## TURNKEY VERIFICATION ORACLES (CYCLE G74)
+## TURNKEY VERIFICATION ORACLES (CYCLE G75)
 
-### Oracle 1: Safe Error Serialization Depth Capping
+### Oracle 1: Price Anomaly Historical Cohort Upper Bound Capping
 ```bash
-npm test src/app/lib/analytics.test.ts
+npx vitest run src/domain/farely/priceAnomaly.test.ts
+```
+Expected output: All 12 test cases pass, verifying:
+1. Cohorts containing > 250 elements are strictly bounded to `MAX_COHORT_ANALYSIS_SIZE = 250`.
+2. Median computation executes without floating-point degradation.
+3. Zero dispersion returns `INSUFFICIENT_DISPERSION_ABSTENTION`.
+
+### Oracle 2: Partner Hostname Whitelist Verification
+```bash
+npx vitest run src/app/lib/bookingUrls.test.ts
 ```
 Expected output: All test cases pass, verifying:
-1. `maxDepth = 3` replaces deeply nested subtrees with `"[MaxDepthExceeded]"`.
-2. Circular object cycles are safely replaced with `"[Circular]"`.
-3. Long strings over 1000 chars are truncated with `"...[TRUNCATED]"`.
+1. `isSafeOutboundBookingUrl` rejects non-https URLs (e.g. `javascript:`, `http:`).
+2. `isSafeOutboundBookingUrl` validates approved partner domains (`google.com`, `skyscanner.net`, `vietjetair.com`, etc.).
+3. Malicious subdomains and phishing domains are rejected.
 
-### Oracle 2: Metropolitan Minimum Ground Transit Buffer
+### Oracle 3: Analytics Key Truncation Cap
 ```bash
-npm test src/domain/farely/multiCityItinerary.test.ts
+npx vitest run src/app/lib/analytics.test.ts
 ```
 Expected output: All test cases pass, verifying:
-1. `getMetropolitanMinimumTransitMinutes` returns 210 for `HND-NRT`, `DMK-BKK`, `GMP-ICN`, `LHR-LGW`, `JFK-EWR`.
-2. Surface connections under 210 minutes receive high connection risk.
-
-### Oracle 3: Zero-Dispersion Abstention Defense
-```bash
-npm test src/domain/farely/priceAnomaly.test.ts
-```
-Expected output: All test cases pass, verifying:
-1. Cohorts of identical prices trigger `INSUFFICIENT_DISPERSION_ABSTENTION`.
-2. No division by zero or NaN propagation.
+1. Objects with > 50 keys at any level are capped to `maxKeysPerLevel`.
+2. Circular references are safely replaced with `"[Circular]"`.
+3. String lengths over 1000 chars are truncated.

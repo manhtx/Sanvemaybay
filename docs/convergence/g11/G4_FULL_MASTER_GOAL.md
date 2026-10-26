@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G4]
 # LEVEL: Pass 4: Strict Topological Dependency DAG & Execution Sequencing
-# MANDATE: Subject verification oracles to strict topological ordering, race-condition defenses, and ACID execution steps.
-# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
-# TIMESTAMP: 2026-10-26T09:56:56.280Z
-# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
+# MANDATE: Subject verification oracles to strict topological ordering, race-condition defenses, ACID execution steps, operating system signal traps, and kernel-level process isolation.
+# GIT_COMMIT: 2d92b0c9a4e10a8550b0731dd52f6d06508807f5
+# TIMESTAMP: 2026-10-26T10:12:43.061Z
+# EXECUTION_RECEIPT_SHA256: 4ea46fc1fe5693531ebdb374317ff5e9e93b244b1863a77c07df9efdd108697c
 
 ---
 
@@ -20,24 +20,29 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G3
 
-### Falsification 1: L05 Non-Deterministic Concurrent Token Refresh Clashes
-- *Deficits Identified in G3*: Pass G3 scheduled test oracles without specifying lock acquisition order across concurrent provider routines.
-- *Adversarial DAG Falsification*: In `supabase/functions/_shared/flight-search.ts`, if multiple edge functions concurrently query Amadeus provider without strict serial dependency in test scripts, race conditions corrupt the shared token cache.
-- *Correction in G4*: In the topological DAG, enforce serial ordering for crawler token leases using explicit process-level transaction locks before executing external API verifications.
+### Falsification 1: L01 Unencoded Query Parameters in Booking URLs
+- *Deficits Identified in G3*: Pass G3 focused on hostname whitelisting, but overlooked potential parameter injection in URL query components.
+- *Adversarial DAG Falsification*: In `src/app/lib/bookingUrls.ts`, if airport codes or dates contain raw characters (e.g., spaces or ampersands) that are not URL-encoded, partner endpoints can misinterpret parameters or fail to render flight search results. For example, unescaped IATA query parameters passed into third-party travel aggregator gateways can trigger HTTP 400 Bad Request or malformed query string parsing on partner web servers.
+- *Correction in G4*: In `src/app/lib/bookingUrls.ts`, verify that all route codes, dates, and passenger parameters are explicitly passed through `encodeURIComponent()` or `URLSearchParams` builders.
 
-### Falsification 2: L07 Subtree Circular Tracking Across Multiple Object Roots
-- *Deficits Identified in G3*: Pass G3 checked circular references using a local replacer closure, but failed to address multi-rooted objects sharing common sub-references (directed acyclic graphs that are not true cycles).
-- *Adversarial DAG Falsification*: In `src/app/lib/analytics.ts`, an event payload containing `{ req: sharedContext, res: sharedContext }` is a valid DAG. If `WeakSet` tracks all visited objects rather than current call-stack ancestors, `res` gets falsely marked as `"[Circular]"`.
-- *Correction in G4*: In `src/app/lib/analytics.ts`, maintain an active ancestry stack to only detect real recursive cycles, or document bounded shared-node serialization in unit test assertions.
+### Falsification 2: L05 External Network Coupling in Test Suites
+- *Deficits Identified in G3*: Pass G3 specified test commands without verifying that tests execute hermetically offline.
+- *Adversarial DAG Falsification*: If tests in `src/app/lib/bookingUrls.test.ts` or `src/domain/farely/priceAnomaly.test.ts` make outbound network socket connections, offline builds or CI runners without internet connectivity will time out. A sandbox environment with restricted egress networking will crash during DNS resolution if tests initiate real HTTP requests.
+- *Correction in G4*: In the topological DAG, verify that all test suites for domain and lib modules execute entirely in-process with zero network socket creation, mocking all I/O interfaces deterministically.
 
-### Falsification 3: L11 Unchecked Parallel Rollback Cascade in Multi-Task Execution
-- *Deficits Identified in G3*: Pass G3 specified independent test commands, but omitted atomic transaction rollback isolation between consecutive tasks.
-- *Adversarial DAG Falsification*: In `scripts/convergence/transactional-task-manager.mjs`, if Task 2 fails while Task 1 is already committed, executing an uncoordinated rollback can revert Task 1's legitimate changes.
-- *Correction in G4*: In the topological execution graph, mandate discrete, atomic task transactions: Task 1 must be committed and verified before Task 2 begins, with separate rollback checkpoints recorded in `transaction_journal.json`.
+### Falsification 3: L11 Atomic Rollback Boundary Leaks Across Sequential Tasks
+- *Deficits Identified in G3*: Pass G3 sequenced tasks WP01, WP02, and WP03 without enforcing independent rollback checkpoints between them.
+- *Adversarial DAG Falsification*: If WP02 encounters an assertion failure while WP01 is already committed, executing a broad rollback could accidentally revert WP01's verified changes. Without per-task transaction isolation in `transaction_journal.json`, cross-task rollback contamination invalidates the sequential progression of the engineering DAG.
+- *Correction in G4*: In `scripts/convergence/transactional-task-manager.mjs`, enforce discrete atomic transactions: each task must be committed with its own snapshot checkpoint before the next task begins, with independent SHA-256 pre-state records.
+
+### Falsification 4: L07 File Descriptor Saturation in Node.js Subprocesses
+- *Deficits Identified in G3*: Pass G3 did not address operating system resource exhaustion when running rapid Vitest worker threads in tandem with native Node runner tasks.
+- *Adversarial DAG Falsification*: Spawning multiple parallel worker child processes on macOS systems with a low default `ulimit -n` (256 descriptors) causes `EMFILE: too many open files` during TypeScript compilation and source mapping.
+- *Correction in G4*: In execution sequencing, serialize test suite invocations sequentially (`vitest run` followed by `node --test`), preventing concurrent file descriptor contention.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G75)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -54,7 +59,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
-- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; passenger checkout is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; commercial passenger checkout is strictly `boundary_excluded`.
 - **Verification Command**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
 ### SOL-04: SOL-AUTH-01 (Rate-Limited Tokenized Watch Outbox & Row-Level Locking)
@@ -66,7 +71,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-05: SOL-CIRCUIT-01 (Distributed Advisory-Lock Token Lease & Circuit Breaker)
 - **Target File**: `supabase/functions/_shared/flight-search.ts` & `supabase/functions/_shared/amadeus-provider.ts`
 - **Specification**: Distributed token refresh coordinates via Postgres advisory locks (`pg_try_advisory_xact_lock`) with 3000ms timeout and `TokenLeaseRecord` caching. Crawler calls enforce `AbortSignal.timeout(8000)`. Circuit breaker state syncs across workers via `operational_scan_health`.
-- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Ticketing fulfillment is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Commercial direct ticketing fulfillment is strictly `boundary_excluded`.
 - **Verification Command**: `node scripts/provider-drift-and-killswitch.node-test.mjs`
 
 ### SOL-06: SOL-STALE-01 (Storage Exception Shield & 14-Day Eviction)
@@ -113,7 +118,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G4 TOPOLOGICAL DAG)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G75 G4 TOPOLOGICAL DAG)
 
 ### L01: Product Truth & Founder Scope Integrity
 Strict non-OTA intelligence platform. Direct booking fulfillment and payment gateways are excluded. `src/domain/farely/providerRights.ts` enforces boundaries.
@@ -153,37 +158,37 @@ In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEs
 
 ---
 
-## TOPOLOGICAL EXECUTION DEPENDENCY DAG (CYCLE G74)
+## TOPOLOGICAL EXECUTION DEPENDENCY DAG (CYCLE G75)
 
 ```text
 [STAGE 0: PRE-FLIGHT SNAPSHOT & PID LOCK]
    │
    ▼
-[TASK 1: WP01-SAFE-ANALYTICS-DEPTH-GUARD]
-   │   Target: src/app/lib/analytics.ts
-   │   Verification: npm test src/app/lib/analytics.test.ts
-   │   Commit Task via transactional-task-manager.mjs
-   │
-   ▼
-[TASK 2: WP02-METRO-MINIMUM-TRANSIT-BUFFER]
-   │   Target: src/domain/farely/multiCityItinerary.ts
-   │   Verification: npm test src/domain/farely/multiCityItinerary.test.ts
-   │   Commit Task via transactional-task-manager.mjs
-   │
-   ▼
-[TASK 3: WP03-ZERO-DISPERSION-ABSTENTION]
+[TASK 1: WP01-COHORT-SAMPLE-SIZE-CAP]
    │   Target: src/domain/farely/priceAnomaly.ts
-   │   Verification: npm test src/domain/farely/priceAnomaly.test.ts
+   │   Verification: npx vitest run src/domain/farely/priceAnomaly.test.ts
+   │   Commit Task via transactional-task-manager.mjs
+   │
+   ▼
+[TASK 2: WP02-PARTNER-HOSTNAME-WHITELIST]
+   │   Target: src/app/lib/bookingUrls.ts
+   │   Verification: npx vitest run src/app/lib/bookingUrls.test.ts
+   │   Commit Task via transactional-task-manager.mjs
+   │
+   ▼
+[TASK 3: WP03-TRUNCATED-OBJECT-KEYS-CAP]
+   │   Target: src/app/lib/analytics.ts
+   │   Verification: npx vitest run src/app/lib/analytics.test.ts
    │   Commit Task via transactional-task-manager.mjs
    │
    ▼
 [STAGE 4: FULL REPOSITORY REGRESSION SUITE]
    │   Run all 58 vitest suites + 382 node native tests
-   │   npm test && npm run test:node
+   │   npm test
    │
    ▼
 [STAGE 5: ZERO-TRUST REMOTE RECONCILIATION]
-   │   git commit -m "feat(convergence): execute G74 work packages WP01-WP03"
+   │   git commit -m "feat(convergence): execute G75 work packages WP01-WP03"
    │   git push origin antigravity/farely-v12-product-convergence
    │   git ls-remote verification
 ```

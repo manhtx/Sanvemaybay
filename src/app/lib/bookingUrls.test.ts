@@ -4,6 +4,7 @@ import {
   buildSkyscannerUrl,
   getBestBookingUrl,
   getEffectiveDealBookingUrl,
+  isSafeOutboundBookingUrl,
 } from "./bookingUrls";
 
 const params = {
@@ -42,5 +43,19 @@ describe("booking URL builders", () => {
     expect(getBestBookingUrl({ ...params, airlineCode: "VN" })).toContain(
       "google.com/travel/flights",
     );
+  });
+
+  it("validates outbound booking URLs against whitelist and HTTPS protocol", () => {
+    expect(isSafeOutboundBookingUrl("https://www.google.com/travel/flights")).toBe(true);
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com/vi/flights")).toBe(true);
+    expect(isSafeOutboundBookingUrl("https://booking.bambooairways.com/search")).toBe(true);
+    expect(isSafeOutboundBookingUrl("https://google.com./travel/flights")).toBe(true); // Trailing dot FQDN
+    
+    // Insecure / spoofed / malicious protocols
+    expect(isSafeOutboundBookingUrl("http://www.google.com/travel/flights")).toBe(false); // Insecure HTTP
+    expect(isSafeOutboundBookingUrl("javascript:alert(1)")).toBe(false);
+    expect(isSafeOutboundBookingUrl("https://evilvietjetair.com/search")).toBe(false);
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com.attacker.com/steal")).toBe(false);
+    expect(isSafeOutboundBookingUrl("")).toBe(false);
   });
 });

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis & Scope Decomposition
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
-# TIMESTAMP: 2026-10-26T09:56:56.280Z
-# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
+# GIT_COMMIT: 2d92b0c9a4e10a8550b0731dd52f6d06508807f5
+# TIMESTAMP: 2026-10-26T10:12:43.061Z
+# EXECUTION_RECEIPT_SHA256: 4ea46fc1fe5693531ebdb374317ff5e9e93b244b1863a77c07df9efdd108697c
 
 ---
 
@@ -18,7 +18,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G75)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -94,10 +94,10 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G1 BASELINE)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G75 G1 BASELINE)
 
 ### L01: Product Truth & Founder Scope Integrity
-Strict non-OTA intelligence platform. Direct booking fulfillment and payment gateways are excluded. `src/domain/farely/providerRights.ts` enforces boundaries.
+Strict non-OTA flight opportunity intelligence platform. Direct booking fulfillment and payment gateways are excluded. `src/domain/farely/providerRights.ts` enforces boundaries.
 
 ### L02: Price, Historical Baseline & Data Integrity
 In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors.
@@ -134,19 +134,19 @@ In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEs
 
 ---
 
-## WORK PACKAGE SPECIFICATION FOR CYCLE G74
+## WORK PACKAGE SPECIFICATION FOR CYCLE G75
 
-### WP01-SAFE-ANALYTICS-DEPTH-GUARD (SOL-07)
-- **Target File**: `src/app/lib/analytics.ts`
-- **Scope**: In `safeSerializeError`, implement strict recursion depth capping (`maxDepth = 3`) to replace exceeded subtrees with `"[MaxDepthExceeded]"`, while verifying object types before `WeakSet` operations.
-- **Verification**: `npm test src/app/lib/analytics.test.ts`
-
-### WP02-METRO-MINIMUM-TRANSIT-BUFFER (SOL-03)
-- **Target File**: `src/domain/farely/multiCityItinerary.ts`
-- **Scope**: Implement `getMetropolitanMinimumTransitMinutes` returning 210 minutes for `METROPOLITAN_AIRPORT_PAIRS`. In `validateMultiCityItinerary`, flag high risk if ground transfer window is below buffer.
-- **Verification**: `npm test src/domain/farely/multiCityItinerary.test.ts`
-
-### WP03-ZERO-DISPERSION-ABSTENTION (SOL-01)
+### WP01-COHORT-SAMPLE-SIZE-CAP (SOL-01)
 - **Target File**: `src/domain/farely/priceAnomaly.ts`
-- **Scope**: In `detectPriceAnomaly`, guard against division by zero when standard deviation or MAD is 0 across homogeneous historical observations, returning `INSUFFICIENT_DISPERSION_ABSTENTION`.
-- **Verification**: `npm test src/domain/farely/priceAnomaly.test.ts`
+- **Scope**: Define `MAX_COHORT_ANALYSIS_SIZE = 250` and bound historical cohort prices array to prevent memory exhaustion and sorting slowdowns.
+- **Verification**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+
+### WP02-PARTNER-HOSTNAME-WHITELIST (SOL-01)
+- **Target File**: `src/app/lib/bookingUrls.ts`
+- **Scope**: Implement `isSafeOutboundBookingUrl(url: string): boolean` with protocol validation (`https:`) and trusted partner hostname matching.
+- **Verification**: `npx vitest run src/app/lib/bookingUrls.test.ts`
+
+### WP03-TRUNCATED-OBJECT-KEYS-CAP (SOL-07)
+- **Target File**: `src/app/lib/analytics.ts`
+- **Scope**: In `safeSerializeError`, bound object keys per depth level to `maxKeysPerLevel = 50`, recording `_truncatedKeys: true` to prevent memory thrashing.
+- **Verification**: `npx vitest run src/app/lib/analytics.test.ts`

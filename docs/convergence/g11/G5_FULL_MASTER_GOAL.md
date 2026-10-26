@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
 # LEVEL: Pass 5: Sovereign Locked Master Goal Prompt & Canonical Convergence
 # MANDATE: Final synthesis of passes G1..G4 into a hermetically sealed, executable Master Goal prompt with invariant locks.
-# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
-# TIMESTAMP: 2026-10-26T09:56:56.280Z
-# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
+# GIT_COMMIT: 2d92b0c9a4e10a8550b0731dd52f6d06508807f5
+# TIMESTAMP: 2026-10-26T10:12:43.061Z
+# EXECUTION_RECEIPT_SHA256: 4ea46fc1fe5693531ebdb374317ff5e9e93b244b1863a77c07df9efdd108697c
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G4
 
-### Falsification 1: L01 Scope Conflation on Self-Transfer Warning Terminology
-- *Deficits Identified in G4*: Pass G4 scheduled multi-city itinerary changes, but used colloquial phraseology that blurred the line between intelligence alerts and third-party warranty promises.
-- *Adversarial Invariant Falsification*: In `src/domain/farely/providerRights.ts`, Farely must never imply that it provides travel protection or interline guarantees. Phrases like "guaranteed connection" violate the product boundary invariant.
-- *Correction in G5*: In `src/domain/farely/multiCityItinerary.ts`, enforce explicit disclaimer strings emphasizing that Farely provides information only (`SELF_TRANSFER_UNPROTECTED`), and passengers are solely responsible for re-checking baggage.
+### Falsification 1: L01 Regulatory Disclosure Absence in Outbound Handoff
+- *Deficits Identified in G4*: Pass G4 secured outbound partner hostnames in `src/app/lib/bookingUrls.ts`, but failed to mandate consumer transparency disclosures regarding third-party merchant status.
+- *Adversarial Invariant Falsification*: Under consumer protection standards, if an intelligence engine hands off users to an external airline site without explicitly stating that the transaction occurs on a third-party platform, users may attribute booking errors or ticketing disputes to Farely.
+- *Correction in G5*: In `src/app/lib/bookingUrls.ts`, enforce immutable disclaimer strings confirming that Farely is an independent flight opportunity intelligence engine and never collects payments or fulfills tickets.
 
-### Falsification 2: L04 Migration Downgrade Vulnerability Under Concurrent Session Reset
-- *Deficits Identified in G4*: Pass G4 mapped outbox queue concurrency, but failed to assert session state cleanup in client local storage during authentication invalidation.
-- *Adversarial Invariant Falsification*: If an anonymous user converts to an authenticated user while offline alerts are pending, stale session keys in `localStorage` can lead to cross-account telemetry leak.
-- *Correction in G5*: In `src/app/lib/analytics.ts`, ensure that local product events are partitioned and sanitized against tenant boundary leaks before queue persistence.
+### Falsification 2: L02 Currency Normalization Guard in Price Anomaly Telemetry
+- *Deficits Identified in G4*: Pass G4 capped cohort sample lengths, but did not assert currency unit consistency across scraped pricing feeds.
+- *Adversarial Invariant Falsification*: In `src/domain/farely/priceAnomaly.ts`, if international partner feeds emit fares in USD (e.g. 120 USD) while domestic records use VND (e.g. 2,800,000 VND), mixing raw numbers without currency proof triggers catastrophic data glitch classifications ($Z > 90$).
+- *Correction in G5*: In `src/domain/farely/priceAnomaly.ts`, require callers to ensure currency parity before invoking statistical anomaly detection, maintaining currency independence across normalized observations.
 
-### Falsification 3: L12 Remote Branch Desynchronization Detection
-- *Deficits Identified in G4*: Pass G4 checked remote branch equality via simple `git push`, but did not mandate strict commit SHA verification between local `HEAD` and remote branch before declaring cycle completion.
-- *Adversarial Invariant Falsification*: If network timeouts occur during push, a local script might assume completion while remote GitHub repository remains un-updated, violating the zero-trust release contract.
-- *Correction in G5*: In `scripts/convergence/watchdog-convergence.mjs`, require live `git ls-remote` verification asserting identical 40-character commit hashes between local HEAD and remote origin before goal completion.
+### Falsification 3: L12 Stale Remote Ref Comparison in Git Watchdog
+- *Deficits Identified in G4*: Pass G4 compared local `HEAD` against `origin/antigravity/farely-v12-product-convergence` via `git ls-remote`, but did not require an explicit `git fetch` before status derivation.
+- *Adversarial Invariant Falsification*: If upstream commits are pushed from an alternate CI runner or team branch, querying cached remote refs can produce false parity certificates.
+- *Correction in G5*: In `scripts/convergence/watchdog-convergence.mjs`, mandate direct upstream ref interrogation via `git ls-remote origin` asserting exact 40-character SHA matching against local `git rev-parse HEAD`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G75)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -54,7 +54,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
-- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; passenger checkout is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; commercial passenger checkout is strictly `boundary_excluded`.
 - **Verification Command**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
 ### SOL-04: SOL-AUTH-01 (Rate-Limited Tokenized Watch Outbox & Row-Level Locking)
@@ -66,7 +66,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-05: SOL-CIRCUIT-01 (Distributed Advisory-Lock Token Lease & Circuit Breaker)
 - **Target File**: `supabase/functions/_shared/flight-search.ts` & `supabase/functions/_shared/amadeus-provider.ts`
 - **Specification**: Distributed token refresh coordinates via Postgres advisory locks (`pg_try_advisory_xact_lock`) with 3000ms timeout and `TokenLeaseRecord` caching. Crawler calls enforce `AbortSignal.timeout(8000)`. Circuit breaker state syncs across workers via `operational_scan_health`.
-- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Ticketing fulfillment is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Commercial direct ticketing fulfillment is strictly `boundary_excluded`.
 - **Verification Command**: `node scripts/provider-drift-and-killswitch.node-test.mjs`
 
 ### SOL-06: SOL-STALE-01 (Storage Exception Shield & 14-Day Eviction)
@@ -113,7 +113,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G5 CANONICAL SEALED)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G75 G5 CANONICAL SEALED)
 
 ### L01: Product Truth & Founder Scope Integrity
 Strict non-OTA intelligence platform. Direct booking fulfillment and payment gateways are excluded. `src/domain/farely/providerRights.ts` enforces boundaries.
@@ -153,29 +153,29 @@ In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEs
 
 ---
 
-## SECTION E: COMPLETE WORK PACKAGE SPECIFICATIONS FOR CYCLE G74
+## SECTION E: COMPLETE WORK PACKAGE SPECIFICATIONS FOR CYCLE G75
 
-### WP01-SAFE-ANALYTICS-DEPTH-GUARD
-- **Target File**: `src/app/lib/analytics.ts`
-- **Scope**:
-  - Implement depth tracking in `safeSerializeError(err: unknown, maxDepth = 3): string`.
-  - Replace subtrees exceeding `maxDepth` with `"[MaxDepthExceeded]"`.
-  - Guard `seen.has()` and `seen.add()` with `typeof value === "object" && value !== null`.
-  - Add unit tests in `src/app/lib/analytics.test.ts`.
-- **Verification**: `npm test src/app/lib/analytics.test.ts`
-
-### WP02-METRO-MINIMUM-TRANSIT-BUFFER
-- **Target File**: `src/domain/farely/multiCityItinerary.ts`
-- **Scope**:
-  - Implement `getMetropolitanMinimumTransitMinutes(fromAirport: string, toAirport: string): number` returning 210 for `METROPOLITAN_AIRPORT_PAIRS` and 0 otherwise.
-  - In `validateMultiCityItinerary`, if an open-jaw segment between consecutive slices is a recognized metropolitan airport change, attach explicit warning notice regarding ground transfer time.
-  - Add unit tests in `src/domain/farely/multiCityItinerary.test.ts`.
-- **Verification**: `npm test src/domain/farely/multiCityItinerary.test.ts`
-
-### WP03-ZERO-DISPERSION-ABSTENTION
+### WP01-COHORT-SAMPLE-SIZE-CAP
 - **Target File**: `src/domain/farely/priceAnomaly.ts`
 - **Scope**:
-  - In `detectPriceAnomaly`, check if `rawMad < 1e-6` when evaluating historical cohort.
-  - Return `classification: "INSUFFICIENT_DISPERSION_ABSTENTION"` with zero z-score and clear Vietnamese explanation.
-  - Add unit tests in `src/domain/farely/priceAnomaly.test.ts`.
-- **Verification**: `npm test src/domain/farely/priceAnomaly.test.ts`
+  - Export `MAX_COHORT_ANALYSIS_SIZE = 250`.
+  - In `detectPriceAnomaly`, filter for positive finite numbers, then slice to `MAX_COHORT_ANALYSIS_SIZE`.
+  - Add unit test coverage in `src/domain/farely/priceAnomaly.test.ts`.
+- **Verification**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+
+### WP02-PARTNER-HOSTNAME-WHITELIST
+- **Target File**: `src/app/lib/bookingUrls.ts`
+- **Scope**:
+  - Define `APPROVED_BOOKING_DOMAINS` set with recognized carriers and search engines.
+  - Implement `isSafeOutboundBookingUrl(urlStr: string): boolean` validating `https:` protocol and hostname suffix matching.
+  - In `getEffectiveDealBookingUrl`, verify url safety before returning external link.
+  - Add unit test coverage in `src/app/lib/bookingUrls.test.ts`.
+- **Verification**: `npx vitest run src/app/lib/bookingUrls.test.ts`
+
+### WP03-TRUNCATED-OBJECT-KEYS-CAP
+- **Target File**: `src/app/lib/analytics.ts`
+- **Scope**:
+  - In `safeSerializeError(err: unknown, maxDepth = 3, maxKeysPerLevel = 50)`, bound object key iterations to `maxKeysPerLevel`.
+  - Ensure typed arrays and primitive structures are not corrupted.
+  - Add unit test coverage in `src/app/lib/analytics.test.ts`.
+- **Verification**: `npx vitest run src/app/lib/analytics.test.ts`

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G2]
 # LEVEL: Pass 2: Adversarial AST Diff Blueprint & Hostile Refutation
 # MANDATE: Subject baseline G1 to adversarial AST diffing, structural vulnerability audits, and concrete code transformations.
-# GIT_COMMIT: 8ada9173783ba6466c2aa867a31fb44319cd6a41
-# TIMESTAMP: 2026-10-26T09:56:56.280Z
-# EXECUTION_RECEIPT_SHA256: ec82db03479cd6d2743d1704f65b8f8781d060851a461aaaa79a6c727abd8014
+# GIT_COMMIT: 2d92b0c9a4e10a8550b0731dd52f6d06508807f5
+# TIMESTAMP: 2026-10-26T10:12:43.061Z
+# EXECUTION_RECEIPT_SHA256: 4ea46fc1fe5693531ebdb374317ff5e9e93b244b1863a77c07df9efdd108697c
 
 ---
 
@@ -20,24 +20,24 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & FALSIFICATION OF PASS G1
 
-### Falsification 1: L02 Floating-Point Epsilon Failure in Zero-Variance Anomaly Checks
-- *Deficits Identified in G1*: Pass G1 specified checking for zero dispersion using exact equality (`stdDev === 0` or `mad === 0`), but overlooked IEEE 754 floating-point inaccuracies in calculation.
-- *Adversarial AST Falsification*: If historical prices differ by trivial floating-point noise (e.g. 1e-14), `rawMad === 0` evaluates false, triggering standard z-score evaluation that emits absurd scores ($Z > 10^{12}$).
-- *Correction in G2*: In `src/domain/farely/priceAnomaly.ts`, apply an epsilon threshold: if `rawMad < 1e-6` or `sampleVariance < 1e-6`, classify immediately as `INSUFFICIENT_DISPERSION_ABSTENTION`.
+### Falsification 1: L02 Sample Truncation Jitter in Price Anomaly Calculation
+- *Deficits Identified in G1*: Pass G1 specified capping historical cohort arrays, but did not specify whether truncation occurs before or after filtering non-finite values.
+- *Adversarial AST Falsification*: In `src/domain/farely/priceAnomaly.ts`, if truncation executes prior to filtering, an array containing 200 dirty `NaN` values followed by 10 valid prices gets truncated to 200 dirty elements, erroneously triggering `SPARSE_DATA_ABSTENTION`.
+- *Correction in G2*: In `src/domain/farely/priceAnomaly.ts`, filter for positive finite numbers *first*, and then apply `validCohort.slice(0, MAX_COHORT_ANALYSIS_SIZE)`.
 
-### Falsification 2: L03 Open-Jaw Surface Ground Buffer Without Metro Differentiation
-- *Deficits Identified in G1*: Pass G1 checked general open-jaw segments but did not differentiate between same-airport surface connections and cross-metropolitan inter-airport transfers.
-- *Adversarial AST Falsification*: In `src/domain/farely/multiCityItinerary.ts`, transit between different terminals at SGN is not an inter-airport transfer, while transit between HND and NRT requires traveling across greater Tokyo.
-- *Correction in G2*: In `src/domain/farely/multiCityItinerary.ts`, gate transit buffer enforcement explicitly on `isMetropolitanAirportChange(prev.destinationCode, current.originCode)`.
+### Falsification 2: L01 Port and Protocol Evasion in Booking URL Validation
+- *Deficits Identified in G1*: Pass G1 called for hostname verification, but overlooked non-standard ports (e.g. `vietjetair.com:8080`) or credential injection (`user@vietjetair.com`).
+- *Adversarial AST Falsification*: In `src/app/lib/bookingUrls.ts`, attackers crafting URLs with embedded user credentials or non-standard ports can bypass naive regexes or cause browser redirection anomalies.
+- *Correction in G2*: In `src/app/lib/bookingUrls.ts`, enforce strict URL origin parsing: `protocol === "https:"`, `port === "" || port === "443"`, and exact domain or subdomain matching against `APPROVED_BOOKING_DOMAINS`.
 
-### Falsification 3: L07 WeakSet Garbage Collector Memory Retention in Serializer
-- *Deficits Identified in G1*: Pass G1 proposed capping depth in `safeSerializeError`, but failed to specify how primitive wrappers (e.g. `Object(42)`) or prototype chains affect depth calculation.
-- *Adversarial AST Falsification*: In `src/app/lib/analytics.ts`, if depth is not decremented upon returning from subtree recursion or if cycle detection doesn't track path ancestry, branch siblings get erroneously marked as circular.
-- *Correction in G2*: In `src/app/lib/analytics.ts`, implement a clean path-depth tracker that correctly scopes depth to the current branch.
+### Falsification 3: L07 Key Ordering and Metadata Contamination in Serializer
+- *Deficits Identified in G1*: Pass G1 proposed attaching `_truncatedKeys: true` directly to serialized objects, but this can overwrite an existing telemetry key of the same name.
+- *Adversarial AST Falsification*: In `src/app/lib/analytics.ts`, if an error telemetry payload already tracks a field named `_truncatedKeys`, mutating or assigning to this property corrupts caller telemetry.
+- *Correction in G2*: In `src/app/lib/analytics.ts`, emit a dedicated symbol or distinct reserved key (`__farely_truncated_keys__: true`) or simply slice keys cleanly without modifying caller object graphs.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G74)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G75)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
@@ -54,7 +54,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
-- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; passenger checkout is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers; commercial passenger checkout is strictly `boundary_excluded`.
 - **Verification Command**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
 ### SOL-04: SOL-AUTH-01 (Rate-Limited Tokenized Watch Outbox & Row-Level Locking)
@@ -66,7 +66,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ### SOL-05: SOL-CIRCUIT-01 (Distributed Advisory-Lock Token Lease & Circuit Breaker)
 - **Target File**: `supabase/functions/_shared/flight-search.ts` & `supabase/functions/_shared/amadeus-provider.ts`
 - **Specification**: Distributed token refresh coordinates via Postgres advisory locks (`pg_try_advisory_xact_lock`) with 3000ms timeout and `TokenLeaseRecord` caching. Crawler calls enforce `AbortSignal.timeout(8000)`. Circuit breaker state syncs across workers via `operational_scan_health`.
-- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Ticketing fulfillment is strictly `boundary_excluded`.
+- **Forbidden Deviations**: No isolate-local in-memory token mutexes; no un-timeouted fetches. Commercial direct ticketing fulfillment is strictly `boundary_excluded`.
 - **Verification Command**: `node scripts/provider-drift-and-killswitch.node-test.mjs`
 
 ### SOL-06: SOL-STALE-01 (Storage Exception Shield & 14-Day Eviction)
@@ -107,19 +107,19 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ### SOL-12: SOL-RELEASE-01 (Git Remote Fast-Forward & SHA Parity)
 - **Target File**: `scripts/convergence/watchdog-convergence.mjs` & `package.json`
-- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts. Payment gateway integration is strictly `boundary_excluded`.
+- **Specification**: Enforces remote SHA equality with `origin/antigravity/farely-v12-product-convergence` with 0 ahead, 0 behind, and zero untracked working-tree artifacts. Commercial payment gateway integration is strictly `boundary_excluded`.
 - **Forbidden Deviations**: No completion declaration with unpushed commits or untracked changes.
 - **Verification Command**: `git ls-remote origin antigravity/farely-v12-product-convergence`
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G2 AST REFUTATION)
+## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (CYCLE G75 G2 AST BLUEPRINT)
 
 ### L01: Product Truth & Founder Scope Integrity
-Strict non-OTA flight opportunity intelligence platform. `src/domain/farely/providerRights.ts` enforces boundaries against booking stubs.
+Strict non-OTA intelligence platform. Booking forms and transactional checkout are prohibited. Handled via `src/domain/farely/providerRights.ts` and `src/app/lib/bookingUrls.ts`.
 
 ### L02: Price, Historical Baseline & Data Integrity
-In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors.
+In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$, bounded cohort sizes, and seasonal Tết holiday priors.
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
 In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity.
@@ -155,88 +155,72 @@ In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEs
 
 ## SECTION E: HOSTILE BEFORE/AFTER AST DIFF BLUEPRINT
 
-### Task 1: `WP01-SAFE-ANALYTICS-DEPTH-GUARD`
-**File**: `src/app/lib/analytics.ts`
-```diff
---- a/src/app/lib/analytics.ts
-+++ b/src/app/lib/analytics.ts
-@@ -68,14 +68,26 @@ export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
- export function safeSerializeError(err: unknown, maxDepth = 3): string {
-   const seen = new WeakSet();
-+  function replacer(this: any, key: string, value: any, depth = 0): any {
-+    if (typeof value === "string" && value.length > 1000) {
-+      return value.slice(0, 1000) + "...[TRUNCATED]";
-+    }
-+    if (typeof value === "object" && value !== null) {
-+      if (seen.has(value)) {
-+        return "[Circular]";
-+      }
-+      if (depth >= maxDepth) {
-+        return "[MaxDepthExceeded]";
-+      }
-+      seen.add(value);
-+      const out: Record<string, any> = Array.isArray(value) ? [] : {};
-+      for (const k of Object.keys(value)) {
-+        out[k] = replacer.call(out, k, value[k], depth + 1);
-+      }
-+      return out;
-+    }
-+    return value;
-+  }
-   try {
--    return JSON.stringify(err, (key, value) => {
--      if (typeof value === "string" && value.length > 1000) {
--        return value.slice(0, 1000) + "...[TRUNCATED]";
--      }
--      if (typeof value === "object" && value !== null) {
--        if (seen.has(value)) {
--          return "[Circular]";
--        }
--        seen.add(value);
--      }
--      return value;
--    });
-+    return JSON.stringify(replacer.call({ "": err }, "", err, 0));
-   } catch {
-     return JSON.stringify({ message: String(err) });
-   }
-```
-
-### Task 2: `WP02-METRO-MINIMUM-TRANSIT-BUFFER`
-**File**: `src/domain/farely/multiCityItinerary.ts`
-```diff
---- a/src/domain/farely/multiCityItinerary.ts
-+++ b/src/domain/farely/multiCityItinerary.ts
-@@ -160,2 +160,9 @@ export function isMetropolitanAirportChange(fromAirport: string, toAirport: stri
-   return METROPOLITAN_AIRPORT_PAIRS.has(key);
- }
-+
-+/**
-+ * Returns required ground transit buffer in minutes for inter-airport metropolitan transfers.
-+ */
-+export function getMetropolitanMinimumTransitMinutes(fromAirport: string, toAirport: string): number {
-+  return isMetropolitanAirportChange(fromAirport, toAirport) ? 210 : 0;
-+}
-```
-
-### Task 3: `WP03-ZERO-DISPERSION-ABSTENTION`
+### Task 1: `WP01-COHORT-SAMPLE-SIZE-CAP`
 **File**: `src/domain/farely/priceAnomaly.ts`
 ```diff
 --- a/src/domain/farely/priceAnomaly.ts
 +++ b/src/domain/farely/priceAnomaly.ts
-@@ -139,2 +139,16 @@ export function detectPriceAnomaly(params: {
-   // AUD-12: If the historical cohort is homogeneous (rawMad === 0), there is zero empirical dispersion.
-+  if (rawMad < 1e-6) {
-+    return {
-+      classification: "INSUFFICIENT_DISPERSION_ABSTENTION",
-+      sampleSize: validCohort.length,
-+      medianPrice: median,
-+      mad: 0,
-+      modifiedZScore: 0,
-+      discountVsMedianPercent: 0,
-+      isActionableDeal: false,
-+      explanationVi: "Độ phân tán giá quan sát bằng 0 (tất cả các mức giá lịch sử đều giống nhau). Hệ thống từ chối đánh giá bất thường.",
-+      cohortScope,
-+    };
+@@ -37,2 +37,4 @@ export interface AnomalyEvaluation {
+ export const MIN_ANOMALY_SAMPLE_SIZE = 10;
++export const MAX_COHORT_ANALYSIS_SIZE = 250;
++
+@@ -101,3 +103,4 @@ export function detectPriceAnomaly(params: {
+-  const validCohort = (params.historicalCohortPrices || []).filter(
++  const rawCohort = (params.historicalCohortPrices || []).filter(
+     (p) => Number.isFinite(p) && p > 0
+   );
++  const validCohort = rawCohort.slice(0, MAX_COHORT_ANALYSIS_SIZE);
+```
+
+### Task 2: `WP02-PARTNER-HOSTNAME-WHITELIST`
+**File**: `src/app/lib/bookingUrls.ts`
+```diff
+--- a/src/app/lib/bookingUrls.ts
++++ b/src/app/lib/bookingUrls.ts
+@@ -27,2 +27,28 @@ export interface BookingParams {
++export const APPROVED_BOOKING_DOMAINS = new Set([
++  "google.com",
++  "skyscanner.com",
++  "skyscanner.net",
++  "kayak.com",
++  "vietjetair.com",
++  "vietnamairlines.com",
++  "bambooairways.com",
++  "vietravelairlines.com",
++  "tripadvisor.com",
++]);
++
++/**
++ * Validates that an outbound partner booking URL is HTTPS and belongs to an approved partner domain.
++ */
++export function isSafeOutboundBookingUrl(urlStr: string): boolean {
++  if (!urlStr || typeof urlStr !== "string") return false;
++  try {
++    const parsed = new URL(urlStr);
++    if (parsed.protocol !== "https:") return false;
++    const hostname = parsed.hostname.toLowerCase();
++    return Array.from(APPROVED_BOOKING_DOMAINS).some(
++      (domain) => hostname === domain || hostname.endsWith("." + domain)
++    );
++  } catch {
++    return false;
 +  }
++}
+```
+
+### Task 3: `WP03-TRUNCATED-OBJECT-KEYS-CAP`
+**File**: `src/app/lib/analytics.ts`
+```diff
+--- a/src/app/lib/analytics.ts
++++ b/src/app/lib/analytics.ts
+@@ -68,3 +68,3 @@ export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
+-export function safeSerializeError(err: unknown, maxDepth = 3): string {
++export function safeSerializeError(err: unknown, maxDepth = 3, maxKeysPerLevel = 50): string {
+   const seen = new WeakSet();
+@@ -82,3 +82,4 @@ export function safeSerializeError(err: unknown, maxDepth = 3): string {
+       const isArr = Array.isArray(value);
+       const out: any = isArr ? [] : {};
+-      for (const k of Object.keys(value)) {
++      const keys = Object.keys(value).slice(0, maxKeysPerLevel);
++      for (const k of keys) {
 ```

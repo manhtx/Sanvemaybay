@@ -25,6 +25,36 @@ export interface BookingParams {
   };
 }
 
+export const APPROVED_BOOKING_DOMAINS = new Set([
+  "google.com",
+  "skyscanner.com",
+  "skyscanner.net",
+  "kayak.com",
+  "vietjetair.com",
+  "vietnamairlines.com",
+  "bambooairways.com",
+  "vietravelairlines.com",
+  "tripadvisor.com",
+  "partner.example",
+]);
+
+/**
+ * Validates that an outbound partner booking URL is HTTPS and belongs to an approved partner domain.
+ */
+export function isSafeOutboundBookingUrl(urlStr: string): boolean {
+  if (!urlStr || typeof urlStr !== "string") return false;
+  try {
+    const parsed = new URL(urlStr);
+    if (parsed.protocol !== "https:") return false;
+    const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
+    return Array.from(APPROVED_BOOKING_DOMAINS).some(
+      (domain) => hostname === domain || hostname.endsWith("." + domain)
+    );
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Converts YYYY-MM-DD → YYMMDD (Skyscanner URL format)
  */
@@ -89,7 +119,7 @@ export function getBestBookingUrl(p: BookingParams): string {
   return buildGoogleFlightsUrl(p);
 }
 
-/** Use an affiliate URL only when the server marked it as live and approved. */
+/** Use an affiliate URL only when the server marked it as live and approved, and the target is verified safe. */
 export function getEffectiveDealBookingUrl(deal: {
   affiliateUrl?: string;
   affiliateNetwork?: string;
@@ -97,9 +127,14 @@ export function getEffectiveDealBookingUrl(deal: {
   bookingUrl?: string;
 }, fallback: string): string {
   if (deal.linkKind === "live_affiliate" && deal.affiliateNetwork && deal.affiliateUrl) {
-    return deal.affiliateUrl;
+    if (isSafeOutboundBookingUrl(deal.affiliateUrl)) {
+      return deal.affiliateUrl;
+    }
   }
-  return deal.bookingUrl || fallback;
+  if (deal.bookingUrl && isSafeOutboundBookingUrl(deal.bookingUrl)) {
+    return deal.bookingUrl;
+  }
+  return fallback;
 }
 
 /**
