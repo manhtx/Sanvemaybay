@@ -60,6 +60,28 @@ if (fs.existsSync(STATE_FILE)) {
   }
 }
 
+// A paused/terminal mission is not an active continuation request.  In
+// particular, do not let the fallback below turn an audit pause into a
+// permanent "still working" state.
+const NON_CONTINUABLE_STATUSES = new Set([
+  'IDLE',
+  'PAUSED_FOR_USER_AUDIT',
+  'PAUSED',
+  'BLOCKED',
+  'BLOCKED_BY_LINTER',
+  'HARD_BLOCKED',
+  'COMPLETED',
+  'TERMINATED'
+]);
+
+if (NON_CONTINUABLE_STATUSES.has(state.status)) {
+  console.log(JSON.stringify({
+    decision: 'allow',
+    reason: `Mission state is ${state.status}; no autonomous continuation is admissible.`
+  }));
+  process.exit(0);
+}
+
 // 3. Handle Token Budget or Invocation Limit
 if (terminationReason === 'MAX_TOKEN_BUDGET_EXCEEDED' || terminationReason === 'MAX_INVOCATIONS' || terminationReason === 'MAX_FORCED_INVOCATIONS') {
   state.pausedReason = terminationReason;
@@ -196,10 +218,11 @@ if (state.status === 'EXECUTING_GOAL') {
   );
 
   if (executedInCycle.length === 0) {
-    // Tasks have NOT been executed yet! DO NOT SKIP OR JUMP!
+    // A Stop hook cannot execute a task.  Continuing here used to leave the
+    // UI in a liveness loop with no new model work scheduled.
     console.log(JSON.stringify({
-      decision: 'continue',
-      reason: `[PERPETUAL ENGINE - YÊU CẦU THỰC THI TASK] Goal [${state.cycleId || 'ACTIVE'}] có prompt nhưng CHƯA THỰC THI TASK NÀO! Tuyệt đối CẤM nhảy cóc. Lập tức đọc LATEST_MASTER_GOAL_PROMPT.md, khởi động transactional-task-manager.mjs beginTask, và thực thi các task sửa code trong dự án!`
+      decision: 'allow',
+      reason: `[CONTINUATION NOT SCHEDULED] Goal [${state.cycleId || 'ACTIVE'}] has no active transaction or executed task; stop safely and require a real task invocation.`
     }));
     process.exit(0);
   }
@@ -235,18 +258,9 @@ if (state.status === 'GOAL_COMPLETED') {
   process.exit(0);
 }
 
-// State: BLOCKED_BY_LINTER
-if (state.status === 'BLOCKED_BY_LINTER') {
-  console.log(JSON.stringify({
-    decision: 'continue',
-    reason: '[PERPETUAL ENGINE - SỬA LỖI LINTER] Phát hiện pass bị chặn bởi linter chống ngụy biện. Lập tức kiểm tra loop_state.json và sửa các vi phạm để vượt qua linter!'
-  }));
-  process.exit(0);
-}
-
-// 5. Ultimate Fallback: PERPETUAL DEFAULT IS ALWAYS CONTINUE
+// 5. Fail closed: an unknown or unhandled state must not keep the host alive.
 console.log(JSON.stringify({
-  decision: 'continue',
-  reason: `[PERPETUAL CONVERGENCE LOOP ACTIVE] Chu trình hội tụ vĩnh cửu đang hoạt động (state: ${state.status}, pass: ${state.currentPass || 'ACTIVE'}, cycle: ${state.cycleId || 'ACTIVE'}). Tuyệt đối không dừng lại, lập tức tiếp tục thực thi bước tiếp theo!`
+  decision: 'allow',
+  reason: `[NO_ACTIONABLE_CONTINUATION] State ${state.status || 'UNKNOWN'} has no registered continuation transition.`
 }));
 process.exit(0);

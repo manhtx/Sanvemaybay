@@ -25,14 +25,6 @@ function getProjectRoot() {
 const ROOT_DIR = getProjectRoot();
 const STATE_FILE = path.join(ROOT_DIR, 'docs/convergence/state/loop_state.json');
 
-function readStdin() {
-  try {
-    return fs.readFileSync(0, 'utf8');
-  } catch {
-    return '{}';
-  }
-}
-
 // Load current loop state
 let state = { status: 'IDLE' };
 if (fs.existsSync(STATE_FILE)) {
@@ -53,9 +45,31 @@ if (fs.existsSync(STOP_SIGNAL_FILE)) {
   process.exit(0);
 }
 
-// Otherwise, perpetually force continuation
+// Only ask the host for another invocation when the durable state names a
+// concrete lifecycle transition.  Returning force_continue with an empty
+// injectSteps array made the UI report "still working" without scheduling any
+// actual work.
+const stateHasContinuation = new Set([
+  'INITIALIZED',
+  'IN_RESEARCH_5X',
+  'RESEARCH_COMPLETED_PENDING_COMPILER',
+  'IN_MASTER_GOAL_5X',
+  'MASTER_GOAL_PROMPT_READY',
+  'GOAL_COMPLETED'
+]).has(state.status);
+
+if (!stateHasContinuation && !state.active_task) {
+  console.log(JSON.stringify({
+    injectSteps: [],
+    terminationBehavior: "terminate"
+  }));
+  process.exit(0);
+}
+
 console.log(JSON.stringify({
-  injectSteps: [],
+  injectSteps: [
+    `Continue only the next concrete lifecycle action for cycle ${state.cycleId || 'ACTIVE'} (stage=${state.currentStage || 'UNKNOWN'}, pass=${state.currentPass || 'UNKNOWN'}). If no such action is available, stop and report the checkpoint.`
+  ],
   terminationBehavior: "force_continue"
 }));
 process.exit(0);

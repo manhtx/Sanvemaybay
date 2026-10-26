@@ -44,8 +44,8 @@ To prevent AI complacency, evasion, and unfeasible hallucinations:
 
 ## 5. CONTINUOUS LOOP & HANDOVER MECHANISM
 1. **Chat Canvas Injection**: Render the verbatim Pass G5 Master Goal Prompt into the chat canvas inside a fenced `markdown` block.
-2. **Autonomous Continuation**: Automatically begin task execution of the new Goal without waiting for external prompting.
-3. **Loop Persistence**: When Goal N completes and tests pass with remote Git verification, the 5x5 convergence cycle automatically triggers for Goal N+1.
+2. **Bounded Autonomous Continuation**: Automatically continue only when the durable state names a concrete next lifecycle action. A hook must never keep the host alive with an empty continuation payload; if no action is scheduled, terminate and preserve the checkpoint.
+3. **Loop Persistence**: When Goal N completes and tests pass with remote Git verification, the 5x5 convergence cycle may trigger Goal N+1. `PAUSED`, `BLOCKED`, `BLOCKED_BY_LINTER`, terminal, unknown, and user-audit states are allowed to terminate and must not be re-armed by a Stop hook.
 
 ## 6. SOLUTION CAGE PROTOCOL 2.0 (STRICT ZERO-DEVIATION LOCK)
 1. **1:1 Research-to-Goal Binding**: Every single solution identified in Research R5 (`SOL-[ID]`) must be mechanically incorporated into Section D & E of Master Goal G5. The linter enforces 100% presence; any dropped solution causes immediate `BLOCKED_BY_LINTER: SOLUTION_CAGE_LEAKAGE`.
