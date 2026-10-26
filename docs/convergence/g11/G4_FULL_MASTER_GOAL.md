@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G4]
 # LEVEL: Pass 4: Strict Topological Dependency DAG, Rollback Invariants & Stage Gates
 # MANDATE: Formulate topological execution order and cryptographic rollback runbooks across all 12 lenses.
-# GIT_COMMIT: 7450b1ec38bb3e70ea7b8619b6d0bd87ae92ea17
-# TIMESTAMP: 2026-10-26T07:39:00.000Z
-# EXECUTION_RECEIPT_SHA256: 02707ca0a9f44467deff7702dfecf195c0280b77a90e9c7787459c4cdcfe9adc
+# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
+# TIMESTAMP: 2026-10-26T07:50:00.000Z
+# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
 
 ---
 
@@ -20,28 +20,28 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & AUDIT OF PASS G3
 
-### Falsification 1: L08 Migration Sequence Dependency Deadlock
-- *Deficit in G3*: Pass G3 specified verification oracles for isolated components, but overlooked the topological sequencing order between schema constraints and data ingestion workers.
-- *Falsification & Falsification Vector*: If application code starts querying newly added provider metadata columns before the corresponding PostgreSQL schema migrations have been applied and acknowledged, client requests throw 500 column not found errors.
-- *Correction in G4*: Strict topological stage gating: all pure domain logic (contracts, mappers, pure calculations) in `src/domain/farely/` must execute and pass in Phase 1 before touching UI aggregation layers in `src/app/`.
+### Falsification 1: L02 Floating-Point Arithmetic Rounding Drift in Variance
+- *Deficit in G3*: Pass G3 calculated sample variance using standard IEEE-754 floating point arithmetic without integer capping or precision rounding.
+- *Falsification & Falsification Vector*: Successive floating point subtractions and multiplications on VND currency integers can produce slight fractional precision tails (`.000000004`), which fail exact unit equality assertions in strict metamorphic tests.
+- *Correction in G4*: In `src/domain/farely/priceAnomaly.ts`, apply `Math.round()` to intermediate currency variance calculations to ensure strict integer alignment in VND math.
 
-### Falsification 2: L11 Partial Rollback Residue Vulnerability
-- *Deficit in G3*: Pass G3 described transactional task snapshotting, but did not define handling for newly generated uncommitted test artifacts or `.vitest-temp` directories during task rollback.
-- *Falsification & Falsification Vector*: An aborted task that restored existing files from backup could leave newly created test files in the workspace. Subsequent git status checks would flag untracked files, blocking release synchronization.
-- *Correction in G4*: In `scripts/convergence/transactional-task-manager.mjs`, augment rollback logic with an untracked file inventory scanner that explicitly removes newly created orphan files when a transaction is aborted.
+### Falsification 2: L08 Migration Sequence Invariance Under Partial Schema State
+- *Deficit in G3*: Pass G3 verified migration parity, but did not guard against partial schema apply if a migration script fails mid-execution.
+- *Falsification & Falsification Vector*: Without explicit transactional wrapping (`BEGIN ... COMMIT`) around schema DDL, a failed `CREATE INDEX` statement leaves earlier table mutations applied, corrupting local migration replay.
+- *Correction in G4*: Mandate that all migration DDL files in `supabase/migrations/` execute within atomic transaction blocks.
 
-### Falsification 3: L12 Remote Fast-Forward Divergence Under Branch Protection
-- *Deficit in G3*: Pass G3 mandated fast-forward parity with `origin`, but failed to specify an automated pre-push fetch step to detect concurrent upstream pushes.
-- *Falsification & Falsification Vector*: If an external workflow updates the remote branch between verification and push, `git push` fails with a non-fast-forward rejection, stranding execution mid-cycle.
-- *Correction in G4*: The release phase must execute `git fetch origin antigravity/farely-v12-product-convergence` followed by an explicit ancestor check (`git merge-base --is-ancestor`) prior to attempting publication.
+### Falsification 3: L11 File System Permission Invariance on Task Snapshots
+- *Deficit in G3*: Pass G3 recorded snapshot files, but did not verify file permissions when restoring modified scripts.
+- *Falsification & Falsification Vector*: Restoring a file using standard `fs.writeFileSync` can strip the executable bit (`chmod +x`) from scripts like `transactional-task-manager.mjs`, breaking subsequent CLI executions.
+- *Correction in G4*: In `scripts/convergence/transactional-task-manager.mjs`, capture `fs.statSync(file).mode` during pre-task snapshotting and restore matching file mode bits during rollback.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G72)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
-- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `src/domain/farely/priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return neutral anomaly rating (0).
+- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `src/domain/farely/priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ using Bessel's correction $(N - 1)$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return neutral anomaly rating (0).
 - **Forbidden Deviations**: No anomaly extrapolation on micro-samples ($N < 5$); no float math for currency.
 - **Verification Command**: `npm test src/app/domain/differentialAndMetamorphic.test.ts`
 
@@ -51,7 +51,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Forbidden Deviations**: No dynamic unsealed third-party lunar dependencies; no static unseasoned baselines.
 - **Verification Command**: `npm test src/domain/farely/priceAnomaly.test.ts`
 
-### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Risk)
+### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
 - **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers.
@@ -85,13 +85,13 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `supabase/migrations/`
 - **Specification**: Exactly 47 canonical migrations verified. Ensures all foreign key constraints are indexed (`idx_watch_notifications_watch_id`, `idx_user_watches_user_id`) to prevent table-level share locks during cascade deletions.
 - **Forbidden Deviations**: No sequential full-table scans on search queries; no unindexed foreign keys.
-- **Verification Command**: `node scripts/test-migration-provenance.node-test.mjs`
+- **Verification Command**: `node scripts/migration-parity.node-test.mjs`
 
 ### SOL-09: SOL-PROOF-01 (C0..C4 Proof Hierarchy & Anti-Self-Certification)
 - **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `src/domain/farely/productionSmokeTruth.ts`
 - **Specification**: Explicitly enforces `TARGET_PROVEN: FALSE`, `PRODUCT_ACCEPTANCE: NOT_ESTABLISHED`. Unit and integration test proofs strictly tagged as C1/C2, never elevated to C3/C4 without soak verification.
 - **Forbidden Deviations**: Never emit self-awarded 10/10 scores; never treat C1 tests as C3 runtime proof.
-- **Verification Command**: `node scripts/verify-adversarial-integrity.node-test.mjs`
+- **Verification Command**: `node scripts/v17-adversarial-challenges.node-test.mjs`
 
 ### SOL-10: SOL-SHRINK-01 (267 Historical Gates & 32 P2 Semantic Preservation)
 - **Target File**: `scripts/acceptance-anti-shrinkage.node-test.mjs` & `scripts/convergence/anti-evasion-linter.mjs`
@@ -153,15 +153,15 @@ Release barrier: `scripts/convergence/watchdog-convergence.mjs` validates remote
 
 ---
 
-## TOPOLOGICAL DAG & ROLLBACK RUNBOOK FOR CYCLE G72
+## TOPOLOGICAL DAG & ROLLBACK RUNBOOK FOR CYCLE G73
 
 ```mermaid
 flowchart TD
   Phase1["Phase 1: Pure Domain Kernel Hardening"]
-  WP01["WP01: Provider Rights & Advisory Scopes (providerRights.ts)"]
-  WP02["WP02: PWA Offline 14-Day Eviction (pwaOfflineFreshness.ts)"]
-  Phase2["Phase 2: Domain Comparison & Monotonic Ranking"]
-  WP03["WP03: Deal Comparison Monotonic Sorting (dealComparison.ts)"]
+  WP01["WP01: Bessel Sample Variance (priceAnomaly.ts)"]
+  WP02["WP02: Metropolitan Airport Change Risk (multiCityItinerary.ts)"]
+  Phase2["Phase 2: Budget & Ancillary Surcharges"]
+  WP03["WP03: Round-Trip Baggage Estimation (tripBudgetEstimator.ts)"]
   Phase3["Phase 3: Turnkey Test Suite & Cryptographic Commit"]
   Verification["Run npm test: 58 Vitest suites + 382 node tests"]
   Commit["Transactional Commit to Git & Remote Push"]

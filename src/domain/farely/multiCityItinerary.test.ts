@@ -4,6 +4,7 @@ import {
   FictitiousSingleOfferError,
   InvalidMultiCitySequenceError,
   ItinerarySlice,
+  isMetropolitanAirportChange,
 } from "./multiCityItinerary";
 
 describe("Multi-City Itinerary Coherence (F41)", () => {
@@ -142,5 +143,15 @@ describe("Multi-City Itinerary Coherence (F41)", () => {
     expect(result.isValid).toBe(true);
     expect(result.coherenceType).toBe("SELF_TRANSFER_UNPROTECTED");
     expect(result.selfTransferWarningVi).toContain("nối chuyến tự túc (Self-transfer)");
+  });
+
+  describe("SOL-03: Metropolitan Split-Airport Identification", () => {
+    it("identifies inter-airport transfers across metropolitan airport pairs", () => {
+      expect(isMetropolitanAirportChange("HND", "NRT")).toBe(true);
+      expect(isMetropolitanAirportChange("NRT", "HND")).toBe(true);
+      expect(isMetropolitanAirportChange("DMK", "BKK")).toBe(true);
+      expect(isMetropolitanAirportChange("hnd", "nrt")).toBe(true); // Case-insensitive
+      expect(isMetropolitanAirportChange("HAN", "SGN")).toBe(false);
+    });
   });
 });

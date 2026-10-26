@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   detectPriceAnomaly,
+  calculateSampleStandardDeviation,
 } from "./priceAnomaly";
 
 describe("Price Anomaly Detection (F37)", () => {
@@ -126,6 +127,23 @@ describe("Price Anomaly Detection (F37)", () => {
       expect(offerResult.classification).toBe("STRONG_DROP_ANOMALY");
       expect(offerResult.cohortScope).toBe("IDENTICAL_OFFER");
       expect(offerResult.explanationVi).toContain("chính chuyến bay này");
+    });
+  });
+
+  describe("SOL-01: Bessel's Correction Sample Variance", () => {
+    it("calculates unbiased Bessel-corrected sample standard deviation for N >= 2", () => {
+      const prices = [1_000_000, 1_200_000, 1_100_000, 1_300_000, 1_400_000];
+      const { mean, sampleVariance, sampleStdDev } = calculateSampleStandardDeviation(prices);
+      expect(mean).toBe(1_200_000);
+      expect(sampleVariance).toBe(25_000_000_000); // 100e9 / 4 = 25e9
+      expect(sampleStdDev).toBeCloseTo(158113.88, 1);
+    });
+
+    it("safely handles single sample without zero division error", () => {
+      const { mean, sampleVariance, sampleStdDev } = calculateSampleStandardDeviation([1_500_000]);
+      expect(mean).toBe(1_500_000);
+      expect(sampleVariance).toBe(0);
+      expect(sampleStdDev).toBe(0);
     });
   });
 });

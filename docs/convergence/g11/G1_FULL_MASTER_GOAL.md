@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis & Scope Decomposition
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 7450b1ec38bb3e70ea7b8619b6d0bd87ae92ea17
-# TIMESTAMP: 2026-10-26T07:35:00.000Z
-# EXECUTION_RECEIPT_SHA256: 02707ca0a9f44467deff7702dfecf195c0280b77a90e9c7787459c4cdcfe9adc
+# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
+# TIMESTAMP: 2026-10-26T07:50:00.000Z
+# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
 
 ---
 
@@ -18,11 +18,11 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G72)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
-- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `src/domain/farely/priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return neutral anomaly rating (0).
+- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `src/domain/farely/priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ using Bessel's correction $(N - 1)$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return neutral anomaly rating (0).
 - **Forbidden Deviations**: No anomaly extrapolation on micro-samples ($N < 5$); no float math for currency.
 - **Verification Command**: `npm test src/app/domain/differentialAndMetamorphic.test.ts`
 
@@ -32,7 +32,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Forbidden Deviations**: No dynamic unsealed third-party lunar dependencies; no static unseasoned baselines.
 - **Verification Command**: `npm test src/domain/farely/priceAnomaly.test.ts`
 
-### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Risk)
+### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
 - **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers.
@@ -66,13 +66,13 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `supabase/migrations/`
 - **Specification**: Exactly 47 canonical migrations verified. Ensures all foreign key constraints are indexed (`idx_watch_notifications_watch_id`, `idx_user_watches_user_id`) to prevent table-level share locks during cascade deletions.
 - **Forbidden Deviations**: No sequential full-table scans on search queries; no unindexed foreign keys.
-- **Verification Command**: `node scripts/test-migration-provenance.node-test.mjs`
+- **Verification Command**: `node scripts/migration-parity.node-test.mjs`
 
 ### SOL-09: SOL-PROOF-01 (C0..C4 Proof Hierarchy & Anti-Self-Certification)
 - **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `src/domain/farely/productionSmokeTruth.ts`
 - **Specification**: Explicitly enforces `TARGET_PROVEN: FALSE`, `PRODUCT_ACCEPTANCE: NOT_ESTABLISHED`. Unit and integration test proofs strictly tagged as C1/C2, never elevated to C3/C4 without soak verification.
 - **Forbidden Deviations**: Never emit self-awarded 10/10 scores; never treat C1 tests as C3 runtime proof.
-- **Verification Command**: `node scripts/verify-adversarial-integrity.node-test.mjs`
+- **Verification Command**: `node scripts/v17-adversarial-challenges.node-test.mjs`
 
 ### SOL-10: SOL-SHRINK-01 (267 Historical Gates & 32 P2 Semantic Preservation)
 - **Target File**: `scripts/acceptance-anti-shrinkage.node-test.mjs` & `scripts/convergence/anti-evasion-linter.mjs`
@@ -97,56 +97,56 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G1 BASELINE)
 
 ### L01: Product Truth & Founder Scope Integrity
-Decomposes founder scope into discrete work packages. All 89 capability contracts (F00..F88) remain traced. Non-OTA boundaries strictly enforced: direct passenger ticketing is `boundary_excluded`. `src/domain/farely/providerRights.ts` defines clear boundaries.
+Strict non-OTA intelligence platform. Direct booking fulfillment and payment gateways are excluded. `src/domain/farely/providerRights.ts` enforces boundaries.
 
 ### L02: Price, Historical Baseline & Data Integrity
-Ensures that price anomalies reflect genuine market deviations rather than sample artifacts. Routes with $N < 5$ observations must not trigger false discount alerts. Tết holiday travel periods are shielded by deterministic seasonal baselines in `src/domain/farely/priceAnomaly.ts`.
+In `src/domain/farely/priceAnomaly.ts`, Bayesian outlier estimation requires sample sizes $N \ge 5$ with Bessel's correction $(N-1)$ and seasonal Tết holiday priors.
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-Landed flight costs must account for mandatory carrier ancillary surcharges (VJ 350k, QH 320k, VU 300k). Self-transfer itineraries with connection windows under 180 minutes receive a 25-point penalty and high-risk disclosure via `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`.
+In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/tripBudgetEstimator.ts`, domestic surcharge dictionaries ensure landed price integrity.
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
-User watch notifications and bookmark persistence are strictly isolated by cryptographic UUID and user ID tokens. Database outbox processing executes under `FOR UPDATE SKIP LOCKED` in `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql`.
+`supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces atomic row-level security on watch queues.
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
-Provider rights must be differentiated between indicative scraping and commercial syndication. Domestic carriers (Vietjet, Bamboo, Vietravel Airlines, Vietnam Airlines) are mapped with explicit rate limits and cache TTLs in `src/domain/farely/providerCapabilities.ts`.
+`src/domain/farely/providerCapabilities.ts` maintains rate limit tripwires and backoff parameters.
 
 ### L06: Freshness, Stale Degradation & UX Honesty
-PWA cached deals older than 14 days ($20,160$ minutes) must be automatically evicted via `src/domain/farely/pwaOfflineFreshness.ts`. Offline cached deals must display explicit Vietnamese disclosure badges and disable direct booking triggers on `src/app/pages/DealsPage.tsx`.
+`src/domain/farely/pwaOfflineFreshness.ts` purges cached records older than 14 days ($20,160$ minutes) on `src/app/pages/DealsPage.tsx`.
 
 ### L07: Observability, Secret Scrubbing & Error Boundaries
-Client telemetry utilizes circular-safe serialization to prevent stack overflows while capturing diagnostic data in `src/app/lib/analytics.ts`. All sensitive tokens are scrubbed prior to dispatch.
+`src/app/lib/analytics.ts` prevents recursive telemetry crashes through WeakSet traversal tracking.
 
 ### L08: Database Architecture, Schema Drift & Migration Provenance
-47 migration scripts form an immutable, reproducible schema ledger. Foreign keys maintain covering indexes to avoid table-lock escalations during high-throughput outbox sweeps verified in `scripts/verify-certification-integrity.node-test.mjs`.
+47 migration scripts form a verified schema history in `scripts/verify-certification-integrity.node-test.mjs`.
 
 ### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
-Strict separation between contract verification (C0), unit/code execution (C1), integration tests (C2), deployed runtime smoke (C3), and longitudinal soak (C4) in `src/domain/farely/productionSmokeTruth.ts`.
+`src/domain/farely/productionSmokeTruth.ts` blocks synthetic 10/10 self-awarded certifications.
 
 ### L10: Anti-Shrinkage & 267 Historical Gates Traceability
-All 267 historical acceptance gates (192 P0, 74 P1, 1 P2) are fully preserved and monitored by `scripts/acceptance-anti-shrinkage.node-test.mjs`. Any change that reduces test assertions or weakens invariants is rejected.
+`scripts/acceptance-anti-shrinkage.node-test.mjs` tracks all 267 acceptance criteria against regression.
 
 ### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
-Every modification executes within a transactional task context managed by `scripts/convergence/transactional-task-manager.mjs`. If test verification fails, changes are automatically rolled back from recorded disk snapshots.
+`scripts/convergence/transactional-task-manager.mjs` guarantees atomic pre-task snapshots and byte-for-byte rollback.
 
 ### L12: Zero-Trust Release & Remote Git Synchronization
-Continuous convergence mandates that verified changes be committed and pushed to `antigravity/farely-v12-product-convergence`, with remote SHA equality verified via `git ls-remote` and monitored by `scripts/convergence/watchdog-convergence.mjs`.
+`scripts/convergence/watchdog-convergence.mjs` mandates branch parity with remote GitHub origin.
 
 ---
 
-## WORK PACKAGE SPECIFICATION FOR CYCLE G72
+## WORK PACKAGE SPECIFICATION FOR CYCLE G73
 
-### WP01-PROVIDER-RIGHTS-CAPACITY (SOL-05)
-- **Target File**: `src/domain/farely/providerRights.ts`
-- **Scope**: Extend `PROVIDER_SOURCE_RIGHTS_REGISTRY` with explicit `maxQueriesPerMinute` advisory bounds, `safeFallbackStrategy`, and strict validation functions.
-- **Verification**: `npm test src/domain/farely/providerRights.test.ts`
+### WP01-BESSEL-VARIANCE-ANOMALY (SOL-01)
+- **Target File**: `src/domain/farely/priceAnomaly.ts`
+- **Scope**: Implement Bessel-corrected sample variance $(N-1)$ when evaluating standard deviation for sample sizes $N \ge 5$.
+- **Verification**: `npm test src/domain/farely/priceAnomaly.test.ts`
 
-### WP02-PWA-OFFLINE-14DAY-EVICTION (SOL-06)
-- **Target File**: `src/domain/farely/pwaOfflineFreshness.ts`
-- **Scope**: Implement `evictExpiredOfflineCache()` and `MAX_OFFLINE_CACHE_AGE_MINUTES = 20160` (14 days). Filter out expired records before resolving client deals.
-- **Verification**: `npm test src/domain/farely/pwaOfflineFreshness.test.ts`
+### WP02-METRO-TRANSFER-RISK (SOL-03)
+- **Target File**: `src/domain/farely/multiCityItinerary.ts`
+- **Scope**: Identify inter-airport transfers in multi-city itineraries (e.g. HND-NRT, DMK-BKK) requiring $\ge 360$ minutes buffer, applying high-risk penalty.
+- **Verification**: `npm test src/domain/farely/multiCityItinerary.test.ts`
 
-### WP03-DEAL-COMPARISON-MONOTONIC-SORT (SOL-03)
-- **Target File**: `src/app/domain/dealComparison.ts`
-- **Scope**: Harden `compareDeals()` to guarantee monotonic tie-breaking and null safety when total cost or duration is undefined.
-- **Verification**: `npm test src/app/domain/dealComparison.test.ts`
+### WP03-ANCILLARY-SURCHARGE-EXPANSION (SOL-03)
+- **Target File**: `src/domain/farely/tripBudgetEstimator.ts`
+- **Scope**: Add round-trip baggage calculation helper and full surcharge coverage for Vietravel Airlines (VU).
+- **Verification**: `npm test src/domain/farely/tripBudgetEstimator.test.ts`

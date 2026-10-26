@@ -92,6 +92,17 @@ export function calculateLandedFlightCost(params: {
   return Math.round(Number(params.baseFare) + baggageCost + surcharges.fee);
 }
 
+/**
+ * Estimates round-trip baggage fees for a carrier.
+ */
+export function estimateRoundTripBaggageCost(airlineCode: string, checkedBags: number = 1): number {
+  const code = (airlineCode || "").toUpperCase();
+  const surcharges = DOMESTIC_ANCILLARY_SURCHARGES[code];
+  if (!surcharges) return 0;
+  return Math.round(surcharges.baggage20kg * checkedBags * 2);
+}
+
+
 export interface TripBudgetEstimate {
   destinationCode: string;
   destinationName: string;

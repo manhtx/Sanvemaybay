@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-10-26T07:23:53.834Z",
+  "timestamp": "2026-10-26T07:44:19.809Z",
   "total_files_scanned": 313,
   "subsystems": {
     "farely_domain": {
       "path": "src/domain/farely",
       "file_count": 49,
-      "total_loc": 8629,
+      "total_loc": 8813,
       "files": [
         {
           "path": "src/domain/farely/airportAlternatives.test.ts",
@@ -145,19 +145,19 @@
         },
         {
           "path": "src/domain/farely/providerRights.test.ts",
-          "loc": 126
+          "loc": 148
         },
         {
           "path": "src/domain/farely/providerRights.ts",
-          "loc": 242
+          "loc": 277
         },
         {
           "path": "src/domain/farely/pwaOfflineFreshness.test.ts",
-          "loc": 91
+          "loc": 176
         },
         {
           "path": "src/domain/farely/pwaOfflineFreshness.ts",
-          "loc": 126
+          "loc": 168
         },
         {
           "path": "src/domain/farely/releaseTuple.ts",
@@ -208,7 +208,7 @@
     "app_domain": {
       "path": "src/app/domain",
       "file_count": 53,
-      "total_loc": 5874,
+      "total_loc": 5929,
       "files": [
         {
           "path": "src/app/domain/accountContinuity.test.ts",
@@ -244,11 +244,11 @@
         },
         {
           "path": "src/app/domain/dealComparison.test.ts",
-          "loc": 238
+          "loc": 272
         },
         {
           "path": "src/app/domain/dealComparison.ts",
-          "loc": 245
+          "loc": 266
         },
         {
           "path": "src/app/domain/decisionModes.test.ts",

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G2]
 # LEVEL: Pass 2: Hostile Before/After AST Diff Blueprint & Code Mutation Contracts
 # MANDATE: Subject baseline G1 to adversarial stress testing across all 12 lenses. Establish rigorous code-level AST diff blueprints.
-# GIT_COMMIT: 7450b1ec38bb3e70ea7b8619b6d0bd87ae92ea17
-# TIMESTAMP: 2026-10-26T07:37:00.000Z
-# EXECUTION_RECEIPT_SHA256: 02707ca0a9f44467deff7702dfecf195c0280b77a90e9c7787459c4cdcfe9adc
+# GIT_COMMIT: af8731c668458f641aa5a217ebf706f1ce5c88dc
+# TIMESTAMP: 2026-10-26T07:50:00.000Z
+# EXECUTION_RECEIPT_SHA256: c56460961379bb3e528f7a31e0f223ffbeaa7990973cf29dc5e204020f6453e3
 
 ---
 
@@ -20,28 +20,28 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## REFUTATION MATRIX & AUDIT OF PASS G1
 
-### Falsification 1: L03 Cost Monotonicity Under Incomplete Ancillary Data
-- *Deficit in G1*: Pass G1 proposed basic monotonic sorting in `dealComparison.ts`, but failed to define deterministic behavior when two flights share the same base price and both lack baggage fee declarations.
-- *Falsification & Falsification Vector*: Without an explicit secondary and tertiary tie-breaking mechanism (e.g., departing timestamp, carrier reliability tier, or duration), sorting results fluctuate non-deterministically across re-renders, causing visual jitter in the UI comparison table.
-- *Correction in G2*: In `src/app/domain/dealComparison.ts`, specify strict deterministic ordering: primary by `totalCost ?? ticketPrice`, secondary by `durationMinutes ?? 9999`, and tertiary by `id`.
+### Falsification 1: L02 Zero Variance Zero Division Vulnerability
+- *Deficit in G1*: Pass G1 specified Bessel-corrected sample variance $(N - 1)$, but overlooked cohorts where all historical prices are identical.
+- *Falsification & Falsification Vector*: If 5 historical fares are identical (e.g., promotional fixed fare of 500,000 VND), sample variance $\sum (x_i - \mu)^2$ is 0. Dividing by standard deviation $\sigma = 0$ yields `NaN` or `Infinity`, crashing downstream ranking filters.
+- *Correction in G2*: In `src/domain/farely/priceAnomaly.ts`, guard variance calculations: if $\sigma \le 0.05 \mu$ or variance is 0, return `modifiedZScore: 0` with classification `SPARSE_DATA_ABSTENTION`.
 
-### Falsification 2: L05 Provider Query Advisory Throttling Boundary
-- *Deficit in G1*: Pass G1 outlined advisory limits in `providerRights.ts`, but omitted execution-level rejection if a client caller queries an unregistered or unentitled route without fallback handling.
-- *Falsification & Falsification Vector*: An unhandled exception during route lookup can crash background feed aggregators when an upstream service sends an experimental carrier code.
-- *Correction in G2*: In `src/domain/farely/providerRights.ts`, define safe default capabilities (`canDisplayDirectly: false`, `cacheTtlSeconds: 300`) for unknown provider identifiers rather than throwing fatal runtime exceptions.
+### Falsification 2: L03 Metro Airport Change Buffer Asymmetry
+- *Deficit in G1*: Pass G1 proposed a 360-minute buffer for inter-airport transfers, but did not define directional transit pairs.
+- *Falsification & Falsification Vector*: Transit from Haneda (HND) to Narita (NRT) requires different clearance times than Narita to Haneda due to customs layout and Narita Express rail schedules.
+- *Correction in G2*: In `src/domain/farely/multiCityItinerary.ts`, implement bidirectional pair checks: `(from === 'HND' && to === 'NRT') || (from === 'NRT' && to === 'HND')` and `(from === 'DMK' && to === 'BKK') || (from === 'BKK' && to === 'DMK')`.
 
-### Falsification 3: L06 PWA Offline Cache Boundary & Eviction Monotonicity
-- *Deficit in G1*: Pass G1 declared a 14-day eviction rule, but did not define handling for malformed or unparseable `observedAt` / `cachedAt` ISO strings.
-- *Falsification & Falsification Vector*: If IndexedDB contains corrupted timestamps (`Invalid Date`), `new Date(deal.cachedAt).getTime()` evaluates to `NaN`, causing timestamp comparison `now - NaN` to evaluate to `NaN` and bypassing eviction logic entirely.
-- *Correction in G2*: In `src/domain/farely/pwaOfflineFreshness.ts`, parse timestamps with fallback to current epoch if `Number.isNaN(cachedTime)` occurs, guaranteeing immediate eviction of corrupt records.
+### Falsification 3: L01 Indicative Link Formatting Under Currency Deserialization
+- *Deficit in G1*: Pass G1 mandated outlink sanitization, but failed to specify currency parameter conversions for international carriers.
+- *Falsification & Falsification Vector*: Sending raw VND integers (`price=2500000`) to foreign partner endpoints expecting USD or THB results in checkout 400 Bad Request errors.
+- *Correction in G2*: In `src/domain/farely/providerRights.ts`, ensure partner links sanitize currency query parameters to the provider's native ISO currency code.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G72)
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS (CYCLE G73)
 
 ### SOL-01: SOL-DATA-01 (Null Preservation & Sample Size Threshold $N \ge 5$)
 - **Target File**: `src/app/data/api.ts` & `src/domain/farely/priceAnomaly.ts`
-- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `src/domain/farely/priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return neutral anomaly rating (0).
+- **Specification**: Helper `parseNullableNumber(val)` preserves `null` and `undefined` without coercion to 0. In `src/domain/farely/priceAnomaly.ts`, require both sample variance $\sigma > 0.05 \mu$ AND sample size $N \ge 5$ using Bessel's correction $(N - 1)$ before calculating z-scores. Routes with $N < 5$ yield `confidence: INSUFFICIENT_HISTORY` and return neutral anomaly rating (0).
 - **Forbidden Deviations**: No anomaly extrapolation on micro-samples ($N < 5$); no float math for currency.
 - **Verification Command**: `npm test src/app/domain/differentialAndMetamorphic.test.ts`
 
@@ -51,7 +51,7 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Forbidden Deviations**: No dynamic unsealed third-party lunar dependencies; no static unseasoned baselines.
 - **Verification Command**: `npm test src/domain/farely/priceAnomaly.test.ts`
 
-### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Risk)
+### SOL-03: SOL-COST-01 (Carrier Landed Surcharges & Self-Transfer Penalty)
 - **Target File**: `src/domain/farely/tripBudgetEstimator.ts` & `src/domain/farely/multiCityItinerary.ts`
 - **Specification**: Domestic surcharge dictionary: VJ (350k VND bag, 55k fee), QH (320k VND bag, 45k fee), VU (300k VND bag, 50k fee), VN (included bag, 0k fee). Multi-carrier self-transfers require 150m (domestic) or 240m (international). If below, deduct 25 points from deal score with flag `SELF_TRANSFER_HIGH_RISK`.
 - **Forbidden Deviations**: No naked base fare ranking; no unflagged interline transfers.
@@ -85,13 +85,13 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 - **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `supabase/migrations/`
 - **Specification**: Exactly 47 canonical migrations verified. Ensures all foreign key constraints are indexed (`idx_watch_notifications_watch_id`, `idx_user_watches_user_id`) to prevent table-level share locks during cascade deletions.
 - **Forbidden Deviations**: No sequential full-table scans on search queries; no unindexed foreign keys.
-- **Verification Command**: `node scripts/test-migration-provenance.node-test.mjs`
+- **Verification Command**: `node scripts/migration-parity.node-test.mjs`
 
 ### SOL-09: SOL-PROOF-01 (C0..C4 Proof Hierarchy & Anti-Self-Certification)
 - **Target File**: `scripts/verify-certification-integrity.node-test.mjs` & `src/domain/farely/productionSmokeTruth.ts`
 - **Specification**: Explicitly enforces `TARGET_PROVEN: FALSE`, `PRODUCT_ACCEPTANCE: NOT_ESTABLISHED`. Unit and integration test proofs strictly tagged as C1/C2, never elevated to C3/C4 without soak verification.
 - **Forbidden Deviations**: Never emit self-awarded 10/10 scores; never treat C1 tests as C3 runtime proof.
-- **Verification Command**: `node scripts/verify-adversarial-integrity.node-test.mjs`
+- **Verification Command**: `node scripts/v17-adversarial-challenges.node-test.mjs`
 
 ### SOL-10: SOL-SHRINK-01 (267 Historical Gates & 32 P2 Semantic Preservation)
 - **Target File**: `scripts/acceptance-anti-shrinkage.node-test.mjs` & `scripts/convergence/anti-evasion-linter.mjs`
@@ -116,13 +116,13 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 ## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX (G2 AST BLUEPRINTS)
 
 ### L01: Product Truth & Founder Scope Integrity
-In `src/domain/farely/providerRights.ts`, ensure provider definitions strictly reflect verification boundaries without admitting prohibited merchant booking execution features.
+In `src/domain/farely/providerRights.ts`, enforce strict non-OTA scope boundaries without admitting booking execution.
 
 ### L02: Price, Historical Baseline & Data Integrity
-In `src/domain/farely/priceAnomaly.ts`, verify that `isTetDeparture()` properly handles UTC vs local ICT offsets to avoid shifting midnight departures into non-Tet status.
+In `src/domain/farely/priceAnomaly.ts`, ensure `calculateSampleVariance()` divides by $(N - 1)$ for unbiased sample variance estimation.
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
-In `src/app/domain/dealComparison.ts`, ensure that comparisons rank dominant offers with strictly lower total landed cost higher, while preserving explicit null disclosures.
+In `src/domain/farely/multiCityItinerary.ts`, verify that `isMetropolitanAirportTransfer()` properly flags transit between different airports in the same metropolitan area.
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
 `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` guarantees that all watch evaluations enforce `auth.uid() = user_id` row-level tenancy.
@@ -153,71 +153,52 @@ In `src/app/domain/dealComparison.ts`, ensure that comparisons rank dominant off
 
 ---
 
-## AST MUTATION SPECIFICATIONS FOR CYCLE G72
+## AST MUTATION SPECIFICATIONS FOR CYCLE G73
 
-### WP01: AST BLUEPRINT FOR `src/domain/farely/providerRights.ts`
+### WP01: AST BLUEPRINT FOR `src/domain/farely/priceAnomaly.ts`
 ```typescript
-// AST Addition: Safe default rights and scope query validator
-export function getSafeProviderRights(providerId: string): ProviderSourceRights {
-  const existing = PROVIDER_SOURCE_RIGHTS_REGISTRY[providerId];
-  if (existing) return existing;
+// AST Addition: Bessel-corrected sample standard deviation
+export function calculateSampleStandardDeviation(prices: number[]): {
+  mean: number;
+  sampleVariance: number;
+  sampleStdDev: number;
+} {
+  const n = prices.length;
+  if (n < 2) return { mean: prices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };
+  const mean = prices.reduce((a, b) => a + b, 0) / n;
+  const sumSquaredDiffs = prices.reduce((acc, p) => acc + Math.pow(p - mean, 2), 0);
+  const sampleVariance = sumSquaredDiffs / (n - 1); // Bessel's correction
   return {
-    providerId,
-    sourceName: `Unknown Provider (${providerId})`,
-    licenseType: 'RESTRICTED',
-    declarationStatus: 'INTERNAL_DECLARATION',
-    canScrape: false,
-    canDisplayDirectly: false,
-    canCache: false,
-    cacheTtlSeconds: 0,
-    canRedistributeB2B: false,
-    canMonetizeAffiliate: false,
-    attributionRequired: true,
-    termsSummary: 'Unregistered source; strictly denied for external display or distribution.',
-    authorizedScopes: [],
+    mean,
+    sampleVariance,
+    sampleStdDev: Math.sqrt(sampleVariance),
   };
 }
+```
 
-export function isProviderQueryPermitted(providerId: string, scope: AuthorizedDataScope): boolean {
-  const rights = getSafeProviderRights(providerId);
-  return rights.authorizedScopes.includes(scope);
+### WP02: AST BLUEPRINT FOR `src/domain/farely/multiCityItinerary.ts`
+```typescript
+// AST Addition: Metropolitan split-airport transfer risk detection
+export const METROPOLITAN_AIRPORT_PAIRS = new Set([
+  'HND-NRT', 'NRT-HND', // Tokyo
+  'DMK-BKK', 'BKK-DMK', // Bangkok
+  'GMP-ICN', 'ICN-GMP', // Seoul
+  'LHR-LGW', 'LGW-LHR', // London
+  'JFK-EWR', 'EWR-JFK', // New York
+]);
+
+export function isMetropolitanAirportChange(fromAirport: string, toAirport: string): boolean {
+  return METROPOLITAN_AIRPORT_PAIRS.has(`${fromAirport}-${toAirport}`);
 }
 ```
 
-### WP02: AST BLUEPRINT FOR `src/domain/farely/pwaOfflineFreshness.ts`
+### WP03: AST BLUEPRINT FOR `src/domain/farely/tripBudgetEstimator.ts`
 ```typescript
-// AST Addition: 14-day eviction filter with corrupted timestamp safety
-export const MAX_OFFLINE_CACHE_AGE_MINUTES = 20160; // 14 days = 14 * 24 * 60
-
-export function evictExpiredOfflineDeals(
-  cachedDeals: CachedDealRecord[],
-  maxAgeMinutes: number = MAX_OFFLINE_CACHE_AGE_MINUTES,
-  nowIsoString: string = new Date().toISOString()
-): CachedDealRecord[] {
-  const nowMs = new Date(nowIsoString).getTime();
-  return cachedDeals.filter((deal) => {
-    const cachedTime = new Date(deal.cachedAt).getTime();
-    if (Number.isNaN(cachedTime)) return false; // Corrupt timestamp evicted immediately
-    const stalenessMinutes = (nowMs - cachedTime) / (60 * 1000);
-    return stalenessMinutes <= maxAgeMinutes;
-  });
-}
-```
-
-### WP03: AST BLUEPRINT FOR `src/app/domain/dealComparison.ts`
-```typescript
-// AST Modification: Monotonic tie-breaking in compareDeals
-export function sortComparisonRowsMonotonically(rows: DealComparisonRow[]): DealComparisonRow[] {
-  return [...rows].sort((a, b) => {
-    const costA = a.totalCost ?? a.ticketPrice;
-    const costB = b.totalCost ?? b.ticketPrice;
-    if (costA !== costB) return costA - costB;
-
-    const durA = a.durationMinutes ?? 9999;
-    const durB = b.durationMinutes ?? 9999;
-    if (durA !== durB) return durA - durB;
-
-    return a.id.localeCompare(b.id);
-  });
+// AST Addition: Round-trip baggage calculation helper
+export function estimateRoundTripBaggageCost(airlineCode: string, checkedBags: number = 1): number {
+  const normalized = airlineCode.toUpperCase();
+  const surcharges = DOMESTIC_ANCILLARY_SURCHARGES[normalized];
+  if (!surcharges) return 0;
+  return surcharges.baggagePerPieceVND * checkedBags * 2;
 }
 ```

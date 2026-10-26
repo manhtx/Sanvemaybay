@@ -233,3 +233,27 @@ export function detectPriceAnomaly(params: {
     cohortScope,
   };
 }
+
+/**
+ * Calculates unbiased sample standard deviation using Bessel's correction (N - 1).
+ * Guards against division by zero when sample size N <= 1.
+ */
+export function calculateSampleStandardDeviation(prices: number[]): {
+  mean: number;
+  sampleVariance: number;
+  sampleStdDev: number;
+} {
+  const n = prices.length;
+  if (n <= 1) {
+    return { mean: prices[0] ?? 0, sampleVariance: 0, sampleStdDev: 0 };
+  }
+  const mean = prices.reduce((a, b) => a + b, 0) / n;
+  const sumSquaredDiffs = prices.reduce((acc, p) => acc + Math.pow(p - mean, 2), 0);
+  const sampleVariance = Math.round(sumSquaredDiffs / (n - 1)); // Bessel's correction
+  return {
+    mean,
+    sampleVariance,
+    sampleStdDev: Math.sqrt(sampleVariance),
+  };
+}
+

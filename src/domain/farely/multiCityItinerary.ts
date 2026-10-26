@@ -137,3 +137,25 @@ export function validateMultiCityItinerary(params: {
     dealScorePenalty: isSelfTransfer ? 25 : 0,
   };
 }
+
+/**
+ * Recognized metropolitan airport pairs requiring surface transfer.
+ */
+export const METROPOLITAN_AIRPORT_PAIRS = new Set([
+  "HND-NRT", "NRT-HND", // Tokyo
+  "DMK-BKK", "BKK-DMK", // Bangkok
+  "GMP-ICN", "ICN-GMP", // Seoul
+  "LHR-LGW", "LGW-LHR", // London
+  "JFK-EWR", "EWR-JFK", // New York
+]);
+
+/**
+ * Checks whether two airports are distinct airports within the same metropolitan area,
+ * requiring ground surface transit between airports (e.g. Haneda to Narita).
+ */
+export function isMetropolitanAirportChange(fromAirport: string, toAirport: string): boolean {
+  if (!fromAirport || !toAirport) return false;
+  const key = `${fromAirport.trim().toUpperCase()}-${toAirport.trim().toUpperCase()}`;
+  return METROPOLITAN_AIRPORT_PAIRS.has(key);
+}
+
