@@ -96,4 +96,24 @@ describe("Vietnam Travel Context (F86 & F87)", () => {
     expect(getCarrierBaggagePolicy(undefined as any)).toBeNull();
     expect(getCarrierBaggagePolicy(null as any, true)).toBe(DEFAULT_CARRIER_BAGGAGE_POLICY);
   });
+
+  describe("SOL-TRAVELCTX-01: Enhanced Holiday & Baggage Dimension Tests", () => {
+    it("identifies Tet Duong Lich 2027 holiday context accurately", () => {
+      const newYearHoliday = getVietnamHolidayContext("2027-01-01");
+      expect(newYearHoliday).not.toBeNull();
+      expect(newYearHoliday?.name).toContain("Tết Dương lịch 2027");
+      expect(newYearHoliday?.peakDemand).toBe(true);
+    });
+
+    it("exposes CAAV compliant standard carry-on dimensions on carrier baggage policies", () => {
+      const vn = getCarrierBaggagePolicy("VN");
+      expect(vn?.maxCarryOnDimensionsCm).toBe("56 x 36 x 23 cm");
+
+      const vj = getCarrierBaggagePolicy("VJ");
+      expect(vj?.maxCarryOnDimensionsCm).toBe("56 x 36 x 23 cm");
+
+      const fallback = getCarrierBaggagePolicy("UNKNOWN", true);
+      expect(fallback?.maxCarryOnDimensionsCm).toContain("56 x 36 x 23 cm");
+    });
+  });
 });

@@ -40,12 +40,20 @@ export const VIETNAM_MAJOR_HOLIDAYS_2026: VietnamHoliday[] = [
     peakDemand: true,
     guidanceVi: "Kỳ nghỉ Quốc khánh: Nên theo dõi giá và kích hoạt Watch sớm từ 4-6 tuần.",
   },
+  {
+    name: "Tết Dương lịch 2027",
+    solarStartDate: "2026-12-31",
+    solarEndDate: "2027-01-03",
+    peakDemand: true,
+    guidanceVi: "Kỳ nghỉ Tết Dương lịch: Nhu cầu du lịch ngắn ngày và về quê tăng cao vào các ngày cuối tuần.",
+  },
 ];
 
 export interface CarrierBaggagePolicy {
   carrierCode: string;
   carrierName: string;
   standardCarryOnKg: number;
+  maxCarryOnDimensionsCm?: string;
   standardCheckedBagIncluded: boolean;
   defaultCheckedKgIfIncluded: number;
   baggageNoteVi: string;
@@ -56,6 +64,7 @@ export const VIETNAM_DOMESTIC_CARRIERS: Record<string, CarrierBaggagePolicy> = {
     carrierCode: "VN",
     carrierName: "Vietnam Airlines",
     standardCarryOnKg: 12,
+    maxCarryOnDimensionsCm: "56 x 36 x 23 cm",
     standardCheckedBagIncluded: true,
     defaultCheckedKgIfIncluded: 23,
     baggageNoteVi: "Đã bao gồm 1 kiện 12kg xách tay và 1 kiện 23kg ký gửi (trừ hạng Siêu tiết kiệm).",
@@ -64,6 +73,7 @@ export const VIETNAM_DOMESTIC_CARRIERS: Record<string, CarrierBaggagePolicy> = {
     carrierCode: "VJ",
     carrierName: "Vietjet Air",
     standardCarryOnKg: 7,
+    maxCarryOnDimensionsCm: "56 x 36 x 23 cm",
     standardCheckedBagIncluded: false,
     defaultCheckedKgIfIncluded: 0,
     baggageNoteVi: "Vé tiêu chuẩn chỉ gồm 7kg xách tay. Hành lý ký gửi cần mua thêm theo gói.",
@@ -72,6 +82,7 @@ export const VIETNAM_DOMESTIC_CARRIERS: Record<string, CarrierBaggagePolicy> = {
     carrierCode: "QH",
     carrierName: "Bamboo Airways",
     standardCarryOnKg: 7,
+    maxCarryOnDimensionsCm: "56 x 36 x 23 cm",
     standardCheckedBagIncluded: false,
     defaultCheckedKgIfIncluded: 0,
     baggageNoteVi: "Bao gồm 7kg xách tay. Hành lý ký gửi tùy thuộc vào điều kiện từng nhóm giá.",
@@ -80,6 +91,7 @@ export const VIETNAM_DOMESTIC_CARRIERS: Record<string, CarrierBaggagePolicy> = {
     carrierCode: "VU",
     carrierName: "Vietravel Airlines",
     standardCarryOnKg: 7,
+    maxCarryOnDimensionsCm: "56 x 36 x 23 cm",
     standardCheckedBagIncluded: false,
     defaultCheckedKgIfIncluded: 0,
     baggageNoteVi: "Bao gồm 7kg xách tay. Hành lý ký gửi tính phí theo bảng giá hãng.",
@@ -90,6 +102,7 @@ export const DEFAULT_CARRIER_BAGGAGE_POLICY: Readonly<CarrierBaggagePolicy> = Ob
   carrierCode: "DEFAULT",
   carrierName: "Hãng chưa cập nhật chính sách riêng",
   standardCarryOnKg: 7,
+  maxCarryOnDimensionsCm: "56 x 36 x 23 cm (tiêu chuẩn IATA/CAAV)",
   standardCheckedBagIncluded: false,
   defaultCheckedKgIfIncluded: 0,
   baggageNoteVi: "Mặc định 7kg xách tay tiêu chuẩn CAAV. Hành lý ký gửi cần xác nhận trực tiếp với hãng vận chuyển.",

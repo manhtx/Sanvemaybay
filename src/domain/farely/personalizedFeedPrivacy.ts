@@ -36,6 +36,8 @@ export interface RankedFeedItem {
   displayRank: number;
   isPersonalizedPromotion: boolean;
   rankingRationaleVi: string;
+  personalizedScoreDelta?: number;
+  matchedPreferenceRules?: string[];
 }
 
 // Prohibited demographic and covert profiling attributes
@@ -135,33 +137,56 @@ export function rankFeedWithPrivacyGuarantees(params: {
   }
 
   // 3. User opted in: Calculate ranking based ONLY on declared explicit criteria
+  const homeAirports = (preferences.homeAirports || []).slice(0, 10);
+  const preferredAirlines = (preferences.preferredAirlines || []).slice(0, 20);
+
   const scoredDeals = deals.map((deal) => {
     let score = deal.objectiveDealScore;
     const rationales: string[] = [];
+    const matchedRules: string[] = [];
 
     // Origin airport match
-    if (preferences.homeAirports && preferences.homeAirports.includes(deal.originCode)) {
+    if (homeAirports.length > 0 && homeAirports.includes(deal.originCode)) {
       score += 20;
       rationales.push(`Khởi hành từ sân bay bạn quan tâm (${deal.originCode})`);
+      matchedRules.push(`HOME_AIRPORT_${deal.originCode}`);
     }
 
     // Airline match
-    if (preferences.preferredAirlines && preferences.preferredAirlines.includes(deal.airlineCode)) {
+    if (preferredAirlines.length > 0 && preferredAirlines.includes(deal.airlineCode)) {
       score += 15;
       rationales.push(`Hãng bay ưu thích (${deal.airlineCode})`);
+      matchedRules.push(`PREFERRED_AIRLINE_${deal.airlineCode}`);
     }
 
     // Budget match
-    if (preferences.maxBudgetVND && deal.priceVND <= preferences.maxBudgetVND) {
+    if (
+      preferences.maxBudgetVND !== undefined &&
+      Number.isInteger(preferences.maxBudgetVND) &&
+      preferences.maxBudgetVND > 0 &&
+      deal.priceVND <= preferences.maxBudgetVND
+    ) {
       score += 10;
       rationales.push('Trong ngân sách đã đặt');
+      matchedRules.push('BUDGET_COMPLIANT');
     }
 
-    // Stop count filter
-    if (preferences.maxStops !== undefined && deal.stops <= preferences.maxStops) {
+    // Stop count filter - accurately handles maxStops = 0 (direct flight preference)
+    if (
+      preferences.maxStops !== undefined &&
+      Number.isInteger(preferences.maxStops) &&
+      preferences.maxStops >= 0 &&
+      deal.stops <= preferences.maxStops
+    ) {
       score += 5;
       rationales.push('Phù hợp số điểm dừng');
+      matchedRules.push(`MAX_STOPS_${preferences.maxStops}`);
     }
+
+    // SOL-PRIVACY-01: Cap total personalization boost at 35 points to maintain objective opportunity primacy
+    const rawDelta = score - deal.objectiveDealScore;
+    const cappedDelta = Math.min(35, Math.max(0, rawDelta));
+    const compositeScore = Math.min(100, deal.objectiveDealScore + cappedDelta);
 
     const isPromoted = rationales.length > 0;
     const rationaleText = isPromoted
@@ -170,15 +195,21 @@ export function rankFeedWithPrivacyGuarantees(params: {
 
     return {
       deal,
-      compositeScore: score,
+      compositeScore,
+      personalizedScoreDelta: cappedDelta,
+      matchedPreferenceRules: matchedRules,
       isPersonalizedPromotion: isPromoted,
       rankingRationaleVi: rationaleText,
     };
   });
 
+  // Multi-tier deterministic tie-breaking: compositeScore DESC -> priceVND ASC -> id ASC
   scoredDeals.sort((a, b) => {
     if (b.compositeScore !== a.compositeScore) {
       return b.compositeScore - a.compositeScore;
+    }
+    if (a.deal.priceVND !== b.deal.priceVND) {
+      return a.deal.priceVND - b.deal.priceVND;
     }
     return a.deal.id.localeCompare(b.deal.id);
   });
@@ -188,5 +219,7 @@ export function rankFeedWithPrivacyGuarantees(params: {
     displayRank: idx + 1,
     isPersonalizedPromotion: item.isPersonalizedPromotion,
     rankingRationaleVi: item.rankingRationaleVi,
+    personalizedScoreDelta: item.personalizedScoreDelta,
+    matchedPreferenceRules: item.matchedPreferenceRules,
   }));
 }

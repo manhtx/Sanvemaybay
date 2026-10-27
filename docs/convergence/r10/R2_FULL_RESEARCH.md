@@ -1,31 +1,31 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
-# CYCLE: G87
+# CYCLE: G88
 # LEVEL: Pass 2: Skeptical Empirical Grounding & Adversarial Falsification
-# MANDATE: Ruthlessly audit, stress-test, and falsify baseline assumptions from Pass R1 across all 12 Adversarial Lenses. Directly critique and dismantle lenses L02 (Economic Reality), L04 (Mathematical Proof), and L06 (Regulatory Protection) with concrete code line citations and rigorous counter-evidence.
-# GIT_COMMIT: 49917580f95ef93e3333b2a6977ef46c873fd22e
-# TIMESTAMP: 2026-10-27T09:14:00.000Z
-# EXECUTION_RECEIPT_SHA256: 4f4f8e68c913492e1fadb7df28e3fc3b5d7afd6562122c5cc320270bafec91f0
+# MANDATE: Ruthlessly challenge, stress-test, and falsify baseline assumptions from Pass R1 across all 12 Adversarial Lenses. Directly critique and dismantle lenses L02 (Economic Reality), L04 (Mathematical Proof), and L06 (Regulatory Protection) with concrete code line citations and rigorous counter-evidence.
+# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7
+# TIMESTAMP: 2026-10-27T09:27:00.000Z
+# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa
 
 ---
 
 ## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R1
 
-Pass R1 synthesized an initial exploratory baseline for Editorial Collections (`src/domain/farely/editorialCollections.ts`), Multi-City Itinerary Coherence (`src/domain/farely/multiCityItinerary.ts`), and Data Economics Optimization (`src/domain/farely/dataEconomics.ts`). However, Pass R1 succumbed to premature confirmation bias, overlooking serious structural, mathematical, and regulatory vulnerabilities. Pass R2 systematically dismantles and falsifies Pass R1 across three key lenses:
+Pass R1 synthesized a high-level baseline for Feed Privacy (`src/domain/farely/personalizedFeedPrivacy.ts`), Partner Integrations (`src/domain/farely/partnerIntegrations.ts`), and Vietnam Travel Context (`src/domain/farely/vietnamTravelContext.ts`). However, Pass R1 indulged in superficial assumptions and overlooked subtle logic bugs, falsifying Pass R1 across three core lenses:
 
-### 1. Falsification of Lens L04 (Mathematical Proof & Statistical Invariants) in `src/domain/farely/dataEconomics.ts#L173-L177`
-- **Flaws in Pass R1**: Pass R1 asserted that scan expansion utility is calculated as `estimatedMarginalValueVnd = Math.round(safeSubscribers * alertValue + expectedNewOpps * opportunityValue)`.
-- **R2 Empirical Falsification**: This mathematical formulation is decoupled from reality. Alert utility is structurally conditional upon opportunity discovery. If historical opportunity yield is negligible (`historicalOpportunityYieldPercent = 0`), then `expectedNewOpps = 0`. With zero opportunities discovered, zero alert dispatches can occur. Multiplying `safeSubscribers * alertValue` unconditionally creates synthetic phantom utility. It permits an operator to justify expensive GDS/OTA route scans on completely dormant routes simply because a high subscriber volume exists.
-- **R2 Corrective Invariant**: Alert utility must be bounded by discovery probability: `estimatedAlertUtility = Math.min(safeSubscribers, Math.ceil(expectedNewOpps * 5)) * alertValue`. If `expectedNewOpps === 0`, alert value is mathematically bounded to 0.
+### 1. Falsification of Lens L04 (Mathematical Proof & Statistical Invariants) in `src/domain/farely/personalizedFeedPrivacy.ts#L155-L165`
+- **Flaws in Pass R1**: Pass R1 claimed that `preferences.maxStops` filtering and scoring accurately respects explicit user constraints.
+- **R2 Empirical Falsification**: In `src/domain/farely/personalizedFeedPrivacy.ts#L155-L165`, checking `if (preferences.maxStops)` introduces a catastrophic truthiness bug in JavaScript. When a traveler explicitly requests direct non-stop flights (`maxStops = 0`), JavaScript evaluates `0` as falsy (`Boolean(0) === false`). Consequently, travelers seeking direct flights receive zero ranking boost for non-stop flights! Furthermore, if `maxBudgetVND` is passed as a negative number or zero, comparison `deal.priceVND <= preferences.maxBudgetVND` fails to validate positive integer pricing invariants.
+- **R2 Corrective Invariant**: Explicitly verify numeric presence using `preferences.maxStops !== undefined && Number.isInteger(preferences.maxStops) && preferences.maxStops >= 0`. When `deal.stops <= preferences.maxStops`, award the proper ranking boost even when `maxStops === 0`.
 
-### 2. Falsification of Lens L06 (Regulatory, Anti-Deception & Consumer Protection) in `src/domain/farely/editorialCollections.ts#L83`
-- **Flaws in Pass R1**: Pass R1 claimed editorial curation enforces an airtight anti-stale boundary of 24 hours.
-- **R2 Empirical Falsification**: Inspecting production code in `src/domain/farely/editorialCollections.ts#L83` reveals `const MAX_DEAL_AGE_HOURS_FOR_EDITORIAL = 48;`. This 48-hour tolerance permits 2-day-old fare anomalies to remain highlighted in featured collections. In Vietnamese domestic aviation (Vietjet, Bamboo, Vietnam Airlines), flash promotional buckets (Eco promo 0đ, 99kđ) evaporate within 3 to 6 hours. Presenting 47-hour-old promotional prices as verified curated deals deceives consumers and breaches Vietnam Consumer Protection Law 2023 (Luật Bảo vệ quyền lợi người tiêu dùng số 19/2023/QH15, Điều 10).
-- **R2 Corrective Invariant**: Tighten `MAX_DEAL_AGE_HOURS_FOR_EDITORIAL` from 48 hours to 24 hours (1,440 minutes). Furthermore, in `src/domain/farely/editorialCollections.ts#L140-L148`, enforce physical aircraft capacity ceilings: `seatsRemaining` must be an integer between 1 and 500.
+### 2. Falsification of Lens L02 (Economic Reality & Data Arbitrage Boundaries) in `src/domain/farely/partnerIntegrations.ts#L65-L85`
+- **Flaws in Pass R1**: Pass R1 assumed simple threshold checks (`estimatedRevenuePerBookingVND > estimatedApiCostPerBookingVND`) guarantee partner economic viability.
+- **R2 Empirical Falsification**: In `src/domain/farely/partnerIntegrations.ts#L65-L85`, calculating net yield without accounting for API call multipliers per realized booking produces phantom margins. In real flight search aggregations, it requires on average 50 to 100 API queries per converted booking (look-to-book ratio of 0.5% - 2%). If `estimatedApiCostPerBookingVND` represents single-query cost, comparing it directly against booking revenue inflates commercial viability by 100x.
+- **R2 Corrective Invariant**: Standardize unit economics to compute total acquisition cost per booking: `totalApiCost = singleQueryCost * lookToBookRatio`. Furthermore, enforce strict non-negative finite bounds on latency and success rate metrics.
 
-### 3. Falsification of Lens L02 (Economic Reality & Data Arbitrage Boundaries) in `src/domain/farely/multiCityItinerary.ts#L138-L144`
-- **Flaws in Pass R1**: Pass R1 assumed calendar date monotonicity `slice[i].departDate <= slice[i+1].departDate` guarantees valid passenger flight sequencing.
-- **R2 Empirical Falsification**: In `src/domain/farely/multiCityItinerary.ts#L138-L144`, date-only validation (`YYYY-MM-DD`) allows catastrophic intraday sequence inversions. For example, a traveler booking Leg 1 HAN-DAD departing at 21:00 on 2026-11-20 followed by Leg 2 DAD-SGN departing at 06:00 on 2026-11-20 satisfies `departDate <= nextDepartDate` because `2026-11-20 <= 2026-11-20`. Yet the traveler would land in Da Nang 15 hours after Leg 2 has departed!
-- **R2 Corrective Invariant**: When departure timestamps are present, enforce strict temporal progression. On same-day multi-city connections without timestamps, inject mandatory connection buffer notices and classify unprotected connections as `SELF_TRANSFER_UNPROTECTED`.
+### 3. Falsification of Lens L06 (Regulatory, Anti-Deception & Consumer Protection) in `src/domain/farely/vietnamTravelContext.ts#L115-L130`
+- **Flaws in Pass R1**: Pass R1 assumed calendar date string matching operates uniformly regardless of temporal zone.
+- **R2 Empirical Falsification**: In `src/domain/farely/vietnamTravelContext.ts#L115-L130`, date string slicing (`departDate.slice(0, 10)`) without timezone localization causes boundary misclassification for late-night flights. A flight departing Hanoi at 23:30 UTC on 2026-02-13 is already 06:30 ICT (UTC+7) on 2026-02-14 in Vietnam—the first day of the peak Tet holiday rush. Omitting ICT timezone normalization misclassifies peak holiday flights as non-peak shoulder dates.
+- **R2 Corrective Invariant**: Explicitly normalize departure timestamps to Indochina Time (ICT, UTC+7) before matching against Vietnam holiday date ranges.
 
 ---
 
@@ -43,42 +43,38 @@ All external booking, checkout, and payment processing capabilities remain stric
 
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-EDITORIAL-01 (Editorial Curation Expiration Bounds & Scarcity Proof)
-- **SOL_ID**: SOL-EDITORIAL-01
-- **TARGET_FILES**: `src/domain/farely/editorialCollections.ts`
+### SOL-01: SOL-PRIVACY-01 (Personalized Feed Privacy & Non-Profiling Falsification Defense)
+- **SOL_ID**: SOL-PRIVACY-01
+- **TARGET_FILES**: `src/domain/farely/personalizedFeedPrivacy.ts`
 - **LOCKED_ALGORITHM**:
-  1. Set `MAX_DEAL_AGE_HOURS_FOR_EDITORIAL = 24`.
-  2. In `validateCuratedDeal`:
-     - Ban fabricated scarcity: if `deal.scarcityClaim` exists, assert `deal.scarcityClaim.hasProviderInventoryProof === true` and `deal.scarcityClaim.seatsRemaining` is a positive integer $\le 500$. If invalid, throw `FabricatedScarcityError`.
-     - Validate discount claims: require `deal.cohortMedianPriceVND > 0`. Calculate true discount $\frac{M - P}{M} \times 100$. If claimed discount exceeds calculated discount by $> 2\%$, throw `UnsupportedFeaturedDiscountError`.
-     - Reject observations older than 24 hours with `StaleCuratedItemError`.
-- **FORBIDDEN_DEVIATIONS**: Do not relax 24h ceiling; maintain Vietnamese error messages.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/editorialCollections.test.ts`
+  1. Fix `maxStops === 0` falsy bug: check `preferences.maxStops !== undefined && Number.isInteger(preferences.maxStops) && preferences.maxStops >= 0`.
+  2. Enforce positive integer budget: if `preferences.maxBudgetVND !== undefined`, assert `Number.isInteger(preferences.maxBudgetVND) && preferences.maxBudgetVND > 0`.
+  3. Cycle-safe deep traversal with max depth 8 and prototype pollution defenses.
+  4. Preserve exact error class `CovertProfilingViolationError`.
+- **FORBIDDEN_DEVIATIONS**: No tracking or profiling heuristics.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/personalizedFeedPrivacy.test.ts`
 
-### SOL-02: SOL-MULTICITY-01 (Chronological Slice Ordering & Open-Jaw Surface Safety)
-- **SOL_ID**: SOL-MULTICITY-01
-- **TARGET_FILES**: `src/domain/farely/multiCityItinerary.ts`
+### SOL-02: SOL-PARTNER-01 (Partner Integrations & Look-to-Book Economic Guard)
+- **SOL_ID**: SOL-PARTNER-01
+- **TARGET_FILES**: `src/domain/farely/partnerIntegrations.ts`
 - **LOCKED_ALGORITHM**:
-  1. Enforce slice array bounds: $2 \le \text{slices.length} \le 10$.
-  2. Enforce monotonic index sequence: `slice[i].sliceIndex === i`.
-  3. Chronological progression: `slice[i].departDate <= slice[i+1].departDate`.
-  4. Open-jaw surface detection: if `slice[i].destinationCode !== slice[i+1].originCode`, flag `hasOpenJawSurfaceSegment = true` and populate `groundTransferNoticeVi`.
-  5. Ticket coherence classification: normalize carrier codes to uppercase. If separate carriers lack interline agreements, classify as `SELF_TRANSFER_UNPROTECTED` with high connection risk.
-- **FORBIDDEN_DEVIATIONS**: Never permit unprotected self-transfers to be labeled as single through-tickets.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
+  1. Commercial permissions gate: require `hasActiveCommercialAgreement === true` and `hasAffiliateRights === true`.
+  2. Ban unauthorized scraping: reject if `isScrapingPermitted === true` without active commercial agreement.
+  3. Reliability and latency bounds: `historicalSuccessRatePercent >= 95` and `averageLatencyMs <= 3000`.
+  4. Economic viability: require `estimatedRevenuePerBookingVND > estimatedApiCostPerBookingVND`.
+- **FORBIDDEN_DEVIATIONS**: Never authorize uncontracted or blocked commercial sources.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/partnerIntegrations.test.ts`
 
-### SOL-03: SOL-DATAECON-01 (Marginal Scan ROI Floor & Watch Demand Gating)
-- **SOL_ID**: SOL-DATAECON-01
-- **TARGET_FILES**: `src/domain/farely/dataEconomics.ts`
+### SOL-03: SOL-TRAVELCTX-01 (Vietnam Travel Context & ICT Timezone Alignment)
+- **SOL_ID**: SOL-TRAVELCTX-01
+- **TARGET_FILES**: `src/domain/farely/vietnamTravelContext.ts`
 - **LOCKED_ALGORITHM**:
-  1. Enforce 1 VND integer minimum floor on positive unit costs.
-  2. In `evaluateScanExpansionProposal`:
-     - Reject if `additionalScopesCount <= 0` or `estimatedCostPerScopeVnd <= 0`.
-     - If both alert and opportunity valuations are omitted, return `INSUFFICIENT_EVIDENCE`.
-     - Cap alert value to discovery yield: `alertUtility = Math.min(safeSubscribers, Math.ceil(expectedNewOpps * 5)) * alertValue`.
-     - Reject with `REJECTED_UNECONOMIC` if `marginalRoiRatio < 1.0`.
-- **FORBIDDEN_DEVIATIONS**: Never inject unmeasured baseline valuations.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
+  1. Validate Gregorian calendar date with leap year verification.
+  2. Normalize date string to YYYY-MM-DD.
+  3. Accurate holiday mapping for Tet 2026, Hung Kings, 30/4 - 1/5, and National Day.
+  4. Precise carrier baggage policy mapping (VN, VJ, QH, VU).
+- **FORBIDDEN_DEVIATIONS**: No unverified airline baggage allowances.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/vietnamTravelContext.test.ts`
 
 ---
 
@@ -86,74 +82,75 @@ All external booking, checkout, and payment processing capabilities remain stric
 
 ### L01: Product Truth & Founder Scope Integrity
 - Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.
-- Editorial curation serves as an informational telescope, not an inventory broker.
+- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties.
 
 ### L02: Economic Reality & Data Arbitrage Boundaries
-- Route scanning consumes external API quotas, compute cycles, and network egress. Expanding scans without measured active user Watch subscriptions (`activeWatchSubscribersCount > 0`) creates operational capital bleed without revenue or user retention upside.
-- Self-transfer multi-city itineraries represent unbundled point-to-point tickets; consumer savings must be weighed against misconnection risks.
+- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.
+- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts.
 
 ### L03: Epistemic Humility & Machine Learning Calibration
-- Reject algorithmic overconfidence. Editorial curations must be signed by named human curators (`CuratorMetadata`) to maintain forensic accountability.
-- Avoid heuristic smoothing that hides volatile price spikes.
+- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.
+- Avoid predicting passenger intent from demographic assumptions.
 
 ### L04: Mathematical Proof & Statistical Invariants
-- Invariant 1: Median price non-negativity: $M > 0$.
-- Invariant 2: Calculated discount bounded: $\delta \in (-\infty, 100\%]$.
-- Invariant 3: Marginal ROI ratio non-negative: $\text{ROI} = \frac{V_{\text{marginal}}}{C_{\text{marginal}}} \ge 0$.
+- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.
+- Invariant 2: Net partner margin $> 0$ VND.
+- Invariant 3: Gregorian calendar date validity guaranteed.
 
 ### L05: Adversarial Inputs & Boundary Penetration
-- Fuzzing resilience: handles corrupted dates, empty airport IATA codes, zero denominators, and extreme numeric payloads ($\pm 10^{15}$).
-- Sanitizes Vietnamese editorial strings against script injection and carriage-return smuggling.
+- Resilient against prototype pollution (`__proto__`, `constructor`).
+- Handles circular references gracefully.
+- Rejects malformed dates and negative numbers.
 
 ### L06: Regulatory, Anti-Deception & Consumer Protection
-- Complies with Decree 52/2013/ND-CP and Law 19/2023/QH15 on E-Commerce and Consumer Protection.
-- Eliminates "dark patterns" such as fake countdown timers and unverified scarcity claims ("Chỉ còn 1 vé duy nhất!").
+- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.
+- Compliant with CAAV Circulars on passenger rights and baggage disclosures.
 
 ### L07: Operational Resilience & Resource Saturation
-- Sub-millisecond execution budget. Pure functional TypeScript execution with zero synchronous disk I/O or network locks.
-- Bounded memory allocations protect Node.js microservices against heap exhaustion under high-throughput scanning.
+- Sub-millisecond execution envelope across all pure domain functions.
+- Bounded memory and call stack depth protect Node.js microservices.
 
 ### L08: Architectural Cohesion & Schema Evolution
-- Zero database migrations required. Clean domain entities interface smoothly with Supabase edge functions and client-side PWA layers.
-- Full type safety with exhaustive TypeScript interfaces and strict compile-time checking.
+- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.
+- Strict compile-time typing guarantees no runtime field degradation.
 
 ### L09: Observability, Traceability & Forensic Auditability
-- Curated deals preserve cryptographic signature and curator ID.
-- Rejection rationales are outputted in human-readable Vietnamese for audit logs and customer transparency.
+- Transparent Vietnamese rationales for feed boosts.
+- Detailed rejection diagnostics for partner evaluation pipelines.
 
 ### L10: Developer Velocity & Turnkey Verification
-- 100% turnkey test coverage with Vitest. Fast test turnaround ($< 500$ ms) enables rapid local iteration.
-- Deterministic behavior across macOS, Linux CI, and production runtimes.
+- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.
+- Zero-mock hermeticity ensures 100% reproducible execution in CI.
 
 ### L11: Graceful Degradation & Autonomous Recovery
-- In the event of stale curation, the system gracefully excludes expired items rather than crashing the entire collection view.
-- Uneconomic scan proposals fail closed, preserving system API budgets during traffic surges.
+- In the absence of user opt-in, feed gracefully falls back to objective deal score rankings without error.
+- Unrecognized carrier codes safely fall back to CAAV default baggage policies.
 
 ### L12: Long-Term Maintenance & Debt Eradication
-- Strict deprecation of legacy heuristic mock algorithms.
-- Single source of truth for airline alliance memberships and airport minimum connection times.
+- Zero deprecated dependencies. Clean, modern TypeScript code adhering strictly to Farely coding standards.
+- Modular domain interfaces facilitate straightforward future expansions.
 
 ---
 
 ## SECTION F: CANONICAL RISK MATRIX
 | Risk ID | Severity | Mitigation Strategy | Proof Mechanism |
 |---|---|---|---|
-| R-EDIT-01 | HIGH | Enforce 24h observation expiration and inventory proof | Vitest `editorialCollections.test.ts` |
-| R-MULTI-01 | HIGH | Monotonic chronological slice ordering and open-jaw notice | Vitest `multiCityItinerary.test.ts` |
-| R-ECON-01 | MEDIUM | Yield-coupled alert valuation and $\text{ROI} \ge 1.0$ gate | Vitest `dataEconomics.test.ts` |
+| R-MAXSTOPS-TRUTHINESS | HIGH | Explicit undefined check for maxStops = 0 | Vitest `personalizedFeedPrivacy.test.ts` |
+| R-PARTNER-ACQUISITION-COST | HIGH | Commercial contract & net margin verification | Vitest `partnerIntegrations.test.ts` |
+| R-TIMEZONE-HOLIDAY | MEDIUM | Gregorian date validation and ICT alignment | Vitest `vietnamTravelContext.test.ts` |
 
 ---
 
 ## SECTION G: TRANSACTIONAL WORK PACKAGES
 
-### WP01: WP01-EDITORIAL-SCARCITY-EXPIRATION-GUARD
-- **Target**: `src/domain/farely/editorialCollections.ts`
-- **Specification**: Implement 24h freshness ceiling, validate scarcity inventory proof, assert positive median price.
+### WP01: WP01-FEED-PRIVACY-DEEP-SANITIZATION
+- **Target**: `src/domain/farely/personalizedFeedPrivacy.ts`
+- **Specification**: Implement cycle-safe traversal, prototype pollution defense, fix `maxStops === 0` bug, and enforce positive budget integer bounds.
 
-### WP02: WP02-MULTICITY-CHRONOLOGICAL-SAFETY
-- **Target**: `src/domain/farely/multiCityItinerary.ts`
-- **Specification**: Implement chronological monotonicity check, open-jaw ground transfer disclosure, case-insensitive alliance normalization.
+### WP02: WP02-PARTNER-COMMERCIAL-RIGHTS-GATE
+- **Target**: `src/domain/farely/partnerIntegrations.ts`
+- **Specification**: Implement commercial contract verification, SLA threshold validation, and positive net margin evaluation.
 
-### WP03: WP03-DATAECON-MARGINAL-ROI-FLOOR
-- **Target**: `src/domain/farely/dataEconomics.ts`
-- **Specification**: Implement yield-coupled alert utility bounds, enforce 1 VND cost floor, enforce $\text{ROI} \ge 1.0$ gate.
+### WP03: WP03-TRAVELCTX-HOLIDAY-BAGGAGE-SAFETY
+- **Target**: `src/domain/farely/vietnamTravelContext.ts`
+- **Specification**: Implement Gregorian date validation, 2026 holiday calendar matching, and CAAV carrier baggage policy retrieval.

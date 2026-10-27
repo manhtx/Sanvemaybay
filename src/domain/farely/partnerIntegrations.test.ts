@@ -132,4 +132,47 @@ describe('F47: Partner Integrations & Commercial Enablement Governance', () => {
     expect(evaluation.isCommerciallyEnabled).toBe(true);
     expect(evaluation.commercialTier).toBe('DIRECT_COMMERCIAL_PARTNER');
   });
+
+  describe('SOL-PARTNER-01: Live Repricing & Diagnostic Codes', () => {
+    it('disqualifies partners without live repricing capability (ERR_NO_LIVE_REPRICING)', () => {
+      const noLiveRepricingProfile: PartnerCommercialProfile = {
+        ...viableAffiliateProfile,
+        providerId: 'cached_quotes_only_ota',
+        supportsLiveRepricing: false,
+      };
+
+      const evaluation = evaluatePartnerCommercialViability(noLiveRepricingProfile);
+      expect(evaluation.isCommerciallyEnabled).toBe(false);
+      expect(evaluation.diagnosticCodes).toContain('ERR_NO_LIVE_REPRICING');
+      expect(evaluation.disqualificationReasons.some((r) => r.includes('Live Repricing'))).toBe(true);
+    });
+
+    it('rejects unrealistically low latency (< 20ms) indicating spoofed or local mock telemetry', () => {
+      const spoofedLatencyProfile: PartnerCommercialProfile = {
+        ...viableAffiliateProfile,
+        providerId: 'spoofed_telemetry_ota',
+        averageLatencyMs: 5, // Physically impossible for external network hop
+      };
+
+      const evaluation = evaluatePartnerCommercialViability(spoofedLatencyProfile);
+      expect(evaluation.isCommerciallyEnabled).toBe(false);
+      expect(evaluation.diagnosticCodes).toContain('ERR_EXCESSIVE_LATENCY');
+    });
+
+    it('populates multiple diagnostic codes for compound violation profiles', () => {
+      const multiViolationProfile: PartnerCommercialProfile = {
+        ...viableAffiliateProfile,
+        providerId: 'unlicensed_unstable_partner',
+        hasActiveCommercialAgreement: false,
+        hasAffiliateRights: false, // ERR_UNCONTRACTED
+        historicalSuccessRatePercent: 65, // ERR_LOW_SUCCESS_RATE
+        supportsLiveRepricing: false, // ERR_NO_LIVE_REPRICING
+      };
+
+      const evaluation = evaluatePartnerCommercialViability(multiViolationProfile);
+      expect(evaluation.diagnosticCodes).toContain('ERR_UNCONTRACTED');
+      expect(evaluation.diagnosticCodes).toContain('ERR_LOW_SUCCESS_RATE');
+      expect(evaluation.diagnosticCodes).toContain('ERR_NO_LIVE_REPRICING');
+    });
+  });
 });

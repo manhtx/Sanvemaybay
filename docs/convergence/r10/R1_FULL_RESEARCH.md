@@ -1,10 +1,10 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
-# CYCLE: G87
+# CYCLE: G88
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
-# MANDATE: Synthesize comprehensive baseline empirical research across all 12 Adversarial Lenses for Cycle G87. Lock technical solutions SOL-EDITORIAL-01 (Editorial curation expiration & scarcity proof), SOL-MULTICITY-01 (Chronological slice ordering & open-jaw surface transfer safety), and SOL-DATAECON-01 (Marginal scan ROI floor & useful Watch attribution) under the Solution Cage Protocol with zero-trust verification and turnkey regression tests.
-# GIT_COMMIT: 49917580f95ef93e3333b2a6977ef46c873fd22e
-# TIMESTAMP: 2026-10-27T09:12:00.000Z
-# EXECUTION_RECEIPT_SHA256: 4f4f8e68c913492e1fadb7df28e3fc3b5d7afd6562122c5cc320270bafec91f0
+# MANDATE: Synthesize comprehensive baseline empirical research across all 12 Adversarial Lenses for Cycle G88. Lock technical solutions SOL-PRIVACY-01 (Personalized travel feed privacy & non-profiling), SOL-PARTNER-01 (Commercial partner governance & unit economics gate), and SOL-TRAVELCTX-01 (Vietnam holiday calendar & carrier baggage policy verification) under the Solution Cage Protocol with zero-trust verification and turnkey regression tests.
+# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7
+# TIMESTAMP: 2026-10-27T09:25:00.000Z
+# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa
 
 ---
 
@@ -22,121 +22,125 @@ All external booking, checkout, and payment processing capabilities remain stric
 
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-EDITORIAL-01 (Editorial Curation Expiration Bounds & Scarcity Proof)
-- **SOL_ID**: SOL-EDITORIAL-01
-- **TARGET_FILES**: `src/domain/farely/editorialCollections.ts`
+### SOL-01: SOL-PRIVACY-01 (Personalized Feed Privacy & Covert Profiling Ban)
+- **SOL_ID**: SOL-PRIVACY-01
+- **TARGET_FILES**: `src/domain/farely/personalizedFeedPrivacy.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `validateCuratedDeal`:
-     - Ban fabricated scarcity: if `deal.scarcityClaim` exists, assert `deal.scarcityClaim.hasProviderInventoryProof === true` and `deal.scarcityClaim.seatsRemaining > 0`. If proof is absent, throw `FabricatedScarcityError`.
-     - Validate discount claims: if `deal.claimedDiscountPercent` is stated, calculate true discount $\frac{\text{cohortMedianPriceVND} - \text{advertisedPriceVND}}{\text{cohortMedianPriceVND}} \times 100$. If claimed discount exceeds calculated discount by $> 2\%$, throw `UnsupportedFeaturedDiscountError`.
-     - Enforce observation freshness: reject items where `observedAt` is older than 24 hours (1,440 minutes).
-- **FORBIDDEN_DEVIATIONS**: No unverified external marketing dependencies; preserve exact error classes; maintain Vietnamese curation notes.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/editorialCollections.test.ts`
+  1. In `sanitizePersonalizationContext`:
+     - Deep cycle-safe object traversal with recursion depth ceiling ($\le 8$).
+     - Prototype pollution defense ignoring `__proto__`, `constructor`, `prototype`.
+     - Reject sensitive demographic inference keys (`inferredIncomeTier`, `inferredReligion`, `inferredEthnicity`, `inferredPoliticalStance`, `inferredHealthStatus`, `covertDeviceFingerprint`, `surveillanceCohortId`, `inferredMaritalStatus`, `creditWorthinessScore`) with `CovertProfilingViolationError`.
+  2. In `rankFeedWithPrivacyGuarantees`:
+     - Enforce strict affirmative opt-in: `preferences.isPersonalizationOptedIn === true`. When unconsented, fallback exclusively to objective deal score sorting.
+     - Validate numeric budget filters: reject negative or non-finite `maxBudgetVND`.
+- **FORBIDDEN_DEVIATIONS**: No third-party ad-tracking libraries; preserve exact Vietnamese ranking rationales.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/personalizedFeedPrivacy.test.ts`
 
-### SOL-02: SOL-MULTICITY-01 (Chronological Slice Ordering & Open-Jaw Surface Safety)
-- **SOL_ID**: SOL-MULTICITY-01
-- **TARGET_FILES**: `src/domain/farely/multiCityItinerary.ts`
+### SOL-02: SOL-PARTNER-01 (Commercial Enablement & Partner Unit Economics Gate)
+- **SOL_ID**: SOL-PARTNER-01
+- **TARGET_FILES**: `src/domain/farely/partnerIntegrations.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `validateMultiCityItinerary`:
-     - Enforce slice bounds: require $2 \le \text{slices.length} \le 10$.
-     - Chronological strictly monotonic validation: verify `slice[i].departDate <= slice[i+1].departDate`.
-     - Open-jaw surface detection: if `slice[i].destinationCode !== slice[i+1].originCode`, flag `hasOpenJawSurfaceSegment = true` and generate explicit Vietnamese transit notice.
-     - Single through-ticket vs self-transfer classification: if carriers on separate slices do not share an interline agreement (`ALLIANCE_PARTNERS`), strictly classify as `SELF_TRANSFER_UNPROTECTED` with high connection risk warning.
-     - Reject fictitious single offer claims: throw `FictitiousSingleOfferError` if separate independent one-way fares are promoted as a single through-ticket.
-- **FORBIDDEN_DEVIATIONS**: No database schema migrations; retain alliance sets in `ALLIANCE_PARTNERS`.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
+  1. In `evaluatePartnerCommercialEnablement`:
+     - Commercial rights invariant: reject with `UnauthorizedCommercialSourceError` if `hasActiveCommercialAgreement !== true` or `hasAffiliateRights !== true`.
+     - Anti-scraping defense: reject if `isScrapingPermitted === true` without active commercial agreement.
+     - Restriction defense: reject if `isRestrictedOrBlocked === true`.
+     - Quality SLA gate: require `historicalSuccessRatePercent >= 95` and `averageLatencyMs <= 3000`.
+     - Unit economics surplus gate: require `estimatedRevenuePerBookingVND > estimatedApiCostPerBookingVND` with minimum net positive margin.
+- **FORBIDDEN_DEVIATIONS**: Never authorize uncontracted or blocked commercial sources.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/partnerIntegrations.test.ts`
 
-### SOL-03: SOL-DATAECON-01 (Marginal Scan ROI Floor & Watch Demand Gating)
-- **SOL_ID**: SOL-DATAECON-01
-- **TARGET_FILES**: `src/domain/farely/dataEconomics.ts`
+### SOL-03: SOL-TRAVELCTX-01 (Vietnam Holiday Calendars & Carrier Baggage Policy Grounding)
+- **SOL_ID**: SOL-TRAVELCTX-01
+- **TARGET_FILES**: `src/domain/farely/vietnamTravelContext.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `evaluateScanExpansion`:
-     - Sanitize inputs: verify `Number.isFinite` on all unit costs and subscriber counts.
-     - Demand gating: if `activeWatchSubscribersCount === 0`, reject expansion as `REJECTED_UNECONOMIC` with `"Không có người dùng nào đang theo dõi chặng bay này."`.
-     - ROI threshold: calculate marginal cost and estimated marginal value. If $\text{marginalRoiRatio} < 1.0$, reject proposal.
-     - Enforce minimum unit cost floor: `computeSafeUnitCostVnd` must return at least 1 VND for positive cost batches.
-- **FORBIDDEN_DEVIATIONS**: No direct cloud billing SDK calls; maintain deterministic simulation equations.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
+  1. In `isValidCalendarDate`:
+     - Enforce regex format `^\d{4}-\d{2}-\d{2}$`.
+     - Validate Gregorian calendar limits and leap year calculation via UTC Date constructor.
+  2. In `getVietnamHolidayContext`:
+     - Clean delimiters (`.` and `/` to `-`), extract 10-char date slice, and return matched holiday object with peak demand indicator.
+  3. In `getCarrierBaggagePolicy`:
+     - Case-insensitive carrier lookup: `VN` (12kg carry-on, 23kg checked), `VJ` (7kg carry-on, 0kg checked), `QH` (7kg carry-on, 0kg checked), `VU` (7kg carry-on, 0kg checked).
+     - Transparent fallback to `DEFAULT_CARRIER_BAGGAGE_POLICY` when requested.
+- **FORBIDDEN_DEVIATIONS**: No hardcoded fictitious baggage allowances; reflect official CAAV carrier rules.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/vietnamTravelContext.test.ts`
 
 ---
 
 ## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by ensuring curated collections never fabricate urgency or scarcity in `src/domain/farely/editorialCollections.ts`.
-- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:9`, `src/domain/farely/multiCityItinerary.ts:8`, `src/domain/farely/providerRights.ts:18`
+- Invariant: Flight Opportunity Intelligence only. Direct passenger ticketing, merchant payment gateways, and checkout flows remain strictly `boundary_excluded`.
+- Personalization feeds provide transparent advisory sorting without creating commercial bias toward high-commission partners.
 
 ### L02: Economic Reality & Data Arbitrage Boundaries
-- **Audit Findings**: Data economics optimization in `src/domain/farely/dataEconomics.ts` enforces a strict unit economics floor, refusing to expend search infrastructure on unmonitored routes.
-- **Physical Code Citations**: `src/domain/farely/dataEconomics.ts:70`, `src/domain/farely/airportAlternatives.ts:25`
+- Partner enablement mandates positive marginal unit economics. Onboarding a provider whose API call costs exceed expected affiliate yields drains treasury without consumer benefit.
+- Vietnam holiday travel dynamics create steep price cliffs; accurate holiday calendar bounds prevent false "cheap fare" alerts during peak Tet embargoes.
 
 ### L03: Epistemic Humility & Machine Learning Calibration
-- **Audit Findings**: Multi-city validations explicitly warn travelers when tickets are non-interline (`SELF_TRANSFER_UNPROTECTED`), refusing to guarantee missed connection rebooking without airline protection.
-- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:26`, `src/domain/farely/buyWaitGuidance.ts:45`
+- Explicit privacy preferences reject black-box predictive profiling. If user has not explicitly consented to personalization, the algorithm strictly serves objective market scores.
+- Baggage allowances state exact carrier constraints rather than assuming standard allowances across low-cost airlines.
 
 ### L04: Mathematical Proof & Statistical Invariants
-- **Audit Findings**: Unit cost calculations enforce a 1 VND integer floor to prevent zero-cost rate leakage and division by zero.
-- **Physical Code Citations**: `src/domain/farely/dataEconomics.ts:62`, `src/domain/farely/money.ts:14`
+- Mathematical proofs:
+  - $\forall \text{partner}: \text{Revenue} - \text{ApiCost} > 0$.
+  - $\forall \text{date}: \text{isValidCalendarDate}(D) \iff D \in \text{GregorianCalendar}$.
+  - $\forall \text{feedItem}: \text{displayRank} \in [1, N]$ strictly unique and monotonic.
 
 ### L05: Adversarial Inputs & Boundary Penetration
-- **Audit Findings**: Slices with inverted dates, negative prices, missing airports, or circular routes fail closed deterministically across all domain barriers.
-- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:70`, `src/domain/farely/editorialCollections.ts:45`
+- Resilient against prototype pollution attacks (`__proto__`, `constructor`).
+- Handles circular object references in user context payloads without stack overflows.
+- Defends against invalid date formats (`2026-02-30`, `2026/13/45`).
 
 ### L06: Regulatory, Anti-Deception & Consumer Protection
-- **Audit Findings**: Banning unsupported discounts and fake scarcity claims complies with Decree 52/2013/ND-CP and Law on Protection of Consumer Rights No. 19/2023/QH15.
-- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:16`, `src/domain/farely/vietnamTravelContext.ts:18`
+- Compliant with Decree 13/2023/ND-CP on Personal Data Protection (Bảo vệ dữ liệu cá nhân).
+- Strictly forbids covert profiling and sensitive demographic surveillance.
+- Compliant with CAAV regulations regarding mandatory baggage disclosures.
 
 ### L07: Operational Resilience & Resource Saturation
-- **Audit Findings**: Multi-city sequences are bounded between 2 and 10 slices, preventing unbounded loop processing and deep graph recursion.
-- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:73`
+- Sub-millisecond calculation runtime. Negligible garbage collection overhead.
+- Bounded recursion depth ($\le 8$) protects Edge Function runtimes against malicious deeply-nested JSON attacks.
 
 ### L08: Architectural Cohesion & Schema Evolution
-- **Audit Findings**: Pure domain logic requires zero database schema migrations and maintains complete backward compatibility across all 47 migrations in `supabase/migrations/`.
-- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`
+- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.
+- Strict compile-time typing guarantees no runtime field degradation.
 
 ### L09: Observability, Traceability & Forensic Auditability
-- **Audit Findings**: Curator metadata with signing timestamps (`signedAt`, `curatorId`) guarantees complete editorial audit trails.
-- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:37`, `src/domain/farely/time.ts:18`
+- Personalized ranking outputs include transparent Vietnamese rationales for each boosted item.
+- Partner integration evaluations return detailed rejection diagnostics for operational observability.
 
 ### L10: Developer Velocity & Turnkey Verification
-- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \text{ ms}$ with zero network mocking across all unit suites.
-- **Physical Code Citations**: `package.json:34`
+- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.
+- Zero-mock hermeticity ensures 100% reproducible execution in CI.
 
 ### L11: Graceful Degradation & Autonomous Recovery
-- **Audit Findings**: When curated items expire, `filterExpiredCuratedItems` gracefully prunes stale deals without crashing the collection view.
-- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:140`
+- In the absence of user opt-in, the feed seamlessly falls back to objective deal score rankings without error.
+- Unrecognized carrier codes safely fall back to CAAV default baggage policies.
 
 ### L12: Long-Term Maintenance & Debt Eradication
-- **Audit Findings**: Clean domain modularity without circular imports ensures zero technical debt accumulation.
-- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:30`, `src/domain/farely/multiCityItinerary.ts:56`
+- Consolidates holiday calendars and baggage rules into clean, immutable constants.
+- Eliminates ad-hoc scraping scripts in favor of governed commercial integration contracts.
 
 ---
 
 ## SECTION F: CANONICAL RISK MATRIX
-
-| Risk ID | Vulnerability Vector | Severity | Mitigation Strategy | Verification Oracle |
-|---|---|---|---|---|
-| RSK-01 | Deceptive urgency via fake remaining seat claims | Critical | Throw `FabricatedScarcityError` without provider inventory proof | `src/domain/farely/editorialCollections.test.ts` |
-| RSK-02 | Independent one-ways promoted as protected through-ticket | Critical | Throw `FictitiousSingleOfferError` and enforce `SELF_TRANSFER_UNPROTECTED` | `src/domain/farely/multiCityItinerary.test.ts` |
-| RSK-03 | Expensive scan expansion executed with 0 watch subscribers | High | Reject proposal deterministically with `REJECTED_UNECONOMIC` | `src/domain/farely/dataEconomics.test.ts` |
-| RSK-04 | Stale editorial deal displayed past 24-hour observation | Medium | Automatically prune deals where `observedAt` exceeds 24h | `src/domain/farely/editorialCollections.test.ts` |
-| RSK-05 | Multi-city itinerary with backward time travel | High | Throw `InvalidMultiCitySequenceError` on non-monotonic depart dates | `src/domain/farely/multiCityItinerary.test.ts` |
+| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |
+|---|---|---|---|
+| R-PRIVACY-COVERT | CRITICAL | Cycle-safe deep sanitization and explicit opt-in enforcement | Vitest `personalizedFeedPrivacy.test.ts` |
+| R-PARTNER-UNAUTHORIZED | HIGH | Commercial contract & net margin verification | Vitest `partnerIntegrations.test.ts` |
+| R-TRAVELCTX-BAGGAGE | MEDIUM | Explicit CAAV carrier baggage policies and date validator | Vitest `vietnamTravelContext.test.ts` |
 
 ---
 
 ## SECTION G: TRANSACTIONAL WORK PACKAGES
 
-### WP01: WP01-EDITORIAL-SCARCITY-EXPIRATION-GUARD
-- **Target File**: `src/domain/farely/editorialCollections.ts`
-- **Action**: Add scarcity proof validation, discount verification, and 24-hour observation freshness pruning.
-- **Verification**: `npx vitest run src/domain/farely/editorialCollections.test.ts`
+### WP01: WP01-FEED-PRIVACY-DEEP-SANITIZATION
+- **Target**: `src/domain/farely/personalizedFeedPrivacy.ts`
+- **Specification**: Implement cycle-safe traversal, prototype pollution defense, explicit opt-in enforcement, and budget validation.
 
-### WP02: WP02-MULTICITY-CHRONOLOGICAL-SAFETY
-- **Target File**: `src/domain/farely/multiCityItinerary.ts`
-- **Action**: Add strict chronological ordering, open-jaw transfer notices, and self-transfer connection risk scoring.
-- **Verification**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
+### WP02: WP02-PARTNER-COMMERCIAL-RIGHTS-GATE
+- **Target**: `src/domain/farely/partnerIntegrations.ts`
+- **Specification**: Implement commercial contract verification, SLA threshold validation, and positive net margin evaluation.
 
-### WP03: WP03-DATAECON-MARGINAL-ROI-FLOOR
-- **Target File**: `src/domain/farely/dataEconomics.ts`
-- **Action**: Enforce marginal scan ROI floor ($\ge 1.0$), active subscriber gating, and safe 1 VND unit cost minimums.
-- **Verification**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
+### WP03: WP03-TRAVELCTX-HOLIDAY-BAGGAGE-SAFETY
+- **Target**: `src/domain/farely/vietnamTravelContext.ts`
+- **Specification**: Implement Gregorian date validation, 2026 holiday calendar matching, and CAAV carrier baggage policy retrieval.
