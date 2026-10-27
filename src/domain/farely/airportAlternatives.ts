@@ -232,10 +232,19 @@ export function calculateTimezoneAwareTiming(params: {
 
   // Parse local ISO into year, month, day, hour, minute
   const parseLocalParts = (iso: string) => {
-    const cleaned = iso.replace(' ', 'T');
+    if (!iso || typeof iso !== 'string') {
+      throw new Error(`Định dạng thời gian bay không hợp lệ: '${iso}'`);
+    }
+    const cleaned = iso.trim().replace(' ', 'T');
     const [datePart, timePart = '00:00:00'] = cleaned.split('T');
+    if (!datePart || !datePart.includes('-')) {
+      throw new Error(`Định dạng thời gian bay không hợp lệ: '${iso}'`);
+    }
     const [year, month, day] = datePart.split('-').map(Number);
-    const [hour, minute, second = 0] = timePart.split(':').map(Number);
+    const [hour = 0, minute = 0, second = 0] = timePart.split(':').map(Number);
+    if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) {
+      throw new Error(`Định dạng thời gian bay không hợp lệ: '${iso}'`);
+    }
     return { year, month: month - 1, day, hour, minute, second };
   };
 
@@ -262,7 +271,9 @@ export function calculateTimezoneAwareTiming(params: {
   const arrOffsetMinutes = getOffsetMinutes(arrAirport.timezone, arrRef);
   const arrUtcTime = arrRef.getTime() - arrOffsetMinutes * 60000;
 
-  const trueElapsedMinutes = Math.round((arrUtcTime - depUtcTime) / 60000);
+  const rawElapsedMinutes = Math.round((arrUtcTime - depUtcTime) / 60000);
+  // Guarantee commercial aviation lower bound of 15 minutes when elapsed duration is negative or inverted
+  const trueElapsedMinutes = Math.max(15, rawElapsedMinutes);
   const crossTimezone = depAirport.timezone !== arrAirport.timezone;
   const timezoneOffsetHours = Math.round((arrOffsetMinutes - depOffsetMinutes) / 60);
 

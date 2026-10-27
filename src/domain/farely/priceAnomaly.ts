@@ -48,10 +48,19 @@ export const TET_WINDOWS = [
 
 /**
  * Checks whether a given flight departure date falls within a recognized peak Tet window.
+ * Normalizes input date strings by replacing delimiters (., /, whitespace) with '-',
+ * handling inverted DD-MM-YYYY formats, and slicing to 10 characters (YYYY-MM-DD).
  */
 export function isTetDeparture(departureDate?: string): boolean {
-  if (!departureDate) return false;
-  const dateStr = departureDate.slice(0, 10);
+  if (!departureDate || typeof departureDate !== 'string') return false;
+  const clean = departureDate.replace(/[./\s]/g, '-').replace(/-+/g, '-').trim();
+  const parts = clean.split('-');
+  let normalized = clean;
+  // If date was provided in DD-MM-YYYY format, reorder to YYYY-MM-DD
+  if (parts.length >= 3 && parts[0].length === 2 && parts[2].length === 4) {
+    normalized = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+  const dateStr = normalized.slice(0, 10);
   return TET_WINDOWS.some((w) => dateStr >= w.start && dateStr <= w.end);
 }
 

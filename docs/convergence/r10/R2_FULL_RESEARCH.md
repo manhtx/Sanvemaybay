@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding & Adversarial Deconstruction
 # MANDATE: Assume Pass 1 was naive across all 12 lenses. Open actual code, tests, and DB migrations to prove or debunk every claim.
-# GIT_COMMIT: 5bb4d0b020e727e4b7cd779d2d5aeeaf7ecaf62a
-# TIMESTAMP: 2026-10-26T11:10:30.000Z
-# EXECUTION_RECEIPT_SHA256: 1f5b48e7ace6b05c6cff63384090800bc1bb014741e493e5cecc127f3797f671
+# GIT_COMMIT: 284631b78ca1ecefc90d9a10821cd8d216c55c39
+# TIMESTAMP: 2026-10-26T11:24:30.000Z
+# EXECUTION_RECEIPT_SHA256: be5149febde42d540bdab35ce3862526e68383412a670a6a2951dfaf6a44fd6a
 
 ---
 
@@ -20,39 +20,45 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## SECTION III: FALSIFICATION & AUDIT OF PASS R1
 
-### Falsification 1: L01 Airport Code Empty String Boundary in Partner URLs
-- *Deficits Identified in Pass R1*: Pass R1 proposed trimming whitespace on airport codes, but naively failed to handle empty string, null, or undefined codes.
-- *Empirical Code Evidence*: In `src/app/lib/bookingUrls.ts`, if `p.fromCode` evaluates to an empty string, `buildSkyscannerUrl` generates `https://www.skyscanner.net/transport/flights///...`, producing illegal double slashes that break partner CDN reverse proxies.
-- *Locked Invariant for Pass R2*: If `fromCode` or `toCode` lacks at least 3 valid alphanumeric characters, partner URL generators must throw `InvalidRouteParamsError` or return empty fallback string. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+### Falsification 1: L01 Timezone Offset Math & NaN Flight Timings
+- *Deficits Identified in Pass R1*: Pass R1 identified date parsing errors in `calculateTimezoneAwareTiming`, but failed to specify how timezone offset conversion should handle corrupt date components.
+- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts`:
+  ```typescript
+  const depRef = new Date(Date.UTC(depParts.year, depParts.month, depParts.day, depParts.hour, depParts.minute, depParts.second));
+  ```
+  If `depParts.year` is `NaN`, `depRef.getTime()` is `NaN`. Calling `depRef.toLocaleString('en-US', ...)` inside `getOffsetMinutes` throws `RangeError: Invalid time value`, crashing the entire domain kernel.
+- *Locked Invariant for Pass R2*:
+  In `src/domain/farely/airportAlternatives.ts`, validate date parts before calling `Date.UTC`: if any numeric part is non-finite, throw `InvalidTimingFormatError` with explicit Vietnamese message. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
-### Falsification 2: L02 Synthetic Yield Inflation in Marginal Scan Economics
-- *Deficits Identified in Pass R1*: Pass R1 clamped `additionalScopesCount`, but overlooked unbounded `historicalOpportunityYieldPercent`.
-- *Empirical Code Evidence*: In `src/domain/farely/dataEconomics.ts`, `expectedNewOpps = proposal.additionalScopesCount * (proposal.historicalOpportunityYieldPercent / 100)`. If a malicious or corrupted input passes `historicalOpportunityYieldPercent = 500` (500%), `expectedNewOpps` inflates fivefold, approving uneconomic expansions despite massive net cash loss.
-- *Locked Invariant for Pass R2*: In `src/domain/farely/dataEconomics.ts`, clamp `historicalOpportunityYieldPercent` strictly between 0 and 100: `Math.min(100, Math.max(0, proposal.historicalOpportunityYieldPercent))`.
+### Falsification 2: L02 Vietnamese Date Format DD-MM-YYYY in Tet Window Verification
+- *Deficits Identified in Pass R1*: Pass R1 proposed replacing slashes with hyphens, but failed to address non-ISO date formats like `DD-MM-YYYY`.
+- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts`:
+  If a Vietnamese client sends `"10/02/2026"` (February 10, 2026, which is during peak Tet), `.replace(/\//g, "-")` yields `"10-02-2026"`. Lexicographical check `"10-02-2026" >= "2026-02-03"` evaluates to `false` because ASCII `'1' < '2'`. The seasonal Lunar Tet multiplier fails to trigger!
+- *Locked Invariant for Pass R2*:
+  In `src/domain/farely/priceAnomaly.ts`, parse timestamps with `Date.parse()` to extract canonical `YYYY-MM-DD` ISO representations before comparing against `TET_WINDOWS`.
 
-### Falsification 3: L03 Zero Dispersion Flat Cohort Anomaly in Buy/Wait
-- *Deficits Identified in Pass R1*: Pass R1 validated departure date parseability, but failed to test what happens when historical prices have zero dispersion (all 14 observations are identical, e.g. 1,500,000 VND).
-- *Empirical Code Evidence*: In `src/domain/farely/buyWaitGuidance.ts`, `countBelow = prices.filter(p => p < currentPrice).length`. If `currentPrice === minPrice`, `percentile` evaluates to 0. A flat, stagnant price is falsely classified as "top 5% all-time low", triggering an unjustified high-confidence `BUY_NOW` advice.
-- *Locked Invariant for Pass R2*: In `src/domain/farely/buyWaitGuidance.ts`, when `maxPrice - minPrice === 0` (zero variance), buy/wait guidance must decline high-confidence buy recommendations and flag the route as price-pegged. Commercial payment gateway integration is strictly `boundary_excluded`.
+### Falsification 3: L03 Zero and Negative Flight Durations in Deal Comparisons
+- *Deficits Identified in Pass R1*: Pass R1 flagged invalid prices, but overlooked zero and negative duration strings in `compareDeals`.
+- *Empirical Code Evidence*: In `src/app/domain/dealComparison.ts`:
+  If `deal.duration` is `"0h"` or `"0 phút"`, `durationMinutes` returns `0`. A commercial flight with 0 minutes duration is physically impossible, yet `identifyDominatedOptions` considers a 0-minute flight strictly superior to a normal 2-hour flight, falsely marking legitimate flights as Pareto-dominated!
+- *Locked Invariant for Pass R2*:
+  In `src/app/domain/dealComparison.ts`, any flight with parsed duration `< 15` minutes must have `durationMinutes` set to `undefined` and flagged under `unverifiedFields: ["Thời gian bay không hợp lệ"]`. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ---
 
-## SECTION IV: 12 ADVERSARIAL LENSES DEEP AUDIT (CYCLE G79)
+## SECTION IV: 12 ADVERSARIAL LENSES DEEP AUDIT (CYCLE G80)
 
 ### L01: Data Ingestion & Live Schema Integrity
-- **Current Ground Truth**: `src/app/data/api.ts` maps API records to domain types. In `src/app/lib/bookingUrls.ts`, URLs are constructed for travel search handoff.
-- **Vulnerability Discovered**: Airport codes missing length validation allow garbage strings like `fromCode: "X"` to construct broken search queries.
-- **Defensive Target**: Add 3-letter IATA code sanitization in `src/app/lib/bookingUrls.ts`: `const cleanCode = (code || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 3); if (cleanCode.length < 3) return "";`.
+- **Current Ground Truth**: `src/domain/farely/airportAlternatives.ts` maps airport catalog data and evaluates ground transfer trade-offs.
+- **Defensive Target**: Add defensive date component checks in `calculateTimezoneAwareTiming` to eliminate unhandled `RangeError` exceptions.
 
 ### L02: Price Anomaly Detection & Statistical Rigor
-- **Current Ground Truth**: `src/domain/farely/priceAnomaly.ts` implements MAD and sample standard deviation with $(N - 1)$ Bessel's correction.
-- **Vulnerability Discovered**: In `src/domain/farely/dataEconomics.ts`, `calculateUnitEconomics` can receive `metrics.scannedScopesCount = 0`, producing division by zero or negative costs.
-- **Defensive Target**: Guard `calculateUnitEconomics` with `const scans = Math.max(1, Number.isFinite(metrics.scannedScopesCount) ? metrics.scannedScopesCount : 1)`.
+- **Current Ground Truth**: `src/domain/farely/priceAnomaly.ts` enforces robust MAD estimation and Lunar Tet windows.
+- **Defensive Target**: Canonicalize date parsing using `Date.parse()` to reliably identify Tet travel dates across all formatting variations.
 
 ### L03: True Landed Cost Monotonicity & Ancillary Transparency
-- **Current Ground Truth**: `src/domain/farely/tripBudgetEstimator.ts` provides carrier surcharges. In `src/domain/farely/buyWaitGuidance.ts`, price cohorts are analyzed.
-- **Vulnerability Discovered**: If `params.departureDate` is in the past relative to `evaluationDate`, `daysUntilDeparture` becomes negative, bypassing airline yield-management window checks.
-- **Defensive Target**: Validate `daysUntilDeparture >= 0` in `src/domain/farely/buyWaitGuidance.ts`; if flight is in the past, return `INSUFFICIENT_DATA` with explanatory Vietnamese notice: "Chuyến bay đã khởi hành, không thể phân tích khuyến nghị mua."
+- **Current Ground Truth**: `src/app/domain/dealComparison.ts` computes Pareto dominance across ticket price, total cost, stops, and duration.
+- **Defensive Target**: Prevent zero-minute durations from falsely dominating valid flight options.
 
 ### L04: Authentication, Access Control & Anti-Abuse
 - **Current Ground Truth**: `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces tokenized watch creation, rate limiting (`check_watch_rate_limit`), and row-level locking (`FOR UPDATE SKIP LOCKED`).

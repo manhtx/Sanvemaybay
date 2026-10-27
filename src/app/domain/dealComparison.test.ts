@@ -5,6 +5,7 @@ import {
   checkOpportunitiesCompatibility,
   explainTradeoff,
   identifyDominatedOptions,
+  isDealDominated,
   sortComparisonRowsMonotonically,
 } from "./dealComparison";
 
@@ -307,6 +308,60 @@ describe("deal comparison", () => {
       expect(compared[0].durationMinutes).toBe(135);
       expect(compared[1].durationMinutes).toBe(90);
       expect(compared[2].durationMinutes).toBe(45);
+    });
+  });
+
+  describe("WP03: isDealDominated & Pareto sanity", () => {
+    it("rejects non-positive prices from dominating or being dominated", () => {
+      const valid = { id: "v1", price: 1_500_000, durationMinutes: 120, stops: 0 };
+      const zeroPrice = { id: "z1", price: 0, durationMinutes: 100, stops: 0 };
+      const negativePrice = { id: "n1", price: -500_000, durationMinutes: 60, stops: 0 };
+
+      expect(isDealDominated(valid, zeroPrice)).toBe(false);
+      expect(isDealDominated(zeroPrice, valid)).toBe(false);
+      expect(isDealDominated(valid, negativePrice)).toBe(false);
+    });
+
+    it("prevents self-domination when candidate and baseline have identical ID", () => {
+      const deal = { id: "same-id", price: 1_500_000, durationMinutes: 120, stops: 0 };
+      expect(isDealDominated(deal, deal)).toBe(false);
+    });
+
+    it("correctly identifies Pareto dominance across price, duration, and stops", () => {
+      const candidate = { id: "c1", price: 2_000_000, durationMinutes: 180, stops: 1 };
+      const baselineSuperior = { id: "b1", price: 1_500_000, durationMinutes: 120, stops: 0 };
+      const baselineTie = { id: "b2", price: 2_000_000, durationMinutes: 180, stops: 1 };
+
+      expect(isDealDominated(candidate, baselineSuperior)).toBe(true);
+      expect(isDealDominated(baselineSuperior, candidate)).toBe(false);
+      expect(isDealDominated(candidate, baselineTie)).toBe(false);
+    });
+
+    it("ignores deals with non-positive totalCost in identifyDominatedOptions", () => {
+      const normalDeal = {
+        id: "d1",
+        route: "HAN → SGN",
+        ticketPrice: 1_500_000,
+        totalCost: 1_500_000,
+        durationMinutes: 120,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      };
+      const glitchDeal = {
+        id: "d2",
+        route: "HAN → SGN",
+        ticketPrice: -1,
+        totalCost: -1,
+        durationMinutes: 60,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      };
+
+      const dominated = identifyDominatedOptions([normalDeal, glitchDeal]);
+      expect(dominated.has("d1")).toBe(false);
+      expect(dominated.has("d2")).toBe(false);
     });
   });
 });

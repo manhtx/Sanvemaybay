@@ -153,4 +153,27 @@ describe('F68: Airport and Local Datetime Correctness across Timezones & Overnig
     expect(timing.isOvernight).toBe(false);
     expect(timing.trueElapsedMinutes).toBe(135);
   });
+
+  it('WP01: defensively clamps negative elapsed durations to commercial floor (>= 15 min) on inverted timings', () => {
+    // Inverted flight: arrive before departure
+    const timing = calculateTimezoneAwareTiming({
+      departureCode: 'HAN',
+      arrivalCode: 'SGN',
+      departureLocalIso: '2026-11-01T10:15:00',
+      arrivalLocalIso: '2026-11-01T08:00:00',
+    });
+
+    expect(timing.trueElapsedMinutes).toBe(15);
+  });
+
+  it('WP01: rejects malformed date strings with informative error', () => {
+    expect(() =>
+      calculateTimezoneAwareTiming({
+        departureCode: 'HAN',
+        arrivalCode: 'SGN',
+        departureLocalIso: 'invalid-date',
+        arrivalLocalIso: '2026-11-01T10:15:00',
+      })
+    ).toThrow('Định dạng thời gian bay không hợp lệ');
+  });
 });

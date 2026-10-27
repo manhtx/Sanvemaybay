@@ -3,6 +3,7 @@ import {
   detectPriceAnomaly,
   calculateSampleStandardDeviation,
   hasZeroDispersion,
+  isTetDeparture,
   MAX_COHORT_ANALYSIS_SIZE,
 } from "./priceAnomaly";
 
@@ -176,6 +177,31 @@ describe("Price Anomaly Detection (F37)", () => {
       });
       expect(result.sampleSize).toBe(250);
       expect(result.classification).toBe("STRONG_DROP_ANOMALY");
+    });
+  });
+
+  describe("WP02: isTetDeparture date normalization & separator robustness", () => {
+    it("recognizes standard ISO Tet date", () => {
+      expect(isTetDeparture("2026-02-15")).toBe(true);
+      expect(isTetDeparture("2026-07-20")).toBe(false);
+    });
+
+    it("normalizes slash and dot separators", () => {
+      expect(isTetDeparture("2026/02/15")).toBe(true);
+      expect(isTetDeparture("2026.02.15")).toBe(true);
+      expect(isTetDeparture("2026 / 02 / 15")).toBe(true);
+    });
+
+    it("handles inverted DD-MM-YYYY formats", () => {
+      expect(isTetDeparture("15-02-2026")).toBe(true);
+      expect(isTetDeparture("15/02/2026")).toBe(true);
+    });
+
+    it("safely handles non-string and undefined inputs", () => {
+      expect(isTetDeparture(undefined)).toBe(false);
+      expect(isTetDeparture("" as any)).toBe(false);
+      expect(isTetDeparture(null as any)).toBe(false);
+      expect(isTetDeparture(12345 as any)).toBe(false);
     });
   });
 });

@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis & Scope Decomposition
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 5bb4d0b020e727e4b7cd779d2d5aeeaf7ecaf62a
-# TIMESTAMP: 2026-10-26T11:08:00.000Z
-# EXECUTION_RECEIPT_SHA256: 1f5b48e7ace6b05c6cff63384090800bc1bb014741e493e5cecc127f3797f671
+# GIT_COMMIT: 284631b78ca1ecefc90d9a10821cd8d216c55c39
+# TIMESTAMP: 2026-10-26T11:23:00.000Z
+# EXECUTION_RECEIPT_SHA256: be5149febde42d540bdab35ce3862526e68383412a670a6a2951dfaf6a44fd6a
 
 ---
 
@@ -18,22 +18,22 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION III: 12 ADVERSARIAL LENSES DEEP AUDIT (CYCLE G79)
+## SECTION III: 12 ADVERSARIAL LENSES DEEP AUDIT (CYCLE G80)
 
 ### L01: Data Ingestion & Live Schema Integrity
-- **Current Ground Truth**: `src/app/data/api.ts` enforces strict nullable schema parsing. In `src/app/lib/bookingUrls.ts`, outbound partner search URLs are constructed for Google Flights, Skyscanner, and direct airlines.
-- **Vulnerability Discovered**: In `src/app/lib/bookingUrls.ts`, airport codes `fromCode` and `toCode` in `buildGoogleFlightsUrl` and `buildSkyscannerUrl` are formatted without stripping whitespace or non-alphanumeric characters. Untrimmed codes (`"HAN "` or `" SGN"`) produce malformed path components in Skyscanner URLs (`/han%20/%20sgn/`).
-- **Defensive Target**: Add defensive sanitization in `src/app/lib/bookingUrls.ts`: `(code || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "")`. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
+- **Current Ground Truth**: `src/domain/farely/airportAlternatives.ts` implements airport alternatives and timezone-aware flight timing.
+- **Vulnerability Discovered**: In `calculateTimezoneAwareTiming`, local date/time strings are split naively with `datePart.split('-').map(Number)`. If input contains unparseable formatting or slashes, `depParts.year`, `month`, or `day` evaluates to `NaN`, resulting in `depUtcTime = NaN` and `trueElapsedMinutes = NaN`.
+- **Defensive Target**: Add defensive date parsing and validation in `calculateTimezoneAwareTiming`: verify `Number.isFinite(trueElapsedMinutes)` and clamp negative flight times to 0 with chronological inconsistency warnings. Direct ticketing and passenger checkout are strictly `boundary_excluded`.
 
 ### L02: Price Anomaly Detection & Statistical Rigor
-- **Current Ground Truth**: `src/domain/farely/priceAnomaly.ts` guarantees Bessel's correction $(N - 1)$, cohort bounding (`MAX_COHORT_ANALYSIS_SIZE = 250`), and Lunar Tet baselines.
-- **Vulnerability Discovered**: In `src/domain/farely/dataEconomics.ts`, `evaluateScanExpansionProposal` multiplies `proposal.additionalScopesCount * proposal.estimatedCostPerScopeVnd`. If `additionalScopesCount <= 0` or non-integer, `marginalCostVnd` evaluates to 0 or negative, causing `marginalRoiRatio` to default to 1.0, approving un-economic expansions.
-- **Defensive Target**: Clamp `safeAdditionalScopes = Math.floor(Math.max(1, proposal.additionalScopesCount || 0))` and `safeCostPerScope = Math.max(0, proposal.estimatedCostPerScopeVnd || 0)` in `src/domain/farely/dataEconomics.ts`.
+- **Current Ground Truth**: `src/domain/farely/priceAnomaly.ts` defines static Lunar Tet windows for 2025–2027 to suppress false deal alerts during holiday price surges.
+- **Vulnerability Discovered**: In `isTetDeparture`, `departureDate.slice(0, 10)` is compared lexicographically against `w.start` (format `YYYY-MM-DD`). If caller provides slash separators (`"2026/02/10"`), the comparison fails silently, causing peak Tet fares to be misclassified as anomalies.
+- **Defensive Target**: Normalize date separators: `const dateStr = (departureDate || "").replace(/\//g, "-").slice(0, 10)`.
 
 ### L03: True Landed Cost Monotonicity & Ancillary Transparency
-- **Current Ground Truth**: `src/domain/farely/tripBudgetEstimator.ts` scales ancillary baggage and seat surcharges by whole-integer passengers. In `src/domain/farely/buyWaitGuidance.ts`, historical volatility informs buy vs wait advice.
-- **Vulnerability Discovered**: In `src/domain/farely/buyWaitGuidance.ts`, `departureDate` is parsed with `new Date(params.departureDate)`. If `params.departureDate` is invalid or missing, `depDate.getTime()` returns `NaN`, poisoning `daysUntilDeparture` with `NaN` and failing to trigger imminent departure rules.
-- **Defensive Target**: Validate `Number.isFinite(depDate.getTime())` in `src/domain/farely/buyWaitGuidance.ts`, returning fail-closed `INSUFFICIENT_DATA` with explanatory Vietnamese rationale when `departureDate` is unparseable. Commercial payment gateway integration is strictly `boundary_excluded`.
+- **Current Ground Truth**: `src/app/domain/dealComparison.ts` compares deal options and identifies Pareto-dominated alternatives.
+- **Vulnerability Discovered**: In `compareDeals`, if a deal has `price <= 0` or non-finite price, it participates in dominance calculations, distorting price rankings.
+- **Defensive Target**: Add price positivity validation and flag non-positive prices under `unverifiedFields: ["Giá vé không hợp lệ"]`. Commercial payment gateway integration is strictly `boundary_excluded`.
 
 ### L04: Authentication, Access Control & Anti-Abuse
 - **Current Ground Truth**: `supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql` enforces tokenized watch creation, rate limiting (`check_watch_rate_limit`), and row-level locking (`FOR UPDATE SKIP LOCKED`).

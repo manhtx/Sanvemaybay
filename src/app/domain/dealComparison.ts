@@ -225,22 +225,55 @@ export function identifyDominatedOptions(rows: DealComparisonRow[]): Set<string>
     for (const b of rows) {
       if (a.id === b.id) continue;
       // Invariant (AUD-06 & AUD-15): Pareto comparison strictly requires all compared
-      // dimensions to be defined and known on both options. Missing dimensions cannot be treated as Infinity.
+      // dimensions to be defined, positive, and finite on both options. Missing dimensions cannot be treated as Infinity.
       if (
         a.totalCost == null || b.totalCost == null ||
+        !Number.isFinite(a.totalCost) || !Number.isFinite(b.totalCost) ||
+        a.totalCost <= 0 || b.totalCost <= 0 ||
         a.durationMinutes == null || b.durationMinutes == null ||
-        a.stops == null || b.stops == null
+        !Number.isFinite(a.durationMinutes) || !Number.isFinite(b.durationMinutes) ||
+        a.durationMinutes <= 0 || b.durationMinutes <= 0 ||
+        a.stops == null || b.stops == null ||
+        a.stops < 0 || b.stops < 0
       ) {
         continue;
       }
-      const noWorse = a.totalCost <= b.totalCost && a.durationMinutes <= b.durationMinutes && a.stops <= b.stops;
-      const strictlyBetter = a.totalCost < b.totalCost || a.durationMinutes < b.durationMinutes || a.stops < b.stops;
+      const costA = Math.round(a.totalCost);
+      const costB = Math.round(b.totalCost);
+      const noWorse = costA <= costB && a.durationMinutes <= b.durationMinutes && a.stops <= b.stops;
+      const strictlyBetter = costA < costB || a.durationMinutes < b.durationMinutes || a.stops < b.stops;
       if (noWorse && strictlyBetter) {
         dominatedIds.add(b.id);
       }
     }
   }
   return dominatedIds;
+}
+
+/**
+ * Evaluates whether a candidate deal is strictly dominated by a baseline deal
+ * according to 3-dimensional Pareto criteria (price, duration, stops).
+ */
+export function isDealDominated(
+  candidate: { id?: string; price: number; durationMinutes?: number; stops?: number | null },
+  baseline: { id?: string; price: number; durationMinutes?: number; stops?: number | null }
+): boolean {
+  if (candidate.id && baseline.id && candidate.id === baseline.id) return false;
+  const candPrice = Math.round(candidate.price);
+  const basePrice = Math.round(baseline.price);
+  if (!Number.isFinite(candPrice) || candPrice <= 0 || !Number.isFinite(basePrice) || basePrice <= 0) return false;
+  if (candidate.durationMinutes == null || baseline.durationMinutes == null || candidate.durationMinutes <= 0 || baseline.durationMinutes <= 0) return false;
+  if (candidate.stops == null || baseline.stops == null || candidate.stops < 0 || baseline.stops < 0) return false;
+
+  const noWorse = basePrice <= candPrice &&
+                  baseline.durationMinutes <= candidate.durationMinutes &&
+                  baseline.stops <= candidate.stops;
+
+  const strictlyBetter = basePrice < candPrice ||
+                         baseline.durationMinutes < candidate.durationMinutes ||
+                         baseline.stops < candidate.stops;
+
+  return noWorse && strictlyBetter;
 }
 
 /**
