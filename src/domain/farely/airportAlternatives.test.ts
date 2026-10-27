@@ -4,6 +4,7 @@ import {
   areAirportsInSameMetro,
   calculateTimezoneAwareTiming,
   evaluateAirportAlternative,
+  evaluateAlternativeAirportSavings,
 } from './airportAlternatives.ts';
 
 describe('F23: Airport Alternatives with Ground Transfer Time and Cost', () => {
@@ -175,5 +176,44 @@ describe('F68: Airport and Local Datetime Correctness across Timezones & Overnig
         arrivalLocalIso: '2026-11-01T10:15:00',
       })
     ).toThrow('Định dạng thời gian bay không hợp lệ');
+  });
+
+  describe('SOL-AIRPORT-01: Alternative Airport Net Economic Savings & Friction', () => {
+    it('accurately debits surface transit cost and validates economic viability', () => {
+      // 500k fare savings - 200k taxi = 300k net savings (60 min)
+      const res1 = evaluateAlternativeAirportSavings({
+        primaryAirfare: 2000000,
+        alternativeAirfare: 1500000,
+        surfaceTransitCost: 200000,
+        transferMinutes: 60,
+      });
+      expect(res1.airFareSavingsVND).toBe(500000);
+      expect(res1.netSavingsVND).toBe(300000);
+      expect(res1.isEconomicallyViable).toBe(true);
+      expect(res1.explanationVi).toContain('Tiết kiệm thực tế 300.000 đ');
+
+      // 100k fare savings - 200k taxi = -100k net loss -> not viable
+      const res2 = evaluateAlternativeAirportSavings({
+        primaryAirfare: 2000000,
+        alternativeAirfare: 1900000,
+        surfaceTransitCost: 200000,
+        transferMinutes: 60,
+      });
+      expect(res2.airFareSavingsVND).toBe(100000);
+      expect(res2.netSavingsVND).toBe(-100000);
+      expect(res2.isEconomicallyViable).toBe(false);
+      expect(res2.explanationVi).toContain('vượt quá mức chênh lệch giá vé');
+
+      // Excessive detour time > 180 min -> not viable
+      const res3 = evaluateAlternativeAirportSavings({
+        primaryAirfare: 2000000,
+        alternativeAirfare: 1000000,
+        surfaceTransitCost: 200000,
+        transferMinutes: 240,
+      });
+      expect(res3.netSavingsVND).toBe(800000);
+      expect(res3.isEconomicallyViable).toBe(false);
+      expect(res3.explanationVi).toContain('vượt quá ngưỡng chịu đựng tối đa');
+    });
   });
 });

@@ -962,7 +962,55 @@
       "committed_at": "2026-10-27T08:30:57.079Z",
       "verification_output": "18 vitest tests in priceAnomaly.test.ts pass",
       "git_commit": null
+    },
+    {
+      "task_id": "WP01-PWA-OFFLINE-CACHE-FRESHNESS",
+      "cycleId": "G85",
+      "started_at": "2026-10-27T08:45:04.447Z",
+      "status": "COMMITTED",
+      "target_files": [
+        "Add action deduplication, queue FIFO buffer, and offline disclosure hardening"
+      ],
+      "snapshots": {
+        "Add action deduplication, queue FIFO buffer, and offline disclosure hardening": null
+      },
+      "git_head": "c0643b86c813a50a4905bf60d8d75e23a0c24af0",
+      "committed_at": "2026-10-27T08:46:04.627Z",
+      "verification_output": "pwaOfflineFreshness tests passed: 10/10 green",
+      "git_commit": null
+    },
+    {
+      "task_id": "WP02-CONDITIONAL-GROWTH-SAFETY-AUTH",
+      "cycleId": "G85",
+      "started_at": "2026-10-27T08:46:35.099Z",
+      "status": "COMMITTED",
+      "target_files": [
+        "Add timing-safe comparison, candidate key entropy floor, and constant-time token verification"
+      ],
+      "snapshots": {
+        "Add timing-safe comparison, candidate key entropy floor, and constant-time token verification": null
+      },
+      "git_head": "c0643b86c813a50a4905bf60d8d75e23a0c24af0",
+      "committed_at": "2026-10-27T08:47:29.113Z",
+      "verification_output": "conditionalGrowthSafety tests passed: 9/9 green",
+      "git_commit": null
+    },
+    {
+      "task_id": "WP03-AIRPORT-ALTERNATIVES-GROUND-FRICTION",
+      "cycleId": "G85",
+      "started_at": "2026-10-27T08:48:11.809Z",
+      "status": "COMMITTED",
+      "target_files": [
+        "Add evaluateAlternativeAirportSavings function with ground transit friction and economic viability assertions"
+      ],
+      "snapshots": {
+        "Add evaluateAlternativeAirportSavings function with ground transit friction and economic viability assertions": null
+      },
+      "git_head": "c0643b86c813a50a4905bf60d8d75e23a0c24af0",
+      "committed_at": "2026-10-27T08:48:54.306Z",
+      "verification_output": "airportAlternatives tests passed: 12/12 green",
+      "git_commit": null
     }
   ],
-  "last_updated": "2026-10-27T08:30:57.080Z"
+  "last_updated": "2026-10-27T08:48:54.307Z"
 }

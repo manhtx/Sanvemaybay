@@ -4,7 +4,11 @@ import {
   UnauthorizedP3ActivationError,
   P3_CAPABILITY_REGISTRY,
   generateFounderAuthToken,
+  timingSafeEqualHex,
+  verifyFounderAuthorization,
+  FOUNDER_AUTH_SALT,
 } from './conditionalGrowthSafety';
+import { sha256Hex } from './identity';
 
 describe('Rule 4 & Section D4: Conditional Growth Safety & P3 Governance', () => {
   it('allows activation of F50 (forecasting) when bounded prerequisites are satisfied', () => {
@@ -142,5 +146,39 @@ describe('Rule 4 & Section D4: Conditional Growth Safety & P3 Governance', () =>
         { founderSecret: secureSecret }
       )
     ).toThrow(UnauthorizedP3ActivationError);
+  });
+
+  describe('SOL-GROWTH-01: Cryptographic Founder Key Verification & Timing Safety', () => {
+    it('timingSafeEqualHex executes constant-time equality over hex strings case-insensitively', () => {
+      const hexA = 'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789';
+      const hexB = 'ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789';
+      const hexC = 'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456780';
+
+      expect(timingSafeEqualHex(hexA, hexB)).toBe(true);
+      expect(timingSafeEqualHex(hexA, hexC)).toBe(false);
+      expect(timingSafeEqualHex(hexA, 'short')).toBe(false);
+      expect(timingSafeEqualHex(null as unknown as string, hexA)).toBe(false);
+    });
+
+    it('verifyFounderAuthorization enforces >= 12 chars entropy and matches salted hash', () => {
+      const validKey = 'production-founder-key-2026';
+      const expectedHash = sha256Hex(FOUNDER_AUTH_SALT + ':' + validKey);
+
+      expect(verifyFounderAuthorization(validKey, expectedHash)).toBe(true);
+
+      // Rejects short key (<12 chars)
+      expect(verifyFounderAuthorization('short-key', expectedHash)).toBe(false);
+
+      // Rejects empty/null/undefined
+      expect(verifyFounderAuthorization('', expectedHash)).toBe(false);
+      expect(verifyFounderAuthorization(null as unknown as string, expectedHash)).toBe(false);
+
+      // Rejects incorrect key
+      expect(verifyFounderAuthorization('wrong-production-key-2026', expectedHash)).toBe(false);
+
+      // Strips non-printable ASCII control characters
+      const keyWithControlChars = '\x00\x1F' + validKey + '\x7F';
+      expect(verifyFounderAuthorization(keyWithControlChars, expectedHash)).toBe(true);
+    });
   });
 });

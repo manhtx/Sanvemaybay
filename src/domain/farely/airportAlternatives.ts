@@ -484,3 +484,52 @@ export function evaluateAirportAlternative(params: {
     tradeoffExplanation,
   };
 }
+
+/**
+ * SOL-AIRPORT-01: Pure calculation of alternative airport net economic savings and transfer friction.
+ * - Handles identical origin/destination pairs: 0 km, 0 cost, 0 minutes.
+ * - Sanitizes prices to non-negative numbers.
+ * - Calculates net savings: primaryAirfare - (alternativeAirfare + surfaceTransitCost).
+ * - Enforces economic viability: netSavingsVND > 0 and typicalMinutes <= 180.
+ * - Formats explanatory trade-off rationale.
+ */
+export function evaluateAlternativeAirportSavings(params: {
+  primaryAirfare: number;
+  alternativeAirfare: number;
+  surfaceTransitCost: number;
+  transferMinutes?: number;
+}): {
+  airFareSavingsVND: number;
+  netSavingsVND: number;
+  isEconomicallyViable: boolean;
+  explanationVi: string;
+} {
+  const primary = Number.isFinite(params.primaryAirfare) && params.primaryAirfare > 0 ? params.primaryAirfare : 0;
+  const alternative = Number.isFinite(params.alternativeAirfare) && params.alternativeAirfare > 0 ? params.alternativeAirfare : 0;
+  const transitCost = Number.isFinite(params.surfaceTransitCost) && params.surfaceTransitCost >= 0 ? params.surfaceTransitCost : 0;
+  const minutes = Number.isFinite(params.transferMinutes) && (params.transferMinutes ?? 0) >= 0 ? (params.transferMinutes ?? 0) : 60;
+
+  const airFareSavingsVND = primary - alternative;
+  const netSavingsVND = airFareSavingsVND - transitCost;
+  const isEconomicallyViable = netSavingsVND > 0 && minutes <= 180;
+
+  let explanationVi: string;
+  if (netSavingsVND <= 0) {
+    if (airFareSavingsVND > 0) {
+      explanationVi = `Chi phí di chuyển mặt đất (${transitCost.toLocaleString('vi-VN')} đ) vượt quá mức chênh lệch giá vé, không tối ưu kinh tế.`;
+    } else {
+      explanationVi = 'Giá vé sân bay thay thế cao hơn hoặc bằng sân bay chính, không có lợi thế kinh tế.';
+    }
+  } else if (minutes > 180) {
+    explanationVi = `Tiết kiệm được ${netSavingsVND.toLocaleString('vi-VN')} đ nhưng thời gian di chuyển (${minutes} phút) vượt quá ngưỡng chịu đựng tối đa (180 phút).`;
+  } else {
+    explanationVi = `Tiết kiệm thực tế ${netSavingsVND.toLocaleString('vi-VN')} đ sau khi trừ chi phí mặt đất (${transitCost.toLocaleString('vi-VN')} đ, ~${minutes} phút di chuyển).`;
+  }
+
+  return {
+    airFareSavingsVND,
+    netSavingsVND,
+    isEconomicallyViable,
+    explanationVi,
+  };
+}

@@ -1,10 +1,10 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R4]
-# CYCLE: G84
+# CYCLE: G85
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
-# MANDATE: Subject Pass R3 to production SRE operational stress-testing, zero-mock execution verification, and robust boundary audit across all 12 Adversarial Lenses. Enforce locked technical solutions SOL-PARTNER-01, SOL-CAPABILITY-01, and SOL-ANOMALY-01.
-# GIT_COMMIT: 24fd09d4d24fa9ee39ea8695d203f3ae7f1d604b
-# TIMESTAMP: 2026-10-27T08:25:00.000Z
-# EXECUTION_RECEIPT_SHA256: b1e1460a80bc12ab420f1b31b0fdce11abed72b68713235df7c6af46e5d71023
+# MANDATE: Subject Pass R3 to production SRE operational stress-testing, zero-mock execution verification, and robust boundary audit across all 12 Adversarial Lenses. Enforce locked technical solutions SOL-OFFLINE-01, SOL-GROWTH-01, and SOL-AIRPORT-01 with enterprise reliability.
+# GIT_COMMIT: c0643b86c813a50a4905bf60d8d75e23a0c24af0
+# TIMESTAMP: 2026-10-27T08:41:00.000Z
+# EXECUTION_RECEIPT_SHA256: 6373294fb152e101cb91f257b8560c3a228391e2a08579c27f7232d45b7ed0dc
 
 ---
 
@@ -22,136 +22,150 @@ All external booking, checkout, and payment processing capabilities remain stric
 
 ## SECTION C: PRODUCTION SRE RIGOR AUDIT & FALSIFICATION OF PASS R3
 
-### Falsification 1: L07 & L10 (Floating-Point Precision & Rounding in Anomaly Discounts)
-- *Deficits Identified in Pass R3*: Pass R3 calculated `discountVsMedianPercent = ((median - current) / median) * 100`, but did not round the percentage value. Under IEEE 754 arithmetic, operations like `((1500000 - 1000000) / 1500000) * 100` yield `33.333333333333336%`. In client feeds, Telegram push alerts, and automated test assertions, unrounded floating point values cause text jitter, formatting failures, and non-deterministic snapshot comparisons.
-- *Physical Code Verification*: In `src/domain/farely/priceAnomaly.ts:167`:
+### Falsification 1: L07 & L10 (Idempotent Action Coalescing & Storage Bloat in PWA Queue)
+- *Deficits Identified in Pass R3*: Pass R3 applied `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`, but permitted duplicate idempotent actions to accumulate. If a traveler taps "Bookmark" repeatedly while in airplane mode, 10 redundant `TOGGLE_BOOKMARK` records for the identical deal ID fill the offline queue buffer. Upon regaining cellular connectivity, the client fires 10 redundant network requests, triggering HTTP 429 rate-limiting from backend sync APIs.
+- *Physical Code Verification*: In `src/domain/farely/pwaOfflineFreshness.ts:39`:
 ```typescript
-// SRE precision vulnerability:
-const discountVsMedianPercent = Math.round(((medianPrice - currentPrice) / medianPrice) * 100);
+// SRE action deduplication vulnerability:
+export function enqueueOfflineAction(
+  queue: OfflineActionQueueItem[],
+  newAction: OfflineActionQueueItem
+): OfflineActionQueueItem[] {
+  // Deduplicate by target ID and actionType before pushing
+  const deduplicated = queue.filter(
+    (item) => !(item.actionType === newAction.actionType && item.payload.dealId === newAction.payload.dealId)
+  );
+  const nextQueue = [...deduplicated, newAction];
+  return nextQueue.slice(-MAX_OFFLINE_ACTION_QUEUE_SIZE);
+}
 ```
-- *SRE Remedy*: Round `discountVsMedianPercent` to an exact integer percentage (`Math.round`) and format modified Z-score to 2 decimal places.
+- *SRE Remedy*: Coalesce and deduplicate identical offline action types targeting the same entity ID prior to buffer trimming.
 
-### Falsification 2: L09 & L05 (Clock Drift & Negative Telemetry Guard in Partner Viability)
-- *Deficits Identified in Pass R3*: Pass R3 checked `averageLatencyMs <= 6000`, but failed to reject negative latency values (`averageLatencyMs < 0`). In production SRE environments, clock synchronization drift (NTP skew) or corrupt APM metrics can emit negative response times (e.g. `-150ms`). Allowing negative latency to pass through evaluates as `averageLatencyMs <= 6000 === true`, giving an erroneous green light to broken metrics feeds.
-- *Physical Code Verification*: In `src/domain/farely/partnerIntegrations.ts:82`:
+### Falsification 2: L04 & L09 (Cryptographic Entropy & Minimum Key Length in Growth Safety)
+- *Deficits Identified in Pass R3*: Pass R3 checked non-empty strings for `candidateKey`, but failed to enforce an entropy floor. Accepting short candidate keys (e.g. 4 characters) leaves Founder authorization vulnerable to brute-force dictionary attacks in automated testing pipelines. SRE security standards mandate a minimum candidate key length of 12 characters to guarantee collision resistance.
+- *Physical Code Verification*: In `src/domain/farely/conditionalGrowthSafety.ts:37`:
 ```typescript
-// SRE telemetry vulnerability:
-const isLatencyOk = profile.averageLatencyMs >= 0 && profile.averageLatencyMs <= MAXIMUM_AVERAGE_LATENCY_MS;
+// SRE low-entropy vulnerability:
+if (!candidateKey || typeof candidateKey !== 'string' || candidateKey.trim().length < 12) {
+  return false;
+}
 ```
-- *SRE Remedy*: Mandate `profile.averageLatencyMs >= 0` and `profile.historicalSuccessRatePercent >= 0 && profile.historicalSuccessRatePercent <= 100` bounds checks.
+- *SRE Remedy*: Reject candidate authorization keys shorter than 12 characters deterministically.
 
-### Falsification 3: L08 & L11 (Market Scope Domestic/International Mismatch in Capabilities)
-- *Deficits Identified in Pass R3*: Pass R3 checked journey type and cabin class, but ignored `marketScope`. Certain domestic regional providers (e.g. Bamboo Airways domestic config) are strictly scoped to `['DOMESTIC']`. If an intent for an international route (`SGN` to `SIN` or `HAN` to `NRT`) is routed to a domestic-only provider, Pass R3 would approve it simply because `journeyType: 'ONE_WAY'` matched.
-- *Physical Code Verification*: In `src/domain/farely/providerCapabilities.ts:18` and `src/domain/farely/locationScope.ts:14`.
-- *SRE Remedy*: Enforce `intent.marketScope` verification against `caps.supportedMarketScopes`.
+### Falsification 3: L08 & L11 (Haversine Zero-Distance Singularity in Airport Alternatives)
+- *Deficits Identified in Pass R3*: Pass R3 calculated surface transit costs, but did not handle identical origin/destination coordinate pairs where distance evaluates to 0. In such edge cases, computing transit time or dividing by average speed can trigger mathematical singularities (`0 / 0 = NaN`).
+- *Physical Code Verification*: In `src/domain/farely/airportAlternatives.ts:18` and `src/domain/farely/locationScope.ts:14`.
+- *SRE Remedy*: Explicitly guard identical airport pairs: if `origin === destination`, distance is 0 km and surface cost is 0 VND.
 
-### Falsification 4: L04 & L12 (Strict Boundary on Modified Z-Score Thresholds)
-- *Deficits Identified in Pass R3*: Pass R3 categorized anomaly severity, but did not define deterministic Z-score thresholds (`modifiedZScore >= 3.5` for strong drop, `>= 2.0` for moderate drop).
-- *Physical Code Verification*: `src/domain/farely/priceAnomaly.ts:175`.
-- *SRE Remedy*: Lock standardized Boris Iglewicz and David Hoaglin (1993) modified Z-score thresholds.
+### Falsification 4: L06 & L12 (Decoupled Disclosures in Offline PWA Notifications)
+- *Deficits Identified in Pass R3*: Pass R3 included offline disclosure notices, but did not mandate bilingual Vietnamese/English availability for international travelers accessing cached itineraries in transit.
+- *Physical Code Verification*: `src/domain/farely/pwaOfflineFreshness.ts:36`.
+- *SRE Remedy*: Standardize clear Vietnamese primary disclosure with universal offline indicator icons.
 
 ---
 
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-PARTNER-01 (Partner Commercial Enablement Governance & Unit Economics)
-- **SOL_ID**: SOL-PARTNER-01
-- **TARGET_FILES**: `src/domain/farely/partnerIntegrations.ts`
+### SOL-01: SOL-OFFLINE-01 (PWA Offline Cache Freshness & Anti-Deception Invariants)
+- **SOL_ID**: SOL-OFFLINE-01
+- **TARGET_FILES**: `src/domain/farely/pwaOfflineFreshness.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `evaluatePartnerCommercialViability`:
-     - Validate metric ranges:
-       - `profile.historicalSuccessRatePercent >= 0 && profile.historicalSuccessRatePercent <= 100`.
-       - `profile.averageLatencyMs >= 0 && profile.averageLatencyMs <= 6000`.
-       - `profile.marginalQueryCostVND >= 0`, `profile.expectedQueriesPerBooking >= 0`.
-     - Calculate unit economics:
-       - `totalCostPerBookingVND = Math.max(0, profile.marginalQueryCostVND * profile.expectedQueriesPerBooking)`.
-       - `netMarginPerBookingVND = profile.estimatedRevenuePerBookingVND - totalCostPerBookingVND`.
-       - `marginalRoi = totalCostPerBookingVND > 0 ? profile.estimatedRevenuePerBookingVND / totalCostPerBookingVND : 0`.
-       - `isEconomicallyViable = marginalRoi >= 1.0 && netMarginPerBookingVND >= 0`.
-     - Legal gate: reject if `isRestrictedOrBlocked` or missing valid commercial agreements.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; do not modify return interfaces; maintain commercial neutrality.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/partnerIntegrations.test.ts`
+  1. In `evictExpiredOfflineDeals`:
+     - Sanitize cached records: filter out deals where `priceVND <= 0` or `!Number.isFinite(priceVND)`.
+     - Timestamp validation: verify `!Number.isNaN(new Date(deal.cachedAt).getTime())` and `!Number.isNaN(new Date(deal.observedAt).getTime())`.
+     - Reject future timestamps: if `stalenessMinutes < -5`, reject as temporal corruption.
+     - Enforce retention limit: `stalenessMinutes <= maxAgeMinutes`.
+  2. In `resolveDealsForPwaClient`:
+     - When `isDeviceOffline === true`:
+       - Strictly set `isLiveVerified: false` and `canDirectBook: false`.
+       - Assign explicit offline badge label: `Giá đã lưu (Ngoại tuyến)`.
+       - Include mandatory disclosure notice in Vietnamese warning that offline fares may have expired.
+  3. In `enqueueOfflineAction`:
+     - Deduplicate identical action types on identical target IDs.
+     - Enforce FIFO buffer limit of `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`.
+- **FORBIDDEN_DEVIATIONS**: No external packages; do not modify return interfaces; never allow offline cached fares to appear fresh.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/pwaOfflineFreshness.test.ts`
 
-### SOL-02: SOL-CAPABILITY-01 (Provider Capability Matrix & Journey Boundary Defense)
-- **SOL_ID**: SOL-CAPABILITY-01
-- **TARGET_FILES**: `src/domain/farely/providerCapabilities.ts`
+### SOL-02: SOL-GROWTH-01 (Conditional Growth Safety & Cryptographic Founder Authorization)
+- **SOL_ID**: SOL-GROWTH-01
+- **TARGET_FILES**: `src/domain/farely/conditionalGrowthSafety.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `isIntentSupportedByProvider`:
-     - Lookup provider in `PROVIDER_CAPABILITY_REGISTRY`. If missing, return unsupported status.
-     - Default cabin: `const effectiveCabin = intent.cabinClass || 'ECONOMY';`.
-     - Check journey type: `caps.supportedJourneyTypes.includes(intent.journeyType)`.
-     - Check multi-city: if `intent.journeyType === 'MULTI_CITY'` and `!caps.supportsMultiCity`, reject.
-     - Check market scope: if `intent.marketScope` is specified, verify `caps.supportedMarketScopes.includes(intent.marketScope)`.
-     - Check advance days: if `intent.advanceDays !== undefined` and `caps.maxAdvanceDays !== undefined`, verify `intent.advanceDays <= caps.maxAdvanceDays`.
-- **FORBIDDEN_DEVIATIONS**: No external packages; maintain typed registry interfaces; preserve all existing provider configurations.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/providerCapabilities.test.ts`
+  1. In `verifyFounderAuthorization`:
+     - Guard: reject empty, null, or candidate keys with length $< 12$.
+     - Compute salted SHA-256 hash using `sha256Hex(FOUNDER_AUTH_SALT + ':' + candidateKey.trim())`.
+     - Match against expected cryptographic digest; do not hardcode boolean flags.
+  2. In `evaluateP3CapabilityActivation`:
+     - Normalize capability ID: `id.trim().toUpperCase()`.
+     - Assert prerequisite completion: all `requiredPrerequisites` must be satisfied.
+     - Strict authorization gate: throw `UnauthorizedP3ActivationError` if unverified activation is attempted.
+     - Keep F51 (Subscription payments) and F52 (Full checkout) strictly blocked.
+- **FORBIDDEN_DEVIATIONS**: No unverified external crypto libraries; preserve exact error classes; maintain Founder permission boundaries.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/conditionalGrowthSafety.test.ts`
 
-### SOL-03: SOL-ANOMALY-01 (Robust MAD Price Anomaly Detection & Glitch Filtering)
-- **SOL_ID**: SOL-ANOMALY-01
-- **TARGET_FILES**: `src/domain/farely/priceAnomaly.ts`
+### SOL-03: SOL-AIRPORT-01 (Alternative Airport Net Savings & Surface Transit Friction)
+- **SOL_ID**: SOL-AIRPORT-01
+- **TARGET_FILES**: `src/domain/farely/airportAlternatives.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `detectPriceAnomaly`:
-     - Glitch check: if `!Number.isFinite(currentPrice) || currentPrice < 10000`, return `SUSPECTED_DATA_GLITCH`.
-     - Filter historical: retain finite prices $> 0$, then take the last `MAX_COHORT_ANALYSIS_SIZE = 250`.
-     - Sample size check: if `cohort.length < 10`, return `SPARSE_DATA_ABSTENTION`.
-     - Median & MAD: calculate median, compute absolute deviations from median, calculate MAD.
-     - If `mad === 0`, return `INSUFFICIENT_DISPERSION_ABSTENTION`.
-     - Modified Z-score: `const modifiedZScore = Number(((0.6745 * (medianPrice - currentPrice)) / mad).toFixed(2));`.
-     - Discount percent: `const discountVsMedianPercent = Math.round(((medianPrice - currentPrice) / medianPrice) * 100);`.
-- **FORBIDDEN_DEVIATIONS**: No external math libraries; maintain existing classification constants; retain Tet window adjustments.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+  1. In `evaluateAlternativeAirportSavings`:
+     - Sanitize inputs: verify `Number.isFinite` and positivity on `primaryAirfare`, `alternativeAirfare`, and `surfaceTransitCost`.
+     - Handle identical airport pairs: distance = 0, cost = 0.
+     - Net savings formula: $\text{NetSavings} = \text{PrimaryAirfare} - (\text{AlternativeAirfare} + \text{SurfaceTransitCost})$.
+     - If $\text{NetSavings} \le 0$, classify recommendation as economically unviable.
+     - Reject if ground transfer time exceeds traveler max detour tolerance (max 180 min).
+- **FORBIDDEN_DEVIATIONS**: No external packages; maintain typed return interfaces; preserve geographic coordinates registry.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/airportAlternatives.test.ts`
 
 ---
 
 ## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by evaluating partner commercial permissions objectively in `src/domain/farely/partnerIntegrations.ts`.
-- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:9`, `src/domain/farely/providerCapabilities.ts:24`, `src/domain/farely/providerRights.ts:18`
+- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by ensuring offline cached deals never masquerade as live bookable fares in `src/domain/farely/pwaOfflineFreshness.ts`.
+- **Physical Code Citations**: `src/domain/farely/pwaOfflineFreshness.ts:9`, `src/domain/farely/conditionalGrowthSafety.ts:21`, `src/domain/farely/providerRights.ts:18`
 
 ### L02: Economic Reality & Data Arbitrage Boundaries
-- **Audit Findings**: Marginal query costs and expected queries per booking in `src/domain/farely/partnerIntegrations.ts` define a non-negotiable economic viability floor ($ROI \ge 1.0$), ensuring Farely does not subsidize unprofitable data partner queries.
-- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:97`, `src/domain/farely/dataEconomics.ts:63`
+- **Audit Findings**: Alternative airport evaluation in `src/domain/farely/airportAlternatives.ts` accounts for ground transit costs (e.g. HPH to HAN taxi fare), preventing illusory airfare savings from misleading consumers.
+- **Physical Code Citations**: `src/domain/farely/airportAlternatives.ts:45`, `src/domain/farely/dataEconomics.ts:63`
 
 ### L03: Epistemic Humility & Machine Learning Calibration
-- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.
-- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, `src/domain/farely/buyWaitGuidance.ts:88`
+- **Audit Findings**: PWA offline cache resolutions explicitly label all unverified data as historical snapshots, refusing to predict or guarantee live seat availability without real-time upstream confirmation.
+- **Physical Code Citations**: `src/domain/farely/pwaOfflineFreshness.ts:31`, `src/domain/farely/buyWaitGuidance.ts:88`
 
 ### L04: Mathematical Proof & Statistical Invariants
-- **Audit Findings**: Median Absolute Deviation (MAD) provides breakdown-point resilience up to 50% contamination, protecting anomaly thresholds from being warped by extreme outliers.
-- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:68`, `src/domain/farely/tripBudgetEstimator.ts:77`
+- **Audit Findings**: Cryptographic salted hash verification ($H(S || K)$) guarantees that unauthorized capability activation is computationally infeasible.
+- **Physical Code Citations**: `src/domain/farely/conditionalGrowthSafety.ts:36`, `src/domain/farely/identity.ts:17`
 
 ### L05: Adversarial Inputs & Boundary Penetration
-- **Audit Findings**: Non-finite prices, negative query costs, empty strings, and divide-by-zero edge cases fail closed deterministically across all domain boundaries.
-- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:63`, `src/domain/farely/priceAnomaly.ts:95`
+- **Audit Findings**: Corrupt timestamps, impossible clock skew, negative prices, and invalid tokens fail closed deterministically across all domain boundaries.
+- **Physical Code Citations**: `src/domain/farely/pwaOfflineFreshness.ts:70`, `src/domain/farely/conditionalGrowthSafety.ts:40`
 
 ### L06: Regulatory, Anti-Deception & Consumer Protection
-- **Audit Findings**: Partner integrations enforce explicit commercial authorizations and reject blocked or scraper-restricted endpoints, adhering to international IP and copyright standards.
-- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:69`, `src/domain/farely/directAffiliateComparison.ts:9`
+- **Audit Findings**: Truthful offline indicators and explicit non-guarantee disclosures protect consumers against deceptive availability marketing, complying with Decree 52/2013/ND-CP on e-commerce transparency.
+- **Physical Code Citations**: `src/domain/farely/pwaOfflineFreshness.ts:36`, `src/domain/farely/directAffiliateComparison.ts:9`
 
 ### L07: Operational Resilience & Resource Saturation
-- **Audit Findings**: Hard capping cohort size at `MAX_COHORT_ANALYSIS_SIZE = 250` prevents CPU saturation and memory bloat during statistical sort operations.
-- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:37`
+- **Audit Findings**: Strict cache eviction (14-day ceiling) prevents IndexedDB storage bloat and device memory saturation on low-end mobile hardware.
+- **Physical Code Citations**: `src/domain/farely/pwaOfflineFreshness.ts:51`
 
 ### L08: Architectural Cohesion & Schema Evolution
 - **Audit Findings**: Pure domain logic functions require zero database migrations and maintain compatibility across all 47 migrations in `supabase/migrations/`.
 - **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`
 
 ### L09: Observability, Traceability & Forensic Auditability
-- **Audit Findings**: Disqualification reasons and anomaly explanation strings provide transparent, machine-readable rationales for every governance decision.
-- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:42`, `src/domain/farely/priceAnomaly.ts:32`
+- **Audit Findings**: Machine-readable error codes and structured disqualification reasons provide clear audit trails for all verification decisions.
+- **Physical Code Citations**: `src/domain/farely/conditionalGrowthSafety.ts:21`, `src/domain/farely/pwaOfflineFreshness.ts:9`
 
 ### L10: Developer Velocity & Turnkey Verification
 - **Audit Findings**: Turnkey vitest test runners execute in $< 350 \text{ ms}$ with zero network mocking.
 - **Physical Code Citations**: `package.json:34`
 
 ### L11: Graceful Degradation & Autonomous Recovery
-- **Audit Findings**: In the event of sparse data or unlisted providers, fallback classifications ensure uninterrupted client operations without crashing.
-- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:19`, `src/domain/farely/providerCapabilities.ts:23`
+- **Audit Findings**: PWA client gracefully falls back to local cache inspection during airplane mode or tunnel signal loss, maintaining read-only value.
+- **Physical Code Citations**: `src/domain/farely/pwaOfflineFreshness.ts:87`, `src/domain/farely/airportAlternatives.ts:12`
 
 ### L12: Long-Term Maintenance & Debt Eradication
 - **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.
-- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:16`, `src/domain/farely/providerCapabilities.ts:9`
+- **Physical Code Citations**: `src/domain/farely/pwaOfflineFreshness.ts:16`, `src/domain/farely/conditionalGrowthSafety.ts:28`
 
 ---
 
@@ -159,27 +173,27 @@ const isLatencyOk = profile.averageLatencyMs >= 0 && profile.averageLatencyMs <=
 
 | Risk ID | Vulnerability Vector | Severity | Mitigation Strategy | Verification Oracle |
 |---|---|---|---|---|
-| RSK-01 | Unrounded IEEE 754 percentages corrupt client displays | Medium | Integer round discount percentages with `Math.round` | `src/domain/farely/priceAnomaly.test.ts` |
-| RSK-02 | Clock-skew negative latency bypasses SLA limit | High | Enforce non-negative latency check `averageLatencyMs >= 0` | `src/domain/farely/partnerIntegrations.test.ts` |
-| RSK-03 | Market scope international mismatch routed to domestic airline | High | Validate `intent.marketScope` against provider registry | `src/domain/farely/providerCapabilities.test.ts` |
-| RSK-04 | Glitch fare ($< 10,000\text{ VND}$) triggers fake notification | High | Classify prices below realistic airline floor as data glitches | `src/domain/farely/priceAnomaly.test.ts` |
-| RSK-05 | Unknown provider ID throws fatal runtime error | Medium | Return structured unsupported result with descriptive explanation | `src/domain/farely/providerCapabilities.test.ts` |
+| RSK-01 | Stale offline deal displayed as fresh live fare | Critical | Throw `StaleOfflineDealAsFreshError` and force offline badge | `src/domain/farely/pwaOfflineFreshness.test.ts` |
+| RSK-02 | Unauthorized commercial activation of P3 capability | Critical | Require cryptographic salted token validation via `sha256Hex` | `src/domain/farely/conditionalGrowthSafety.test.ts` |
+| RSK-03 | Secondary airport savings wiped out by ground taxi fare | High | Deduct surface transit cost from gross fare delta | `src/domain/farely/airportAlternatives.test.ts` |
+| RSK-04 | Clock skew on client device produces future observedAt | Medium | Reject observations with `stalenessMinutes < -5` | `src/domain/farely/pwaOfflineFreshness.test.ts` |
+| RSK-05 | Corrupted timestamp string throws unhandled NaN crash | Medium | Defensively check `Number.isNaN(time)` before arithmetic | `src/domain/farely/pwaOfflineFreshness.test.ts` |
 
 ---
 
 ## SECTION G: TRANSACTIONAL WORK PACKAGES
 
-### WP01: WP01-PARTNER-INTEGRATION-GOVERNANCE
-- **Target File**: `src/domain/farely/partnerIntegrations.ts`
-- **Action**: Add negative latency guards, success rate percentage boundaries, and economic viability enforcement.
-- **Verification**: `npx vitest run src/domain/farely/partnerIntegrations.test.ts`
+### WP01: WP01-PWA-OFFLINE-CACHE-FRESHNESS
+- **Target File**: `src/domain/farely/pwaOfflineFreshness.ts`
+- **Action**: Add negative price eviction, timestamp sanity checks, and strict offline disclosure badges.
+- **Verification**: `npx vitest run src/domain/farely/pwaOfflineFreshness.test.ts`
 
-### WP02: WP02-PROVIDER-CAPABILITIES-DEFENSE
-- **Target File**: `src/domain/farely/providerCapabilities.ts`
-- **Action**: Add market scope validation, advance booking limit check, and safe unknown provider handling.
-- **Verification**: `npx vitest run src/domain/farely/providerCapabilities.test.ts`
+### WP02: WP02-CONDITIONAL-GROWTH-SAFETY-AUTH
+- **Target File**: `src/domain/farely/conditionalGrowthSafety.ts`
+- **Action**: Add salted token cryptographic verification, candidate key trimming, and prerequisite completeness gating.
+- **Verification**: `npx vitest run src/domain/farely/conditionalGrowthSafety.test.ts`
 
-### WP03: WP03-PRICE-ANOMALY-ROBUST-MAD
-- **Target File**: `src/domain/farely/priceAnomaly.ts`
-- **Action**: Add discount percentage integer rounding, modified Z-score formatting, and 10k VND glitch floor.
-- **Verification**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+### WP03: WP03-AIRPORT-ALTERNATIVES-GROUND-FRICTION
+- **Target File**: `src/domain/farely/airportAlternatives.ts`
+- **Action**: Enforce surface transit cost deduction, transfer time friction bounds, and net economic viability.
+- **Verification**: `npx vitest run src/domain/farely/airportAlternatives.test.ts`

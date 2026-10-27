@@ -4,8 +4,11 @@ import {
   assertOfflineFreshnessIntegrity,
   evictExpiredOfflineDeals,
   MAX_OFFLINE_CACHE_AGE_MINUTES,
+  MAX_OFFLINE_ACTION_QUEUE_SIZE,
+  enqueueOfflineAction,
   StaleOfflineDealAsFreshError,
   CachedDealRecord,
+  OfflineActionQueueItem,
 } from './pwaOfflineFreshness';
 
 describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
@@ -202,6 +205,55 @@ describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
       expect(resolvedOnline[0].canDirectBook).toBe(false);
       expect(resolvedOnline[0].isLiveVerified).toBe(false);
       expect(resolvedOnline[0].offlineBadgeLabelVi).toBe('Dữ liệu giá không hợp lệ');
+    });
+
+    it('idempotently deduplicates identical actions and preserves bounded FIFO queue capacity', () => {
+      let queue: OfflineActionQueueItem[] = [];
+
+      // Enqueue bookmark for deal 1
+      queue = enqueueOfflineAction(queue, {
+        id: 'act_1',
+        actionType: 'TOGGLE_BOOKMARK',
+        payload: { dealId: 'deal_100' },
+        queuedAt: '2026-10-27T08:00:00.000Z',
+        status: 'PENDING_SYNC',
+      });
+      expect(queue).toHaveLength(1);
+
+      // Repeat bookmark action for same deal -> should deduplicate
+      queue = enqueueOfflineAction(queue, {
+        id: 'act_2',
+        actionType: 'TOGGLE_BOOKMARK',
+        payload: { dealId: 'deal_100' },
+        queuedAt: '2026-10-27T08:01:00.000Z',
+        status: 'PENDING_SYNC',
+      });
+      expect(queue).toHaveLength(1);
+      expect(queue[0].id).toBe('act_2');
+
+      // Different deal -> appends
+      queue = enqueueOfflineAction(queue, {
+        id: 'act_3',
+        actionType: 'TOGGLE_BOOKMARK',
+        payload: { dealId: 'deal_200' },
+        queuedAt: 'invalid-date', // corrupt timestamp fallback
+        status: 'PENDING_SYNC',
+      });
+      expect(queue).toHaveLength(2);
+      expect(queue[1].queuedAt).not.toBe('invalid-date');
+
+      // Saturate queue past MAX_OFFLINE_ACTION_QUEUE_SIZE
+      for (let i = 0; i < 120; i++) {
+        queue = enqueueOfflineAction(queue, {
+          id: `burst_act_${i}`,
+          actionType: 'PAUSE_WATCH',
+          payload: { dealId: `deal_${i}` },
+          queuedAt: new Date().toISOString(),
+          status: 'PENDING_SYNC',
+        });
+      }
+      expect(queue.length).toBe(MAX_OFFLINE_ACTION_QUEUE_SIZE);
+      expect(queue.length).toBeLessThanOrEqual(100);
     });
   });
 });

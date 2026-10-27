@@ -45,6 +45,36 @@ export interface OfflineActionQueueItem {
 }
 
 /**
+ * Maximum permitted queue capacity for offline user actions (F48).
+ * Enforces bounded memory limits on mobile PWA clients.
+ */
+export const MAX_OFFLINE_ACTION_QUEUE_SIZE = 100;
+
+/**
+ * Enqueues an offline action into the PWA action queue.
+ * - Idempotently deduplicates identical action types targeting the same entity (dealId).
+ * - Enforces valid ISO timestamp or falls back to current time.
+ * - Enforces bounded FIFO capacity: newest items preserved, oldest items trimmed.
+ */
+export function enqueueOfflineAction(
+  queue: OfflineActionQueueItem[],
+  newAction: OfflineActionQueueItem
+): OfflineActionQueueItem[] {
+  const deduplicated = queue.filter(
+    (item) => !(item.actionType === newAction.actionType && item.payload?.dealId === newAction.payload?.dealId)
+  );
+  const validQueuedAt = !Number.isNaN(new Date(newAction.queuedAt).getTime())
+    ? newAction.queuedAt
+    : new Date().toISOString();
+  const sanitizedAction: OfflineActionQueueItem = {
+    ...newAction,
+    queuedAt: validQueuedAt,
+  };
+  const nextQueue = [...deduplicated, sanitizedAction];
+  return nextQueue.slice(-MAX_OFFLINE_ACTION_QUEUE_SIZE);
+}
+
+/**
  * Maximum permitted retention age for offline cached deals (14 days = 14 * 24 * 60 minutes).
  * Any observation older than 14 days is strictly evicted from local caches.
  */

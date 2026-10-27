@@ -117,6 +117,41 @@ export const P3_CAPABILITY_REGISTRY: Record<P3CapabilityId, P3PrerequisiteRegist
 };
 
 /**
+ * Constant-time comparison between two hexadecimal digests (F48, Rule 4).
+ * Eliminates side-channel timing analysis vulnerability during cryptographic verification.
+ */
+export function timingSafeEqualHex(a: string, b: string): boolean {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const normA = a.toLowerCase();
+  const normB = b.toLowerCase();
+  if (normA.length !== normB.length) return false;
+  let diff = 0;
+  for (let i = 0; i < normA.length; i++) {
+    diff |= normA.charCodeAt(i) ^ normB.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
+/**
+ * Cryptographically verifies Founder authorization key with entropy floor and constant-time check.
+ * - Rejects empty, null, or short keys (< 12 characters).
+ * - Strips non-printable ASCII control characters.
+ * - Computes salted SHA-256 hash.
+ * - Compares hash using constant-time timingSafeEqualHex.
+ */
+export function verifyFounderAuthorization(candidateKey: string, expectedHash: string): boolean {
+  if (!candidateKey || typeof candidateKey !== 'string' || candidateKey.trim().length < 12) {
+    return false;
+  }
+  const cleanKey = candidateKey.replace(/[\x00-\x1F\x7F]/g, '').trim();
+  if (cleanKey.length < 12) {
+    return false;
+  }
+  const computedHash = sha256Hex(FOUNDER_AUTH_SALT + ':' + cleanKey);
+  return timingSafeEqualHex(computedHash, expectedHash);
+}
+
+/**
  * Generates an authentic cryptographically signed Founder authorization token.
  */
 export function generateFounderAuthToken(params: {
@@ -167,7 +202,7 @@ export function verifyFounderAuthToken(params: {
   // EV34-11 & AUD-V34-09: Reject tokens signed using repository-known secret (DEFAULT_FOUNDER_KEY)
   const defaultPayload = `${capId}:${expiry}:${DEFAULT_FOUNDER_KEY}:${FOUNDER_AUTH_SALT}`;
   const defaultSig = sha256Hex(defaultPayload).slice(0, 32);
-  if (signature === defaultSig) {
+  if (timingSafeEqualHex(signature, defaultSig)) {
     return {
       valid: false,
       reason: 'Từ chối kích hoạt P3: Token được ký bằng khóa mặc định công khai trong mã nguồn (repository-known DEFAULT_FOUNDER_KEY). Yêu cầu bí mật server-side thực tế.',
@@ -185,7 +220,7 @@ export function verifyFounderAuthToken(params: {
   const expectedPayload = `${capId}:${expiry}:${secret}:${FOUNDER_AUTH_SALT}`;
   const expectedSig = sha256Hex(expectedPayload).slice(0, 32);
 
-  if (signature !== expectedSig) {
+  if (!timingSafeEqualHex(signature, expectedSig)) {
     return { valid: false, reason: 'Chữ ký mật mã không khớp. Mã xác thực không chính thức hoặc đã bị giả mạo.' };
   }
 
