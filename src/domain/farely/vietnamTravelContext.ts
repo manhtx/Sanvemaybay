@@ -86,6 +86,15 @@ export const VIETNAM_DOMESTIC_CARRIERS: Record<string, CarrierBaggagePolicy> = {
   },
 };
 
+export const DEFAULT_CARRIER_BAGGAGE_POLICY: Readonly<CarrierBaggagePolicy> = Object.freeze({
+  carrierCode: "DEFAULT",
+  carrierName: "Hãng chưa cập nhật chính sách riêng",
+  standardCarryOnKg: 7,
+  standardCheckedBagIncluded: false,
+  defaultCheckedKgIfIncluded: 0,
+  baggageNoteVi: "Mặc định 7kg xách tay tiêu chuẩn CAAV. Hành lý ký gửi cần xác nhận trực tiếp với hãng vận chuyển.",
+});
+
 export type TravelMotivation = "BEACH" | "NATURE_TREKKING" | "CULINARY_CULTURE" | "HERITAGE_HISTORY";
 
 export const MOTIVATION_DESTINATIONS: Record<TravelMotivation, { labelVi: string; destinationCodes: string[] }> = {
@@ -108,12 +117,35 @@ export const MOTIVATION_DESTINATIONS: Record<TravelMotivation, { labelVi: string
 };
 
 /**
+ * Validates whether a date string is a mathematically valid Gregorian calendar date in YYYY-MM-DD format.
+ */
+export function isValidCalendarDate(dateStr: string): boolean {
+  if (!dateStr || typeof dateStr !== "string") return false;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+  const parts = dateStr.split("-").map(Number);
+  const year = parts[0];
+  const month = parts[1];
+  const day = parts[2];
+  if (month < 1 || month > 12 || day < 1 || day > 31) return false;
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return (
+    d.getUTCFullYear() === year &&
+    d.getUTCMonth() === month - 1 &&
+    d.getUTCDate() === day
+  );
+}
+
+/**
  * Checks if a given departure date falls within a known major Vietnam holiday period.
+ * Sanitizes delimiters, verifies true calendar date, and prevents invalid matches.
  */
 export function getVietnamHolidayContext(departDate: string): VietnamHoliday | null {
   if (!departDate || typeof departDate !== "string") return null;
+  const cleanDate = departDate.trim().slice(0, 10).replace(/[./]/g, "-");
+  if (!isValidCalendarDate(cleanDate)) return null;
+
   for (const holiday of VIETNAM_MAJOR_HOLIDAYS_2026) {
-    if (departDate >= holiday.solarStartDate && departDate <= holiday.solarEndDate) {
+    if (cleanDate >= holiday.solarStartDate && cleanDate <= holiday.solarEndDate) {
       return holiday;
     }
   }
@@ -122,11 +154,17 @@ export function getVietnamHolidayContext(departDate: string): VietnamHoliday | n
 
 /**
  * Retrieves domestic carrier baggage policy by airline code.
+ * Defends against non-string inputs and supports transparent fallback.
  */
-export function getCarrierBaggagePolicy(carrierCode: string): CarrierBaggagePolicy | null {
-  if (!carrierCode) return null;
-  const upper = carrierCode.toUpperCase();
-  return VIETNAM_DOMESTIC_CARRIERS[upper] || null;
+export function getCarrierBaggagePolicy(
+  carrierCode: string,
+  fallbackIfUnknown: boolean = false
+): CarrierBaggagePolicy | null {
+  if (!carrierCode || typeof carrierCode !== "string") {
+    return fallbackIfUnknown ? DEFAULT_CARRIER_BAGGAGE_POLICY : null;
+  }
+  const upper = carrierCode.trim().toUpperCase();
+  return VIETNAM_DOMESTIC_CARRIERS[upper] || (fallbackIfUnknown ? DEFAULT_CARRIER_BAGGAGE_POLICY : null);
 }
 
 /**

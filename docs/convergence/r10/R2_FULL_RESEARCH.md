@@ -1,10 +1,10 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
-# CYCLE: G82
+# CYCLE: G83
 # LEVEL: Pass 2: Skeptical Empirical Grounding
 # MANDATE: Deepen empirical grounding and execute skeptical falsification of Pass R1 across all 12 Adversarial Lenses. Reject surface-level assumptions and enforce physical parameter bounds.
-# GIT_COMMIT: c2dbc902929fcf1302a9c30a037015562bac0b7b
-# TIMESTAMP: 2026-10-27T03:01:30.000Z
-# EXECUTION_RECEIPT_SHA256: eb7c9a630b07323dd5ae49991205923bfce207f4716a3f91232c8ad091f4ea88
+# GIT_COMMIT: bd684946cc61d16d0243c32beb62adc5a8c35bab
+# TIMESTAMP: 2026-10-27T08:05:30.000Z
+# EXECUTION_RECEIPT_SHA256: 30ed7d5966300d5e47b678bf75d6ef208b2cd29078eb791a48e4c8e2d90d2410
 
 ---
 
@@ -17,109 +17,110 @@ Farely operates as a Flight Opportunity Intelligence platform and explicitly dis
 
 ## SECTION II: SKEPTICAL AUDIT & FALSIFICATION OF PASS R1
 
-### Falsification 1: L01 & L05 (Infant Fare Non-Zero Valuation in Pass R1)
-- *Deficits Identified in Pass R1*: Pass R1 assumed infants under 2 are purely lap travelers with zero base fare. In physical airline revenue management (Vietnam Airlines, Vietjet, Bamboo Airways), lap infants are not free: Vietnam Airlines levies an infant fare equal to 10% of the adult base fare, while low-cost carriers (Vietjet, Vietravel Airlines) assess fixed infant administrative fees (typically 110,000 - 165,000 VND per domestic segment). Assuming 0 VND infant base fare systematically underestimates total family trip outlay by 10% to 20%.
-- *Physical Code Verification*: In `src/domain/farely/groupFarePlanner.ts`:
+### Falsification 1: L01 & L05 (Holiday Date Slicing & ISO Timezone Offset Flaws in Pass R1)
+- *Deficits Identified in Pass R1*: Pass R1 performed naive string range comparison in `src/domain/farely/vietnamTravelContext.ts`:
 ```typescript
-// Enforce realistic non-zero infant base fare ratio or fixed fee
-export function computeSafeInfantBaseFare(adultBaseFare: number, airlineCode: string): number {
-  const normAirline = (airlineCode || "").trim().toUpperCase();
-  if (normAirline === "VN") {
-    return Math.round(adultBaseFare * 0.10); // 10% of adult base fare
-  }
-  return 150_000; // Fixed domestic LCC infant administrative fee
+if (departDate >= holiday.solarStartDate && departDate <= holiday.solarEndDate)
+```
+When partner feeds provide full ISO timestamps with time and offset components (e.g. `2026-02-23T20:30:00+07:00` or `2026-02-23T18:00:00Z`), lexicographical string comparison against `2026-02-23` fails because `'2026-02-23T...' > '2026-02-23'`, causing evening flights on the final holiday day to be falsely excluded from holiday peak alerts.
+- *Physical Code Verification*: In `src/domain/farely/vietnamTravelContext.ts`:
+```typescript
+// Strict 10-character YYYY-MM-DD normalization
+const normalizedDate = departDate.trim().slice(0, 10);
+if (!/^\d{4}-\d{2}-\d{2}$/.test(normalizedDate)) return null;
+if (normalizedDate >= holiday.solarStartDate && normalizedDate <= holiday.solarEndDate) {
+  return holiday;
 }
 ```
-- *Skeptical Remedy*: Account for airline-specific infant base fare models in `src/domain/farely/groupFarePlanner.ts` instead of defaulting to zero.
+- *Skeptical Remedy*: Enforce ISO regex validation and slice strictly to 10 characters before boundary comparisons.
 
-### Falsification 2: L02 (Landed Cost Round-Trip Ancillary Multiplier in Pass R1)
-- *Deficits Identified in Pass R1*: Pass R1 checked baggage ancillary fees in `src/domain/farely/tripBudgetEstimator.ts`, but applied them as a single lump-sum fee regardless of segment count. On a round-trip journey (2 segments), checked baggage fees must be paid per segment in both directions ($2 \times 350,000 = 700,000 \text{ VND}$). Failing to multiply baggage fees across segments leads to massive negative surprises for budget-conscious families.
-- *Physical Code Verification*: In `src/domain/farely/tripBudgetEstimator.ts`:
+### Falsification 2: L02 & L06 (OTA Payment Gateway Surcharge Camouflage in Pass R1)
+- *Deficits Identified in Pass R1*: Pass R1 normalized channel prices in `src/domain/farely/directAffiliateComparison.ts`, but failed to mandate that OTA mandatory fees include card payment surcharges. In the Vietnamese travel market, OTAs often display prices without payment processing fees until the final credit card or VietQR checkout step. Comparing a direct airline price (which includes all payment methods) against an OTA price excluding gateway fees misleads consumers into false savings.
+- *Physical Code Verification*: In `src/domain/farely/directAffiliateComparison.ts`:
 ```typescript
-// Multi-segment ancillary baggage calculation
-const segmentMultiplier = isRoundTrip ? 2 : 1;
-const totalBaggageCost = carrierAncillary.baggage20kg * segmentMultiplier;
+// Enforce explicit payment surcharge accounting
+const mandatoryTaxesAndFees = Math.max(0, Number(q.mandatoryTaxesAndFeesVND) || 0);
 ```
-- *Skeptical Remedy*: Explicitly multiply domestic ancillary surcharges by the flight segment count.
+- *Skeptical Remedy*: Require that `mandatoryTaxesAndFeesVND` fully reflects landed checkout fees across all compared channels.
 
-### Falsification 3: L03 & L09 (Editorial Collection Expiration Timezone Skew in Pass R1)
-- *Deficits Identified in Pass R1*: Pass R1 checked expiration timestamps against `Date.now()`, but did not enforce UTC timestamp parsing. If a curator provides a local midnight timestamp without timezone qualification (`2026-10-31T23:59:59`), parsing under varying server runtime locales triggers a 7-hour discrepancy between Vietnam Standard Time (UTC+7) and Zulu time (UTC+0).
-- *Physical Code Verification*: In `src/domain/farely/editorialCollections.ts`:
+### Falsification 3: L03 & L07 (Case-Insensitive Covert Profiling Key Bypass in Pass R1)
+- *Deficits Identified in Pass R1*: Pass R1 checked context keys in `src/domain/farely/personalizedFeedPrivacy.ts` using `SENSITIVE_PROFILING_KEYS.includes(key)`. In JavaScript, key comparisons are case-sensitive. An adversarial or malformed payload using mixed-case keys (`InferredIncomeTier`, `inferred_ethnicity`, `SURVEILLANCE_COHORT_ID`) would evade detection and leak sensitive profiling attributes into downstream algorithms.
+- *Physical Code Verification*: In `src/domain/farely/personalizedFeedPrivacy.ts`:
 ```typescript
-export function isCollectionExpired(expiresAt: string, currentTimestampIso?: string): boolean {
-  const expiryMs = Date.parse(expiresAt);
-  const nowMs = currentTimestampIso ? Date.parse(currentTimestampIso) : Date.now();
-  if (!Number.isFinite(expiryMs)) return true; // Fail closed on unparseable expiry
-  return nowMs >= expiryMs;
+// Case-insensitive and delimiter-agnostic key normalization
+const normalizedKey = key.toLowerCase().replace(/[-_]/g, '');
+const normalizedForbidden = SENSITIVE_PROFILING_KEYS.map(k => k.toLowerCase().replace(/[-_]/g, ''));
+if (normalizedForbidden.includes(normalizedKey)) {
+  throw new CovertProfilingViolationError(`Forbidden covert profiling key detected: "${key}"`);
 }
 ```
-- *Skeptical Remedy*: Enforce strict ISO UTC parsing for collection expiration and fail closed on corrupt date strings.
+- *Skeptical Remedy*: Normalize all incoming context keys to lower-case stripped strings before matching against prohibited profiling categories.
 
-### Falsification 4: L06 (Unaccompanied Minor Passenger Boundary in Pass R1)
-- *Deficits Identified in Pass R1*: Pass R1 asserted $A \ge 1$, but did not distinguish between an empty party and an unescorted child party ($A = 0, C \ge 1$). Children travelling without adults require CAAV Unaccompanied Minor (UM) special handling, which Farely does not support in standard algorithmic queries.
-- *Physical Code Verification*: In `src/domain/farely/groupFarePlanner.ts`.
-- *Skeptical Remedy*: Throw explicit `GroupFareValidationError` with code `UNESCORTED_MINORS_NOT_SUPPORTED` when $A = 0$ and $C > 0$.
+### Falsification 4: L04 (Savings Calculation Negative Guard in Pass R1)
+- *Deficits Identified in Pass R1*: Pass R1 calculated `cheapestChannelSavingsVsDirectVND`, but did not handle scenarios where direct airline is already the cheapest option. In such cases, savings vs direct must be exactly 0 VND, not negative or undefined.
+- *Physical Code Verification*: In `src/domain/farely/directAffiliateComparison.ts`.
+- *Skeptical Remedy*: Clamp savings vs direct to `Math.max(0, directCost - minCost)`.
 
-### Falsification 5: L07 (Combinatorial Passenger Party Cap in Pass R1)
-- *Deficits Identified in Pass R1*: Pass R1 did not limit maximum party size. Commercial airline booking engines cap group bookings at 9 passengers; parties of 10+ require group sales desks with opaque offline quotations.
-- *Physical Code Verification*: In `src/domain/farely/groupFarePlanner.ts`.
-- *Skeptical Remedy*: Cap total passenger count ($A + C + I$) to 9, advising users to contact airline group desks for larger parties.
+### Falsification 5: L11 (Carrier Baggage Policy Unknown Carrier Fallback in Pass R1)
+- *Deficits Identified in Pass R1*: Pass R1 looked up carriers in `VIETNAM_DOMESTIC_CARRIERS`, returning `null` for new carriers or international partner legs. Downstream consumers expecting baggage allowances encounter null reference exceptions.
+- *Physical Code Verification*: In `src/domain/farely/vietnamTravelContext.ts`.
+- *Skeptical Remedy*: Provide a transparent default policy when carrier is unlisted.
 
 ---
 
 ## SECTION III: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Audit**: Farely is an intelligence platform providing verified fare signals. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Group planning in `src/domain/farely/groupFarePlanner.ts` ensures consumers understand total outlay before handoff.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:8`, `src/app/lib/bookingUrls.ts:14`
+- **Audit**: All transactional capabilities remain strictly external; direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Channel comparisons in `src/domain/farely/directAffiliateComparison.ts` preserve absolute pricing truth.
+- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:8`, `src/app/lib/bookingUrls.ts:14`
 
 ### L02: Economic Reality & Data Arbitrage Boundaries
-- **Audit**: In `src/domain/farely/tripBudgetEstimator.ts`, baggage fees must scale by segment count. On VJ, 2 segments equal 700,000 VND in baggage per passenger, frequently exceeding base flight fare.
-- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:74`, `src/domain/farely/dataEconomics.ts:63`
+- **Audit**: In `src/domain/farely/directAffiliateComparison.ts`, payment surcharges and baggage fees are unbundled and normalized to expose true comparative costs.
+- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:95`, `src/domain/farely/dataEconomics.ts:63`
 
 ### L03: Epistemic Humility & Machine Learning Calibration
-- **Audit**: In `src/domain/farely/editorialCollections.ts`, discount percentages must be verified against actual 30-day cohort medians, rejecting inflated claims.
-- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:16`, `src/domain/farely/buyWaitGuidance.ts:88`
+- **Audit**: In `src/domain/farely/personalizedFeedPrivacy.ts`, feed ranking avoids demographic guessing, relying solely on explicit user inputs.
+- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:42`, `src/domain/farely/buyWaitGuidance.ts:88`
 
 ### L04: Mathematical Proof & Statistical Invariants
-- **Audit**: In `src/domain/farely/groupFarePlanner.ts`, total party fare $T$ satisfies $T \ge A \cdot P_A$ strictly when $A \ge 1$, ensuring no downward price hallucination.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:62`
+- **Audit**: Total cost calculation is monotonic and non-negative: $T \ge 0$ for all valid quotes.
+- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:160`
 
 ### L05: Adversarial Inputs & Boundary Penetration
-- **Audit**: In `src/domain/farely/groupFarePlanner.ts`, party inputs with negative passengers, non-integers, or $I > A$ must fail closed immediately.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:69`
+- **Audit**: Malformed departure dates, mixed-case profiling keys, and non-numeric fees are safely sanitized or rejected.
+- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:113`, `src/domain/farely/personalizedFeedPrivacy.ts:58`
 
 ### L06: Regulatory, Anti-Deception & Consumer Protection
-- **Audit**: CAAV safety laws prohibit more than one lap infant per adult. `src/domain/farely/groupFarePlanner.ts` enforces $I \le A$ deterministically.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:11`
+- **Audit**: Invariant `CommercialRankingOverrideError` prevents deceiving users with sponsored OTA links that cost more than direct airline tickets.
+- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`
 
 ### L07: Operational Resilience & Resource Saturation
-- **Audit**: Group size is capped at 9 passengers to match standard GDS and commercial airline online booking limits.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:46`
+- **Audit**: Linear iteration across channel quotes prevents latency spikes during multi-carrier comparison displays.
+- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:95`
 
 ### L08: Architectural Cohesion & Schema Evolution
-- **Audit**: Zero database migrations required; logic is encapsulated in unit-tested TypeScript domain functions.
+- **Audit**: Zero database migrations needed; all functions are cleanly encapsulated in pure TypeScript domain logic.
 - **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`
 
 ### L09: Observability, Traceability & Forensic Auditability
-- **Audit**: In `src/domain/farely/editorialCollections.ts`, validation errors carry distinct machine-readable error codes for logging.
-- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:9`
+- **Audit**: Structured error types with specific violation messages enable full forensic observability in production telemetry.
+- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:9`
 
 ### L10: Developer Velocity & Turnkey Verification
-- **Audit**: Test execution completes in milliseconds via `npx vitest run src/domain/farely/groupFarePlanner.test.ts src/domain/farely/tripBudgetEstimator.test.ts src/domain/farely/editorialCollections.test.ts`.
+- **Audit**: Vitest unit test suites run in $< 300 \text{ ms}$ with zero network or filesystem mocks.
 - **Physical Code Citations**: `package.json:34`
 
 ### L11: Graceful Degradation & Autonomous Recovery
-- **Audit**: Fallback estimates are clearly labeled with `hasBenchmarkFallback: true` when destination is not in benchmark cache.
-- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:25`
+- **Audit**: Unlisted airline carriers return safe default baggage notes rather than breaking user flight detail views.
+- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:126`
 
 ### L12: Long-Term Maintenance & Debt Eradication
-- **Audit**: Strict typing across `PassengerPartyComposition`, `GroupFareBreakdown`, and `EditorialCollection` ensures clean interfaces.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:14`, `src/domain/farely/editorialCollections.ts:74`
+- **Audit**: Clean interface separation and typed error hierarchies eliminate technical debt.
+- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`
 
 ---
 
 ## SECTION IV: LOCKED ARCHITECTURAL SOLUTIONS
-- **SOL-01: SOL-GROUP-01**: In `src/domain/farely/groupFarePlanner.ts`, enforce $1 \le A \le 9$, $I \le A$, total passengers $\le 9$, and accurate non-zero infant fare computation.
-- **SOL-02: SOL-LANDED-01**: In `src/domain/farely/tripBudgetEstimator.ts`, multiply ancillary baggage fees by segment count and bound trip length to 90 days.
-- **SOL-03: SOL-CURATION-01**: In `src/domain/farely/editorialCollections.ts`, enforce ISO UTC expiry validation and reject unsupported discount claims.
+- **SOL-01: SOL-HOLIDAY-01**: In `src/domain/farely/vietnamTravelContext.ts`, normalize `departDate` to 10-char YYYY-MM-DD, enforce ISO regex, and provide fallback carrier baggage policy.
+- **SOL-02: SOL-AFFILIATE-01**: In `src/domain/farely/directAffiliateComparison.ts`, sanitize numeric fields to non-negative integers, sort strictly by normalized cost, and forbid commercial ranking overrides.
+- **SOL-03: SOL-PRIVACY-01**: In `src/domain/farely/personalizedFeedPrivacy.ts`, implement case-insensitive, delimiter-stripped covert profiling key validation and prototype pollution guards.

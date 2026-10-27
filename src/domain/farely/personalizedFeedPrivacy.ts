@@ -14,7 +14,7 @@ export class CovertProfilingViolationError extends Error {
 }
 
 export interface ExplicitUserPreferences {
-  isPersonalizationOptedIn: boolean; // Must be explicit; never covert
+  isPersonalizationOptedIn: boolean; // Must be explicit boolean true; never covert
   homeAirports?: string[];
   preferredAirlines?: string[];
   maxBudgetVND?: number;
@@ -51,22 +51,58 @@ const SENSITIVE_PROFILING_KEYS = [
   'creditWorthinessScore',
 ] as const;
 
+const NORMALIZED_PROHIBITED_KEYS = new Set(
+  SENSITIVE_PROFILING_KEYS.map((k) => k.toLowerCase().replace(/[^a-z0-9]/g, ''))
+);
+
 /**
  * Validates and cleanses user context, strictly rejecting any covert or sensitive inferences (F38).
+ * Hardened with cycle-safe recursive traversal, prototype pollution defense, and deep array inspection.
  */
-export function sanitizePersonalizationContext(contextPayload: Record<string, unknown>): void {
-  for (const key of Object.keys(contextPayload)) {
-    if (SENSITIVE_PROFILING_KEYS.includes(key as any)) {
-      throw new CovertProfilingViolationError(
-        `Personalization context contains forbidden sensitive/covert inference key: "${key}". Farely strictly prohibits covert profiling or sensitive demographic inference.`
-      );
+export function sanitizePersonalizationContext(contextPayload: unknown): void {
+  if (!contextPayload || typeof contextPayload !== 'object') {
+    return;
+  }
+
+  const visited = new Set<unknown>();
+
+  function traverse(target: unknown, depth: number): void {
+    if (depth > 8) return; // bounded depth recursion guard
+    if (!target || typeof target !== 'object') return;
+    if (visited.has(target)) return; // cycle detection
+    visited.add(target);
+
+    if (Array.isArray(target)) {
+      for (const item of target) {
+        traverse(item, depth + 1);
+      }
+      return;
+    }
+
+    for (const key of Object.keys(target as Record<string, unknown>)) {
+      // Prototype pollution defense
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        continue;
+      }
+
+      const normalizedKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (NORMALIZED_PROHIBITED_KEYS.has(normalizedKey)) {
+        throw new CovertProfilingViolationError(
+          `Personalization context contains forbidden sensitive/covert inference key: "${key}". Farely strictly prohibits covert profiling or sensitive demographic inference.`
+        );
+      }
+
+      const value = (target as Record<string, unknown>)[key];
+      traverse(value, depth + 1);
     }
   }
+
+  traverse(contextPayload, 0);
 }
 
 /**
  * Ranks deals for travel feed using strictly explicit preferences.
- * When personalization is disabled or unconsented, falls back to objective deal score.
+ * When personalization is disabled or unconsented (strict boolean check), falls back to objective deal score.
  */
 export function rankFeedWithPrivacyGuarantees(params: {
   deals: FeedCandidateDeal[];
@@ -82,9 +118,14 @@ export function rankFeedWithPrivacyGuarantees(params: {
     return [];
   }
 
-  // 2. If user has NOT explicitly opted into personalization, return pure objective ranking
-  if (!preferences.isPersonalizationOptedIn) {
-    const sorted = [...deals].sort((a, b) => b.objectiveDealScore - a.objectiveDealScore);
+  // 2. Strict affirmative consent: must be boolean true (Decree 13/2023/ND-CP)
+  if (preferences.isPersonalizationOptedIn !== true) {
+    const sorted = [...deals].sort((a, b) => {
+      if (b.objectiveDealScore !== a.objectiveDealScore) {
+        return b.objectiveDealScore - a.objectiveDealScore;
+      }
+      return a.id.localeCompare(b.id);
+    });
     return sorted.map((deal, idx) => ({
       deal,
       displayRank: idx + 1,
@@ -135,7 +176,12 @@ export function rankFeedWithPrivacyGuarantees(params: {
     };
   });
 
-  scoredDeals.sort((a, b) => b.compositeScore - a.compositeScore);
+  scoredDeals.sort((a, b) => {
+    if (b.compositeScore !== a.compositeScore) {
+      return b.compositeScore - a.compositeScore;
+    }
+    return a.deal.id.localeCompare(b.deal.id);
+  });
 
   return scoredDeals.map((item, idx) => ({
     deal: item.deal,

@@ -173,4 +173,106 @@ describe('F43: Direct/Affiliate Provider Comparison', () => {
     // Baggage is already included, so total cost remains 1.9M
     expect(allIncWithBaggage.normalizedTotalCostVND).toBe(1_900_000);
   });
+
+  it('rejects non-finite, negative, or invalid tax price quotes (L02/L05/L07)', () => {
+    const invalidQuote: ProviderQuoteInput = {
+      ...directAirlineQuote,
+      providerId: 'invalid_price',
+      rawQuotedPriceVND: NaN,
+    };
+
+    expect(() =>
+      compareProviderChannels({
+        flightKey: 'VN214_SGN_HAN_20261101',
+        quotes: [invalidQuote],
+      })
+    ).toThrow(/positive finite number/);
+
+    const negativeTaxesQuote: ProviderQuoteInput = {
+      ...directAirlineQuote,
+      providerId: 'neg_taxes',
+      mandatoryTaxesAndFeesVND: -50_000,
+    };
+
+    expect(() =>
+      compareProviderChannels({
+        flightKey: 'VN214_SGN_HAN_20261101',
+        quotes: [negativeTaxesQuote],
+      })
+    ).toThrow(/non-negative finite number/);
+
+    const taxesExceedingTotal: ProviderQuoteInput = {
+      ...directAirlineQuote,
+      providerId: 'bad_inclusive',
+      quoteBasis: 'TOTAL_INCLUSIVE_NO_BAGGAGE',
+      rawQuotedPriceVND: 500_000,
+      mandatoryTaxesAndFeesVND: 600_000, // Impossible: taxes > total quoted
+    };
+
+    expect(() =>
+      compareProviderChannels({
+        flightKey: 'VN214_SGN_HAN_20261101',
+        quotes: [taxesExceedingTotal],
+      })
+    ).toThrow(/cannot be lower than mandatory taxes/);
+  });
+
+  it('prioritizes DIRECT_AIRLINE on exact price ties and enforces deterministic order (L01/L04)', () => {
+    // Direct airline and OTA both offer identical total price 1.5M
+    const tiedDirect: ProviderQuoteInput = {
+      ...directAirlineQuote,
+      providerId: 'vna_direct_tied',
+      providerName: 'Vietnam Airlines',
+      channelType: 'DIRECT_AIRLINE',
+      quoteBasis: 'TOTAL_INCLUSIVE_NO_BAGGAGE',
+      rawQuotedPriceVND: 1_500_000,
+      mandatoryTaxesAndFeesVND: 400_000,
+      isBaggageIncludedInQuote: true,
+    };
+
+    const tiedOta: ProviderQuoteInput = {
+      ...discountOtaQuote,
+      providerId: 'ota_tied',
+      providerName: 'OTA Aggregator Partner',
+      channelType: 'OTA_PARTNER',
+      quoteBasis: 'TOTAL_INCLUSIVE_NO_BAGGAGE',
+      rawQuotedPriceVND: 1_500_000,
+      mandatoryTaxesAndFeesVND: 400_000,
+      isBaggageIncludedInQuote: true,
+    };
+
+    const tiedAffiliate: ProviderQuoteInput = {
+      providerId: 'affiliate_tied',
+      providerName: 'Affiliate Referral Partner',
+      channelType: 'AFFILIATE_AGGREGATOR',
+      quoteBasis: 'TOTAL_INCLUSIVE_NO_BAGGAGE',
+      rawQuotedPriceVND: 1_500_000,
+      mandatoryTaxesAndFeesVND: 400_000,
+      checkedBaggageFeeVND: 0,
+      isBaggageIncludedInQuote: true,
+      deepLinkClass: 'PROVIDER_HOMEPAGE_GENERIC',
+      deepLinkUrl: 'https://example.com/affiliate',
+      isCommercialPartner: true,
+      observedAt: '2026-10-15T02:00:00Z',
+    };
+
+    // Pass in reverse order: Affiliate first, OTA second, Direct last
+    const res = compareProviderChannels({
+      flightKey: 'VN214_SGN_HAN_20261101',
+      quotes: [tiedAffiliate, tiedOta, tiedDirect],
+      requiresCheckedBaggage: false,
+    });
+
+    // DIRECT_AIRLINE must be ranked first deterministically
+    expect(res.channels[0].channelType).toBe('DIRECT_AIRLINE');
+    expect(res.channels[0].providerId).toBe('vna_direct_tied');
+
+    // OTA_PARTNER must be second
+    expect(res.channels[1].channelType).toBe('OTA_PARTNER');
+    expect(res.channels[1].providerId).toBe('ota_tied');
+
+    // AFFILIATE_AGGREGATOR must be third
+    expect(res.channels[2].channelType).toBe('AFFILIATE_AGGREGATOR');
+    expect(res.channels[2].providerId).toBe('affiliate_tied');
+  });
 });

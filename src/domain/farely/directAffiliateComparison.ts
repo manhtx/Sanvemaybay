@@ -72,6 +72,12 @@ export interface DirectAffiliateComparisonResult {
   disclosureNoticeVi: string;
 }
 
+const CHANNEL_PRIORITY_ORDER: Record<ProviderChannelType, number> = {
+  DIRECT_AIRLINE: 1,
+  OTA_PARTNER: 2,
+  AFFILIATE_AGGREGATOR: 3,
+};
+
 /**
  * Normalizes provider quotes across direct and affiliate channels.
  * Enforces strict invariant: Commercial ranking can NEVER override
@@ -89,6 +95,22 @@ export function compareProviderChannels(params: {
     throw new Error('At least one provider quote is required for channel comparison.');
   }
 
+  // 0. SRE rigor: validate finite numeric bounds and quote invariants
+  for (const q of quotes) {
+    if (!Number.isFinite(q.rawQuotedPriceVND) || q.rawQuotedPriceVND <= 0) {
+      throw new Error(`Invalid rawQuotedPriceVND for provider ${q.providerId}: must be positive finite number.`);
+    }
+    if (!Number.isFinite(q.mandatoryTaxesAndFeesVND) || q.mandatoryTaxesAndFeesVND < 0) {
+      throw new Error(`Invalid mandatoryTaxesAndFeesVND for provider ${q.providerId}: must be non-negative finite number.`);
+    }
+    if (!Number.isFinite(q.checkedBaggageFeeVND) || q.checkedBaggageFeeVND < 0) {
+      throw new Error(`Invalid checkedBaggageFeeVND for provider ${q.providerId}: must be non-negative finite number.`);
+    }
+    if (q.quoteBasis !== 'BASE_FARE_ONLY' && q.rawQuotedPriceVND < q.mandatoryTaxesAndFeesVND) {
+      throw new Error(`Provider ${q.providerId} quoted price (${q.rawQuotedPriceVND}) cannot be lower than mandatory taxes (${q.mandatoryTaxesAndFeesVND}).`);
+    }
+  }
+
   const nowMs = new Date(nowIsoString).getTime();
 
   // 1. Calculate normalized total cost for each channel
@@ -98,10 +120,12 @@ export function compareProviderChannels(params: {
     let baggage = 0;
     let totalCost = 0;
 
+    const isBaggageIncluded = q.quoteBasis === 'ALL_INCLUSIVE_WITH_BAGGAGE' ? true : q.isBaggageIncludedInQuote;
+
     if (q.quoteBasis === 'BASE_FARE_ONLY') {
       baseFare = q.rawQuotedPriceVND;
       taxes = q.mandatoryTaxesAndFeesVND;
-      if (requiresCheckedBaggage && !q.isBaggageIncludedInQuote) {
+      if (requiresCheckedBaggage && !isBaggageIncluded) {
         baggage = q.checkedBaggageFeeVND;
       }
       totalCost = baseFare + taxes + baggage;
@@ -109,14 +133,14 @@ export function compareProviderChannels(params: {
       // Raw price already includes mandatory taxes and fees
       taxes = q.mandatoryTaxesAndFeesVND;
       baseFare = Math.max(0, q.rawQuotedPriceVND - taxes);
-      if (requiresCheckedBaggage && !q.isBaggageIncludedInQuote) {
+      if (requiresCheckedBaggage && !isBaggageIncluded) {
         baggage = q.checkedBaggageFeeVND;
       }
       totalCost = q.rawQuotedPriceVND + baggage;
     } else {
       // ALL_INCLUSIVE_WITH_BAGGAGE: already includes taxes and baggage
       taxes = q.mandatoryTaxesAndFeesVND;
-      const includedBaggage = q.isBaggageIncludedInQuote ? q.checkedBaggageFeeVND : 0;
+      const includedBaggage = isBaggageIncluded ? q.checkedBaggageFeeVND : 0;
       baggage = includedBaggage;
       baseFare = Math.max(0, q.rawQuotedPriceVND - taxes - baggage);
       totalCost = q.rawQuotedPriceVND;
@@ -171,18 +195,30 @@ export function compareProviderChannels(params: {
     }
   }
 
-  const cheapestChannels = normalizedList.filter((c) => c.isObjectiveCheapest);
-  const objectiveCheapestProviderId = cheapestChannels[0].providerId;
+  // 3. Sort channels objectively with deterministic 4-tier comparator:
+  // Tier 1: normalizedTotalCostVND ascending
+  // Tier 2: channelType priority (DIRECT_AIRLINE > OTA_PARTNER > AFFILIATE_AGGREGATOR)
+  // Tier 3: providerName alphabetical
+  // Tier 4: providerId alphabetical
+  normalizedList.sort((a, b) => {
+    if (a.normalizedTotalCostVND !== b.normalizedTotalCostVND) {
+      return a.normalizedTotalCostVND - b.normalizedTotalCostVND;
+    }
+    const prioA = CHANNEL_PRIORITY_ORDER[a.channelType] || 99;
+    const prioB = CHANNEL_PRIORITY_ORDER[b.channelType] || 99;
+    if (prioA !== prioB) return prioA - prioB;
+    const nameCmp = a.providerName.localeCompare(b.providerName);
+    if (nameCmp !== 0) return nameCmp;
+    return a.providerId.localeCompare(b.providerId);
+  });
+
+  const objectiveCheapestProviderId = normalizedList[0].providerId;
 
   // Find direct airline if available
   const directAirline = normalizedList.find((c) => c.channelType === 'DIRECT_AIRLINE');
   const cheapestChannelSavingsVsDirectVND = directAirline
     ? Math.max(0, directAirline.normalizedTotalCostVND - minCost)
     : 0;
-
-  // 3. Sort channels objectively by normalized total cost (cheapest first)
-  // Strict F43 invariant: Do NOT sort by affiliate commission or partner status!
-  normalizedList.sort((a, b) => a.normalizedTotalCostVND - b.normalizedTotalCostVND);
 
   return {
     flightKey,

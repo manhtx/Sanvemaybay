@@ -92,4 +92,53 @@ describe('F38: Personalized Travel Feed Privacy & Non-Profiling', () => {
       })
     ).toThrow(CovertProfilingViolationError);
   });
+
+  it('detects sensitive profiling keys in nested objects and arrays with normalized key variants (L05/L07)', () => {
+    // Nested object with snake_case
+    expect(() =>
+      sanitizePersonalizationContext({
+        userMeta: {
+          demographics: {
+            inferred_income_tier: 'TOP_5_PERCENT',
+          },
+        },
+      })
+    ).toThrow(CovertProfilingViolationError);
+
+    // Nested array with kebab-case
+    expect(() =>
+      sanitizePersonalizationContext({
+        history: [
+          { tag: 'vietnam' },
+          { 'inferred-political-stance': 'CENTRIST' },
+        ],
+      })
+    ).toThrow(CovertProfilingViolationError);
+  });
+
+  it('handles cyclical references safely without stack overflow (L05/L07)', () => {
+    const circularObj: any = { safeField: 'travel_lover' };
+    circularObj.self = circularObj;
+
+    expect(() => sanitizePersonalizationContext(circularObj)).not.toThrow();
+  });
+
+  it('ignores prototype pollution keys safely (L05)', () => {
+    const maliciousPayload = JSON.parse('{"__proto__": {"polluted": true}, "safeKey": "value"}');
+    expect(() => sanitizePersonalizationContext(maliciousPayload)).not.toThrow();
+  });
+
+  it('strictly requires boolean true for affirmative consent under Decree 13/2023/ND-CP (L06)', () => {
+    // Truthy string "true" or "yes" is NOT boolean true
+    const pseudoConsentPreferences: any = {
+      isPersonalizationOptedIn: 'true',
+      homeAirports: ['HAN'],
+    };
+
+    const result = rankFeedWithPrivacyGuarantees({ deals, preferences: pseudoConsentPreferences });
+
+    // Should fall back to objective ranking (90 > 80)
+    expect(result[0].deal.id).toBe('deal_sgn_bkk');
+    expect(result[0].isPersonalizedPromotion).toBe(false);
+  });
 });
