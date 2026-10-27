@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   getProviderCapabilities,
   isProviderSupportingJourneyType,
+  isProviderSupportingMultiCity,
   validateIntentProviderCompatibility,
   filterProvidersByIntent,
   createProviderSearchQuery,
@@ -125,5 +126,45 @@ describe('F61: Typed Provider Capability Matrix & Journey Type Boundary', () => 
     const result = validateIntentProviderCompatibility('non_existent_ota', intent);
     expect(result.compatible).toBe(false);
     expect(result.violations[0]).toContain('không tồn tại trong danh mục hệ thống');
+
+    // Safe null or empty string check
+    expect(getProviderCapabilities('')).toBeUndefined();
+    expect(getProviderCapabilities(null as any)).toBeUndefined();
+  });
+
+  it('enforces multi-city support boundary and verifies isProviderSupportingMultiCity (L01/L11)', () => {
+    expect(isProviderSupportingMultiCity('vietnam_airlines')).toBe(true);
+    expect(isProviderSupportingMultiCity('vietjet_direct')).toBe(false);
+    expect(isProviderSupportingMultiCity('bamboo_airways')).toBe(false);
+
+    const multiCityIntent = createTravelIntent({
+      origin: 'HAN',
+      destination: 'SGN',
+      journeyType: 'MULTI_CITY',
+      outboundDate: '2026-11-20',
+    });
+
+    // Vietjet does not support multi-city -> must be rejected
+    const vjRes = validateIntentProviderCompatibility('vietjet_direct', multiCityIntent);
+    expect(vjRes.compatible).toBe(false);
+    expect(vjRes.violations.some((v) => v.includes('Multi-city'))).toBe(true);
+
+    // Vietnam Airlines supports multi-city -> must be compatible
+    const vnaRes = validateIntentProviderCompatibility('vietnam_airlines', multiCityIntent);
+    expect(vnaRes.compatible).toBe(true);
+  });
+
+  it('enforces market scope compatibility when international route requested (L08)', () => {
+    // Bamboo domestic config does not support international market scope
+    const intlIntent = createTravelIntent({
+      origin: 'HAN',
+      destination: 'NRT',
+      journeyType: 'ONE_WAY',
+      outboundDate: '2026-12-15',
+    });
+
+    const bambooRes = validateIntentProviderCompatibility('bamboo_airways', intlIntent);
+    expect(bambooRes.compatible).toBe(false);
+    expect(bambooRes.violations.some((v) => v.includes('phạm vi thị trường'))).toBe(true);
   });
 });

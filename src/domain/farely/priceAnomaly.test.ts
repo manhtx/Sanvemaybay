@@ -203,5 +203,20 @@ describe("Price Anomaly Detection (F37)", () => {
       expect(isTetDeparture(null as any)).toBe(false);
       expect(isTetDeparture(12345 as any)).toBe(false);
     });
+
+    it("enriches explanationVi with Tet high-demand caveat when drop occurs during Tet (L04/L06)", () => {
+      const cohort = [
+        2_000_000, 2_100_000, 1_900_000, 2_050_000, 1_950_000,
+        2_200_000, 2_150_000, 2_000_000, 2_050_000, 2_100_000,
+      ];
+      const result = detectPriceAnomaly({
+        currentPrice: 1_200_000,
+        historicalCohortPrices: cohort,
+        departureDate: "2026-02-15", // Peak Tet window
+      });
+
+      expect(result.classification).toBe("STRONG_DROP_ANOMALY");
+      expect(result.explanationVi).toContain("Cao điểm Tết");
+    });
   });
 });

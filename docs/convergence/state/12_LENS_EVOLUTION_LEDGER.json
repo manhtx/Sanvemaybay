@@ -3,64 +3,64 @@
     "name": "Product Truth & Founder Scope Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
-        "byteCount": 488,
-        "summaryExcerpt": "- **Audit**: Farely never books flights or collects payment; direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded. In `src/domain/farely/directAffiliateComparison.ts`, comparing direct airlines with OTAs m"
+        "byteCount": 475,
+        "summaryExcerpt": "- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by evaluating partner commercial permissions objectively in `src/domain/farely/partnerIntegrat"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.488Z",
         "covered": true,
-        "byteCount": 1083,
-        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 performed naive string range comparison in `src/domain/farely/vietnamTravelContext.ts`:\n```typescript\nif (departDate >= holiday.solarStartDate && departDate <= holiday.solarEndDate)\n```\nWhen partner feeds provide full ISO timestamps with time and offset co"
+        "byteCount": 653,
+        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 asserted strict cabin matching, but did not handle implicit default cabin classes. In Vietnam domestic travel, standard user queries frequently omit `cabinClass` (represented as `undefined`), implicitly requesting ECONOMY. Rejecting an intent because `cabi"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.763Z",
+        "timestamp": "2026-10-27T08:20:18.610Z",
         "covered": true,
-        "byteCount": 964,
-        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 implemented regex check `/^\\d{4}-\\d{2}-\\d{2}$/` in `src/domain/farely/vietnamTravelContext.ts`, but regex alone does not validate calendar existence. Dates like `2026-02-31` or `2026-04-31` pass the regex test. In JavaScript, `new Date(\"2026-02-31\")` rolls"
+        "byteCount": 652,
+        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 checked journey types, but did not defend against `MULTI_CITY` intents routed to providers with `supportsMultiCity: false` (such as Vietjet Direct or Bamboo Airways). Furthermore, if `intent.journeyType` is an unrecognized or adversarial string, naive incl"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.549Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 1086,
-        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 computed `baseFare = Math.max(0, q.rawQuotedPriceVND - taxes)` in `src/domain/farely/directAffiliateComparison.ts`, but allowed malformed input where `rawQuotedPriceVND < mandatoryTaxesAndFeesVND` without raising an integrity warning. If an upstream OTA AP"
+        "byteCount": 475,
+        "summaryExcerpt": "- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by evaluating partner commercial permissions objectively in `src/domain/farely/partnerIntegrat"
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.271Z",
         "covered": true,
-        "byteCount": 1367,
-        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 validated calendar dates in `src/domain/farely/vietnamTravelContext.ts`, but overlooked airline code string sanitization in `getCarrierBaggagePolicy`. Partner API feeds frequently deliver airline codes with leading/trailing whitespace or tabs (`\" VN \"`, `\""
+        "byteCount": 5233,
+        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 defined `commercialTier`, but did not specify the deterministic precedence logic between direct commercial partners and approved affiliates. If a partner has both active commercial agreements and affiliate rights, sovereign governance requires designating "
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
-        "byteCount": 489,
-        "summaryExcerpt": "- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains absolute consumer transparency by prioritizing direct airline links in `src/domain/farely/directAffiliateComp"
+        "byteCount": 475,
+        "summaryExcerpt": "- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by evaluating partner commercial permissions objectively in `src/domain/farely/partnerIntegrat"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.382Z",
+        "timestamp": "2026-10-27T08:23:00.182Z",
         "covered": true,
-        "byteCount": 848,
-        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 asserted that departure dates in `src/domain/farely/vietnamTravelContext.ts` must match `/^\\d{4}-\\d{2}-\\d{2}$/`, but failed to normalize common delimiter variants. In real-world partner feeds, dates are frequently formatted with slashes (`2026/02/15`) or p"
+        "byteCount": 557,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 checked provider existence, but did not guarantee that `reasons` array contains actionable guidance for unlisted partners.\n- *Physical Code Verification*: In `src/domain/farely/providerCapabilities.ts:23`:\n```typescript\nexport const PROVIDER_CAPABILITY_REG"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.044Z",
+        "timestamp": "2026-10-27T08:24:21.062Z",
         "covered": true,
-        "byteCount": 1440,
-        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 added delimiter normalization, but failed to validate true astronomical/Gregorian calendar validity. For instance, `2026-02-29` (2026 is a standard 365-day non-leap year) or `2026-04-31` (April has only 30 days) are invalid dates that string comparisons wo"
+        "byteCount": 954,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 checked journey types generically, but omitted segment-level verification for multi-city routes. If a traveler searches for a 3-leg open-jaw journey (`SGN -> DAD -> HAN`), passing this intent to low-cost point-to-point carriers (e.g. Vietjet Direct) fails "
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.647Z",
+        "timestamp": "2026-10-27T08:25:06.409Z",
         "covered": true,
-        "byteCount": 1007,
-        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 indicated `carrierCode.trim().toUpperCase()`, but failed to protect against `null`, `undefined`, or non-string inputs (`typeof carrierCode !== 'string'`). In real-world partner integrations, partner feeds often transmit null carrier codes on codeshare itin"
+        "byteCount": 475,
+        "summaryExcerpt": "- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by evaluating partner commercial permissions objectively in `src/domain/farely/partnerIntegrat"
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.997Z",
         "covered": true,
-        "byteCount": 489,
-        "summaryExcerpt": "- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains absolute consumer transparency by prioritizing direct airline links in `src/domain/farely/directAffiliateComp"
+        "byteCount": 5366,
+        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 computed commercial tiers, but did not structurally guarantee the bi-directional invariant: a provider is commercially enabled if and only if their assigned tier is strictly non-disqualified (`isCommerciallyEnabled === true \\iff commercialTier \\in \\{DIRECT"
       }
     }
   },
@@ -68,64 +68,64 @@
     "name": "Price, Historical Baseline & Data Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
-        "byteCount": 383,
-        "summaryExcerpt": "- **Audit**: In `src/domain/farely/directAffiliateComparison.ts`, OTAs often quote low base fares but add payment processing fees and separate baggage charges. A true normalized cost comparison must add all mandatory fees to reveal the actual consumer outlay.\n- **Physical Code Citations**: `src/doma"
+        "byteCount": 375,
+        "summaryExcerpt": "- **Audit Findings**: Marginal query costs and expected queries per booking in `src/domain/farely/partnerIntegrations.ts` define a non-negotiable economic viability floor ($ROI \\ge 1.0$), ensuring Farely does not subsidize unprofitable data partner queries.\n- **Physical Code Citations**: `src/domain"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.488Z",
         "covered": true,
-        "byteCount": 884,
-        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 normalized channel prices in `src/domain/farely/directAffiliateComparison.ts`, but failed to mandate that OTA mandatory fees include card payment surcharges. In the Vietnamese travel market, OTAs often display prices without payment processing fees until t"
+        "byteCount": 1238,
+        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 formulated `totalCostPerBookingVND = profile.marginalQueryCostVND * profile.expectedQueriesPerBooking`, but failed to defend against zero or fractional inputs. In production feeds, an aggregator profile claiming `marginalQueryCostVND: 0` or `expectedQuerie"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.763Z",
+        "timestamp": "2026-10-27T08:20:18.610Z",
         "covered": true,
-        "byteCount": 962,
-        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 normalized provider prices in `src/domain/farely/directAffiliateComparison.ts`, but did not explicitly forbid affiliate commissions (`affiliateCommissionRatePercent`) from artificially inflating consumer price totals. In ethical flight intelligence, affili"
+        "byteCount": 1117,
+        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 handled zero-cost division, but failed to assert mandatory disqualification when unit economics are strictly negative (`netMarginPerBookingVND < 0` or `marginalRoi < 1.0`). If an affiliate partner pays only 15,000 VND per booking while requiring 80 queries"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.549Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 1008,
-        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 treated all deep links equally. In real-world metasearch operations, an OTA providing a `DEEP_LINK_EXACT_OFFER` (landing user directly on pre-held seat summary) delivers vastly superior consumer utility compared to an affiliate link pointing to `PROVIDER_H"
+        "byteCount": 375,
+        "summaryExcerpt": "- **Audit Findings**: Marginal query costs and expected queries per booking in `src/domain/farely/partnerIntegrations.ts` define a non-negotiable economic viability floor ($ROI \\ge 1.0$), ensuring Farely does not subsidize unprofitable data partner queries.\n- **Physical Code Citations**: `src/domain"
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.271Z",
         "covered": true,
-        "byteCount": 1307,
-        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 sorted provider channels strictly by `normalizedTotalCostVND` in `src/domain/farely/directAffiliateComparison.ts`. However, when direct airline and third-party OTAs offer identical total prices (e.g., Vietnam Airlines direct is 1,500,000 VND and Traveloka "
+        "byteCount": 5233,
+        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 defined `commercialTier`, but did not specify the deterministic precedence logic between direct commercial partners and approved affiliates. If a partner has both active commercial agreements and affiliate rights, sovereign governance requires designating "
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
-        "byteCount": 312,
-        "summaryExcerpt": "- **Audit Findings**: Affiliate commission rates are strictly isolated from consumer ticket prices in `src/domain/farely/directAffiliateComparison.ts`, preventing unearned price inflation.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:95`, `src/domain/farely/dataEcon"
+        "byteCount": 375,
+        "summaryExcerpt": "- **Audit Findings**: Marginal query costs and expected queries per booking in `src/domain/farely/partnerIntegrations.ts` define a non-negotiable economic viability floor ($ROI \\ge 1.0$), ensuring Farely does not subsidize unprofitable data partner queries.\n- **Physical Code Citations**: `src/domain"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.182Z",
         "covered": true,
-        "byteCount": 779,
-        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 calculated normalized costs in `src/domain/farely/directAffiliateComparison.ts`, but did not enforce internal consistency when `quoteBasis === 'ALL_INCLUSIVE_WITH_BAGGAGE'`. If an OTA sets `quoteBasis` to all-inclusive but sets `isBaggageIncludedInQuote: f"
+        "byteCount": 712,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 checked non-negative numbers in `src/domain/farely/partnerIntegrations.ts`, but did not guard against `NaN` or `Infinity` passed in `estimatedRevenuePerBookingVND`. Under IEEE 754, `NaN - totalCost` evaluates to `NaN`, propagating into downstream margin ch"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.044Z",
+        "timestamp": "2026-10-27T08:24:21.062Z",
         "covered": true,
-        "byteCount": 312,
-        "summaryExcerpt": "- **Audit Findings**: Affiliate commission rates are strictly isolated from consumer ticket prices in `src/domain/farely/directAffiliateComparison.ts`, preventing unearned price inflation.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:95`, `src/domain/farely/dataEcon"
+        "byteCount": 1079,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 verified that `marginalRoi >= 1.0`, but failed to defend against fractional micro-revenues and asymmetric query exhaustion where high query volumes yield negligible payouts. For example, if a partner offers a commission of 1,000 VND per booking but consume"
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.647Z",
+        "timestamp": "2026-10-27T08:25:06.409Z",
         "covered": true,
-        "byteCount": 1066,
-        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 checked `rawQuotedPriceVND <= 0`, but relied on primitive comparison operators which fail silently when inputs are `NaN`, `Infinity`, or non-numeric types (`typeof price !== 'number'`). Under JavaScript IEEE 754 arithmetic, `NaN <= 0` evaluates to `false`,"
+        "byteCount": 375,
+        "summaryExcerpt": "- **Audit Findings**: Marginal query costs and expected queries per booking in `src/domain/farely/partnerIntegrations.ts` define a non-negotiable economic viability floor ($ROI \\ge 1.0$), ensuring Farely does not subsidize unprofitable data partner queries.\n- **Physical Code Citations**: `src/domain"
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 312,
-        "summaryExcerpt": "- **Audit Findings**: Affiliate commission rates are strictly isolated from consumer ticket prices in `src/domain/farely/directAffiliateComparison.ts`, preventing unearned price inflation.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:95`, `src/domain/farely/dataEcon"
+        "byteCount": 5366,
+        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 computed commercial tiers, but did not structurally guarantee the bi-directional invariant: a provider is commercially enabled if and only if their assigned tier is strictly non-disqualified (`isCommerciallyEnabled === true \\iff commercialTier \\in \\{DIRECT"
       }
     }
   },
@@ -133,64 +133,64 @@
     "name": "Deal Score, Statistical Confidence & Cost Monotonicity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
-        "byteCount": 370,
-        "summaryExcerpt": "- **Audit**: In `src/domain/farely/personalizedFeedPrivacy.ts`, personalization algorithms must operate strictly on explicit, consented user selections. Inferring religion, ethnicity, or financial creditworthiness is strictly forbidden under F38.\n- **Physical Code Citations**: `src/domain/farely/per"
+        "byteCount": 341,
+        "summaryExcerpt": "- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, "
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.488Z",
         "covered": true,
-        "byteCount": 1074,
-        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 checked context keys in `src/domain/farely/personalizedFeedPrivacy.ts` using `SENSITIVE_PROFILING_KEYS.includes(key)`. In JavaScript, key comparisons are case-sensitive. An adversarial or malformed payload using mixed-case keys (`InferredIncomeTier`, `infe"
+        "byteCount": 962,
+        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 identified the risk of `mad === 0`, but did not formalize the mathematical relationship between MAD and Gaussian normality. Specifically, the standard consistency factor $k = 1.4826$ is necessary for the modified Z-score ($M_i = \\frac{0.6745 \\cdot (x_i - \\"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.610Z",
         "covered": true,
-        "byteCount": 1158,
-        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 sanitized top-level keys in `contextPayload` in `src/domain/farely/personalizedFeedPrivacy.ts`, but completely ignored nested objects. An upstream payload could nest forbidden profiling attributes inside sub-objects (e.g. `{ demographicInferences: { inferr"
+        "byteCount": 341,
+        "summaryExcerpt": "- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, "
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.549Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 778,
-        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 used truthiness checking (`if (!preferences.isPersonalizationOptedIn)`). In Vietnamese Decree 13/2023/NĐ-CP on Personal Data Protection, user consent must be affirmative and unambiguous. If `isPersonalizationOptedIn` is truthy but non-boolean (e.g. `\"yes\"`"
+        "byteCount": 341,
+        "summaryExcerpt": "- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, "
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.271Z",
         "covered": true,
-        "byteCount": 748,
-        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 verified explicit consent in `src/domain/farely/personalizedFeedPrivacy.ts`, but did not sanitize preference filters like `maxBudgetVND` or `maxStops`. If a client passes `maxBudgetVND: 0` or negative values, the filtering logic drops all deals or produces"
+        "byteCount": 341,
+        "summaryExcerpt": "- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, "
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
-        "byteCount": 306,
-        "summaryExcerpt": "- **Audit Findings**: Feed ranking in `src/domain/farely/personalizedFeedPrivacy.ts` operates strictly on explicit user preferences, completely avoiding covert demographic profiling.\n- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:42`, `src/domain/farely/buyWaitGuidance."
+        "byteCount": 341,
+        "summaryExcerpt": "- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, "
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.182Z",
         "covered": true,
-        "byteCount": 703,
-        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 specified recursive tree traversal in `src/domain/farely/personalizedFeedPrivacy.ts` with `typeof obj === 'object'`, but failed to guard against `null`. In JavaScript, `typeof null === 'object'`. If a client context object contains null values (`{ metadata"
+        "byteCount": 708,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 asserted that zero-MAD requires `INSUFFICIENT_DISPERSION_ABSTENTION`, but failed to differentiate between cohorts with genuine uniform prices (e.g. 15 identical fares at 1,500,000 VND) and cohorts contaminated with zero fares. If a cohort contains 15 zeroe"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.044Z",
+        "timestamp": "2026-10-27T08:24:21.062Z",
         "covered": true,
-        "byteCount": 306,
-        "summaryExcerpt": "- **Audit Findings**: Feed ranking in `src/domain/farely/personalizedFeedPrivacy.ts` operates strictly on explicit user preferences, completely avoiding covert demographic profiling.\n- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:42`, `src/domain/farely/buyWaitGuidance."
+        "byteCount": 341,
+        "summaryExcerpt": "- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, "
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.647Z",
+        "timestamp": "2026-10-27T08:25:06.409Z",
         "covered": true,
-        "byteCount": 306,
-        "summaryExcerpt": "- **Audit Findings**: Feed ranking in `src/domain/farely/personalizedFeedPrivacy.ts` operates strictly on explicit user preferences, completely avoiding covert demographic profiling.\n- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:42`, `src/domain/farely/buyWaitGuidance."
+        "byteCount": 341,
+        "summaryExcerpt": "- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, "
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 7432,
-        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 suggested normalized substring matching, which risks false-positive rejections if legitimate context fields contain substrings like \"income\" or \"religion\" (e.g. `destinationIncomeTaxDisclosure`, `regionalReligionFestivals`). Sovereign privacy protection re"
+        "byteCount": 341,
+        "summaryExcerpt": "- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, "
       }
     }
   },
@@ -198,64 +198,64 @@
     "name": "Auth, Privacy, Tenant Isolation & RLS Matrix",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
         "byteCount": 300,
-        "summaryExcerpt": "- **Audit**: In `src/domain/farely/directAffiliateComparison.ts`, normalized cost $C = P_{base} + F_{tax} + B_{baggage}$ is mathematically verified. The minimum cost channel must satisfy $\\forall i, C_{min} \\le C_i$.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:160`"
+        "summaryExcerpt": "- **Audit Findings**: Median Absolute Deviation (MAD) provides breakdown-point resilience up to 50% contamination, protecting anomaly thresholds from being warped by extreme outliers.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:68`, `src/domain/farely/tripBudgetEstimator.ts:77`"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.488Z",
         "covered": true,
-        "byteCount": 449,
-        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 calculated `cheapestChannelSavingsVsDirectVND`, but did not handle scenarios where direct airline is already the cheapest option. In such cases, savings vs direct must be exactly 0 VND, not negative or undefined.\n- *Physical Code Verification*: In `src/dom"
+        "byteCount": 962,
+        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 identified the risk of `mad === 0`, but did not formalize the mathematical relationship between MAD and Gaussian normality. Specifically, the standard consistency factor $k = 1.4826$ is necessary for the modified Z-score ($M_i = \\frac{0.6745 \\cdot (x_i - \\"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.611Z",
         "covered": true,
-        "byteCount": 667,
-        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 sorted feed items strictly by `objectiveDealScore`, but did not specify a deterministic secondary tie-breaker. When multiple flight deals share identical scores, unstable browser sorting can cause visual rank flickering between refreshes.\n- *Physical Code "
+        "byteCount": 1117,
+        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 handled zero-cost division, but failed to assert mandatory disqualification when unit economics are strictly negative (`netMarginPerBookingVND < 0` or `marginalRoi < 1.0`). If an affiliate partner pays only 15,000 VND per booking while requiring 80 queries"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.549Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 182,
-        "summaryExcerpt": "- **Audit**: Total cost calculation is monotonic and non-negative: $T \\ge 0$ for all valid quotes.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:160`"
+        "byteCount": 4081,
+        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 categorized anomaly severity, but did not define deterministic Z-score thresholds (`modifiedZScore >= 3.5` for strong drop, `>= 2.0` for moderate drop).\n- *Physical Code Verification*: `src/domain/farely/priceAnomaly.ts:175`.\n- *SRE Remedy*: Lock standardi"
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.271Z",
         "covered": true,
-        "byteCount": 1307,
-        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 sorted provider channels strictly by `normalizedTotalCostVND` in `src/domain/farely/directAffiliateComparison.ts`. However, when direct airline and third-party OTAs offer identical total prices (e.g., Vietnam Airlines direct is 1,500,000 VND and Traveloka "
+        "byteCount": 810,
+        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 calculated statistical anomalies, but did not integrate Tet peak seasonal context into the resulting narrative. During Tet travel windows (`isTetDeparture(departureDate) === true`), standard domestic baseline prices inflate naturally due to structural supp"
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
-        "byteCount": 239,
-        "summaryExcerpt": "- **Audit Findings**: Monotonic cost normalization and deterministic tie-breaking guarantee that the displayed cheapest provider is mathematically optimal.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:160`"
+        "byteCount": 300,
+        "summaryExcerpt": "- **Audit Findings**: Median Absolute Deviation (MAD) provides breakdown-point resilience up to 50% contamination, protecting anomaly thresholds from being warped by extreme outliers.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:68`, `src/domain/farely/tripBudgetEstimator.ts:77`"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.182Z",
         "covered": true,
-        "byteCount": 239,
-        "summaryExcerpt": "- **Audit Findings**: Monotonic cost normalization and deterministic tie-breaking guarantee that the displayed cheapest provider is mathematically optimal.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:160`"
+        "byteCount": 708,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 asserted that zero-MAD requires `INSUFFICIENT_DISPERSION_ABSTENTION`, but failed to differentiate between cohorts with genuine uniform prices (e.g. 15 identical fares at 1,500,000 VND) and cohorts contaminated with zero fares. If a cohort contains 15 zeroe"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.044Z",
+        "timestamp": "2026-10-27T08:24:21.062Z",
         "covered": true,
-        "byteCount": 1442,
-        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 relied on standard JavaScript array sort `normalizedList.sort((a, b) => a.normalizedTotalCostVND - b.normalizedTotalCostVND)`, but failed to provide a deterministic secondary and tertiary tie-breaker when multiple channels quote identical prices. Under ECM"
+        "byteCount": 1079,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 verified that `marginalRoi >= 1.0`, but failed to defend against fractional micro-revenues and asymmetric query exhaustion where high query volumes yield negligible payouts. For example, if a partner offers a commission of 1,000 VND per booking but consume"
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.647Z",
+        "timestamp": "2026-10-27T08:25:06.409Z",
         "covered": true,
-        "byteCount": 1066,
-        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 checked `rawQuotedPriceVND <= 0`, but relied on primitive comparison operators which fail silently when inputs are `NaN`, `Infinity`, or non-numeric types (`typeof price !== 'number'`). Under JavaScript IEEE 754 arithmetic, `NaN <= 0` evaluates to `false`,"
+        "byteCount": 4951,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 lacked explicit test assertions for borderline modified Z-scores. Modified Z-score classifications must follow Boris Iglewicz and David Hoaglin (1993): $M_i \\ge 3.5$ indicates a strong statistical anomaly, while $2.0 \\le M_i < 3.5$ indicates a moderate ano"
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 940,
-        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 applied a 3-tier sort (`normalizedTotalCostVND` $\\to$ channel type priority $\\to$ `providerName.localeCompare`). However, if an OTA or aggregator returns multiple quote options with the same provider name and total price (e.g. two flight options or fare cl"
+        "byteCount": 1245,
+        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 calculated robust modified Z-scores, but failed to formalize how Lunar New Year (Tet) travel intervals alter empirical distribution properties. Under normal flight booking seasons, airfares exhibit log-normal distribution; however, during Tet travel window"
       }
     }
   },
@@ -263,64 +263,64 @@
     "name": "Provider Drift, Circuit Breakers & Kill Switches",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
-        "byteCount": 269,
-        "summaryExcerpt": "- **Audit**: In `src/domain/farely/vietnamTravelContext.ts`, departure date strings with invalid formats, extra whitespace, or malformed characters must fail safely to null without crashing.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:113`"
+        "byteCount": 284,
+        "summaryExcerpt": "- **Audit Findings**: Non-finite prices, negative query costs, empty strings, and divide-by-zero edge cases fail closed deterministically across all domain boundaries.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:63`, `src/domain/farely/priceAnomaly.ts:95`"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.488Z",
         "covered": true,
-        "byteCount": 1083,
-        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 performed naive string range comparison in `src/domain/farely/vietnamTravelContext.ts`:\n```typescript\nif (departDate >= holiday.solarStartDate && departDate <= holiday.solarEndDate)\n```\nWhen partner feeds provide full ISO timestamps with time and offset co"
+        "byteCount": 1238,
+        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 formulated `totalCostPerBookingVND = profile.marginalQueryCostVND * profile.expectedQueriesPerBooking`, but failed to defend against zero or fractional inputs. In production feeds, an aggregator profile claiming `marginalQueryCostVND: 0` or `expectedQuerie"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.611Z",
         "covered": true,
-        "byteCount": 964,
-        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 implemented regex check `/^\\d{4}-\\d{2}-\\d{2}$/` in `src/domain/farely/vietnamTravelContext.ts`, but regex alone does not validate calendar existence. Dates like `2026-02-31` or `2026-04-31` pass the regex test. In JavaScript, `new Date(\"2026-02-31\")` rolls"
+        "byteCount": 1134,
+        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 applied cohort size capping (`MAX_COHORT_ANALYSIS_SIZE = 250`), but did not strictly order the filtering pipeline. If an adversarial payload delivers 500 prices where the first 250 are corrupt (`NaN`, negative, or zero) and the last 250 are valid historica"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.549Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 616,
-        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 traversed context payloads recursively, but did not guard against prototype pollution vectors (`__proto__`, `constructor`, `prototype`). A malicious payload crafted to poison JavaScript Object prototypes could bypass traversal guards.\n- *Physical Code Veri"
+        "byteCount": 872,
+        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 checked `averageLatencyMs <= 6000`, but failed to reject negative latency values (`averageLatencyMs < 0`). In production SRE environments, clock synchronization drift (NTP skew) or corrupt APM metrics can emit negative response times (e.g. `-150ms`). Allow"
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.272Z",
         "covered": true,
-        "byteCount": 748,
-        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 verified explicit consent in `src/domain/farely/personalizedFeedPrivacy.ts`, but did not sanitize preference filters like `maxBudgetVND` or `maxStops`. If a client passes `maxBudgetVND: 0` or negative values, the filtering logic drops all deals or produces"
+        "byteCount": 284,
+        "summaryExcerpt": "- **Audit Findings**: Non-finite prices, negative query costs, empty strings, and divide-by-zero edge cases fail closed deterministically across all domain boundaries.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:63`, `src/domain/farely/priceAnomaly.ts:95`"
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
-        "byteCount": 269,
-        "summaryExcerpt": "- **Audit Findings**: Prototype pollution attempts, nonexistent calendar dates, and nested injection attacks fail closed deterministically.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:113`, `src/domain/farely/personalizedFeedPrivacy.ts:58`"
+        "byteCount": 284,
+        "summaryExcerpt": "- **Audit Findings**: Non-finite prices, negative query costs, empty strings, and divide-by-zero edge cases fail closed deterministically across all domain boundaries.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:63`, `src/domain/farely/priceAnomaly.ts:95`"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.183Z",
         "covered": true,
-        "byteCount": 848,
-        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 asserted that departure dates in `src/domain/farely/vietnamTravelContext.ts` must match `/^\\d{4}-\\d{2}-\\d{2}$/`, but failed to normalize common delimiter variants. In real-world partner feeds, dates are frequently formatted with slashes (`2026/02/15`) or p"
+        "byteCount": 712,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 checked non-negative numbers in `src/domain/farely/partnerIntegrations.ts`, but did not guard against `NaN` or `Infinity` passed in `estimatedRevenuePerBookingVND`. Under IEEE 754, `NaN - totalCost` evaluates to `NaN`, propagating into downstream margin ch"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.044Z",
+        "timestamp": "2026-10-27T08:24:21.062Z",
         "covered": true,
-        "byteCount": 1442,
-        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 relied on standard JavaScript array sort `normalizedList.sort((a, b) => a.normalizedTotalCostVND - b.normalizedTotalCostVND)`, but failed to provide a deterministic secondary and tertiary tie-breaker when multiple channels quote identical prices. Under ECM"
+        "byteCount": 1233,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 applied `MAX_COHORT_ANALYSIS_SIZE = 250`, but did not specify whether filtration happens before or after slicing. In a targeted denial-of-service or poisoning vector, an attacker injects a dense sequence of 300 non-finite values (such as `NaN`, `Infinity`,"
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.647Z",
+        "timestamp": "2026-10-27T08:25:06.410Z",
         "covered": true,
-        "byteCount": 1011,
-        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 specified recursive traversal over `Object.keys(obj)`, but did not properly account for arrays containing nested objects or non-string inputs. If a client sends `{ searchHistory: [{ inferredIncomeTier: \"HIGH\" }] }`, an object-only traversal that does not i"
+        "byteCount": 962,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 asserted `profile.averageLatencyMs <= MAXIMUM_AVERAGE_LATENCY_MS`, but did not check for negative values (`profile.averageLatencyMs < 0`). In real-world telemetry pipelines, clock synchronization skew across container nodes (NTP drift) or timestamp parsing"
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 293,
-        "summaryExcerpt": "- **Audit Findings**: Prototype pollution attempts, nonexistent calendar dates, circular object graphs, and nested injection attacks fail closed deterministically.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:113`, `src/domain/farely/personalizedFeedPrivacy.ts:58`"
+        "byteCount": 284,
+        "summaryExcerpt": "- **Audit Findings**: Non-finite prices, negative query costs, empty strings, and divide-by-zero edge cases fail closed deterministically across all domain boundaries.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:63`, `src/domain/farely/priceAnomaly.ts:95`"
       }
     }
   },
@@ -328,64 +328,64 @@
     "name": "Freshness, Stale Degradation & UX Honesty",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
-        "byteCount": 281,
-        "summaryExcerpt": "- **Audit**: Displaying an OTA as \"Recommended\" or \"Cheapest\" when the official airline direct website is cheaper violates consumer transparency and F43 invariants (`CommercialRankingOverrideError`).\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`"
+        "byteCount": 320,
+        "summaryExcerpt": "- **Audit Findings**: Partner integrations enforce explicit commercial authorizations and reject blocked or scraper-restricted endpoints, adhering to international IP and copyright standards.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:69`, `src/domain/farely/directAffil"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.489Z",
         "covered": true,
-        "byteCount": 884,
-        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 normalized channel prices in `src/domain/farely/directAffiliateComparison.ts`, but failed to mandate that OTA mandatory fees include card payment surcharges. In the Vietnamese travel market, OTAs often display prices without payment processing fees until t"
+        "byteCount": 3761,
+        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 logged disqualification strings in Vietnamese, but did not provide machine-readable error codes for SRE monitoring and partner SLA reconciliation.\n- *Physical Code Verification*: `src/domain/farely/partnerIntegrations.ts:42`.\n- *Skeptical Remedy*: Add stan"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.611Z",
         "covered": true,
-        "byteCount": 184,
-        "summaryExcerpt": "- **Audit**: Objective sorting ensures consumers always see the mathematically cheapest channel first.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`"
+        "byteCount": 4020,
+        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 permitted scraping if `profile.isScrapingPermitted` was true, but did not require affirmative proof of non-restriction. If a partner is in a legal gray area, commercial enablement must fail closed.\n- *Physical Code Verification*: `src/domain/farely/partner"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.549Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 279,
-        "summaryExcerpt": "- **Audit**: Affirmative consent verification and transparent commercial channel disclosures ensure full compliance with consumer protection laws.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:17`"
+        "byteCount": 320,
+        "summaryExcerpt": "- **Audit Findings**: Partner integrations enforce explicit commercial authorizations and reject blocked or scraper-restricted endpoints, adhering to international IP and copyright standards.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:69`, `src/domain/farely/directAffil"
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.272Z",
         "covered": true,
-        "byteCount": 1367,
-        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 validated calendar dates in `src/domain/farely/vietnamTravelContext.ts`, but overlooked airline code string sanitization in `getCarrierBaggagePolicy`. Partner API feeds frequently deliver airline codes with leading/trailing whitespace or tabs (`\" VN \"`, `\""
+        "byteCount": 810,
+        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 calculated statistical anomalies, but did not integrate Tet peak seasonal context into the resulting narrative. During Tet travel windows (`isTetDeparture(departureDate) === true`), standard domestic baseline prices inflate naturally due to structural supp"
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
-        "byteCount": 276,
-        "summaryExcerpt": "- **Audit Findings**: Transparent commercial disclosures and affirmative consent compliance safeguard users from deceptive marketing practices.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:17`"
+        "byteCount": 320,
+        "summaryExcerpt": "- **Audit Findings**: Partner integrations enforce explicit commercial authorizations and reject blocked or scraper-restricted endpoints, adhering to international IP and copyright standards.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:69`, `src/domain/farely/directAffil"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.183Z",
         "covered": true,
-        "byteCount": 424,
-        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 indexed `MOTIVATION_DESTINATIONS[motivation]`, but did not handle invalid motivation strings safely. Unrecognized motivation values must cleanly return an empty array `[]` rather than throwing exceptions.\n- *Physical Code Verification*: In `src/domain/fare"
+        "byteCount": 320,
+        "summaryExcerpt": "- **Audit Findings**: Partner integrations enforce explicit commercial authorizations and reject blocked or scraper-restricted endpoints, adhering to international IP and copyright standards.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:69`, `src/domain/farely/directAffil"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.045Z",
+        "timestamp": "2026-10-27T08:24:21.063Z",
         "covered": true,
-        "byteCount": 4880,
-        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 checked `!preferences.isPersonalizationOptedIn`, which could permit truthy string inputs like `\"false\"` or `\"0\"` if type validation is loose. Consent under Vietnam Decree 13/2023/ND-CP requires explicit affirmative consent.\n- *Physical Code Verification*: "
+        "byteCount": 5055,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 evaluated scraping permission as an alternative to commercial agreements, but failed to require explicit affiliate authorization. Under Vietnamese Civil Code 2015 and cybersecurity regulations, automated data extraction without contractual rights or affili"
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.647Z",
+        "timestamp": "2026-10-27T08:25:06.410Z",
         "covered": true,
-        "byteCount": 5006,
-        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 suggested generic error throwing for quote validation, which hinders SRE root-cause analysis when debugging faulty upstream aggregator feeds.\n- *Physical Code Verification*: `src/domain/farely/directAffiliateComparison.ts:9`.\n- *SRE Remedy*: Provide standa"
+        "byteCount": 320,
+        "summaryExcerpt": "- **Audit Findings**: Partner integrations enforce explicit commercial authorizations and reject blocked or scraper-restricted endpoints, adhering to international IP and copyright standards.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:69`, `src/domain/farely/directAffil"
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 7432,
-        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 suggested normalized substring matching, which risks false-positive rejections if legitimate context fields contain substrings like \"income\" or \"religion\" (e.g. `destinationIncomeTaxDisclosure`, `regionalReligionFestivals`). Sovereign privacy protection re"
+        "byteCount": 1245,
+        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 calculated robust modified Z-scores, but failed to formalize how Lunar New Year (Tet) travel intervals alter empirical distribution properties. Under normal flight booking seasons, airfares exhibit log-normal distribution; however, during Tet travel window"
       }
     }
   },
@@ -393,64 +393,64 @@
     "name": "Observability, Secret Scrubbing & Error Boundaries",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
-        "byteCount": 266,
-        "summaryExcerpt": "- **Audit**: Feed ranking in `src/domain/farely/personalizedFeedPrivacy.ts` processes deals in $O(N \\log N)$ time, preventing computational bottlenecks during large payload evaluations.\n- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:87`"
+        "byteCount": 229,
+        "summaryExcerpt": "- **Audit Findings**: Hard capping cohort size at `MAX_COHORT_ANALYSIS_SIZE = 250` prevents CPU saturation and memory bloat during statistical sort operations.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:37`"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.489Z",
         "covered": true,
-        "byteCount": 1074,
-        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 checked context keys in `src/domain/farely/personalizedFeedPrivacy.ts` using `SENSITIVE_PROFILING_KEYS.includes(key)`. In JavaScript, key comparisons are case-sensitive. An adversarial or malformed payload using mixed-case keys (`InferredIncomeTier`, `infe"
+        "byteCount": 229,
+        "summaryExcerpt": "- **Audit Findings**: Hard capping cohort size at `MAX_COHORT_ANALYSIS_SIZE = 250` prevents CPU saturation and memory bloat during statistical sort operations.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:37`"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.611Z",
         "covered": true,
-        "byteCount": 1158,
-        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 sanitized top-level keys in `contextPayload` in `src/domain/farely/personalizedFeedPrivacy.ts`, but completely ignored nested objects. An upstream payload could nest forbidden profiling attributes inside sub-objects (e.g. `{ demographicInferences: { inferr"
+        "byteCount": 1134,
+        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 applied cohort size capping (`MAX_COHORT_ANALYSIS_SIZE = 250`), but did not strictly order the filtering pipeline. If an adversarial payload delivers 500 prices where the first 250 are corrupt (`NaN`, negative, or zero) and the last 250 are valid historica"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.549Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 200,
-        "summaryExcerpt": "- **Audit**: Linear iteration across channel quotes prevents latency spikes during multi-carrier comparison displays.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:95`"
+        "byteCount": 844,
+        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 calculated `discountVsMedianPercent = ((median - current) / median) * 100`, but did not round the percentage value. Under IEEE 754 arithmetic, operations like `((1500000 - 1000000) / 1500000) * 100` yield `33.333333333333336%`. In client feeds, Telegram pu"
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.272Z",
         "covered": true,
-        "byteCount": 360,
-        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 processed arbitrary deal arrays without bounding maximum candidates. A bulk injection of 100,000 candidate deals would degrade client UI rendering.\n- *Physical Code Verification*: In `src/domain/farely/personalizedFeedPrivacy.ts`.\n- *Sovereign Remedy*: Cap"
+        "byteCount": 229,
+        "summaryExcerpt": "- **Audit Findings**: Hard capping cohort size at `MAX_COHORT_ANALYSIS_SIZE = 250` prevents CPU saturation and memory bloat during statistical sort operations.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:37`"
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
-        "byteCount": 201,
-        "summaryExcerpt": "- **Audit Findings**: Bounded traversal and capped feed candidate lists prevent denial of service and memory saturation.\n- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:79`"
+        "byteCount": 229,
+        "summaryExcerpt": "- **Audit Findings**: Hard capping cohort size at `MAX_COHORT_ANALYSIS_SIZE = 250` prevents CPU saturation and memory bloat during statistical sort operations.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:37`"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.183Z",
         "covered": true,
-        "byteCount": 703,
-        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 specified recursive tree traversal in `src/domain/farely/personalizedFeedPrivacy.ts` with `typeof obj === 'object'`, but failed to guard against `null`. In JavaScript, `typeof null === 'object'`. If a client context object contains null values (`{ metadata"
+        "byteCount": 229,
+        "summaryExcerpt": "- **Audit Findings**: Hard capping cohort size at `MAX_COHORT_ANALYSIS_SIZE = 250` prevents CPU saturation and memory bloat during statistical sort operations.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:37`"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.045Z",
+        "timestamp": "2026-10-27T08:24:21.063Z",
         "covered": true,
-        "byteCount": 1175,
-        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 introduced recursive traversal to scrub sensitive demographic profiling attributes, but failed to protect against cyclic object graphs (e.g. `obj.self = obj`). Passing a circular object into `sanitizePersonalizationContext` triggers an uncatchable `RangeEr"
+        "byteCount": 1233,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 applied `MAX_COHORT_ANALYSIS_SIZE = 250`, but did not specify whether filtration happens before or after slicing. In a targeted denial-of-service or poisoning vector, an attacker injects a dense sequence of 300 non-finite values (such as `NaN`, `Infinity`,"
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.647Z",
+        "timestamp": "2026-10-27T08:25:06.410Z",
         "covered": true,
-        "byteCount": 1066,
-        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 checked `rawQuotedPriceVND <= 0`, but relied on primitive comparison operators which fail silently when inputs are `NaN`, `Infinity`, or non-numeric types (`typeof price !== 'number'`). Under JavaScript IEEE 754 arithmetic, `NaN <= 0` evaluates to `false`,"
+        "byteCount": 1003,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 calculated discount percentage via `((medianPrice - currentPrice) / medianPrice) * 100`, but omitted an explicit defensive guard for `medianPrice === 0`. In degraded telemetry states where all historical values evaluate to zero, calculating the ratio trigg"
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 221,
-        "summaryExcerpt": "- **Audit Findings**: Bounded recursion depth ($\\le 8$) and cycle-safe traversal prevent call-stack overflows and memory exhaustion attacks.\n- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:79`"
+        "byteCount": 229,
+        "summaryExcerpt": "- **Audit Findings**: Hard capping cohort size at `MAX_COHORT_ANALYSIS_SIZE = 250` prevents CPU saturation and memory bloat during statistical sort operations.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:37`"
       }
     }
   },
@@ -458,64 +458,64 @@
     "name": "Database Architecture, Schema Drift & Migration Provenance",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
-        "byteCount": 293,
-        "summaryExcerpt": "- **Audit**: All three modules operate in pure domain logic (`src/domain/farely/`), requiring no database schema mutations and maintaining compatibility across all 47 migrations in `supabase/migrations/`.\n- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`"
+        "byteCount": 250,
+        "summaryExcerpt": "- **Audit Findings**: Pure domain logic functions require zero database migrations and maintain compatibility across all 47 migrations in `supabase/migrations/`.\n- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.489Z",
         "covered": true,
-        "byteCount": 206,
-        "summaryExcerpt": "- **Audit**: Zero database migrations needed; all functions are cleanly encapsulated in pure TypeScript domain logic.\n- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`"
+        "byteCount": 653,
+        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 asserted strict cabin matching, but did not handle implicit default cabin classes. In Vietnam domestic travel, standard user queries frequently omit `cabinClass` (represented as `undefined`), implicitly requesting ECONOMY. Rejecting an intent because `cabi"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.611Z",
         "covered": true,
-        "byteCount": 667,
-        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 sorted feed items strictly by `objectiveDealScore`, but did not specify a deterministic secondary tie-breaker. When multiple flight deals share identical scores, unstable browser sorting can cause visual rank flickering between refreshes.\n- *Physical Code "
+        "byteCount": 250,
+        "summaryExcerpt": "- **Audit Findings**: Pure domain logic functions require zero database migrations and maintain compatibility across all 47 migrations in `supabase/migrations/`.\n- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.549Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 1086,
-        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 computed `baseFare = Math.max(0, q.rawQuotedPriceVND - taxes)` in `src/domain/farely/directAffiliateComparison.ts`, but allowed malformed input where `rawQuotedPriceVND < mandatoryTaxesAndFeesVND` without raising an integrity warning. If an upstream OTA AP"
+        "byteCount": 654,
+        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 checked journey type and cabin class, but ignored `marketScope`. Certain domestic regional providers (e.g. Bamboo Airways domestic config) are strictly scoped to `['DOMESTIC']`. If an intent for an international route (`SGN` to `SIN` or `HAN` to `NRT`) is "
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.272Z",
         "covered": true,
-        "byteCount": 270,
-        "summaryExcerpt": "- **Audit Findings**: Zero database migrations needed; all logic is cleanly packaged in pure domain TypeScript functions compatible with all 47 migrations in `supabase/migrations/`.\n- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`"
+        "byteCount": 1111,
+        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 added market scope checking, but failed to preserve backward compatibility when callers omit `marketScope`. Existing test cases in `src/domain/farely/providerCapabilities.test.ts:32` construct lightweight `TravelIntent` objects without a `marketScope` prop"
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
         "byteCount": 250,
         "summaryExcerpt": "- **Audit Findings**: Pure domain logic functions require zero database migrations and maintain compatibility across all 47 migrations in `supabase/migrations/`.\n- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.183Z",
         "covered": true,
-        "byteCount": 250,
-        "summaryExcerpt": "- **Audit Findings**: Pure domain logic functions require zero database migrations and maintain compatibility across all 47 migrations in `supabase/migrations/`.\n- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`"
+        "byteCount": 557,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 checked provider existence, but did not guarantee that `reasons` array contains actionable guidance for unlisted partners.\n- *Physical Code Verification*: In `src/domain/farely/providerCapabilities.ts:23`:\n```typescript\nexport const PROVIDER_CAPABILITY_REG"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.045Z",
+        "timestamp": "2026-10-27T08:24:21.063Z",
         "covered": true,
-        "byteCount": 250,
-        "summaryExcerpt": "- **Audit Findings**: Pure domain logic functions require zero database migrations and maintain compatibility across all 47 migrations in `supabase/migrations/`.\n- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`"
+        "byteCount": 954,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 checked journey types generically, but omitted segment-level verification for multi-city routes. If a traveler searches for a 3-leg open-jaw journey (`SGN -> DAD -> HAN`), passing this intent to low-cost point-to-point carriers (e.g. Vietjet Direct) fails "
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.648Z",
+        "timestamp": "2026-10-27T08:25:06.410Z",
         "covered": true,
-        "byteCount": 250,
-        "summaryExcerpt": "- **Audit Findings**: Pure domain logic functions require zero database migrations and maintain compatibility across all 47 migrations in `supabase/migrations/`.\n- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`"
+        "byteCount": 928,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 checked multi-city capability, but did not enforce market scope compatibility. A domestic-only airline profile (e.g., Bamboo Airways domestic config with `supportedMarketScopes: ['DOMESTIC']`) must not be matched to an intent where `intent.marketScope === "
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 1299,
-        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 proposed an unconditional non-null fallback in `getCarrierBaggagePolicy`. However, an existing historical acceptance contract in `src/domain/farely/vietnamTravelContext.test.ts:40` explicitly asserts `expect(getCarrierBaggagePolicy(\"NONEXISTENT\")).toBeNull"
+        "byteCount": 1399,
+        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 verified market scope and advance days, but did not explicitly assert that `marketScope` and `advanceDays` remain strictly optional parameters within polymorphic request contexts. Historical acceptance contracts in `src/domain/farely/providerCapabilities.t"
       }
     }
   },
@@ -523,64 +523,64 @@
     "name": "Proof Hierarchy & Anti-Self-Certification (C0..C4)",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
-        "byteCount": 272,
-        "summaryExcerpt": "- **Audit**: In `src/domain/farely/directAffiliateComparison.ts`, all comparisons return structured disclosure notices (`disclosureNoticeVi`) and explicit staleness minutes for audit logs.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:193`"
+        "byteCount": 275,
+        "summaryExcerpt": "- **Audit Findings**: Disqualification reasons and anomaly explanation strings provide transparent, machine-readable rationales for every governance decision.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:42`, `src/domain/farely/priceAnomaly.ts:32`"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.489Z",
         "covered": true,
-        "byteCount": 260,
-        "summaryExcerpt": "- **Audit**: Structured error types with specific violation messages enable full forensic observability in production telemetry.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:9`"
+        "byteCount": 3761,
+        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 logged disqualification strings in Vietnamese, but did not provide machine-readable error codes for SRE monitoring and partner SLA reconciliation.\n- *Physical Code Verification*: `src/domain/farely/partnerIntegrations.ts:42`.\n- *Skeptical Remedy*: Add stan"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.611Z",
         "covered": true,
-        "byteCount": 232,
-        "summaryExcerpt": "- **Audit**: Machine-readable error codes and structured explanations provide complete auditability.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:9`"
+        "byteCount": 4020,
+        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 permitted scraping if `profile.isScrapingPermitted` was true, but did not require affirmative proof of non-restriction. If a partner is in a legal gray area, commercial enablement must fail closed.\n- *Physical Code Verification*: `src/domain/farely/partner"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.549Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 778,
-        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 used truthiness checking (`if (!preferences.isPersonalizationOptedIn)`). In Vietnamese Decree 13/2023/NĐ-CP on Personal Data Protection, user consent must be affirmative and unambiguous. If `isPersonalizationOptedIn` is truthy but non-boolean (e.g. `\"yes\"`"
+        "byteCount": 872,
+        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 checked `averageLatencyMs <= 6000`, but failed to reject negative latency values (`averageLatencyMs < 0`). In production SRE environments, clock synchronization drift (NTP skew) or corrupt APM metrics can emit negative response times (e.g. `-150ms`). Allow"
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.272Z",
         "covered": true,
-        "byteCount": 268,
-        "summaryExcerpt": "- **Audit Findings**: Every error throws a distinct machine-readable code, enabling unambiguous structured telemetry in production logs.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:9`"
+        "byteCount": 275,
+        "summaryExcerpt": "- **Audit Findings**: Disqualification reasons and anomaly explanation strings provide transparent, machine-readable rationales for every governance decision.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:42`, `src/domain/farely/priceAnomaly.ts:32`"
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
-        "byteCount": 269,
-        "summaryExcerpt": "- **Audit Findings**: Machine-readable error codes and structured explanations provide clear audit trails for all verification decisions.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:9`"
+        "byteCount": 275,
+        "summaryExcerpt": "- **Audit Findings**: Disqualification reasons and anomaly explanation strings provide transparent, machine-readable rationales for every governance decision.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:42`, `src/domain/farely/priceAnomaly.ts:32`"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.183Z",
         "covered": true,
-        "byteCount": 269,
-        "summaryExcerpt": "- **Audit Findings**: Machine-readable error codes and structured explanations provide clear audit trails for all verification decisions.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:9`"
+        "byteCount": 275,
+        "summaryExcerpt": "- **Audit Findings**: Disqualification reasons and anomaly explanation strings provide transparent, machine-readable rationales for every governance decision.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:42`, `src/domain/farely/priceAnomaly.ts:32`"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.045Z",
+        "timestamp": "2026-10-27T08:24:21.063Z",
         "covered": true,
-        "byteCount": 269,
-        "summaryExcerpt": "- **Audit Findings**: Machine-readable error codes and structured explanations provide clear audit trails for all verification decisions.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:9`"
+        "byteCount": 5055,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 evaluated scraping permission as an alternative to commercial agreements, but failed to require explicit affiliate authorization. Under Vietnamese Civil Code 2015 and cybersecurity regulations, automated data extraction without contractual rights or affili"
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.648Z",
+        "timestamp": "2026-10-27T08:25:06.410Z",
         "covered": true,
-        "byteCount": 5006,
-        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 suggested generic error throwing for quote validation, which hinders SRE root-cause analysis when debugging faulty upstream aggregator feeds.\n- *Physical Code Verification*: `src/domain/farely/directAffiliateComparison.ts:9`.\n- *SRE Remedy*: Provide standa"
+        "byteCount": 962,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 asserted `profile.averageLatencyMs <= MAXIMUM_AVERAGE_LATENCY_MS`, but did not check for negative values (`profile.averageLatencyMs < 0`). In real-world telemetry pipelines, clock synchronization skew across container nodes (NTP drift) or timestamp parsing"
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 269,
-        "summaryExcerpt": "- **Audit Findings**: Machine-readable error codes and structured explanations provide clear audit trails for all verification decisions.\n- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:9`"
+        "byteCount": 275,
+        "summaryExcerpt": "- **Audit Findings**: Disqualification reasons and anomaly explanation strings provide transparent, machine-readable rationales for every governance decision.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:42`, `src/domain/farely/priceAnomaly.ts:32`"
       }
     }
   },
@@ -588,64 +588,64 @@
     "name": "Anti-Shrinkage & 267 Historical Gates Traceability",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.732Z",
+        "timestamp": "2026-10-27T08:18:44.741Z",
         "covered": true,
-        "byteCount": 147,
-        "summaryExcerpt": "- **Audit**: Tests execute in $< 300 \\text{ ms}$ via turnkey vitest runners without network mocks.\n- **Physical Code Citations**: `package.json:34`"
+        "byteCount": 155,
+        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.489Z",
         "covered": true,
-        "byteCount": 150,
-        "summaryExcerpt": "- **Audit**: Vitest unit test suites run in $< 300 \\text{ ms}$ with zero network or filesystem mocks.\n- **Physical Code Citations**: `package.json:34`"
+        "byteCount": 155,
+        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.611Z",
         "covered": true,
-        "byteCount": 133,
-        "summaryExcerpt": "- **Audit**: Vitest test suites run in $< 300 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
+        "byteCount": 155,
+        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.550Z",
+        "timestamp": "2026-10-27T08:21:06.427Z",
         "covered": true,
-        "byteCount": 354,
-        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 lacked comprehensive negative vector test cases for holiday boundary anomalies.\n- *Physical Code Verification*: In `src/domain/farely/vietnamTravelContext.test.ts`.\n- *SRE Remedy*: Add parameterized test cases for edge-date holiday transitions.\n\n---\n\n## SE"
+        "byteCount": 844,
+        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 calculated `discountVsMedianPercent = ((median - current) / median) * 100`, but did not round the percentage value. Under IEEE 754 arithmetic, operations like `((1500000 - 1000000) / 1500000) * 100` yield `33.333333333333336%`. In client feeds, Telegram pu"
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.272Z",
         "covered": true,
-        "byteCount": 3778,
-        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 outlined test assertions, but Pass R5 must provide turnkey verification command suites executing in $< 500 \\text{ ms}$.\n- *Physical Code Verification*: `package.json:34`.\n- *Sovereign Remedy*: Bind verification strictly to standard vitest runners with zero"
+        "byteCount": 155,
+        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
         "byteCount": 155,
-        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 300 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
+        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.183Z",
         "covered": true,
-        "byteCount": 3846,
-        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 specified test commands, but did not assert sub-second execution across all three domain modules simultaneously.\n- *Physical Code Verification*: `package.json:34`.\n- *Skeptical Remedy*: Verify turnkey execution across all target test files in parallel.\n\n--"
+        "byteCount": 4792,
+        "summaryExcerpt": "- *Deficits Identified in Pass G1*: Pass G1 specified individual vitest commands, but did not assert unified turnkey verification across all three domain modules simultaneously.\n- *Physical Code Verification*: `package.json:34`.\n- *Skeptical Remedy*: Verify parallel execution of target test suites i"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.045Z",
+        "timestamp": "2026-10-27T08:24:21.063Z",
         "covered": true,
         "byteCount": 155,
-        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 300 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
+        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.648Z",
+        "timestamp": "2026-10-27T08:25:06.410Z",
         "covered": true,
-        "byteCount": 155,
-        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 300 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
+        "byteCount": 1003,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 calculated discount percentage via `((medianPrice - currentPrice) / medianPrice) * 100`, but omitted an explicit defensive guard for `medianPrice === 0`. In degraded telemetry states where all historical values evaluate to zero, calculating the ratio trigg"
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
         "byteCount": 155,
-        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 300 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
+        "summaryExcerpt": "- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \\text{ ms}$ with zero network mocking.\n- **Physical Code Citations**: `package.json:34`"
       }
     }
   },
@@ -653,64 +653,64 @@
     "name": "Turnkey Execution, Topological DAG & Rollback Runbooks",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.733Z",
+        "timestamp": "2026-10-27T08:18:44.742Z",
         "covered": true,
-        "byteCount": 223,
-        "summaryExcerpt": "- **Audit**: When user preferences are unconsented or disabled, `rankFeedWithPrivacyGuarantees` degrades gracefully to objective deal scoring.\n- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:86`"
+        "byteCount": 272,
+        "summaryExcerpt": "- **Audit Findings**: In the event of sparse data or unlisted providers, fallback classifications ensure uninterrupted client operations without crashing.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:19`, `src/domain/farely/providerCapabilities.ts:23`"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.489Z",
         "covered": true,
-        "byteCount": 477,
-        "summaryExcerpt": "- *Deficits Identified in Pass R1*: Pass R1 looked up carriers in `VIETNAM_DOMESTIC_CARRIERS`, returning `null` for new carriers or international partner legs. Downstream consumers expecting baggage allowances encounter null reference exceptions.\n- *Physical Code Verification*: In `src/domain/farely"
+        "byteCount": 272,
+        "summaryExcerpt": "- **Audit Findings**: In the event of sparse data or unlisted providers, fallback classifications ensure uninterrupted client operations without crashing.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:19`, `src/domain/farely/providerCapabilities.ts:23`"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.611Z",
         "covered": true,
-        "byteCount": 380,
-        "summaryExcerpt": "- *Deficits Identified in Pass R2*: Pass R2 threw a generic Error when `quotes` array is empty. A production SRE standard requires typed domain errors for empty payloads.\n- *Physical Code Verification*: In `src/domain/farely/directAffiliateComparison.ts`.\n- *Hostile Remedy*: Export structured channe"
+        "byteCount": 272,
+        "summaryExcerpt": "- **Audit Findings**: In the event of sparse data or unlisted providers, fallback classifications ensure uninterrupted client operations without crashing.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:19`, `src/domain/farely/providerCapabilities.ts:23`"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.550Z",
+        "timestamp": "2026-10-27T08:21:06.428Z",
         "covered": true,
-        "byteCount": 198,
-        "summaryExcerpt": "- **Audit**: Unlisted airline carriers return safe default baggage notes rather than breaking user flight detail views.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:126`"
+        "byteCount": 654,
+        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 checked journey type and cabin class, but ignored `marketScope`. Certain domestic regional providers (e.g. Bamboo Airways domestic config) are strictly scoped to `['DOMESTIC']`. If an intent for an international route (`SGN` to `SIN` or `HAN` to `NRT`) is "
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.272Z",
         "covered": true,
-        "byteCount": 216,
-        "summaryExcerpt": "- **Audit Findings**: Missing airline carriers return transparent default baggage policies rather than breaking user flight detail views.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:126`"
+        "byteCount": 272,
+        "summaryExcerpt": "- **Audit Findings**: In the event of sparse data or unlisted providers, fallback classifications ensure uninterrupted client operations without crashing.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:19`, `src/domain/farely/providerCapabilities.ts:23`"
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.833Z",
+        "timestamp": "2026-10-27T08:22:19.852Z",
         "covered": true,
-        "byteCount": 270,
-        "summaryExcerpt": "- **Audit Findings**: Fallback estimators and unpersonalized objective scoring ensure uninterrupted service during partial context failures.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:126`, `src/domain/farely/personalizedFeedPrivacy.ts:86`"
+        "byteCount": 272,
+        "summaryExcerpt": "- **Audit Findings**: In the event of sparse data or unlisted providers, fallback classifications ensure uninterrupted client operations without crashing.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:19`, `src/domain/farely/providerCapabilities.ts:23`"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.183Z",
         "covered": true,
-        "byteCount": 270,
-        "summaryExcerpt": "- **Audit Findings**: Fallback estimators and unpersonalized objective scoring ensure uninterrupted service during partial context failures.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:126`, `src/domain/farely/personalizedFeedPrivacy.ts:86`"
+        "byteCount": 272,
+        "summaryExcerpt": "- **Audit Findings**: In the event of sparse data or unlisted providers, fallback classifications ensure uninterrupted client operations without crashing.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:19`, `src/domain/farely/providerCapabilities.ts:23`"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.045Z",
+        "timestamp": "2026-10-27T08:24:21.063Z",
         "covered": true,
-        "byteCount": 1440,
-        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 added delimiter normalization, but failed to validate true astronomical/Gregorian calendar validity. For instance, `2026-02-29` (2026 is a standard 365-day non-leap year) or `2026-04-31` (April has only 30 days) are invalid dates that string comparisons wo"
+        "byteCount": 954,
+        "summaryExcerpt": "- *Deficits Identified in Pass G2*: Pass G2 checked journey types generically, but omitted segment-level verification for multi-city routes. If a traveler searches for a 3-leg open-jaw journey (`SGN -> DAD -> HAN`), passing this intent to low-cost point-to-point carriers (e.g. Vietjet Direct) fails "
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.648Z",
+        "timestamp": "2026-10-27T08:25:06.410Z",
         "covered": true,
-        "byteCount": 1007,
-        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 indicated `carrierCode.trim().toUpperCase()`, but failed to protect against `null`, `undefined`, or non-string inputs (`typeof carrierCode !== 'string'`). In real-world partner integrations, partner feeds often transmit null carrier codes on codeshare itin"
+        "byteCount": 928,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 checked multi-city capability, but did not enforce market scope compatibility. A domestic-only airline profile (e.g., Bamboo Airways domestic config with `supportedMarketScopes: ['DOMESTIC']`) must not be matched to an intent where `intent.marketScope === "
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.819Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 305,
-        "summaryExcerpt": "- **Audit Findings**: Fallback estimators, default carrier baggage policies, and unpersonalized objective scoring ensure uninterrupted service during partial context failures.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:126`, `src/domain/farely/personalizedFeedPrivacy.t"
+        "byteCount": 272,
+        "summaryExcerpt": "- **Audit Findings**: In the event of sparse data or unlisted providers, fallback classifications ensure uninterrupted client operations without crashing.\n- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:19`, `src/domain/farely/providerCapabilities.ts:23`"
       }
     }
   },
@@ -718,64 +718,64 @@
     "name": "Zero-Trust Release & Remote Git Synchronization",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T08:04:09.733Z",
+        "timestamp": "2026-10-27T08:18:44.742Z",
         "covered": true,
-        "byteCount": 1034,
-        "summaryExcerpt": "- **Audit**: Strictly typed TypeScript interfaces (`VietnamHoliday`, `NormalizedProviderChannel`, `RankedFeedItem`) eliminate hidden technical debt.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`\n\n---\n\n## SECTION V: P"
+        "byteCount": 2342,
+        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:16`, `src/domain/farely/providerCapabilities.ts:9`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulnerabilit"
       },
       "R2": {
-        "timestamp": "2026-10-27T08:04:48.866Z",
+        "timestamp": "2026-10-27T08:19:33.489Z",
         "covered": true,
-        "byteCount": 865,
-        "summaryExcerpt": "- **Audit**: Clean interface separation and typed error hierarchies eliminate technical debt.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`\n\n---\n\n## SECTION IV: LOCKED ARCHITECTURAL SOLUTIONS\n- **SOL-01: SOL-HOLIDAY-"
+        "byteCount": 2236,
+        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:16`, `src/domain/farely/providerCapabilities.ts:9`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulnerabilit"
       },
       "R3": {
-        "timestamp": "2026-10-27T08:05:30.764Z",
+        "timestamp": "2026-10-27T08:20:18.611Z",
         "covered": true,
-        "byteCount": 858,
-        "summaryExcerpt": "- **Audit**: Strict encapsulation of Vietnamese calendar and channel comparison algorithms guarantees modular maintainability.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`\n\n---\n\n## SECTION IV: LOCKED ARCHITECTURAL S"
+        "byteCount": 2209,
+        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:16`, `src/domain/farely/providerCapabilities.ts:9`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulnerabilit"
       },
       "R4": {
-        "timestamp": "2026-10-27T08:06:16.550Z",
+        "timestamp": "2026-10-27T08:21:06.428Z",
         "covered": true,
-        "byteCount": 814,
-        "summaryExcerpt": "- **Audit**: Clean interface separation and typed error hierarchies eliminate technical debt.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`\n\n---\n\n## SECTION IV: LOCKED ARCHITECTURAL SOLUTIONS\n- **SOL-01: SOL-HOLIDAY-"
+        "byteCount": 4081,
+        "summaryExcerpt": "- *Deficits Identified in Pass R3*: Pass R3 categorized anomaly severity, but did not define deterministic Z-score thresholds (`modifiedZScore >= 3.5` for strong drop, `>= 2.0` for moderate drop).\n- *Physical Code Verification*: `src/domain/farely/priceAnomaly.ts:175`.\n- *SRE Remedy*: Lock standardi"
       },
       "R5": {
-        "timestamp": "2026-10-27T08:07:05.983Z",
+        "timestamp": "2026-10-27T08:21:46.272Z",
         "covered": true,
-        "byteCount": 1338,
-        "summaryExcerpt": "- **Audit Findings**: Strongly typed domain models eliminate technical debt and ensure maintainability for future cycles.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`\n\n---\n\n## SECTION V: CANONICAL RISK MATRIX\n\n| Ris"
+        "byteCount": 1111,
+        "summaryExcerpt": "- *Deficits Identified in Pass R4*: Pass R4 added market scope checking, but failed to preserve backward compatibility when callers omit `marketScope`. Existing test cases in `src/domain/farely/providerCapabilities.test.ts:32` construct lightweight `TravelIntent` objects without a `marketScope` prop"
       },
       "G1": {
-        "timestamp": "2026-10-27T08:07:46.834Z",
+        "timestamp": "2026-10-27T08:22:19.853Z",
         "covered": true,
-        "byteCount": 2308,
-        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulner"
+        "byteCount": 2258,
+        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:16`, `src/domain/farely/providerCapabilities.ts:9`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulnerabilit"
       },
       "G2": {
-        "timestamp": "2026-10-27T08:08:52.383Z",
+        "timestamp": "2026-10-27T08:23:00.183Z",
         "covered": true,
-        "byteCount": 2308,
-        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulner"
+        "byteCount": 2258,
+        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:16`, `src/domain/farely/providerCapabilities.ts:9`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulnerabilit"
       },
       "G3": {
-        "timestamp": "2026-10-27T08:11:55.045Z",
+        "timestamp": "2026-10-27T08:24:21.063Z",
         "covered": true,
-        "byteCount": 2445,
-        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulner"
+        "byteCount": 2258,
+        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:16`, `src/domain/farely/providerCapabilities.ts:9`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulnerabilit"
       },
       "G4": {
-        "timestamp": "2026-10-27T08:12:54.648Z",
+        "timestamp": "2026-10-27T08:25:06.410Z",
         "covered": true,
-        "byteCount": 2383,
-        "summaryExcerpt": "- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.\n- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n\n| Risk ID | Vulner"
+        "byteCount": 4951,
+        "summaryExcerpt": "- *Deficits Identified in Pass G3*: Pass G3 lacked explicit test assertions for borderline modified Z-scores. Modified Z-score classifications must follow Boris Iglewicz and David Hoaglin (1993): $M_i \\ge 3.5$ indicates a strong statistical anomaly, while $2.0 \\le M_i < 3.5$ indicates a moderate ano"
       },
       "G5": {
-        "timestamp": "2026-10-27T08:13:42.820Z",
+        "timestamp": "2026-10-27T08:26:25.998Z",
         "covered": true,
-        "byteCount": 1299,
-        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 proposed an unconditional non-null fallback in `getCarrierBaggagePolicy`. However, an existing historical acceptance contract in `src/domain/farely/vietnamTravelContext.test.ts:40` explicitly asserts `expect(getCarrierBaggagePolicy(\"NONEXISTENT\")).toBeNull"
+        "byteCount": 1399,
+        "summaryExcerpt": "- *Deficits Identified in Pass G4*: Pass G4 verified market scope and advance days, but did not explicitly assert that `marketScope` and `advanceDays` remain strictly optional parameters within polymorphic request contexts. Historical acceptance contracts in `src/domain/farely/providerCapabilities.t"
       }
     }
   }

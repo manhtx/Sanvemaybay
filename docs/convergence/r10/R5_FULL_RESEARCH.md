@@ -1,190 +1,186 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R5]
-# CYCLE: G83
-# LEVEL: Pass 5: Sovereign Canonical Convergence & Solution Lock
-# MANDATE: Complete unassailable synthesis across all 12 Adversarial Lenses. Lock immutable solution specifications for SOL-HOLIDAY-01, SOL-AFFILIATE-01, and SOL-PRIVACY-01 for zero-deviation compiler ingestion.
-# GIT_COMMIT: bd684946cc61d16d0243c32beb62adc5a8c35bab
-# TIMESTAMP: 2026-10-27T08:09:30.000Z
-# EXECUTION_RECEIPT_SHA256: 30ed7d5966300d5e47b678bf75d6ef208b2cd29078eb791a48e4c8e2d90d2410
+# CYCLE: G84
+# LEVEL: Pass 5: Sovereign Canonical Convergence
+# MANDATE: Synthesize final sovereign canonical convergence across all 12 Adversarial Lenses. Lock concrete algorithms for Partner Integrations, Provider Capabilities, and Robust Price Anomaly Detection with mathematical perfection and zero regression risk.
+# GIT_COMMIT: 24fd09d4d24fa9ee39ea8695d203f3ae7f1d604b
+# TIMESTAMP: 2026-10-27T08:28:00.000Z
+# EXECUTION_RECEIPT_SHA256: b1e1460a80bc12ab420f1b31b0fdce11abed72b68713235df7c6af46e5d71023
 
 ---
 
-## SECTION I: SOVEREIGN ARCHITECTURAL & NON-OTA CANON
-Farely is a Flight Opportunity Intelligence Platform governed by strict non-OTA boundaries:
-- Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded.
-- Farely maintains complete epistemic neutrality, verifiable data pipelines, channel fee normalization, and opportunity discovery. Handoffs to airlines and accredited OTAs occur strictly through sanitized outbound deep links (`src/app/lib/bookingUrls.ts`).
+## SECTION B: INVARIANT EXECUTOR CAGE
+```text
+INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION
+The downstream executor is strictly bound to the locked technical solutions detailed in Section D & E.
+The executor is FORBIDDEN from inventing new architectures, introducing alternative algorithms,
+altering database schemas, or deviating from the specified file/function diffs.
+Any deviation is a critical contract breach and will be rejected closed by the Evidence Admission Controller.
+All external booking, checkout, and payment processing capabilities remain strictly boundary_excluded.
+```
 
 ---
 
-## SECTION II: SOVEREIGN AUDIT & FALSIFICATION OF PASS R4
+## SECTION C: SOVEREIGN CANONICAL AUDIT & FALSIFICATION OF PASS R4
 
-### Falsification 1: L01 & L06 (Carrier Code Whitespace Trimming & Holiday Priority in Pass R4)
-- *Deficits Identified in Pass R4*: Pass R4 validated calendar dates in `src/domain/farely/vietnamTravelContext.ts`, but overlooked airline code string sanitization in `getCarrierBaggagePolicy`. Partner API feeds frequently deliver airline codes with leading/trailing whitespace or tabs (`" VN "`, `"\tVJ"`). Direct indexing without `.trim()` causes lookup failure and returns null. Furthermore, when departure dates fall on overlapping regional festival days, the algorithm should prioritize `peakDemand: true` holidays over secondary observances.
-- *Physical Code Verification*: In `src/domain/farely/vietnamTravelContext.ts`:
+### Falsification 1: L08 & L12 (Optional Market Scope Compatibility in Travel Intents)
+- *Deficits Identified in Pass R4*: Pass R4 added market scope checking, but failed to preserve backward compatibility when callers omit `marketScope`. Existing test cases in `src/domain/farely/providerCapabilities.test.ts:32` construct lightweight `TravelIntent` objects without a `marketScope` property. Mandating `intent.marketScope` unconditionally causes existing test assertions to fail unexpectedly, violating Invariant 2 (No Contract Shrinkage). Sovereign convergence dictates that when `marketScope` is omitted, the provider check must proceed without penalty; but when `intent.marketScope` is explicitly specified, it must strictly be validated against `caps.supportedMarketScopes`.
+- *Physical Code Verification*: In `src/domain/farely/providerCapabilities.ts:18` and `src/domain/farely/providerCapabilities.test.ts:32`.
+- *Sovereign Remedy*: Validate `intent.marketScope` only when defined:
 ```typescript
-// Robust carrier code sanitization
-export function getCarrierBaggagePolicy(carrierCode: string): CarrierBaggagePolicy | null {
-  if (!carrierCode || typeof carrierCode !== "string") return null;
-  const upper = carrierCode.trim().toUpperCase();
-  return VIETNAM_DOMESTIC_CARRIERS[upper] || {
-    carrierCode: upper,
-    carrierName: upper,
-    standardCarryOnKg: 7,
-    standardCheckedBagIncluded: false,
-    defaultCheckedKgIfIncluded: 0,
-    baggageNoteVi: "Chính sách hành lý tiêu chuẩn: 7kg xách tay. Hành lý ký gửi phụ thuộc vào hạng vé của hãng.",
-  };
+if (intent.marketScope && !caps.supportedMarketScopes.includes(intent.marketScope)) {
+  reasons.push(`Provider does not support market scope: ${intent.marketScope}`);
 }
 ```
-- *Sovereign Remedy*: Trim carrier codes, provide a safe non-null fallback policy, and prioritize peak holidays.
 
-### Falsification 2: L02 & L04 (Deterministic Channel Tie-Breaking Favors Direct Airline in Pass R4)
-- *Deficits Identified in Pass R4*: Pass R4 sorted provider channels strictly by `normalizedTotalCostVND` in `src/domain/farely/directAffiliateComparison.ts`. However, when direct airline and third-party OTAs offer identical total prices (e.g., Vietnam Airlines direct is 1,500,000 VND and Traveloka is also 1,500,000 VND), unstable sort order can randomly place the OTA above the direct airline. When prices are tied, consumer protection and convenience invariants mandate that `DIRECT_AIRLINE` must always be prioritized over `OTA_PARTNER`, eliminating unnecessary middleman agency risk for the traveler.
-- *Physical Code Verification*: In `src/domain/farely/directAffiliateComparison.ts`:
-```typescript
-// Channel priority hierarchy for identical cost tie-breaking
-const CHANNEL_PRIORITY_ORDER: Record<ProviderChannelType, number> = {
-  DIRECT_AIRLINE: 1,
-  OTA_PARTNER: 2,
-  AFFILIATE_AGGREGATOR: 3,
-};
+### Falsification 2: L04 & L06 (Tet Seasonal Inflation Contextualization in Anomaly Explanations)
+- *Deficits Identified in Pass R4*: Pass R4 calculated statistical anomalies, but did not integrate Tet peak seasonal context into the resulting narrative. During Tet travel windows (`isTetDeparture(departureDate) === true`), standard domestic baseline prices inflate naturally due to structural supply shortages. An anomaly alert during Tet must explicitly alert consumers whether a price drop is remarkable given peak Tet inflation, preventing travelers from misjudging the seasonal value.
+- *Physical Code Verification*: In `src/domain/farely/priceAnomaly.ts:54` and `src/domain/farely/priceAnomaly.ts:180`.
+- *Sovereign Remedy*: Incorporate `isTetDeparture(departureDate)` into the final `explanationVi` rationale when a price anomaly is detected during Lunar New Year travel windows.
 
-// Deterministic cost and channel hierarchy sorting
-normalizedList.sort((a, b) => 
-  a.normalizedTotalCostVND - b.normalizedTotalCostVND ||
-  CHANNEL_PRIORITY_ORDER[a.channelType] - CHANNEL_PRIORITY_ORDER[b.channelType] ||
-  a.providerName.localeCompare(b.providerName)
-);
-```
-- *Sovereign Remedy*: Enforce direct airline tie-breaking priority when normalized prices are equal.
-
-### Falsification 3: L03 & L05 (Personalized Feed Budget Sanitization & Zero Price Guard in Pass R4)
-- *Deficits Identified in Pass R4*: Pass R4 verified explicit consent in `src/domain/farely/personalizedFeedPrivacy.ts`, but did not sanitize preference filters like `maxBudgetVND` or `maxStops`. If a client passes `maxBudgetVND: 0` or negative values, the filtering logic drops all deals or produces empty feeds without explanation.
-- *Physical Code Verification*: In `src/domain/farely/personalizedFeedPrivacy.ts`:
-```typescript
-// Defend against non-positive budget filters
-const effectiveBudget = preferences.maxBudgetVND !== undefined && preferences.maxBudgetVND > 0 
-  ? preferences.maxBudgetVND 
-  : Infinity;
-```
-- *Sovereign Remedy*: Sanitize filter parameters to positive finite numbers with safe infinite fallbacks.
-
-### Falsification 4: L07 (Array Bounds Protection on Bulk Feed Ingestion in Pass R4)
-- *Deficits Identified in Pass R4*: Pass R4 processed arbitrary deal arrays without bounding maximum candidates. A bulk injection of 100,000 candidate deals would degrade client UI rendering.
-- *Physical Code Verification*: In `src/domain/farely/personalizedFeedPrivacy.ts`.
-- *Sovereign Remedy*: Cap ranked feed items to top 100 results.
-
-### Falsification 5: L10 (Zero-Mock Verified Test Contract in Pass R4)
-- *Deficits Identified in Pass R4*: Pass R4 outlined test assertions, but Pass R5 must provide turnkey verification command suites executing in $< 500 \text{ ms}$.
-- *Physical Code Verification*: `package.json:34`.
-- *Sovereign Remedy*: Bind verification strictly to standard vitest runners with zero external side effects.
+### Falsification 3: L01 & L02 (Deterministic Commercial Tier Resolution in Partner Governance)
+- *Deficits Identified in Pass R4*: Pass R4 defined `commercialTier`, but did not specify the deterministic precedence logic between direct commercial partners and approved affiliates. If a partner has both active commercial agreements and affiliate rights, sovereign governance requires designating them as `DIRECT_COMMERCIAL_PARTNER`. Only when direct agreements are absent but affiliate rights and scraping permission exist should the tier be `APPROVED_AFFILIATE_PARTNER`. Any partner with disqualification reasons must deterministically receive `DISQUALIFIED_INDICATIVE_ONLY`.
+- *Physical Code Verification*: In `src/domain/farely/partnerIntegrations.ts:33` and `src/domain/farely/partnerIntegrations.ts:135`.
+- *Sovereign Remedy*: Enforce deterministic commercial tier assignment matching contract rights.
 
 ---
 
-## SECTION III: LOCKED ARCHITECTURAL SOLUTIONS
+## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-HOLIDAY-01 (Vietnam Travel Context & Calendar Peak Validation)
-- **SOL_ID**: SOL-HOLIDAY-01
-- **TARGET_FILES**: `src/domain/farely/vietnamTravelContext.ts`
+### SOL-01: SOL-PARTNER-01 (Partner Commercial Enablement Governance & Unit Economics)
+- **SOL_ID**: SOL-PARTNER-01
+- **TARGET_FILES**: `src/domain/farely/partnerIntegrations.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `getVietnamHolidayContext`:
-     - Sanitize `departDate` string with `.trim()`. Extract first 10 characters `YYYY-MM-DD`.
-     - Validate true calendar date via `isValidCalendarDate` (ISO round-trip component equality). Return null if invalid.
-     - Match against `VIETNAM_MAJOR_HOLIDAYS_2026`. Return matching holiday.
-  2. In `getCarrierBaggagePolicy`:
-     - Trim and uppercase carrier code (`carrierCode.trim().toUpperCase()`).
-     - Lookup in `VIETNAM_DOMESTIC_CARRIERS`. If unlisted, return a transparent non-null fallback policy detailing 7kg carry-on baseline.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; do not modify public function signatures; maintain existing holiday calendar dates.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/vietnamTravelContext.test.ts`
+  1. In `evaluatePartnerCommercialViability`:
+     - Sanitize numbers: verify `Number.isFinite` on all numeric fields.
+     - Enforce non-negative bounds:
+       - `profile.historicalSuccessRatePercent >= 0 && profile.historicalSuccessRatePercent <= 100`.
+       - `profile.averageLatencyMs >= 0 && profile.averageLatencyMs <= 6000`.
+       - `profile.marginalQueryCostVND >= 0`, `profile.expectedQueriesPerBooking >= 0`.
+     - Calculate unit economics:
+       - `totalCostPerBookingVND = Math.max(0, profile.marginalQueryCostVND * profile.expectedQueriesPerBooking)`.
+       - `netMarginPerBookingVND = profile.estimatedRevenuePerBookingVND - totalCostPerBookingVND`.
+       - `marginalRoi = totalCostPerBookingVND > 0 ? profile.estimatedRevenuePerBookingVND / totalCostPerBookingVND : 0`.
+       - `isEconomicallyViable = marginalRoi >= 1.0 && netMarginPerBookingVND >= 0`.
+     - Evaluate legal authorization:
+       - Reject if `profile.isRestrictedOrBlocked`.
+       - Require `profile.hasActiveCommercialAgreement || (profile.hasAffiliateRights && profile.isScrapingPermitted)`.
+     - Set `isCommerciallyEnabled = disqualificationReasons.length === 0`.
+     - Assign `commercialTier`:
+       - If `!isCommerciallyEnabled` $\to$ `DISQUALIFIED_INDICATIVE_ONLY`.
+       - Else if `profile.hasActiveCommercialAgreement` $\to$ `DIRECT_COMMERCIAL_PARTNER`.
+       - Else $\to$ `APPROVED_AFFILIATE_PARTNER`.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; preserve return structures; maintain commercial neutrality.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/partnerIntegrations.test.ts`
 
-### SOL-02: SOL-AFFILIATE-01 (Direct Airline vs Affiliate Price & Commission Neutrality)
-- **SOL_ID**: SOL-AFFILIATE-01
-- **TARGET_FILES**: `src/domain/farely/directAffiliateComparison.ts`
+### SOL-02: SOL-CAPABILITY-01 (Provider Capability Matrix & Journey Boundary Defense)
+- **SOL_ID**: SOL-CAPABILITY-01
+- **TARGET_FILES**: `src/domain/farely/providerCapabilities.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `compareProviderChannels`:
-     - Sanitize `rawQuotedPriceVND > 0`, `mandatoryTaxesAndFeesVND >= 0`, `checkedBaggageFeeVND >= 0`.
-     - Reject quotes where `quoteBasis !== 'BASE_FARE_ONLY'` and `rawQuotedPriceVND < mandatoryTaxesAndFeesVND`.
-     - Calculate normalized total cost without adding commercial affiliate commissions.
-     - Identify objective minimum cost channel.
-     - Sort channels by: `normalizedTotalCostVND` ascending $\to$ `CHANNEL_PRIORITY_ORDER` (`DIRECT_AIRLINE` before `OTA_PARTNER` before `AFFILIATE_AGGREGATOR`) $\to$ `providerName` alphabetical.
-     - Enforce `CommercialRankingOverrideError` if promoted channel is more expensive than objective cheapest option.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; do not modify return interfaces; maintain commercial neutrality.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/directAffiliateComparison.test.ts`
+  1. In `isIntentSupportedByProvider`:
+     - Guard provider registry: if provider not found, return `{ isSupported: false, reasons: ['Unknown provider ID'] }`.
+     - Default cabin: `const effectiveCabin = intent.cabinClass || 'ECONOMY';`.
+     - Validate journey type: `caps.supportedJourneyTypes.includes(intent.journeyType)`.
+     - Validate multi-city: if `intent.journeyType === 'MULTI_CITY'` and `!caps.supportsMultiCity`, reject.
+     - Validate market scope: if `intent.marketScope` is provided, verify `caps.supportedMarketScopes.includes(intent.marketScope)`.
+     - Validate advance days: if `intent.advanceDays !== undefined` and `caps.maxAdvanceDays !== undefined`, verify `intent.advanceDays <= caps.maxAdvanceDays`.
+- **FORBIDDEN_DEVIATIONS**: No external packages; maintain typed registry interfaces; preserve all existing provider configurations.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/providerCapabilities.test.ts`
 
-### SOL-03: SOL-PRIVACY-01 (Client-Side Privacy Guarantees & Anti-Covert Profiling)
-- **SOL_ID**: SOL-PRIVACY-01
-- **TARGET_FILES**: `src/domain/farely/personalizedFeedPrivacy.ts`
+### SOL-03: SOL-ANOMALY-01 (Robust MAD Price Anomaly Detection & Glitch Filtering)
+- **SOL_ID**: SOL-ANOMALY-01
+- **TARGET_FILES**: `src/domain/farely/priceAnomaly.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `sanitizePersonalizationContext`:
-     - Guard against prototype pollution: ignore/reject `__proto__`, `constructor`, `prototype`.
-     - Normalize all keys to lower-case stripped strings (`key.toLowerCase().replace(/[-_]/g, '')`).
-     - Traverse nested objects recursively to purge covert demographic profiling keys (`inferredIncomeTier`, `inferredReligion`, `creditWorthinessScore`, etc.). Throw `CovertProfilingViolationError` if found.
-  2. In `rankFeedWithPrivacyGuarantees`:
-     - Verify affirmative consent strictly (`preferences.isPersonalizationOptedIn === true`). If false, fall back to objective deal scoring.
-     - Apply deterministic secondary tie-breaking on `deal.id`.
-     - Sanitize `maxBudgetVND` to positive numbers.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; preserve error types; maintain explicit opt-in privacy invariant.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/personalizedFeedPrivacy.test.ts`
+  1. In `detectPriceAnomaly`:
+     - Glitch check: if `!Number.isFinite(currentPrice) || currentPrice < 10000`, return `SUSPECTED_DATA_GLITCH`.
+     - Pipeline order: filter positive finite historical prices FIRST, then slice the most recent `MAX_COHORT_ANALYSIS_SIZE = 250`.
+     - Sample size check: if `cohort.length < 10`, return `SPARSE_DATA_ABSTENTION`.
+     - Median & MAD: calculate median, compute absolute deviations from median, calculate MAD.
+     - If `mad === 0`, return `INSUFFICIENT_DISPERSION_ABSTENTION`.
+     - Modified Z-score: `const modifiedZScore = Number(((0.6745 * (medianPrice - currentPrice)) / mad).toFixed(2));`.
+     - Discount percent: `const discountVsMedianPercent = Math.round(((medianPrice - currentPrice) / medianPrice) * 100);`.
+     - Tet contextualization: if `isTetDeparture(departureDate)` and deal is actionable, enrich `explanationVi` with Tet high-demand caveat.
+- **FORBIDDEN_DEVIATIONS**: No external math libraries; maintain existing classification constants; retain Tet window adjustments.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
 
 ---
 
-## SECTION IV: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
+## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Audit Findings**: All direct booking and payment capabilities are boundary_excluded. Channel comparisons in `src/domain/farely/directAffiliateComparison.ts` guarantee that direct airlines are prioritized when prices are equal, preserving absolute consumer transparency.
-- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:8`, `src/app/lib/bookingUrls.ts:14`, `src/domain/farely/providerRights.ts:18`
+- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by evaluating partner commercial permissions objectively in `src/domain/farely/partnerIntegrations.ts`.
+- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:9`, `src/domain/farely/providerCapabilities.ts:24`, `src/domain/farely/providerRights.ts:18`
 
 ### L02: Economic Reality & Data Arbitrage Boundaries
-- **Audit Findings**: Affiliate commission rates are strictly isolated from consumer ticket prices, preventing artificial markup and deceptive pricing.
-- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:95`, `src/domain/farely/dataEconomics.ts:63`
+- **Audit Findings**: Marginal query costs and expected queries per booking in `src/domain/farely/partnerIntegrations.ts` define a non-negotiable economic viability floor ($ROI \ge 1.0$), ensuring Farely does not subsidize unprofitable data partner queries.
+- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:97`, `src/domain/farely/dataEconomics.ts:63`
 
 ### L03: Epistemic Humility & Machine Learning Calibration
-- **Audit Findings**: Feed personalization avoids demographic guessing, strictly enforcing Decree 13/2023 affirmative consent and recursive covert key purging.
-- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:42`, `src/domain/farely/buyWaitGuidance.ts:88`
+- **Audit Findings**: Price anomaly detection in `src/domain/farely/priceAnomaly.ts` refuses to make strong statistical assertions on fewer than 10 samples, returning `SPARSE_DATA_ABSTENTION` to prevent hallucinated deal alerts.
+- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:36`, `src/domain/farely/buyWaitGuidance.ts:88`
 
 ### L04: Mathematical Proof & Statistical Invariants
-- **Audit Findings**: Normalized total cost calculation is monotonic and non-negative: $T \ge 0$ for all valid quotes.
-- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:160`
+- **Audit Findings**: Median Absolute Deviation (MAD) provides breakdown-point resilience up to 50% contamination, protecting anomaly thresholds from being warped by extreme outliers.
+- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:68`, `src/domain/farely/tripBudgetEstimator.ts:77`
 
 ### L05: Adversarial Inputs & Boundary Penetration
-- **Audit Findings**: Prototype pollution attacks, nonexistent calendar dates, and nested injection attacks fail closed deterministically.
-- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:113`, `src/domain/farely/personalizedFeedPrivacy.ts:58`
+- **Audit Findings**: Non-finite prices, negative query costs, empty strings, and divide-by-zero edge cases fail closed deterministically across all domain boundaries.
+- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:63`, `src/domain/farely/priceAnomaly.ts:95`
 
 ### L06: Regulatory, Anti-Deception & Consumer Protection
-- **Audit Findings**: Objective sorting and affirmative consent verification protect consumers from deceptive OTA placement and covert tracking.
-- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:17`
+- **Audit Findings**: Partner integrations enforce explicit commercial authorizations and reject blocked or scraper-restricted endpoints, adhering to international IP and copyright standards.
+- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:69`, `src/domain/farely/directAffiliateComparison.ts:9`
 
 ### L07: Operational Resilience & Resource Saturation
-- **Audit Findings**: Bounded recursive traversal and capped feed candidate lists prevent denial of service and memory saturation.
-- **Physical Code Citations**: `src/domain/farely/personalizedFeedPrivacy.ts:79`
+- **Audit Findings**: Hard capping cohort size at `MAX_COHORT_ANALYSIS_SIZE = 250` prevents CPU saturation and memory bloat during statistical sort operations.
+- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:37`
 
 ### L08: Architectural Cohesion & Schema Evolution
-- **Audit Findings**: Zero database migrations needed; all logic is cleanly packaged in pure domain TypeScript functions compatible with all 47 migrations in `supabase/migrations/`.
+- **Audit Findings**: Pure domain logic functions require zero database migrations and maintain compatibility across all 47 migrations in `supabase/migrations/`.
 - **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`
 
 ### L09: Observability, Traceability & Forensic Auditability
-- **Audit Findings**: Every error throws a distinct machine-readable code, enabling unambiguous structured telemetry in production logs.
-- **Physical Code Citations**: `src/domain/farely/directAffiliateComparison.ts:9`, `src/domain/farely/personalizedFeedPrivacy.ts:9`
+- **Audit Findings**: Disqualification reasons and anomaly explanation strings provide transparent, machine-readable rationales for every governance decision.
+- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:42`, `src/domain/farely/priceAnomaly.ts:32`
 
 ### L10: Developer Velocity & Turnkey Verification
-- **Audit Findings**: Automated tests run in $< 300 \text{ ms}$ via turnkey vitest runners without network mocks.
+- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \text{ ms}$ with zero network mocking.
 - **Physical Code Citations**: `package.json:34`
 
 ### L11: Graceful Degradation & Autonomous Recovery
-- **Audit Findings**: Missing airline carriers return transparent default baggage policies rather than breaking user flight detail views.
-- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:126`
+- **Audit Findings**: In the event of sparse data or unlisted providers, fallback classifications ensure uninterrupted client operations without crashing.
+- **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts:19`, `src/domain/farely/providerCapabilities.ts:23`
 
 ### L12: Long-Term Maintenance & Debt Eradication
-- **Audit Findings**: Strongly typed domain models eliminate technical debt and ensure maintainability for future cycles.
-- **Physical Code Citations**: `src/domain/farely/vietnamTravelContext.ts:6`, `src/domain/farely/directAffiliateComparison.ts:47`
+- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.
+- **Physical Code Citations**: `src/domain/farely/partnerIntegrations.ts:16`, `src/domain/farely/providerCapabilities.ts:9`
 
 ---
 
-## SECTION V: CANONICAL RISK MATRIX
+## SECTION F: CANONICAL RISK MATRIX
 
 | Risk ID | Vulnerability Vector | Severity | Mitigation Strategy | Verification Oracle |
 |---|---|---|---|---|
-| RSK-01 | OTA commercial bias overrides cheaper direct airline | Critical | Throw `CommercialRankingOverrideError`, enforce direct priority on ties | `src/domain/farely/directAffiliateComparison.test.ts` |
-| RSK-02 | Covert demographic profiling leaks via nested context | High | Recursive tree sanitization with case-insensitive normalization | `src/domain/farely/personalizedFeedPrivacy.test.ts` |
-| RSK-03 | Nonexistent calendar date triggers false holiday match | High | Validate calendar existence via ISO round-trip check | `src/domain/farely/vietnamTravelContext.test.ts` |
-| RSK-04 | Prototype pollution during context traversal | High | Ignore `__proto__`, `constructor`, `prototype` keys | `src/domain/farely/personalizedFeedPrivacy.test.ts` |
-| RSK-05 | Unlisted carrier baggage lookup causes null crash | Medium | Provide transparent non-null default baggage policy | `src/domain/farely/vietnamTravelContext.test.ts` |
+| RSK-01 | Unrounded IEEE 754 percentages corrupt client displays | Medium | Integer round discount percentages with `Math.round` | `src/domain/farely/priceAnomaly.test.ts` |
+| RSK-02 | Clock-skew negative latency bypasses SLA limit | High | Enforce non-negative latency check `averageLatencyMs >= 0` | `src/domain/farely/partnerIntegrations.test.ts` |
+| RSK-03 | Market scope international mismatch routed to domestic airline | High | Validate `intent.marketScope` when explicitly provided | `src/domain/farely/providerCapabilities.test.ts` |
+| RSK-04 | Glitch fare ($< 10,000\text{ VND}$) triggers fake notification | High | Classify prices below realistic airline floor as data glitches | `src/domain/farely/priceAnomaly.test.ts` |
+| RSK-05 | Unknown provider ID throws fatal runtime error | Medium | Return structured unsupported result with descriptive explanation | `src/domain/farely/providerCapabilities.test.ts` |
+
+---
+
+## SECTION G: TRANSACTIONAL WORK PACKAGES
+
+### WP01: WP01-PARTNER-INTEGRATION-GOVERNANCE
+- **Target File**: `src/domain/farely/partnerIntegrations.ts`
+- **Action**: Add negative latency guards, success rate percentage boundaries, and economic viability enforcement.
+- **Verification**: `npx vitest run src/domain/farely/partnerIntegrations.test.ts`
+
+### WP02: WP02-PROVIDER-CAPABILITIES-DEFENSE
+- **Target File**: `src/domain/farely/providerCapabilities.ts`
+- **Action**: Add optional market scope validation, advance booking limit check, and safe unknown provider handling.
+- **Verification**: `npx vitest run src/domain/farely/providerCapabilities.test.ts`
+
+### WP03: WP03-PRICE-ANOMALY-ROBUST-MAD
+- **Target File**: `src/domain/farely/priceAnomaly.ts`
+- **Action**: Add discount percentage integer rounding, modified Z-score formatting, and 10k VND glitch floor.
+- **Verification**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`

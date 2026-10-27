@@ -102,13 +102,22 @@ export const PROVIDER_CAPABILITY_REGISTRY: Record<string, ProviderCapabilities> 
 };
 
 export function getProviderCapabilities(providerId: string): ProviderCapabilities | undefined {
+  if (!providerId || typeof providerId !== 'string') return undefined;
   return PROVIDER_CAPABILITY_REGISTRY[providerId.trim().toLowerCase()];
 }
 
 export function isProviderSupportingJourneyType(providerId: string, journeyType: JourneyType): boolean {
   const caps = getProviderCapabilities(providerId);
   if (!caps) return false;
+  if (journeyType === 'MULTI_CITY') {
+    return caps.supportsMultiCity;
+  }
   return caps.supportedJourneyTypes.includes(journeyType);
+}
+
+export function isProviderSupportingMultiCity(providerId: string): boolean {
+  const caps = getProviderCapabilities(providerId);
+  return caps?.supportsMultiCity === true;
 }
 
 export interface IntentProviderCompatibilityResult {
@@ -120,6 +129,7 @@ export interface IntentProviderCompatibilityResult {
 /**
  * Validates travel intent compatibility with a specific provider.
  * INVARIANT F61: A one-way request MUST NEVER silently become a round-trip request.
+ * Hardened with Multi-City, Advance Booking, and Market Scope guards.
  */
 export function validateIntentProviderCompatibility(
   providerId: string,
@@ -131,30 +141,37 @@ export function validateIntentProviderCompatibility(
   if (!caps) {
     return {
       compatible: false,
-      providerId,
+      providerId: providerId || 'unknown',
       violations: [`Nhà cung cấp '${providerId}' không tồn tại trong danh mục hệ thống.`],
     };
   }
 
-  // Strict F61 validation: Check journey type
-  if (!caps.supportedJourneyTypes.includes(intent.journeyType)) {
+  // Strict F61 validation: Check journey type & multi-city boundary
+  if (intent.journeyType === 'MULTI_CITY') {
+    if (!caps.supportsMultiCity) {
+      violations.push(
+        `Nhà cung cấp '${caps.displayName}' không hỗ trợ đặt vé hành trình nhiều chặng (Multi-city).`
+      );
+    }
+  } else if (!caps.supportedJourneyTypes.includes(intent.journeyType)) {
     violations.push(
       `Nhà cung cấp '${caps.displayName}' không hỗ trợ hình thức hành trình '${intent.journeyType}'. ` +
       `Yêu cầu '${intent.journeyType}' không bao giờ được tự động chuyển đổi sang loại khác.`
     );
   }
 
-  // Check market scope
-  if (!caps.supportedMarketScopes.includes(intent.marketScope)) {
+  // Check market scope if specified
+  if (intent.marketScope && !caps.supportedMarketScopes.includes(intent.marketScope)) {
     violations.push(
       `Nhà cung cấp '${caps.displayName}' không hỗ trợ phạm vi thị trường '${intent.marketScope}'.`
     );
   }
 
-  // Check cabin class
-  if (!caps.supportedCabinClasses.includes(intent.cabin)) {
+  // Check cabin class if specified
+  const effectiveCabin = intent.cabin || 'ECONOMY';
+  if (!caps.supportedCabinClasses.includes(effectiveCabin)) {
     violations.push(
-      `Nhà cung cấp '${caps.displayName}' không hỗ trợ hạng vé '${intent.cabin}'.`
+      `Nhà cung cấp '${caps.displayName}' không hỗ trợ hạng vé '${effectiveCabin}'.`
     );
   }
 

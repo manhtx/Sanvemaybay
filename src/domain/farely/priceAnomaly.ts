@@ -106,10 +106,11 @@ export function detectPriceAnomaly(params: {
     };
   }
 
+  // Filter positive finite numbers first, then slice up to MAX_COHORT_ANALYSIS_SIZE
   const rawCohort = (params.historicalCohortPrices || []).filter(
     (p) => Number.isFinite(p) && p > 0
   );
-  const validCohort = rawCohort.slice(0, MAX_COHORT_ANALYSIS_SIZE);
+  const validCohort = rawCohort.slice(-MAX_COHORT_ANALYSIS_SIZE);
 
   // F37 Invariant: Never make strong anomaly claims on insufficient sample
   if (validCohort.length < MIN_ANOMALY_SAMPLE_SIZE) {
@@ -183,18 +184,21 @@ export function detectPriceAnomaly(params: {
 
   // Boris Iglewicz and David Hoaglin modified Z-score: 0.6745 * (x - median) / MAD
   // If departure is during peak Tet holiday, historical baseline median is scaled by 2.8x seasonal prior
-  const seasonalMultiplier = params.departureDate && isTetDeparture(params.departureDate) ? 2.8 : 1.0;
+  const isTet = Boolean(params.departureDate && isTetDeparture(params.departureDate));
+  const seasonalMultiplier = isTet ? 2.8 : 1.0;
   const effectiveMedian = median * seasonalMultiplier;
-  const modifiedZScore = (0.6745 * (currentPrice - effectiveMedian)) / mad;
+  const rawZScore = (0.6745 * (currentPrice - effectiveMedian)) / mad;
+  const modifiedZScore = Number(rawZScore.toFixed(2));
   const discountVsMedianPercent = effectiveMedian > 0 ? Math.round(((effectiveMedian - currentPrice) / effectiveMedian) * 100) : 0;
+  const tetNote = isTet ? " (Lưu ý: Mức giá giảm hiếm có trong giai đoạn Cao điểm Tết)." : "";
 
-  // Strong drop anomaly: z-score < -2.5 and discount >= 20%
+  // Strong drop anomaly: z-score <= -2.5 and discount >= 20%
   if (modifiedZScore <= -2.5 && discountVsMedianPercent >= 20) {
-    const explanationVi = cohortScope === "IDENTICAL_OFFER"
+    const explanationVi = (cohortScope === "IDENTICAL_OFFER"
       ? `Giá chuyến bay giảm đột biến mạnh so với lịch sử (thấp hơn trung vị ${discountVsMedianPercent}%, độ lệch chuẩn MAD z-score ${modifiedZScore.toFixed(2)}). Đây là cơ hội vé giá rẻ vượt trội của chính chuyến bay này.`
       : cohortScope === "COHORT"
       ? `Giá giảm đột biến mạnh trong nhóm vé tương đương (thấp hơn trung vị ${discountVsMedianPercent}%, độ lệch chuẩn MAD z-score ${modifiedZScore.toFixed(2)}).`
-      : `Giá giảm đột biến mạnh trên toàn chặng (thấp hơn trung vị ${discountVsMedianPercent}%, độ lệch chuẩn MAD z-score ${modifiedZScore.toFixed(2)}). Đây là cơ hội vé giá rẻ vượt trội.`;
+      : `Giá giảm đột biến mạnh trên toàn chặng (thấp hơn trung vị ${discountVsMedianPercent}%, độ lệch chuẩn MAD z-score ${modifiedZScore.toFixed(2)}). Đây là cơ hội vé giá rẻ vượt trội.`) + tetNote;
 
     return {
       classification: "STRONG_DROP_ANOMALY",
@@ -209,13 +213,13 @@ export function detectPriceAnomaly(params: {
     };
   }
 
-  // Moderate drop anomaly: z-score < -1.5 and discount >= 10%
+  // Moderate drop anomaly: z-score <= -1.5 and discount >= 10%
   if (modifiedZScore <= -1.5 && discountVsMedianPercent >= 10) {
-    const explanationVi = cohortScope === "IDENTICAL_OFFER"
+    const explanationVi = (cohortScope === "IDENTICAL_OFFER"
       ? `Giá chuyến bay thấp hơn mức thông thường (${discountVsMedianPercent}% so với trung vị), có xu hướng giảm đáng chú ý.`
       : cohortScope === "COHORT"
       ? `Giá thấp hơn mức thông thường trong nhóm vé tương đương (${discountVsMedianPercent}% so với trung vị).`
-      : `Giá thấp hơn mức thông thường trên chặng (${discountVsMedianPercent}% so với trung vị), có xu hướng giảm đáng chú ý.`;
+      : `Giá thấp hơn mức thông thường trên chặng (${discountVsMedianPercent}% so với trung vị), có xu hướng giảm đáng chú ý.`) + tetNote;
 
     return {
       classification: "MODERATE_DROP_ANOMALY",
@@ -279,4 +283,3 @@ export function hasZeroDispersion(prices: number[]): boolean {
   const { sampleVariance } = calculateSampleStandardDeviation(prices);
   return sampleVariance < 1e-6;
 }
-

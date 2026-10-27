@@ -103,4 +103,33 @@ describe('F47: Partner Integrations & Commercial Enablement Governance', () => {
       UnauthorizedCommercialSourceError
     );
   });
+
+  it('disqualifies partners with negative or corrupt latency telemetry (L05/L09)', () => {
+    const negativeLatencyProfile: PartnerCommercialProfile = {
+      ...viableAffiliateProfile,
+      providerId: 'clock_skew_partner',
+      averageLatencyMs: -150, // Invalid negative latency from clock drift
+    };
+
+    const evaluation = evaluatePartnerCommercialViability(negativeLatencyProfile);
+
+    expect(evaluation.isCommerciallyEnabled).toBe(false);
+    expect(evaluation.commercialTier).toBe('DISQUALIFIED_INDICATIVE_ONLY');
+    expect(evaluation.disqualificationReasons.some((r) => r.includes('Độ trễ phản hồi'))).toBe(true);
+  });
+
+  it('designates DIRECT_COMMERCIAL_PARTNER tier when active direct contract exists (L01/L02)', () => {
+    const directPartnerProfile: PartnerCommercialProfile = {
+      ...viableAffiliateProfile,
+      providerId: 'vietnam_airlines_direct',
+      providerName: 'Vietnam Airlines Direct Corporate',
+      hasActiveCommercialAgreement: true,
+      hasAffiliateRights: true,
+    };
+
+    const evaluation = evaluatePartnerCommercialViability(directPartnerProfile);
+
+    expect(evaluation.isCommerciallyEnabled).toBe(true);
+    expect(evaluation.commercialTier).toBe('DIRECT_COMMERCIAL_PARTNER');
+  });
 });

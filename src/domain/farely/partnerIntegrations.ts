@@ -77,32 +77,44 @@ export function evaluatePartnerCommercialViability(
     disqualificationReasons.push('Thiếu thỏa thuận thương mại hoặc quyền tiếp thị liên kết (Affiliate) hợp lệ.');
   }
 
-  // 2. Reliability & technical performance check
-  const isSuccessRateOk = profile.historicalSuccessRatePercent >= MINIMUM_SUCCESS_RATE_PERCENT;
-  const isLatencyOk = profile.averageLatencyMs <= MAXIMUM_AVERAGE_LATENCY_MS;
+  // 2. Reliability & technical performance check (with negative value guards)
+  const isSuccessRateValid =
+    Number.isFinite(profile.historicalSuccessRatePercent) &&
+    profile.historicalSuccessRatePercent >= 0 &&
+    profile.historicalSuccessRatePercent <= 100;
+  const isLatencyValid =
+    Number.isFinite(profile.averageLatencyMs) &&
+    profile.averageLatencyMs >= 0;
+
+  const isSuccessRateOk = isSuccessRateValid && profile.historicalSuccessRatePercent >= MINIMUM_SUCCESS_RATE_PERCENT;
+  const isLatencyOk = isLatencyValid && profile.averageLatencyMs <= MAXIMUM_AVERAGE_LATENCY_MS;
   const isReliabilitySlaMet = isSuccessRateOk && isLatencyOk;
 
-  if (!isSuccessRateOk) {
+  if (!isSuccessRateValid || !isSuccessRateOk) {
     disqualificationReasons.push(
       `Tỷ lệ thành công (${profile.historicalSuccessRatePercent}%) thấp hơn ngưỡng yêu cầu ${MINIMUM_SUCCESS_RATE_PERCENT}%.`
     );
   }
-  if (!isLatencyOk) {
+  if (!isLatencyValid || !isLatencyOk) {
     disqualificationReasons.push(
-      `Độ trễ phản hồi (${profile.averageLatencyMs}ms) vượt quá giới hạn tối đa ${MAXIMUM_AVERAGE_LATENCY_MS}ms.`
+      `Độ trễ phản hồi (${profile.averageLatencyMs}ms) không hợp lệ hoặc vượt quá giới hạn tối đa ${MAXIMUM_AVERAGE_LATENCY_MS}ms.`
     );
   }
 
-  // 3. Unit economics check
-  const totalCostPerBookingVND = profile.marginalQueryCostVND * profile.expectedQueriesPerBooking;
-  const netMarginPerBookingVND = profile.estimatedRevenuePerBookingVND - totalCostPerBookingVND;
+  // 3. Unit economics check (with finite and non-negative guards)
+  const validQueryCost = Math.max(0, Number.isFinite(profile.marginalQueryCostVND) ? profile.marginalQueryCostVND : 0);
+  const validQueriesPerBooking = Math.max(0, Number.isFinite(profile.expectedQueriesPerBooking) ? profile.expectedQueriesPerBooking : 0);
+  const validRevenue = Number.isFinite(profile.estimatedRevenuePerBookingVND) ? profile.estimatedRevenuePerBookingVND : 0;
+
+  const totalCostPerBookingVND = validQueryCost * validQueriesPerBooking;
+  const netMarginPerBookingVND = validRevenue - totalCostPerBookingVND;
   const marginalRoi =
-    totalCostPerBookingVND > 0 ? profile.estimatedRevenuePerBookingVND / totalCostPerBookingVND : 0;
-  const isEconomicallyViable = marginalRoi >= MINIMUM_ECONOMIC_ROI;
+    totalCostPerBookingVND > 0 ? validRevenue / totalCostPerBookingVND : 0;
+  const isEconomicallyViable = marginalRoi >= MINIMUM_ECONOMIC_ROI && netMarginPerBookingVND >= 0;
 
   if (!isEconomicallyViable) {
     disqualificationReasons.push(
-      `Hiệu quả kinh tế âm: Chi phí quét (${totalCostPerBookingVND.toLocaleString('vi-VN')}₫) vượt quá doanh thu dự kiến (${profile.estimatedRevenuePerBookingVND.toLocaleString('vi-VN')}₫) trên mỗi lượt đặt vé (ROI: ${marginalRoi.toFixed(2)} < 1.0).`
+      `Hiệu quả kinh tế âm: Chi phí quét (${totalCostPerBookingVND.toLocaleString('vi-VN')}₫) vượt quá doanh thu dự kiến (${validRevenue.toLocaleString('vi-VN')}₫) trên mỗi lượt đặt vé (ROI: ${marginalRoi.toFixed(2)} < 1.0).`
     );
   }
 
@@ -129,28 +141,24 @@ export function evaluatePartnerCommercialViability(
     reliability: {
       isReliabilitySlaMet,
       slaNoteVi: isReliabilitySlaMet
-        ? 'Đáp ứng đầy đủ tiêu chuẩn độ trễ và độ tin cậy kết nối.'
-        : 'Không đạt tiêu chuẩn SLA vận hành.',
+        ? `SLA đạt tiêu chuẩn (${profile.historicalSuccessRatePercent}%, ${profile.averageLatencyMs}ms)`
+        : `SLA vi phạm tiêu chuẩn Farely P2`,
     },
   };
 }
 
 /**
- * Asserts that a provider marked as commercially enabled strictly complies with F47 invariants.
- * Throws UnauthorizedCommercialSourceError if commercial enablement was granted without supporting rights or economics.
+ * Asserts that a provider marked as commercially enabled truly complies with F47.
+ * Throws UnauthorizedCommercialSourceError if commercial status was illegally asserted.
  */
 export function assertCommercialEnablementIntegrity(
   evaluation: PartnerCommercialEvaluation
 ): void {
-  if (evaluation.isCommerciallyEnabled && evaluation.disqualificationReasons.length > 0) {
-    throw new UnauthorizedCommercialSourceError(
-      `Provider "${evaluation.providerId}" was enabled commercially despite failing criteria: ${evaluation.disqualificationReasons.join(' | ')}`
-    );
-  }
-
   if (
     evaluation.isCommerciallyEnabled &&
-    (!evaluation.unitEconomics.isEconomicallyViable || evaluation.commercialTier === 'DISQUALIFIED_INDICATIVE_ONLY')
+    (!evaluation.unitEconomics.isEconomicallyViable ||
+      evaluation.disqualificationReasons.length > 0 ||
+      evaluation.commercialTier === 'DISQUALIFIED_INDICATIVE_ONLY')
   ) {
     throw new UnauthorizedCommercialSourceError(
       `Provider "${evaluation.providerId}" cannot be commercially enabled with negative unit economics or DISQUALIFIED tier.`
