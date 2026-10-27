@@ -18,6 +18,8 @@ export interface GroundTransferRoute {
   isVerifiedSource: boolean;
 }
 
+export type TransferFrictionCategory = 'LOW' | 'MEDIUM' | 'HIGH' | 'EXCESSIVE';
+
 // Canonical Ground Transfer Catalog
 export const GROUND_TRANSFER_CATALOG: GroundTransferRoute[] = [
   // Bangkok Metro: BKK <-> DMK
@@ -146,6 +148,27 @@ export const GROUND_TRANSFER_CATALOG: GroundTransferRoute[] = [
     sourceName: 'Bảng cước xe khách cao tốc Hà Nội - Hải Phòng công bố',
     isVerifiedSource: true,
   },
+  // Adjacent Vietnam regional airports: HAN <-> VDO (Quang Ninh / Van Don Express)
+  {
+    originCode: 'HAN',
+    destinationCode: 'VDO',
+    distanceKm: 175,
+    typicalMinutes: 150,
+    estimatedCostVND: 280000,
+    modes: ['Xe limousine cao tốc Hà Nội - Hải Phòng - Vân Đồn'],
+    sourceName: 'Bảng cước xe khách cao tốc Hà Nội - Quảng Ninh công bố',
+    isVerifiedSource: true,
+  },
+  {
+    originCode: 'VDO',
+    destinationCode: 'HAN',
+    distanceKm: 175,
+    typicalMinutes: 150,
+    estimatedCostVND: 280000,
+    modes: ['Xe limousine cao tốc Hà Nội - Hải Phòng - Vân Đồn'],
+    sourceName: 'Bảng cước xe khách cao tốc Hà Nội - Quảng Ninh công bố',
+    isVerifiedSource: true,
+  },
   // Adjacent Vietnam regional airports: SGN <-> VCA
   {
     originCode: 'SGN',
@@ -206,6 +229,8 @@ export interface TimezoneAwareFlightTiming {
   departureUtcIso: string;
   arrivalUtcIso: string;
   trueElapsedMinutes: number;
+  rawElapsedMinutes: number;
+  isInvertedSchedule: boolean;
   isOvernight: boolean;
   crossTimezone: boolean;
   timezoneOffsetHours: number;
@@ -272,6 +297,7 @@ export function calculateTimezoneAwareTiming(params: {
   const arrUtcTime = arrRef.getTime() - arrOffsetMinutes * 60000;
 
   const rawElapsedMinutes = Math.round((arrUtcTime - depUtcTime) / 60000);
+  const isInvertedSchedule = rawElapsedMinutes < 0;
   // Guarantee commercial aviation lower bound of 15 minutes when elapsed duration is negative or inverted
   const trueElapsedMinutes = Math.max(15, rawElapsedMinutes);
   const crossTimezone = depAirport.timezone !== arrAirport.timezone;
@@ -289,6 +315,8 @@ export function calculateTimezoneAwareTiming(params: {
     departureUtcIso: new Date(depUtcTime).toISOString(),
     arrivalUtcIso: new Date(arrUtcTime).toISOString(),
     trueElapsedMinutes,
+    rawElapsedMinutes,
+    isInvertedSchedule,
     isOvernight,
     crossTimezone,
     timezoneOffsetHours,
@@ -316,6 +344,9 @@ export interface AirportAlternativeEvaluation {
   };
   netSavingsVND: number;
   hourlyEfficiencyVND: number;
+  positiveHourlyEfficiencyVND: number;
+  transferFrictionCategory: TransferFrictionCategory;
+  isExcessiveDetour: boolean;
   verdict: AlternativeVerdict;
   worthwhile: boolean;
   tradeoffExplanation: string;
@@ -366,6 +397,9 @@ export function evaluateAirportAlternative(params: {
       },
       netSavingsVND: 0,
       hourlyEfficiencyVND: 0,
+      positiveHourlyEfficiencyVND: 0,
+      transferFrictionCategory: 'LOW',
+      isExcessiveDetour: false,
       verdict: "NOT_RECOMMENDED",
       worthwhile: false,
       tradeoffExplanation: baseCode === altCode
@@ -398,6 +432,9 @@ export function evaluateAirportAlternative(params: {
       },
       netSavingsVND: 0,
       hourlyEfficiencyVND: 0,
+      positiveHourlyEfficiencyVND: 0,
+      transferFrictionCategory: 'LOW',
+      isExcessiveDetour: false,
       verdict: "NOT_RECOMMENDED",
       worthwhile: false,
       tradeoffExplanation: "Mức giá so sánh không hợp lệ (phải là số dương hợp lệ).",
@@ -423,11 +460,22 @@ export function evaluateAirportAlternative(params: {
     };
   }
 
-  const airFareSavingsVND = params.baselinePrice - params.alternativePrice;
-  const netSavingsVND = airFareSavingsVND - transfer.estimatedCostVND;
+  const airFareSavingsVND = Math.round(params.baselinePrice - params.alternativePrice);
+  const netSavingsVND = Math.round(airFareSavingsVND - transfer.estimatedCostVND);
   const safeMinutes = Number.isFinite(transfer.typicalMinutes) && transfer.typicalMinutes > 0 ? transfer.typicalMinutes : 60;
   const transferHours = Math.max(0.25, safeMinutes / 60);
   const hourlyEfficiencyVND = Math.round(netSavingsVND / transferHours);
+  const positiveHourlyEfficiencyVND = Math.max(0, hourlyEfficiencyVND);
+
+  const isExcessiveDetour = safeMinutes > 180;
+  let transferFrictionCategory: TransferFrictionCategory = 'LOW';
+  if (safeMinutes > 180) {
+    transferFrictionCategory = 'EXCESSIVE';
+  } else if (safeMinutes >= 120) {
+    transferFrictionCategory = 'HIGH';
+  } else if (safeMinutes >= 60) {
+    transferFrictionCategory = 'MEDIUM';
+  }
 
   let verdict: AlternativeVerdict;
   let worthwhile: boolean;
@@ -445,6 +493,12 @@ export function evaluateAirportAlternative(params: {
       tradeoffExplanation =
         `Giá vé qua ${altName} (${altCode}) đắt hơn chuyến gốc và phát sinh thêm chi phí di chuyển đường bộ. Không khuyến nghị.`;
     }
+  } else if (isExcessiveDetour) {
+    verdict = 'NOT_RECOMMENDED';
+    worthwhile = false;
+    tradeoffExplanation =
+      `Tiết kiệm được ${netSavingsVND.toLocaleString('vi-VN')}₫ nhưng thời gian di chuyển (${safeMinutes} phút) ` +
+      `vượt quá ngưỡng chịu đựng tối đa (180 phút). Không khuyến nghị đổi sân bay.`;
   } else if (hourlyEfficiencyVND < MIN_INCONVENIENCE_VALUE_VND_PER_HOUR) {
     verdict = 'MARGINAL';
     worthwhile = false;
@@ -452,6 +506,14 @@ export function evaluateAirportAlternative(params: {
       `Tiết kiệm thực tế sau khi trừ cước di chuyển chỉ là ${netSavingsVND.toLocaleString('vi-VN')}₫ ` +
       `cho khoảng ${transfer.typicalMinutes} phút di chuyển phát sinh (~${hourlyEfficiencyVND.toLocaleString('vi-VN')}₫/giờ). ` +
       `Mức đánh đổi này không đủ bù đắp sự bất tiện trừ khi bạn có lịch trình linh hoạt.`;
+  } else if (!transfer.isVerifiedSource) {
+    // Unverified algorithmic estimate: cap at MARGINAL with transparent disclaimer (L03/L09)
+    verdict = 'MARGINAL';
+    worthwhile = false;
+    tradeoffExplanation =
+      `Tiết kiệm thực tế ước tính ${netSavingsVND.toLocaleString('vi-VN')}₫ sau khi trừ chi phí di chuyển ` +
+      `(~${transfer.estimatedCostVND.toLocaleString('vi-VN')}₫, ~${transfer.typicalMinutes} phút), ` +
+      `nhưng dựa trên ước tính thuật toán chưa được kiểm chứng từ nguồn chính thức. Cần xác minh chi phí thực tế trước khi đặt vé.`;
   } else {
     verdict = 'RECOMMENDED';
     worthwhile = true;
@@ -479,6 +541,9 @@ export function evaluateAirportAlternative(params: {
     },
     netSavingsVND,
     hourlyEfficiencyVND,
+    positiveHourlyEfficiencyVND,
+    transferFrictionCategory,
+    isExcessiveDetour,
     verdict,
     worthwhile,
     tradeoffExplanation,
@@ -509,8 +574,8 @@ export function evaluateAlternativeAirportSavings(params: {
   const transitCost = Number.isFinite(params.surfaceTransitCost) && params.surfaceTransitCost >= 0 ? params.surfaceTransitCost : 0;
   const minutes = Number.isFinite(params.transferMinutes) && (params.transferMinutes ?? 0) >= 0 ? (params.transferMinutes ?? 0) : 60;
 
-  const airFareSavingsVND = primary - alternative;
-  const netSavingsVND = airFareSavingsVND - transitCost;
+  const airFareSavingsVND = Math.round(primary - alternative);
+  const netSavingsVND = Math.round(airFareSavingsVND - transitCost);
   const isEconomicallyViable = netSavingsVND > 0 && minutes <= 180;
 
   let explanationVi: string;

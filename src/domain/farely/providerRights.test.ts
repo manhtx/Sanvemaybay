@@ -8,12 +8,16 @@ import {
   filterRecordsForB2BExport,
   DataRightsViolationError,
   isCommercialContractRequired,
+  normalizeProviderId,
 } from './providerRights.ts';
 
 describe('Provider Source Rights Registry (F85)', () => {
-  it('registers rights metadata for all canonical sources', () => {
+  it('registers rights metadata for all canonical sources including domestic airlines', () => {
     expect(PROVIDER_SOURCE_RIGHTS_REGISTRY.vietjet_direct).toBeDefined();
     expect(PROVIDER_SOURCE_RIGHTS_REGISTRY.vietnam_airlines).toBeDefined();
+    expect(PROVIDER_SOURCE_RIGHTS_REGISTRY.bamboo_airways).toBeDefined();
+    expect(PROVIDER_SOURCE_RIGHTS_REGISTRY.vietravel_airlines).toBeDefined();
+    expect(PROVIDER_SOURCE_RIGHTS_REGISTRY.pacific_airlines).toBeDefined();
     expect(PROVIDER_SOURCE_RIGHTS_REGISTRY.fast_flights_google).toBeDefined();
     expect(PROVIDER_SOURCE_RIGHTS_REGISTRY.amadeus_commercial_gds).toBeDefined();
 
@@ -22,6 +26,14 @@ describe('Provider Source Rights Registry (F85)', () => {
     expect(vj?.canCache).toBe(true);
     expect(vj?.cacheTtlSeconds).toBe(1800);
     expect(vj?.attributionRequired).toBe(true);
+
+    const vu = getProviderSourceRights('vietravel_airlines');
+    expect(vu?.sourceName).toBe('Vietravel Airlines');
+    expect(vu?.canRedistributeB2B).toBe(false);
+
+    const bl = getProviderSourceRights('pacific_airlines');
+    expect(bl?.sourceName).toBe('Pacific Airlines');
+    expect(bl?.licenseType).toBe('PUBLIC_INDICATIVE');
   });
 
   it('differentiates public indicative sources from commercial direct feeds', () => {
@@ -37,7 +49,7 @@ describe('Provider Source Rights Registry (F85)', () => {
     expect(amadeus?.authorizedScopes).toContain('B2B_SYNDICATION');
   });
 
-  it('validates B2B redistribution scope and identifies unauthorized sources', () => {
+  it('validates B2B redistribution scope and identifies unauthorized sources with error codes', () => {
     const scopeCheck = validateB2BRedistributionScope([
       'amadeus_commercial_gds',
       'vietjet_direct',
@@ -50,9 +62,11 @@ describe('Provider Source Rights Registry (F85)', () => {
 
     const vjDenial = scopeCheck.denied.find((d) => d.providerId === 'vietjet_direct');
     expect(vjDenial?.reason).toContain('Không có quyền B2B syndication');
+    expect(vjDenial?.errorCode).toBe('ERR_UNAUTHORIZED_SCOPE');
 
     const unregDenial = scopeCheck.denied.find((d) => d.providerId === 'unregistered_random_bot');
     expect(unregDenial?.reason).toContain('chưa được đăng ký');
+    expect(unregDenial?.errorCode).toBe('ERR_UNREGISTERED_PROVIDER');
   });
 
   describe('STRICT ACCEPTANCE (F85): No premium/B2B redistribution without actual rights', () => {
@@ -74,6 +88,7 @@ describe('Provider Source Rights Registry (F85)', () => {
 
       expect(outcome.rejectedReasons).toHaveLength(2);
       expect(outcome.rejectedReasons[0].providerId).toBe('vietjet_direct');
+      expect(outcome.rejectedReasons[0].errorCode).toBe('ERR_UNAUTHORIZED_SCOPE');
       expect(outcome.rejectedReasons[1].providerId).toBe('fast_flights_google');
     });
 
@@ -157,6 +172,29 @@ describe('Provider Source Rights Registry (F85)', () => {
       const amadeusDenial = scopeCheck.denied.find((d) => d.providerId === 'amadeus_commercial_gds');
       expect(amadeusDenial?.reason).toContain('yêu cầu hợp đồng thương mại có hiệu lực');
       expect(amadeusDenial?.reason).toContain('COMMERCIAL_STAGED_CONTRACT_REQUIRED');
+      expect(amadeusDenial?.errorCode).toBe('ERR_COMMERCIAL_CONTRACT_STAGED');
+    });
+
+    it('normalizes provider IDs with Unicode zero-width characters and handles non-string inputs safely (L02/L05)', () => {
+      expect(normalizeProviderId('  \u200Bvietjet_direct\uFEFF  ')).toBe('vietjet_direct');
+      expect(normalizeProviderId(null)).toBe('unknown');
+      expect(normalizeProviderId(undefined)).toBe('unknown');
+      expect(normalizeProviderId('')).toBe('unknown');
+
+      // Cased lookup succeeds in getSafeProviderRights
+      const casedSafe = getSafeProviderRights('VIETJET_DIRECT');
+      expect(casedSafe.providerId).toBe('vietjet_direct');
+      expect(casedSafe.licenseType).toBe('PUBLIC_INDICATIVE');
+    });
+
+    it('enforces deep immutability on the registry and fallback objects (L05/L11)', () => {
+      expect(Object.isFrozen(PROVIDER_SOURCE_RIGHTS_REGISTRY)).toBe(true);
+      expect(Object.isFrozen(PROVIDER_SOURCE_RIGHTS_REGISTRY.vietjet_direct)).toBe(true);
+      expect(Object.isFrozen(PROVIDER_SOURCE_RIGHTS_REGISTRY.vietjet_direct.authorizedScopes)).toBe(true);
+
+      const fallback = getSafeProviderRights('unregistered_crawler');
+      expect(Object.isFrozen(fallback)).toBe(true);
+      expect(Object.isFrozen(fallback.authorizedScopes)).toBe(true);
     });
   });
 });

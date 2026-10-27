@@ -3,64 +3,64 @@
     "name": "Product Truth & Founder Scope Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.899Z",
+        "timestamp": "2026-10-27T09:39:25.856Z",
         "covered": true,
-        "byteCount": 288,
-        "summaryExcerpt": "- Invariant: Flight Opportunity Intelligence only. Direct passenger ticketing, merchant payment gateways, and checkout flows remain strictly `boundary_excluded`.\n- Personalization feeds provide transparent advisory sorting without creating commercial bias toward high-commission partners."
+        "byteCount": 560,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: `cacheTtlSeconds` currently accepts any number. If a provider configuration or dynamic override injects `0`, negative values, or excessive TTL (e.g., $10^9$ seconds), downstream caching layers either fail into cache-bust thrashing (cache invalidation DDOS on ups"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.961Z",
         "covered": true,
-        "byteCount": 278,
-        "summaryExcerpt": "- Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.\n- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties."
+        "byteCount": 142,
+        "summaryExcerpt": "- *Pass R1 Claim*: \"Clamp all `cacheTtlSeconds` to $[60, 86400]$.\"\n   - *Falsification & Code Proof*: In `src/domain/farely/providerRights.ts#"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.518Z",
-        "covered": true,
-        "byteCount": 278,
-        "summaryExcerpt": "- Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.\n- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties."
+        "timestamp": "2026-10-27T09:41:08.345Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
-        "covered": true,
-        "byteCount": 278,
-        "summaryExcerpt": "- Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.\n- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties."
+        "timestamp": "2026-10-27T09:41:49.333Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.447Z",
+        "timestamp": "2026-10-27T09:42:31.370Z",
         "covered": true,
-        "byteCount": 596,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:33:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R4\n\nPass R4 instituted essential SRE diagnostic code"
+        "byteCount": 153,
+        "summaryExcerpt": "- Bounded integer currency math in VND, avoiding floating-point imprecision.\n- Clamped cache TTL ($[60, 86400]$) and detour thresholds ($[15, 180]$ min)."
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.002Z",
-        "covered": true,
-        "byteCount": 278,
-        "summaryExcerpt": "- Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.\n- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties."
+        "timestamp": "2026-10-27T09:43:04.895Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 278,
-        "summaryExcerpt": "- Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.\n- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties."
+        "timestamp": "2026-10-27T09:43:54.840Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 278,
-        "summaryExcerpt": "- Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.\n- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties."
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 278,
-        "summaryExcerpt": "- Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.\n- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties."
+        "timestamp": "2026-10-27T09:45:19.613Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.572Z",
-        "covered": true,
-        "byteCount": 606,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:43:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G4\n\nPass G4 instituted comprehensive telemetry struc"
+        "timestamp": "2026-10-27T09:46:00.719Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       }
     }
   },
@@ -68,64 +68,64 @@
     "name": "Price, Historical Baseline & Data Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.856Z",
         "covered": true,
-        "byteCount": 336,
-        "summaryExcerpt": "- Partner enablement mandates positive marginal unit economics. Onboarding a provider whose API call costs exceed expected affiliate yields drains treasury without consumer benefit.\n- Vietnam holiday travel dynamics create steep price cliffs; accurate holiday calendar bounds prevent false \"cheap far"
+        "byteCount": 128,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: Look at `getSafeProviderRights(providerId: string)` (`src/domain/farely/providerRights.ts#"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.962Z",
         "covered": true,
-        "byteCount": 663,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:27:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R1\n\nPass R1 synthesized a high-level baseline for Fe"
+        "byteCount": 838,
+        "summaryExcerpt": "- *Pass R1 Claim*: \"Throw an error instead of clamping negative durations to 15 minutes.\"\n   - *Falsification & Code Proof*: Line 158 of `src/domain/farely/airportAlternatives.test.ts` explicitly asserts:\n     ```ts\n     it('WP01: defensively clamps negative elapsed durations to commercial floor (>="
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
-        "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.\n- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts."
+        "timestamp": "2026-10-27T09:41:08.345Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
-        "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.\n- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts."
+        "timestamp": "2026-10-27T09:41:49.333Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.447Z",
-        "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.\n- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts."
+        "timestamp": "2026-10-27T09:42:31.370Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.002Z",
-        "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.\n- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts."
+        "timestamp": "2026-10-27T09:43:04.895Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 563,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:37:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G1\n\nPass G1 established the architectural baseline f"
+        "timestamp": "2026-10-27T09:43:54.840Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.\n- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts."
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.\n- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts."
+        "timestamp": "2026-10-27T09:45:19.613Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.572Z",
-        "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.\n- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts."
+        "timestamp": "2026-10-27T09:46:00.719Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       }
     }
   },
@@ -133,64 +133,64 @@
     "name": "Deal Score, Statistical Confidence & Cost Monotonicity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.856Z",
         "covered": true,
-        "byteCount": 301,
-        "summaryExcerpt": "- Explicit privacy preferences reject black-box predictive profiling. If user has not explicitly consented to personalization, the algorithm strictly serves objective market scores.\n- Baggage allowances state exact carrier constraints rather than assuming standard allowances across low-cost airlines"
+        "byteCount": 296,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: `amadeus_commercial_gds` and `sabre_enterprise_feed` are labeled with `canRedistributeB2B: true`, but have `declarationStatus: 'COMMERCIAL_STAGED_CONTRACT_REQUIRED'`. In `hasB2BRedistributionRights(providerId, options)` (`src/domain/farely/providerRights.ts#"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.962Z",
         "covered": true,
-        "byteCount": 157,
-        "summaryExcerpt": "- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.\n- Avoid predicting passenger intent from demographic assumptions."
+        "byteCount": 205,
+        "summaryExcerpt": "- *Pass R1 Claim*: \"Enforce `requireExecutedContract: true` by default in `hasB2BRedistributionRights`.\"\n   - *Falsification & Code Proof*: Existing unit tests in `src/domain/farely/providerRights.test.ts#"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
+        "timestamp": "2026-10-27T09:41:08.345Z",
         "covered": true,
-        "byteCount": 157,
-        "summaryExcerpt": "- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.\n- Avoid predicting passenger intent from demographic assumptions."
+        "byteCount": 736,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: Staged contracts (`COMMERCIAL_STAGED_CONTRACT_REQUIRED`) must be clearly delineated:\n  ```ts\n  export function isStagedContract(providerId: string): boolean {\n    const rights = getSafeProviderRights(providerId);\n    return rights.declarationStatus === 'COMMERCI"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
-        "covered": true,
-        "byteCount": 157,
-        "summaryExcerpt": "- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.\n- Avoid predicting passenger intent from demographic assumptions."
+        "timestamp": "2026-10-27T09:41:49.333Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.447Z",
+        "timestamp": "2026-10-27T09:42:31.370Z",
         "covered": true,
-        "byteCount": 596,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:33:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R4\n\nPass R4 instituted essential SRE diagnostic code"
+        "byteCount": 119,
+        "summaryExcerpt": "- Grounded highway travel tariffs for Northeast Vietnam (`HAN <-> VDO`). Transparent degradation of unverified sources."
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.002Z",
-        "covered": true,
-        "byteCount": 157,
-        "summaryExcerpt": "- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.\n- Avoid predicting passenger intent from demographic assumptions."
+        "timestamp": "2026-10-27T09:43:04.896Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 157,
-        "summaryExcerpt": "- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.\n- Avoid predicting passenger intent from demographic assumptions."
+        "timestamp": "2026-10-27T09:43:54.841Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 157,
-        "summaryExcerpt": "- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.\n- Avoid predicting passenger intent from demographic assumptions."
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 157,
-        "summaryExcerpt": "- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.\n- Avoid predicting passenger intent from demographic assumptions."
+        "timestamp": "2026-10-27T09:45:19.613Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.572Z",
-        "covered": true,
-        "byteCount": 606,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:43:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G4\n\nPass G4 instituted comprehensive telemetry struc"
+        "timestamp": "2026-10-27T09:46:00.720Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -198,64 +198,64 @@
     "name": "Auth, Privacy, Tenant Isolation & RLS Matrix",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.856Z",
         "covered": true,
-        "byteCount": 275,
-        "summaryExcerpt": "- Mathematical proofs:\n  - $\\forall \\text{partner}: \\text{Revenue} - \\text{ApiCost} > 0$.\n  - $\\forall \\text{date}: \\text{isValidCalendarDate}(D) \\iff D \\in \\text{GregorianCalendar}$.\n  - $\\forall \\text{feedItem}: \\text{displayRank} \\in [1, N]$ strictly unique and monotonic."
+        "byteCount": 431,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: What if `providerIds` passed to `validateB2BRedistributionScope` contains duplicates, empty strings, or whitespaces? Lines 193-195 handle deduplication, but `hasB2BRedistributionRights` and `isProviderQueryPermitted` do not sanitize input strings before querying"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.962Z",
         "covered": true,
-        "byteCount": 663,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:27:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R1\n\nPass R1 synthesized a high-level baseline for Fe"
+        "byteCount": 182,
+        "summaryExcerpt": "- *Pass R1 Claim*: \"Validate deepLinkUrl strictly with `new URL(url)` requiring https://.\"\n   - *Falsification & Code Proof*: In `src/domain/farely/directAffiliateComparison.test.ts#"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
-        "covered": true,
-        "byteCount": 182,
-        "summaryExcerpt": "- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.\n- Invariant 2: Net partner margin $> 0$ VND.\n- Invariant 3: Gregorian calendar date validity guaranteed."
+        "timestamp": "2026-10-27T09:41:08.345Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
+        "timestamp": "2026-10-27T09:41:49.334Z",
         "covered": true,
-        "byteCount": 182,
-        "summaryExcerpt": "- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.\n- Invariant 2: Net partner margin $> 0$ VND.\n- Invariant 3: Gregorian calendar date validity guaranteed."
+        "byteCount": 451,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: Sanitized lookup across all entry points. Safe fallback object for unknown providers with `providerId: normalizedId`.\n- **Target 2 (`directAffiliateComparison.ts`)**: Handle negative, zero, and extreme values in quotes. Gracefully handle empty quotes array with "
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.447Z",
+        "timestamp": "2026-10-27T09:42:31.370Z",
         "covered": true,
-        "byteCount": 182,
-        "summaryExcerpt": "- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.\n- Invariant 2: Net partner margin $> 0$ VND.\n- Invariant 3: Gregorian calendar date validity guaranteed."
+        "byteCount": 100,
+        "summaryExcerpt": "- Graceful handling of null/undefined inputs, empty strings, identical airports, and extreme prices."
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.002Z",
-        "covered": true,
-        "byteCount": 182,
-        "summaryExcerpt": "- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.\n- Invariant 2: Net partner margin $> 0$ VND.\n- Invariant 3: Gregorian calendar date validity guaranteed."
+        "timestamp": "2026-10-27T09:43:04.896Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 563,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:37:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G1\n\nPass G1 established the architectural baseline f"
+        "timestamp": "2026-10-27T09:43:54.841Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 182,
-        "summaryExcerpt": "- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.\n- Invariant 2: Net partner margin $> 0$ VND.\n- Invariant 3: Gregorian calendar date validity guaranteed."
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 182,
-        "summaryExcerpt": "- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.\n- Invariant 2: Net partner margin $> 0$ VND.\n- Invariant 3: Gregorian calendar date validity guaranteed."
+        "timestamp": "2026-10-27T09:45:19.613Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.572Z",
-        "covered": true,
-        "byteCount": 182,
-        "summaryExcerpt": "- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.\n- Invariant 2: Net partner margin $> 0$ VND.\n- Invariant 3: Gregorian calendar date validity guaranteed."
+        "timestamp": "2026-10-27T09:46:00.720Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -263,64 +263,64 @@
     "name": "Provider Drift, Circuit Breakers & Kill Switches",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.856Z",
         "covered": true,
-        "byteCount": 233,
-        "summaryExcerpt": "- Resilient against prototype pollution attacks (`__proto__`, `constructor`).\n- Handles circular object references in user context payloads without stack overflows.\n- Defends against invalid date formats (`2026-02-30`, `2026/13/45`)."
+        "byteCount": 872,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: The registry `PROVIDER_SOURCE_RIGHTS_REGISTRY` is currently a mutable exported object. If any runtime worker mutates `PROVIDER_SOURCE_RIGHTS_REGISTRY.vietjet_direct.canRedistributeB2B = true`, all concurrent evaluations in the Node.js event loop are compromised."
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.962Z",
         "covered": true,
-        "byteCount": 159,
-        "summaryExcerpt": "- Resilient against prototype pollution (`__proto__`, `constructor`).\n- Handles circular references gracefully.\n- Rejects malformed dates and negative numbers."
+        "byteCount": 486,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: Deep freeze `PROVIDER_SOURCE_RIGHTS_REGISTRY` using `Object.freeze` to guarantee immutability across concurrent evaluation tasks.\n- **Target 2 (`directAffiliateComparison.ts`)**: Ensure `compareProviderChannels` executes without any external I/O or state mutatio"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
+        "timestamp": "2026-10-27T09:41:08.345Z",
         "covered": true,
-        "byteCount": 606,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:29:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R2\n\nPass R2 eliminated mathematical edge-case bugs l"
+        "byteCount": 553,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: Deep freeze the registry object to guarantee thread safety and prevent prototype mutations.\n- **Target 2 (`directAffiliateComparison.ts`)**: Deterministic comparator with 4-tier tie-breaking:\n  1. `normalizedTotalCostVND ASC`\n  2. `channelType PRIORITY` (DIRECT_"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
+        "timestamp": "2026-10-27T09:41:49.334Z",
         "covered": true,
-        "byteCount": 159,
-        "summaryExcerpt": "- Resilient against prototype pollution (`__proto__`, `constructor`).\n- Handles circular references gracefully.\n- Rejects malformed dates and negative numbers."
+        "byteCount": 319,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: `Object.freeze(PROVIDER_SOURCE_RIGHTS_REGISTRY)` prevents concurrent mutation.\n- **Target 2 (`directAffiliateComparison.ts`)**: Pure synchronous function with deterministic sorting.\n- **Target 3 (`airportAlternatives.ts`)**: Instant in-memory catalog lookup with"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.447Z",
-        "covered": true,
-        "byteCount": 159,
-        "summaryExcerpt": "- Resilient against prototype pollution (`__proto__`, `constructor`).\n- Handles circular references gracefully.\n- Rejects malformed dates and negative numbers."
+        "timestamp": "2026-10-27T09:42:31.370Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.002Z",
-        "covered": true,
-        "byteCount": 159,
-        "summaryExcerpt": "- Resilient against prototype pollution (`__proto__`, `constructor`).\n- Handles circular references gracefully.\n- Rejects malformed dates and negative numbers."
+        "timestamp": "2026-10-27T09:43:04.896Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 159,
-        "summaryExcerpt": "- Resilient against prototype pollution (`__proto__`, `constructor`).\n- Handles circular references gracefully.\n- Rejects malformed dates and negative numbers."
+        "timestamp": "2026-10-27T09:43:54.841Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 577,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:39:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G2\n\nPass G2 introduced necessary input bounds and co"
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 159,
-        "summaryExcerpt": "- Resilient against prototype pollution (`__proto__`, `constructor`).\n- Handles circular references gracefully.\n- Rejects malformed dates and negative numbers."
+        "timestamp": "2026-10-27T09:45:19.613Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.572Z",
-        "covered": true,
-        "byteCount": 159,
-        "summaryExcerpt": "- Resilient against prototype pollution (`__proto__`, `constructor`).\n- Handles circular references gracefully.\n- Rejects malformed dates and negative numbers."
+        "timestamp": "2026-10-27T09:46:00.720Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       }
     }
   },
@@ -328,64 +328,64 @@
     "name": "Freshness, Stale Degradation & UX Honesty",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.857Z",
         "covered": true,
-        "byteCount": 252,
-        "summaryExcerpt": "- Compliant with Decree 13/2023/ND-CP on Personal Data Protection (Bảo vệ dữ liệu cá nhân).\n- Strictly forbids covert profiling and sensitive demographic surveillance.\n- Compliant with CAAV regulations regarding mandatory baggage disclosures."
+        "byteCount": 1310,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**:\n  - `NEG-24`: Staged GDS contract appears to grant B2B rights. Defended by enforcing `requireExecutedContract: true` by default or requiring explicit execution confirmation.\n  - `NEG-38`: Unlicensed background scan continues. Defended by rejecting `canScrape: fa"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.962Z",
         "covered": true,
-        "byteCount": 663,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:27:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R1\n\nPass R1 synthesized a high-level baseline for Fe"
+        "byteCount": 838,
+        "summaryExcerpt": "- *Pass R1 Claim*: \"Throw an error instead of clamping negative durations to 15 minutes.\"\n   - *Falsification & Code Proof*: Line 158 of `src/domain/farely/airportAlternatives.test.ts` explicitly asserts:\n     ```ts\n     it('WP01: defensively clamps negative elapsed durations to commercial floor (>="
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.\n- Compliant with CAAV Circulars on passenger rights and baggage disclosures."
+        "timestamp": "2026-10-27T09:41:08.345Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.\n- Compliant with CAAV Circulars on passenger rights and baggage disclosures."
+        "timestamp": "2026-10-27T09:41:49.334Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.447Z",
+        "timestamp": "2026-10-27T09:42:31.370Z",
         "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.\n- Compliant with CAAV Circulars on passenger rights and baggage disclosures."
+        "byteCount": 175,
+        "summaryExcerpt": "- Defends against `NEG-04` (unknown fee becomes 0), `NEG-05` (unknown baggage becomes free), `NEG-24` (staged contract misrepresentation), and deep link XSS/injection attacks."
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.002Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.\n- Compliant with CAAV Circulars on passenger rights and baggage disclosures."
+        "timestamp": "2026-10-27T09:43:04.896Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 563,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:37:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G1\n\nPass G1 established the architectural baseline f"
+        "timestamp": "2026-10-27T09:43:54.841Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.\n- Compliant with CAAV Circulars on passenger rights and baggage disclosures."
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.\n- Compliant with CAAV Circulars on passenger rights and baggage disclosures."
+        "timestamp": "2026-10-27T09:45:19.613Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.572Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.\n- Compliant with CAAV Circulars on passenger rights and baggage disclosures."
+        "timestamp": "2026-10-27T09:46:00.720Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -393,64 +393,64 @@
     "name": "Observability, Secret Scrubbing & Error Boundaries",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.857Z",
         "covered": true,
-        "byteCount": 192,
-        "summaryExcerpt": "- Sub-millisecond calculation runtime. Negligible garbage collection overhead.\n- Bounded recursion depth ($\\le 8$) protects Edge Function runtimes against malicious deeply-nested JSON attacks."
+        "byteCount": 980,
+        "summaryExcerpt": "- **Target 1 (`providerRights.ts`)**: Vietnam domestic market has 5 active carriers: Vietnam Airlines (`VN`), Vietjet Air (`VJ`), Bamboo Airways (`QH`), Vietravel Airlines (`VU`), and Pacific Airlines (`BL`). `PROVIDER_SOURCE_RIGHTS_REGISTRY` lacks entries for `vietravel_airlines` and `pacific_airli"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.962Z",
         "covered": true,
-        "byteCount": 139,
-        "summaryExcerpt": "- Sub-millisecond execution envelope across all pure domain functions.\n- Bounded memory and call stack depth protect Node.js microservices."
+        "byteCount": 346,
+        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**:\n  Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- Register all 5 Vietnamese airlin"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
+        "timestamp": "2026-10-27T09:41:08.345Z",
         "covered": true,
-        "byteCount": 606,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:29:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R2\n\nPass R2 eliminated mathematical edge-case bugs l"
+        "byteCount": 493,
+        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**:\n  Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- Register all 5 Vietnamese airlin"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
+        "timestamp": "2026-10-27T09:41:49.334Z",
         "covered": true,
-        "byteCount": 139,
-        "summaryExcerpt": "- Sub-millisecond execution envelope across all pure domain functions.\n- Bounded memory and call stack depth protect Node.js microservices."
+        "byteCount": 356,
+        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**:\n  Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- Production-realistic airline nam"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.447Z",
+        "timestamp": "2026-10-27T09:42:31.371Z",
         "covered": true,
-        "byteCount": 139,
-        "summaryExcerpt": "- Sub-millisecond execution envelope across all pure domain functions.\n- Bounded memory and call stack depth protect Node.js microservices."
+        "byteCount": 378,
+        "summaryExcerpt": "- Full coverage of Vietnam's 5 domestic airlines. Ground truth travel tariffs from verified transport operators.\n- **Product Boundary Invariant (Anti-OTA Conflation)**:\n  Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, cre"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.002Z",
-        "covered": true,
-        "byteCount": 139,
-        "summaryExcerpt": "- Sub-millisecond execution envelope across all pure domain functions.\n- Bounded memory and call stack depth protect Node.js microservices."
+        "timestamp": "2026-10-27T09:43:04.896Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
+        "timestamp": "2026-10-27T09:43:54.841Z",
         "covered": true,
-        "byteCount": 139,
-        "summaryExcerpt": "- Sub-millisecond execution envelope across all pure domain functions.\n- Bounded memory and call stack depth protect Node.js microservices."
+        "byteCount": 209,
+        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
+        "timestamp": "2026-10-27T09:44:39.941Z",
         "covered": true,
-        "byteCount": 577,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:39:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G2\n\nPass G2 introduced necessary input bounds and co"
+        "byteCount": 209,
+        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
+        "timestamp": "2026-10-27T09:45:19.613Z",
         "covered": true,
-        "byteCount": 139,
-        "summaryExcerpt": "- Sub-millisecond execution envelope across all pure domain functions.\n- Bounded memory and call stack depth protect Node.js microservices."
+        "byteCount": 209,
+        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- **"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.572Z",
+        "timestamp": "2026-10-27T09:46:00.720Z",
         "covered": true,
-        "byteCount": 139,
-        "summaryExcerpt": "- Sub-millisecond execution envelope across all pure domain functions.\n- Bounded memory and call stack depth protect Node.js microservices."
+        "byteCount": 209,
+        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- **"
       }
     }
   },
@@ -458,64 +458,64 @@
     "name": "Database Architecture, Schema Drift & Migration Provenance",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.857Z",
         "covered": true,
-        "byteCount": 162,
-        "summaryExcerpt": "- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.\n- Strict compile-time typing guarantees no runtime field degradation."
+        "byteCount": 211,
+        "summaryExcerpt": "- Pure domain files must have 0 external npm dependencies and 0 network/I/O imports.\n- `providerRights.ts`, `directAffiliateComparison.ts`, and `airportAlternatives.ts` maintain pure TypeScript domain semantics."
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.962Z",
         "covered": true,
-        "byteCount": 162,
-        "summaryExcerpt": "- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.\n- Strict compile-time typing guarantees no runtime field degradation."
+        "byteCount": 182,
+        "summaryExcerpt": "- Pure TypeScript implementations without third-party dependencies.\n- Modular exports that cleanly separate rights registries, comparison engines, and geographic friction estimators."
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
+        "timestamp": "2026-10-27T09:41:08.345Z",
         "covered": true,
-        "byteCount": 162,
-        "summaryExcerpt": "- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.\n- Strict compile-time typing guarantees no runtime field degradation."
+        "byteCount": 171,
+        "summaryExcerpt": "- Pure domain models with 0 external npm dependencies and 0 side effects.\n- Clean separation of concerns between provider rights, channel pricing, and geographic friction."
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
+        "timestamp": "2026-10-27T09:41:49.334Z",
         "covered": true,
-        "byteCount": 621,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:31:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R3\n\nPass R3 resolved input fuzzing vulnerabilities a"
+        "byteCount": 63,
+        "summaryExcerpt": "- Pure TypeScript domain files with zero external dependencies."
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.447Z",
+        "timestamp": "2026-10-27T09:42:31.371Z",
         "covered": true,
-        "byteCount": 162,
-        "summaryExcerpt": "- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.\n- Strict compile-time typing guarantees no runtime field degradation."
+        "byteCount": 87,
+        "summaryExcerpt": "- Pure TypeScript implementation with zero external dependencies and zero side effects."
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.003Z",
-        "covered": true,
-        "byteCount": 162,
-        "summaryExcerpt": "- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.\n- Strict compile-time typing guarantees no runtime field degradation."
+        "timestamp": "2026-10-27T09:43:04.896Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 162,
-        "summaryExcerpt": "- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.\n- Strict compile-time typing guarantees no runtime field degradation."
+        "timestamp": "2026-10-27T09:43:54.841Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 162,
-        "summaryExcerpt": "- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.\n- Strict compile-time typing guarantees no runtime field degradation."
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 591,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:41:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G3\n\nPass G3 sealed negative vector vulnerabilities a"
+        "timestamp": "2026-10-27T09:45:19.613Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.572Z",
-        "covered": true,
-        "byteCount": 162,
-        "summaryExcerpt": "- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.\n- Strict compile-time typing guarantees no runtime field degradation."
+        "timestamp": "2026-10-27T09:46:00.720Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       }
     }
   },
@@ -523,64 +523,64 @@
     "name": "Proof Hierarchy & Anti-Self-Certification (C0..C4)",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.857Z",
         "covered": true,
-        "byteCount": 198,
-        "summaryExcerpt": "- Personalized ranking outputs include transparent Vietnamese rationales for each boosted item.\n- Partner integration evaluations return detailed rejection diagnostics for operational observability."
+        "byteCount": 570,
+        "summaryExcerpt": "- Under Vietnam Law on Protection of Consumer Rights (2023) and Decree 52/2013/NĐ-CP on E-Commerce (amended by Decree 85/2021/NĐ-CP):\n  - Metasearch and price comparison platforms must transparently disclose whether ranking is influenced by commercial affiliation or advertising fees.\n  - Displaying "
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.962Z",
         "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Transparent Vietnamese rationales for feed boosts.\n- Detailed rejection diagnostics for partner evaluation pipelines."
+        "byteCount": 259,
+        "summaryExcerpt": "- Compliance with Article 10 of Vietnam Law on Protection of Consumer Rights: Transparent disclosure of commercial relationships.\n- Mandatory disclosure text in Vietnamese explaining that rankings are determined objectively by total cost, not commission rate."
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
+        "timestamp": "2026-10-27T09:41:08.345Z",
         "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Transparent Vietnamese rationales for feed boosts.\n- Detailed rejection diagnostics for partner evaluation pipelines."
+        "byteCount": 172,
+        "summaryExcerpt": "- Compliance with CAAV regulations and Vietnam Law on Consumer Rights: Total price transparency, mandatory disclosure of commercial affiliation, and anti-misrepresentation."
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
+        "timestamp": "2026-10-27T09:41:49.334Z",
         "covered": true,
-        "byteCount": 621,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:31:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R3\n\nPass R3 resolved input fuzzing vulnerabilities a"
+        "byteCount": 86,
+        "summaryExcerpt": "- Adherence to CAAV consumer protection directives and Vietnam Law on Consumer Rights."
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.448Z",
-        "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Transparent Vietnamese rationales for feed boosts.\n- Detailed rejection diagnostics for partner evaluation pipelines."
+        "timestamp": "2026-10-27T09:42:31.371Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.003Z",
-        "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Transparent Vietnamese rationales for feed boosts.\n- Detailed rejection diagnostics for partner evaluation pipelines."
+        "timestamp": "2026-10-27T09:43:04.896Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Transparent Vietnamese rationales for feed boosts.\n- Detailed rejection diagnostics for partner evaluation pipelines."
+        "timestamp": "2026-10-27T09:43:54.841Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Transparent Vietnamese rationales for feed boosts.\n- Detailed rejection diagnostics for partner evaluation pipelines."
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 591,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:41:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G3\n\nPass G3 sealed negative vector vulnerabilities a"
+        "timestamp": "2026-10-27T09:45:19.614Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.573Z",
-        "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Transparent Vietnamese rationales for feed boosts.\n- Detailed rejection diagnostics for partner evaluation pipelines."
+        "timestamp": "2026-10-27T09:46:00.720Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       }
     }
   },
@@ -588,64 +588,64 @@
     "name": "Anti-Shrinkage & 267 Historical Gates Traceability",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.857Z",
         "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.\n- Zero-mock hermeticity ensures 100% reproducible execution in CI."
+        "byteCount": 563,
+        "summaryExcerpt": "- In `providerRights.ts`, rejection reasons must provide structured error codes (e.g. `ERR_UNREGISTERED_PROVIDER`, `ERR_STAGED_CONTRACT_REQUIRED`, `ERR_LICENSE_RESTRICTED`).\n- In `directAffiliateComparison.ts`, `DirectAffiliateComparisonResult` must export structured diagnostic telemetry: `cheapestC"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.\n- Zero-mock hermeticity ensures 100% reproducible execution in CI."
+        "timestamp": "2026-10-27T09:40:19.962Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "4. **Falsification of"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.\n- Zero-mock hermeticity ensures 100% reproducible execution in CI."
+        "timestamp": "2026-10-27T09:41:08.345Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
+        "timestamp": "2026-10-27T09:41:49.334Z",
         "covered": true,
-        "byteCount": 621,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:31:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R3\n\nPass R3 resolved input fuzzing vulnerabilities a"
+        "byteCount": 115,
+        "summaryExcerpt": "- Diagnostic tags: `[dealId=...]`, `[providerId=...]`, structured error classes, and clear Vietnamese explanations."
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.448Z",
-        "covered": true,
-        "byteCount": 209,
-        "summaryExcerpt": "- **Flaws in Pass R4**: Pass R4 checked calendar leap years but omitted end-of-year holiday spikes for late-December departures.\n- **R5 Sovereign Falsification**: In `src/domain/farely/vietnamTravelContext.ts#"
+        "timestamp": "2026-10-27T09:42:31.371Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.003Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.\n- Zero-mock hermeticity ensures 100% reproducible execution in CI."
+        "timestamp": "2026-10-27T09:43:04.896Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.\n- Zero-mock hermeticity ensures 100% reproducible execution in CI."
+        "timestamp": "2026-10-27T09:43:54.841Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.\n- Zero-mock hermeticity ensures 100% reproducible execution in CI."
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 591,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:41:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G3\n\nPass G3 sealed negative vector vulnerabilities a"
+        "timestamp": "2026-10-27T09:45:19.614Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.573Z",
-        "covered": true,
-        "byteCount": 143,
-        "summaryExcerpt": "- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.\n- Zero-mock hermeticity ensures 100% reproducible execution in CI."
+        "timestamp": "2026-10-27T09:46:00.720Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       }
     }
   },
@@ -653,64 +653,64 @@
     "name": "Turnkey Execution, Topological DAG & Rollback Runbooks",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.857Z",
         "covered": true,
-        "byteCount": 191,
-        "summaryExcerpt": "- In the absence of user opt-in, the feed seamlessly falls back to objective deal score rankings without error.\n- Unrecognized carrier codes safely fall back to CAAV default baggage policies."
+        "byteCount": 478,
+        "summaryExcerpt": "```ts\n  baseFare = Math.max(0, q.rawQuotedPriceVND - taxes - baggage);\n  ```\n  If an ill-formed quote provides `taxes + baggage > rawQuotedPriceVND`, `baseFare` silently collapses to 0 without warning or error! An all-inclusive flight quote where taxes and baggage exceed the total price is mathemati"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
+        "timestamp": "2026-10-27T09:40:19.962Z",
         "covered": true,
-        "byteCount": 198,
-        "summaryExcerpt": "- **Flaws in Pass R1**: Pass R1 assumed calendar date string matching operates uniformly regardless of temporal zone.\n- **R2 Empirical Falsification**: In `src/domain/farely/vietnamTravelContext.ts#"
+        "byteCount": 182,
+        "summaryExcerpt": "- Safe URL protocol parsing: Reject URLs with `javascript:`, `data:`, `file:`.\n- Enforce least privilege data scopes (`CONSUMER_INDICATIVE`, `INTERNAL_ANALYTICS`, `B2B_SYNDICATION`)."
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
+        "timestamp": "2026-10-27T09:41:08.345Z",
         "covered": true,
-        "byteCount": 606,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:29:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R2\n\nPass R2 eliminated mathematical edge-case bugs l"
+        "byteCount": 126,
+        "summaryExcerpt": "- Immutable provider rights registry.\n- Least privilege data access scopes.\n- Strict URL validation before deep link emission."
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.508Z",
-        "covered": true,
-        "byteCount": 187,
-        "summaryExcerpt": "- In the absence of user opt-in, feed gracefully falls back to objective deal score rankings without error.\n- Unrecognized carrier codes safely fall back to CAAV default baggage policies."
+        "timestamp": "2026-10-27T09:41:49.334Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.448Z",
+        "timestamp": "2026-10-27T09:42:31.371Z",
         "covered": true,
-        "byteCount": 187,
-        "summaryExcerpt": "- In the absence of user opt-in, feed gracefully falls back to objective deal score rankings without error.\n- Unrecognized carrier codes safely fall back to CAAV default baggage policies."
+        "byteCount": 89,
+        "summaryExcerpt": "- Safe URL parsing via native `URL` constructor. Deep immutability of configuration data."
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.003Z",
-        "covered": true,
-        "byteCount": 187,
-        "summaryExcerpt": "- In the absence of user opt-in, feed gracefully falls back to objective deal score rankings without error.\n- Unrecognized carrier codes safely fall back to CAAV default baggage policies."
+        "timestamp": "2026-10-27T09:43:04.896Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
-        "covered": true,
-        "byteCount": 187,
-        "summaryExcerpt": "- In the absence of user opt-in, feed gracefully falls back to objective deal score rankings without error.\n- Unrecognized carrier codes safely fall back to CAAV default baggage policies."
+        "timestamp": "2026-10-27T09:43:54.841Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
-        "covered": true,
-        "byteCount": 577,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:39:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G2\n\nPass G2 introduced necessary input bounds and co"
+        "timestamp": "2026-10-27T09:44:39.941Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
-        "covered": true,
-        "byteCount": 187,
-        "summaryExcerpt": "- In the absence of user opt-in, feed gracefully falls back to objective deal score rankings without error.\n- Unrecognized carrier codes safely fall back to CAAV default baggage policies."
+        "timestamp": "2026-10-27T09:45:19.614Z",
+        "covered": false,
+        "byteCount": 4,
+        "summaryExcerpt": "- **"
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.573Z",
-        "covered": true,
-        "byteCount": 187,
-        "summaryExcerpt": "- In the absence of user opt-in, feed gracefully falls back to objective deal score rankings without error.\n- Unrecognized carrier codes safely fall back to CAAV default baggage policies."
+        "timestamp": "2026-10-27T09:46:00.720Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       }
     }
   },
@@ -718,64 +718,64 @@
     "name": "Zero-Trust Release & Remote Git Synchronization",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:24:51.900Z",
+        "timestamp": "2026-10-27T09:39:25.857Z",
         "covered": true,
-        "byteCount": 1451,
-        "summaryExcerpt": "- Consolidates holiday calendars and baggage rules into clean, immutable constants.\n- Eliminates ad-hoc scraping scripts in favor of governed commercial integration contracts.\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |\n|---|---|---|---|\n|"
+        "byteCount": 569,
+        "summaryExcerpt": "- All 11 tests in `providerRights.test.ts`, 7 tests in `directAffiliateComparison.test.ts`, and 12 tests in `airportAlternatives.test.ts` must pass with zero regression.\n- API signatures must remain fully backward-compatible while introducing safe, additive properties and stricter validation.\n\n---\n\n"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:25:37.647Z",
-        "covered": true,
-        "byteCount": 1446,
-        "summaryExcerpt": "- Zero deprecated dependencies. Clean, modern TypeScript code adhering strictly to Farely coding standards.\n- Modular domain interfaces facilitate straightforward future expansions.\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |\n|---|---|---|"
+        "timestamp": "2026-10-27T09:40:19.962Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "3. **Falsification of"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:26:23.519Z",
+        "timestamp": "2026-10-27T09:41:08.345Z",
         "covered": true,
-        "byteCount": 1442,
-        "summaryExcerpt": "- Zero deprecated dependencies. Clean, modern TypeScript code adhering strictly to Farely coding standards.\n- Modular domain interfaces facilitate straightforward future expansions.\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |\n|---|---|---|"
+        "byteCount": 362,
+        "summaryExcerpt": "- All existing function signatures remain backwards-compatible.\n- All existing tests pass without regressions.\n\n---\n\n### ACTIONABLE RESEARCH SUMMARY & TRANSITION TO PASS R4\nPass R3 hardened the specifications against hostile boundaries and negative vectors. In Pass R4, we will develop the complete p"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:27:01.509Z",
+        "timestamp": "2026-10-27T09:41:49.334Z",
         "covered": true,
-        "byteCount": 232,
-        "summaryExcerpt": "- **Flaws in Pass R3**: Pass R3 checked reliability thresholds but lacked standardized machine-parseable error reason codes in enablement evaluations.\n- **R4 SRE Audit & Falsification**: In `src/domain/farely/partnerIntegrations.ts#"
+        "byteCount": 335,
+        "summaryExcerpt": "- 100% backward compatibility with existing tests. All 798 tests must pass.\n\n---\n\n### ACTIONABLE RESEARCH SUMMARY & TRANSITION TO PASS R5\nPass R4 provides the battle-hardened SRE specifications. In Pass R5, we will synthesize these findings into three locked canonical solutions ready for the Solutio"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:27:44.448Z",
-        "covered": true,
-        "byteCount": 596,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:33:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R4\n\nPass R4 instituted essential SRE diagnostic code"
+        "timestamp": "2026-10-27T09:42:31.371Z",
+        "covered": false,
+        "byteCount": 21,
+        "summaryExcerpt": "1. **Falsification of"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:28:26.003Z",
+        "timestamp": "2026-10-27T09:43:04.896Z",
         "covered": true,
-        "byteCount": 1539,
-        "summaryExcerpt": "- Zero deprecated dependencies. Clean, modern TypeScript code adhering strictly to Farely coding standards.\n- Modular domain interfaces facilitate straightforward future expansions.\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |\n|---|---|---|"
+        "byteCount": 1128,
+        "summaryExcerpt": "---\n\n### SECTION D: LOCKED WORK PACKAGES FOR TRANSACTIONAL EXECUTION\n\n#### WP01: `WP01-PROVRIGHTS-B2B-ACCESS-GUARD`\n- **Target File**: `src/domain/farely/providerRights.ts`\n- **Target Test File**: `src/domain/farely/providerRights.test.ts`\n- **Implementation**: Provider normalization, deep freezing,"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:29:11.764Z",
+        "timestamp": "2026-10-27T09:43:54.841Z",
         "covered": true,
-        "byteCount": 1539,
-        "summaryExcerpt": "- Zero deprecated dependencies. Clean, modern TypeScript code adhering strictly to Farely coding standards.\n- Modular domain interfaces facilitate straightforward future expansions.\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |\n|---|---|---|"
+        "byteCount": 151,
+        "summaryExcerpt": "---\n\n### SECTION D: EXECUTION MANDATE\nNo downstream AI or executor is authorized to modify the caged solutions or change the target file architectures."
       },
       "G3": {
-        "timestamp": "2026-10-27T09:29:46.958Z",
+        "timestamp": "2026-10-27T09:44:39.941Z",
         "covered": true,
-        "byteCount": 194,
-        "summaryExcerpt": "- **Flaws in Pass G2**: Pass G2 validated date format but failed to handle invalid calendar days like `2026-02-31`.\n- **G3 Hostile Falsification**: In `src/domain/farely/vietnamTravelContext.ts#"
+        "byteCount": 130,
+        "summaryExcerpt": "---\n\n### SECTION D: EXECUTION MANDATE\nThe executor must implement the caged work packages sequentially via ACID task transactions."
       },
       "G4": {
-        "timestamp": "2026-10-27T09:30:29.725Z",
+        "timestamp": "2026-10-27T09:45:19.614Z",
         "covered": true,
-        "byteCount": 1539,
-        "summaryExcerpt": "- Zero deprecated dependencies. Clean, modern TypeScript code adhering strictly to Farely coding standards.\n- Modular domain interfaces facilitate straightforward future expansions.\n\n---\n\n## SECTION F: CANONICAL RISK MATRIX\n| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |\n|---|---|---|"
+        "byteCount": 112,
+        "summaryExcerpt": "---\n\n### SECTION D: EXECUTION MANDATE\nImplement the caged work packages sequentially via ACID task transactions."
       },
       "G5": {
-        "timestamp": "2026-10-27T09:31:08.573Z",
+        "timestamp": "2026-10-27T09:46:00.720Z",
         "covered": true,
-        "byteCount": 606,
-        "summaryExcerpt": "# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7\n# TIMESTAMP: 2026-10-27T09:43:00.000Z\n# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa\n\n---\n\n## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G4\n\nPass G4 instituted comprehensive telemetry struc"
+        "byteCount": 338,
+        "summaryExcerpt": "---\n\n### SECTION D: LOCKED WORK PACKAGES FOR TRANSACTIONAL EXECUTION\n\n1. `WP01-PROVRIGHTS-B2B-ACCESS-GUARD` (`src/domain/farely/providerRights.ts`)\n2. `WP02-AFFILIATECOMP-OBJECTIVE-OVERRIDE-DEFENSE` (`src/domain/farely/directAffiliateComparison.ts`)\n3. `WP03-AIRPORTALT-GROUND-FRICTION-BOUNDS` (`src/"
       }
     }
   }

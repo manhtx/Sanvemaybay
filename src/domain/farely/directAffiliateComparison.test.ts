@@ -4,6 +4,7 @@ import {
   assertCommercialRankingIntegrity,
   CommercialRankingOverrideError,
   ProviderQuoteInput,
+  isValidDeepLinkUrl,
 } from './directAffiliateComparison';
 
 describe('F43: Direct/Affiliate Provider Comparison', () => {
@@ -70,6 +71,9 @@ describe('F43: Direct/Affiliate Provider Comparison', () => {
     expect(result.channels[1].normalizedTotalCostVND).toBe(1_650_000);
     expect(result.channels[2].providerId).toBe('ota_sponsored');
     expect(result.channels[2].normalizedTotalCostVND).toBe(1_800_000);
+    expect(result.cheapestChannelType).toBe('OTA_PARTNER');
+    expect(result.totalChannelsCompared).toBe(3);
+    expect(result.isDirectCheaperOrEqual).toBe(false);
   });
 
   it('adjusts total cost when checked baggage is required', () => {
@@ -274,5 +278,93 @@ describe('F43: Direct/Affiliate Provider Comparison', () => {
     // AFFILIATE_AGGREGATOR must be third
     expect(res.channels[2].channelType).toBe('AFFILIATE_AGGREGATOR');
     expect(res.channels[2].providerId).toBe('affiliate_tied');
+  });
+
+  it('validates deep link URLs and rejects unsafe schemes (L02/L11)', () => {
+    expect(isValidDeepLinkUrl('https://vietnamairlines.com/book')).toBe(true);
+    expect(isValidDeepLinkUrl('http://vietnamairlines.com/book')).toBe(true);
+    expect(isValidDeepLinkUrl('javascript:alert(1)')).toBe(false);
+    expect(isValidDeepLinkUrl('data:text/html,<script>')).toBe(false);
+    expect(isValidDeepLinkUrl('')).toBe(false);
+    expect(isValidDeepLinkUrl(null)).toBe(false);
+
+    const maliciousQuote: ProviderQuoteInput = {
+      ...directAirlineQuote,
+      providerId: 'malicious_xss',
+      deepLinkUrl: 'javascript:document.cookie',
+    };
+
+    expect(() =>
+      compareProviderChannels({
+        flightKey: 'VN214_SGN_HAN_20261101',
+        quotes: [maliciousQuote],
+      })
+    ).toThrow(/Invalid or unsafe deepLinkUrl/);
+  });
+
+  it('rejects invalid commission rates outside 0-100 range (L01/L02)', () => {
+    const badCommissionQuote: ProviderQuoteInput = {
+      ...highPayingOtaQuote,
+      providerId: 'bad_commission',
+      affiliateCommissionRatePercent: 120.0,
+    };
+
+    expect(() =>
+      compareProviderChannels({
+        flightKey: 'VN214_SGN_HAN_20261101',
+        quotes: [badCommissionQuote],
+      })
+    ).toThrow(/between 0 and 100/);
+
+    const negativeCommissionQuote: ProviderQuoteInput = {
+      ...highPayingOtaQuote,
+      providerId: 'neg_commission',
+      affiliateCommissionRatePercent: -5.0,
+    };
+
+    expect(() =>
+      compareProviderChannels({
+        flightKey: 'VN214_SGN_HAN_20261101',
+        quotes: [negativeCommissionQuote],
+      })
+    ).toThrow(/between 0 and 100/);
+  });
+
+  it('throws CommercialRankingOverrideError when intermediary displaces direct airline on identical price (F43)', () => {
+    const tiedDirect: ProviderQuoteInput = {
+      ...directAirlineQuote,
+      providerId: 'vna_tied',
+      providerName: 'Vietnam Airlines Direct',
+      channelType: 'DIRECT_AIRLINE',
+      rawQuotedPriceVND: 1_500_000,
+      mandatoryTaxesAndFeesVND: 0,
+      checkedBaggageFeeVND: 0,
+      isBaggageIncludedInQuote: true,
+    };
+
+    const tiedOtaSponsored: ProviderQuoteInput = {
+      ...highPayingOtaQuote,
+      providerId: 'ota_sponsored_tied',
+      providerName: 'SuperOTA Sponsored',
+      channelType: 'OTA_PARTNER',
+      rawQuotedPriceVND: 1_500_000,
+      mandatoryTaxesAndFeesVND: 0,
+      checkedBaggageFeeVND: 0,
+      isBaggageIncludedInQuote: true,
+      isCommercialPartner: true,
+    };
+
+    const result = compareProviderChannels({
+      flightKey: 'VN214_SGN_HAN_20261101',
+      quotes: [tiedDirect, tiedOtaSponsored],
+    });
+
+    // Promoting direct airline passes
+    expect(() => assertCommercialRankingIntegrity('vna_tied', result)).not.toThrow();
+
+    // Promoting OTA partner over identical-cost direct airline throws override error
+    expect(() => assertCommercialRankingIntegrity('ota_sponsored_tied', result)).toThrow(
+      CommercialRankingOverrideError
+    );
   });
 });

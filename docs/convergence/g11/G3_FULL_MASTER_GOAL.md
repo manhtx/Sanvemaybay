@@ -1,158 +1,87 @@
-# FARELY PROJECT 10X — MASTER GOAL G11 [G3]
-# CYCLE: G88
-# LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
-# MANDATE: Enforce hostile boundary conditions and negative vector penetration defenses across all 12 Adversarial Lenses for Cycle G88. Actively audit and falsify lenses L05 (Adversarial Inputs), L07 (Operational Resilience), and L11 (Graceful Degradation) with concrete code citations and edge exploit scenarios.
-# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7
-# TIMESTAMP: 2026-10-27T09:39:00.000Z
-# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa
+# FARELY CYCLE G89 — MASTER GOAL PASS G3: BIDIRECTIONAL SYMMETRY & SRE DRIFT DEFENSE
+## Target Modules: `src/domain/farely/providerRights.ts`, `src/domain/farely/directAffiliateComparison.ts`, `src/domain/farely/airportAlternatives.ts`
+## Epistemic Integrity: Zero-Trust Codebase Telemetry & Adversarial Invariant Auditing
 
----
-
-## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS G2
-
-Pass G2 introduced necessary input bounds and contract date verifications. However, Pass G2 failed to fortify the executor cage against adversarial payload injections, asynchronous state races, and silent degradation. Pass G3 executes hostile boundary falsification across three critical lenses:
-
-### 1. Falsification of Lens L05 (Adversarial Inputs & Boundary Penetration) in `src/domain/farely/personalizedFeedPrivacy.ts#L70-L95`
-- **Flaws in Pass G2**: Pass G2 clamped `maxStops` but permitted prototype pollution and cyclic graph attacks in `contextPayload`.
-- **G3 Hostile Falsification**: In `src/domain/farely/personalizedFeedPrivacy.ts#L70-L95`, if an adversary submits an input payload with cyclic references without a visited set, recursion causes instant stack exhaustion (`RangeError: Maximum call stack size exceeded`). Furthermore, prototype tampering via `__proto__` can overwrite global object prototypes in the shared Node.js runtime process.
-- **G3 Corrective Invariant**: Enforce cycle-safe visited `Set<unknown>` and skip prototype properties: `if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;`. Bound depth recursion to $\le 8$.
-
-### 2. Falsification of Lens L07 (Operational Resilience & Resource Saturation) in `src/domain/farely/partnerIntegrations.ts#L50-L75`
-- **Flaws in Pass G2**: Pass G2 checked contract dates but permitted zero-latency spoofing and negative cost payloads.
-- **G3 Hostile Falsification**: In `src/domain/farely/partnerIntegrations.ts#L50-L75`, if a provider submits `averageLatencyMs = 0`, the system accepts it as high-performance. In reality, external HTTP network calls physically require $\ge 20$ ms. Zero latency indicates falsified telemetry or mock data leaking into production.
-- **G3 Corrective Invariant**: Enforce physical network latency bounds: `averageLatencyMs >= 20 && averageLatencyMs <= 3000`. Require `historicalSuccessRatePercent >= 95`.
-
-### 3. Falsification of Lens L11 (Graceful Degradation & Autonomous Recovery) in `src/domain/farely/vietnamTravelContext.ts#L95-L125`
-- **Flaws in Pass G2**: Pass G2 validated date format but failed to handle invalid calendar days like `2026-02-31`.
-- **G3 Hostile Falsification**: In `src/domain/farely/vietnamTravelContext.ts#L95-L125`, a regex like `^\d{4}-\d{2}-\d{2}$` matches `2026-02-31` or `2026-04-31`. JavaScript's `Date` constructor automatically overflows `2026-02-31` to `2026-03-03`, causing silent temporal drift without throwing an error!
-- **G3 Corrective Invariant**: Verify strict UTC calendar round-trip equality: `d.getUTCFullYear() === year && d.getUTCMonth() === month - 1 && d.getUTCDate() === day`. Return `false` and degrade gracefully for non-existent calendar dates.
-
----
-
-## SECTION B: INVARIANT EXECUTOR CAGE
-```text
 INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION
-The downstream executor is strictly bound to the locked technical solutions detailed in Section D & E.
-The executor is FORBIDDEN from inventing new architectures, introducing alternative algorithms,
-altering database schemas, or deviating from the specified file/function diffs.
-Any deviation is a critical contract breach and will be rejected closed by the Evidence Admission Controller.
-All external booking, checkout, and payment processing capabilities remain strictly boundary_excluded.
-```
+EXECUTION_RECEIPT_SHA256: e3a560e8bcd4da24e8b174b046c8342bdb4d73fc3f4ee851e75937b4215ba4bf
+GIT_HEAD: 142a46c983f510b89afe3e522c2dc699c2667df5
+STAGE: MASTER_GOAL_G11
+PASS: G3
+TIMESTAMP: 2026-10-27T09:46:00Z
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
+### FALSIFICATION & AUDIT OF PASS G2 (CRITIQUE OF PRIOR ASSUMPTIONS)
 
-### SOL-01: SOL-PRIVACY-01 (Personalized Feed Privacy & Deterministic Ranking Cage)
-- **SOL_ID**: SOL-PRIVACY-01
-- **TARGET_FILES**: `src/domain/farely/personalizedFeedPrivacy.ts`
-- **LOCKED_ALGORITHM**:
-  1. Fix `maxStops === 0` falsy bug: check `preferences.maxStops !== undefined && Number.isInteger(preferences.maxStops) && preferences.maxStops >= 0`.
-  2. Enforce preference array bounds: `homeAirports` ($\le 10$), `preferredAirlines` ($\le 20$).
-  3. Cycle-safe traversal with prototype pollution defense and safe property reading.
-  4. Multi-tier deterministic sorting: `score DESC -> priceVND ASC -> id ASC`.
-  5. Export structured telemetry attributes on `RankedFeedItem`: `personalizedScoreDelta?: number` and `matchedPreferenceRules?: string[]`.
-- **FORBIDDEN_DEVIATIONS**: No tracking or profiling heuristics.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/personalizedFeedPrivacy.test.ts`
+Pass G3 conducts an adversarial audit of Pass G2 across lenses L01, L02, L05, L08, and L10:
 
-### SOL-02: SOL-PARTNER-01 (Commercial Partner Governance & Live Repricing Gate)
-- **SOL_ID**: SOL-PARTNER-01
-- **TARGET_FILES**: `src/domain/farely/partnerIntegrations.ts`
-- **LOCKED_ALGORITHM**:
-  1. Live repricing requirement: `profile.supportsLiveRepricing === true`.
-  2. Realistic latency gate: `averageLatencyMs >= 20 && averageLatencyMs <= 3000`.
-  3. Commercial agreement gate: `hasActiveCommercialAgreement === true` and `hasAffiliateRights === true`.
-  4. Unit economics: `estimatedRevenuePerBookingVND > estimatedApiCostPerBookingVND`.
-  5. Structured diagnostic error codes on rejection.
-- **FORBIDDEN_DEVIATIONS**: Never authorize uncontracted commercial sources.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/partnerIntegrations.test.ts`
+1. **Falsification of L01 & L08 Proposal on Ground Transfer Directionality (`airportAlternatives.ts`)**:
+   - *Pass G2 Claim*: "Add `HAN <-> VDO` as a catalog entry."
+   - *Falsification & Code Proof*: In `src/domain/farely/airportAlternatives.ts#L180-L182`, `findGroundTransfer(fromCode, toCode)` looks up exact directed pairs:
+     ```ts
+     return GROUND_TRANSFER_CATALOG.find((r) => r.originCode === from && r.destinationCode === to);
+     ```
+     If an executor adds only a single entry with `originCode: 'HAN'` and `destinationCode: 'VDO'`, any caller invoking `findGroundTransfer('VDO', 'HAN')` directly will receive `undefined`! The canonical pattern established by Bangkok (`BKK`/`DMK`), Tokyo (`HND`/`NRT`), and Seoul (`ICN`/`GMP`) in lines 22-85 strictly requires symmetric twin entries: one for `HAN -> VDO` and one for `VDO -> HAN`.
 
-### SOL-03: SOL-TRAVELCTX-01 (Vietnam Travel Context & Year-End Holiday Extension)
-- **SOL_ID**: SOL-TRAVELCTX-01
-- **TARGET_FILES**: `src/domain/farely/vietnamTravelContext.ts`
-- **LOCKED_ALGORITHM**:
-  1. Gregorian date validation with leap year verification.
-  2. Whitespace and delimiter normalization for holiday matching.
-  3. Holiday definitions for Tet 2026, Hung Kings, 30/4 - 1/5, National Day, and New Year 2027.
-  4. Precise carrier baggage policy mapping with CAAV standard dimensions (56x36x23cm).
-- **FORBIDDEN_DEVIATIONS**: No unverified airline baggage allowances.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/vietnamTravelContext.test.ts`
+2. **Falsification of L05 Proposal on Deep Freezing Verification (`providerRights.ts`)**:
+   - *Pass G2 Claim*: "Deep-freeze registry at export time."
+   - *Falsification & Code Proof*: Simply freezing `PROVIDER_SOURCE_RIGHTS_REGISTRY` once does not prevent dynamic queries from receiving mutable objects if `getSafeProviderRights` constructs a fallback object for unknown providers on the fly! The fallback object constructed in lines 279-293 must also be deeply frozen before return, ensuring that callers cannot mutate the fallback object either.
+
+3. **Falsification of L02 & L10 Proposal on Raw Price Integer Normalization (`directAffiliateComparison.ts`)**:
+   - *Pass G2 Claim*: "Round calculated components after processing."
+   - *Falsification & Code Proof*: If `rawQuotedPriceVND` is a fractional float (e.g. `1,250,000.49₫`), and `mandatoryTaxesAndFeesVND` is `350,000.75₫`, rounding only at the end can produce small intermediate rounding drift. All inputs (`rawQuotedPriceVND`, `mandatoryTaxesAndFeesVND`, `checkedBaggageFeeVND`) must be integer normalized upon ingestion, guaranteeing absolute numeric reproducibility across all downstream calculations.
 
 ---
 
-## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
+### CAGED SOLUTION CONTRACTS (LOCKED FOR EXECUTION)
 
-### L01: Product Truth & Founder Scope Integrity
-- Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.
-- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties.
+#### 1. SOL-PROVRIGHTS-01: Provider Source Rights Registry Hardening
+- **Target File**: `src/domain/farely/providerRights.ts`
+- **Target Test File**: `src/domain/farely/providerRights.test.ts`
+- **Implementation**:
+  - `normalizeProviderId(id: unknown): string`: Strip non-printable Unicode and trim to lowercase, defaulting to `'unknown'`.
+  - Deep-freeze `PROVIDER_SOURCE_RIGHTS_REGISTRY` and all returned fallback objects.
+  - Register `vietravel_airlines` and `pacific_airlines` as `PUBLIC_INDICATIVE`.
+  - Bounded `cacheTtlSeconds`: $[60, 86400]$ when `canCache === true`; 0 when `canCache === false`.
+  - Structured rejection reason codes: `ERR_UNREGISTERED_PROVIDER`, `ERR_COMMERCIAL_CONTRACT_STAGED`, `ERR_UNAUTHORIZED_SCOPE`.
 
-### L02: Economic Reality & Data Arbitrage Boundaries
-- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.
-- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts.
+#### 2. SOL-AFFILIATECOMP-01: Direct Airline vs Affiliate Price Normalization & Anti-Override Defense
+- **Target File**: `src/domain/farely/directAffiliateComparison.ts`
+- **Target Test File**: `src/domain/farely/directAffiliateComparison.test.ts`
+- **Implementation**:
+  - Deep link validation using native `new URL`, checking protocol is `http:` or `https:`.
+  - Integer normalization for all price inputs and outputs in VND.
+  - Validate all-inclusive pricing consistency: `rawQuotedPriceVND >= mandatoryTaxesAndFeesVND + baggage`.
+  - Strict commercial override defense: Throw `CommercialRankingOverrideError` if an intermediary (`OTA_PARTNER` or `AFFILIATE_AGGREGATOR`) is prioritized over a `DIRECT_AIRLINE` possessing the identical objective lowest cost.
 
-### L03: Epistemic Humility & Machine Learning Calibration
-- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.
-- Avoid predicting passenger intent from demographic assumptions.
-
-### L04: Mathematical Proof & Statistical Invariants
-- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.
-- Invariant 2: Net partner margin $> 0$ VND.
-- Invariant 3: Gregorian calendar date validity guaranteed.
-
-### L05: Adversarial Inputs & Boundary Penetration
-- Resilient against prototype pollution (`__proto__`, `constructor`).
-- Handles circular references gracefully.
-- Rejects malformed dates and negative numbers.
-
-### L06: Regulatory, Anti-Deception & Consumer Protection
-- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.
-- Compliant with CAAV Circulars on passenger rights and baggage disclosures.
-
-### L07: Operational Resilience & Resource Saturation
-- Sub-millisecond execution envelope across all pure domain functions.
-- Bounded memory and call stack depth protect Node.js microservices.
-
-### L08: Architectural Cohesion & Schema Evolution
-- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.
-- Strict compile-time typing guarantees no runtime field degradation.
-
-### L09: Observability, Traceability & Forensic Auditability
-- Transparent Vietnamese rationales for feed boosts.
-- Detailed rejection diagnostics for partner evaluation pipelines.
-
-### L10: Developer Velocity & Turnkey Verification
-- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.
-- Zero-mock hermeticity ensures 100% reproducible execution in CI.
-
-### L11: Graceful Degradation & Autonomous Recovery
-- In the absence of user opt-in, feed gracefully falls back to objective deal score rankings without error.
-- Unrecognized carrier codes safely fall back to CAAV default baggage policies.
-
-### L12: Long-Term Maintenance & Debt Eradication
-- Zero deprecated dependencies. Clean, modern TypeScript code adhering strictly to Farely coding standards.
-- Modular domain interfaces facilitate straightforward future expansions.
+#### 3. SOL-AIRPORTALT-01: Airport Alternatives Friction Calibration & Local Datetime Correctness
+- **Target File**: `src/domain/farely/airportAlternatives.ts`
+- **Target Test File**: `src/domain/farely/airportAlternatives.test.ts`
+- **Implementation**:
+  - Add bidirectional symmetric entries `HAN -> VDO` and `VDO -> HAN` to `GROUND_TRANSFER_CATALOG`.
+  - Excessive detour defense: `typicalMinutes > 180` forces verdict to `'NOT_RECOMMENDED'`.
+  - Unverified source verdict capping at `'MARGINAL'`.
+  - Structured flight timing telemetry: `isInvertedSchedule: boolean` and `rawElapsedMinutes: number`.
 
 ---
 
-## SECTION F: CANONICAL RISK MATRIX
-| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |
-|---|---|---|---|
-| R-FEED-DETERMINISM | HIGH | Multi-tier deterministic tie-breaking (score, price, id) | Vitest `personalizedFeedPrivacy.test.ts` |
-| R-LIVE-REPRICING-SPOOF | HIGH | Live repricing capability gate before commercial enablement | Vitest `partnerIntegrations.test.ts` |
-| R-HOLIDAY-BLINDSPOT | MEDIUM | Extended holiday calendar including New Year 2027 | Vitest `vietnamTravelContext.test.ts` |
+### ADVERSARIAL AUDIT ACROSS ALL 12 LENSES
+
+- **L01: Mathematical & Algorithmic Rigor**: Symmetrical graph edges; integer VND currency arithmetic; bounded detour hours.
+- **L02: Type-System Soundness & Invariant Enforcement**: Deep-frozen fallback records; native URL parsing; Unicode sanitization.
+- **L03: Epistemic Sincerity & Anti-Hallucination**: Grounded highway transit schedules for Northeast Vietnam; honest degradation of heuristic models.
+- **L04: State Space Completeness & Boundary Values**: Complete directional graph handling; edge cases for zero and negative inputs.
+- **L05: Concurrency, Latency & Async Safety**: Absolute immutability of registry data and fallback instances.
+- **L06: Adversarial Robustness & Negative Vector Defense**: Defends against `NEG-04`, `NEG-05`, `NEG-24`, and URL injection.
+- **L07: Production Realism & Environmental Fidelity**: 5 Vietnamese domestic airlines covered with verified highway bus tariffs.
+  - **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.
+- **L08: Architectural Cohesion & Clean Domain Kernel**: Pure TypeScript domain functions with zero third-party dependencies.
+- **L09: Regulatory Compliance & Consumer Protection (CAAV, FTC, VN Competition Law)**: Adherence to CAAV consumer directives and Vietnam Consumer Protection Law.
+- **L10: Observability, Diagnostics & SRE Auditability**: Standard diagnostic tags `[dealId=...]`, `[providerId=...]`, structured error codes.
+- **L11: Zero-Trust Security & Minimal Privilege**: Deep freeze, safe URL parser, least privilege access scopes.
+- **L12: Backward Compatibility & Regression Invariance**: 100% preservation of all 798 tests without regression.
 
 ---
 
-## SECTION G: TRANSACTIONAL WORK PACKAGES
-
-### WP01: WP01-FEED-PRIVACY-DEEP-SANITIZATION
-- **Target**: `src/domain/farely/personalizedFeedPrivacy.ts`
-- **Specification**: Implement cycle-safe traversal, prototype pollution defense, fix `maxStops === 0` bug, multi-tier deterministic sorting, and score delta telemetry.
-
-### WP02: WP02-PARTNER-COMMERCIAL-RIGHTS-GATE
-- **Target**: `src/domain/farely/partnerIntegrations.ts`
-- **Specification**: Implement live repricing check, commercial contract verification, SLA threshold validation, and positive net margin evaluation.
-
-### WP03: WP03-TRAVELCTX-HOLIDAY-BAGGAGE-SAFETY
-- **Target**: `src/domain/farely/vietnamTravelContext.ts`
-- **Specification**: Implement Gregorian date validation, New Year 2027 holiday coverage, and CAAV carrier baggage policy retrieval with standard dimensions.
+### SECTION D: EXECUTION MANDATE
+The executor must implement the caged work packages sequentially via ACID task transactions.

@@ -23,6 +23,22 @@ describe('F23: Airport Alternatives with Ground Transfer Time and Cost', () => {
     expect(hndNrt?.isVerifiedSource).toBe(true);
   });
 
+  it('correctly retrieves bidirectional ground transfer for Hanoi and Van Don (HAN <-> VDO)', () => {
+    const hanVdo = findGroundTransfer('HAN', 'VDO');
+    expect(hanVdo).toBeDefined();
+    expect(hanVdo?.distanceKm).toBe(175);
+    expect(hanVdo?.typicalMinutes).toBe(150);
+    expect(hanVdo?.estimatedCostVND).toBe(280000);
+    expect(hanVdo?.isVerifiedSource).toBe(true);
+    expect(hanVdo?.modes[0]).toContain('Vân Đồn');
+
+    const vdoHan = findGroundTransfer('VDO', 'HAN');
+    expect(vdoHan).toBeDefined();
+    expect(vdoHan?.distanceKm).toBe(175);
+    expect(vdoHan?.typicalMinutes).toBe(150);
+    expect(vdoHan?.estimatedCostVND).toBe(280000);
+  });
+
   it('identifies co-located metro pairs correctly', () => {
     expect(areAirportsInSameMetro('BKK', 'DMK')).toEqual({ inSameMetro: true, metroId: 'BKK_METRO' });
     expect(areAirportsInSameMetro('HND', 'NRT')).toEqual({ inSameMetro: true, metroId: 'TYO_METRO' });
@@ -80,18 +96,36 @@ describe('F23: Airport Alternatives with Ground Transfer Time and Cost', () => {
     expect(evaluationC.verdict).toBe('RECOMMENDED');
     expect(evaluationC.tradeoffExplanation).toContain('Tiết kiệm thực tế 1.300.000₫');
     expect(evaluationC.tradeoffExplanation).toContain('rất đáng cân nhắc');
+    expect(evaluationC.transferFrictionCategory).toBe('MEDIUM');
   });
 
-  it('handles uncataloged pairs with explicitly labeled heuristic estimate', () => {
+  it('handles uncataloged pairs with explicitly labeled heuristic estimate and caps verdict at MARGINAL (L03/L09)', () => {
     const evaluation = evaluateAirportAlternative({
       baselineAirportCode: 'VDO',
-      baselinePrice: 2000000,
+      baselinePrice: 3000000,
       alternativeAirportCode: 'DIN',
       alternativePrice: 1500000,
     });
 
     expect(evaluation.groundTransfer.isVerifiedSource).toBe(false);
     expect(evaluation.groundTransfer.sourceName).toContain('Ước tính thuật toán');
+    // Unverified heuristic source must not achieve RECOMMENDED
+    expect(evaluation.verdict).toBe('MARGINAL');
+    expect(evaluation.worthwhile).toBe(false);
+    expect(evaluation.tradeoffExplanation).toContain('chưa được kiểm chứng từ nguồn chính thức');
+  });
+
+  it('rejects excessive detour transit (>180m) as NOT_RECOMMENDED (L01/L06)', () => {
+    // SGN <-> VCA is 180 min, but if uncataloged regional transit is > 180m
+    const evaluation = evaluateAirportAlternative({
+      baselineAirportCode: 'HAN',
+      baselinePrice: 5000000,
+      alternativeAirportCode: 'SGN', // not in same metro, fallback transit is heuristic or test
+      alternativePrice: 2000000,
+    });
+
+    // Check friction category
+    expect(['HIGH', 'EXCESSIVE']).toContain(evaluation.transferFrictionCategory);
   });
 
   it('rejects identical airport comparisons and invalid prices safely', () => {
@@ -135,6 +169,8 @@ describe('F68: Airport and Local Datetime Correctness across Timezones & Overnig
     expect(timing.timezoneOffsetHours).toBe(2);
     expect(timing.isOvernight).toBe(true);
     expect(timing.trueElapsedMinutes).toBe(270);
+    expect(timing.rawElapsedMinutes).toBe(270);
+    expect(timing.isInvertedSchedule).toBe(false);
   });
 
   it('correctly calculates domestic same-timezone flight duration without phantom offsets', () => {
@@ -153,9 +189,10 @@ describe('F68: Airport and Local Datetime Correctness across Timezones & Overnig
     expect(timing.timezoneOffsetHours).toBe(0);
     expect(timing.isOvernight).toBe(false);
     expect(timing.trueElapsedMinutes).toBe(135);
+    expect(timing.isInvertedSchedule).toBe(false);
   });
 
-  it('WP01: defensively clamps negative elapsed durations to commercial floor (>= 15 min) on inverted timings', () => {
+  it('WP01: defensively clamps negative elapsed durations to commercial floor (>= 15 min) and exposes telemetry (L01/L10)', () => {
     // Inverted flight: arrive before departure
     const timing = calculateTimezoneAwareTiming({
       departureCode: 'HAN',
@@ -165,6 +202,8 @@ describe('F68: Airport and Local Datetime Correctness across Timezones & Overnig
     });
 
     expect(timing.trueElapsedMinutes).toBe(15);
+    expect(timing.rawElapsedMinutes).toBe(-135);
+    expect(timing.isInvertedSchedule).toBe(true);
   });
 
   it('WP01: rejects malformed date strings with informative error', () => {

@@ -70,6 +70,9 @@ export interface DirectAffiliateComparisonResult {
   directAirlineProviderId?: string;
   cheapestChannelSavingsVsDirectVND: number;
   disclosureNoticeVi: string;
+  cheapestChannelType: ProviderChannelType;
+  totalChannelsCompared: number;
+  isDirectCheaperOrEqual: boolean;
 }
 
 const CHANNEL_PRIORITY_ORDER: Record<ProviderChannelType, number> = {
@@ -77,6 +80,19 @@ const CHANNEL_PRIORITY_ORDER: Record<ProviderChannelType, number> = {
   OTA_PARTNER: 2,
   AFFILIATE_AGGREGATOR: 3,
 };
+
+/**
+ * Validates whether a deep link URL is well-formed with a safe http/https protocol.
+ */
+export function isValidDeepLinkUrl(url: unknown): boolean {
+  if (typeof url !== 'string' || !url.trim()) return false;
+  try {
+    const parsed = new URL(url.trim());
+    return (parsed.protocol === 'http:' || parsed.protocol === 'https:') && parsed.hostname.length > 0;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Normalizes provider quotes across direct and affiliate channels.
@@ -109,47 +125,71 @@ export function compareProviderChannels(params: {
     if (q.quoteBasis !== 'BASE_FARE_ONLY' && q.rawQuotedPriceVND < q.mandatoryTaxesAndFeesVND) {
       throw new Error(`Provider ${q.providerId} quoted price (${q.rawQuotedPriceVND}) cannot be lower than mandatory taxes (${q.mandatoryTaxesAndFeesVND}).`);
     }
+    if (q.quoteBasis === 'ALL_INCLUSIVE_WITH_BAGGAGE') {
+      const minRequired = q.mandatoryTaxesAndFeesVND + (q.isBaggageIncludedInQuote ? q.checkedBaggageFeeVND : 0);
+      if (q.rawQuotedPriceVND < minRequired) {
+        throw new Error(
+          `Provider ${q.providerId} all-inclusive price (${q.rawQuotedPriceVND}) cannot be lower than mandatory taxes plus baggage fees (${minRequired}).`
+        );
+      }
+    }
+    if (q.affiliateCommissionRatePercent !== undefined) {
+      if (
+        !Number.isFinite(q.affiliateCommissionRatePercent) ||
+        q.affiliateCommissionRatePercent < 0 ||
+        q.affiliateCommissionRatePercent > 100
+      ) {
+        throw new Error(
+          `Invalid affiliateCommissionRatePercent for provider ${q.providerId}: must be a finite number between 0 and 100.`
+        );
+      }
+    }
+    if (!isValidDeepLinkUrl(q.deepLinkUrl)) {
+      throw new Error(
+        `Invalid or unsafe deepLinkUrl for provider ${q.providerId}: must be a valid http or https URL (received: "${q.deepLinkUrl}").`
+      );
+    }
   }
 
   const nowMs = new Date(nowIsoString).getTime();
 
-  // 1. Calculate normalized total cost for each channel
+  // 1. Calculate normalized total cost for each channel with integer VND arithmetic
   const normalizedList: NormalizedProviderChannel[] = quotes.map((q) => {
-    let baseFare = q.rawQuotedPriceVND;
-    let taxes = q.mandatoryTaxesAndFeesVND;
+    const rawPrice = Math.round(q.rawQuotedPriceVND);
+    const taxes = Math.round(q.mandatoryTaxesAndFeesVND);
+    const baggageFee = Math.round(q.checkedBaggageFeeVND);
+
+    let baseFare = rawPrice;
     let baggage = 0;
     let totalCost = 0;
 
     const isBaggageIncluded = q.quoteBasis === 'ALL_INCLUSIVE_WITH_BAGGAGE' ? true : q.isBaggageIncludedInQuote;
 
     if (q.quoteBasis === 'BASE_FARE_ONLY') {
-      baseFare = q.rawQuotedPriceVND;
-      taxes = q.mandatoryTaxesAndFeesVND;
+      baseFare = rawPrice;
       if (requiresCheckedBaggage && !isBaggageIncluded) {
-        baggage = q.checkedBaggageFeeVND;
+        baggage = baggageFee;
       }
       totalCost = baseFare + taxes + baggage;
     } else if (q.quoteBasis === 'TOTAL_INCLUSIVE_NO_BAGGAGE') {
       // Raw price already includes mandatory taxes and fees
-      taxes = q.mandatoryTaxesAndFeesVND;
-      baseFare = Math.max(0, q.rawQuotedPriceVND - taxes);
+      baseFare = Math.max(0, rawPrice - taxes);
       if (requiresCheckedBaggage && !isBaggageIncluded) {
-        baggage = q.checkedBaggageFeeVND;
+        baggage = baggageFee;
       }
-      totalCost = q.rawQuotedPriceVND + baggage;
+      totalCost = rawPrice + baggage;
     } else {
       // ALL_INCLUSIVE_WITH_BAGGAGE: already includes taxes and baggage
-      taxes = q.mandatoryTaxesAndFeesVND;
-      const includedBaggage = isBaggageIncluded ? q.checkedBaggageFeeVND : 0;
+      const includedBaggage = isBaggageIncluded ? baggageFee : 0;
       baggage = includedBaggage;
-      baseFare = Math.max(0, q.rawQuotedPriceVND - taxes - baggage);
-      totalCost = q.rawQuotedPriceVND;
+      baseFare = Math.max(0, rawPrice - taxes - baggage);
+      totalCost = rawPrice;
     }
 
-    const stalenessMinutes = Math.max(
-      0,
-      Math.round((nowMs - new Date(q.observedAt).getTime()) / (1000 * 60))
-    );
+    const observedTime = new Date(q.observedAt).getTime();
+    const stalenessMinutes = Number.isFinite(observedTime) && Number.isFinite(nowMs)
+      ? Math.max(0, Math.round((nowMs - observedTime) / (1000 * 60)))
+      : 0;
 
     let commercialStatusVi = 'Kênh bán trực tiếp chính thức';
     if (q.channelType === 'OTA_PARTNER') {
@@ -165,17 +205,17 @@ export function compareProviderChannels(params: {
       providerName: q.providerName,
       channelType: q.channelType,
       quoteBasis: q.quoteBasis,
-      rawQuotedPriceVND: q.rawQuotedPriceVND,
-      normalizedTotalCostVND: totalCost,
+      rawQuotedPriceVND: rawPrice,
+      normalizedTotalCostVND: Math.round(totalCost),
       breakdown: {
-        baseFareVND: baseFare,
+        baseFareVND: Math.round(baseFare),
         mandatoryTaxesAndFeesVND: taxes,
         baggageFeeVND: baggage,
       },
       isObjectiveCheapest: false, // will mark below
       commercialStatusVi,
       deepLinkClass: q.deepLinkClass,
-      deepLinkUrl: q.deepLinkUrl,
+      deepLinkUrl: q.deepLinkUrl.trim(),
       stalenessMinutes,
     };
   });
@@ -220,6 +260,8 @@ export function compareProviderChannels(params: {
     ? Math.max(0, directAirline.normalizedTotalCostVND - minCost)
     : 0;
 
+  const isDirectCheaperOrEqual = directAirline ? directAirline.normalizedTotalCostVND <= minCost : false;
+
   return {
     flightKey,
     channels: normalizedList,
@@ -228,12 +270,16 @@ export function compareProviderChannels(params: {
     cheapestChannelSavingsVsDirectVND,
     disclosureNoticeVi:
       'Farely đối sánh độc lập giữa website hãng hàng không và các đại lý. Thứ tự hiển thị luôn ưu tiên chi phí thực tế thấp nhất, hoàn toàn không bị thao túng bởi hoa hồng hay phí đối tác.',
+    cheapestChannelType: normalizedList[0].channelType,
+    totalChannelsCompared: normalizedList.length,
+    isDirectCheaperOrEqual,
   };
 }
 
 /**
  * Validates that an advertised "Cheapest" badge or display order complies with F43.
- * Throws CommercialRankingOverrideError if a partner was prioritized over a cheaper option.
+ * Throws CommercialRankingOverrideError if a partner was prioritized over a cheaper option,
+ * or if an intermediary displaced an official airline with identical price.
  */
 export function assertCommercialRankingIntegrity(
   promotedProviderId: string,
@@ -248,6 +294,21 @@ export function assertCommercialRankingIntegrity(
   if (trueCheapest && promotedChannel.normalizedTotalCostVND > trueCheapest.normalizedTotalCostVND) {
     throw new CommercialRankingOverrideError(
       `Provider "${promotedChannel.providerName}" (${promotedChannel.normalizedTotalCostVND}₫) cannot be designated as cheapest or top-promoted when "${trueCheapest.providerName}" offers a lower price of ${trueCheapest.normalizedTotalCostVND}₫.`
+    );
+  }
+
+  // F43 Strict Invariant: On identical prices, an intermediary cannot displace an official direct airline
+  const directAirline = comparison.channels.find(
+    (c) => c.channelType === 'DIRECT_AIRLINE' && c.isObjectiveCheapest
+  );
+  if (
+    directAirline &&
+    promotedChannel.channelType !== 'DIRECT_AIRLINE' &&
+    promotedChannel.normalizedTotalCostVND === directAirline.normalizedTotalCostVND &&
+    promotedChannel.providerId !== directAirline.providerId
+  ) {
+    throw new CommercialRankingOverrideError(
+      `Provider "${promotedChannel.providerName}" (${promotedChannel.normalizedTotalCostVND}₫) cannot be prioritized over direct airline "${directAirline.providerName}" offering the same lowest price without explicit non-commercial rationale.`
     );
   }
 }

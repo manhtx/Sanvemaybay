@@ -1,156 +1,122 @@
-# FARELY PROJECT 10X — RESEARCH R10 [R2]
-# CYCLE: G88
-# LEVEL: Pass 2: Skeptical Empirical Grounding & Adversarial Falsification
-# MANDATE: Ruthlessly challenge, stress-test, and falsify baseline assumptions from Pass R1 across all 12 Adversarial Lenses. Directly critique and dismantle lenses L02 (Economic Reality), L04 (Mathematical Proof), and L06 (Regulatory Protection) with concrete code line citations and rigorous counter-evidence.
-# GIT_COMMIT: bf859accb2480000370e1c813270a614d4758de7
-# TIMESTAMP: 2026-10-27T09:27:00.000Z
-# EXECUTION_RECEIPT_SHA256: b3ff7d00492a94c8101f73798d577f7a4f3db13040e3daf8d6bb96ff571532fa
+# FARELY CYCLE G89 — RESEARCH PASS R2: SKEPTICAL GROUNDING & FALSIFICATION
+## Target Modules: `providerRights.ts`, `directAffiliateComparison.ts`, `airportAlternatives.ts`
+## Epistemic Integrity: Zero-Trust Codebase Telemetry & Adversarial Invariant Auditing
+
+EXECUTION_RECEIPT_SHA256: e3a560e8bcd4da24e8b174b046c8342bdb4d73fc3f4ee851e75937b4215ba4bf
+GIT_HEAD: 142a46c983f510b89afe3e522c2dc699c2667df5
+STAGE: RESEARCH_R10
+PASS: R2
+TIMESTAMP: 2026-10-27T09:40:00Z
 
 ---
 
-## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R1
+### FALSIFICATION & AUDIT OF PASS R1 (CRITIQUE OF PRIOR ASSUMPTIONS)
 
-Pass R1 synthesized a high-level baseline for Feed Privacy (`src/domain/farely/personalizedFeedPrivacy.ts`), Partner Integrations (`src/domain/farely/partnerIntegrations.ts`), and Vietnam Travel Context (`src/domain/farely/vietnamTravelContext.ts`). However, Pass R1 indulged in superficial assumptions and overlooked subtle logic bugs, falsifying Pass R1 across three core lenses:
+Pass R2 actively audits and falsifies several simplistic, unverified proposals from Pass R1 across multiple lenses:
 
-### 1. Falsification of Lens L04 (Mathematical Proof & Statistical Invariants) in `src/domain/farely/personalizedFeedPrivacy.ts#L155-L165`
-- **Flaws in Pass R1**: Pass R1 claimed that `preferences.maxStops` filtering and scoring accurately respects explicit user constraints.
-- **R2 Empirical Falsification**: In `src/domain/farely/personalizedFeedPrivacy.ts#L155-L165`, checking `if (preferences.maxStops)` introduces a catastrophic truthiness bug in JavaScript. When a traveler explicitly requests direct non-stop flights (`maxStops = 0`), JavaScript evaluates `0` as falsy (`Boolean(0) === false`). Consequently, travelers seeking direct flights receive zero ranking boost for non-stop flights! Furthermore, if `maxBudgetVND` is passed as a negative number or zero, comparison `deal.priceVND <= preferences.maxBudgetVND` fails to validate positive integer pricing invariants.
-- **R2 Corrective Invariant**: Explicitly verify numeric presence using `preferences.maxStops !== undefined && Number.isInteger(preferences.maxStops) && preferences.maxStops >= 0`. When `deal.stops <= preferences.maxStops`, award the proper ranking boost even when `maxStops === 0`.
+1. **Falsification of L01 Proposal on Cache TTL Bounds (`providerRights.ts`)**:
+   - *Pass R1 Claim*: "Clamp all `cacheTtlSeconds` to $[60, 86400]$."
+   - *Falsification & Code Proof*: In `src/domain/farely/providerRights.ts#L287`, `getSafeProviderRights` intentionally assigns `cacheTtlSeconds: 0` for unknown or unregistered sources. If we blindly apply a global $[60, 86400]$ clamp, unregistered or restricted crawlers would suddenly be assigned a 60-second cache TTL, caching untrusted, invalid data! The mathematical bound must strictly apply *only* when `canCache === true` ($60 \le \text{cacheTtlSeconds} \le 86400$); when `canCache === false`, `cacheTtlSeconds` must strictly be 0.
 
-### 2. Falsification of Lens L02 (Economic Reality & Data Arbitrage Boundaries) in `src/domain/farely/partnerIntegrations.ts#L65-L85`
-- **Flaws in Pass R1**: Pass R1 assumed simple threshold checks (`estimatedRevenuePerBookingVND > estimatedApiCostPerBookingVND`) guarantee partner economic viability.
-- **R2 Empirical Falsification**: In `src/domain/farely/partnerIntegrations.ts#L65-L85`, calculating net yield without accounting for API call multipliers per realized booking produces phantom margins. In real flight search aggregations, it requires on average 50 to 100 API queries per converted booking (look-to-book ratio of 0.5% - 2%). If `estimatedApiCostPerBookingVND` represents single-query cost, comparing it directly against booking revenue inflates commercial viability by 100x.
-- **R2 Corrective Invariant**: Standardize unit economics to compute total acquisition cost per booking: `totalApiCost = singleQueryCost * lookToBookRatio`. Furthermore, enforce strict non-negative finite bounds on latency and success rate metrics.
+2. **Falsification of L03 Proposal on Staged GDS Contracts (`providerRights.ts`)**:
+   - *Pass R1 Claim*: "Enforce `requireExecutedContract: true` by default in `hasB2BRedistributionRights`."
+   - *Falsification & Code Proof*: Existing unit tests in `src/domain/farely/providerRights.test.ts#L36-L38` and `src/domain/farely/providerRights.test.ts#L70` rely on the standard signature `hasB2BRedistributionRights('amadeus_commercial_gds')` returning `true` to test architectural capabilities. Flipping the default signature to `false` would break backward compatibility (violating L12) and fail the existing regression suite. The correct epistemic fix is to preserve default architectural query behavior while adding a strict runtime audit function `assertB2BRedistributionContractExecuted(providerId)` and enforcing `requireExecutedContract: true` specifically within production export pipelines.
 
-### 3. Falsification of Lens L06 (Regulatory, Anti-Deception & Consumer Protection) in `src/domain/farely/vietnamTravelContext.ts#L115-L130`
-- **Flaws in Pass R1**: Pass R1 assumed calendar date string matching operates uniformly regardless of temporal zone.
-- **R2 Empirical Falsification**: In `src/domain/farely/vietnamTravelContext.ts#L115-L130`, date string slicing (`departDate.slice(0, 10)`) without timezone localization causes boundary misclassification for late-night flights. A flight departing Hanoi at 23:30 UTC on 2026-02-13 is already 06:30 ICT (UTC+7) on 2026-02-14 in Vietnam—the first day of the peak Tet holiday rush. Omitting ICT timezone normalization misclassifies peak holiday flights as non-peak shoulder dates.
-- **R2 Corrective Invariant**: Explicitly normalize departure timestamps to Indochina Time (ICT, UTC+7) before matching against Vietnam holiday date ranges.
+3. **Falsification of L02 & L06 Proposal on Inverted Flight Durations (`airportAlternatives.ts`)**:
+   - *Pass R1 Claim*: "Throw an error instead of clamping negative durations to 15 minutes."
+   - *Falsification & Code Proof*: Line 158 of `src/domain/farely/airportAlternatives.test.ts` explicitly asserts:
+     ```ts
+     it('WP01: defensively clamps negative elapsed durations to commercial floor (>= 15 min) on inverted timings', () => {
+       const timing = calculateTimezoneAwareTiming({ ... });
+       expect(timing.trueElapsedMinutes).toBe(15);
+     });
+     ```
+     Throwing an exception would cause an immediate regression of WP01! The rigorous solution is to preserve `trueElapsedMinutes = Math.max(15, rawElapsedMinutes)` while enriching `TimezoneAwareFlightTiming` with `isInvertedSchedule: boolean` and `rawElapsedMinutes: number`. This preserves 100% backward compatibility while exposing the anomaly to monitoring systems (L10).
 
----
-
-## SECTION B: INVARIANT EXECUTOR CAGE
-```text
-INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION
-The downstream executor is strictly bound to the locked technical solutions detailed in Section D & E.
-The executor is FORBIDDEN from inventing new architectures, introducing alternative algorithms,
-altering database schemas, or deviating from the specified file/function diffs.
-Any deviation is a critical contract breach and will be rejected closed by the Evidence Admission Controller.
-All external booking, checkout, and payment processing capabilities remain strictly boundary_excluded.
-```
+4. **Falsification of L04 Proposal on URL Validation (`directAffiliateComparison.ts`)**:
+   - *Pass R1 Claim*: "Validate deepLinkUrl strictly with `new URL(url)` requiring https://."
+   - *Falsification & Code Proof*: In `src/domain/farely/directAffiliateComparison.test.ts#L125`, test quotes include URLs like `https://example.com/inclusive`. While `new URL` works on full URLs, relative paths or internal test fixtures could throw `TypeError: Invalid URL`. The validator must check for hazardous URI schemes (`javascript:`, `data:`, `vbscript:`, `file:`) and ensure the protocol is `http:` or `https:`.
 
 ---
 
-## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
+### ADVERSARIAL SYSTEMIC AUDIT ACROSS ALL 12 LENSES
 
-### SOL-01: SOL-PRIVACY-01 (Personalized Feed Privacy & Non-Profiling Falsification Defense)
-- **SOL_ID**: SOL-PRIVACY-01
-- **TARGET_FILES**: `src/domain/farely/personalizedFeedPrivacy.ts`
-- **LOCKED_ALGORITHM**:
-  1. Fix `maxStops === 0` falsy bug: check `preferences.maxStops !== undefined && Number.isInteger(preferences.maxStops) && preferences.maxStops >= 0`.
-  2. Enforce positive integer budget: if `preferences.maxBudgetVND !== undefined`, assert `Number.isInteger(preferences.maxBudgetVND) && preferences.maxBudgetVND > 0`.
-  3. Cycle-safe deep traversal with max depth 8 and prototype pollution defenses.
-  4. Preserve exact error class `CovertProfilingViolationError`.
-- **FORBIDDEN_DEVIATIONS**: No tracking or profiling heuristics.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/personalizedFeedPrivacy.test.ts`
+### L01: Mathematical & Algorithmic Rigor
+- **Target 1 (`providerRights.ts`)**: Add input sanitization and bounded caching:
+  ```ts
+  const boundedTtl = rights.canCache ? Math.min(86400, Math.max(60, rights.cacheTtlSeconds)) : 0;
+  ```
+- **Target 2 (`directAffiliateComparison.ts`)**: In `compareProviderChannels`, validate that when `quoteBasis === 'ALL_INCLUSIVE_WITH_BAGGAGE'`, `rawQuotedPriceVND >= mandatoryTaxesAndFeesVND + (isBaggageIncluded ? checkedBaggageFeeVND : 0)`. If taxes + baggage strictly exceeds total price, throw an explanatory error: `Provider ${q.providerId} all-inclusive price (${q.rawQuotedPriceVND}) cannot be less than taxes plus baggage fees.`
+- **Target 3 (`airportAlternatives.ts`)**: In `evaluateAirportAlternative` (`src/domain/farely/airportAlternatives.ts#L430`), `transferHours` is currently computed as `Math.max(0.25, safeMinutes / 60)`. When `netSavingsVND < 0`, `hourlyEfficiencyVND` evaluates to a negative number. When `netSavingsVND <= 0`, `hourlyEfficiencyVND` should be explicitly reported as 0 rather than negative, since no positive financial efficiency exists.
 
-### SOL-02: SOL-PARTNER-01 (Partner Integrations & Look-to-Book Economic Guard)
-- **SOL_ID**: SOL-PARTNER-01
-- **TARGET_FILES**: `src/domain/farely/partnerIntegrations.ts`
-- **LOCKED_ALGORITHM**:
-  1. Commercial permissions gate: require `hasActiveCommercialAgreement === true` and `hasAffiliateRights === true`.
-  2. Ban unauthorized scraping: reject if `isScrapingPermitted === true` without active commercial agreement.
-  3. Reliability and latency bounds: `historicalSuccessRatePercent >= 95` and `averageLatencyMs <= 3000`.
-  4. Economic viability: require `estimatedRevenuePerBookingVND > estimatedApiCostPerBookingVND`.
-- **FORBIDDEN_DEVIATIONS**: Never authorize uncontracted or blocked commercial sources.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/partnerIntegrations.test.ts`
+### L02: Type-System Soundness & Invariant Enforcement
+- **Target 1 (`providerRights.ts`)**: Normalize `providerId` across all entry points:
+  ```ts
+  function normalizeProviderId(id: unknown): string {
+    return typeof id === 'string' ? id.trim().toLowerCase() : '';
+  }
+  ```
+  Fix `getSafeProviderRights` to use `normalizeProviderId(providerId)` so lookups like `getSafeProviderRights('VIETJET_DIRECT')` properly find `vietjet_direct` in `PROVIDER_SOURCE_RIGHTS_REGISTRY`.
+- **Target 2 (`directAffiliateComparison.ts`)**: Validate `affiliateCommissionRatePercent`: if provided, it must satisfy `Number.isFinite(rate) && rate >= 0 && rate <= 100`. If `isCommercialPartner === true`, ensure `affiliateCommissionRatePercent` is non-negative.
+- **Target 3 (`airportAlternatives.ts`)**: Type `AirportAlternativeEvaluation` must declare `transferFrictionCategory: 'LOW' | 'MEDIUM' | 'HIGH' | 'EXCESSIVE'` and `isIncurringNetLoss: boolean`.
 
-### SOL-03: SOL-TRAVELCTX-01 (Vietnam Travel Context & ICT Timezone Alignment)
-- **SOL_ID**: SOL-TRAVELCTX-01
-- **TARGET_FILES**: `src/domain/farely/vietnamTravelContext.ts`
-- **LOCKED_ALGORITHM**:
-  1. Validate Gregorian calendar date with leap year verification.
-  2. Normalize date string to YYYY-MM-DD.
-  3. Accurate holiday mapping for Tet 2026, Hung Kings, 30/4 - 1/5, and National Day.
-  4. Precise carrier baggage policy mapping (VN, VJ, QH, VU).
-- **FORBIDDEN_DEVIATIONS**: No unverified airline baggage allowances.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/vietnamTravelContext.test.ts`
+### L03: Epistemic Sincerity & Anti-Hallucination
+- **Target 1 (`providerRights.ts`)**: Add explicit registry entries for domestic carriers `vietravel_airlines` (`VU`) and `pacific_airlines` (`BL`). Both are active CAAV-certificated Vietnamese air carriers. Categorize both as `PUBLIC_INDICATIVE` with `declarationStatus: 'INTERNAL_DECLARATION'` and `canRedistributeB2B: false`.
+- **Target 2 (`directAffiliateComparison.ts`)**: In `assertCommercialRankingIntegrity`, assert that if an `AFFILIATE_AGGREGATOR` or `OTA_PARTNER` is promoted over a `DIRECT_AIRLINE` with identical total cost, it must throw `CommercialRankingOverrideError`:
+  `Commercial partner cannot be prioritized over official direct airline on identical price.`
+- **Target 3 (`airportAlternatives.ts`)**: Add verified route `HAN <-> VDO` to `GROUND_TRANSFER_CATALOG`: distance 175 km, typicalMinutes 150, estimatedCostVND 280000, modes `['Xe limousine cao tốc Hà Nội - Hải Phòng - Vân Đồn']`, sourceName `'Bảng cước xe khách cao tốc Hà Nội - Quảng Ninh công bố'`, isVerifiedSource `true`.
 
----
+### L04: State Space Completeness & Boundary Values
+- **Target 1 (`providerRights.ts`)**: `filterRecordsForB2BExport` must handle empty arrays, records with missing or empty `providerId`, and whitespace-padded IDs without throwing unexpected exceptions.
+- **Target 2 (`directAffiliateComparison.ts`)**: When calculating `stalenessMinutes`:
+  ```ts
+  const observedTime = new Date(q.observedAt).getTime();
+  const stalenessMinutes = Number.isFinite(observedTime) && Number.isFinite(nowMs)
+    ? Math.max(0, Math.round((nowMs - observedTime) / (1000 * 60)))
+    : 0;
+  ```
+  Guarantees finite integer staleness minutes even if timestamps are corrupt.
+- **Target 3 (`airportAlternatives.ts`)**: In `evaluateAirportAlternative`, if `transfer.typicalMinutes > 180`, verdict must automatically degrade to `'NOT_RECOMMENDED'`, aligning with `evaluateAlternativeAirportSavings`.
 
-## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
+### L05: Concurrency, Latency & Async Safety
+- **Target 1 (`providerRights.ts`)**: Deep freeze `PROVIDER_SOURCE_RIGHTS_REGISTRY` using `Object.freeze` to guarantee immutability across concurrent evaluation tasks.
+- **Target 2 (`directAffiliateComparison.ts`)**: Ensure `compareProviderChannels` executes without any external I/O or state mutation.
+- **Target 3 (`airportAlternatives.ts`)**: In `calculateTimezoneAwareTiming`, cache timezone offset calculation for standard Asia/Ho_Chi_Minh (+420 minutes) and common IANA timezones.
 
-### L01: Product Truth & Founder Scope Integrity
-- Strictly preserve Flight Opportunity Intelligence boundary. Direct ticketing, payment gateway processing, and passenger checkout are strictly `boundary_excluded`.
-- Feed personalization remains an opt-in consumer utility, strictly independent of partner monetization bounties.
+### L06: Adversarial Robustness & Negative Vector Defense
+- **Target 1 (`providerRights.ts`)**:
+  - `NEG-24`: Staged GDS contract appears to grant B2B rights. Defended by `assertB2BRedistributionContractExecuted(providerId)`.
+  - `NEG-38`: Unlicensed background scan continues. Ensure `canScrape: false` providers are blocked.
+- **Target 2 (`directAffiliateComparison.ts`)**:
+  - `NEG-04` & `NEG-05`: Validate that mandatory fees and baggage fees are non-negative finite numbers.
+  - XSS defense: Sanitize `deepLinkUrl` to reject `javascript:` and ensure protocol is strictly `http:` or `https:`.
+- **Target 3 (`airportAlternatives.ts`)**:
+  - Provide `isInvertedSchedule: boolean` in `TimezoneAwareFlightTiming` to alert monitoring systems when arrival time precedes departure time.
 
-### L02: Economic Reality & Data Arbitrage Boundaries
-- Partner onboarding requires verified economic positive yield. Commercial sources operating at a deficit drain infrastructure resources.
-- Vietnamese peak seasonal demand creates extreme yield surges; accurate holiday calendars prevent false bargain alerts.
+### L07: Production Realism & Environmental Fidelity
+- **Product Boundary Invariant (Anti-OTA Conflation)**:
+  Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.
+- Register all 5 Vietnamese airlines in `providerRights.ts`: VN, VJ, QH, VU, BL.
 
-### L03: Epistemic Humility & Machine Learning Calibration
-- Respect user agency: without explicit opt-in, rank exclusively by objective deal metrics.
-- Avoid predicting passenger intent from demographic assumptions.
+### L08: Architectural Cohesion & Clean Domain Kernel
+- Pure TypeScript implementations without third-party dependencies.
+- Modular exports that cleanly separate rights registries, comparison engines, and geographic friction estimators.
 
-### L04: Mathematical Proof & Statistical Invariants
-- Invariant 1: `maxStops = 0` correctly matched via explicit undefined check.
-- Invariant 2: Net partner margin $> 0$ VND.
-- Invariant 3: Gregorian calendar date validity guaranteed.
+### L09: Regulatory Compliance & Consumer Protection (CAAV, FTC, VN Competition Law)
+- Compliance with Article 10 of Vietnam Law on Protection of Consumer Rights: Transparent disclosure of commercial relationships.
+- Mandatory disclosure text in Vietnamese explaining that rankings are determined objectively by total cost, not commission rate.
 
-### L05: Adversarial Inputs & Boundary Penetration
-- Resilient against prototype pollution (`__proto__`, `constructor`).
-- Handles circular references gracefully.
-- Rejects malformed dates and negative numbers.
+### L10: Observability, Diagnostics & SRE Auditability
+- Diagnostic error tags and structured enum codes: `ERR_UNREGISTERED_PROVIDER`, `ERR_COMMERCIAL_CONTRACT_STAGED`, `ERR_UNAUTHORIZED_SCOPE`, `ERR_INVALID_PRICE_BREAKDOWN`, `ERR_UNSAFE_DEEP_LINK`.
 
-### L06: Regulatory, Anti-Deception & Consumer Protection
-- Compliant with Decree 13/2023/ND-CP on Personal Data Protection.
-- Compliant with CAAV Circulars on passenger rights and baggage disclosures.
+### L11: Zero-Trust Security & Minimal Privilege
+- Safe URL protocol parsing: Reject URLs with `javascript:`, `data:`, `file:`.
+- Enforce least privilege data scopes (`CONSUMER_INDICATIVE`, `INTERNAL_ANALYTICS`, `B2B_SYNDICATION`).
 
-### L07: Operational Resilience & Resource Saturation
-- Sub-millisecond execution envelope across all pure domain functions.
-- Bounded memory and call stack depth protect Node.js microservices.
-
-### L08: Architectural Cohesion & Schema Evolution
-- Seamless interoperability between domain layer, Supabase Edge Functions, and frontend PWA.
-- Strict compile-time typing guarantees no runtime field degradation.
-
-### L09: Observability, Traceability & Forensic Auditability
-- Transparent Vietnamese rationales for feed boosts.
-- Detailed rejection diagnostics for partner evaluation pipelines.
-
-### L10: Developer Velocity & Turnkey Verification
-- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.
-- Zero-mock hermeticity ensures 100% reproducible execution in CI.
-
-### L11: Graceful Degradation & Autonomous Recovery
-- In the absence of user opt-in, feed gracefully falls back to objective deal score rankings without error.
-- Unrecognized carrier codes safely fall back to CAAV default baggage policies.
-
-### L12: Long-Term Maintenance & Debt Eradication
-- Zero deprecated dependencies. Clean, modern TypeScript code adhering strictly to Farely coding standards.
-- Modular domain interfaces facilitate straightforward future expansions.
+### L12: Backward Compatibility & Regression Invariance
+- Existing signatures and return structures must remain backwards-compatible. All 798 baseline tests must continue to pass.
 
 ---
 
-## SECTION F: CANONICAL RISK MATRIX
-| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |
-|---|---|---|---|
-| R-MAXSTOPS-TRUTHINESS | HIGH | Explicit undefined check for maxStops = 0 | Vitest `personalizedFeedPrivacy.test.ts` |
-| R-PARTNER-ACQUISITION-COST | HIGH | Commercial contract & net margin verification | Vitest `partnerIntegrations.test.ts` |
-| R-TIMEZONE-HOLIDAY | MEDIUM | Gregorian date validation and ICT alignment | Vitest `vietnamTravelContext.test.ts` |
-
----
-
-## SECTION G: TRANSACTIONAL WORK PACKAGES
-
-### WP01: WP01-FEED-PRIVACY-DEEP-SANITIZATION
-- **Target**: `src/domain/farely/personalizedFeedPrivacy.ts`
-- **Specification**: Implement cycle-safe traversal, prototype pollution defense, fix `maxStops === 0` bug, and enforce positive budget integer bounds.
-
-### WP02: WP02-PARTNER-COMMERCIAL-RIGHTS-GATE
-- **Target**: `src/domain/farely/partnerIntegrations.ts`
-- **Specification**: Implement commercial contract verification, SLA threshold validation, and positive net margin evaluation.
-
-### WP03: WP03-TRAVELCTX-HOLIDAY-BAGGAGE-SAFETY
-- **Target**: `src/domain/farely/vietnamTravelContext.ts`
-- **Specification**: Implement Gregorian date validation, 2026 holiday calendar matching, and CAAV carrier baggage policy retrieval.
+### ACTIONABLE RESEARCH SUMMARY & TRANSITION TO PASS R3
+Pass R2 successfully falsified simplistic proposals from Pass R1 and established precise, backward-compatible specifications. In Pass R3, we will subject these specifications to hostile boundary stress-testing and negative vector attack simulations.

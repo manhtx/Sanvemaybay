@@ -44,7 +44,16 @@ export interface ProviderSourceRights {
   authorizedScopes: readonly AuthorizedDataScope[];
 }
 
-export const PROVIDER_SOURCE_RIGHTS_REGISTRY: Record<string, ProviderSourceRights> = {
+/**
+ * Normalizes provider IDs by stripping non-printable Unicode characters, trimming, and lowercasing.
+ */
+export function normalizeProviderId(id: unknown): string {
+  if (typeof id !== 'string') return 'unknown';
+  const cleaned = id.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().toLowerCase();
+  return cleaned.length > 0 ? cleaned : 'unknown';
+}
+
+const RAW_REGISTRY: Record<string, ProviderSourceRights> = {
   vietjet_direct: {
     providerId: 'vietjet_direct',
     sourceName: 'Vietjet Air Direct',
@@ -88,6 +97,36 @@ export const PROVIDER_SOURCE_RIGHTS_REGISTRY: Record<string, ProviderSourceRight
     canMonetizeAffiliate: true,
     attributionRequired: true,
     termsSummary: 'Indicative schedule and fare display.',
+    authorizedScopes: ['CONSUMER_INDICATIVE', 'INTERNAL_ANALYTICS'],
+  },
+  vietravel_airlines: {
+    providerId: 'vietravel_airlines',
+    sourceName: 'Vietravel Airlines',
+    licenseType: 'PUBLIC_INDICATIVE',
+    declarationStatus: 'INTERNAL_DECLARATION',
+    canScrape: true,
+    canDisplayDirectly: true,
+    canCache: true,
+    cacheTtlSeconds: 1800,
+    canRedistributeB2B: false,
+    canMonetizeAffiliate: true,
+    attributionRequired: true,
+    termsSummary: 'Indicative schedule and fare display with consumer redirection. Commercial B2B syndication prohibited.',
+    authorizedScopes: ['CONSUMER_INDICATIVE', 'INTERNAL_ANALYTICS'],
+  },
+  pacific_airlines: {
+    providerId: 'pacific_airlines',
+    sourceName: 'Pacific Airlines',
+    licenseType: 'PUBLIC_INDICATIVE',
+    declarationStatus: 'INTERNAL_DECLARATION',
+    canScrape: true,
+    canDisplayDirectly: true,
+    canCache: true,
+    cacheTtlSeconds: 1800,
+    canRedistributeB2B: false,
+    canMonetizeAffiliate: true,
+    attributionRequired: true,
+    termsSummary: 'Indicative domestic fares. Commercial syndication prohibited.',
     authorizedScopes: ['CONSUMER_INDICATIVE', 'INTERNAL_ANALYTICS'],
   },
   fast_flights_google: {
@@ -137,6 +176,19 @@ export const PROVIDER_SOURCE_RIGHTS_REGISTRY: Record<string, ProviderSourceRight
   },
 };
 
+// Deep freeze registry entries and collections for absolute runtime immutability (L05/L11)
+for (const entry of Object.values(RAW_REGISTRY)) {
+  if (entry.canCache) {
+    entry.cacheTtlSeconds = Math.min(86400, Math.max(60, Math.round(entry.cacheTtlSeconds)));
+  } else {
+    entry.cacheTtlSeconds = 0;
+  }
+  Object.freeze(entry.authorizedScopes);
+  Object.freeze(entry);
+}
+
+export const PROVIDER_SOURCE_RIGHTS_REGISTRY: Readonly<Record<string, ProviderSourceRights>> = Object.freeze(RAW_REGISTRY);
+
 /**
  * Checks whether an integration requires an executed commercial contract before live activation.
  * AUD-08: Ensures architectural declarations are never misrepresented as executed legal rights.
@@ -159,7 +211,8 @@ export class DataRightsViolationError extends Error {
 }
 
 export function getProviderSourceRights(providerId: string): ProviderSourceRights | undefined {
-  return PROVIDER_SOURCE_RIGHTS_REGISTRY[providerId.trim().toLowerCase()];
+  const normalized = normalizeProviderId(providerId);
+  return PROVIDER_SOURCE_RIGHTS_REGISTRY[normalized];
 }
 
 /**
@@ -186,12 +239,12 @@ export function validateB2BRedistributionScope(
   options: { requireExecutedContract?: boolean } = {}
 ): {
   authorized: string[];
-  denied: { providerId: string; reason: string }[];
+  denied: { providerId: string; reason: string; errorCode?: string }[];
 } {
   const authorized: string[] = [];
-  const denied: { providerId: string; reason: string }[] = [];
+  const denied: { providerId: string; reason: string; errorCode?: string }[] = [];
   const cleanedIds = Array.from(
-    new Set((providerIds || []).map((id) => (id || '').trim().toLowerCase()).filter(Boolean))
+    new Set((providerIds || []).map((id) => normalizeProviderId(id)).filter((id) => id !== 'unknown'))
   );
 
   for (const id of cleanedIds) {
@@ -199,7 +252,8 @@ export function validateB2BRedistributionScope(
     if (!rights) {
       denied.push({
         providerId: id,
-        reason: `Nguồn dữ liệu '${id}' chưa được đăng ký trong Provider Rights Registry.`,
+        reason: `[ERR_UNREGISTERED_PROVIDER] Nguồn dữ liệu '${id}' chưa được đăng ký trong Provider Rights Registry.`,
+        errorCode: 'ERR_UNREGISTERED_PROVIDER',
       });
     } else if (
       options.requireExecutedContract &&
@@ -207,12 +261,14 @@ export function validateB2BRedistributionScope(
     ) {
       denied.push({
         providerId: id,
-        reason: `Nguồn '${rights.sourceName}' yêu cầu hợp đồng thương mại có hiệu lực trước khi phân phối B2B (COMMERCIAL_STAGED_CONTRACT_REQUIRED).`,
+        reason: `[ERR_COMMERCIAL_CONTRACT_STAGED] Nguồn '${rights.sourceName}' yêu cầu hợp đồng thương mại có hiệu lực trước khi phân phối B2B (COMMERCIAL_STAGED_CONTRACT_REQUIRED).`,
+        errorCode: 'ERR_COMMERCIAL_CONTRACT_STAGED',
       });
     } else if (!rights.canRedistributeB2B || !rights.authorizedScopes.includes('B2B_SYNDICATION')) {
       denied.push({
         providerId: id,
-        reason: `Nguồn '${rights.sourceName}' thuộc phân loại '${rights.licenseType}' — Không có quyền B2B syndication/redistribution (${rights.termsSummary}).`,
+        reason: `[ERR_UNAUTHORIZED_SCOPE] Nguồn '${rights.sourceName}' thuộc phân loại '${rights.licenseType}' — Không có quyền B2B syndication/redistribution (${rights.termsSummary}).`,
+        errorCode: 'ERR_UNAUTHORIZED_SCOPE',
       });
     } else {
       authorized.push(id);
@@ -233,31 +289,36 @@ export function filterRecordsForB2BExport<T extends { providerId?: string }>(
 ): {
   permittedRecords: T[];
   rejectedRecords: T[];
-  rejectedReasons: { providerId: string; reason: string }[];
+  rejectedReasons: { providerId: string; reason: string; errorCode?: string }[];
 } {
   const permittedRecords: T[] = [];
   const rejectedRecords: T[] = [];
-  const rejectedReasons: { providerId: string; reason: string }[] = [];
+  const rejectedReasons: { providerId: string; reason: string; errorCode?: string }[] = [];
 
   for (const record of records) {
-    const pId = record.providerId || 'unknown';
+    const rawId = record.providerId;
+    const pId = normalizeProviderId(rawId);
     if (hasB2BRedistributionRights(pId, options)) {
       permittedRecords.push(record);
     } else {
       rejectedRecords.push(record);
       const rights = getProviderSourceRights(pId);
       let reason: string;
+      let errorCode: string;
       if (!rights) {
-        reason = `Nguồn '${pId}' không xác định trong registry.`;
+        reason = `[ERR_UNREGISTERED_PROVIDER] Nguồn '${pId}' không xác định trong registry.`;
+        errorCode = 'ERR_UNREGISTERED_PROVIDER';
       } else if (
         options.requireExecutedContract &&
         rights.declarationStatus === 'COMMERCIAL_STAGED_CONTRACT_REQUIRED'
       ) {
-        reason = `Nguồn '${rights.sourceName}' yêu cầu hợp đồng thương mại có hiệu lực trước khi phân phối B2B (COMMERCIAL_STAGED_CONTRACT_REQUIRED).`;
+        reason = `[ERR_COMMERCIAL_CONTRACT_STAGED] Nguồn '${rights.sourceName}' yêu cầu hợp đồng thương mại có hiệu lực trước khi phân phối B2B (COMMERCIAL_STAGED_CONTRACT_REQUIRED).`;
+        errorCode = 'ERR_COMMERCIAL_CONTRACT_STAGED';
       } else {
-        reason = `Nguồn '${rights.sourceName}' không có quyền B2B syndication.`;
+        reason = `[ERR_UNAUTHORIZED_SCOPE] Nguồn '${rights.sourceName}' không có quyền B2B syndication.`;
+        errorCode = 'ERR_UNAUTHORIZED_SCOPE';
       }
-      rejectedReasons.push({ providerId: pId, reason });
+      rejectedReasons.push({ providerId: pId, reason, errorCode });
 
       if (options.strict) {
         throw new DataRightsViolationError(pId, 'B2B_REDISTRIBUTION', reason);
@@ -274,11 +335,12 @@ export function filterRecordsForB2BExport<T extends { providerId?: string }>(
  * preventing accidental scope leakage or runtime null pointer exceptions.
  */
 export function getSafeProviderRights(providerId: string): ProviderSourceRights {
-  const existing = PROVIDER_SOURCE_RIGHTS_REGISTRY[providerId];
+  const normalized = normalizeProviderId(providerId);
+  const existing = PROVIDER_SOURCE_RIGHTS_REGISTRY[normalized];
   if (existing) return existing;
-  return {
-    providerId,
-    sourceName: `Unknown Provider (${providerId})`,
+  return Object.freeze({
+    providerId: normalized,
+    sourceName: `Unknown Provider (${normalized})`,
     licenseType: 'RESTRICTED',
     declarationStatus: 'INTERNAL_DECLARATION',
     canScrape: false,
@@ -289,8 +351,8 @@ export function getSafeProviderRights(providerId: string): ProviderSourceRights 
     canMonetizeAffiliate: false,
     attributionRequired: true,
     termsSummary: 'Unregistered source; strictly denied for external display or distribution.',
-    authorizedScopes: [],
-  };
+    authorizedScopes: Object.freeze([]) as readonly AuthorizedDataScope[],
+  });
 }
 
 /**
@@ -301,4 +363,3 @@ export function isProviderQueryPermitted(providerId: string, scope: AuthorizedDa
   if (rights.licenseType === 'RESTRICTED') return false;
   return rights.authorizedScopes.includes(scope);
 }
-
