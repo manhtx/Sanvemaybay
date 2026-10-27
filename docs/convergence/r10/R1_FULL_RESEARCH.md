@@ -1,10 +1,10 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R1]
-# CYCLE: G86
+# CYCLE: G87
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
-# MANDATE: Synthesize comprehensive baseline empirical research across all 12 Adversarial Lenses for Cycle G86. Lock technical solutions SOL-BUYWAIT-01 (Close-in booking window escalation guard & time-decayed volatility), SOL-BUDGET-01 (Destination-calibrated seasonal living cost ratios & finite component bounds), and SOL-GROUP-01 (Inventory bucket cliff mitigation & blended party fare allocation) under the Solution Cage Protocol with zero-trust verification and turnkey regression tests.
-# GIT_COMMIT: 44db15d38b9195228d1ffc54954a759645c824a8
-# TIMESTAMP: 2026-10-27T08:52:00.000Z
-# EXECUTION_RECEIPT_SHA256: 581ac9b57b7e5fbb62a1c1ca079b3d9f46144a40f901d205fcfff57abcec2040
+# MANDATE: Synthesize comprehensive baseline empirical research across all 12 Adversarial Lenses for Cycle G87. Lock technical solutions SOL-EDITORIAL-01 (Editorial curation expiration & scarcity proof), SOL-MULTICITY-01 (Chronological slice ordering & open-jaw surface transfer safety), and SOL-DATAECON-01 (Marginal scan ROI floor & useful Watch attribution) under the Solution Cage Protocol with zero-trust verification and turnkey regression tests.
+# GIT_COMMIT: 49917580f95ef93e3333b2a6977ef46c873fd22e
+# TIMESTAMP: 2026-10-27T09:12:00.000Z
+# EXECUTION_RECEIPT_SHA256: 4f4f8e68c913492e1fadb7df28e3fc3b5d7afd6562122c5cc320270bafec91f0
 
 ---
 
@@ -22,95 +22,93 @@ All external booking, checkout, and payment processing capabilities remain stric
 
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-BUYWAIT-01 (Close-In Booking Window Escalation Guard & Volatility Decay)
-- **SOL_ID**: SOL-BUYWAIT-01
-- **TARGET_FILES**: `src/domain/farely/buyWaitGuidance.ts`
+### SOL-01: SOL-EDITORIAL-01 (Editorial Curation Expiration Bounds & Scarcity Proof)
+- **SOL_ID**: SOL-EDITORIAL-01
+- **TARGET_FILES**: `src/domain/farely/editorialCollections.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `evaluateBuyWaitGuidance`:
-     - Calculate days until departure: `const daysUntilDeparture = Math.round((new Date(departureDate).getTime() - evalDateMs) / (1000 * 60 * 60 * 24));`.
-     - Close-in booking guard: If `daysUntilDeparture <= 3`, airline dynamic yield management closes promotional buckets and applies last-minute surcharges. In this window, advising `WAIT_AND_WATCH` is strictly prohibited. If price is finite and positive, default to `BUY_NOW` with explicit rationale: `"Chuyến bay khởi hành trong vòng ${daysUntilDeparture} ngày tới. Giá vé cận ngày có xu hướng tăng nhanh do các dải giá thấp đã đóng, khuyến nghị mua ngay."`.
-     - Sanitize inputs: assert `Number.isFinite(currentPrice)` and `currentPrice > 0`.
-     - Exponential time decay: assign higher statistical weights to recent price points when evaluating price percentiles.
-- **FORBIDDEN_DEVIATIONS**: No unverified external statistics libraries; preserve `PriceScopeType` distinctions; maintain Vietnamese rationale fidelity.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
+  1. In `validateCuratedDeal`:
+     - Ban fabricated scarcity: if `deal.scarcityClaim` exists, assert `deal.scarcityClaim.hasProviderInventoryProof === true` and `deal.scarcityClaim.seatsRemaining > 0`. If proof is absent, throw `FabricatedScarcityError`.
+     - Validate discount claims: if `deal.claimedDiscountPercent` is stated, calculate true discount $\frac{\text{cohortMedianPriceVND} - \text{advertisedPriceVND}}{\text{cohortMedianPriceVND}} \times 100$. If claimed discount exceeds calculated discount by $> 2\%$, throw `UnsupportedFeaturedDiscountError`.
+     - Enforce observation freshness: reject items where `observedAt` is older than 24 hours (1,440 minutes).
+- **FORBIDDEN_DEVIATIONS**: No unverified external marketing dependencies; preserve exact error classes; maintain Vietnamese curation notes.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/editorialCollections.test.ts`
 
-### SOL-02: SOL-BUDGET-01 (Seasonal Destination Benchmark Calibration & Total Trip Bounds)
-- **SOL_ID**: SOL-BUDGET-01
-- **TARGET_FILES**: `src/domain/farely/tripBudgetEstimator.ts`
+### SOL-02: SOL-MULTICITY-01 (Chronological Slice Ordering & Open-Jaw Surface Safety)
+- **SOL_ID**: SOL-MULTICITY-01
+- **TARGET_FILES**: `src/domain/farely/multiCityItinerary.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `estimateTripBudget`:
-     - Sanitize input parameters: enforce `nights >= 1` (minimum 1-night stay) and clamp passenger party count `1 <= travelers <= 50`.
-     - Validate finite numerical costs: ensure `airfareVND`, `nights`, and `travelers` are positive integers.
-     - Seasonal multiplier: if travel dates overlap Tet peak periods (`isTetDeparture(travelDate)`), apply a $1.35\times$ seasonal inflation multiplier to accommodation and local activities.
-     - Total budget formula:
-       $$\text{TotalBudget} = \text{AirfareTotal} + (\text{LodgingPerNight} \times \text{Nights}) + (\text{DailyFood} \times \text{Days} \times \text{Travelers}) + \text{AirportTransfers}$$
-     - Maintain clear typed separation between `KNOWN` airfare component and `ESTIMATED` ground expenses.
-- **FORBIDDEN_DEVIATIONS**: No database schema migrations; retain benchmark registry structure in `DESTINATION_BENCHMARK_COSTS`.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/tripBudgetEstimator.test.ts`
+  1. In `validateMultiCityItinerary`:
+     - Enforce slice bounds: require $2 \le \text{slices.length} \le 10$.
+     - Chronological strictly monotonic validation: verify `slice[i].departDate <= slice[i+1].departDate`.
+     - Open-jaw surface detection: if `slice[i].destinationCode !== slice[i+1].originCode`, flag `hasOpenJawSurfaceSegment = true` and generate explicit Vietnamese transit notice.
+     - Single through-ticket vs self-transfer classification: if carriers on separate slices do not share an interline agreement (`ALLIANCE_PARTNERS`), strictly classify as `SELF_TRANSFER_UNPROTECTED` with high connection risk warning.
+     - Reject fictitious single offer claims: throw `FictitiousSingleOfferError` if separate independent one-way fares are promoted as a single through-ticket.
+- **FORBIDDEN_DEVIATIONS**: No database schema migrations; retain alliance sets in `ALLIANCE_PARTNERS`.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### SOL-03: SOL-GROUP-01 (Inventory Bucket Cliff Mitigation & Blended Party Fare Allocation)
-- **SOL_ID**: SOL-GROUP-01
-- **TARGET_FILES**: `src/domain/farely/groupFarePlanner.ts`
+### SOL-03: SOL-DATAECON-01 (Marginal Scan ROI Floor & Watch Demand Gating)
+- **SOL_ID**: SOL-DATAECON-01
+- **TARGET_FILES**: `src/domain/farely/dataEconomics.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `calculateGroupFare`:
-     - Enforce CAAV compliance: verify that lap infants ($< 2$ years) do not exceed adult passenger count (max 1 infant per adult lap).
-     - Bucket cliff detection: if `requestedPartySize > availableSeatsInBucket`, evaluate blended allocation where available seats are priced at the promotional tier and remaining seats are priced at the next higher fare bucket.
-     - Provide transparent total fare breakdown: base fare, passenger facility charges, security fees, and optional baggage addons.
-     - Single-passenger price cannot be promoted or disguised as the family party total.
-- **FORBIDDEN_DEVIATIONS**: No direct airline booking API mocking; preserve CAAV mandatory fee schedules.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/groupFarePlanner.test.ts`
+  1. In `evaluateScanExpansion`:
+     - Sanitize inputs: verify `Number.isFinite` on all unit costs and subscriber counts.
+     - Demand gating: if `activeWatchSubscribersCount === 0`, reject expansion as `REJECTED_UNECONOMIC` with `"Không có người dùng nào đang theo dõi chặng bay này."`.
+     - ROI threshold: calculate marginal cost and estimated marginal value. If $\text{marginalRoiRatio} < 1.0$, reject proposal.
+     - Enforce minimum unit cost floor: `computeSafeUnitCostVnd` must return at least 1 VND for positive cost batches.
+- **FORBIDDEN_DEVIATIONS**: No direct cloud billing SDK calls; maintain deterministic simulation equations.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
 
 ---
 
 ## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by ensuring group fare estimators never disguise single-passenger fares as party totals in `src/domain/farely/groupFarePlanner.ts`.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:9`, `src/domain/farely/buyWaitGuidance.ts:8`, `src/domain/farely/providerRights.ts:18`
+- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by ensuring curated collections never fabricate urgency or scarcity in `src/domain/farely/editorialCollections.ts`.
+- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:9`, `src/domain/farely/multiCityItinerary.ts:8`, `src/domain/farely/providerRights.ts:18`
 
 ### L02: Economic Reality & Data Arbitrage Boundaries
-- **Audit Findings**: Total trip budget calculations in `src/domain/farely/tripBudgetEstimator.ts` combine grounded airfare quotes with realistic local accommodation and food benchmarks, preventing consumers from underbudgeting overall travel costs.
-- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:25`, `src/domain/farely/dataEconomics.ts:63`
+- **Audit Findings**: Data economics optimization in `src/domain/farely/dataEconomics.ts` enforces a strict unit economics floor, refusing to expend search infrastructure on unmonitored routes.
+- **Physical Code Citations**: `src/domain/farely/dataEconomics.ts:70`, `src/domain/farely/airportAlternatives.ts:25`
 
 ### L03: Epistemic Humility & Machine Learning Calibration
-- **Audit Findings**: Buy/Wait guidance in `src/domain/farely/buyWaitGuidance.ts` strictly defaults to `INSUFFICIENT_DATA` whenever historical observations span fewer than 14 samples across 7 days, refusing to make ungrounded market predictions.
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:45`, `src/domain/farely/priceAnomaly.ts:40`
+- **Audit Findings**: Multi-city validations explicitly warn travelers when tickets are non-interline (`SELF_TRANSFER_UNPROTECTED`), refusing to guarantee missed connection rebooking without airline protection.
+- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:26`, `src/domain/farely/buyWaitGuidance.ts:45`
 
 ### L04: Mathematical Proof & Statistical Invariants
-- **Audit Findings**: Standard deviation and coefficient of variation ($CV = \sigma / \mu$) provide scale-invariant volatility metrics across differing currency and domestic route magnitudes.
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:51`, `src/domain/farely/money.ts:14`
+- **Audit Findings**: Unit cost calculations enforce a 1 VND integer floor to prevent zero-cost rate leakage and division by zero.
+- **Physical Code Citations**: `src/domain/farely/dataEconomics.ts:62`, `src/domain/farely/money.ts:14`
 
 ### L05: Adversarial Inputs & Boundary Penetration
-- **Audit Findings**: Negative passenger counts, inverted travel dates, negative prices, and invalid destination codes fail closed deterministically across all domain barriers.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:45`, `src/domain/farely/tripBudgetEstimator.ts:10`
+- **Audit Findings**: Slices with inverted dates, negative prices, missing airports, or circular routes fail closed deterministically across all domain barriers.
+- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:70`, `src/domain/farely/editorialCollections.ts:45`
 
 ### L06: Regulatory, Anti-Deception & Consumer Protection
-- **Audit Findings**: Group fare calculations comply with CAAV circulars on passenger facility and airport security fees, and infant lap safety rules (1 infant per adult maximum).
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:38`, `src/domain/farely/vietnamTravelContext.ts:18`
+- **Audit Findings**: Banning unsupported discounts and fake scarcity claims complies with Decree 52/2013/ND-CP and Law on Protection of Consumer Rights No. 19/2023/QH15.
+- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:16`, `src/domain/farely/vietnamTravelContext.ts:18`
 
 ### L07: Operational Resilience & Resource Saturation
-- **Audit Findings**: Pure algorithmic functions run synchronously in $< 5 \text{ ms}$ with bounded memory allocations ($O(N)$ space where $N \le 250$).
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:88`
+- **Audit Findings**: Multi-city sequences are bounded between 2 and 10 slices, preventing unbounded loop processing and deep graph recursion.
+- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:73`
 
 ### L08: Architectural Cohesion & Schema Evolution
 - **Audit Findings**: Pure domain logic requires zero database schema migrations and maintains complete backward compatibility across all 47 migrations in `supabase/migrations/`.
 - **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`
 
 ### L09: Observability, Traceability & Forensic Auditability
-- **Audit Findings**: Structured rationales and typed uncertainty tags (`KNOWN` vs `ESTIMATED`) provide full forensic traceability for every recommendation.
-- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:4`, `src/domain/farely/buyWaitGuidance.ts:30`
+- **Audit Findings**: Curator metadata with signing timestamps (`signedAt`, `curatorId`) guarantees complete editorial audit trails.
+- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:37`, `src/domain/farely/time.ts:18`
 
 ### L10: Developer Velocity & Turnkey Verification
 - **Audit Findings**: Turnkey vitest test runners execute in $< 350 \text{ ms}$ with zero network mocking across all unit suites.
 - **Physical Code Citations**: `package.json:34`
 
 ### L11: Graceful Degradation & Autonomous Recovery
-- **Audit Findings**: When destination cost benchmarks are uncataloged, `estimateTripBudget` gracefully falls back to national baseline averages with explicit heuristic disclosure.
-- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:70`, `src/domain/farely/locationScope.ts:14`
+- **Audit Findings**: When curated items expire, `filterExpiredCuratedItems` gracefully prunes stale deals without crashing the collection view.
+- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:140`
 
 ### L12: Long-Term Maintenance & Debt Eradication
 - **Audit Findings**: Clean domain modularity without circular imports ensures zero technical debt accumulation.
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:14`, `src/domain/farely/time.ts:18`
+- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:30`, `src/domain/farely/multiCityItinerary.ts:56`
 
 ---
 
@@ -118,27 +116,27 @@ All external booking, checkout, and payment processing capabilities remain stric
 
 | Risk ID | Vulnerability Vector | Severity | Mitigation Strategy | Verification Oracle |
 |---|---|---|---|---|
-| RSK-01 | Advising WAIT when flight departs within 3 days | Critical | Force `BUY_NOW` due to dynamic yield bucket closure | `src/domain/farely/buyWaitGuidance.test.ts` |
-| RSK-02 | Single adult price displayed as total family group fare | Critical | Require explicit party composition multiplication and fee addition | `src/domain/farely/groupFarePlanner.test.ts` |
-| RSK-03 | Zero or negative nights in hotel budget calculation | High | Clamp `nights >= 1` and validate finite numbers | `src/domain/farely/tripBudgetEstimator.test.ts` |
-| RSK-04 | Lap infant count exceeds adult lap capacity | High | Assert `infants <= adults` per CAAV/IATA safety rules | `src/domain/farely/groupFarePlanner.test.ts` |
-| RSK-05 | Tet peak holiday living costs drastically underestimated | Medium | Apply seasonal inflation multiplier during Lunar New Year | `src/domain/farely/tripBudgetEstimator.test.ts` |
+| RSK-01 | Deceptive urgency via fake remaining seat claims | Critical | Throw `FabricatedScarcityError` without provider inventory proof | `src/domain/farely/editorialCollections.test.ts` |
+| RSK-02 | Independent one-ways promoted as protected through-ticket | Critical | Throw `FictitiousSingleOfferError` and enforce `SELF_TRANSFER_UNPROTECTED` | `src/domain/farely/multiCityItinerary.test.ts` |
+| RSK-03 | Expensive scan expansion executed with 0 watch subscribers | High | Reject proposal deterministically with `REJECTED_UNECONOMIC` | `src/domain/farely/dataEconomics.test.ts` |
+| RSK-04 | Stale editorial deal displayed past 24-hour observation | Medium | Automatically prune deals where `observedAt` exceeds 24h | `src/domain/farely/editorialCollections.test.ts` |
+| RSK-05 | Multi-city itinerary with backward time travel | High | Throw `InvalidMultiCitySequenceError` on non-monotonic depart dates | `src/domain/farely/multiCityItinerary.test.ts` |
 
 ---
 
 ## SECTION G: TRANSACTIONAL WORK PACKAGES
 
-### WP01: WP01-BUYWAIT-CLOSE-IN-WINDOW-GUARD
-- **Target File**: `src/domain/farely/buyWaitGuidance.ts`
-- **Action**: Add close-in departure window guard ($\le 3$ days), finite price validation, and time-decay volatility weighting.
-- **Verification**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
+### WP01: WP01-EDITORIAL-SCARCITY-EXPIRATION-GUARD
+- **Target File**: `src/domain/farely/editorialCollections.ts`
+- **Action**: Add scarcity proof validation, discount verification, and 24-hour observation freshness pruning.
+- **Verification**: `npx vitest run src/domain/farely/editorialCollections.test.ts`
 
-### WP02: WP02-TRIP-BUDGET-SEASONAL-CALIBRATION
-- **Target File**: `src/domain/farely/tripBudgetEstimator.ts`
-- **Action**: Add seasonal multipliers for Tet peak travel, input sanitization, and finite number clamping.
-- **Verification**: `npx vitest run src/domain/farely/tripBudgetEstimator.test.ts`
+### WP02: WP02-MULTICITY-CHRONOLOGICAL-SAFETY
+- **Target File**: `src/domain/farely/multiCityItinerary.ts`
+- **Action**: Add strict chronological ordering, open-jaw transfer notices, and self-transfer connection risk scoring.
+- **Verification**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### WP03: WP03-GROUP-FARE-BUCKET-CLIFF-DEFENSE
-- **Target File**: `src/domain/farely/groupFarePlanner.ts`
-- **Action**: Add bucket cliff detection, blended fare calculation, and CAAV infant safety bounds.
-- **Verification**: `npx vitest run src/domain/farely/groupFarePlanner.test.ts`
+### WP03: WP03-DATAECON-MARGINAL-ROI-FLOOR
+- **Target File**: `src/domain/farely/dataEconomics.ts`
+- **Action**: Enforce marginal scan ROI floor ($\ge 1.0$), active subscriber gating, and safe 1 VND unit cost minimums.
+- **Verification**: `npx vitest run src/domain/farely/dataEconomics.test.ts`

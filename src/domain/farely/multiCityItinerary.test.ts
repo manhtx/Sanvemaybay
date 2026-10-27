@@ -272,5 +272,59 @@ describe("Multi-City Itinerary Coherence (F41)", () => {
       expect(computeSegmentLayoverMinutes("2026-11-01T15:00:00Z", "2026-11-01T12:00:00Z")).toBe(0);
       expect(computeSegmentLayoverMinutes("invalid", "2026-11-01T12:00:00Z")).toBe(0);
     });
+
+    it("exposes structured risk properties isSelfTransfer and requiresGroundTransfer", () => {
+      const openJawSlices: ItinerarySlice[] = [
+        {
+          sliceIndex: 0,
+          originCode: "HAN",
+          destinationCode: "NRT",
+          departDate: "2026-11-01",
+          airlineCode: "VN",
+          airlineName: "Vietnam Airlines",
+          price: 4_500_000,
+        },
+        {
+          sliceIndex: 1,
+          originCode: "KIX",
+          destinationCode: "HAN",
+          departDate: "2026-11-08",
+          airlineCode: "VN",
+          airlineName: "Vietnam Airlines",
+          price: 4_200_000,
+        },
+      ];
+
+      const result = validateMultiCityItinerary({ slices: openJawSlices });
+      expect(result.isSelfTransfer).toBe(false);
+      expect(result.requiresGroundTransfer).toBe(true);
+    });
+
+    it("treats Vietravel Airlines (VU) as point-to-point LCC without interline partners", () => {
+      const vuSlices: ItinerarySlice[] = [
+        {
+          sliceIndex: 0,
+          originCode: "HAN",
+          destinationCode: "DAD",
+          departDate: "2026-11-01",
+          airlineCode: "VU",
+          airlineName: "Vietravel Airlines",
+          price: 900_000,
+        },
+        {
+          sliceIndex: 1,
+          originCode: "DAD",
+          destinationCode: "SGN",
+          departDate: "2026-11-03",
+          airlineCode: "VN",
+          airlineName: "Vietnam Airlines",
+          price: 1_200_000,
+        },
+      ];
+
+      const result = validateMultiCityItinerary({ slices: vuSlices, claimedAsSingleTicket: false });
+      expect(result.coherenceType).toBe("SELF_TRANSFER_UNPROTECTED");
+      expect(result.isSelfTransfer).toBe(true);
+    });
   });
 });

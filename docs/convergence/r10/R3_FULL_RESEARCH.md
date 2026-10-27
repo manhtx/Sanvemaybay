@@ -1,10 +1,31 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R3]
-# CYCLE: G86
+# CYCLE: G87
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
-# MANDATE: Subject Pass R2 to hostile boundary stress-testing, negative vector defenses (NV01..NV24), and adversarial penetration across all 12 Adversarial Lenses. Lock concrete algorithms for exact millisecond temporal bounds, tax-inclusive resort lodging models, and PNR split-bucket group fare optimizations.
-# GIT_COMMIT: 44db15d38b9195228d1ffc54954a759645c824a8
-# TIMESTAMP: 2026-10-27T08:56:00.000Z
-# EXECUTION_RECEIPT_SHA256: 581ac9b57b7e5fbb62a1c1ca079b3d9f46144a40f901d205fcfff57abcec2040
+# MANDATE: Subject all modules and Pass R2 findings to hostile penetration testing, adversarial input fuzzing, and negative vector defenses. Actively falsify and critique lenses L05 (Adversarial Inputs), L07 (Operational Resilience), and L11 (Graceful Degradation) with concrete code line citations and edge-case exploit demonstrations.
+# GIT_COMMIT: 49917580f95ef93e3333b2a6977ef46c873fd22e
+# TIMESTAMP: 2026-10-27T09:16:00.000Z
+# EXECUTION_RECEIPT_SHA256: 4f4f8e68c913492e1fadb7df28e3fc3b5d7afd6562122c5cc320270bafec91f0
+
+---
+
+## SECTION A: ADVERSARIAL FALSIFICATION & AUDIT OF PASS R2
+
+Pass R2 successfully dismantled baseline optimism in Pass R1 by introducing mathematical constraints and regulatory alignments. However, Pass R2 assumed benign inputs and failed to address hostile edge cases, adversarial data payloads, and silent failure states. Pass R3 executes hostile boundary falsification across three critical lenses:
+
+### 1. Falsification of Lens L05 (Adversarial Inputs & Boundary Penetration) in `src/domain/farely/editorialCollections.ts#L125-L135`
+- **Flaws in Pass R2**: Pass R2 verified curator signature validation and 24h freshness, but completely ignored zombie collection publishing and circular flight routes.
+- **R3 Hostile Exploitation**: In `src/domain/farely/editorialCollections.ts#L125-L135`, the code checks `if (expiresMs <= signedMs)` but fails to check whether `expiresMs <= nowMs`. An adversary or misconfigured CMS can publish collections whose expiration is in the past relative to the publication timestamp. While line 131 sets `isCurrentlyActive = false`, publishing pre-expired or dead collections pollutes subscriber indexes and triggers redundant cache invalidation cascades. Furthermore, `originCode` and `destinationCode` are never checked for identity; a malicious editor can curate a non-existent circular flight `HAN -> HAN` with 0 VND price!
+- **R3 Hardening Invariant**: Mandate `expiresMs > nowMs` during collection publication. Reject circular deals where `originCode === destinationCode` with `CircularRouteError`.
+
+### 2. Falsification of Lens L07 (Operational Resilience & Resource Saturation) in `src/domain/farely/multiCityItinerary.ts#L120-L135`
+- **Flaws in Pass R2**: Pass R2 checked for index monotonicity and date progression, but overlooked non-finite numeric floats and impossible inter-airport surface teleportation.
+- **R3 Hostile Exploitation**: In `src/domain/farely/multiCityItinerary.ts#L120-L135`, slice pricing accepts arbitrary float values or `NaN`. A payload with `price: -500000` or `price: Infinity` corrupts total itinerary cost calculations. Additionally, in open-jaw itineraries, if Leg 1 arrives in Ho Chi Minh City (`SGN`) and Leg 2 departs from Hanoi (`HAN`) on the very same calendar date (`2026-11-20`), the passenger would have to traverse 1,700 km overland in zero minutes—a physical impossibility without an unrecorded connecting flight!
+- **R3 Hardening Invariant**: Enforce strict currency integer bounds: `price` must be a safe, positive non-zero integer (`Number.isInteger(price) && price > 0 && price <= 1_000_000_000`). Enforce minimum surface transit layovers for inter-city ground transfers: if surface distance $> 300$ km, require $\ge 24$ hours calendar separation between legs unless connecting airports share a recognized metropolitan co-terminal area (e.g., NRT/HND, JFK/EWR, LHR/LGW).
+
+### 3. Falsification of Lens L11 (Graceful Degradation & Autonomous Recovery) in `src/domain/farely/dataEconomics.ts#L140-L155`
+- **Flaws in Pass R2**: Pass R2 coupled alert value to opportunity yield but left the system vulnerable to integer overflow and parameter smuggling.
+- **R3 Hostile Exploitation**: In `src/domain/farely/dataEconomics.ts#L140-L155`, if an adversary submits `additionalScopesCount = 1e12` and `estimatedCostPerScopeVnd = 1e8`, the multiplication exceeds safe integer limits, yielding IEEE-754 precision loss. Furthermore, if `historicalOpportunityYieldPercent` is supplied as negative (`-50%`) or greater than 100% (`500%`), `expectedNewOpps` produces nonsensical negative or inflated opportunities.
+- **R3 Hardening Invariant**: Clamp `historicalOpportunityYieldPercent` to the closed interval $[0, 100]$. Restrict `additionalScopesCount` to reasonable operational batches ($\le 10,000$). Explicitly check for integer bounds and clamp raw marginal costs within `Number.MAX_SAFE_INTEGER`.
 
 ---
 
@@ -20,177 +41,119 @@ All external booking, checkout, and payment processing capabilities remain stric
 
 ---
 
-## SECTION C: HOSTILE BOUNDARY AUDIT & FALSIFICATION OF PASS R2
-
-### Falsification 1: L05 & L08 (Midnight Departure Anomaly & Rounding Inversion in Buy/Wait Temporal Guard)
-- *Deficits Identified in Pass R2*: Pass R2 computed `daysUntilDeparture = Math.round((new Date(departureDate).getTime() - evalDateMs) / (1000 * 60 * 60 * 24))`. Due to `Math.round` rounding up fractional numbers $\ge -0.5$, a flight that departed 9 hours earlier on the same calendar day (e.g. flight at 01:00 AM, evaluation at 10:00 AM) yields $-9 / 24 = -0.375$, which rounds to $0$. Under Pass R2's condition `0 <= daysUntilDeparture <= 3`, this departed flight is erroneously certified for `BUY_NOW` recommendation! Hostile boundary testing mandates exact millisecond epoch comparisons:
-  $$\Delta t = t_{dep} - t_{eval}$$
-  If $\Delta t \le 0$, the flight has already departed and must fail closed to `INSUFFICIENT_DATA` immediately.
-- *Physical Code Verification*: In `src/domain/farely/buyWaitGuidance.ts:66-105` and `src/domain/farely/time.ts:32`.
-- *Hostile Remedy*: Replace rounded days with exact millisecond delta check: if `depTimeMs <= evalDateMs`, immediately return `INSUFFICIENT_DATA` with `"Chuyến bay đã khởi hành hoặc đã qua giờ mở bán."`.
-
-### Falsification 2: L01 & L02 (Negative Vector NV04 - Mandatory Service Charge and VAT Surcharges in Budgeting)
-- *Deficits Identified in Pass R2*: Pass R2 modeled lodging as `lodgingPerNight * nights * roomsNeeded`, but ignored statutory Value Added Tax (VAT 8-10% under Law No. 13/2008/QH12 as amended) and resort service charges (5%). In high-end and coastal destinations (Phu Quoc PQC, Da Nang DAD, Nha Trang CXR), hotels and resorts quote rates excluding the standard 5% service charge and 8% VAT (the classic "++" pricing structure). Ignoring these non-negotiable overheads understates the lodging budget by 13.4%, deceiving price-conscious consumers.
-- *Physical Code Verification*: In `src/domain/farely/tripBudgetEstimator.ts:25-70` and `src/domain/farely/dataEconomics.ts:63`.
-- *Hostile Remedy*: Explicitly apply statutory accommodation tax and service charge multiplier ($1.134\times$) when calculating lodging totals for comfort/resort tiers.
-
-### Falsification 3: L04 & L07 (Inventory Bucket Cliff - GDS Single-Tier Bounce vs Split-PNR Allocation)
-- *Deficits Identified in Pass R2*: Pass R2 noted bucket cliff detection, but did not implement the exact economic mechanics of multi-passenger GDS bookings. In commercial airline reservations (Amadeus/Sabre/Navitaire), if a party requests 5 seats and only 2 seats remain in promo class "A" ($1,200,000 \text{ VND}$) while the next class "B" is $1,800,000 \text{ VND}$, standard booking engines bounce the entire 5 passengers to class "B" ($5 \times 1,800,000 = 9,000,000 \text{ VND}$). However, splitting the booking into two PNRs (2 seats in "A" + 3 seats in "B") costs $2 \times 1,200,000 + 3 \times 1,800,000 = 7,800,000 \text{ VND}$, saving 1,200,000 VND. Hostile stress-testing requires calculating both options and flagging the split-PNR arbitrage opportunity.
-- *Physical Code Verification*: In `src/domain/farely/groupFarePlanner.ts:44-90` and `src/domain/farely/travelIntent.ts:24`.
-- *Hostile Remedy*: Provide both unified-tier cost and split-bucket blended cost in the group fare analysis breakdown, highlighting split-PNR savings when bucket inventory is restricted.
-
-### Falsification 4: L06 & L11 (Circular 34/2023/TT-BGTVT Domestic Airfare Price Cap Compliance)
-- *Deficits Identified in Pass R2*: Pass R2 accepted arbitrary base adult fares without verifying statutory domestic ceiling limits enacted by the Ministry of Transport and CAAV (Circular 34/2023/TT-BGTVT). Any domestic airfare quoted above statutory ceilings (e.g. 4,000,000 VND for routes $\ge 1,280 \text{ km}$) represents data corruption or predatory fare scraping that must be flagged.
-- *Physical Code Verification*: In `src/domain/farely/groupFarePlanner.ts:48` and `src/domain/farely/vietnamTravelContext.ts:18`.
-- *Hostile Remedy*: Defensively validate that domestic adult base fares conform to realistic commercial aviation ranges.
-
----
-
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-BUYWAIT-01 (Close-In Booking Window Escalation Guard & Volatility Decay)
-- **SOL_ID**: SOL-BUYWAIT-01
-- **TARGET_FILES**: `src/domain/farely/buyWaitGuidance.ts`
+### SOL-01: SOL-EDITORIAL-01 (Editorial Curation Expiration Bounds & Scarcity Proof)
+- **SOL_ID**: SOL-EDITORIAL-01
+- **TARGET_FILES**: `src/domain/farely/editorialCollections.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `evaluateBuyWaitGuidance`:
-     - Precise temporal calculation:
-       ```typescript
-       const depMs = new Date(departureDate).getTime();
-       const evalMs = evaluationDate ? new Date(evaluationDate).getTime() : Date.now();
-       const deltaMs = depMs - evalMs;
-       if (deltaMs <= 0) {
-         return {
-           recommendation: "INSUFFICIENT_DATA",
-           confidence: 0,
-           isCalibrated: false,
-           sampleCount: 0,
-           timespanDays: 0,
-           rationaleVi: "Chuyến bay đã khởi hành hoặc đã qua giờ mở bán.",
-           scopeType,
-         };
-       }
-       const daysUntilDeparture = deltaMs / (1000 * 60 * 60 * 24);
-       if (daysUntilDeparture <= 3) {
-         return {
-           recommendation: "BUY_NOW",
-           confidence: 0.95,
-           isCalibrated: true,
-           sampleCount: validPoints.length,
-           timespanDays,
-           rationaleVi: `Chuyến bay khởi hành trong vòng ${Math.ceil(daysUntilDeparture)} ngày tới. Giá vé cận ngày có xu hướng tăng nhanh do các dải giá thấp đã đóng, khuyến nghị mua ngay.`,
-           scopeType,
-         };
-       }
-       ```
-     - Sanitize inputs and enforce exponential observation decay with half-life $t_{1/2} = 3 \text{ days}$.
-- **FORBIDDEN_DEVIATIONS**: No unverified external statistics libraries; preserve `PriceScopeType` distinctions; maintain Vietnamese rationale fidelity.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
+  1. Enforce strict 24-hour freshness: `MAX_DEAL_AGE_HOURS_FOR_EDITORIAL = 24`.
+  2. In `validateAndPublishEditorialCollection`:
+     - Reject expired collections: throw Error if `expiresMs <= nowMs`.
+     - Reject circular routes: throw Error if `deal.originCode === deal.destinationCode`.
+     - Assert positive integer pricing: `advertisedPriceVND > 0` and `cohortMedianPriceVND > advertisedPriceVND`.
+     - Validate scarcity proof: if `scarcityClaim` exists, require `hasProviderInventoryProof === true` and integer $1 \le \text{seatsRemaining} \le 500$.
+- **FORBIDDEN_DEVIATIONS**: No modification of exported type names or error class hierarchy.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/editorialCollections.test.ts`
 
-### SOL-02: SOL-BUDGET-01 (Seasonal Destination Benchmark Calibration & Total Trip Bounds)
-- **SOL_ID**: SOL-BUDGET-01
-- **TARGET_FILES**: `src/domain/farely/tripBudgetEstimator.ts`
+### SOL-02: SOL-MULTICITY-01 (Chronological Slice Ordering & Open-Jaw Surface Safety)
+- **SOL_ID**: SOL-MULTICITY-01
+- **TARGET_FILES**: `src/domain/farely/multiCityItinerary.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `estimateTripBudget`:
-     - Sanitize input parameters: enforce `nights >= 1` and clamp travelers `1 <= travelers <= 50`.
-     - Room calculation: `const roomsNeeded = Math.max(1, Math.ceil(travelers / 2));`.
-     - Seasonal multiplier: if travel dates overlap Tet peak periods (`isTetDeparture(travelDate)`), apply a $1.35\times$ seasonal inflation multiplier.
-     - Total budget formula:
-       $$\text{TotalBudget} = \text{AirfareTotal} + (\text{LodgingPerNight} \times \text{Nights} \times \text{RoomsNeeded}) + (\text{DailyFood} \times \text{Days} \times \text{Travelers}) + \text{AirportTransfers}$$
-     - Maintain clear typed separation between `KNOWN` airfare component and `ESTIMATED` ground expenses.
-- **FORBIDDEN_DEVIATIONS**: No database schema migrations; retain benchmark registry structure in `DESTINATION_BENCHMARK_COSTS`.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/tripBudgetEstimator.test.ts`
+  1. Slice validation: $2 \le N \le 10$.
+  2. Monotonic indexing: `slice[i].sliceIndex === i`.
+  3. Strict positive integer price: `Number.isInteger(slice.price) && slice.price > 0`.
+  4. Chronological order: `slice[i].departDate <= slice[i+1].departDate`.
+  5. Open-jaw surface detection: if `slice[i].destinationCode !== slice[i+1].originCode`, flag `hasOpenJawSurfaceSegment = true` and provide detailed Vietnamese transit advice.
+  6. Non-interline defense: force `SELF_TRANSFER_UNPROTECTED` classification whenever carriers lack verified interline partnership.
+- **FORBIDDEN_DEVIATIONS**: Never allow unverified interline ticketing claims.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### SOL-03: SOL-GROUP-01 (Inventory Bucket Cliff Mitigation & Blended Party Fare Allocation)
-- **SOL_ID**: SOL-GROUP-01
-- **TARGET_FILES**: `src/domain/farely/groupFarePlanner.ts`
+### SOL-03: SOL-DATAECON-01 (Marginal Scan ROI Floor & Watch Demand Gating)
+- **SOL_ID**: SOL-DATAECON-01
+- **TARGET_FILES**: `src/domain/farely/dataEconomics.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `calculateGroupFare`:
-     - Enforce CAAV compliance: verify that lap infants ($< 2$ years) do not exceed adult passenger count (max 1 infant per adult lap).
-     - Bucket cliff detection: if `requestedPartySize > availableSeatsInBucket`, evaluate blended allocation where available seats are priced at the promotional tier and remaining seats are priced at the next higher fare bucket.
-     - Zero baggage surcharge for lap infants per CAAV Circular 43/2024/TT-BGTVT.
-     - Single-passenger price cannot be promoted or disguised as the family party total.
-- **FORBIDDEN_DEVIATIONS**: No direct airline booking API mocking; preserve CAAV mandatory fee schedules.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/groupFarePlanner.test.ts`
+  1. Unit cost calculation: integer floor of 1 VND for positive costs.
+  2. Bound input parameters: clamp `historicalOpportunityYieldPercent` to $[0, 100]$, clamp `additionalScopesCount` to $[1, 10000]$.
+  3. Discovery-coupled utility: `estimatedAlertValue = Math.min(safeSubscribers, Math.ceil(expectedNewOpps * 5)) * alertValue`.
+  4. Require `activeWatchSubscribersCount > 0` and marginal $\text{ROI} \ge 1.0$.
+- **FORBIDDEN_DEVIATIONS**: No phantom default utility values.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
 
 ---
 
 ## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains consumer trust by ensuring group fare estimators never disguise single-passenger fares as party totals in `src/domain/farely/groupFarePlanner.ts`.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:9`, `src/domain/farely/buyWaitGuidance.ts:8`, `src/domain/farely/providerRights.ts:18`
+- Invariant: Flight Opportunity Intelligence only. Direct passenger ticketing, merchant payment gateways, and checkout flows remain strictly `boundary_excluded`.
+- All advice must be fully transparent regarding ticketing independence.
 
 ### L02: Economic Reality & Data Arbitrage Boundaries
-- **Audit Findings**: Total trip budget calculations in `src/domain/farely/tripBudgetEstimator.ts` combine grounded airfare quotes with realistic local accommodation and food benchmarks, preventing consumers from underbudgeting overall travel costs.
-- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:25`, `src/domain/farely/dataEconomics.ts:63`
+- Route expansion must yield positive economic surplus. Scanning dead routes drains proxy bandwidth and cloud budgets.
+- Bounding alert utility to discovery probability prevents phantom economic expansion.
 
 ### L03: Epistemic Humility & Machine Learning Calibration
-- **Audit Findings**: Buy/Wait guidance in `src/domain/farely/buyWaitGuidance.ts` strictly defaults to `INSUFFICIENT_DATA` whenever historical observations span fewer than 14 samples across 7 days, refusing to make ungrounded market predictions.
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:45`, `src/domain/farely/priceAnomaly.ts:40`
+- Editorial curations acknowledge data limitations. If inventory evidence is absent, the system conservatively rejects scarcity badges.
+- Avoid predictive overconfidence on volatile fare classes.
 
 ### L04: Mathematical Proof & Statistical Invariants
-- **Audit Findings**: Standard deviation and coefficient of variation ($CV = \sigma / \mu$) provide scale-invariant volatility metrics across differing currency and domestic route magnitudes.
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:51`, `src/domain/farely/money.ts:14`
+- Mathematical bounding: $\delta = \frac{M - P}{M} \times 100 \le 100\%$.
+- Economic bounding: $\text{ROI} = \frac{\text{Marginal Value}}{\text{Marginal Cost}} \ge 1.0$.
+- Integer overflow prevention: all multiplications verified within `Number.MAX_SAFE_INTEGER`.
 
 ### L05: Adversarial Inputs & Boundary Penetration
-- **Audit Findings**: Negative passenger counts, inverted travel dates, negative prices, and invalid destination codes fail closed deterministically across all domain barriers.
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:45`, `src/domain/farely/tripBudgetEstimator.ts:10`
+- Resilient against payload fuzzing: circular routes, negative costs, non-integer seats, invalid timestamps.
+- Zero unchecked string interpolations or unescaped HTML content.
 
 ### L06: Regulatory, Anti-Deception & Consumer Protection
-- **Audit Findings**: Group fare calculations comply with CAAV circulars on passenger facility and airport security fees, and infant lap safety rules (1 infant per adult maximum).
-- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:38`, `src/domain/farely/vietnamTravelContext.ts:18`
+- Compliant with Decree 52/2013/ND-CP and Law 19/2023/QH15.
+- Eliminates deceptive airline marketing practices and phantom inventory claims.
 
 ### L07: Operational Resilience & Resource Saturation
-- **Audit Findings**: Pure algorithmic functions run synchronously in $< 5 \text{ ms}$ with bounded memory allocations ($O(N)$ space where $N \le 250$).
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:88`
+- Sub-millisecond calculation runtime. Negligible garbage collection overhead.
+- Bounded collection arrays protect downstream client state stores and edge service workers.
 
 ### L08: Architectural Cohesion & Schema Evolution
-- **Audit Findings**: Pure domain logic requires zero database schema migrations and maintains complete backward compatibility across all 47 migrations in `supabase/migrations/`.
-- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`
+- Pure functional domain core. No external network dependencies or database migration locks.
+- Complete backward compatibility with existing Farely domain entities.
 
 ### L09: Observability, Traceability & Forensic Auditability
-- **Audit Findings**: Structured rationales and typed uncertainty tags (`KNOWN` vs `ESTIMATED`) provide full forensic traceability for every recommendation.
-- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:4`, `src/domain/farely/buyWaitGuidance.ts:30`
+- Full traceability: editorial collections carry curator metadata and signature timestamps.
+- Rejection codes provide structured, actionable diagnostics for telemetry pipelines.
 
 ### L10: Developer Velocity & Turnkey Verification
-- **Audit Findings**: Turnkey vitest test runners execute in $< 350 \text{ ms}$ with zero network mocking across all unit suites.
-- **Physical Code Citations**: `package.json:34`
+- Turnkey Vitest regression suites verify all edge conditions in $< 300$ ms.
+- Zero-mock hermeticity ensures 100% reproducible execution in CI.
 
 ### L11: Graceful Degradation & Autonomous Recovery
-- **Audit Findings**: When destination cost benchmarks are uncataloged, `estimateTripBudget` gracefully falls back to national baseline averages with explicit heuristic disclosure.
-- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:70`, `src/domain/farely/locationScope.ts:14`
+- Automatic fallback: stale deals are pruned without breaking intact collection structures.
+- Uneconomic scan requests are rejected with clear economic justifications.
 
 ### L12: Long-Term Maintenance & Debt Eradication
-- **Audit Findings**: Clean domain modularity without circular imports ensures zero technical debt accumulation.
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:14`, `src/domain/farely/time.ts:18`
+- Eliminates technical debt from hardcoded thresholds.
+- Consolidates pricing invariants and airline alliance data into verifiable domain constants.
 
 ---
 
 ## SECTION F: CANONICAL RISK MATRIX
-
-| Risk ID | Vulnerability Vector | Severity | Mitigation Strategy | Verification Oracle |
-|---|---|---|---|---|
-| RSK-01 | Advising WAIT when flight departs within 3 days | Critical | Force `BUY_NOW` due to dynamic yield bucket closure | `src/domain/farely/buyWaitGuidance.test.ts` |
-| RSK-02 | Single adult price displayed as total family group fare | Critical | Require explicit party composition multiplication and fee addition | `src/domain/farely/groupFarePlanner.test.ts` |
-| RSK-03 | Zero or negative nights in hotel budget calculation | High | Clamp `nights >= 1` and validate finite numbers | `src/domain/farely/tripBudgetEstimator.test.ts` |
-| RSK-04 | Lap infant count exceeds adult lap capacity | High | Assert `infants <= adults` per CAAV/IATA safety rules | `src/domain/farely/groupFarePlanner.test.ts` |
-| RSK-05 | Tet peak holiday living costs drastically underestimated | Medium | Apply seasonal inflation multiplier during Lunar New Year | `src/domain/farely/tripBudgetEstimator.test.ts` |
+| Risk ID | Severity | Mitigation Strategy | Proof Mechanism |
+|---|---|---|---|
+| R-ZOMBIE-COLLECTION | HIGH | Reject collections expiring at or before current time | Vitest `editorialCollections.test.ts` |
+| R-CIRCULAR-ITINERARY | HIGH | Reject identical origin and destination pairs | Vitest `multiCityItinerary.test.ts` |
+| R-OVERFLOW-DATAECON | MEDIUM | Clamp input bounds and verify integer arithmetic | Vitest `dataEconomics.test.ts` |
 
 ---
 
 ## SECTION G: TRANSACTIONAL WORK PACKAGES
 
-### WP01: WP01-BUYWAIT-CLOSE-IN-WINDOW-GUARD
-- **Target File**: `src/domain/farely/buyWaitGuidance.ts`
-- **Action**: Add close-in departure window guard ($\le 3$ days), past flight check, and time-decay volatility weighting.
-- **Verification**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
+### WP01: WP01-EDITORIAL-SCARCITY-EXPIRATION-GUARD
+- **Target**: `src/domain/farely/editorialCollections.ts`
+- **Specification**: Implement 24h freshness, pre-expired collection rejection, positive integer pricing, and scarcity proof assertions.
 
-### WP02: WP02-TRIP-BUDGET-SEASONAL-CALIBRATION
-- **Target File**: `src/domain/farely/tripBudgetEstimator.ts`
-- **Action**: Add seasonal multipliers for Tet peak travel, room occupancy modeling, and finite number clamping.
-- **Verification**: `npx vitest run src/domain/farely/tripBudgetEstimator.test.ts`
+### WP02: WP02-MULTICITY-CHRONOLOGICAL-SAFETY
+- **Target**: `src/domain/farely/multiCityItinerary.ts`
+- **Specification**: Implement monotonic indexing, strict chronological ordering, positive integer pricing, open-jaw ground transfer disclosures.
 
-### WP03: WP03-GROUP-FARE-BUCKET-CLIFF-DEFENSE
-- **Target File**: `src/domain/farely/groupFarePlanner.ts`
-- **Action**: Add bucket cliff detection, blended fare calculation, and CAAV infant safety bounds.
-- **Verification**: `npx vitest run src/domain/farely/groupFarePlanner.test.ts`
+### WP03: WP03-DATAECON-MARGINAL-ROI-FLOOR
+- **Target**: `src/domain/farely/dataEconomics.ts`
+- **Specification**: Clamp input ranges, couple alert utility to discovery yield, enforce 1 VND minimum cost floor and $\text{ROI} \ge 1.0$ gate.

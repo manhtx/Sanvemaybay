@@ -83,10 +83,10 @@ export interface EditorialCollection {
   totalDealsCount: number;
 }
 
-const MAX_DEAL_AGE_HOURS_FOR_EDITORIAL = 48;
+const MAX_DEAL_AGE_HOURS_FOR_EDITORIAL = 24;
 
 /**
- * Validates whether an observed fare timestamp is within the 48-hour editorial freshness ceiling.
+ * Validates whether an observed fare timestamp is within the 24-hour editorial freshness ceiling.
  */
 export function validateCuratedItemFreshness(observedAt: string, currentTimestampIso?: string): void {
   const nowMs = currentTimestampIso ? Date.parse(currentTimestampIso) : Date.now();
@@ -131,8 +131,8 @@ export function validateAndPublishEditorialCollection(params: {
     throw new Error('Editorial collection must contain at least one curated item.');
   }
 
-  if (!curator || !curator.curatorId || !curator.name || !curator.signedAt) {
-    throw new Error('Thông tin biên tập viên (curatorId, name, signedAt) không được để trống.');
+  if (!curator || !curator.curatorId || !curator.name || !curator.signedAt || !curator.role || curator.role.trim().length < 3) {
+    throw new Error('Thông tin biên tập viên (curatorId, name, role, signedAt) không được để trống hoặc thiếu hợp lệ.');
   }
 
   const signedMs = Date.parse(curator.signedAt);
@@ -152,13 +152,22 @@ export function validateAndPublishEditorialCollection(params: {
   }
 
   const validatedItems: ValidatedCuratedItem[] = items.map((item) => {
-    // 1. Freshness check: Reject obsolete deals (> 48h old) or future-dated anomalies
+    // 0. Boundary integrity: Reject circular route and invalid advertised price
+    if (item.originCode.trim().toUpperCase() === item.destinationCode.trim().toUpperCase()) {
+      throw new Error(`[F42_CIRCULAR_ROUTE_VIOLATION] [dealId=${item.dealId}] Tuyến bay không hợp lệ (điểm đi và điểm đến trùng nhau: ${item.originCode}).`);
+    }
+
+    if (!Number.isInteger(item.advertisedPriceVND) || item.advertisedPriceVND <= 0) {
+      throw new Error(`[F42_INVALID_PRICE_VIOLATION] [dealId=${item.dealId}] Giá quảng cáo phải là số nguyên dương (${item.advertisedPriceVND}đ).`);
+    }
+
+    // 1. Freshness check: Reject obsolete deals (> 24h old) or future-dated anomalies
     validateCuratedItemFreshness(item.observedAt, nowIsoString);
 
     // 2. Discount validity check: Verify claimed discount does not exceed authentic calculation
     if (!Number.isFinite(item.cohortMedianPriceVND) || item.cohortMedianPriceVND <= 0) {
       throw new UnsupportedFeaturedDiscountError(
-        `Deal ${item.dealId} có giá trung vị nhóm không hợp lệ hoặc bằng 0 (${item.cohortMedianPriceVND}).`
+        `[dealId=${item.dealId}] Deal ${item.dealId} có giá trung vị nhóm không hợp lệ hoặc bằng 0 (${item.cohortMedianPriceVND}).`
       );
     }
 
@@ -172,13 +181,13 @@ export function validateAndPublishEditorialCollection(params: {
     if (item.claimedDiscountPercent !== undefined) {
       if (item.claimedDiscountPercent <= 0 || !Number.isFinite(item.claimedDiscountPercent)) {
         throw new UnsupportedFeaturedDiscountError(
-          `Deal ${item.dealId} công bố tỷ lệ giảm giá không hợp lệ (${item.claimedDiscountPercent}%). Tỷ lệ giảm giá phải là số dương lớn hơn 0%.`
+          `[dealId=${item.dealId}] Deal ${item.dealId} công bố tỷ lệ giảm giá không hợp lệ (${item.claimedDiscountPercent}%). Tỷ lệ giảm giá phải là số dương lớn hơn 0%.`
         );
       }
       // Claiming higher discount than authentic data permits (> 1% tolerance for rounding)
       if (item.claimedDiscountPercent > trueDiscountPercent + 1) {
         throw new UnsupportedFeaturedDiscountError(
-          `Deal ${item.dealId} claims discount of ${item.claimedDiscountPercent}% but authentic cohort calculation only supports ${trueDiscountPercent}% (Price: ${item.advertisedPriceVND}₫ vs Cohort: ${item.cohortMedianPriceVND}₫).`
+          `[dealId=${item.dealId}] Deal ${item.dealId} claims discount of ${item.claimedDiscountPercent}% but authentic cohort calculation only supports ${trueDiscountPercent}% (Price: ${item.advertisedPriceVND}₫ vs Cohort: ${item.cohortMedianPriceVND}₫).`
         );
       }
     }
@@ -188,18 +197,26 @@ export function validateAndPublishEditorialCollection(params: {
     let scarcityLabelVi: string | undefined;
 
     if (item.scarcityClaim) {
-      if (!item.scarcityClaim.hasProviderInventoryProof) {
+      if (
+        !item.scarcityClaim.hasProviderInventoryProof ||
+        item.scarcityClaim.seatsRemaining === undefined ||
+        !Number.isInteger(item.scarcityClaim.seatsRemaining) ||
+        item.scarcityClaim.seatsRemaining < 1 ||
+        item.scarcityClaim.seatsRemaining > 500 ||
+        !item.scarcityClaim.claimTextVi ||
+        item.scarcityClaim.claimTextVi.trim().length < 3
+      ) {
         throw new FabricatedScarcityError(
-          `Deal ${item.dealId} asserts scarcity claim "${item.scarcityClaim.claimTextVi}" without provider inventory proof.`
+          `[dealId=${item.dealId}] Deal ${item.dealId} asserts invalid or unverified scarcity claim "${item.scarcityClaim.claimTextVi}". Provider inventory proof and valid seat count (1-500) are mandatory.`
         );
       }
       hasVerifiedScarcity = true;
-      scarcityLabelVi = item.scarcityClaim.claimTextVi;
+      scarcityLabelVi = item.scarcityClaim.claimTextVi.trim();
     }
 
     return {
       dealId: item.dealId,
-      routeKey: `${item.originCode}-${item.destinationCode}`,
+      routeKey: `${item.originCode.trim().toUpperCase()}-${item.destinationCode.trim().toUpperCase()}`,
       airlineCode: item.airlineCode,
       advertisedPriceVND: item.advertisedPriceVND,
       cohortMedianPriceVND: item.cohortMedianPriceVND,

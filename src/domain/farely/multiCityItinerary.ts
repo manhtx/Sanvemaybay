@@ -36,6 +36,8 @@ export interface MultiCityItineraryValidation {
   isFictitiousJoinedOffer: boolean;
   connectionRisk?: "NONE" | "MODERATE" | "HIGH";
   dealScorePenalty?: number;
+  isSelfTransfer?: boolean;
+  requiresGroundTransfer?: boolean;
 }
 
 export class FictitiousSingleOfferError extends Error {
@@ -57,6 +59,7 @@ const ALLIANCE_PARTNERS: Record<string, Set<string>> = {
   VN: new Set(["VN", "AF", "KL", "KE", "DL", "CI", "GA"]), // SkyTeam
   VJ: new Set(["VJ"]), // Point-to-point LCC
   QH: new Set(["QH"]), // Bamboo Airways
+  VU: new Set(["VU"]), // Vietravel Airlines
 };
 
 /**
@@ -165,6 +168,8 @@ export function validateMultiCityItinerary(params: {
     isFictitiousJoinedOffer: false,
     connectionRisk: (isSelfTransfer || hasMetroTransit) ? "HIGH" : "NONE",
     dealScorePenalty: (isSelfTransfer || hasMetroTransit) ? 25 : 0,
+    isSelfTransfer,
+    requiresGroundTransfer: openJawNotices.length > 0,
   };
 }
 

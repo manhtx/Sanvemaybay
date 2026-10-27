@@ -119,5 +119,36 @@ describe("Data Economics Optimizer (F88)", () => {
       expect(decision.marginalRoiRatio).toBe(0);
       expect(decision.rejectionReasonVi).toContain("không hợp lệ hoặc số lượng phạm vi quét bổ sung bằng 0");
     });
+
+    it("SOL-DATAECON-01: tracks full cost as sunk capital leakage when cost > 0 but scannedScopesCount <= 0", () => {
+      const failedScanBatch: ScopeEconomicMetrics = {
+        routeScope: "HAN-PQC",
+        scannedScopesCount: 0, // Zero scans achieved due to connection failures
+        totalScanCostVnd: 500_000,
+        eligibleOffersFound: 0,
+        verifiedOpportunitiesFound: 0,
+        usefulWatchEventsDispatched: 0,
+      };
+
+      const summary = calculateUnitEconomics(failedScanBatch);
+      expect(summary.costPerScannedScopeVnd).toBe(500_000); // Attributes full cost to prevent hiding capital leakage
+    });
+
+    it("SOL-DATAECON-01: rejects scan expansion when opportunity yield is 0 even with high subscriber count", () => {
+      const zeroYieldProposal: ScanExpansionProposal = {
+        routeScope: "HAN-HPH",
+        additionalScopesCount: 100,
+        estimatedCostPerScopeVnd: 500, // Marginal cost = 50,000 VND
+        activeWatchSubscribersCount: 1000, // 1000 subscribers!
+        estimatedUsefulAlertValueVnd: 20_000,
+        historicalOpportunityYieldPercent: 0, // ZERO YIELD!
+        estimatedOpportunityValueVnd: 10_000,
+      };
+
+      const decision = evaluateScanExpansionProposal(zeroYieldProposal);
+      expect(decision.status).toBe("REJECTED_UNECONOMIC");
+      expect(decision.estimatedMarginalValueVnd).toBe(0); // Zero yield cannot dispatch alerts!
+      expect(decision.marginalRoiRatio).toBe(0);
+    });
   });
 });

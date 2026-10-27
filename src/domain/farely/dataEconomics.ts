@@ -68,14 +68,18 @@ export function computeSafeUnitCostVnd(totalCostVnd: number, totalScans: number)
  * Calculates historical unit economics across a scanned dataset.
  */
 export function calculateUnitEconomics(metrics: ScopeEconomicMetrics): UnitEconomicsSummary {
-  const scans = Math.floor(Math.max(1, Number.isFinite(metrics.scannedScopesCount) ? metrics.scannedScopesCount : 1));
+  const rawScans = Number.isFinite(metrics.scannedScopesCount) ? metrics.scannedScopesCount : 0;
+  const scans = Math.floor(Math.max(1, rawScans));
   const cost = Math.max(0, Number.isFinite(metrics.totalScanCostVnd) ? metrics.totalScanCostVnd : 0);
   const offers = Math.max(0, Number.isFinite(metrics.eligibleOffersFound) ? metrics.eligibleOffersFound : 0);
   const opps = Math.max(0, Number.isFinite(metrics.verifiedOpportunitiesFound) ? metrics.verifiedOpportunitiesFound : 0);
   const alerts = Math.max(0, Number.isFinite(metrics.usefulWatchEventsDispatched) ? metrics.usefulWatchEventsDispatched : 0);
 
   // SOL-BUDGET-01: When positive cost is incurred, enforce an integer minimum floor of 1 VND to prevent zero-cost rate leakage.
-  const costPerScannedScopeVnd = cost > 0 && scans > 0 ? Math.max(1, Math.round(cost / scans)) : 0;
+  // SOL-DATAECON-01: If positive cost was incurred with zero scanned scopes, record full cost as sunk capital leakage.
+  const costPerScannedScopeVnd = cost > 0 && rawScans <= 0
+    ? cost
+    : (cost > 0 && scans > 0 ? Math.max(1, Math.round(cost / scans)) : 0);
   const costPerEligibleOfferVnd = cost > 0 && offers > 0 ? Math.max(1, Math.round(cost / offers)) : (offers > 0 ? 0 : cost);
   const costPerVerifiedOpportunityVnd = cost > 0 && opps > 0 ? Math.max(1, Math.round(cost / opps)) : (opps > 0 ? 0 : cost);
   const costPerUsefulWatchEventVnd = cost > 0 && alerts > 0 ? Math.max(1, Math.round(cost / alerts)) : (alerts > 0 ? 0 : cost);
@@ -97,7 +101,7 @@ export function calculateUnitEconomics(metrics: ScopeEconomicMetrics): UnitEcono
 export function evaluateScanExpansionProposal(
   proposal: ScanExpansionProposal
 ): ScanExpansionDecision {
-  const safeScopes = Math.floor(Math.max(0, proposal.additionalScopesCount || 0));
+  const safeScopes = Math.min(10000, Math.floor(Math.max(0, proposal.additionalScopesCount || 0)));
   const safeCostPerScope = Math.max(0, proposal.estimatedCostPerScopeVnd || 0);
   const rawMarginalCost = safeScopes * safeCostPerScope;
   const marginalCostVnd = Math.min(Number.MAX_SAFE_INTEGER, Math.round(rawMarginalCost));
@@ -135,9 +139,17 @@ export function evaluateScanExpansionProposal(
   // Expected opportunities from new scans
   const expectedNewOpps = safeScopes * (safeYieldPercent / 100);
 
+  // SOL-DATAECON-01: Couple alert dispatchable utility to opportunity discovery.
+  // If zero opportunities are discovered (or yield is 0), zero alert notifications can be dispatched.
+  const dispatchableSubscribers = expectedNewOpps >= 1.0
+    ? Math.min(safeSubscribers, Math.ceil(expectedNewOpps * 5))
+    : 0;
+  const estimatedAlertUtilityVnd = dispatchableSubscribers * alertValue;
+  const estimatedOpportunityUtilityVnd = Math.round(expectedNewOpps * opportunityValue);
+
   // Expected value = (active subscribers benefiting * alertValue) + (expected new opps * opportunityValue)
   const estimatedMarginalValueVnd = Math.round(
-    safeSubscribers * alertValue + expectedNewOpps * opportunityValue
+    estimatedAlertUtilityVnd + estimatedOpportunityUtilityVnd
   );
 
   const marginalRoiRatio = marginalCostVnd > 0

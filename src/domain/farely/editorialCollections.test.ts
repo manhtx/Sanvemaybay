@@ -222,5 +222,70 @@ describe('F42: Deal Curation and Editorial Collections', () => {
         })
       ).toThrow();
     });
+
+    it('rejects circular routes where origin equals destination', () => {
+      expect(() =>
+        validateAndPublishEditorialCollection({
+          collectionId: 'col_circular',
+          titleVi: 'Tuyến bay vòng quanh',
+          summaryVi: 'Điểm đi trùng điểm đến',
+          theme: 'WEEKEND_GETAWAY',
+          curator: mockCurator,
+          expiresAt: '2026-10-18T00:00:00Z',
+          items: [
+            {
+              ...validDealItem,
+              originCode: 'HAN',
+              destinationCode: 'HAN',
+            },
+          ],
+          nowIsoString: '2026-10-15T04:00:00Z',
+        })
+      ).toThrow(/F42_CIRCULAR_ROUTE_VIOLATION/);
+    });
+
+    it('rejects non-positive or non-integer advertised prices', () => {
+      expect(() =>
+        validateAndPublishEditorialCollection({
+          collectionId: 'col_invalid_price',
+          titleVi: 'Giá vé không hợp lệ',
+          summaryVi: 'Giá âm hoặc số lẻ',
+          theme: 'WEEKEND_GETAWAY',
+          curator: mockCurator,
+          expiresAt: '2026-10-18T00:00:00Z',
+          items: [
+            {
+              ...validDealItem,
+              advertisedPriceVND: -100000,
+            },
+          ],
+          nowIsoString: '2026-10-15T04:00:00Z',
+        })
+      ).toThrow(/F42_INVALID_PRICE_VIOLATION/);
+    });
+
+    it('rejects scarcity claim with non-integer or out-of-bound seats remaining', () => {
+      expect(() =>
+        validateAndPublishEditorialCollection({
+          collectionId: 'col_bad_seats',
+          titleVi: 'Số ghế không hợp lệ',
+          summaryVi: 'Số ghế là số thập phân hoặc quá 500',
+          theme: 'WEEKEND_GETAWAY',
+          curator: mockCurator,
+          expiresAt: '2026-10-18T00:00:00Z',
+          items: [
+            {
+              ...validDealItem,
+              scarcityClaim: {
+                hasProviderInventoryProof: true,
+                seatsRemaining: 2.5,
+                claimTextVi: 'Còn 2.5 ghế',
+              },
+            },
+          ],
+          nowIsoString: '2026-10-15T04:00:00Z',
+        })
+      ).toThrow(FabricatedScarcityError);
+    });
   });
 });
