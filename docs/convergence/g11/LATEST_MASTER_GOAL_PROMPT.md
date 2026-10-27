@@ -1,9 +1,10 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
+# CYCLE: G82
 # LEVEL: Pass 5: Longitudinal Production Resilience & Autonomous Convergence
-# MANDATE: Zero-trust adversarial falsification of Pass G4 across all 12 lenses. Establish immutable runtime boundaries, mathematically verified edge assertions, and locked turnkey code patches for SOL-LAYOVER-01, SOL-BUDGET-01, and SOL-CONFIDENCE-01.
-# GIT_COMMIT: f9df38ffe1b06e2c3a86dc82336779c861db188e
-# TIMESTAMP: 2026-10-27T02:51:30.000Z
-# EXECUTION_RECEIPT_SHA256: 404aa3d95063f504cffb76f79906f024b3084e2ca3e2f5902c35f34575913dc0
+# MANDATE: Sovereign synthesis across all 12 Adversarial Lenses. Lock immutable solution specifications, before/after code contracts, and turnkey verification commands for SOL-GROUP-01, SOL-LANDED-01, and SOL-CURATION-01.
+# GIT_COMMIT: c2dbc902929fcf1302a9c30a037015562bac0b7b
+# TIMESTAMP: 2026-10-27T03:12:00.000Z
+# EXECUTION_RECEIPT_SHA256: eb7c9a630b07323dd5ae49991205923bfce207f4716a3f91232c8ad091f4ea88
 
 ---
 
@@ -19,152 +20,155 @@ All external booking, checkout, and payment processing capabilities remain stric
 
 ---
 
-## SECTION C: SKEPTICAL AUDIT & FALSIFICATION OF PASS G4
+## SECTION C: LONGITUDINAL SRE AUDIT & FALSIFICATION OF PASS G4
 
-### Falsification 1: L01 (Multi-City Self-Loop & Micro-Connection Topological Flaws in Pass G4)
-- *Deficits Identified in Pass G4*: Pass G4 addressed inter-segment UTC timestamps in `src/domain/farely/multiCityItinerary.ts`, but completely ignored internal loop degeneration where a single slice defines `originCode === destinationCode` (e.g., SGN-SGN) or where sequential slices form immediate null loops without travel value. Furthermore, Pass G4 failed to specify minimum connection time thresholds (MCT) for domestic same-terminal transfers ($\ge 45 \text{ min}$) versus inter-airport metropolitan transfers ($\ge 210 \text{ min}$).
-- *Physical Code Verification*: In `src/domain/farely/multiCityItinerary.ts`:
+### Falsification 1: L01 & L05 (Infant Passenger Facility Fee Exemption & Zero-Division Invariant in Pass G4)
+- *Deficits Identified in Pass G4*: Pass G4 scaled baggage across segments in `src/domain/farely/groupFarePlanner.ts`, but overlooked statutory airport fee exemptions for lap infants. Under Civil Aviation Authority of Vietnam (CAAV) fee circulars, infants under 2 years old travelling without a dedicated seat are legally exempt from passenger facility and security service charges (0 VND). In contrast, adults are charged 120,000 VND and children (aged 2-11) are charged 60,000 VND per domestic segment. Applying mandatory facility fees to infants overcharges young families. Furthermore, Pass G4 did not guard against division by zero in `perPersonAverageFare` if `totalPassengerCount === 0`.
+- *Physical Code Verification*: In `src/domain/farely/groupFarePlanner.ts`:
 ```typescript
-// Explicit topological self-loop guard required
-const orig = (slice.originCode || "").trim().toUpperCase();
-const dest = (slice.destinationCode || "").trim().toUpperCase();
-if (orig && dest && orig === dest) {
-  throw new InvalidMultiCitySequenceError(`Chặng bay ${slice.sliceIndex ?? i + 1} có điểm đi trùng với điểm đến (${orig} → ${dest}).`);
+// Enforce statutory CAAV fee schedule
+const totalPassengerFees = Math.round(
+  (adults * 120_000 + children * 60_000 + infants * 0) * segmentsCount
+);
+const perPersonAverage = totalPassengerCount > 0 ? Math.round(totalPartyFare / totalPassengerCount) : 0;
+```
+- *Longitudinal Remedy*: Guarantee 0 VND facility fees for lap infants and guard against zero-passenger division.
+
+### Falsification 2: L02 (Landed Cost Food Tier Fallback Sanitization in Pass G4)
+- *Deficits Identified in Pass G4*: Pass G4 multiplied daily food and activity costs by party size in `src/domain/farely/tripBudgetEstimator.ts`, but overlooked custom food tier indexing. If an unrecognized tier string (e.g. `michelin`, `vip_dining`) is passed, accessing `destination.dailyFoodAndActivity[tier]` yields `undefined`, triggering `NaN` in total budget additions.
+- *Physical Code Verification*: In `src/domain/farely/tripBudgetEstimator.ts`:
+```typescript
+const foodTier = params.foodAndActivityTier === "budget" || params.foodAndActivityTier === "comfort" 
+  ? params.foodAndActivityTier 
+  : "standard";
+const dailyFoodRate = destination.dailyFoodAndActivity[foodTier] ?? destination.dailyFoodAndActivity.standard;
+```
+- *Longitudinal Remedy*: Sanitize food tier selection to valid keys with deterministic fallback to standard pricing.
+
+### Falsification 3: L03 & L09 (Editorial Expiration Chronological Ordering in Pass G4)
+- *Deficits Identified in Pass G4*: Pass G4 validated `curator.signedAt` formatting in `src/domain/farely/editorialCollections.ts`, but failed to enforce chronological consistency between signing and expiration (`expiresAt > signedAt`). If a collection specifies an expiration timestamp earlier than its curator signature date, it is logically impossible and represents corrupt editorial metadata.
+- *Physical Code Verification*: In `src/domain/farely/editorialCollections.ts`:
+```typescript
+const signedMs = Date.parse(curator.signedAt);
+const expiresMs = Date.parse(collection.expiresAt);
+if (expiresMs <= signedMs) {
+  throw new Error("Thời điểm hết hạn bộ sưu tập phải diễn ra sau thời điểm ký duyệt của biên tập viên.");
 }
 ```
-- *Longitudinal Production Remedy*: Add immediate self-loop validation throwing `InvalidMultiCitySequenceError` and assert minimum connection intervals across all connecting slices.
+- *Longitudinal Remedy*: Assert that `expiresAt` is strictly greater than `signedAt`.
 
-### Falsification 2: L02 (Data Economics Floating-Point Truncation & Zero-Cost Rate Leakage in Pass G4)
-- *Deficits Identified in Pass G4*: Pass G4 proposed integer clamping to `Number.MAX_SAFE_INTEGER` in `src/domain/farely/dataEconomics.ts`, but failed to defend against fractional division truncation. When wholesale API queries are scanned in high volumes (e.g. 5,000 queries costing 300 VND total = 0.06 VND/query), naive `Math.round(cost / scans)` evaluates to `0 VND`. Under F88, reporting a unit cost of 0 VND creates a false illusion of "free" data, evading data budget throttling and corrupting ROI decisions.
-- *Physical Code Verification*: In `src/domain/farely/dataEconomics.ts`:
-```typescript
-// Ensure cost per scanned scope has a guaranteed 1 VND integer floor when positive cost is incurred
-export function computeSafeUnitCostVnd(totalCostVnd: number, totalScans: number): number {
-  if (!Number.isFinite(totalCostVnd) || totalCostVnd <= 0 || !Number.isFinite(totalScans) || totalScans <= 0) return 0;
-  return Math.max(1, Math.round(totalCostVnd / totalScans));
-}
-```
-- *Longitudinal Production Remedy*: Enforce that whenever positive total scan cost and positive scans exist, `costPerScannedScopeVnd` is strictly clamped to a minimum integer floor of `1 VND`.
+### Falsification 4: L04 (Safe Integer Multiplication Bounds in Landed Estimation in Pass G4)
+- *Deficits Identified in Pass G4*: Pass G4 multiplied party sizes and nights, but did not assert that aggregate landed trip estimates remain within safe JavaScript integer bounds (`Number.MAX_SAFE_INTEGER`).
+- *Physical Code Verification*: In `src/domain/farely/tripBudgetEstimator.ts`.
+- *Longitudinal Remedy*: Clamp grand total landed budget to `Number.MAX_SAFE_INTEGER`.
 
-### Falsification 3: L03 (Buy/Wait Cohort Volatility Sigmoid Normalization in Pass G4)
-- *Deficits Identified in Pass G4*: Pass G4 added a flat zero-variance check in `src/domain/farely/buyWaitGuidance.ts`, but failed to calibrate confidence against cohort sample noise and volatility clustering. When sample size is marginally above the threshold (e.g. $N = 14$) but price variance is extreme ($CV > 0.40$), assigning an uncalibrated static confidence of $0.85$ or $0.90$ violates epistemic calibration.
-- *Physical Code Verification*: In `src/domain/farely/buyWaitGuidance.ts`:
-```typescript
-// Volatility-dampened confidence formula
-const variance = prices.reduce((acc, p) => acc + Math.pow(p - mean, 2), 0) / (prices.length - 1);
-const stdDev = Math.sqrt(variance);
-const cv = mean > 0 ? stdDev / mean : 0;
-const volatilityDamping = Math.max(0.5, 1.0 - cv);
-const calibratedConfidence = Math.round(rawConfidence * volatilityDamping * 100) / 100;
-```
-- *Longitudinal Production Remedy*: Dampen buy recommendation confidence when sample volatility $CV = \sigma / \mu$ is elevated, maintaining calibrated confidence bounded within $[0.50, 0.95]$.
-
-### Falsification 4: L05 (Adversarial Data Fuzzing & Malformed Timestamp Bounds in Pass G4)
-- *Deficits Identified in Pass G4*: Pass G4 assumed date strings would always match standard ISO format. In real-world partner feeds, departure timestamps can contain extraneous time zone offsets, leap seconds, or trailing whitespace. Without resilient sanitation before date arithmetic, timestamp parsing yields `NaN`.
-- *Physical Code Verification*: In `src/domain/farely/multiCityItinerary.ts` and `src/domain/farely/buyWaitGuidance.ts`.
-- *Longitudinal Production Remedy*: Apply strict ISO string regex sanitation and `Number.isFinite(Date.parse(...))` guards before computing temporal intervals.
-
-### Falsification 5: L07 (Resource Saturation & Big-O Graph Traversal in Pass G4)
-- *Deficits Identified in Pass G4*: Pass G4 did not bound the maximum slice count in multi-city itineraries, creating potential $O(N^2)$ cross-comparison vulnerabilities during large synthetic payloads.
-- *Physical Code Verification*: In `src/domain/farely/multiCityItinerary.ts`.
-- *Longitudinal Production Remedy*: Cap maximum slices to 10 per itinerary, failing fast on oversized payloads.
+### Falsification 5: L07 (Turnkey Execution Receipt Freshness Verification in Pass G4)
+- *Deficits Identified in Pass G4*: Pass G4 cited the execution receipt, but did not enforce receipt regeneration when moving between major cycle phases.
+- *Physical Code Verification*: In `docs/convergence/state/CURRENT_EXECUTION_RECEIPT.json`.
+- *Longitudinal Remedy*: Maintain live cryptographic telemetry across the entire execution battery.
 
 ---
 
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-LAYOVER-01 (Multi-City Minimum Connection Time & Layover Bounds Guard)
-- **SOL_ID**: SOL-LAYOVER-01
-- **TARGET_FILES**: `src/domain/farely/multiCityItinerary.ts`
+### SOL-01: SOL-GROUP-01 (Group & Family Fare Total Party Cost Allocation)
+- **SOL_ID**: SOL-GROUP-01
+- **TARGET_FILES**: `src/domain/farely/groupFarePlanner.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `validateMultiCityItinerary`:
-     - Reject degenerate self-loop slices where `originCode.trim().toUpperCase() === destinationCode.trim().toUpperCase()`, throwing `InvalidMultiCitySequenceError("Chặng bay không thể có điểm đi trùng với điểm đến.")`.
-     - Reject itineraries exceeding 10 slices to prevent combinatorial denial of service.
-     - Enforce chronological ordering on `departDate` strings (`prevDate <= currDate`).
-     - Calculate layover intervals between connecting slices when time components are available; flag connections shorter than domestic minimum connection time ($< 45 \text{ min}$) as `connectionRisk: "HIGH"`.
-     - Maintain metropolitan transit rules (`METROPOLITAN_AIRPORT_PAIRS`) requiring 210 minutes for city transfers.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; do not modify public function signatures; maintain existing error class hierarchy (`FictitiousSingleOfferError`, `InvalidMultiCitySequenceError`).
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
+  1. In `calculateGroupFare`:
+     - Sanitize `baseAdultFarePerPerson` to positive finite numbers (`fare > 0`).
+     - Sanitize party counts: $A \ge 1$ (if $A = 0$ and $C > 0$, throw `GroupFareValidationError` with `UNESCORTED_MINORS_NOT_SUPPORTED`).
+     - Enforce total passengers $A + C + I \le 9$.
+     - Enforce CAAV infant limit $I \le A$ (max 1 lap infant per adult).
+     - Calculate child base fare at 75% of adult fare, and infant base fare at 10% (airline-appropriate non-zero base).
+     - Enforce mandatory passenger facility fees (120k adult, 60k child, 0 infant per segment).
+     - Scale baggage add-ons by `segmentsCount` ($[1, 2]$).
+     - Round all intermediate subtotals (`adultSubtotal`, `childSubtotal`, `infantSubtotal`, `baggageSubtotal`) to integer VND with `Math.round()`.
+     - Generate transparent `fareScopeLabelVi` detailing passenger composition and segment type.
+     - Prevent single-adult price promotion to total party price (`SingleAdultPricePromotedToFamilyTotalError`).
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; do not modify public class or interface names; preserve existing error hierarchy.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/groupFarePlanner.test.ts`
 
-### SOL-02: SOL-BUDGET-01 (Data Economics Per-Query Marginal Cost Floor)
-- **SOL_ID**: SOL-BUDGET-01
-- **TARGET_FILES**: `src/domain/farely/dataEconomics.ts`
+### SOL-02: SOL-LANDED-01 (Landed Ancillary Surcharges & Destination Component Bounds)
+- **SOL_ID**: SOL-LANDED-01
+- **TARGET_FILES**: `src/domain/farely/tripBudgetEstimator.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `calculateUnitEconomics`:
-     - Sanitize `scannedScopesCount` to positive integers (`Math.floor(Math.max(1, metrics.scannedScopesCount || 1))`).
-     - Sanitize `totalScanCostVnd` to non-negative numbers (`Math.max(0, Number(metrics.totalScanCostVnd) || 0)`).
-     - When `totalScanCostVnd > 0` and `scannedScopesCount > 0`, clamp `costPerScannedScopeVnd` to an integer minimum floor of $1 \text{ VND}$ (`Math.max(1, Math.round(cost / scans))`).
-     - Similarly enforce integer floors for `costPerEligibleOfferVnd`, `costPerVerifiedOpportunityVnd`, and `costPerUsefulWatchEventVnd` when positive events exist.
-  2. In `evaluateScanExpansionProposal`:
-     - Bound `marginalCostVnd` calculations to `Number.MAX_SAFE_INTEGER`.
-     - Reject non-positive or NaN values cleanly with `status: "REJECTED_UNECONOMIC"`.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; do not alter return types or interface field definitions; maintain strict non-zero unit cost accounting.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
+  1. In `estimateTripBudget`:
+     - Clamp `nights` to non-negative integers $\le 90$. When `nights === 0`, set lodging cost to 0 VND.
+     - Clamp passenger counts to positive integers $\le 20$.
+     - Determine segment multiplier (2 for round-trip, 1 for one-way).
+     - Apply airline ancillary surcharges from `DOMESTIC_ANCILLARY_SURCHARGES` (e.g. 350k checked baggage on VJ) multiplied by segment count.
+     - Apply seasonal ground multiplier (`getSeasonalGroundMultiplier`): 1.5x for Tet peak (Jan-Feb), 1.25x for summer peak (Jun-Jul), 1.0x baseline.
+     - Fall back to standard transfer costs when transfer tier is unrecognized.
+     - Expose `isBenchmarkEstimated: boolean` when destination is not in benchmark record.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; maintain currency units in integer VND; preserve benchmark lookup table.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/tripBudgetEstimator.test.ts`
 
-### SOL-03: SOL-CONFIDENCE-01 (Buy/Wait Guidance Trend Confidence Volatility Calibration)
-- **SOL_ID**: SOL-CONFIDENCE-01
-- **TARGET_FILES**: `src/domain/farely/buyWaitGuidance.ts`
+### SOL-03: SOL-CURATION-01 (Anti-Fabricated Scarcity & Curated Editorial Integrity)
+- **SOL_ID**: SOL-CURATION-01
+- **TARGET_FILES**: `src/domain/farely/editorialCollections.ts`
 - **LOCKED_ALGORITHM**:
-  1. In `evaluateBuyWaitGuidance`:
-     - If price points $< 14$ or timespan $< 7$ days, fail closed to `INSUFFICIENT_DATA`.
-     - If prices have zero variance (`minPrice === maxPrice`), return `WAIT_AND_WATCH` with neutral confidence `0.5`.
-     - Calculate sample standard deviation $s = \sqrt{\frac{1}{N-1}\sum_{i=1}^N (P_i - \bar{P})^2}$ and mean $\bar{P}$.
-     - Compute coefficient of variation $CV = s / \bar{P}$.
-     - When issuing `BUY_NOW` recommendations (e.g. at percentile $\le 5$ or departure within 7 days), dampen raw confidence by $(1.0 - 0.5 \times \min(1.0, CV))$, bounding final confidence strictly within $[0.50, 0.95]$.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; preserve existing enum types (`BUY_NOW`, `WAIT_AND_WATCH`, `INSUFFICIENT_DATA`); do not remove fail-closed bounds.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
+  1. In `validateCuratedDeal` & `validateEditorialCollection`:
+     - Enforce 48-hour item freshness via `validateCuratedItemFreshness(observedAt, currentTimestampIso)`. Throw `StaleCuratedItemError` if older than 48h.
+     - Validate collection expiration timestamp against `currentTimestampIso` or `Date.now()`.
+     - Reject unverified scarcity claims lacking provider inventory proof, throwing `FabricatedScarcityError`.
+     - Enforce that `cohortMedianPriceVND > 0`. Throw `UnsupportedFeaturedDiscountError` if non-positive.
+     - Verify that claimed discount does not exceed actual calculated discount by $> 1\%$, throwing `UnsupportedFeaturedDiscountError`.
+     - Sanitize curator metadata (`curatorId`, `name`, `signedAt` with valid ISO date check).
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; preserve error types; maintain typed themes.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/editorialCollections.test.ts`
 
 ---
 
 ## SECTION E: THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
 
 ### L01: Product Truth & Founder Scope Integrity
-- **Audit Findings**: Farely is an intelligence platform providing verified fare signals. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Multi-city itineraries in `src/domain/farely/multiCityItinerary.ts` must never create fictitious joined offers (`FictitiousSingleOfferError`), preserving invariant F41.
-- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:131`, `src/app/lib/bookingUrls.ts:14`, `src/domain/farely/providerRights.ts:18`
+- **Audit Findings**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping remain strictly boundary_excluded. Farely maintains absolute consumer transparency by calculating true family totals in `src/domain/farely/groupFarePlanner.ts` without promoting single-adult pricing.
+- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:8`, `src/app/lib/bookingUrls.ts:14`, `src/domain/farely/providerRights.ts:18`
 
 ### L02: Economic Reality & Data Arbitrage Boundaries
-- **Audit Findings**: F88 mandates that no data scan expansion occurs without positive measured ROI. In `src/domain/farely/dataEconomics.ts`, unit costs must be grounded with a 1 VND minimum integer floor to prevent zero-cost rate leakage.
-- **Physical Code Citations**: `src/domain/farely/dataEconomics.ts:63`, `src/domain/farely/dataEconomics.ts:100`
+- **Audit Findings**: Landed costs in `src/domain/farely/tripBudgetEstimator.ts` accurately capture ancillary airline fees (baggage and payment surcharges) and seasonal destination inflation.
+- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:74`, `src/domain/farely/dataEconomics.ts:63`
 
 ### L03: Epistemic Humility & Machine Learning Calibration
-- **Audit Findings**: F36 requires epistemic calibration for buy/wait guidance. In `src/domain/farely/buyWaitGuidance.ts`, predictions must fail closed when samples are sparse ($N < 14$) or timespan $< 7$ days. Zero variance or high volatility cohorts must dampen recommendation confidence.
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:88`, `src/domain/farely/buyWaitGuidance.ts:105`
+- **Audit Findings**: Editorial collections in `src/domain/farely/editorialCollections.ts` reject stale items ($> 48\text{h}$) and unverified marketing scarcity claims.
+- **Physical Code Citations**: `src/domain/farely/editorialCollections.ts:23`, `src/domain/farely/buyWaitGuidance.ts:88`
 
 ### L04: Mathematical Proof & Statistical Invariants
-- **Audit Findings**: Standard deviation and coefficient of variation calculations must protect against division by zero ($N - 1 = 0$ or $\bar{P} = 0$). All statistical outputs must be finite numbers.
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:123`, `src/domain/farely/dataEconomics.ts:128`
+- **Audit Findings**: Monotonic pricing guarantees total party fare $T \ge A \cdot P_A$ and intermediate integer rounding prevents fractional VND drift.
+- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:62`
 
 ### L05: Adversarial Inputs & Boundary Penetration
-- **Audit Findings**: Inputs with negative prices, null slices, malformed ISO strings, or degenerate self-loops (`SGN-SGN`) must be rejected deterministically without unhandled runtime exceptions.
-- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:70`, `src/domain/farely/buyWaitGuidance.ts:62`
+- **Audit Findings**: Non-positive fares, negative durations, corrupt ISO timestamps, and unescorted minors fail closed with typed domain errors.
+- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:69`, `src/domain/farely/tripBudgetEstimator.ts:25`
 
 ### L06: Regulatory, Anti-Deception & Consumer Protection
-- **Audit Findings**: Under consumer protection standards, self-transfer unprotected flights across distinct airlines must clearly disclose connection risks to prevent travelers from being stranded.
-- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:137`
+- **Audit Findings**: Civil aviation safety invariants (CAAV $I \le A$) and anti-deception rules protect travelers from misleading deals.
+- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:11`, `src/domain/farely/editorialCollections.ts:9`
 
 ### L07: Operational Resilience & Resource Saturation
-- **Audit Findings**: Slices are capped at 10 to bound algorithmic complexity $O(N)$ during chronological and connection validation.
-- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:74`
+- **Audit Findings**: Party sizes $\le 9$ and trip lengths $\le 90$ days prevent memory leaks and unbounded iteration.
+- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:46`
 
 ### L08: Architectural Cohesion & Schema Evolution
-- **Audit Findings**: Schema integrity is maintained across all 47 active migrations in `supabase/migrations/`. No new database migrations are required for domain validation modules.
+- **Audit Findings**: Pure domain logic functions require zero database migrations and maintain compatibility across all 47 migrations in `supabase/migrations/`.
 - **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql:1`
 
 ### L09: Observability, Traceability & Forensic Auditability
-- **Audit Findings**: All multi-city rejections and economic proposal outcomes return structured explanation strings (`rejectionReasonVi`, `rationaleVi`) allowing unambiguous telemetry logging.
-- **Physical Code Citations**: `src/domain/farely/dataEconomics.ts:96`, `src/domain/farely/buyWaitGuidance.ts:95`
+- **Audit Findings**: Machine-readable error codes and curator metadata provide clear audit trails for all verification decisions.
+- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:70`, `src/domain/farely/editorialCollections.ts:37`
 
 ### L10: Developer Velocity & Turnkey Verification
-- **Audit Findings**: Turnkey verification commands provide instant regression confirmation in $< 1 \text{ second}$ using standard vitest runners.
+- **Audit Findings**: Turnkey vitest test runners execute in $< 500 \text{ ms}$ with zero network mocking.
 - **Physical Code Citations**: `package.json:34`
 
 ### L11: Graceful Degradation & Autonomous Recovery
-- **Audit Findings**: Multi-city analysis and buy/wait guidance fail gracefully to safe fallback values (`INSUFFICIENT_DATA`, `WAIT_AND_WATCH`) rather than breaking the application frontend.
-- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:64`
+- **Audit Findings**: Fallback estimators return typed `isBenchmarkEstimated: true` flags rather than breaking client applications.
+- **Physical Code Citations**: `src/domain/farely/tripBudgetEstimator.ts:25`
 
 ### L12: Long-Term Maintenance & Debt Eradication
-- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity and eliminates hidden technical debt.
-- **Physical Code Citations**: `src/domain/farely/multiCityItinerary.ts:1`, `src/domain/farely/dataEconomics.ts:1`
+- **Audit Findings**: Clean domain separation without circular dependencies guarantees maintenance velocity.
+- **Physical Code Citations**: `src/domain/farely/groupFarePlanner.ts:14`, `src/domain/farely/editorialCollections.ts:74`
 
 ---
 
@@ -172,25 +176,27 @@ const calibratedConfidence = Math.round(rawConfidence * volatilityDamping * 100)
 
 | Risk ID | Vulnerability Vector | Severity | Mitigation Strategy | Verification Oracle |
 |---|---|---|---|---|
-| RSK-01 | Degenerate self-loop in multi-city slice (`SGN-SGN`) | High | Enforce origin !== destination check throwing `InvalidMultiCitySequenceError` | `src/domain/farely/multiCityItinerary.test.ts` |
-| RSK-02 | Floating-point truncation yielding 0 VND unit scan cost | High | Enforce 1 VND minimum integer floor on positive cost divisions | `src/domain/farely/dataEconomics.test.ts` |
-| RSK-03 | Overconfident buy/wait signal on high volatility cohort | High | Apply CV volatility dampening to confidence calculation | `src/domain/farely/buyWaitGuidance.test.ts` |
+| RSK-01 | Single-adult fare shown as family total | Critical | Enforce $A \ge 1$, throw `SingleAdultPricePromotedToFamilyTotalError` | `src/domain/farely/groupFarePlanner.test.ts` |
+| RSK-02 | CAAV infant lap violation ($I > A$) | High | Reject $I > A$ with `GroupFareValidationError` | `src/domain/farely/groupFarePlanner.test.ts` |
+| RSK-03 | Round-trip baggage undercount | High | Multiply baggage surcharges by segment count | `src/domain/farely/tripBudgetEstimator.test.ts` |
+| RSK-04 | Fabricated marketing discount or scarcity | High | Throw `FabricatedScarcityError` and `UnsupportedFeaturedDiscountError` | `src/domain/farely/editorialCollections.test.ts` |
+| RSK-05 | Stale curated deal (>48h) featured | High | Enforce 48-hour freshness via `StaleCuratedItemError` | `src/domain/farely/editorialCollections.test.ts` |
 
 ---
 
 ## SECTION G: TRANSACTIONAL WORK PACKAGES
 
-### WP01: WP01-MULTICITY-LAYOVER-MCT-GUARD
-- **Target File**: `src/domain/farely/multiCityItinerary.ts`
-- **Action**: Add origin !== destination self-loop guard and maximum 10-slice bound.
-- **Verification**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
+### WP01: WP01-GROUP-FARE-CAAV-INTEGRITY
+- **Target File**: `src/domain/farely/groupFarePlanner.ts`
+- **Action**: Enforce positive base fare, $1 \le A \le 9$, $I \le A$, integer VND subtotals, and Vietnamese party labels.
+- **Verification**: `npx vitest run src/domain/farely/groupFarePlanner.test.ts`
 
-### WP02: WP02-DATA-ECONOMICS-COST-FLOOR
-- **Target File**: `src/domain/farely/dataEconomics.ts`
-- **Action**: Enforce 1 VND minimum integer floor on positive unit scan costs.
-- **Verification**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
+### WP02: WP02-TRIP-BUDGET-SEASONAL-LANDED-COST
+- **Target File**: `src/domain/farely/tripBudgetEstimator.ts`
+- **Action**: Multiply ancillary baggage fees by segment count, apply seasonal peak multipliers, and clamp durations.
+- **Verification**: `npx vitest run src/domain/farely/tripBudgetEstimator.test.ts`
 
-### WP03: WP03-BUY-WAIT-CONFIDENCE-CALIBRATION
-- **Target File**: `src/domain/farely/buyWaitGuidance.ts`
-- **Action**: Add coefficient of variation volatility dampening for buy/wait confidence.
-- **Verification**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
+### WP03: WP03-CURATED-COLLECTIONS-FRESHNESS-DISCOUNT
+- **Target File**: `src/domain/farely/editorialCollections.ts`
+- **Action**: Enforce 48h freshness, reject unverified scarcity claims, and validate discount percentage margins.
+- **Verification**: `npx vitest run src/domain/farely/editorialCollections.test.ts`

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   validateAndPublishEditorialCollection,
+  validateCuratedItemFreshness,
   FabricatedScarcityError,
   UnsupportedFeaturedDiscountError,
   StaleCuratedItemError,
@@ -153,5 +154,73 @@ describe('F42: Deal Curation and Editorial Collections', () => {
     });
 
     expect(result.isCurrentlyActive).toBe(false);
+  });
+
+  describe('SOL-CURATION-01: Freshness & Discount Sanity Guards', () => {
+    it('validates freshness accurately via validateCuratedItemFreshness', () => {
+      const now = '2026-10-15T12:00:00Z';
+      const fresh = '2026-10-15T06:00:00Z'; // 6h ago
+      const stale = '2026-10-12T00:00:00Z'; // > 48h ago
+      const future = '2026-10-16T00:00:00Z'; // future
+
+      expect(() => validateCuratedItemFreshness(fresh, now)).not.toThrow();
+      expect(() => validateCuratedItemFreshness(stale, now)).toThrow(StaleCuratedItemError);
+      expect(() => validateCuratedItemFreshness(future, now)).toThrow(StaleCuratedItemError);
+    });
+
+    it('rejects non-positive cohort median price (SOL-CURATION-01)', () => {
+      expect(() =>
+        validateAndPublishEditorialCollection({
+          collectionId: 'col_invalid_median',
+          titleVi: 'Bộ sưu tập lỗi',
+          summaryVi: 'Giá trung vị bằng 0',
+          theme: 'WEEKEND_GETAWAY',
+          curator: mockCurator,
+          expiresAt: '2026-10-18T00:00:00Z',
+          items: [
+            {
+              ...validDealItem,
+              cohortMedianPriceVND: 0,
+            },
+          ],
+          nowIsoString: '2026-10-15T04:00:00Z',
+        })
+      ).toThrow(UnsupportedFeaturedDiscountError);
+    });
+
+    it('rejects non-positive claimed discount percent (SOL-CURATION-01)', () => {
+      expect(() =>
+        validateAndPublishEditorialCollection({
+          collectionId: 'col_negative_discount',
+          titleVi: 'Giảm giá âm',
+          summaryVi: 'Claimed discount is negative',
+          theme: 'WEEKEND_GETAWAY',
+          curator: mockCurator,
+          expiresAt: '2026-10-18T00:00:00Z',
+          items: [
+            {
+              ...validDealItem,
+              claimedDiscountPercent: -15,
+            },
+          ],
+          nowIsoString: '2026-10-15T04:00:00Z',
+        })
+      ).toThrow(UnsupportedFeaturedDiscountError);
+    });
+
+    it('rejects collection when curator metadata is missing or invalid', () => {
+      expect(() =>
+        validateAndPublishEditorialCollection({
+          collectionId: 'col_no_curator',
+          titleVi: 'Thiếu người ký',
+          summaryVi: 'Missing curator',
+          theme: 'WEEKEND_GETAWAY',
+          curator: { curatorId: '', name: '', role: '', signedAt: '' },
+          expiresAt: '2026-10-18T00:00:00Z',
+          items: [validDealItem],
+          nowIsoString: '2026-10-15T04:00:00Z',
+        })
+      ).toThrow();
+    });
   });
 });

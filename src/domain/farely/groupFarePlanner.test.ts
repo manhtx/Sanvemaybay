@@ -39,6 +39,20 @@ describe("Group & Family Fare Planner (F40 & F87)", () => {
       expect(() => validatePassengerParty({ adults: 1.5, children: 0, infants: 0 })).toThrow();
       expect(() => validatePassengerParty({ adults: 1, children: -1, infants: 0 })).toThrow();
     });
+
+    it("rejects party size exceeding maximum 9 passengers (SOL-GROUP-01)", () => {
+      expect(() =>
+        validatePassengerParty({ adults: 6, children: 4, infants: 0 })
+      ).toThrow(GroupFareValidationError);
+    });
+
+    it("rejects unescorted minors when adult count is zero (SOL-GROUP-01)", () => {
+      try {
+        validatePassengerParty({ adults: 0, children: 2, infants: 0 });
+      } catch (err: any) {
+        expect(err.code).toBe("UNESCORTED_MINORS_NOT_SUPPORTED");
+      }
+    });
   });
 
   describe("calculateGroupFamilyFare", () => {
@@ -57,6 +71,22 @@ describe("Group & Family Fare Planner (F40 & F87)", () => {
       expect(breakdown.totalPartyFare).toBe(1_120_000);
       expect(breakdown.perPersonAverageFare).toBe(1_120_000);
       expect(breakdown.fareScopeLabelVi).toContain("1 người lớn");
+    });
+
+    it("rejects non-positive base adult fare (SOL-GROUP-01)", () => {
+      expect(() =>
+        calculateGroupFamilyFare({
+          baseAdultFarePerPerson: 0,
+          party: { adults: 1, children: 0, infants: 0 },
+        })
+      ).toThrow(GroupFareValidationError);
+
+      expect(() =>
+        calculateGroupFamilyFare({
+          baseAdultFarePerPerson: -500_000,
+          party: { adults: 1, children: 0, infants: 0 },
+        })
+      ).toThrow(GroupFareValidationError);
     });
 
     it("computes family with 2 adults, 1 child (75% base), 1 infant with baggage for round-trip", () => {

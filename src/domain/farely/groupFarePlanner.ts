@@ -89,6 +89,12 @@ export class SingleAdultPricePromotedToFamilyTotalError extends Error {
  */
 export function validatePassengerParty(party: PassengerPartyComposition): void {
   if (!Number.isInteger(party.adults) || party.adults < 1) {
+    if (party.adults === 0 && Number.isInteger(party.children) && party.children > 0) {
+      throw new GroupFareValidationError(
+        "Trẻ em (2-11 tuổi) không thể bay một mình mà không có người lớn đi kèm (yêu cầu dịch vụ trẻ em đi một mình UM).",
+        "UNESCORTED_MINORS_NOT_SUPPORTED"
+      );
+    }
     throw new GroupFareValidationError("Đoàn hành khách phải có ít nhất 1 người lớn (12 tuổi trở lên).", "INVALID_ADULT_COUNT");
   }
   if (!Number.isInteger(party.children) || party.children < 0) {
@@ -96,6 +102,12 @@ export function validatePassengerParty(party: PassengerPartyComposition): void {
   }
   if (!Number.isInteger(party.infants) || party.infants < 0) {
     throw new GroupFareValidationError("Số lượng em bé không hợp lệ.", "INVALID_INFANT_COUNT");
+  }
+  if (party.adults + party.children + party.infants > 9) {
+    throw new GroupFareValidationError(
+      "Đoàn hành khách vượt quá giới hạn tối đa 9 người cho đặt chỗ trực tuyến (yêu cầu liên hệ phòng vé đoàn).",
+      "PARTY_SIZE_EXCEEDS_MAX"
+    );
   }
   if (party.infants > party.adults) {
     throw new GroupFareValidationError(
@@ -120,9 +132,13 @@ export function calculateGroupFamilyFare(params: {
 }): GroupFareBreakdown {
   validatePassengerParty(params.party);
 
-  const baseAdultFare = Math.max(0, params.baseAdultFarePerPerson);
-  const segments = Math.max(1, params.segmentsCount ?? 1);
-  const childRatio = params.childDiscountRatio ?? 0.75;
+  const rawFare = Number(params.baseAdultFarePerPerson);
+  if (!Number.isFinite(rawFare) || rawFare <= 0) {
+    throw new GroupFareValidationError("Giá vé người lớn cơ bản phải là số dương hợp lệ.", "INVALID_BASE_FARE");
+  }
+  const baseAdultFare = Math.round(rawFare);
+  const segments = Math.max(1, Math.min(2, Math.floor(params.segmentsCount ?? 1)));
+  const childRatio = Math.max(0.1, Math.min(1.0, params.childDiscountRatio ?? 0.75));
   const baggageSchedule = params.baggageSchedule ?? DEFAULT_BAGGAGE_PRICING;
 
   // Adult base fare

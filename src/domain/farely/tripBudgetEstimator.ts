@@ -122,6 +122,22 @@ export function calculateCarrierLandedSurcharges(
 }
 
 
+/**
+ * Calculates seasonal price inflation multiplier for Vietnamese tourist destinations.
+ * - Tet peak (January - February): +50% (1.5x)
+ * - Summer peak (June - July): +25% (1.25x)
+ * - Regular baseline season: 1.0x
+ */
+export function getSeasonalGroundMultiplier(departureDate?: string): number {
+  if (!departureDate) return 1.0;
+  const parsed = Date.parse(departureDate);
+  if (!Number.isFinite(parsed)) return 1.0;
+  const month = new Date(parsed).getUTCMonth() + 1; // 1-12 in UTC
+  if (month === 1 || month === 2) return 1.5;
+  if (month === 6 || month === 7) return 1.25;
+  return 1.0;
+}
+
 export interface TripBudgetEstimate {
   destinationCode: string;
   destinationName: string;
@@ -134,6 +150,7 @@ export interface TripBudgetEstimate {
   travelers: number;
   style: "budget" | "standard" | "comfort";
   uncertainty: "ESTIMATED";
+  isBenchmarkEstimated: boolean;
   disclosureVi: string;
 }
 
@@ -143,9 +160,11 @@ export function estimateTotalTripCost(params: {
   nights?: number;
   travelers?: number;
   style?: "budget" | "standard" | "comfort";
+  departureDate?: string;
 }): TripBudgetEstimate {
-  const code = params.destinationCode.toUpperCase();
-  const benchmark = DESTINATION_BENCHMARK_COSTS[code] || {
+  const code = (params.destinationCode || "").trim().toUpperCase();
+  const hasKnownBenchmark = Object.prototype.hasOwnProperty.call(DESTINATION_BENCHMARK_COSTS, code);
+  const benchmark = hasKnownBenchmark ? DESTINATION_BENCHMARK_COSTS[code] : {
     destinationCode: code,
     destinationName: code,
     lodgingPerNight: { budget: 350_000, standard: 800_000, comfort: 2_000_000 },
@@ -153,28 +172,38 @@ export function estimateTotalTripCost(params: {
     dailyFoodAndActivity: { budget: 250_000, standard: 500_000, comfort: 1_000_000 },
   };
 
-  const nights = Math.max(1, params.nights ?? 3);
-  const travelers = Math.max(1, params.travelers ?? 1);
+  const rawNights = params.nights !== undefined ? Number(params.nights) : 3;
+  const nights = Math.max(0, Math.min(90, Math.floor(Number.isFinite(rawNights) ? rawNights : 3)));
+  const rawTravelers = params.travelers !== undefined ? Number(params.travelers) : 1;
+  const travelers = Math.max(1, Math.min(20, Math.floor(Number.isFinite(rawTravelers) ? rawTravelers : 1)));
   const style = params.style ?? "standard";
+  const seasonalMultiplier = getSeasonalGroundMultiplier(params.departureDate);
 
-  // Approximate hotel rooms needed (1 room per 2 travelers)
+  // Approximate hotel rooms needed (1 room per 2 travelers). Zero nights = 0 lodging.
   const roomsNeeded = Math.ceil(travelers / 2);
-  const lodgingTotalEstimated = benchmark.lodgingPerNight[style] * nights * roomsNeeded;
+  const lodgingRate = benchmark.lodgingPerNight[style] ?? benchmark.lodgingPerNight.standard;
+  const lodgingTotalEstimated = nights === 0
+    ? 0
+    : Math.round(lodgingRate * nights * roomsNeeded * seasonalMultiplier);
 
   // Round trip transfer (to and from airport)
   const transferStyle = style === "budget" ? "budget" : "standard";
-  const groundTransferEstimated = benchmark.airportTransferOneWay[transferStyle] * 2 * roomsNeeded;
+  const transferCost = benchmark.airportTransferOneWay[transferStyle] ?? benchmark.airportTransferOneWay.standard;
+  const groundTransferEstimated = Math.round(transferCost * 2 * roomsNeeded);
 
   // Daily expenses per traveler
-  const dailyExpensesEstimated = benchmark.dailyFoodAndActivity[style] * (nights + 1) * travelers;
+  const dailyFoodRate = benchmark.dailyFoodAndActivity[style] ?? benchmark.dailyFoodAndActivity.standard;
+  const days = nights === 0 ? 1 : nights + 1;
+  const dailyExpensesEstimated = Math.round(dailyFoodRate * days * travelers * seasonalMultiplier);
 
-  const grandTotalEstimated =
-    params.airfareTotal + lodgingTotalEstimated + groundTransferEstimated + dailyExpensesEstimated;
+  const safeAirfare = Math.max(0, Math.round(Number(params.airfareTotal) || 0));
+  const rawGrandTotal = safeAirfare + lodgingTotalEstimated + groundTransferEstimated + dailyExpensesEstimated;
+  const grandTotalEstimated = Math.min(Number.MAX_SAFE_INTEGER, rawGrandTotal);
 
   return {
     destinationCode: code,
     destinationName: benchmark.destinationName,
-    airfareTotal: params.airfareTotal,
+    airfareTotal: safeAirfare,
     lodgingTotalEstimated,
     groundTransferEstimated,
     dailyExpensesEstimated,
@@ -183,6 +212,7 @@ export function estimateTotalTripCost(params: {
     travelers,
     style,
     uncertainty: "ESTIMATED",
+    isBenchmarkEstimated: !hasKnownBenchmark,
     disclosureVi:
       "Chi phí vé máy bay là số liệu ghi nhận thực tế. Các chi phí khách sạn, di chuyển mặt đất và sinh hoạt là ước tính tham khảo (ESTIMATED) dựa trên mức giá trung bình của điểm đến.",
   };

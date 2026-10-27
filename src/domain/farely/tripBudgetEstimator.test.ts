@@ -4,6 +4,7 @@ import {
   calculateLandedFlightCost,
   estimateRoundTripBaggageCost,
   calculateCarrierLandedSurcharges,
+  getSeasonalGroundMultiplier,
 } from "./tripBudgetEstimator";
 
 describe("Trip Budget Estimator (F46)", () => {
@@ -63,6 +64,46 @@ describe("Trip Budget Estimator (F46)", () => {
     expect(estimate.destinationCode).toBe("UNKNOWN_CITY");
     expect(estimate.grandTotalEstimated).toBeGreaterThan(2_000_000);
     expect(estimate.uncertainty).toBe("ESTIMATED");
+    expect(estimate.isBenchmarkEstimated).toBe(true);
+  });
+
+  it("calculates zero lodging for same-day zero-night turnarounds (SOL-LANDED-01)", () => {
+    const dayTrip = estimateTotalTripCost({
+      destinationCode: "SGN",
+      airfareTotal: 1_200_000,
+      nights: 0,
+      travelers: 1,
+    });
+
+    expect(dayTrip.nights).toBe(0);
+    expect(dayTrip.lodgingTotalEstimated).toBe(0);
+    expect(dayTrip.isBenchmarkEstimated).toBe(false);
+  });
+
+  it("applies seasonal peak ground multipliers accurately (SOL-LANDED-01)", () => {
+    expect(getSeasonalGroundMultiplier("2026-02-15")).toBe(1.5); // Tet peak
+    expect(getSeasonalGroundMultiplier("2026-07-10")).toBe(1.25); // Summer peak
+    expect(getSeasonalGroundMultiplier("2026-10-20")).toBe(1.0); // Baseline
+    expect(getSeasonalGroundMultiplier(undefined)).toBe(1.0);
+
+    const tetTrip = estimateTotalTripCost({
+      destinationCode: "DAD",
+      airfareTotal: 2_000_000,
+      nights: 3,
+      travelers: 2,
+      departureDate: "2026-02-15",
+    });
+
+    const baselineTrip = estimateTotalTripCost({
+      destinationCode: "DAD",
+      airfareTotal: 2_000_000,
+      nights: 3,
+      travelers: 2,
+      departureDate: "2026-10-20",
+    });
+
+    expect(tetTrip.lodgingTotalEstimated).toBe(Math.round(baselineTrip.lodgingTotalEstimated * 1.5));
+    expect(tetTrip.grandTotalEstimated).toBeGreaterThan(baselineTrip.grandTotalEstimated);
   });
 
   describe("SOL-03: Carrier Landed Cost & Round-Trip Baggage Estimation", () => {

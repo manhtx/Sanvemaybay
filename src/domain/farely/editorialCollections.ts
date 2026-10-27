@@ -86,6 +86,23 @@ export interface EditorialCollection {
 const MAX_DEAL_AGE_HOURS_FOR_EDITORIAL = 48;
 
 /**
+ * Validates whether an observed fare timestamp is within the 48-hour editorial freshness ceiling.
+ */
+export function validateCuratedItemFreshness(observedAt: string, currentTimestampIso?: string): void {
+  const nowMs = currentTimestampIso ? Date.parse(currentTimestampIso) : Date.now();
+  const observedMs = Date.parse(observedAt);
+  if (!Number.isFinite(observedMs) || observedMs > nowMs + 60000) {
+    throw new StaleCuratedItemError("Thời điểm quan sát giá không hợp lệ hoặc nằm trong tương lai.");
+  }
+  const ageHours = (nowMs - observedMs) / (1000 * 60 * 60);
+  if (ageHours > MAX_DEAL_AGE_HOURS_FOR_EDITORIAL) {
+    throw new StaleCuratedItemError(
+      `Ưu đãi được quan sát ${Math.round(ageHours)} giờ trước, vượt quá giới hạn tối đa ${MAX_DEAL_AGE_HOURS_FOR_EDITORIAL} giờ cho bộ sưu tập tuyển chọn.`
+    );
+  }
+}
+
+/**
  * Validates curated deal items against authentic observation evidence.
  * Enforces strict anti-fabrication invariants (F42).
  */
@@ -114,24 +131,37 @@ export function validateAndPublishEditorialCollection(params: {
     throw new Error('Editorial collection must contain at least one curated item.');
   }
 
-  const nowMs = new Date(nowIsoString).getTime();
-  const expiresMs = new Date(expiresAt).getTime();
+  if (!curator || !curator.curatorId || !curator.name || !curator.signedAt) {
+    throw new Error('Thông tin biên tập viên (curatorId, name, signedAt) không được để trống.');
+  }
 
-  if (expiresMs <= new Date(curator.signedAt).getTime()) {
+  const signedMs = Date.parse(curator.signedAt);
+  if (!Number.isFinite(signedMs)) {
+    throw new Error('Dấu thời gian ký duyệt của biên tập viên (curator.signedAt) không hợp lệ.');
+  }
+
+  const nowMs = Date.parse(nowIsoString);
+  const expiresMs = Date.parse(expiresAt);
+
+  if (!Number.isFinite(expiresMs)) {
+    throw new Error('Thời điểm hết hạn bộ sưu tập (expiresAt) không hợp lệ.');
+  }
+
+  if (expiresMs <= signedMs) {
     throw new Error('Collection expiration must be strictly after curator signature timestamp.');
   }
 
   const validatedItems: ValidatedCuratedItem[] = items.map((item) => {
-    // 1. Freshness check: Reject obsolete deals (> 48h old)
-    const itemObservedMs = new Date(item.observedAt).getTime();
-    const ageHours = (nowMs - itemObservedMs) / (1000 * 60 * 60);
-    if (ageHours > MAX_DEAL_AGE_HOURS_FOR_EDITORIAL) {
-      throw new StaleCuratedItemError(
-        `Deal ${item.dealId} (${item.originCode}-${item.destinationCode}) was observed ${Math.round(ageHours)}h ago, exceeding the ${MAX_DEAL_AGE_HOURS_FOR_EDITORIAL}h editorial freshness ceiling.`
+    // 1. Freshness check: Reject obsolete deals (> 48h old) or future-dated anomalies
+    validateCuratedItemFreshness(item.observedAt, nowIsoString);
+
+    // 2. Discount validity check: Verify claimed discount does not exceed authentic calculation
+    if (!Number.isFinite(item.cohortMedianPriceVND) || item.cohortMedianPriceVND <= 0) {
+      throw new UnsupportedFeaturedDiscountError(
+        `Deal ${item.dealId} có giá trung vị nhóm không hợp lệ hoặc bằng 0 (${item.cohortMedianPriceVND}).`
       );
     }
 
-    // 2. Discount validity check: Verify claimed discount does not exceed authentic calculation
     const trueDiscountPercent = Math.max(
       0,
       Math.round(
@@ -140,6 +170,11 @@ export function validateAndPublishEditorialCollection(params: {
     );
 
     if (item.claimedDiscountPercent !== undefined) {
+      if (item.claimedDiscountPercent <= 0 || !Number.isFinite(item.claimedDiscountPercent)) {
+        throw new UnsupportedFeaturedDiscountError(
+          `Deal ${item.dealId} công bố tỷ lệ giảm giá không hợp lệ (${item.claimedDiscountPercent}%). Tỷ lệ giảm giá phải là số dương lớn hơn 0%.`
+        );
+      }
       // Claiming higher discount than authentic data permits (> 1% tolerance for rounding)
       if (item.claimedDiscountPercent > trueDiscountPercent + 1) {
         throw new UnsupportedFeaturedDiscountError(
