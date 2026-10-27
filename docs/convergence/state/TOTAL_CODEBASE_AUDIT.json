@@ -1,27 +1,27 @@
 {
-  "timestamp": "2026-10-26T11:07:15.929Z",
-  "total_files_scanned": 313,
+  "timestamp": "2026-10-27T10:08:22.965Z",
+  "total_files_scanned": 314,
   "subsystems": {
     "farely_domain": {
       "path": "src/domain/farely",
-      "file_count": 49,
-      "total_loc": 9261,
+      "file_count": 50,
+      "total_loc": 12061,
       "files": [
         {
           "path": "src/domain/farely/airportAlternatives.test.ts",
-          "loc": 157
+          "loc": 259
         },
         {
           "path": "src/domain/farely/airportAlternatives.ts",
-          "loc": 476
+          "loc": 601
         },
         {
           "path": "src/domain/farely/buyWaitGuidance.test.ts",
-          "loc": 170
+          "loc": 262
         },
         {
           "path": "src/domain/farely/buyWaitGuidance.ts",
-          "loc": 287
+          "loc": 374
         },
         {
           "path": "src/domain/farely/comparator.ts",
@@ -29,11 +29,11 @@
         },
         {
           "path": "src/domain/farely/conditionalGrowthSafety.test.ts",
-          "loc": 147
+          "loc": 185
         },
         {
           "path": "src/domain/farely/conditionalGrowthSafety.ts",
-          "loc": 253
+          "loc": 288
         },
         {
           "path": "src/domain/farely/costEpistemics.ts",
@@ -41,19 +41,19 @@
         },
         {
           "path": "src/domain/farely/dataEconomics.test.ts",
-          "loc": 86
+          "loc": 155
         },
         {
           "path": "src/domain/farely/dataEconomics.ts",
-          "loc": 136
-        },
-        {
-          "path": "src/domain/farely/directAffiliateComparison.test.ts",
           "loc": 177
         },
         {
+          "path": "src/domain/farely/directAffiliateComparison.test.ts",
+          "loc": 371
+        },
+        {
           "path": "src/domain/farely/directAffiliateComparison.ts",
-          "loc": 218
+          "loc": 315
         },
         {
           "path": "src/domain/farely/domainKernel.test.ts",
@@ -61,19 +61,19 @@
         },
         {
           "path": "src/domain/farely/editorialCollections.test.ts",
-          "loc": 158
+          "loc": 292
         },
         {
           "path": "src/domain/farely/editorialCollections.ts",
-          "loc": 193
+          "loc": 245
         },
         {
           "path": "src/domain/farely/groupFarePlanner.test.ts",
-          "loc": 123
+          "loc": 188
         },
         {
           "path": "src/domain/farely/groupFarePlanner.ts",
-          "loc": 206
+          "loc": 288
         },
         {
           "path": "src/domain/farely/identity.ts",
@@ -93,35 +93,35 @@
         },
         {
           "path": "src/domain/farely/multiCityItinerary.test.ts",
-          "loc": 221
+          "loc": 331
         },
         {
           "path": "src/domain/farely/multiCityItinerary.ts",
-          "loc": 187
+          "loc": 215
         },
         {
           "path": "src/domain/farely/partnerIntegrations.test.ts",
-          "loc": 107
+          "loc": 179
         },
         {
           "path": "src/domain/farely/partnerIntegrations.ts",
-          "loc": 160
-        },
-        {
-          "path": "src/domain/farely/personalizedFeedPrivacy.test.ts",
-          "loc": 96
-        },
-        {
-          "path": "src/domain/farely/personalizedFeedPrivacy.ts",
-          "loc": 147
-        },
-        {
-          "path": "src/domain/farely/priceAnomaly.test.ts",
           "loc": 182
         },
         {
+          "path": "src/domain/farely/personalizedFeedPrivacy.test.ts",
+          "loc": 237
+        },
+        {
+          "path": "src/domain/farely/personalizedFeedPrivacy.ts",
+          "loc": 226
+        },
+        {
+          "path": "src/domain/farely/priceAnomaly.test.ts",
+          "loc": 300
+        },
+        {
           "path": "src/domain/farely/priceAnomaly.ts",
-          "loc": 274
+          "loc": 297
         },
         {
           "path": "src/domain/farely/priceScope.ts",
@@ -133,11 +133,11 @@
         },
         {
           "path": "src/domain/farely/providerCapabilities.test.ts",
-          "loc": 130
+          "loc": 171
         },
         {
           "path": "src/domain/farely/providerCapabilities.ts",
-          "loc": 234
+          "loc": 251
         },
         {
           "path": "src/domain/farely/providerResult.ts",
@@ -145,19 +145,19 @@
         },
         {
           "path": "src/domain/farely/providerRights.test.ts",
-          "loc": 163
+          "loc": 201
         },
         {
           "path": "src/domain/farely/providerRights.ts",
-          "loc": 305
+          "loc": 366
         },
         {
           "path": "src/domain/farely/pwaOfflineFreshness.test.ts",
-          "loc": 208
+          "loc": 346
         },
         {
           "path": "src/domain/farely/pwaOfflineFreshness.ts",
-          "loc": 179
+          "loc": 243
         },
         {
           "path": "src/domain/farely/releaseTuple.ts",
@@ -176,16 +176,20 @@
           "loc": 99
         },
         {
+          "path": "src/domain/farely/travelIntent.test.ts",
+          "loc": 332
+        },
+        {
           "path": "src/domain/farely/travelIntent.ts",
-          "loc": 139
+          "loc": 214
         },
         {
           "path": "src/domain/farely/tripBudgetEstimator.test.ts",
-          "loc": 105
+          "loc": 163
         },
         {
           "path": "src/domain/farely/tripBudgetEstimator.ts",
-          "loc": 190
+          "loc": 243
         },
         {
           "path": "src/domain/farely/truthKernelV2.test.ts",
@@ -193,11 +197,11 @@
         },
         {
           "path": "src/domain/farely/vietnamTravelContext.test.ts",
-          "loc": 54
+          "loc": 120
         },
         {
           "path": "src/domain/farely/vietnamTravelContext.ts",
-          "loc": 138
+          "loc": 189
         },
         {
           "path": "src/domain/farely/watchCondition.ts",
@@ -208,7 +212,7 @@
     "app_domain": {
       "path": "src/app/domain",
       "file_count": 53,
-      "total_loc": 5972,
+      "total_loc": 6060,
       "files": [
         {
           "path": "src/app/domain/accountContinuity.test.ts",
@@ -244,11 +248,11 @@
         },
         {
           "path": "src/app/domain/dealComparison.test.ts",
-          "loc": 314
+          "loc": 369
         },
         {
           "path": "src/app/domain/dealComparison.ts",
-          "loc": 267
+          "loc": 300
         },
         {
           "path": "src/app/domain/decisionModes.test.ts",
@@ -1207,6 +1211,10 @@
       {
         "path": "src/app/pages/SearchPage.tsx",
         "loc": 726
+      },
+      {
+        "path": "src/domain/farely/airportAlternatives.ts",
+        "loc": 601
       }
     ],
     "missing_error_boundaries": [],

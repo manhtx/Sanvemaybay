@@ -53,15 +53,15 @@ export interface EligibilityResult {
  * NODE TK-05, D14: Does not naively divide party total when children/infants are present without fare breakdown.
  */
 export function normalizeOfferForIntent(offer: RouteOffer, intent: TravelIntent): RouteOffer {
-  let normalizedPrice = offer.price;
+  let normalizedPrice = Number.isFinite(offer.price) && offer.price > 0 ? Math.round(offer.price) : 0;
   let normalizedPricingUnit = offer.pricingUnit || 'PER_TRAVELER';
 
-  if (normalizedPricingUnit === 'PARTY_TOTAL') {
+  if (normalizedPricingUnit === 'PARTY_TOTAL' && normalizedPrice > 0) {
     const hasChildrenOrInfants = (intent.passengers.children || 0) > 0 || (intent.passengers.infants || 0) > 0;
     if (!hasChildrenOrInfants) {
       const adults = intent.passengers.adults || 1;
       if (adults > 1) {
-        normalizedPrice = Math.round(offer.price / adults);
+        normalizedPrice = Math.round(normalizedPrice / adults);
         normalizedPricingUnit = 'PER_TRAVELER';
       }
     }
@@ -96,20 +96,30 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
   if (intent.journeyType === 'ROUND_TRIP') {
     if (!offer.returnDate) {
       reasons.push('MISSING_RETURN_DATE');
-    } else if (intent.inbound?.exact && offer.returnDate !== intent.inbound.exact) {
-      reasons.push('RETURN_DATE_MISMATCH');
-    } else if (intent.inbound?.from && intent.inbound?.to) {
-      if (offer.returnDate < intent.inbound.from || offer.returnDate > intent.inbound.to) {
+    } else {
+      const offerReturn = offer.returnDate.slice(0, 10);
+      const intentReturnExact = intent.inbound?.exact ? intent.inbound.exact.slice(0, 10) : undefined;
+      if (intentReturnExact && offerReturn !== intentReturnExact) {
         reasons.push('RETURN_DATE_MISMATCH');
+      } else if (intent.inbound?.from && intent.inbound?.to) {
+        const retFrom = intent.inbound.from.slice(0, 10);
+        const retTo = intent.inbound.to.slice(0, 10);
+        if (offerReturn < retFrom || offerReturn > retTo) {
+          reasons.push('RETURN_DATE_MISMATCH');
+        }
       }
     }
   }
 
   // 4. Outbound date & windows (S08 / C-13)
-  if (intent.outbound.exact && offer.departDate !== intent.outbound.exact) {
+  const offerDepart = (offer.departDate || '').slice(0, 10);
+  const intentDepartExact = intent.outbound.exact ? intent.outbound.exact.slice(0, 10) : undefined;
+  if (intentDepartExact && offerDepart !== intentDepartExact) {
     reasons.push('OUTBOUND_DATE_MISMATCH');
   } else if (intent.outbound.from && intent.outbound.to) {
-    if (offer.departDate < intent.outbound.from || offer.departDate > intent.outbound.to) {
+    const from = intent.outbound.from.slice(0, 10);
+    const to = intent.outbound.to.slice(0, 10);
+    if (offerDepart < from || offerDepart > to) {
       reasons.push('OUTBOUND_DATE_MISMATCH');
     }
   }
@@ -218,12 +228,14 @@ export function selectRouteBest(offers: RouteOffer[], intent: TravelIntent): Rou
 
   if (eligibleOffers.length === 0) return null;
 
-  // Sort deterministically by price ascending, with stable tie-breaker on offer ID
+  // Sort deterministically by price ascending (integer VND), with stable tie-breaker on offer ID
   eligibleOffers.sort((a, b) => {
-    if (a.price !== b.price) {
-      return a.price - b.price; // mathematical minimum
+    const priceA = Math.round(a.price);
+    const priceB = Math.round(b.price);
+    if (priceA !== priceB) {
+      return priceA - priceB; // mathematical minimum
     }
-    return a.id.localeCompare(b.id);
+    return String(a.id || '').localeCompare(String(b.id || ''));
   });
 
   return eligibleOffers[0];

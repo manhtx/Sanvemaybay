@@ -257,5 +257,39 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
       expect(res.recommendation).toBe("BUY_NOW");
       expect(res.rationaleVi).toContain("khởi hành trong 2 ngày tới");
     });
+
+    it("WP01: sanitizes dirty price inputs and guards Bessel sample variance in computeCohortVolatility", () => {
+      const dirtyPrices = [1_000_000, NaN, null as any, undefined as any, -500_000, 2_000_000];
+      const vol = computeCohortVolatility(dirtyPrices);
+      expect(vol.mean).toBe(1_500_000);
+      expect(vol.stdDev).toBeGreaterThan(0);
+      expect(Number.isFinite(vol.cv)).toBe(true);
+
+      const singleValid = computeCohortVolatility([NaN, -1, 1_500_000]);
+      expect(singleValid.mean).toBe(1_500_000);
+      expect(singleValid.stdDev).toBe(0);
+      expect(singleValid.cv).toBe(0);
+
+      const emptyDirty = computeCohortVolatility([NaN, null as any, -100]);
+      expect(emptyDirty.mean).toBe(0);
+      expect(emptyDirty.stdDev).toBe(0);
+      expect(emptyDirty.cv).toBe(0);
+    });
+
+    it("WP01: safely handles delimiter normalization and clamps rolling backtest parameters", () => {
+      const history = generateSyntheticHistory(20, 20, 2_000_000);
+      const res = evaluateBuyWaitGuidance({
+        currentPrice: 2_200_000, // Median price (neither all-time low nor spike)
+        priceHistory: history,
+        departureDate: "2026/11/01", // Slash delimited
+        evaluationDate: "2026-09-25",
+      });
+      expect(res.recommendation).toBe("WAIT_AND_WATCH");
+
+      // Clamps horizonDays <= 0 to 1
+      const backtest = evaluateRollingHorizonBacktest(history, 0, 0);
+      expect(backtest.backtestWindowDays).toBe(1);
+    });
   });
 });
+

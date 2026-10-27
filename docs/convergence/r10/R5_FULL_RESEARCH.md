@@ -1,110 +1,159 @@
-# FARELY CYCLE G90 — RESEARCH PASS R5: SOVEREIGN CANONICAL CONVERGENCE & SOLUTION CAGE
-## Target Modules: `pwaOfflineFreshness.ts`, `priceAnomaly.ts`, `travelIntent.ts`
-## Epistemic Integrity: Zero-Trust Codebase Telemetry & Adversarial Invariant Auditing
-
-EXECUTION_RECEIPT_SHA256: 88599b0d444b87b019aa44e9be835cc7561cec596b5098cf571358633f3c5482
-GIT_HEAD: b300c3d5d796f8a6b33e8d1eee47ea1f4d6b84bc
-STAGE: RESEARCH_R10
-PASS: R5
-TIMESTAMP: 2026-10-27T09:58:00Z
+# FARELY PROJECT 10X — RESEARCH R10 [R5]
+# LEVEL: Pass 5: Sovereign Canonical Convergence
+# MANDATE: Unassailable synthesis across all 12 lenses. Sealed proof ledger, canonical handoff contract, 100% self-contained output.
+# GIT_COMMIT: fe54b1f527b82c304ef362570cf4daa235ec8443
+# TIMESTAMP: 2026-10-27T10:15:45.917Z
+# EXECUTION_RECEIPT_SHA256: c7a51cd8915367533247952e15af83863bf0b018d3135e9ab6cba7e0a6c83e3a
 
 ---
 
-### FALSIFICATION & AUDIT OF PASS R4 (CRITIQUE OF PRIOR ASSUMPTIONS)
+## AUDIT & FALSIFICATION OF PASS N-1
 
-Pass R5 conducts the final adversarial audit of Pass R4 across lenses L01, L02, L05, L08, L10, and L12:
+Pass R4 addressed production SRE edge cases. In this Pass R5 Sovereign Canonical Synthesis, we subject Pass R4 to ultimate adversarial verification across all 12 lenses and falsify 3 residual assumptions:
 
-1. **Falsification of L01 Proposal on NEG-08 Baseline Contamination (`priceAnomaly.ts`)**:
-   - *Pass R4 Claim*: "Verify baseline cohort represents independent observations."
-   - *Falsification & Code Proof*: Merely documenting this invariant does not stop callers or automated scrapers from accidentally including `currentPrice` in `historicalCohortPrices`. To provide ironclad automated defense against `NEG-08` ("Current observation included in own baseline"), `detectPriceAnomaly` must support an explicit `excludeCurrentPriceFromBaseline?: boolean` option (defaulting to `false` for backward compatibility, but actively filtering out one instance of `currentPrice` when `excludeCurrentPriceFromBaseline === true` or when flagged by SRE audit pipelines).
+1. **Falsification 1: Unclamped Backtest Horizon Parameters in `buyWaitGuidance.ts` (L02 & L03 / SOV-01)**:
+   - *Pass R4 Claim*: Pass R4 assumed callers of `evaluateRollingHorizonBacktest` always supply valid positive horizon and training points.
+   - *Falsification & Code Proof*: In `src/domain/farely/buyWaitGuidance.ts#L296-L300`, `evaluateRollingHorizonBacktest(priceHistory, horizonDays = 7, minTrainingPoints = MIN_OBSERVATION_POINTS)`. If an external caller passes `horizonDays = 0` or negative, `futureWindow.slice(t + 1, t + 1 + horizonDays)` evaluates to an empty array (`slice(t+1, t+1)`), causing `futureMin = Infinity` (`Math.min()`), resulting in completely distorted accuracy rates! Sovereign rigor mandates explicit parameter clamping: `horizonDays = Math.max(1, Math.round(horizonDays || 7))` and `minTrainingPoints = Math.max(MIN_OBSERVATION_POINTS, Math.round(minTrainingPoints || 14))`.
 
-2. **Falsification of L02 & L12 Proposal on Optional Properties in TravelIntent (`travelIntent.ts`)**:
-   - *Pass R4 Claim*: "Add `isGroupBooking` and validate flight constraints."
-   - *Falsification & Code Proof*: If `isGroupBooking` is added as a mandatory field, existing stored JSON strings in databases or localStorage with `schemaVersion: 1` will fail strict schema validation upon deserialization. The field must be typed as `isGroupBooking?: boolean` so legacy serialized intents deserialize without breakage. Furthermore, `maxStops` validation must explicitly permit `0` (direct flights) while rejecting negative numbers (`maxStops < 0`), and `maxDurationMinutes` must be validated to ensure positive duration ($\ge 15$).
+2. **Falsification 2: Unchecked Non-Positive Price Pass-Through in `normalizeOfferForIntent` (L01 & L02 / SOV-02)**:
+   - *Pass R4 Claim*: Pass R4 assumed `normalizeOfferForIntent` is only called after `evaluateOfferEligibility`.
+   - *Falsification & Code Proof*: `normalizeOfferForIntent` (`src/domain/farely/routeBest.ts#L55-L75`) is an exported pure kernel function. If called independently by UI or analytics pipelines on raw partner feeds containing negative prices (e.g. `-100000` or `NaN`), `Math.round(offer.price / adults)` passes corrupted prices through. Sovereign safety mandates that `normalizeOfferForIntent` validates `Number.isFinite(offer.price) && offer.price > 0`. If invalid, price is normalized to `0`.
 
-3. **Falsification of L05 & L08 Proposal on Test Artifact Cleanup (`pwaOfflineFreshness.ts`)**:
-   - *Pass R4 Claim*: "Remove stray hook text only from `pwaOfflineFreshness.ts`."
-   - *Falsification & Code Proof*: In `src/domain/farely/pwaOfflineFreshness.test.ts#L220-L259`, terminal hook resume strings were also appended to the test file during previous interactive sessions! If only the domain file is cleaned, running `npm test` on the test file could fail compilation with unexpected token errors. Both production modules and their corresponding test files must be cleanly sanitized of terminal hook artifacts simultaneously.
-
----
-
-### CANONICAL SOLUTION SPECIFICATIONS (SOLUTION CAGE PROTOCOL)
-
-The following three solutions are strictly locked for execution during Cycle G90:
-
-#### 1. SOL-PWAOFFLINE-01: PWA Offline Freshness Calibration & Multi-Entity Queue Safety
-- **Target File**: `src/domain/farely/pwaOfflineFreshness.ts`
-- **Target Test File**: `src/domain/farely/pwaOfflineFreshness.test.ts`
-- **Specification**:
-  - Calibrate live verification threshold: Define `export const LIVE_REVALIDATION_THRESHOLD_MINUTES = 45`. Observations $> 45$ min in online mode are `isLiveVerified: false` with label `'Dữ liệu chờ cập nhật'`.
-  - Fix action queue deduplication in `enqueueOfflineAction`: Extract target entity key using `(item.payload?.dealId as string) || (item.payload?.watchId as string) || (item.payload?.id as string) || ''`.
-  - In `assertOfflineFreshnessIntegrity`, expand validation: If online (`isDeviceOffline === false`), assert that deals with invalid prices (`priceVND <= 0`) or extreme staleness ($> 45$ min) cannot have `isLiveVerified: true` or `canDirectBook: true`.
-  - Clean up stray terminal hook output from both `pwaOfflineFreshness.ts` and `pwaOfflineFreshness.test.ts`.
-
-#### 2. SOL-PRICEANOMALY-01: Anomaly Detection Rigor & NEG-08 Baseline Independence
-- **Target File**: `src/domain/farely/priceAnomaly.ts`
-- **Target Test File**: `src/domain/farely/priceAnomaly.test.ts`
-- **Specification**:
-  - Provide `excludeCurrentPriceFromBaseline?: boolean` in `detectPriceAnomaly` to defend against `NEG-08`.
-  - Guard all numerical outputs in `AnomalyEvaluation` against `NaN`, `Infinity`, or precision loss.
-  - Retain `AUD-12` zero empirical dispersion abstention (`INSUFFICIENT_DISPERSION_ABSTENTION`).
-  - Enforce `MIN_ANOMALY_SAMPLE_SIZE = 10` before declaring statistical anomalies.
-
-#### 3. SOL-TRAVELINTENT-01: TravelIntent Creation Rigor, Chronological Validation & Infant Safety
-- **Target File**: `src/domain/farely/travelIntent.ts`
-- **Target Test File**: `src/domain/farely/travelIntent.test.ts` [PROPOSED_NEW]
-- **Specification**:
-  - Export `TravelIntentValidationError` with structured error codes (`ERR_INVERTED_DATES`, `ERR_PASSENGER_MIX_INVALID`, `ERR_LAP_INFANT_EXCESS`, `ERR_INVALID_CONSTRAINTS`).
-  - Chronological date validation: extract effective departure date and effective return date, verifying `effectiveInbound >= effectiveOutbound` (supporting same-day round trips while rejecting inverted dates).
-  - Passenger mix validation: `adults >= 1`, `children >= 0`, `infants >= 0`, all integers.
-  - ICAO lap infant safety: `infants <= adults`.
-  - Group capacity handling: If `adults + children > 9`, set `isGroupBooking: true`.
-  - Flight constraint bounds: `maxStops >= 0`, `maxDurationMinutes >= 15`.
-  - Clean up stray terminal hook strings from bottom of `travelIntent.ts`.
-  - Create dedicated unit test suite in `src/domain/farely/travelIntent.test.ts`.
+3. **Falsification 3: Ephemeral Generation ID Epoch Loss in `watchCondition.ts` (L04 & L08 / SOV-03)**:
+   - *Pass R4 Claim*: Pass R4 assumed `generationId` is simply passed along without transition enforcement.
+   - *Falsification & Code Proof*: In `src/domain/farely/watchCondition.ts#L43-L54`, `generationId?: string`. When a watch search condition is edited by a user (e.g. changing target budget from 2M to 1.5M), a new `generationId` is issued. If `activeEpisode.generationId` does not match `params.generationId`, evaluating against the old episode creates a phantom transition across disjoint condition scopes! Sovereign state handling must detect generation mismatch and close the old episode (`state: 'EXITED'`) before starting a fresh episode for the new generation.
 
 ---
 
-### ADVERSARIAL SYSTEMIC AUDIT ACROSS ALL 12 LENSES
-
-### L01: Mathematical & Algorithmic Rigor
-- Bounded live verification window (45 min); integer passenger arithmetic; MAD dispersion bounds.
-
-### L02: Type-System Soundness & Invariant Enforcement
-- Strongly typed travel intent errors, multi-entity queue keys, robust date window extraction.
-
-### L03: Epistemic Sincerity & Anti-Hallucination
-- `NEG-35` defense against offline cache misrepresentation; `NEG-08` defense against self-contaminating baselines; ICAO lap infant safety enforcement.
-
-### L04: State Space Completeness & Boundary Values
-- Same-day round trips permitted; zero-stop direct flights permitted; FIFO queue capacity capped at 100.
-
-### L05: Concurrency, Latency & Async Safety
-- Pure array transformations and fast synchronous serialization.
-
-### L06: Adversarial Robustness & Negative Vector Defense
-- Defends `NEG-35`, `NEG-08`, `NEG-09`, and invalid passenger payload injection.
-
-### L07: Production Realism & Environmental Fidelity
-- Reflects real Vietnamese domestic aviation policies (CAAV lap infants, PWA mobile offline experience).
-  - **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.
-
-### L08: Architectural Cohesion & Clean Domain Kernel
-- Pure TypeScript implementations without third-party dependencies. Clean stray hook output from source files.
-
-### L09: Regulatory Compliance & Consumer Protection (CAAV, FTC, VN Competition Law)
-- Adherence to CAAV infant passenger safety standards and consumer protection transparency.
-
-### L10: Observability, Diagnostics & SRE Auditability
-- Structured error codes `[ERR_INVERTED_DATES]`, `[ERR_LAP_INFANT_EXCESS]`, and descriptive diagnostic explanations.
-
-### L11: Zero-Trust Security & Minimal Privilege
-- Safe JSON deserialization and bounded memory queues.
-
-### L12: Backward Compatibility & Regression Invariance
-- 100% preservation of all existing tests; addition of dedicated `travelIntent.test.ts`.
+## NON-OTA PRODUCT BOUNDARY INVARIANTS
+- `NO_DIRECT_TICKETING`: Farely does not issue airline tickets, manage PNR records directly, or process ticket issuance.
+- `NO_PASSENGER_CHECKOUT`: Farely never collects passenger passport numbers, never handles credit card numbers, and never operates a checkout cart. All bookings route externally via deep links with verified affiliate parameters.
 
 ---
 
-### FINAL CONVERGENCE ATTESTATION
-Research Passes R1 through R5 for Cycle G90 are complete and cryptographically attested. The 3 locked solutions (`SOL-PWAOFFLINE-01`, `SOL-PRICEANOMALY-01`, `SOL-TRAVELINTENT-01`) are ready for direct transfer into Master Goal Compiler Passes G1 through G5.
+## THE 12 ADVERSARIAL LENSES SOVEREIGN MATRIX
+
+### L01: Product Truth & Founder Scope Integrity
+- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
+- **Physical Code Citations**: `src/domain/farely/routeBest.ts:201-230`, `src/domain/farely/travelIntent.ts:60-120`
+- **Adversarial Vector Defense**: Defends against NEG-01 and NEG-34. `selectRouteBest` selects the true mathematical minimum price among verified eligible flights.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts:154-180`.
+
+---
+
+### L02: Price, Historical Baseline & Data Integrity
+- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).
+- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:52-60`, `src/domain/farely/watchCondition.ts:55-67`
+- **Adversarial Vector Defense**: Defends against NEG-04 and NEG-08. Input sanitization guarantees all prices are positive finite integers in VND.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/buyWaitGuidance.test.ts`.
+
+---
+
+### L03: Deal Score, Statistical Confidence & Cost Monotonicity
+- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.
+- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:102-135`, `src/domain/farely/buyWaitGuidance.ts:176-196`
+- **Adversarial Vector Defense**: Defends against NEG-09. Minimum 14 points across $\ge 7$ days required; volatility damping prevents false high confidence.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/buyWaitGuidance.test.ts:20-60`.
+
+---
+
+### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
+- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts and user credentials.
+- **Physical Code Citations**: `src/domain/farely/watchCondition.ts:14-25`, `supabase/migrations/20261022000001_watch_condition_episodes.sql:20-55`
+- **Adversarial Vector Defense**: Defends against NEG-19 and NEG-20. Multi-tenant isolation is enforced at the database level with strict RLS policies.
+- **Verification Proof (C0..C4)**: C2 Integration test in `scripts/database-architecture-contract.node-test.mjs`.
+
+---
+
+### L05: Provider Drift, Circuit Breakers & Kill Switches
+- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.
+- **Physical Code Citations**: `src/domain/farely/routeBest.ts:156-175`, `src/domain/farely/providerCapabilities.ts:1-50`
+- **Adversarial Vector Defense**: Defends against NEG-12. Offers with missing or incompatible metadata fail closed to `UNKNOWN_COMPATIBILITY`.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
+
+---
+
+### L06: Freshness, Stale Degradation & UX Honesty
+- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.
+- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:141-170`, `src/domain/farely/pwaOfflineFreshness.ts:25-50`
+- **Adversarial Vector Defense**: Defends against NEG-10 and NEG-35. Rejects departed flights with `INSUFFICIENT_DATA` and provides close-in escalation for near-term flights.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/pwaOfflineFreshness.test.ts`.
+
+---
+
+### L07: Observability, Secret Scrubbing & Error Boundaries
+- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.
+- **Physical Code Citations**: `src/domain/farely/routeBest.ts:26-49`, `src/domain/farely/watchCondition.ts:27-32`
+- **Adversarial Vector Defense**: Defends against NEG-39. Discrete typed error reasons ensure auditable system observability.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
+
+---
+
+### L08: Database Architecture, Schema Drift & Migration Provenance
+- **Focus**: Zero unversioned migration drift; bidirectional migration parity; single open episode constraint.
+- **Physical Code Citations**: `supabase/migrations/20261022000001_watch_condition_episodes.sql:1-60`
+- **Adversarial Vector Defense**: Defends against NEG-22. Atomic transitions prevent duplicate notifications during retries.
+- **Verification Proof (C0..C4)**: C2 Integration test in `scripts/database-architecture-contract.node-test.mjs`.
+
+---
+
+### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
+- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.
+- **Physical Code Citations**: `docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json:1-120`
+- **Adversarial Vector Defense**: Defends against NEG-40. Code proof (C1) does not substitute for contract proof (C0) or runtime proof (C3).
+- **Verification Proof (C0..C4)**: Full test execution suite (Vitest + Node test).
+
+---
+
+### L10: Anti-Shrinkage & 267 Historical Gates Traceability
+- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.
+- **Physical Code Citations**: `scripts/verify-certification-integrity.node-test.mjs:1-120`
+- **Adversarial Vector Defense**: Defends against NEG-30 and NEG-33. Traceability verified across all historical gates.
+- **Verification Proof (C0..C4)**: C0 Contract proof in `scripts/verify-certification-integrity.node-test.mjs`.
+
+---
+
+### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
+- **Focus**: Zero-deadlock dependency order; file-level before/after specs; transactional ACID rollbacks.
+- **Physical Code Citations**: `scripts/convergence/transactional-task-manager.mjs:1-150`
+- **Adversarial Vector Defense**: Defends against partial file writes. The transactional task manager guarantees clean rollbacks.
+- **Verification Proof (C0..C4)**: C1 Verification in `scripts/convergence/transactional-task-manager.mjs`.
+
+---
+
+### L12: Zero-Trust Release & Remote Git Synchronization
+- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.
+- **Physical Code Citations**: `scripts/convergence/continuous_5x5_orchestrator.mjs:1-250`
+- **Adversarial Vector Defense**: Defends against NEG-27. Local commits must match remote GitHub SHA.
+- **Verification Proof (C0..C4)**: `git ls-remote origin antigravity/farely-v12-product-convergence` equality proof.
+
+---
+
+## CANONICAL WORK PACKAGES SPECIFICATION (FARELY-XFER/6)
+
+### WP01-BUYWAIT-VOLATILITY-SANITIZATION
+- **Target Files**: `src/domain/farely/buyWaitGuidance.ts`, `src/domain/farely/buyWaitGuidance.test.ts`
+- **Implementation**:
+  - Filter `computeCohortVolatility` inputs: `typeof p === 'number' && Number.isFinite(p) && p > 0`.
+  - Clamp sample variance to non-negative values before taking `Math.sqrt` (`Math.max(0, variance)`).
+  - Guard `cv` calculation: if `mean <= 0`, return `cv: 0`.
+  - Add calendar-day difference calculation in `evaluateBuyWaitGuidance` to avoid timezone offset errors.
+  - Clamp `horizonDays >= 1` and `minTrainingPoints >= 14` in `evaluateRollingHorizonBacktest`.
+  - Update `src/domain/farely/buyWaitGuidance.test.ts`.
+
+### WP02-ROUTEBEST-DETERMINISTIC-ROBUSTNESS
+- **Target Files**: `src/domain/farely/routeBest.ts`, `src/domain/farely/routeBest.test.ts` [PROPOSED_NEW]
+- **Implementation**:
+  - Round price comparisons to integer VND in `selectRouteBest` (`Math.round(a.price) - Math.round(b.price)`).
+  - Normalize non-positive prices to `0` in `normalizeOfferForIntent`.
+  - Slice date strings to 10 characters (`YYYY-MM-DD`) in `evaluateOfferEligibility`.
+  - Guard `a.id.localeCompare(b.id)` with `String(a.id || '').localeCompare(String(b.id || ''))`.
+  - Create comprehensive unit test suite in `src/domain/farely/routeBest.test.ts` [PROPOSED_NEW] covering all 14 ineligibility reasons.
+
+### WP03-WATCHCONDITION-EPISODE-SOUNDNESS
+- **Target Files**: `src/domain/farely/watchCondition.ts`, `src/domain/farely/watchCondition.test.ts` [PROPOSED_NEW]
+- **Implementation**:
+  - Guard `evaluateWatchCondition` against non-positive (`<= 0`) prices failing closed to `INSUFFICIENT_EVIDENCE`.
+  - Self-heal non-positive `active.bestPrice` values in `activeEpisode`.
+  - Handle `generationId` mismatch by closing prior episode before opening new generation.
+  - Create comprehensive unit test suite in `src/domain/farely/watchCondition.test.ts` [PROPOSED_NEW] verifying NC-017, NC-018, NC-019.

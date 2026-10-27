@@ -1,87 +1,123 @@
-# FARELY CYCLE G90 — MASTER GOAL PASS G1: EXECUTION DIRECTIVE & SOLUTION CAGE
-## Target Modules: `src/domain/farely/pwaOfflineFreshness.ts`, `src/domain/farely/priceAnomaly.ts`, `src/domain/farely/travelIntent.ts`
-## Epistemic Integrity: Zero-Trust Codebase Telemetry & Adversarial Invariant Auditing
-
-INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION
-EXECUTION_RECEIPT_SHA256: 88599b0d444b87b019aa44e9be835cc7561cec596b5098cf571358633f3c5482
-GIT_HEAD: b300c3d5d796f8a6b33e8d1eee47ea1f4d6b84bc
-STAGE: MASTER_GOAL_G11
-PASS: G1
-TIMESTAMP: 2026-10-27T09:59:00Z
+# FARELY PROJECT 10X — MASTER GOAL G11 [G1]
+# LEVEL: Pass 1: Lossless Structural Projection A–K
+# MANDATE: Project FARELY-XFER/6 into an 11-section A–K Master Goal across all 12 adversarial lenses with strict Solution Cage locking.
+# GIT_COMMIT: fe54b1f527b82c304ef362570cf4daa235ec8443
+# TIMESTAMP: 2026-10-27T10:16:52.269Z
+# EXECUTION_RECEIPT_SHA256: bfa37db81b12d81eeb38a7323c6716dcda18eb6876a99461294800f9d29cadef
 
 ---
 
-### SECTION A: MISSION ARCHITECTURE & PRODUCT BOUNDARY
-Farely is strictly an independent flight opportunity intelligence platform. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.
-The executor must implement the exact, locked work packages below with zero deviation.
+## SECTION A: OBJECTIVE & MANDATE
+This Master Goal defines the turnkey execution package for Cycle G91 of Farely Project 10X. All work packages are strictly bound to verified solutions from Research R10 (`docs/convergence/r10/R5_FULL_RESEARCH.md`). The executor is granted zero degrees of freedom to deviate, weaken, or omit any locked requirements.
+
+Target Modules:
+1. `src/domain/farely/buyWaitGuidance.ts` & `src/domain/farely/buyWaitGuidance.test.ts`
+2. `src/domain/farely/routeBest.ts` & `src/domain/farely/routeBest.test.ts` [PROPOSED_NEW]
+3. `src/domain/farely/watchCondition.ts` & `src/domain/farely/watchCondition.test.ts` [PROPOSED_NEW]
 
 ---
 
-### SECTION B: CAGED SOLUTION CONTRACTS (FROM RESEARCH R5)
-
-#### 1. SOL-PWAOFFLINE-01: PWA Offline Freshness Calibration & Multi-Entity Queue Safety
-- **Target File**: `src/domain/farely/pwaOfflineFreshness.ts`
-- **Target Test File**: `src/domain/farely/pwaOfflineFreshness.test.ts`
-- **Specification**:
-  - Calibrate live verification threshold: Define `export const LIVE_REVALIDATION_THRESHOLD_MINUTES = 45`. Observations $> 45$ min in online mode are `isLiveVerified: false` with label `'Dữ liệu chờ cập nhật'`.
-  - Fix action queue deduplication in `enqueueOfflineAction`: Extract target entity key using `(item.payload?.dealId as string) || (item.payload?.watchId as string) || (item.payload?.id as string) || ''`.
-  - In `assertOfflineFreshnessIntegrity`, expand validation: If online (`isDeviceOffline === false`), assert that deals with invalid prices (`priceVND <= 0`) or extreme staleness ($> 45$ min) cannot have `isLiveVerified: true` or `canDirectBook: true`.
-  - Clean up stray terminal hook output from both `pwaOfflineFreshness.ts` and `pwaOfflineFreshness.test.ts`.
-
-#### 2. SOL-PRICEANOMALY-01: Anomaly Detection Rigor & NEG-08 Baseline Independence
-- **Target File**: `src/domain/farely/priceAnomaly.ts`
-- **Target Test File**: `src/domain/farely/priceAnomaly.test.ts`
-- **Specification**:
-  - Provide `excludeCurrentPriceFromBaseline?: boolean` in `detectPriceAnomaly` to defend against `NEG-08`.
-  - Guard all numerical outputs in `AnomalyEvaluation` against `NaN`, `Infinity`, or precision loss.
-  - Retain `AUD-12` zero empirical dispersion abstention (`INSUFFICIENT_DISPERSION_ABSTENTION`).
-  - Enforce `MIN_ANOMALY_SAMPLE_SIZE = 10` before declaring statistical anomalies.
-
-#### 3. SOL-TRAVELINTENT-01: TravelIntent Creation Rigor, Chronological Validation & Infant Safety
-- **Target File**: `src/domain/farely/travelIntent.ts`
-- **Target Test File**: `src/domain/farely/travelIntent.test.ts` [PROPOSED_NEW]
-- **Specification**:
-  - Export `TravelIntentValidationError` with structured error codes (`ERR_INVERTED_DATES`, `ERR_PASSENGER_MIX_INVALID`, `ERR_LAP_INFANT_EXCESS`, `ERR_INVALID_CONSTRAINTS`).
-  - Chronological date validation: extract effective departure date and effective return date, verifying `effectiveInbound >= effectiveOutbound` (supporting same-day round trips while rejecting inverted dates).
-  - Passenger mix validation: `adults >= 1`, `children >= 0`, `infants >= 0`, all integers.
-  - ICAO lap infant safety: `infants <= adults`.
-  - Group capacity handling: If `adults + children > 9`, set `isGroupBooking: true`.
-  - Flight constraint bounds: `maxStops >= 0`, `maxDurationMinutes >= 15`.
-  - Clean up stray terminal hook strings from bottom of `travelIntent.ts`.
-  - Create dedicated unit test suite in `src/domain/farely/travelIntent.test.ts` [PROPOSED_NEW].
+## SECTION B: INVARIANT EXECUTOR CAGE
+- `INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION`
+- `NO_DIRECT_TICKETING`: Farely does not issue airline tickets, manage PNR records directly, or process ticket issuance.
+- `NO_PASSENGER_CHECKOUT`: Farely never collects passenger passport numbers, never handles credit card numbers, and never operates a checkout cart. All bookings route externally via deep links with verified affiliate parameters.
+- `NO_SELF_CERTIFICATION`: All gates must be certified by independent, automated Vitest and Node native test executions.
+- `NO_CONTRACT_SHRINKAGE`: All 89 capability contracts (F00..F88) and 267 historical acceptance gates remain immutable.
 
 ---
 
-### SECTION C: ADVERSARIAL AUDIT ACROSS ALL 12 LENSES
+## SECTION C: TARGET MODULES & WORK PACKAGES
+- **WP01-BUYWAIT-VOLATILITY-SANITIZATION**:
+  - Target: `src/domain/farely/buyWaitGuidance.ts`, `src/domain/farely/buyWaitGuidance.test.ts`
+  - Sanitize price series to finite numbers $> 0$ in `computeCohortVolatility`.
+  - Clamp sample variance to non-negative values before taking `Math.sqrt` (`Math.max(0, variance)`).
+  - Clamp `cv` to 0 when mean $\le 0$.
+  - Implement calendar-day difference calculation in `evaluateBuyWaitGuidance` to avoid timezone offset errors.
+  - Clamp `horizonDays >= 1` and `minTrainingPoints >= 14` in `evaluateRollingHorizonBacktest`.
 
-- **L01: Mathematical & Algorithmic Rigor**: Calibrated 45-min live verification window; MAD statistics without synthetic variance.
-- **L02: Type-System Soundness & Invariant Enforcement**: Multi-entity queue keys, structured validation errors, optional group fields.
-- **L03: Epistemic Sincerity & Anti-Hallucination**: `NEG-35` offline cache defense, `NEG-08` baseline independence defense.
-- **L04: State Space Completeness & Boundary Values**: Same-day round trips supported; direct 0-stop flights supported; queue FIFO capped at 100.
-- **L05: Concurrency, Latency & Async Safety**: Pure array operations; fast deterministic serialization.
-- **L06: Adversarial Robustness & Negative Vector Defense**: Defends `NEG-35`, `NEG-08`, `NEG-09`, and chronological date inversion.
-- **L07: Production Realism & Environmental Fidelity**: CAAV passenger safety directives and PWA mobile offline experience.
-- **L08: Architectural Cohesion & Clean Domain Kernel**: Pure TypeScript implementations with zero external dependencies.
-- **L09: Regulatory Compliance & Consumer Protection (CAAV, FTC, VN Competition Law)**: Adherence to CAAV flight safety directives and consumer protection standards.
-- **L10: Observability, Diagnostics & SRE Auditability**: Standard error tags `[dealId=...]`, `[ERR_INVERTED_DATES]`, and diagnostic properties.
-- **L11: Zero-Trust Security & Minimal Privilege**: Safe JSON parsing, bounded memory queue size `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`.
-- **L12: Backward Compatibility & Regression Invariance**: 100% preservation of all existing tests; new dedicated test suite for `travelIntent.ts`.
+- **WP02-ROUTEBEST-DETERMINISTIC-ROBUSTNESS**:
+  - Target: `src/domain/farely/routeBest.ts`, `src/domain/farely/routeBest.test.ts` [PROPOSED_NEW]
+  - Round price comparisons to integer VND in `selectRouteBest` (`Math.round(a.price) - Math.round(b.price)`).
+  - Normalize non-positive prices to `0` in `normalizeOfferForIntent`.
+  - Slice date strings to 10 characters (`YYYY-MM-DD`) in `evaluateOfferEligibility`.
+  - Guard `a.id.localeCompare(b.id)` with `String(a.id || '').localeCompare(String(b.id || ''))`.
+  - Create comprehensive unit test suite in `src/domain/farely/routeBest.test.ts` [PROPOSED_NEW] covering all 14 ineligibility reasons.
+
+- **WP03-WATCHCONDITION-EPISODE-SOUNDNESS**:
+  - Target: `src/domain/farely/watchCondition.ts`, `src/domain/farely/watchCondition.test.ts` [PROPOSED_NEW]
+  - Guard `evaluateWatchCondition` against non-positive (`<= 0`) prices failing closed to `INSUFFICIENT_EVIDENCE`.
+  - Self-heal non-positive `active.bestPrice` values in `activeEpisode`.
+  - Handle `generationId` mismatch by closing prior episode before opening new generation.
+  - Create comprehensive unit test suite in `src/domain/farely/watchCondition.test.ts` [PROPOSED_NEW] verifying NC-017, NC-018, NC-019.
 
 ---
 
-### SECTION D: LOCKED WORK PACKAGES FOR TRANSACTIONAL EXECUTION
+## SECTION D: 12 ADVERSARIAL LENSES SPECIFICATION
+1. **L01: Product Truth & Founder Scope Integrity**: Mathematical minimum price selection; no commercial deal overrides; strict location scope satisfaction.
+2. **L02: Price, Historical Baseline & Data Integrity**: Rejection of NaN, negative, non-finite prices; integer rounding in VND; non-negative variance.
+3. **L03: Deal Score, Statistical Confidence & Cost Monotonicity**: 14 observation points over 7 days required; volatility damping prevents false high confidence.
+4. **L04: Auth, Privacy, Tenant Isolation & RLS Matrix**: Generation-aware watch condition episodes; isolated pure domain functions.
+5. **L05: Provider Drift, Circuit Breakers & Kill Switches**: Fail-closed `UNKNOWN_COMPATIBILITY` classification for unresolvable pricing units or party totals.
+6. **L06: Freshness, Stale Degradation & UX Honesty**: Calendar day normalization avoids timezone skew; departed flights return `INSUFFICIENT_DATA`.
+7. **L07: Observability, Secret Scrubbing & Error Boundaries**: Strongly-typed ineligibility reasons (`ORIGIN_MISMATCH`, `CABIN_MISMATCH`, etc.) without secrets.
+8. **L08: Database Architecture, Schema Drift & Migration Provenance**: Unique partial index on `(watch_id) WHERE closed_at IS NULL` preserves single open episode.
+9. **L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)**: C1 unit tests for algorithms; C2 integration tests for Supabase RLS.
+10. **L10: Anti-Shrinkage & 267 Historical Gates Traceability**: Preservation of 192 P0, 74 P1, 1 P2 gates verified by contract tests.
+11. **L11: Turnkey Execution, Topological DAG & Rollback Runbooks**: ACID transactions via `transactional-task-manager.mjs`.
+12. **L12: Zero-Trust Release & Remote Git Synchronization**: Push to `antigravity/farely-v12-product-convergence` with remote SHA equality.
 
-#### WP01: `WP01-PWAOFFLINE-FRESHNESS-CALIBRATION`
-- **Target File**: `src/domain/farely/pwaOfflineFreshness.ts`
-- **Target Test File**: `src/domain/farely/pwaOfflineFreshness.test.ts`
-- **Implementation**: 45-min live verification threshold, multi-entity queue deduplication, online stale deal assertions, hook cleanup.
+---
 
-#### WP02: `WP02-PRICEANOMALY-INDEPENDENT-BASELINE`
-- **Target File**: `src/domain/farely/priceAnomaly.ts`
-- **Target Test File**: `src/domain/farely/priceAnomaly.test.ts`
-- **Implementation**: Baseline independence (NEG-08 defense), robust numerical clamping, zero-dispersion handling.
+## SECTION E: EXACT BEFORE/AFTER DELTAS
+- `src/domain/farely/buyWaitGuidance.ts`:
+  - Before: `computeCohortVolatility` accepts dirty arrays and can output `NaN`. Day diff uses naive Date math subject to timezone skew.
+  - After: Sanitizes prices, clamps variance to $\ge 0$, guards mean $\le 0$, and normalizes calendar days.
+- `src/domain/farely/routeBest.ts`:
+  - Before: Floating point price sort, un-sliced ISO timestamps causing false date mismatches, unguarded `id.localeCompare`.
+  - After: Integer VND rounding, 10-char date slicing, safe `String(id).localeCompare`.
+- `src/domain/farely/watchCondition.ts`:
+  - Before: Negative prices bypass non-finite check and trigger false alerts; corrupted `bestPrice <= 0` suppresses future alerts.
+  - After: Non-positive prices fail closed to `INSUFFICIENT_EVIDENCE`; self-healing `bestPrice`.
 
-#### WP03: `WP03-TRAVELINTENT-CHRONO-SAFETY`
-- **Target File**: `src/domain/farely/travelIntent.ts`
-- **Target Test File**: `src/domain/farely/travelIntent.test.ts` [PROPOSED_NEW]
-- **Implementation**: Chronological date window validation (effectiveInbound >= effectiveOutbound), passenger mix constraints, lap infant safety (infants <= adults), dedicated test suite.
+---
+
+## SECTION F: NEGATIVE VECTOR DEFENSE MATRIX
+- **NV01**: Defended by full candidate array evaluation in `selectRouteBest`.
+- **NV04**: Defended by strict `price > 0` validation in `buyWaitGuidance` and `routeBest`.
+- **NV08**: Defended by separate historical cohort evaluation and non-negative Bessel variance.
+- **NV10**: Defended by calendar day normalization in `buyWaitGuidance`.
+- **NV12**: Defended by typed `UNKNOWN_COMPATIBILITY` classification.
+- **NV20**: Defended by non-positive price fail-closed check in `watchCondition`.
+
+---
+
+## SECTION G: TOPOLOGICAL TASK EXECUTION ORDER
+1. Task 1: `WP01-BUYWAIT-VOLATILITY-SANITIZATION`
+2. Task 2: `WP02-ROUTEBEST-DETERMINISTIC-ROBUSTNESS`
+3. Task 3: `WP03-WATCHCONDITION-EPISODE-SOUNDNESS`
+
+---
+
+## SECTION H: VERIFICATION COMMAND SUITE
+- `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
+- `npx vitest run src/domain/farely/routeBest.test.ts`
+- `npx vitest run src/domain/farely/watchCondition.test.ts`
+- `npm test`
+
+---
+
+## SECTION I: ROLLBACK & SRE RUNBOOK
+- On task failure: `node scripts/convergence/transactional-task-manager.mjs rollback <task_id>`
+- To inspect status: `node scripts/convergence/transactional-task-manager.mjs status`
+
+---
+
+## SECTION J: ZERO-TRUST GIT SYNCHRONIZATION
+- Commit message format: `feat(convergence): complete Cycle G91 5x5 recursive convergence and lock WP01-WP03`
+- Push target: `origin/antigravity/farely-v12-product-convergence`
+- Parity command: `git ls-remote origin antigravity/farely-v12-product-convergence`
+
+---
+
+## SECTION K: COMMITMENT & HANDOFF CONTRACT
+This Master Goal is completely locked and self-contained. The executor must follow all steps sequentially using the transactional task manager.

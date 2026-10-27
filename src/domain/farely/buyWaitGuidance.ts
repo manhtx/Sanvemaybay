@@ -50,10 +50,15 @@ export const MAX_BUY_WAIT_HISTORY_POINTS = 300;
  * Calculates cohort standard deviation and coefficient of variation for price series.
  */
 export function computeCohortVolatility(prices: number[]): { mean: number; stdDev: number; cv: number } {
-  if (!prices || prices.length < 2) return { mean: prices?.[0] || 0, stdDev: 0, cv: 0 };
-  const sum = prices.reduce((a, b) => a + b, 0);
-  const mean = sum / prices.length;
-  const variance = prices.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (prices.length - 1);
+  const validPrices = (prices || []).filter(
+    (p) => typeof p === "number" && Number.isFinite(p) && p > 0
+  );
+  const n = validPrices.length;
+  if (n < 2) return { mean: validPrices[0] ?? 0, stdDev: 0, cv: 0 };
+  const sum = validPrices.reduce((a, b) => a + b, 0);
+  const mean = sum / n;
+  const sumSquaredDiffs = validPrices.reduce((a, b) => a + Math.pow(b - mean, 2), 0);
+  const variance = Math.max(0, sumSquaredDiffs / (n - 1));
   const stdDev = Math.sqrt(variance);
   const cv = mean > 0 ? stdDev / mean : 0;
   return { mean, stdDev, cv };
@@ -138,12 +143,16 @@ export function evaluateBuyWaitGuidance(params: {
   const countEqual = prices.filter((p) => p === currentPrice).length;
   const percentile = Math.round(((countBelow + 0.5 * countEqual) / prices.length) * 100);
 
-  // Check days until flight departure
-  const evalMs = params.evaluationDate ? Date.parse(params.evaluationDate) : Date.now();
-  const evalDate = Number.isFinite(evalMs) ? new Date(evalMs) : new Date();
-  const depDate = new Date(params.departureDate);
+  // Check days until flight departure using normalized civil calendar dates (YYYY-MM-DD)
+  const evalIso = (params.evaluationDate && !isNaN(Date.parse(params.evaluationDate)))
+    ? new Date(params.evaluationDate).toISOString().slice(0, 10)
+    : new Date().toISOString().slice(0, 10);
 
-  if (!Number.isFinite(depDate.getTime())) {
+  const depIso = (typeof params.departureDate === 'string' && params.departureDate.trim().length >= 10)
+    ? params.departureDate.trim().replace(/[./\s]/g, '-').slice(0, 10)
+    : '';
+
+  if (!depIso || isNaN(Date.parse(depIso))) {
     return {
       recommendation: "INSUFFICIENT_DATA",
       confidence: 0,
@@ -155,7 +164,9 @@ export function evaluateBuyWaitGuidance(params: {
     };
   }
 
-  const daysUntilDeparture = Math.round((depDate.getTime() - evalDate.getTime()) / (1000 * 60 * 60 * 24));
+  const daysUntilDeparture = Math.round(
+    (Date.parse(depIso + "T00:00:00Z") - Date.parse(evalIso + "T00:00:00Z")) / (1000 * 60 * 60 * 24)
+  );
 
   if (daysUntilDeparture < 0) {
     return {
@@ -298,29 +309,32 @@ export function evaluateRollingHorizonBacktest(
   horizonDays = 7,
   minTrainingPoints = MIN_OBSERVATION_POINTS
 ): BacktestResult {
+  const effectiveHorizonDays = Math.max(1, Math.round(horizonDays ?? 7));
+  const effectiveMinTraining = Math.max(MIN_OBSERVATION_POINTS, Math.round(minTrainingPoints ?? MIN_OBSERVATION_POINTS));
+
   const validPoints = (priceHistory || [])
     .filter((p) => Number.isFinite(p.price) && p.price > 0 && Number.isFinite(Date.parse(p.date)))
     .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
 
-  if (validPoints.length < minTrainingPoints + 3) {
+  if (validPoints.length < effectiveMinTraining + 3) {
     return {
       totalEvaluated: 0,
       correctPredictions: 0,
       accuracyRate: 0,
       isSufficientForDeployment: false,
-      backtestWindowDays: horizonDays,
-      epistemicNote: `Dữ liệu lịch sử không đủ để backtest out-of-sample (yêu cầu tối thiểu ${minTrainingPoints + 3} mẫu, hiện có ${validPoints.length}).`,
+      backtestWindowDays: effectiveHorizonDays,
+      epistemicNote: `Dữ liệu lịch sử không đủ để backtest out-of-sample (yêu cầu tối thiểu ${effectiveMinTraining + 3} mẫu, hiện có ${validPoints.length}).`,
     };
   }
 
   let totalEvaluated = 0;
   let correctPredictions = 0;
 
-  for (let t = minTrainingPoints; t < validPoints.length - 1; t++) {
+  for (let t = effectiveMinTraining; t < validPoints.length - 1; t++) {
     const trainingSeries = validPoints.slice(0, t);
     const evalPoint = validPoints[t];
     const currentPrice = evalPoint.price;
-    const futureWindow = validPoints.slice(t + 1, Math.min(validPoints.length, t + 1 + horizonDays));
+    const futureWindow = validPoints.slice(t + 1, Math.min(validPoints.length, t + 1 + effectiveHorizonDays));
 
     if (futureWindow.length === 0) continue;
 
@@ -365,9 +379,10 @@ export function evaluateRollingHorizonBacktest(
     correctPredictions: Math.round(correctPredictions),
     accuracyRate,
     isSufficientForDeployment,
-    backtestWindowDays: horizonDays,
+    backtestWindowDays: effectiveHorizonDays,
     epistemicNote: isSufficientForDeployment
       ? `Kiểm định out-of-sample đạt độ chuẩn xác ${Math.round(accuracyRate * 100)}% qua ${totalEvaluated} bước trượt.`
       : `Độ chuẩn xác backtest (${Math.round(accuracyRate * 100)}% trên ${totalEvaluated} bước) chưa đủ điều kiện công bố mô hình dự báo không điều kiện.`,
   };
 }
+

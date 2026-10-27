@@ -3,64 +3,64 @@
     "name": "Product Truth & Founder Scope Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.134Z",
+        "timestamp": "2026-10-27T10:12:08.597Z",
         "covered": true,
-        "byteCount": 116,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: In `resolveDealsForPwaClient` (`src/domain/farely/pwaOfflineFreshness.ts#"
+        "byteCount": 839,
+        "summaryExcerpt": "- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.\n- **Physical Code Citations**: `src/domain/farely/routeBest.ts:201-230`, `src/domain/farely/watchCondition.ts:43-85`\n- **Adversarial Vector Defense**: Defends against NEG-01 (lowest co"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.462Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:13:45.031Z",
+        "covered": true,
+        "byteCount": 214,
+        "summaryExcerpt": "- *Pass R1 Claim*: Pass R1 assumed sorting by `a.price !== b.price ? a.price - b.price : a.id.localeCompare(b.id)` is completely deterministic.\n   - *Falsification & Code Proof*: In `src/domain/farely/routeBest.ts#"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.595Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:14:44.964Z",
+        "covered": true,
+        "byteCount": 178,
+        "summaryExcerpt": "- *Pass R2 Claim*: Pass R2 assumed direct string comparison on `departDate` and `returnDate` is sufficient.\n   - *Falsification & Code Proof*: In `src/domain/farely/routeBest.ts#"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:15:40.209Z",
+        "covered": true,
+        "byteCount": 166,
+        "summaryExcerpt": "- *Pass R3 Claim*: Pass R3 assumed `a.id.localeCompare(b.id)` is safe for all candidate offers.\n   - *Falsification & Code Proof*: In `src/domain/farely/routeBest.ts#"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:16:44.695Z",
+        "covered": true,
+        "byteCount": 204,
+        "summaryExcerpt": "- *Pass R4 Claim*: Pass R4 assumed `normalizeOfferForIntent` is only called after `evaluateOfferEligibility`.\n   - *Falsification & Code Proof*: `normalizeOfferForIntent` (`src/domain/farely/routeBest.ts#"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.298Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "2. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.948Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:18:32.032Z",
+        "covered": true,
+        "byteCount": 209,
+        "summaryExcerpt": "- *Pass G1 Proposal*: Pass G1 stated \"slice date strings to 10 characters\" without specifying window boundary comparisons.\n   - *Falsification & Concrete Before/After Spec*: In `src/domain/farely/routeBest.ts#"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.237Z",
+        "timestamp": "2026-10-27T10:19:22.906Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 5,
+        "summaryExcerpt": "2. **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.648Z",
+        "timestamp": "2026-10-27T10:20:14.916Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 5,
+        "summaryExcerpt": "2. **"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:21:47.411Z",
+        "covered": true,
+        "byteCount": 868,
+        "summaryExcerpt": "- *Pass G4 Specification*: Pass G4 specified `String(a.id || '').localeCompare(String(b.id || ''))`.\n   - *Deepening & Canonical Stability*: In `selectRouteBest`, when multiple providers or flight variants offer identical integer VND prices (e.g. Vietjet Direct vs Travelpayouts Vietjet at $1\\,250\\,0"
       }
     }
   },
@@ -68,64 +68,64 @@
     "name": "Price, Historical Baseline & Data Integrity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.135Z",
+        "timestamp": "2026-10-27T10:12:08.597Z",
         "covered": true,
-        "byteCount": 112,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: In `enqueueOfflineAction` (`src/domain/farely/pwaOfflineFreshness.ts#"
+        "byteCount": 844,
+        "summaryExcerpt": "- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).\n- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:52-60`, `src/domain/farely/routeBest.ts:151-155`\n- **Adversarial Vector Defense**: Defends against NEG-0"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:13:45.031Z",
+        "covered": true,
+        "byteCount": 190,
+        "summaryExcerpt": "- *Pass R1 Claim*: Pass R1 proposed simply filtering `prices` inside `computeCohortVolatility` to finite numbers.\n   - *Falsification & Code Proof*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.595Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:14:44.964Z",
+        "covered": true,
+        "byteCount": 238,
+        "summaryExcerpt": "- *Pass R2 Claim*: Pass R2 assumed checking `!Number.isFinite(params.observedPrice)` in `evaluateWatchCondition` prevents corrupt prices from triggering episodes.\n   - *Falsification & Code Proof*: In `src/domain/farely/watchCondition.ts#"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:15:40.209Z",
+        "covered": true,
+        "byteCount": 203,
+        "summaryExcerpt": "- *Pass R3 Claim*: Pass R3 assumed `new Date(params.departureDate)` compared with `evalDate` handles calendar days accurately.\n   - *Falsification & Code Proof*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:16:44.695Z",
+        "covered": true,
+        "byteCount": 213,
+        "summaryExcerpt": "- *Pass R4 Claim*: Pass R4 assumed callers of `evaluateRollingHorizonBacktest` always supply valid positive horizon and training points.\n   - *Falsification & Code Proof*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.298Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "3. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.948Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:18:32.032Z",
+        "covered": true,
+        "byteCount": 238,
+        "summaryExcerpt": "- *Pass G1 Proposal*: Pass G1 stated \"implement calendar-day difference calculation to avoid timezone offset errors\" without concrete code specs.\n   - *Falsification & Concrete Before/After Spec*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.237Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:19:22.906Z",
+        "covered": true,
+        "byteCount": 3266,
+        "summaryExcerpt": "- *Pass G2 Proposal*: Pass G2 proposed testing clean price histories.\n   - *Falsification & Hardened Gate*: Testing clean price histories never verifies that NaN volatility damping is fixed. Pass G3 mandates explicit unit tests asserting that:\n     1. `computeCohortVolatility([1000000, NaN, null as "
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.648Z",
+        "timestamp": "2026-10-27T10:20:14.916Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 5,
+        "summaryExcerpt": "3. **"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:21:47.411Z",
+        "covered": true,
+        "byteCount": 1205,
+        "summaryExcerpt": "- *Pass G4 Specification*: Pass G4 proposed applying `Math.max(0, variance)` to sample variance.\n   - *Algorithmic Proof & Formalization*: In sample variance computation:\n     $$s^2 = \\frac{1}{N - 1} \\sum_{i=1}^N (x_i - \\bar{x})^2$$\n     When prices in the cohort are very close or identical (e.g., $"
       }
     }
   },
@@ -133,64 +133,64 @@
     "name": "Deal Score, Statistical Confidence & Cost Monotonicity",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.135Z",
+        "timestamp": "2026-10-27T10:12:08.597Z",
         "covered": true,
-        "byteCount": 1045,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: `NEG-35`: Offline cache shown as fresh. The system must explicitly label all offline cached items with `offlineBadgeLabelVi: 'Dữ liệu lưu tạm ngoại tuyến (Offline)'` and prevent any direct booking claim while offline.\n- **Target 2 (`priceAnomaly.ts`)**: `NE"
+        "byteCount": 765,
+        "summaryExcerpt": "- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.\n- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:102-113`, `src/domain/farely/buyWaitGuidance.ts:176-180`\n- **Adversarial Vector Defense**: Defends against NEG-0"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:13:45.031Z",
+        "covered": true,
+        "byteCount": 190,
+        "summaryExcerpt": "- *Pass R1 Claim*: Pass R1 proposed simply filtering `prices` inside `computeCohortVolatility` to finite numbers.\n   - *Falsification & Code Proof*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.595Z",
+        "timestamp": "2026-10-27T10:14:44.964Z",
         "covered": true,
-        "byteCount": 337,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: `NEG-35`: Defend against presenting offline data as live or verified.\n- **Target 2 (`priceAnomaly.ts`)**: `AUD-12`: Zero empirical dispersion must never fabricate synthetic MAD variance.\n- **Target 3 (`travelIntent.ts`)**: Accurate representation of civil a"
+        "byteCount": 232,
+        "summaryExcerpt": "- *Pass R2 Claim*: Pass R2 assumed standard variance computation in `computeCohortVolatility` is numerically stable for identical or near-identical prices.\n   - *Falsification & Code Proof*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
+        "timestamp": "2026-10-27T10:15:40.209Z",
         "covered": true,
-        "byteCount": 308,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: `NEG-35`: Clear labeling of cached vs live verified records.\n- **Target 2 (`priceAnomaly.ts`)**: Zero empirical dispersion (`rawMad < 1e-6`) abstains rather than inventing fake variance.\n- **Target 3 (`travelIntent.ts`)**: Civil aviation passenger safety ad"
+        "byteCount": 616,
+        "summaryExcerpt": "- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.\n- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:102-135`, `src/domain/farely/buyWaitGuidance.ts:296-373`\n- **Adversarial Vector Defense**: Defends against NEG-0"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
+        "timestamp": "2026-10-27T10:16:44.695Z",
         "covered": true,
-        "byteCount": 150,
-        "summaryExcerpt": "- `NEG-35` defense against offline cache misrepresentation; `NEG-08` defense against self-contaminating baselines; ICAO lap infant safety enforcement."
+        "byteCount": 213,
+        "summaryExcerpt": "- *Pass R4 Claim*: Pass R4 assumed callers of `evaluateRollingHorizonBacktest` always supply valid positive horizon and training points.\n   - *Falsification & Code Proof*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.298Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "4. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.948Z",
+        "timestamp": "2026-10-27T10:18:32.032Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "4. **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.237Z",
+        "timestamp": "2026-10-27T10:19:22.906Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "4. **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
+        "timestamp": "2026-10-27T10:20:14.917Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 5,
+        "summaryExcerpt": "4. **"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
-        "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "timestamp": "2026-10-27T10:21:47.411Z",
+        "covered": true,
+        "byteCount": 1205,
+        "summaryExcerpt": "- *Pass G4 Specification*: Pass G4 proposed applying `Math.max(0, variance)` to sample variance.\n   - *Algorithmic Proof & Formalization*: In sample variance computation:\n     $$s^2 = \\frac{1}{N - 1} \\sum_{i=1}^N (x_i - \\bar{x})^2$$\n     When prices in the cohort are very close or identical (e.g., $"
       }
     }
   },
@@ -198,64 +198,64 @@
     "name": "Auth, Privacy, Tenant Isolation & RLS Matrix",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.135Z",
+        "timestamp": "2026-10-27T10:12:08.597Z",
         "covered": true,
-        "byteCount": 696,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: Handle clock skew: `evictExpiredOfflineDeals` allows up to 5 minutes of future clock drift, but what if `nowIsoString` is corrupt or missing? It must default to `new Date().toISOString()`.\n- **Target 2 (`priceAnomaly.ts`)**: When all prices in the historica"
+        "byteCount": 764,
+        "summaryExcerpt": "- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts and user credentials.\n- **Physical Code Citations**: `src/domain/farely/watchCondition.ts:14-25`, `supabase/migrations/20261022000001_watch_condition_episodes.sql:20-55`\n- **Adversarial Vector Defe"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
+        "timestamp": "2026-10-27T10:13:45.031Z",
         "covered": true,
-        "byteCount": 378,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: Safe handling of empty queue arrays and FIFO capacity limit `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`.\n- **Target 2 (`priceAnomaly.ts`)**: Boundary checks for sample size $= 10$ and prices matching median exactly.\n- **Target 3 (`travelIntent.ts`)**: Handle `ONE"
+        "byteCount": 668,
+        "summaryExcerpt": "- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts and user credentials.\n- **Physical Code Citations**: `src/domain/farely/watchCondition.ts:14-32`, `supabase/migrations/20261022000001_watch_condition_episodes.sql:20-55`\n- **Adversarial Vector Defe"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.596Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:14:44.964Z",
+        "covered": true,
+        "byteCount": 238,
+        "summaryExcerpt": "- *Pass R2 Claim*: Pass R2 assumed checking `!Number.isFinite(params.observedPrice)` in `evaluateWatchCondition` prevents corrupt prices from triggering episodes.\n   - *Falsification & Code Proof*: In `src/domain/farely/watchCondition.ts#"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
+        "timestamp": "2026-10-27T10:15:40.209Z",
         "covered": true,
-        "byteCount": 275,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: Safe bounds on FIFO queue (`MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`).\n- **Target 2 (`priceAnomaly.ts`)**: Glitch detection on boundary values.\n- **Target 3 (`travelIntent.ts`)**: Same-day round trips permitted; inverted dates rejected."
+        "byteCount": 205,
+        "summaryExcerpt": "- *Pass R3 Claim*: Pass R3 assumed `activeEpisode` objects passed into `evaluateWatchCondition` are always internally consistent.\n   - *Falsification & Code Proof*: In `src/domain/farely/watchCondition.ts#"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
+        "timestamp": "2026-10-27T10:16:44.695Z",
         "covered": true,
-        "byteCount": 104,
-        "summaryExcerpt": "- Same-day round trips permitted; zero-stop direct flights permitted; FIFO queue capacity capped at 100."
+        "byteCount": 180,
+        "summaryExcerpt": "- *Pass R4 Claim*: Pass R4 assumed `generationId` is simply passed along without transition enforcement.\n   - *Falsification & Code Proof*: In `src/domain/farely/watchCondition.ts#"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.298Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "5. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.948Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:18:32.033Z",
+        "covered": true,
+        "byteCount": 221,
+        "summaryExcerpt": "- *Pass G1 Proposal*: Pass G1 mentioned \"guard against non-positive prices\" but did not specify the fail-closed return signature.\n   - *Falsification & Concrete Before/After Spec*: In `src/domain/farely/watchCondition.ts#"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.237Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:19:22.906Z",
+        "covered": true,
+        "byteCount": 966,
+        "summaryExcerpt": "- *Pass G2 Proposal*: Pass G2 referenced NC-017, NC-018, NC-019 without requiring full episode state transition chaining.\n   - *Falsification & Hardened Gate*: Unit tests that evaluate isolated transitions (e.g. only testing `ENTERED`) fail to prove state machine continuity. Pass G3 locks the requir"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
+        "timestamp": "2026-10-27T10:20:14.917Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 5,
+        "summaryExcerpt": "5. **"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
-        "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "timestamp": "2026-10-27T10:21:47.411Z",
+        "covered": true,
+        "byteCount": 3591,
+        "summaryExcerpt": "- *Pass G4 Specification*: Pass G4 noted `generationId` checking.\n   - *Deepening & Epoch Invariants*: When user edits search criteria (e.g. adjusts maximum stops from 1 to 0 or alters price ceiling from 3M to 2M), the frontend or API issues a new `generationId`. If an active episode from `generatio"
       }
     }
   },
@@ -263,64 +263,64 @@
     "name": "Provider Drift, Circuit Breakers & Kill Switches",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.135Z",
+        "timestamp": "2026-10-27T10:12:08.597Z",
         "covered": true,
-        "byteCount": 438,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: Action queue operations in `enqueueOfflineAction` must be pure and return a new array without mutating the input queue.\n- **Target 2 (`priceAnomaly.ts`)**: Cohort analysis slices to `MAX_COHORT_ANALYSIS_SIZE = 250` to bound sorting time to $< 0.1$ ms.\n- **T"
+        "byteCount": 641,
+        "summaryExcerpt": "- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.\n- **Physical Code Citations**: `src/domain/farely/routeBest.ts:156-166`, `src/domain/farely/providerResult.ts:1-45`\n- **Adversarial Vector Defense**: Defends against NEG-12 (HTTP 503/4"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
+        "timestamp": "2026-10-27T10:13:45.031Z",
         "covered": true,
-        "byteCount": 264,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: Immutable queue transformations.\n- **Target 2 (`priceAnomaly.ts`)**: Bounded cohort sorting with `MAX_COHORT_ANALYSIS_SIZE = 250`.\n- **Target 3 (`travelIntent.ts`)**: Pure deterministic serialization without side effects."
+        "byteCount": 610,
+        "summaryExcerpt": "- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.\n- **Physical Code Citations**: `src/domain/farely/routeBest.ts:156-175`, `src/domain/farely/routeBest.ts:26-49`\n- **Adversarial Vector Defense**: Defends against NEG-12 (HTTP 503/429/p"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.596Z",
+        "timestamp": "2026-10-27T10:14:44.964Z",
         "covered": true,
-        "byteCount": 285,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: Pure functional queue enqueueing without array mutation.\n- **Target 2 (`priceAnomaly.ts`)**: Sliced cohort analysis with `MAX_COHORT_ANALYSIS_SIZE = 250`.\n- **Target 3 (`travelIntent.ts`)**: Fast synchronous serialization and deserialization."
+        "byteCount": 178,
+        "summaryExcerpt": "- *Pass R2 Claim*: Pass R2 assumed direct string comparison on `departDate` and `returnDate` is sufficient.\n   - *Falsification & Code Proof*: In `src/domain/farely/routeBest.ts#"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
+        "timestamp": "2026-10-27T10:15:40.209Z",
         "covered": true,
-        "byteCount": 239,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: Immutable array transformations.\n- **Target 2 (`priceAnomaly.ts`)**: Cohort analysis capped at `MAX_COHORT_ANALYSIS_SIZE = 250`.\n- **Target 3 (`travelIntent.ts`)**: Synchronous JSON serialization."
+        "byteCount": 491,
+        "summaryExcerpt": "- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.\n- **Physical Code Citations**: `src/domain/farely/routeBest.ts:156-175`, `src/domain/farely/providerRights.ts:20-60`\n- **Adversarial Vector Defense**: Defends against NEG-12. Provider "
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:16:44.695Z",
+        "covered": true,
+        "byteCount": 479,
+        "summaryExcerpt": "- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.\n- **Physical Code Citations**: `src/domain/farely/routeBest.ts:156-175`, `src/domain/farely/providerCapabilities.ts:1-50`\n- **Adversarial Vector Defense**: Defends against NEG-12. Offe"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.298Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "6. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.948Z",
-        "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "timestamp": "2026-10-27T10:18:32.033Z",
+        "covered": true,
+        "byteCount": 209,
+        "summaryExcerpt": "- *Pass G1 Proposal*: Pass G1 stated \"slice date strings to 10 characters\" without specifying window boundary comparisons.\n   - *Falsification & Concrete Before/After Spec*: In `src/domain/farely/routeBest.ts#"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.237Z",
+        "timestamp": "2026-10-27T10:19:22.907Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 5,
+        "summaryExcerpt": "6. **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
+        "timestamp": "2026-10-27T10:20:14.917Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "6. **"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
+        "timestamp": "2026-10-27T10:21:47.411Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 5,
+        "summaryExcerpt": "6. **"
       }
     }
   },
@@ -328,64 +328,64 @@
     "name": "Freshness, Stale Degradation & UX Honesty",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.135Z",
+        "timestamp": "2026-10-27T10:12:08.597Z",
         "covered": true,
-        "byteCount": 378,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: Defends `NEG-35` (offline cache shown as fresh).\n- **Target 2 (`priceAnomaly.ts`)**: Defends `NEG-09` (one scan creates false 12-sample evidence) and data glitch attacks (negative, zero, 10x spike fares).\n- **Target 3 (`travelIntent.ts`)**: Defends against "
+        "byteCount": 807,
+        "summaryExcerpt": "- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.\n- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:141-170`, `src/domain/farely/watchCondition.ts:50-54`\n- **Adversarial Vector Defense**: Defends against NEG"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
+        "timestamp": "2026-10-27T10:13:45.031Z",
         "covered": true,
-        "byteCount": 308,
-        "summaryExcerpt": "- **Target 1 (`pwaOfflineFreshness.ts`)**: Defends against `NEG-35` (offline cache shown as fresh).\n- **Target 2 (`priceAnomaly.ts`)**: Defends against `NEG-09` (insufficient sample anomaly claims).\n- **Target 3 (`travelIntent.ts`)**: Defends against chronological date inversion and invalid passenge"
+        "byteCount": 181,
+        "summaryExcerpt": "- *Pass R1 Claim*: Pass R1 asserted that `daysUntilDeparture === 0` should always escalate to `BUY_NOW`.\n   - *Falsification & Code Proof*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.596Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:14:44.965Z",
+        "covered": true,
+        "byteCount": 674,
+        "summaryExcerpt": "- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.\n- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:141-170`, `src/domain/farely/time.ts:1-40`\n- **Adversarial Vector Defense**: Defends against NV10 (departur"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:15:40.209Z",
+        "covered": true,
+        "byteCount": 203,
+        "summaryExcerpt": "- *Pass R3 Claim*: Pass R3 assumed `new Date(params.departureDate)` compared with `evalDate` handles calendar days accurately.\n   - *Falsification & Code Proof*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
+        "timestamp": "2026-10-27T10:16:44.695Z",
         "covered": true,
-        "byteCount": 80,
-        "summaryExcerpt": "- Defends `NEG-35`, `NEG-08`, `NEG-09`, and invalid passenger payload injection."
+        "byteCount": 531,
+        "summaryExcerpt": "- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.\n- **Physical Code Citations**: `src/domain/farely/buyWaitGuidance.ts:141-170`, `src/domain/farely/pwaOfflineFreshness.ts:25-50`\n- **Adversarial Vector Defense**: Defends agains"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.298Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "7. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.948Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:18:32.033Z",
+        "covered": true,
+        "byteCount": 238,
+        "summaryExcerpt": "- *Pass G1 Proposal*: Pass G1 stated \"implement calendar-day difference calculation to avoid timezone offset errors\" without concrete code specs.\n   - *Falsification & Concrete Before/After Spec*: In `src/domain/farely/buyWaitGuidance.ts#"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.237Z",
+        "timestamp": "2026-10-27T10:19:22.907Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 5,
+        "summaryExcerpt": "7. **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
+        "timestamp": "2026-10-27T10:20:14.917Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "7. **"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
-        "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "timestamp": "2026-10-27T10:21:47.411Z",
+        "covered": true,
+        "byteCount": 1172,
+        "summaryExcerpt": "- *Pass G4 Specification*: Pass G4 proposed UTC midnight parsing via `depIso + \"T00:00:00Z\"`.\n   - *Deepening & Temporal Invariants*: In commercial aviation, flight schedules operate under local civil airport time (Indochina Time, UTC+7 for HAN, SGN, DAD, CXR, VDO, PQC). A flight on `2026-11-20` dep"
       }
     }
   },
@@ -393,64 +393,64 @@
     "name": "Observability, Secret Scrubbing & Error Boundaries",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.136Z",
+        "timestamp": "2026-10-27T10:12:08.597Z",
         "covered": true,
-        "byteCount": 226,
-        "summaryExcerpt": "- Domestic Vietnam aviation context:\n  - Lap infants must not exceed adult passengers.\n  - Standard domestic booking limits: 9 seats.\n  - PWA offline caching must reflect real network disconnection scenarios on mobile devices."
+        "byteCount": 674,
+        "summaryExcerpt": "- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured diagnostic tags.\n- **Physical Code Citations**: `src/domain/farely/watchCondition.ts:27-32`, `src/domain/farely/routeBest.ts:26-49`\n- **Adversarial Vector Defense**: Defends against NEG-39 (no useful opportu"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
+        "timestamp": "2026-10-27T10:13:45.031Z",
         "covered": true,
-        "byteCount": 384,
-        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**:\n  Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- PWA mobile experience respects i"
+        "byteCount": 618,
+        "summaryExcerpt": "- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.\n- **Physical Code Citations**: `src/domain/farely/watchCondition.ts:34-42`, `src/domain/farely/routeBest.ts:26-40`\n- **Adversarial Vector Defense**: Defends against NEG-39 (no "
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.596Z",
+        "timestamp": "2026-10-27T10:14:44.965Z",
         "covered": true,
-        "byteCount": 317,
-        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**:\n  Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- Real-world mobile network transi"
+        "byteCount": 607,
+        "summaryExcerpt": "- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.\n- **Physical Code Citations**: `src/domain/farely/routeBest.ts:26-49`, `src/domain/farely/watchCondition.ts:27-32`\n- **Adversarial Vector Defense**: Defends against NV39 (no us"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
+        "timestamp": "2026-10-27T10:15:40.209Z",
         "covered": true,
-        "byteCount": 265,
-        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**:\n  Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded."
+        "byteCount": 166,
+        "summaryExcerpt": "- *Pass R3 Claim*: Pass R3 assumed `a.id.localeCompare(b.id)` is safe for all candidate offers.\n   - *Falsification & Code Proof*: In `src/domain/farely/routeBest.ts#"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
+        "timestamp": "2026-10-27T10:16:44.695Z",
         "covered": true,
-        "byteCount": 311,
-        "summaryExcerpt": "- Reflects real Vietnamese domestic aviation policies (CAAV lap infants, PWA mobile offline experience).\n  - **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundar"
+        "byteCount": 463,
+        "summaryExcerpt": "- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.\n- **Physical Code Citations**: `src/domain/farely/routeBest.ts:26-49`, `src/domain/farely/watchCondition.ts:27-32`\n- **Adversarial Vector Defense**: Defends against NEG-39. Dis"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.298Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "8. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.949Z",
-        "covered": true,
-        "byteCount": 209,
-        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- **"
+        "timestamp": "2026-10-27T10:18:32.033Z",
+        "covered": false,
+        "byteCount": 5,
+        "summaryExcerpt": "8. **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.237Z",
+        "timestamp": "2026-10-27T10:19:22.907Z",
         "covered": true,
-        "byteCount": 209,
-        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- **"
+        "byteCount": 941,
+        "summaryExcerpt": "- *Pass G2 Proposal*: Pass G2 proposed creating `routeBest.test.ts` without enumerating mandatory test cases for all 14 `IneligibilityReason` codes.\n   - *Falsification & Hardened Gate*: The domain kernel defines exactly 14 ineligibility codes: `ORIGIN_MISMATCH`, `DESTINATION_MISMATCH`, `OUTBOUND_DA"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
-        "covered": true,
-        "byteCount": 209,
-        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- **"
+        "timestamp": "2026-10-27T10:20:14.917Z",
+        "covered": false,
+        "byteCount": 5,
+        "summaryExcerpt": "8. **"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
+        "timestamp": "2026-10-27T10:21:47.411Z",
         "covered": true,
-        "byteCount": 209,
-        "summaryExcerpt": "- **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.\n- **"
+        "byteCount": 868,
+        "summaryExcerpt": "- *Pass G4 Specification*: Pass G4 specified `String(a.id || '').localeCompare(String(b.id || ''))`.\n   - *Deepening & Canonical Stability*: In `selectRouteBest`, when multiple providers or flight variants offer identical integer VND prices (e.g. Vietjet Direct vs Travelpayouts Vietjet at $1\\,250\\,0"
       }
     }
   },
@@ -458,64 +458,64 @@
     "name": "Database Architecture, Schema Drift & Migration Provenance",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.136Z",
+        "timestamp": "2026-10-27T10:12:08.598Z",
         "covered": true,
-        "byteCount": 155,
-        "summaryExcerpt": "- Pure domain functions with zero network dependencies.\n- Remove stray terminal hook strings from bottom of `travelIntent.ts` and `pwaOfflineFreshness.ts`."
+        "byteCount": 583,
+        "summaryExcerpt": "- **Focus**: Zero unversioned migration drift; bidirectional parity; single open episode constraint.\n- **Physical Code Citations**: `supabase/migrations/20261022000001_watch_condition_episodes.sql:1-60`\n- **Adversarial Vector Defense**: Defends against NEG-22 (reclaimed lease triggers duplicate aler"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
+        "timestamp": "2026-10-27T10:13:45.031Z",
         "covered": true,
-        "byteCount": 106,
-        "summaryExcerpt": "- Pure TypeScript domain files with zero external dependencies. Clean stray hook output from source files."
+        "byteCount": 542,
+        "summaryExcerpt": "- **Focus**: Zero unversioned migration drift; bidirectional migration parity; single open episode constraint.\n- **Physical Code Citations**: `supabase/migrations/20261022000001_watch_condition_episodes.sql:1-60`\n- **Adversarial Vector Defense**: Defends against NEG-22 (reclaimed lease triggers dupl"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.596Z",
+        "timestamp": "2026-10-27T10:14:44.965Z",
         "covered": true,
-        "byteCount": 109,
-        "summaryExcerpt": "- Pure TypeScript implementation with zero third-party dependencies. Clean stray hook text from domain files."
+        "byteCount": 563,
+        "summaryExcerpt": "- **Focus**: Zero unversioned migration drift; bidirectional migration parity; single open episode constraint.\n- **Physical Code Citations**: `supabase/migrations/20261022000001_watch_condition_episodes.sql:1-60`\n- **Adversarial Vector Defense**: Defends against NV22 (reclaimed lease triggers duplic"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:15:40.209Z",
+        "covered": true,
+        "byteCount": 205,
+        "summaryExcerpt": "- *Pass R3 Claim*: Pass R3 assumed `activeEpisode` objects passed into `evaluateWatchCondition` are always internally consistent.\n   - *Falsification & Code Proof*: In `src/domain/farely/watchCondition.ts#"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:16:44.695Z",
+        "covered": true,
+        "byteCount": 180,
+        "summaryExcerpt": "- *Pass R4 Claim*: Pass R4 assumed `generationId` is simply passed along without transition enforcement.\n   - *Falsification & Code Proof*: In `src/domain/farely/watchCondition.ts#"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.298Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "9. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.949Z",
-        "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "timestamp": "2026-10-27T10:18:32.033Z",
+        "covered": true,
+        "byteCount": 221,
+        "summaryExcerpt": "- *Pass G1 Proposal*: Pass G1 mentioned \"guard against non-positive prices\" but did not specify the fail-closed return signature.\n   - *Falsification & Concrete Before/After Spec*: In `src/domain/farely/watchCondition.ts#"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.238Z",
+        "timestamp": "2026-10-27T10:19:22.907Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "9. **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
+        "timestamp": "2026-10-27T10:20:14.917Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 5,
+        "summaryExcerpt": "9. **"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:21:47.411Z",
+        "covered": true,
+        "byteCount": 3591,
+        "summaryExcerpt": "- *Pass G4 Specification*: Pass G4 noted `generationId` checking.\n   - *Deepening & Epoch Invariants*: When user edits search criteria (e.g. adjusts maximum stops from 1 to 0 or alters price ceiling from 3M to 2M), the frontend or API issues a new `generationId`. If an active episode from `generatio"
       }
     }
   },
@@ -523,64 +523,64 @@
     "name": "Proof Hierarchy & Anti-Self-Certification (C0..C4)",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.136Z",
+        "timestamp": "2026-10-27T10:12:08.598Z",
         "covered": true,
-        "byteCount": 163,
-        "summaryExcerpt": "- Compliance with CAAV flight safety directives regarding infant passenger supervision.\n- Transparent consumer labeling when viewing cached vs live verified fares."
+        "byteCount": 584,
+        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak.\n- **Physical Code Citations**: `docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json:1-100`\n- **Adversarial Vector Defense**: Defends against NEG-40 (executor-written proof declares all 89 accepted). C1 uni"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
+        "timestamp": "2026-10-27T10:13:45.031Z",
         "covered": true,
-        "byteCount": 163,
-        "summaryExcerpt": "- Compliance with CAAV flight safety directives regarding infant passenger supervision.\n- Transparent consumer labeling when viewing cached vs live verified fares."
+        "byteCount": 538,
+        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.\n- **Physical Code Citations**: `docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json:1-120`\n- **Adversarial Vector Defense**: Defends against NEG-40 (executor-written proof declares a"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.596Z",
+        "timestamp": "2026-10-27T10:14:44.965Z",
         "covered": true,
-        "byteCount": 163,
-        "summaryExcerpt": "- Compliance with CAAV flight safety directives regarding infant passenger supervision.\n- Transparent consumer labeling when viewing cached vs live verified fares."
+        "byteCount": 550,
+        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.\n- **Physical Code Citations**: `docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json:1-120`\n- **Adversarial Vector Defense**: Defends against NV40 (executor-written proof declares all"
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
+        "timestamp": "2026-10-27T10:15:40.209Z",
         "covered": true,
-        "byteCount": 163,
-        "summaryExcerpt": "- Compliance with CAAV flight safety directives regarding infant passenger supervision.\n- Transparent consumer labeling when viewing cached vs live verified fares."
+        "byteCount": 415,
+        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.\n- **Physical Code Citations**: `docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json:1-120`\n- **Adversarial Vector Defense**: Defends against NEG-40. Distinct test suites validate eac"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
+        "timestamp": "2026-10-27T10:16:44.696Z",
         "covered": true,
-        "byteCount": 91,
-        "summaryExcerpt": "- Adherence to CAAV infant passenger safety standards and consumer protection transparency."
+        "byteCount": 437,
+        "summaryExcerpt": "- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.\n- **Physical Code Citations**: `docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json:1-120`\n- **Adversarial Vector Defense**: Defends against NEG-40. Code proof (C1) does not substitu"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.298Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 6,
+        "summaryExcerpt": "10. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.949Z",
+        "timestamp": "2026-10-27T10:18:32.033Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 6,
+        "summaryExcerpt": "10. **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.238Z",
-        "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "timestamp": "2026-10-27T10:19:22.907Z",
+        "covered": true,
+        "byteCount": 87,
+        "summaryExcerpt": "1. **Falsification 1: Incomplete Ineligibility Matrix Coverage in `routeBest.test.ts` ("
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
-        "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "timestamp": "2026-10-27T10:20:14.917Z",
+        "covered": true,
+        "byteCount": 631,
+        "summaryExcerpt": "- *Pass G3 Proposal*: Pass G3 listed proposed new files (`routeBest.test.ts` and `watchCondition.test.ts`) as targets without specifying snapshot behavior for non-existent files.\n   - *Falsification & Turnkey Fix*: `transactional-task-manager.mjs` handles non-existent files by recording `snapshots[f"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
+        "timestamp": "2026-10-27T10:21:47.412Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 6,
+        "summaryExcerpt": "10. **"
       }
     }
   },
@@ -588,64 +588,64 @@
     "name": "Anti-Shrinkage & 267 Historical Gates Traceability",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.136Z",
+        "timestamp": "2026-10-27T10:12:08.598Z",
         "covered": true,
-        "byteCount": 304,
-        "summaryExcerpt": "- In `pwaOfflineFreshness.ts`, export diagnostic error class `StaleOfflineDealAsFreshError`.\n- In `priceAnomaly.ts`, provide clear Vietnamese explanations for each anomaly tier.\n- In `travelIntent.ts`, provide descriptive error messages: `[NC-006 InvertedDate]` and `[REQ-DOM-003 PassengerMixViolatio"
+        "byteCount": 540,
+        "summaryExcerpt": "- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 historical gates; zero contract shrinkage.\n- **Physical Code Citations**: `scripts/verify-certification-integrity.node-test.mjs:1-120`\n- **Adversarial Vector Defense**: Defends against NEG-30 (gate name retained only in comment) and NEG-33 (267 ID"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
+        "timestamp": "2026-10-27T10:13:45.032Z",
         "covered": true,
-        "byteCount": 258,
-        "summaryExcerpt": "- In `pwaOfflineFreshness.ts`, export diagnostic error class `StaleOfflineDealAsFreshError`.\n- In `travelIntent.ts`, export `TravelIntentValidationError` with structured error codes: `ERR_INVERTED_DATES`, `ERR_PASSENGER_MIX_INVALID`, `ERR_LAP_INFANT_EXCESS`."
+        "byteCount": 519,
+        "summaryExcerpt": "- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.\n- **Physical Code Citations**: `scripts/verify-certification-integrity.node-test.mjs:1-120`\n- **Adversarial Vector Defense**: Defends against NEG-30 (gate name retained only in comment) and NEG-33 (2"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.596Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:14:44.965Z",
+        "covered": true,
+        "byteCount": 105,
+        "summaryExcerpt": "3. **Falsification 3: Negative Variance Cancellation & Floating Point Underflow in `buyWaitGuidance.ts` ("
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:15:40.209Z",
+        "covered": true,
+        "byteCount": 450,
+        "summaryExcerpt": "---\n\n## NON-OTA PRODUCT BOUNDARY INVARIANTS\n- `NO_DIRECT_TICKETING`: Farely does not issue airline tickets, manage PNR records directly, or process ticket issuance.\n- `NO_PASSENGER_CHECKOUT`: Farely never collects passenger passport numbers, never handles credit card numbers, and never operates a ch"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:16:44.696Z",
+        "covered": true,
+        "byteCount": 429,
+        "summaryExcerpt": "- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.\n- **Physical Code Citations**: `scripts/verify-certification-integrity.node-test.mjs:1-120`\n- **Adversarial Vector Defense**: Defends against NEG-30 and NEG-33. Traceability verified across all histo"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.707Z",
+        "timestamp": "2026-10-27T10:17:33.299Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 6,
+        "summaryExcerpt": "11. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.949Z",
+        "timestamp": "2026-10-27T10:18:32.033Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 6,
+        "summaryExcerpt": "11. **"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.238Z",
-        "covered": true,
-        "byteCount": 596,
-        "summaryExcerpt": "- *Pass G2 Claim*: \"Compare window anchors using `effectiveInboundTo < effectiveOutboundFrom`.\"\n   - *Falsification & Code Proof*: For standard bookings with exact dates (e.g. `outboundDate = '2026-11-15'`, `returnDate = '2026-11-10'`), both `exact` dates are populated. If an algorithm only checked "
+        "timestamp": "2026-10-27T10:19:22.907Z",
+        "covered": false,
+        "byteCount": 6,
+        "summaryExcerpt": "11. **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
+        "timestamp": "2026-10-27T10:20:14.917Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 6,
+        "summaryExcerpt": "11. **"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
+        "timestamp": "2026-10-27T10:21:47.412Z",
         "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "byteCount": 6,
+        "summaryExcerpt": "11. **"
       }
     }
   },
@@ -653,64 +653,64 @@
     "name": "Turnkey Execution, Topological DAG & Rollback Runbooks",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.136Z",
+        "timestamp": "2026-10-27T10:12:08.598Z",
         "covered": true,
-        "byteCount": 116,
-        "summaryExcerpt": "- Safe JSON parsing in `deserializeTravelIntent`.\n- Bounded memory queue size `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`."
+        "byteCount": 565,
+        "summaryExcerpt": "- **Focus**: Zero-deadlock dependency order; file-level before/after specs; transactional ACID rollbacks.\n- **Physical Code Citations**: `scripts/convergence/transactional-task-manager.mjs:1-150`\n- **Adversarial Vector Defense**: Defends against task execution corruption. Work packages are isolated "
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
+        "timestamp": "2026-10-27T10:13:45.032Z",
         "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Safe parsing of JSON in `deserializeTravelIntent`.\n- Bounded memory queue size `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`."
+        "byteCount": 468,
+        "summaryExcerpt": "- **Focus**: Zero-deadlock dependency order; file-level before/after specs; transactional ACID rollbacks.\n- **Physical Code Citations**: `scripts/convergence/transactional-task-manager.mjs:1-150`\n- **Adversarial Vector Defense**: Defends against mid-execution crashes. Tasks are executed within trans"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.596Z",
+        "timestamp": "2026-10-27T10:14:44.965Z",
         "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Safe parsing of JSON in `deserializeTravelIntent`.\n- Bounded memory queue size `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`."
+        "byteCount": 105,
+        "summaryExcerpt": "3. **Falsification 3: Negative Variance Cancellation & Floating Point Underflow in `buyWaitGuidance.ts` ("
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
+        "timestamp": "2026-10-27T10:15:40.210Z",
         "covered": true,
-        "byteCount": 119,
-        "summaryExcerpt": "- Safe parsing of JSON in `deserializeTravelIntent`.\n- Bounded memory queue size `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`."
+        "byteCount": 450,
+        "summaryExcerpt": "---\n\n## NON-OTA PRODUCT BOUNDARY INVARIANTS\n- `NO_DIRECT_TICKETING`: Farely does not issue airline tickets, manage PNR records directly, or process ticket issuance.\n- `NO_PASSENGER_CHECKOUT`: Farely never collects passenger passport numbers, never handles credit card numbers, and never operates a ch"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.487Z",
+        "timestamp": "2026-10-27T10:16:44.696Z",
         "covered": true,
-        "byteCount": 54,
-        "summaryExcerpt": "- Safe JSON deserialization and bounded memory queues."
+        "byteCount": 438,
+        "summaryExcerpt": "- **Focus**: Zero-deadlock dependency order; file-level before/after specs; transactional ACID rollbacks.\n- **Physical Code Citations**: `scripts/convergence/transactional-task-manager.mjs:1-150`\n- **Adversarial Vector Defense**: Defends against partial file writes. The transactional task manager gu"
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.708Z",
+        "timestamp": "2026-10-27T10:17:33.299Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 6,
+        "summaryExcerpt": "12. **"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.949Z",
-        "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "timestamp": "2026-10-27T10:18:32.033Z",
+        "covered": true,
+        "byteCount": 1114,
+        "summaryExcerpt": "```typescript\n     // BEFORE:\n     if (intent.journeyType === 'ROUND_TRIP') {\n       if (!offer.returnDate) {\n         reasons.push('MISSING_RETURN_DATE');\n       } else if (intent.inbound?.exact && offer.returnDate !== intent.inbound.exact) {\n         reasons.push('RETURN_DATE_MISMATCH');\n       }\n"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.238Z",
+        "timestamp": "2026-10-27T10:19:22.908Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 6,
+        "summaryExcerpt": "12. **"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "2. **Falsification of"
+        "timestamp": "2026-10-27T10:20:14.917Z",
+        "covered": true,
+        "byteCount": 713,
+        "summaryExcerpt": "- *Pass G3 Proposal*: Pass G3 specified task names without binding the exact CLI invocations of `transactional-task-manager.mjs`.\n   - *Falsification & Turnkey Fix*: Free-form edits risk file corruptions or un-tracked changes if interrupted by token limits or network timeouts. Pass G4 binds every wo"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
+        "timestamp": "2026-10-27T10:21:47.412Z",
         "covered": false,
-        "byteCount": 4,
-        "summaryExcerpt": "- **"
+        "byteCount": 6,
+        "summaryExcerpt": "12. **"
       }
     }
   },
@@ -718,64 +718,64 @@
     "name": "Zero-Trust Release & Remote Git Synchronization",
     "passes": {
       "R1": {
-        "timestamp": "2026-10-27T09:54:21.137Z",
+        "timestamp": "2026-10-27T10:12:08.598Z",
         "covered": true,
-        "byteCount": 371,
-        "summaryExcerpt": "- All existing tests in `pwaOfflineFreshness.test.ts` and `priceAnomaly.test.ts` must pass.\n- Create comprehensive test suite `src/domain/farely/travelIntent.test.ts`.\n\n---\n\n### ACTIONABLE RESEARCH SUMMARY & TRANSITION TO PASS R2\nPass R1 establishes the concrete defects across the three modules. In "
+        "byteCount": 1798,
+        "summaryExcerpt": "- **Focus**: Local green != Done; mandatory push with remote SHA equality verified via `git ls-remote`.\n- **Physical Code Citations**: `scripts/convergence/continuous_5x5_orchestrator.mjs:1-250`\n- **Adversarial Vector Defense**: Defends against NEG-25 (fake release tuple with matching strings passes"
       },
       "R2": {
-        "timestamp": "2026-10-27T09:55:22.463Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:13:45.032Z",
+        "covered": true,
+        "byteCount": 1684,
+        "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**: `scripts/convergence/continuous_5x5_orchestrator.mjs:1-250`\n- **Adversarial Vector Defense**: Defends against NEG-27 (CI passes while productio"
       },
       "R3": {
-        "timestamp": "2026-10-27T09:56:02.596Z",
+        "timestamp": "2026-10-27T10:14:44.965Z",
         "covered": true,
-        "byteCount": 384,
-        "summaryExcerpt": "- All existing tests in `pwaOfflineFreshness.test.ts` and `priceAnomaly.test.ts` must pass.\n- Create new test suite `src/domain/farely/travelIntent.test.ts`.\n\n---\n\n### ACTIONABLE RESEARCH SUMMARY & TRANSITION TO PASS R4\nPass R3 hardened the specifications against hostile boundaries and negative vect"
+        "byteCount": 1535,
+        "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**: `scripts/convergence/continuous_5x5_orchestrator.mjs:1-250`\n- **Adversarial Vector Defense**: Defends against NV27 (CI passes while production "
       },
       "R4": {
-        "timestamp": "2026-10-27T09:56:39.494Z",
+        "timestamp": "2026-10-27T10:15:40.210Z",
         "covered": true,
-        "byteCount": 56,
-        "summaryExcerpt": "---\n\n### ADVERSARIAL SYSTEMIC AUDIT ACROSS ALL 12 LENSES"
+        "byteCount": 1654,
+        "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**: `scripts/convergence/continuous_5x5_orchestrator.mjs:1-250`\n- **Adversarial Vector Defense**: Defends against NEG-27. Local commits must be pus"
       },
       "R5": {
-        "timestamp": "2026-10-27T09:57:16.488Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:16:44.696Z",
+        "covered": true,
+        "byteCount": 2460,
+        "summaryExcerpt": "- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.\n- **Physical Code Citations**: `scripts/convergence/continuous_5x5_orchestrator.mjs:1-250`\n- **Adversarial Vector Defense**: Defends against NEG-27. Local commits must match "
       },
       "G1": {
-        "timestamp": "2026-10-27T09:57:44.708Z",
+        "timestamp": "2026-10-27T10:17:33.299Z",
         "covered": true,
-        "byteCount": 1047,
-        "summaryExcerpt": "---\n\n### SECTION D: LOCKED WORK PACKAGES FOR TRANSACTIONAL EXECUTION\n\n#### WP01: `WP01-PWAOFFLINE-FRESHNESS-CALIBRATION`\n- **Target File**: `src/domain/farely/pwaOfflineFreshness.ts`\n- **Target Test File**: `src/domain/farely/pwaOfflineFreshness.test.ts`\n- **Implementation**: 45-min live verificatio"
+        "byteCount": 2565,
+        "summaryExcerpt": "---\n\n## SECTION E: EXACT BEFORE/AFTER DELTAS\n- `src/domain/farely/buyWaitGuidance.ts`:\n  - Before: `computeCohortVolatility` accepts dirty arrays and can output `NaN`. Day diff uses naive Date math subject to timezone skew.\n  - After: Sanitizes prices, clamps variance to $\\ge 0$, guards mean $\\le 0$"
       },
       "G2": {
-        "timestamp": "2026-10-27T09:58:25.949Z",
+        "timestamp": "2026-10-27T10:18:32.033Z",
         "covered": true,
-        "byteCount": 151,
-        "summaryExcerpt": "---\n\n### SECTION D: EXECUTION MANDATE\nNo downstream AI or executor is authorized to modify the caged solutions or change the target file architectures."
+        "byteCount": 1826,
+        "summaryExcerpt": "---\n\n## SECTION E: EXACT BEFORE/AFTER DELTAS\n(See detailed code specs in Audit & Falsification section above).\n\n---\n\n## SECTION F: NEGATIVE VECTOR DEFENSE MATRIX\n- **NV01**: Defended by full candidate array evaluation in `selectRouteBest`.\n- **NV04**: Defended by strict `price > 0` validation in `bu"
       },
       "G3": {
-        "timestamp": "2026-10-27T09:59:00.238Z",
+        "timestamp": "2026-10-27T10:19:22.908Z",
         "covered": true,
-        "byteCount": 151,
-        "summaryExcerpt": "---\n\n### SECTION D: EXECUTION MANDATE\nNo downstream AI or executor is authorized to modify the caged solutions or change the target file architectures."
+        "byteCount": 1798,
+        "summaryExcerpt": "---\n\n## SECTION E: EXACT BEFORE/AFTER DELTAS\n(Preserved identically from Pass G2).\n\n---\n\n## SECTION F: NEGATIVE VECTOR DEFENSE MATRIX\n- **NV01**: Defended by full candidate array evaluation in `selectRouteBest`.\n- **NV04**: Defended by strict `price > 0` validation in `buyWaitGuidance` and `routeBes"
       },
       "G4": {
-        "timestamp": "2026-10-27T09:59:38.649Z",
+        "timestamp": "2026-10-27T10:20:14.917Z",
         "covered": true,
-        "byteCount": 2746,
-        "summaryExcerpt": "- *Pass G3 Claim*: \"Validate adults + children > 9 without addressing infant seating limits.\"\n   - *Falsification & Code Proof*: Under CAAV circulars and ICAO Annex 6, lap infants do not occupy an aircraft seat, but commercial aircraft seat rows have oxygen mask limits (typically 1 extra mask per ro"
+        "byteCount": 2974,
+        "summaryExcerpt": "- *Pass G3 Proposal*: Pass G3 relied solely on individual Vitest file runs.\n   - *Falsification & Turnkey Fix*: Passing an individual unit test does not prove backward compatibility across all 59 Vitest files and 382 Node native tests. Pass G4 establishes the mandatory regression gate: `npm test` mu"
       },
       "G5": {
-        "timestamp": "2026-10-27T10:00:20.665Z",
-        "covered": false,
-        "byteCount": 21,
-        "summaryExcerpt": "1. **Falsification of"
+        "timestamp": "2026-10-27T10:21:47.412Z",
+        "covered": true,
+        "byteCount": 3843,
+        "summaryExcerpt": "---\n\n## SECTION E: EXACT BEFORE/AFTER DELTAS\n- `src/domain/farely/buyWaitGuidance.ts`:\n  - `computeCohortVolatility`: Filters `typeof p === 'number' && Number.isFinite(p) && p > 0`. Clamps variance to $\\ge 0$.\n  - `evaluateBuyWaitGuidance`: Uses 10-char civil date string subtraction to prevent UTC/I"
       }
     }
   }
