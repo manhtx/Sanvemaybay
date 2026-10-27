@@ -2,26 +2,29 @@ import { describe, expect, it } from 'vitest';
 import {
   resolveDealsForPwaClient,
   assertOfflineFreshnessIntegrity,
-  evictExpiredOfflineDeals,
-  MAX_OFFLINE_CACHE_AGE_MINUTES,
-  MAX_OFFLINE_ACTION_QUEUE_SIZE,
-  enqueueOfflineAction,
   StaleOfflineDealAsFreshError,
   CachedDealRecord,
+  evictExpiredOfflineDeals,
+  enqueueOfflineAction,
+  MAX_OFFLINE_CACHE_AGE_MINUTES,
+  MAX_OFFLINE_ACTION_QUEUE_SIZE,
+  LIVE_REVALIDATION_THRESHOLD_MINUTES,
   OfflineActionQueueItem,
 } from './pwaOfflineFreshness';
 
 describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
   const sampleCachedDeal: CachedDealRecord = {
-    id: 'deal_pwa_01',
-    route: 'HAN-DAD',
-    airlineCode: 'VN',
-    priceVND: 950_000,
+    id: 'deal_vj_han_sgn_123',
+    route: 'HAN-SGN',
+    airlineCode: 'VJ',
+    priceVND: 1_200_000,
     observedAt: '2026-10-15T02:00:00Z',
     cachedAt: '2026-10-15T02:05:00Z',
   };
 
-  it('marks offline cached deals with offline badge and disables unverified direct booking', () => {
+  const baseNow = '2026-10-26T12:00:00.000Z';
+
+  it('marks all deals as cached and prevents direct booking when device is offline', () => {
     const results = resolveDealsForPwaClient({
       cachedDeals: [sampleCachedDeal],
       isDeviceOffline: true,
@@ -37,7 +40,7 @@ describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
     expect(item.disclosureNoticeVi).toContain('mất kết nối mạng');
   });
 
-  it('allows verified live presentation when online with fresh observations', () => {
+  it('allows verified live presentation when online with fresh observations (<= 45m)', () => {
     const results = resolveDealsForPwaClient({
       cachedDeals: [sampleCachedDeal],
       isDeviceOffline: false,
@@ -47,6 +50,19 @@ describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
     expect(results[0].isOfflineCached).toBe(false);
     expect(results[0].isLiveVerified).toBe(true);
     expect(results[0].canDirectBook).toBe(true);
+    expect(results[0].offlineBadgeLabelVi).toContain('xác minh');
+  });
+
+  it('demotes deals older than 45 minutes to pending revalidation in online mode (L01)', () => {
+    const results = resolveDealsForPwaClient({
+      cachedDeals: [sampleCachedDeal],
+      isDeviceOffline: false,
+      nowIsoString: '2026-10-15T02:50:00Z', // 50 minutes after observation (> 45 min)
+    });
+
+    expect(results[0].isLiveVerified).toBe(false);
+    expect(results[0].canDirectBook).toBe(false);
+    expect(results[0].offlineBadgeLabelVi).toContain('chờ cập nhật');
   });
 
   it('passes assertion check for properly formatted offline deals', () => {
@@ -62,8 +78,12 @@ describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
   });
 
   it('throws StaleOfflineDealAsFreshError if offline deal has isLiveVerified=true', () => {
-    const corruptedDeal = {
-      ...sampleCachedDeal,
+    const invalidOfflineDeal = {
+      id: 'deal_invalid',
+      route: 'SGN-DAD',
+      airlineCode: 'VN',
+      priceVND: 950_000,
+      observedAt: '2026-10-15T01:00:00Z',
       isOfflineCached: true,
       offlineStalenessMinutes: 60,
       isLiveVerified: true, // INVALID in offline mode!
@@ -73,13 +93,17 @@ describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
     };
 
     expect(() =>
-      assertOfflineFreshnessIntegrity(corruptedDeal, true)
+      assertOfflineFreshnessIntegrity(invalidOfflineDeal, true)
     ).toThrow(StaleOfflineDealAsFreshError);
   });
 
   it('throws StaleOfflineDealAsFreshError if offline deal permits direct booking', () => {
-    const corruptedDeal = {
-      ...sampleCachedDeal,
+    const invalidBookingDeal = {
+      id: 'deal_invalid_book',
+      route: 'SGN-PQC',
+      airlineCode: 'QH',
+      priceVND: 800_000,
+      observedAt: '2026-10-15T01:00:00Z',
       isOfflineCached: true,
       offlineStalenessMinutes: 60,
       isLiveVerified: false,
@@ -89,30 +113,68 @@ describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
     };
 
     expect(() =>
-      assertOfflineFreshnessIntegrity(corruptedDeal, true)
+      assertOfflineFreshnessIntegrity(invalidBookingDeal, true)
     ).toThrow(StaleOfflineDealAsFreshError);
   });
 
-  describe('SOL-06: 14-Day Offline Cache Eviction & Temporal Safety', () => {
-    const baseNow = '2026-10-26T12:00:00.000Z';
+  it('throws StaleOfflineDealAsFreshError if offline deal is missing isOfflineCached flag', () => {
+    const missingCacheFlagDeal = {
+      id: 'deal_missing_flag',
+      route: 'HAN-CXR',
+      airlineCode: 'VJ',
+      priceVND: 1_100_000,
+      observedAt: '2026-10-15T01:00:00Z',
+      isOfflineCached: false, // INVALID in offline mode!
+      offlineStalenessMinutes: 60,
+      isLiveVerified: false,
+      canDirectBook: false,
+      offlineBadgeLabelVi: 'Offline',
+      disclosureNoticeVi: 'Notice',
+    };
 
-    it('evicts deals older than 14 days (20160 minutes)', () => {
+    expect(() =>
+      assertOfflineFreshnessIntegrity(missingCacheFlagDeal, true)
+    ).toThrow(StaleOfflineDealAsFreshError);
+  });
+
+  it('throws StaleOfflineDealAsFreshError if online deal has stale observation but isLiveVerified=true (L01/L10)', () => {
+    const falselyLiveDeal = {
+      id: 'deal_stale_live',
+      route: 'HAN-SGN',
+      airlineCode: 'VJ',
+      priceVND: 1_200_000,
+      observedAt: '2026-10-15T01:00:00Z',
+      isOfflineCached: false,
+      offlineStalenessMinutes: 50, // > 45 minutes
+      isLiveVerified: true, // INVALID when stale!
+      canDirectBook: true,
+      offlineBadgeLabelVi: 'Live',
+      disclosureNoticeVi: 'Notice',
+    };
+
+    expect(() =>
+      assertOfflineFreshnessIntegrity(falselyLiveDeal, false)
+    ).toThrow(StaleOfflineDealAsFreshError);
+  });
+
+  describe('Adversarial & Offline Edge Case Defense (AUD-14 / L04 / L06)', () => {
+    it('evicts deals exceeding maximum retention period (14 days)', () => {
       const deals: CachedDealRecord[] = [
         {
           id: 'fresh_deal',
           route: 'HAN-SGN',
-          airlineCode: 'VJ',
-          priceVND: 1200000,
-          observedAt: '2026-10-26T10:00:00.000Z', // 2 hours old
-          cachedAt: '2026-10-26T10:05:00.000Z',
+          airlineCode: 'VN',
+          priceVND: 1500000,
+          observedAt: '2026-10-25T12:00:00.000Z', // 1 day ago
+          cachedAt: '2026-10-25T12:00:00.000Z',
         },
         {
-          id: 'expired_15d_deal',
+          id: 'ancient_deal',
           route: 'HAN-DAD',
-          airlineCode: 'VN',
+          airlineCode: 'VJ',
           priceVND: 900000,
-          observedAt: '2026-10-11T10:00:00.000Z', // 15.08 days old (> 14 days)
-          cachedAt: '2026-10-11T10:05:00.000Z',
+          observedAt: '2026-10-01T12:00:00.000Z', // 25 days ago (> 14 days)
+          cachedAt: '2026-10-01T12:00:00.000Z',
         },
       ];
 
@@ -231,6 +293,26 @@ describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
       expect(queue).toHaveLength(1);
       expect(queue[0].id).toBe('act_2');
 
+      // Watch action deduplicates by watchId (L02)
+      queue = enqueueOfflineAction(queue, {
+        id: 'act_watch_1',
+        actionType: 'PAUSE_WATCH',
+        payload: { watchId: 'watch_abc' },
+        queuedAt: '2026-10-27T08:02:00.000Z',
+        status: 'PENDING_SYNC',
+      });
+      expect(queue).toHaveLength(2);
+
+      queue = enqueueOfflineAction(queue, {
+        id: 'act_watch_2',
+        actionType: 'PAUSE_WATCH',
+        payload: { watchId: 'watch_abc' },
+        queuedAt: '2026-10-27T08:03:00.000Z',
+        status: 'PENDING_SYNC',
+      });
+      expect(queue).toHaveLength(2);
+      expect(queue[1].id).toBe('act_watch_2');
+
       // Different deal -> appends
       queue = enqueueOfflineAction(queue, {
         id: 'act_3',
@@ -239,8 +321,12 @@ describe('F48: Mobile-First PWA and Push Freshness Integrity', () => {
         queuedAt: 'invalid-date', // corrupt timestamp fallback
         status: 'PENDING_SYNC',
       });
-      expect(queue).toHaveLength(2);
-      expect(queue[1].queuedAt).not.toBe('invalid-date');
+      expect(queue).toHaveLength(3);
+      expect(queue[2].queuedAt).not.toBe('invalid-date');
+
+      // Handles null/invalid action safely (L02/L05)
+      queue = enqueueOfflineAction(queue, null as any);
+      expect(queue).toHaveLength(3);
 
       // Saturate queue past MAX_OFFLINE_ACTION_QUEUE_SIZE
       for (let i = 0; i < 120; i++) {

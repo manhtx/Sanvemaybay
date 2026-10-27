@@ -9,6 +9,7 @@
  * - Minimum 10 independent observation samples required before declaring a statistical anomaly.
  * - Sparse data (< 10) must return SPARSE_DATA_ABSTENTION.
  * - Distinguish genuine airline price drops from data glitches (zero fare, negative, 10x spikes).
+ * - NEG-08: Current observation must not contaminate its own baseline.
  */
 
 export type AnomalyClassification =
@@ -87,6 +88,7 @@ export function detectPriceAnomaly(params: {
   historicalCohortPrices: number[];
   cohortScope?: PriceAnomalyScope;
   departureDate?: string;
+  excludeCurrentPriceFromBaseline?: boolean;
 }): AnomalyEvaluation {
   const cohortScope = params.cohortScope || "ROUTE_LEVEL";
   const currentPrice = Number(params.currentPrice);
@@ -106,13 +108,22 @@ export function detectPriceAnomaly(params: {
     };
   }
 
-  // Filter positive finite numbers first, then slice up to MAX_COHORT_ANALYSIS_SIZE
-  const rawCohort = (params.historicalCohortPrices || []).filter(
-    (p) => Number.isFinite(p) && p > 0
+  // Filter positive finite numbers first
+  let rawCohort = (params.historicalCohortPrices || []).filter(
+    (p) => typeof p === 'number' && Number.isFinite(p) && p > 0
   );
+
+  // Defend NEG-08: If excludeCurrentPriceFromBaseline is set, remove at most ONE matching currentPrice instance
+  if (params.excludeCurrentPriceFromBaseline) {
+    const idx = rawCohort.indexOf(currentPrice);
+    if (idx !== -1) {
+      rawCohort = [...rawCohort.slice(0, idx), ...rawCohort.slice(idx + 1)];
+    }
+  }
+
   const validCohort = rawCohort.slice(-MAX_COHORT_ANALYSIS_SIZE);
 
-  // F37 Invariant: Never make strong anomaly claims on insufficient sample
+  // F37 Invariant: Never make strong anomaly claims on insufficient sample (< 10)
   if (validCohort.length < MIN_ANOMALY_SAMPLE_SIZE) {
     return {
       classification: "SPARSE_DATA_ABSTENTION",
@@ -139,7 +150,7 @@ export function detectPriceAnomaly(params: {
       modifiedZScore: 99,
       discountVsMedianPercent: 0,
       isActionableDeal: false,
-      explanationVi: "Mức giá lệch cực đoan bất thường (>10 lần hoặc thấp hơn 5% trung vị). Cần kiểm tra lại nguồn cấp dữ liệu.",
+      explanationVi: "Mức giá lệch cực đoan bất thường (>10 lần hoặc thấp hơn 5% trung vị). Nghi ngờ lỗi dữ liệu hoặc giá cào sai lệch.",
       cohortScope,
     };
   }
@@ -188,7 +199,7 @@ export function detectPriceAnomaly(params: {
   const seasonalMultiplier = isTet ? 2.8 : 1.0;
   const effectiveMedian = median * seasonalMultiplier;
   const rawZScore = (0.6745 * (currentPrice - effectiveMedian)) / mad;
-  const modifiedZScore = Number(rawZScore.toFixed(2));
+  const modifiedZScore = Number.isFinite(rawZScore) ? Number(rawZScore.toFixed(2)) : 0;
   const discountVsMedianPercent = effectiveMedian > 0 ? Math.round(((effectiveMedian - currentPrice) / effectiveMedian) * 100) : 0;
   const tetNote = isTet ? " (Lưu ý: Mức giá giảm hiếm có trong giai đoạn Cao điểm Tết)." : "";
 

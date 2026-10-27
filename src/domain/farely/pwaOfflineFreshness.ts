@@ -51,8 +51,14 @@ export interface OfflineActionQueueItem {
 export const MAX_OFFLINE_ACTION_QUEUE_SIZE = 100;
 
 /**
+ * Live revalidation threshold: cached observations older than 45 minutes
+ * cannot be claimed as freshly live-verified without an active network recheck.
+ */
+export const LIVE_REVALIDATION_THRESHOLD_MINUTES = 45;
+
+/**
  * Enqueues an offline action into the PWA action queue.
- * - Idempotently deduplicates identical action types targeting the same entity (dealId).
+ * - Idempotently deduplicates identical action types targeting the same entity (dealId, watchId, id).
  * - Enforces valid ISO timestamp or falls back to current time.
  * - Enforces bounded FIFO capacity: newest items preserved, oldest items trimmed.
  */
@@ -60,9 +66,26 @@ export function enqueueOfflineAction(
   queue: OfflineActionQueueItem[],
   newAction: OfflineActionQueueItem
 ): OfflineActionQueueItem[] {
-  const deduplicated = queue.filter(
-    (item) => !(item.actionType === newAction.actionType && item.payload?.dealId === newAction.payload?.dealId)
-  );
+  if (!newAction || typeof newAction !== 'object') {
+    return queue;
+  }
+
+  const getTargetKey = (item: OfflineActionQueueItem): string =>
+    (item.payload?.dealId as string) ||
+    (item.payload?.watchId as string) ||
+    (item.payload?.id as string) ||
+    '';
+
+  const newKey = getTargetKey(newAction);
+
+  const deduplicated = queue.filter((item) => {
+    const existingKey = getTargetKey(item);
+    if (Boolean(newKey) && Boolean(existingKey)) {
+      return !(item.actionType === newAction.actionType && existingKey === newKey);
+    }
+    return true;
+  });
+
   const validQueuedAt = !Number.isNaN(new Date(newAction.queuedAt).getTime())
     ? newAction.queuedAt
     : new Date().toISOString();
@@ -129,7 +152,6 @@ export function resolveDealsForPwaClient(params: {
   const validDeals = evictExpiredOfflineDeals(cachedDeals, maxAgeMinutes, nowIsoString);
 
   return validDeals.map((deal) => {
-    const _cachedMs = new Date(deal.cachedAt).getTime();
     const observedMs = new Date(deal.observedAt).getTime();
     const safeObservedMs = Number.isFinite(observedMs) ? observedMs : nowMs;
     const stalenessMinutes = Math.max(0, Math.round((nowMs - safeObservedMs) / (1000 * 60)));
@@ -156,9 +178,8 @@ export function resolveDealsForPwaClient(params: {
       };
     }
 
-    // In online mode, cached records can be used for initial render if within 30 min,
-    // but still clearly indicate cache status until background revalidation completes.
-    const isLive = isPriceValid && stalenessMinutes <= 120; // 2 hours
+    // In online mode, cached records can be used for initial render if within LIVE_REVALIDATION_THRESHOLD_MINUTES (45 min)
+    const isLive = isPriceValid && stalenessMinutes <= LIVE_REVALIDATION_THRESHOLD_MINUTES;
     return {
       id: deal.id,
       route: deal.route,
@@ -185,7 +206,8 @@ export function resolveDealsForPwaClient(params: {
 
 /**
  * Validates that an offline deal presentation does not violate F48.
- * Throws StaleOfflineDealAsFreshError if offline data was marked as live or fresh.
+ * Throws StaleOfflineDealAsFreshError if offline data was marked as live or fresh,
+ * or if online stale/corrupt data was falsely marked as live verified.
  */
 export function assertOfflineFreshnessIntegrity(deal: ResolvedOfflineDeal, isDeviceOffline: boolean): void {
   if (isDeviceOffline) {
@@ -202,6 +224,18 @@ export function assertOfflineFreshnessIntegrity(deal: ResolvedOfflineDeal, isDev
     if (!deal.isOfflineCached) {
       throw new StaleOfflineDealAsFreshError(
         `Deal ${deal.id} (${deal.route}) missing mandatory isOfflineCached indicator in offline presentation.`
+      );
+    }
+  } else {
+    // Online integrity assertions (L01/L10)
+    if (deal.isLiveVerified && (deal.priceVND <= 0 || deal.offlineStalenessMinutes > LIVE_REVALIDATION_THRESHOLD_MINUTES)) {
+      throw new StaleOfflineDealAsFreshError(
+        `Deal ${deal.id} (${deal.route}) has staleness ${deal.offlineStalenessMinutes}m exceeding live revalidation threshold (${LIVE_REVALIDATION_THRESHOLD_MINUTES}m) or invalid price (${deal.priceVND}₫) but is marked with isLiveVerified=true.`
+      );
+    }
+    if (deal.canDirectBook && (deal.priceVND <= 0 || deal.offlineStalenessMinutes > LIVE_REVALIDATION_THRESHOLD_MINUTES)) {
+      throw new StaleOfflineDealAsFreshError(
+        `Deal ${deal.id} (${deal.route}) permits direct booking action while price is invalid (${deal.priceVND}₫) or observation is stale (${deal.offlineStalenessMinutes}m).`
       );
     }
   }

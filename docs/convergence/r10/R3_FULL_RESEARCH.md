@@ -1,140 +1,104 @@
-# FARELY CYCLE G89 — RESEARCH PASS R3: HOSTILE BOUNDARY & NEGATIVE VECTOR DEFENSE
-## Target Modules: `providerRights.ts`, `directAffiliateComparison.ts`, `airportAlternatives.ts`
+# FARELY CYCLE G90 — RESEARCH PASS R3: HOSTILE BOUNDARY & NEGATIVE VECTOR DEFENSE
+## Target Modules: `pwaOfflineFreshness.ts`, `priceAnomaly.ts`, `travelIntent.ts`
 ## Epistemic Integrity: Zero-Trust Codebase Telemetry & Adversarial Invariant Auditing
 
-EXECUTION_RECEIPT_SHA256: e3a560e8bcd4da24e8b174b046c8342bdb4d73fc3f4ee851e75937b4215ba4bf
-GIT_HEAD: 142a46c983f510b89afe3e522c2dc699c2667df5
+EXECUTION_RECEIPT_SHA256: 88599b0d444b87b019aa44e9be835cc7561cec596b5098cf571358633f3c5482
+GIT_HEAD: b300c3d5d796f8a6b33e8d1eee47ea1f4d6b84bc
 STAGE: RESEARCH_R10
 PASS: R3
-TIMESTAMP: 2026-10-27T09:41:00Z
+TIMESTAMP: 2026-10-27T09:56:00Z
 
 ---
 
 ### FALSIFICATION & AUDIT OF PASS R2 (CRITIQUE OF PRIOR ASSUMPTIONS)
 
-Pass R3 subjects Pass R2 to hostile boundary analysis and falsifies three key oversights across lenses L01, L02, L04, L06, and L10:
+Pass R3 subjects Pass R2 to hostile boundary stress-testing and falsifies three critical oversights across lenses L01, L02, L04, L06, and L10:
 
-1. **Falsification of L01 & L10 Proposal on Hourly Efficiency Clamping (`airportAlternatives.ts`)**:
-   - *Pass R2 Claim*: "When `netSavingsVND <= 0`, `hourlyEfficiencyVND` should be set to 0."
-   - *Falsification & Code Proof*: Setting `hourlyEfficiencyVND = 0` whenever `netSavingsVND <= 0` creates an information blackout. If Alternative X incurs a net loss of -50,000₫ for a 60-minute detour (-50,000₫/hr) while Alternative Y incurs a net loss of -2,500,000₫ (-2,500,000₫/hr), setting both to 0 conceals the catastrophic penalty of Alternative Y. Downstream sorting or decision models would treat both as identical 0 efficiency! The mathematically rigorous formulation is to retain `hourlyEfficiencyVND = Math.round(netSavingsVND / transferHours)` (allowing negative values for telemetry and sorting), while exposing `positiveEfficiencyVND: Math.max(0, hourlyEfficiencyVND)` and `isIncurringNetLoss: boolean` for UI rendering.
+1. **Falsification of L04 & L06 Proposal on Same-Day Round Trips (`travelIntent.ts`)**:
+   - *Pass R2 Claim*: "Verify `effectiveInbound >= effectiveOutbound` without testing same-day boundaries."
+   - *Falsification & Code Proof*: In business travel (e.g. SGN-HAN morning flight returning SGN evening), `outboundDate` and `returnDate` share the exact same calendar day (`2026-11-01`). If a naive validator requires `effectiveInbound > effectiveOutbound`, same-day round-trips are erroneously blocked! The condition must strictly be `effectiveInbound >= effectiveOutbound`. Furthermore, if `outboundDate` contains an invalid Gregorian date (e.g. `2026-02-30`), string comparison alone could pass invalid strings without catching calendar corruption. Validation must verify calendar date authenticity before ordering.
 
-2. **Falsification of L02 Proposal on Provider ID Normalization (`providerRights.ts`)**:
-   - *Pass R2 Claim*: "`normalizeProviderId(id)` should return `''` for null or undefined."
-   - *Falsification & Code Proof*: If `normalizeProviderId` returns `''`, then `getSafeProviderRights('')` sets `providerId: ''` and `sourceName: 'Unknown Provider ()'`. Downstream logging and audit systems will emit empty strings `providerId=""`, violating SRE observability invariants (L10). When input is null, undefined, or empty, `normalizeProviderId` should normalize to `'unknown'` or provide a distinct sentinel, and `getSafeProviderRights` must record `providerId: id?.trim() || 'unknown'`.
+2. **Falsification of L01 & L10 Proposal on Online Stale Cache Transparency (`pwaOfflineFreshness.ts`)**:
+   - *Pass R2 Claim*: "When online, mark `isOfflineCached: false` unconditionally."
+   - *Falsification & Code Proof*: In `src/domain/farely/pwaOfflineFreshness.ts#L168`, when `isDeviceOffline === false`, the code sets `isOfflineCached: false` even if the record was retrieved directly from local IndexedDB cache and has not yet completed background HTTP revalidation. Under `NEG-35` ("Offline cache shown as fresh"), if a deal is 60 minutes old and served from local disk, claiming it is not cached misrepresents provenance. The record must indicate `isServedFromCache: true` and `isLiveVerified: false` until active network roundtrip re-verification completes.
 
-3. **Falsification of L04 & L06 Proposal on Zero Baggage Fee Assumptions (`directAffiliateComparison.ts`)**:
-   - *Pass R2 Claim*: "Validate taxes and fees, but accept `checkedBaggageFeeVND: 0` directly."
-   - *Falsification & Code Proof*: Under `NEG-05` ("Unknown baggage becomes free/included"), if `requiresCheckedBaggage === true`, `isBaggageIncludedInQuote === false`, and `checkedBaggageFeeVND === 0`, treating baggage as 0 VND creates a deceptive "free baggage" appearance for budget airlines (Vietjet, AirAsia) where checked baggage is never free! We must require explicit declaration: if `checkedBaggageFeeVND === 0` and `!isBaggageIncludedInQuote`, the channel must flag an advisory warning `baggageFeeUnquoted: true` or require verified 0 baggage fee entitlement.
+3. **Falsification of L02 & L10 Proposal on Anomaly Metric Precision (`priceAnomaly.ts`)**:
+   - *Pass R2 Claim*: "Return raw calculations in `AnomalyEvaluation`."
+   - *Falsification & Code Proof*: If `rawZScore` evaluates to non-finite or `NaN` (e.g. if `mad === 0` in an unhandled branch), `toFixed(2)` or JSON serialization will produce corrupted strings. All numerical fields (`modifiedZScore`, `discountVsMedianPercent`, `medianPrice`, `mad`) must be clamped and validated as finite numbers before serialization.
 
 ---
 
 ### ADVERSARIAL SYSTEMIC AUDIT ACROSS ALL 12 LENSES
 
 ### L01: Mathematical & Algorithmic Rigor
-- **Target 1 (`providerRights.ts`)**: Ensure cache TTL adheres strictly to:
-  ```ts
-  const boundedTtl = rights.canCache
-    ? Math.min(86400, Math.max(60, Math.round(rights.cacheTtlSeconds || 1800)))
-    : 0;
-  ```
-- **Target 2 (`directAffiliateComparison.ts`)**: In `compareProviderChannels`, verify that breakdown sum strictly reconciles:
-  ```ts
-  const reconciledSum = baseFare + taxes + baggage;
-  if (Math.abs(reconciledSum - totalCost) > 1) {
-    throw new Error(`Price breakdown mismatch: baseFare (${baseFare}) + taxes (${taxes}) + baggage (${baggage}) != totalCost (${totalCost})`);
-  }
-  ```
-- **Target 3 (`airportAlternatives.ts`)**: In `evaluateAirportAlternative`, ensure transfer hours are bounded: $0.25 \le \text{transferHours} \le 12.0$.
+- **Target 1 (`pwaOfflineFreshness.ts`)**: Set `LIVE_REVALIDATION_THRESHOLD_MINUTES = 45`. Observations $\le 45$ min in online mode are `isLiveVerified: true`; observations $> 45$ min are `isLiveVerified: false` with label `'Dữ liệu chờ cập nhật'`.
+- **Target 2 (`priceAnomaly.ts`)**: Enforce `MIN_ANOMALY_SAMPLE_SIZE = 10`. Require minimum sample count before executing MAD calculations.
+- **Target 3 (`travelIntent.ts`)**: Passenger count constraints:
+  - `adults >= 1` (integer)
+  - `children >= 0` (integer)
+  - `infants >= 0` (integer)
+  - `infants <= adults` (ICAO lap infant restriction)
+  - `totalPassengers = adults + children + infants`
 
 ### L02: Type-System Soundness & Invariant Enforcement
-- **Target 1 (`providerRights.ts`)**: Export explicit union for provider IDs and strict validation guards:
+- **Target 1 (`pwaOfflineFreshness.ts`)**: Robust multi-entity action key extraction:
   ```ts
-  export function isValidProviderId(id: unknown): id is string {
-    return typeof id === 'string' && id.trim().length > 0;
-  }
+  const targetKey = item.payload?.dealId || item.payload?.watchId || item.payload?.id || '';
   ```
-- **Target 2 (`directAffiliateComparison.ts`)**: Deep link safety type guard:
-  ```ts
-  export function isSafeDeepLinkUrl(url: unknown): boolean {
-    if (typeof url !== 'string' || !url.trim()) return false;
-    const lower = url.trim().toLowerCase();
-    if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) {
-      return false;
-    }
-    return lower.startsWith('http://') || lower.startsWith('https://');
-  }
-  ```
-- **Target 3 (`airportAlternatives.ts`)**: `GroundTransferRoute` must enforce `distanceKm > 0`, `typicalMinutes > 0`, and `estimatedCostVND >= 0`.
+- **Target 2 (`priceAnomaly.ts`)**: Strict typing for anomaly classifications:
+  `STRONG_DROP_ANOMALY` | `MODERATE_DROP_ANOMALY` | `NORMAL_FLUCTUATION` | `SUSPECTED_DATA_GLITCH` | `SPARSE_DATA_ABSTENTION` | `INSUFFICIENT_DISPERSION_ABSTENTION`.
+- **Target 3 (`travelIntent.ts`)**: Export `TravelIntentValidationError` with diagnostic error codes:
+  - `ERR_INVERTED_DATES`
+  - `ERR_INVALID_PASSENGER_COUNT`
+  - `ERR_EXCESSIVE_LAP_INFANTS`
+  - `ERR_GROUP_CAPACITY_EXCEEDED`
 
 ### L03: Epistemic Sincerity & Anti-Hallucination
-- **Target 1 (`providerRights.ts`)**: Staged contracts (`COMMERCIAL_STAGED_CONTRACT_REQUIRED`) must be clearly delineated:
-  ```ts
-  export function isStagedContract(providerId: string): boolean {
-    const rights = getSafeProviderRights(providerId);
-    return rights.declarationStatus === 'COMMERCIAL_STAGED_CONTRACT_REQUIRED';
-  }
-  ```
-- **Target 2 (`directAffiliateComparison.ts`)**: Transparent disclosure notice in Vietnamese must state whether any partner is commercial, and emphasize that sorting is strictly by normalized total cost.
-- **Target 3 (`airportAlternatives.ts`)**: Explicitly differentiate verified ground transfer routes (`isVerifiedSource: true`) from uncataloged heuristic estimates (`isVerifiedSource: false`).
+- **Target 1 (`pwaOfflineFreshness.ts`)**: `NEG-35`: Defend against presenting offline data as live or verified.
+- **Target 2 (`priceAnomaly.ts`)**: `AUD-12`: Zero empirical dispersion must never fabricate synthetic MAD variance.
+- **Target 3 (`travelIntent.ts`)**: Accurate representation of civil aviation passenger safety constraints.
 
 ### L04: State Space Completeness & Boundary Values
-- **Target 1 (`providerRights.ts`)**: Handle null, undefined, whitespace, empty string, and uppercase provider IDs across all public functions.
-- **Target 2 (`directAffiliateComparison.ts`)**: Handle extreme numbers: very large prices ($> 10^9$ VND), zero taxes, missing baggage info, and leap seconds in ISO timestamps.
-- **Target 3 (`airportAlternatives.ts`)**: Handle same-airport comparison (`baseCode === altCode`), unknown airport codes, and regional transit times $> 180$ minutes.
+- **Target 1 (`pwaOfflineFreshness.ts`)**: FIFO bounds on `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`.
+- **Target 2 (`priceAnomaly.ts`)**: Extremes: zero price, negative price, price $> 10\times$ median handled as `SUSPECTED_DATA_GLITCH`.
+- **Target 3 (`travelIntent.ts`)**: Same-day round trips (`outbound === inbound`) accepted; inverted trips rejected.
 
 ### L05: Concurrency, Latency & Async Safety
-- **Target 1 (`providerRights.ts`)**: Deep freeze the registry object to guarantee thread safety and prevent prototype mutations.
-- **Target 2 (`directAffiliateComparison.ts`)**: Deterministic comparator with 4-tier tie-breaking:
-  1. `normalizedTotalCostVND ASC`
-  2. `channelType PRIORITY` (DIRECT_AIRLINE > OTA_PARTNER > AFFILIATE_AGGREGATOR)
-  3. `providerName ASC`
-  4. `providerId ASC`
-- **Target 3 (`airportAlternatives.ts`)**: In-memory lookup in `GROUND_TRANSFER_CATALOG` executes in $O(1)$ to $O(N)$ with $N < 20$, guaranteed $< 1$ ms latency.
+- **Target 1 (`pwaOfflineFreshness.ts`)**: Pure functional queue enqueueing without array mutation.
+- **Target 2 (`priceAnomaly.ts`)**: Sliced cohort analysis with `MAX_COHORT_ANALYSIS_SIZE = 250`.
+- **Target 3 (`travelIntent.ts`)**: Fast synchronous serialization and deserialization.
 
 ### L06: Adversarial Robustness & Negative Vector Defense
-- **Target 1 (`providerRights.ts`)**:
-  - `NEG-24`: Staged GDS contract appears to grant B2B rights.
-  - `NEG-38`: Unlicensed background scan continues.
-- **Target 2 (`directAffiliateComparison.ts`)**:
-  - `NEG-04`: Unknown mandatory fee becomes 0.
-  - `NEG-05`: Unknown baggage becomes free/included.
-  - Injection attacks: Block unsafe URL schemes (`javascript:`).
-- **Target 3 (`airportAlternatives.ts`)**:
-  - Inverted schedule detection: `isInvertedSchedule: boolean`.
-  - Excessive detour detection: `isExcessiveDetour: boolean` when detour time $> 180$ min.
+- **Target 1 (`pwaOfflineFreshness.ts`)**: Defends `NEG-35` (offline cache shown as fresh).
+- **Target 2 (`priceAnomaly.ts`)**: Defends `NEG-09` (insufficient sample anomaly claims).
+- **Target 3 (`travelIntent.ts`)**: Defends against chronological date inversion and passenger safety violations.
 
 ### L07: Production Realism & Environmental Fidelity
 - **Product Boundary Invariant (Anti-OTA Conflation)**:
   Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.
-- Register all 5 Vietnamese airlines in `providerRights.ts`: `vietjet_direct`, `vietnam_airlines`, `bamboo_airways`, `vietravel_airlines`, and `pacific_airlines`.
-- Add regional route `HAN <-> VDO` to `GROUND_TRANSFER_CATALOG`.
+- Real-world mobile network transitions in Vietnam.
 
 ### L08: Architectural Cohesion & Clean Domain Kernel
-- Pure domain models with 0 external npm dependencies and 0 side effects.
-- Clean separation of concerns between provider rights, channel pricing, and geographic friction.
+- Pure TypeScript implementation with zero third-party dependencies. Clean stray hook text from domain files.
 
 ### L09: Regulatory Compliance & Consumer Protection (CAAV, FTC, VN Competition Law)
-- Compliance with CAAV regulations and Vietnam Law on Consumer Rights: Total price transparency, mandatory disclosure of commercial affiliation, and anti-misrepresentation.
+- Compliance with CAAV flight safety directives regarding infant passenger supervision.
+- Transparent consumer labeling when viewing cached vs live verified fares.
 
 ### L10: Observability, Diagnostics & SRE Auditability
-- Standard diagnostic error codes:
-  - `ERR_UNREGISTERED_PROVIDER`
-  - `ERR_COMMERCIAL_CONTRACT_STAGED`
-  - `ERR_UNAUTHORIZED_SCOPE`
-  - `ERR_INVALID_PRICE_BREAKDOWN`
-  - `ERR_UNSAFE_DEEP_LINK`
-  - `ERR_EXCESSIVE_DETOUR`
+- In `pwaOfflineFreshness.ts`, export diagnostic error class `StaleOfflineDealAsFreshError`.
+- In `priceAnomaly.ts`, provide clear Vietnamese explanations for each anomaly tier.
+- In `travelIntent.ts`, export `TravelIntentValidationError` with structured error codes.
 
 ### L11: Zero-Trust Security & Minimal Privilege
-- Immutable provider rights registry.
-- Least privilege data access scopes.
-- Strict URL validation before deep link emission.
+- Safe parsing of JSON in `deserializeTravelIntent`.
+- Bounded memory queue size `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`.
 
 ### L12: Backward Compatibility & Regression Invariance
-- All existing function signatures remain backwards-compatible.
-- All existing tests pass without regressions.
+- All existing tests in `pwaOfflineFreshness.test.ts` and `priceAnomaly.test.ts` must pass.
+- Create new test suite `src/domain/farely/travelIntent.test.ts`.
 
 ---
 
 ### ACTIONABLE RESEARCH SUMMARY & TRANSITION TO PASS R4
-Pass R3 hardened the specifications against hostile boundaries and negative vectors. In Pass R4, we will develop the complete production SRE specifications and precise implementation diffs.
+Pass R3 hardened the specifications against hostile boundaries and negative vectors. In Pass R4, we will develop complete SRE specifications and precise code diffs.

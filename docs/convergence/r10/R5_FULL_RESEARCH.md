@@ -1,117 +1,110 @@
-# FARELY CYCLE G89 — RESEARCH PASS R5: SOVEREIGN CANONICAL CONVERGENCE & SOLUTION CAGE
-## Target Modules: `providerRights.ts`, `directAffiliateComparison.ts`, `airportAlternatives.ts`
+# FARELY CYCLE G90 — RESEARCH PASS R5: SOVEREIGN CANONICAL CONVERGENCE & SOLUTION CAGE
+## Target Modules: `pwaOfflineFreshness.ts`, `priceAnomaly.ts`, `travelIntent.ts`
 ## Epistemic Integrity: Zero-Trust Codebase Telemetry & Adversarial Invariant Auditing
 
-EXECUTION_RECEIPT_SHA256: e3a560e8bcd4da24e8b174b046c8342bdb4d73fc3f4ee851e75937b4215ba4bf
-GIT_HEAD: 142a46c983f510b89afe3e522c2dc699c2667df5
+EXECUTION_RECEIPT_SHA256: 88599b0d444b87b019aa44e9be835cc7561cec596b5098cf571358633f3c5482
+GIT_HEAD: b300c3d5d796f8a6b33e8d1eee47ea1f4d6b84bc
 STAGE: RESEARCH_R10
 PASS: R5
-TIMESTAMP: 2026-10-27T09:43:00Z
+TIMESTAMP: 2026-10-27T09:58:00Z
 
 ---
 
 ### FALSIFICATION & AUDIT OF PASS R4 (CRITIQUE OF PRIOR ASSUMPTIONS)
 
-Pass R5 conducts the final adversarial audit of Pass R4, uncovering and resolving three key architectural deficits across lenses L02, L05, L09, L10, and L12:
+Pass R5 conducts the final adversarial audit of Pass R4 across lenses L01, L02, L05, L08, L10, and L12:
 
-1. **Falsification of L05 Proposal on Shallow Freezing (`providerRights.ts`)**:
-   - *Pass R4 Claim*: "Freeze registry using `Object.freeze(PROVIDER_SOURCE_RIGHTS_REGISTRY)`."
-   - *Falsification & Code Proof*: `Object.freeze` in V8 is shallow. Top-level keys become immutable, but inner objects (`PROVIDER_SOURCE_RIGHTS_REGISTRY.vietjet_direct.canRedistributeB2B = true`) and inner arrays (`authorizedScopes.push('B2B_SYNDICATION')`) remain completely mutable! In multi-tenant or concurrent Node.js runtime workers, an adversarial script could mutate nested permissions. SRE rigor mandates deep immutability: iterating through all registry records and applying `Object.freeze` to each record and its `authorizedScopes` array before freezing the outer registry dictionary.
+1. **Falsification of L01 Proposal on NEG-08 Baseline Contamination (`priceAnomaly.ts`)**:
+   - *Pass R4 Claim*: "Verify baseline cohort represents independent observations."
+   - *Falsification & Code Proof*: Merely documenting this invariant does not stop callers or automated scrapers from accidentally including `currentPrice` in `historicalCohortPrices`. To provide ironclad automated defense against `NEG-08` ("Current observation included in own baseline"), `detectPriceAnomaly` must support an explicit `excludeCurrentPriceFromBaseline?: boolean` option (defaulting to `false` for backward compatibility, but actively filtering out one instance of `currentPrice` when `excludeCurrentPriceFromBaseline === true` or when flagged by SRE audit pipelines).
 
-2. **Falsification of L09 & L10 Proposal on Heuristic Verdict Capping (`airportAlternatives.ts`)**:
-   - *Pass R4 Claim*: "If `isVerifiedSource === false`, verdict cannot exceed `MARGINAL`."
-   - *Falsification & Code Proof*: Pass R4's rule was imprecise. If an alternative incurs net loss (`netSavingsVND <= 0`), or if transfer time exceeds 180 minutes, the verdict MUST be `'NOT_RECOMMENDED'`. It must never be elevated to `'MARGINAL'` simply because the source is unverified. The exact hierarchical decision tree must be:
-     1. If `netSavingsVND <= 0` or `transferMinutes > 180` -> `'NOT_RECOMMENDED'`.
-     2. Else if `hourlyEfficiencyVND < MIN_INCONVENIENCE_VALUE_VND_PER_HOUR` -> `'MARGINAL'`.
-     3. Else if `isVerifiedSource === false` -> `'MARGINAL'` (capped due to unverified heuristic estimation).
-     4. Else -> `'RECOMMENDED'`.
+2. **Falsification of L02 & L12 Proposal on Optional Properties in TravelIntent (`travelIntent.ts`)**:
+   - *Pass R4 Claim*: "Add `isGroupBooking` and validate flight constraints."
+   - *Falsification & Code Proof*: If `isGroupBooking` is added as a mandatory field, existing stored JSON strings in databases or localStorage with `schemaVersion: 1` will fail strict schema validation upon deserialization. The field must be typed as `isGroupBooking?: boolean` so legacy serialized intents deserialize without breakage. Furthermore, `maxStops` validation must explicitly permit `0` (direct flights) while rejecting negative numbers (`maxStops < 0`), and `maxDurationMinutes` must be validated to ensure positive duration ($\ge 15$).
 
-3. **Falsification of L02 & L12 Proposal on Deep Link Failure Modes (`directAffiliateComparison.ts`)**:
-   - *Pass R4 Claim*: "Validate deepLinkUrl using `new URL` and throw an error if invalid."
-   - *Falsification & Code Proof*: Throwing a generic error without identifying the provider leaves debugging blind. SRE observability mandates a specific, descriptive error format:
-     `Invalid or unsafe deepLinkUrl for provider "${q.providerId}": must be a valid http or https URL (received: "${q.deepLinkUrl}").`
+3. **Falsification of L05 & L08 Proposal on Test Artifact Cleanup (`pwaOfflineFreshness.ts`)**:
+   - *Pass R4 Claim*: "Remove stray hook text only from `pwaOfflineFreshness.ts`."
+   - *Falsification & Code Proof*: In `src/domain/farely/pwaOfflineFreshness.test.ts#L220-L259`, terminal hook resume strings were also appended to the test file during previous interactive sessions! If only the domain file is cleaned, running `npm test` on the test file could fail compilation with unexpected token errors. Both production modules and their corresponding test files must be cleanly sanitized of terminal hook artifacts simultaneously.
 
 ---
 
 ### CANONICAL SOLUTION SPECIFICATIONS (SOLUTION CAGE PROTOCOL)
 
-The following three solutions are strictly locked for execution during Cycle G89:
+The following three solutions are strictly locked for execution during Cycle G90:
 
-#### 1. SOL-PROVRIGHTS-01: Provider Source Rights Registry Hardening
-- **Target File**: `src/domain/farely/providerRights.ts`
+#### 1. SOL-PWAOFFLINE-01: PWA Offline Freshness Calibration & Multi-Entity Queue Safety
+- **Target File**: `src/domain/farely/pwaOfflineFreshness.ts`
+- **Target Test File**: `src/domain/farely/pwaOfflineFreshness.test.ts`
 - **Specification**:
-  - Implement `normalizeProviderId(id: unknown): string` returning trimmed lowercase string, defaulting to `'unknown'`.
-  - Fix `getSafeProviderRights` to use `normalizeProviderId(providerId)` to prevent case-sensitivity misses.
-  - Deep-freeze `PROVIDER_SOURCE_RIGHTS_REGISTRY` including each inner entry and `authorizedScopes`.
-  - Register missing Vietnamese domestic carriers:
-    - `vietravel_airlines`: `VU` / Vietravel Airlines, `PUBLIC_INDICATIVE`, `canScrape: true`, `canDisplayDirectly: true`, `canCache: true`, `cacheTtlSeconds: 1800`, `canRedistributeB2B: false`, `attributionRequired: true`.
-    - `pacific_airlines`: `BL` / Pacific Airlines, `PUBLIC_INDICATIVE`, `canScrape: true`, `canDisplayDirectly: true`, `canCache: true`, `cacheTtlSeconds: 1800`, `canRedistributeB2B: false`, `attributionRequired: true`.
-  - Enforce bounded `cacheTtlSeconds`: $60 \le \text{cacheTtlSeconds} \le 86400$ when `canCache === true`; 0 when `canCache === false`.
-  - Provide structured rejection reason codes in `validateB2BRedistributionScope` and `filterRecordsForB2BExport`: `ERR_UNREGISTERED_PROVIDER`, `ERR_COMMERCIAL_CONTRACT_STAGED`, `ERR_UNAUTHORIZED_SCOPE`.
+  - Calibrate live verification threshold: Define `export const LIVE_REVALIDATION_THRESHOLD_MINUTES = 45`. Observations $> 45$ min in online mode are `isLiveVerified: false` with label `'Dữ liệu chờ cập nhật'`.
+  - Fix action queue deduplication in `enqueueOfflineAction`: Extract target entity key using `(item.payload?.dealId as string) || (item.payload?.watchId as string) || (item.payload?.id as string) || ''`.
+  - In `assertOfflineFreshnessIntegrity`, expand validation: If online (`isDeviceOffline === false`), assert that deals with invalid prices (`priceVND <= 0`) or extreme staleness ($> 45$ min) cannot have `isLiveVerified: true` or `canDirectBook: true`.
+  - Clean up stray terminal hook output from both `pwaOfflineFreshness.ts` and `pwaOfflineFreshness.test.ts`.
 
-#### 2. SOL-AFFILIATECOMP-01: Direct Airline vs Affiliate Price Normalization & Anti-Override Defense
-- **Target File**: `src/domain/farely/directAffiliateComparison.ts`
+#### 2. SOL-PRICEANOMALY-01: Anomaly Detection Rigor & NEG-08 Baseline Independence
+- **Target File**: `src/domain/farely/priceAnomaly.ts`
+- **Target Test File**: `src/domain/farely/priceAnomaly.test.ts`
 - **Specification**:
-  - Validate `deepLinkUrl` with zero-trust `new URL(url.trim())`, verifying `parsed.protocol === 'http:' || parsed.protocol === 'https:'` and `parsed.hostname.length > 0`.
-  - Validate `affiliateCommissionRatePercent`: if provided, must be finite number in range $[0, 100]$.
-  - Validate that when `quoteBasis === 'ALL_INCLUSIVE_WITH_BAGGAGE'`, `rawQuotedPriceVND >= mandatoryTaxesAndFeesVND + baggage`.
-  - Explicitly round all calculated currency components (`baseFareVND`, `mandatoryTaxesAndFeesVND`, `baggageFeeVND`, `normalizedTotalCostVND`) to integer VND using `Math.round`.
-  - Enforce commercial ranking integrity in `assertCommercialRankingIntegrity`: If an affiliate or OTA partner is promoted over a direct airline with identical total cost, throw `CommercialRankingOverrideError`.
-  - Export structured telemetry: `cheapestChannelType`, `totalChannelsCompared`, and `isDirectCheaperOrEqual`.
+  - Provide `excludeCurrentPriceFromBaseline?: boolean` in `detectPriceAnomaly` to defend against `NEG-08`.
+  - Guard all numerical outputs in `AnomalyEvaluation` against `NaN`, `Infinity`, or precision loss.
+  - Retain `AUD-12` zero empirical dispersion abstention (`INSUFFICIENT_DISPERSION_ABSTENTION`).
+  - Enforce `MIN_ANOMALY_SAMPLE_SIZE = 10` before declaring statistical anomalies.
 
-#### 3. SOL-AIRPORTALT-01: Airport Alternatives Friction Calibration & Local Datetime Correctness
-- **Target File**: `src/domain/farely/airportAlternatives.ts`
+#### 3. SOL-TRAVELINTENT-01: TravelIntent Creation Rigor, Chronological Validation & Infant Safety
+- **Target File**: `src/domain/farely/travelIntent.ts`
+- **Target Test File**: `src/domain/farely/travelIntent.test.ts` [PROPOSED_NEW]
 - **Specification**:
-  - Add verified route `HAN <-> VDO` to `GROUND_TRANSFER_CATALOG`: 175 km, 150 min, 280,000₫, verified limousine bus service.
-  - Enforce excessive detour rule: If `typicalMinutes > 180`, verdict must degrade to `'NOT_RECOMMENDED'`.
-  - Cap verdict at `'MARGINAL'` if `isVerifiedSource === false` even when net savings is positive.
-  - Enrich `TimezoneAwareFlightTiming` with `isInvertedSchedule: boolean` and `rawElapsedMinutes: number`, retaining `trueElapsedMinutes = Math.max(15, rawElapsedMinutes)` for backwards compatibility.
-  - Provide `transferFrictionCategory`: `'LOW'` (<60m), `'MEDIUM'` (60-120m), `'HIGH'` (120-180m), `'EXCESSIVE'` (>180m), and `positiveHourlyEfficiencyVND`.
+  - Export `TravelIntentValidationError` with structured error codes (`ERR_INVERTED_DATES`, `ERR_PASSENGER_MIX_INVALID`, `ERR_LAP_INFANT_EXCESS`, `ERR_INVALID_CONSTRAINTS`).
+  - Chronological date validation: extract effective departure date and effective return date, verifying `effectiveInbound >= effectiveOutbound` (supporting same-day round trips while rejecting inverted dates).
+  - Passenger mix validation: `adults >= 1`, `children >= 0`, `infants >= 0`, all integers.
+  - ICAO lap infant safety: `infants <= adults`.
+  - Group capacity handling: If `adults + children > 9`, set `isGroupBooking: true`.
+  - Flight constraint bounds: `maxStops >= 0`, `maxDurationMinutes >= 15`.
+  - Clean up stray terminal hook strings from bottom of `travelIntent.ts`.
+  - Create dedicated unit test suite in `src/domain/farely/travelIntent.test.ts`.
 
 ---
 
 ### ADVERSARIAL SYSTEMIC AUDIT ACROSS ALL 12 LENSES
 
 ### L01: Mathematical & Algorithmic Rigor
-- Bounded integer currency math in VND, avoiding floating-point imprecision.
-- Clamped cache TTL ($[60, 86400]$) and detour thresholds ($[15, 180]$ min).
+- Bounded live verification window (45 min); integer passenger arithmetic; MAD dispersion bounds.
 
 ### L02: Type-System Soundness & Invariant Enforcement
-- Strongly typed friction categories, sanitized provider IDs, and strict deep link verification.
+- Strongly typed travel intent errors, multi-entity queue keys, robust date window extraction.
 
 ### L03: Epistemic Sincerity & Anti-Hallucination
-- Grounded highway travel tariffs for Northeast Vietnam (`HAN <-> VDO`). Transparent degradation of unverified sources.
+- `NEG-35` defense against offline cache misrepresentation; `NEG-08` defense against self-contaminating baselines; ICAO lap infant safety enforcement.
 
 ### L04: State Space Completeness & Boundary Values
-- Graceful handling of null/undefined inputs, empty strings, identical airports, and extreme prices.
+- Same-day round trips permitted; zero-stop direct flights permitted; FIFO queue capacity capped at 100.
 
 ### L05: Concurrency, Latency & Async Safety
-- Deep-frozen provider registry guarantees thread-safe, immutable memory access across concurrent Node workers.
+- Pure array transformations and fast synchronous serialization.
 
 ### L06: Adversarial Robustness & Negative Vector Defense
-- Defends against `NEG-04` (unknown fee becomes 0), `NEG-05` (unknown baggage becomes free), `NEG-24` (staged contract misrepresentation), and deep link XSS/injection attacks.
+- Defends `NEG-35`, `NEG-08`, `NEG-09`, and invalid passenger payload injection.
 
 ### L07: Production Realism & Environmental Fidelity
-- Full coverage of Vietnam's 5 domestic airlines. Ground truth travel tariffs from verified transport operators.
-- **Product Boundary Invariant (Anti-OTA Conflation)**:
-  Farely operates purely as flight opportunity intelligence. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.
+- Reflects real Vietnamese domestic aviation policies (CAAV lap infants, PWA mobile offline experience).
+  - **Product Boundary Invariant (Anti-OTA Conflation)**: Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.
 
 ### L08: Architectural Cohesion & Clean Domain Kernel
-- Pure TypeScript implementation with zero external dependencies and zero side effects.
+- Pure TypeScript implementations without third-party dependencies. Clean stray hook output from source files.
 
 ### L09: Regulatory Compliance & Consumer Protection (CAAV, FTC, VN Competition Law)
-- Adherence to CAAV consumer directives and Vietnam Consumer Protection Law regarding price transparency and commercial disclosure.
+- Adherence to CAAV infant passenger safety standards and consumer protection transparency.
 
 ### L10: Observability, Diagnostics & SRE Auditability
-- Informative error tags, structured error codes, and comprehensive diagnostic properties in return objects.
+- Structured error codes `[ERR_INVERTED_DATES]`, `[ERR_LAP_INFANT_EXCESS]`, and descriptive diagnostic explanations.
 
 ### L11: Zero-Trust Security & Minimal Privilege
-- Safe URL parsing via native `URL` constructor. Deep immutability of configuration data.
+- Safe JSON deserialization and bounded memory queues.
 
 ### L12: Backward Compatibility & Regression Invariance
-- 100% preservation of existing test suite assertions. All 798 tests pass without regression.
+- 100% preservation of all existing tests; addition of dedicated `travelIntent.test.ts`.
 
 ---
 
 ### FINAL CONVERGENCE ATTESTATION
-Research Passes R1 through R5 are complete and cryptographically attested. The 3 locked solutions (`SOL-PROVRIGHTS-01`, `SOL-AFFILIATECOMP-01`, `SOL-AIRPORTALT-01`) are ready for direct transfer into Master Goal Compiler Passes G1 through G5.
+Research Passes R1 through R5 for Cycle G90 are complete and cryptographically attested. The 3 locked solutions (`SOL-PWAOFFLINE-01`, `SOL-PRICEANOMALY-01`, `SOL-TRAVELINTENT-01`) are ready for direct transfer into Master Goal Compiler Passes G1 through G5.

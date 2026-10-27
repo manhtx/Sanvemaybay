@@ -1,20 +1,20 @@
-# FARELY CYCLE G89 — RESEARCH PASS R1: DEEP ADVERSARIAL DISSECTION
-## Target Modules: `providerRights.ts`, `directAffiliateComparison.ts`, `airportAlternatives.ts`
+# FARELY CYCLE G90 — RESEARCH PASS R1: DEEP ADVERSARIAL DISSECTION
+## Target Modules: `pwaOfflineFreshness.ts`, `priceAnomaly.ts`, `travelIntent.ts`
 ## Epistemic Integrity: Zero-Trust Codebase Telemetry & Adversarial Invariant Auditing
 
-EXECUTION_RECEIPT_SHA256: e3a560e8bcd4da24e8b174b046c8342bdb4d73fc3f4ee851e75937b4215ba4bf
-GIT_HEAD: 142a46c983f510b89afe3e522c2dc699c2667df5
+EXECUTION_RECEIPT_SHA256: 88599b0d444b87b019aa44e9be835cc7561cec596b5098cf571358633f3c5482
+GIT_HEAD: b300c3d5d796f8a6b33e8d1eee47ea1f4d6b84bc
 STAGE: RESEARCH_R10
 PASS: R1
-TIMESTAMP: 2026-10-27T09:39:00Z
+TIMESTAMP: 2026-10-27T09:53:00Z
 
 ---
 
 ### EXECUTIVE INTENT & SCOPE BOUNDARY
-This pass initiates Cycle G89 under perpetual convergence `/goal`. It conducts an exhaustive, zero-sycophancy adversarial investigation into three mission-critical pure domain modules:
-1. `src/domain/farely/providerRights.ts` (F85: B2B redistribution boundaries, provider source rights registry, and commercial staged contract enforcement).
-2. `src/domain/farely/directAffiliateComparison.ts` (F43: Direct airline vs OTA/affiliate price normalization, anti-double-taxation, and commercial ranking override defense).
-3. `src/domain/farely/airportAlternatives.ts` (F23 & F68: Ground transfer friction bounds, verified multi-metro catalog, and timezone-aware local datetime correctness).
+This pass initiates Cycle G90 under perpetual convergence `/goal`. It conducts an exhaustive adversarial investigation into three core domain modules:
+1. `src/domain/farely/pwaOfflineFreshness.ts` (F48: Mobile-first PWA offline freshness integrity, NEG-35 offline cache defense, and action queue safety).
+2. `src/domain/farely/priceAnomaly.ts` (F37: Robust price anomaly detection, MAD statistics, independent sample minimums, and NEG-09 synthetic evidence defense).
+3. `src/domain/farely/travelIntent.ts` (F01/F02: Canonical TravelIntent creation, chronological return date validation, passenger mix safety, and ICAO lap infant constraints).
 
 **Product Boundary Invariant (Anti-OTA Conflation)**:
 Farely is strictly an independent flight opportunity intelligence platform. Direct ticketing, passenger checkout, payment gateway integration, credit card processing, and unauthorized scraping are strictly boundary_excluded.
@@ -24,90 +24,67 @@ Farely is strictly an independent flight opportunity intelligence platform. Dire
 ### ADVERSARIAL SYSTEMIC AUDIT ACROSS ALL 12 LENSES
 
 ### L01: Mathematical & Algorithmic Rigor
-- **Target 1 (`providerRights.ts`)**: `cacheTtlSeconds` currently accepts any number. If a provider configuration or dynamic override injects `0`, negative values, or excessive TTL (e.g., $10^9$ seconds), downstream caching layers either fail into cache-bust thrashing (cache invalidation DDOS on upstream sources) or persist stale fares indefinitely. A mathematical bound must be clamped: $60 \le \text{cacheTtlSeconds} \le 86400$.
-- **Target 2 (`directAffiliateComparison.ts`)**: In `compareProviderChannels` (`src/domain/farely/directAffiliateComparison.ts#L117-L147`), when `quoteBasis === 'ALL_INCLUSIVE_WITH_BAGGAGE'`, base fare is derived via:
+- **Target 1 (`pwaOfflineFreshness.ts`)**: In `resolveDealsForPwaClient` (`src/domain/farely/pwaOfflineFreshness.ts#L161`), `isLive = isPriceValid && stalenessMinutes <= 120`. A 2-hour window (120 minutes) is excessively permissive for dynamic flight pricing. Airline yield management systems frequently adjust fares within 15–30 minutes. Marking a 115-minute-old cached observation as `isLiveVerified: true` and `canDirectBook: true` violates epistemic freshness honesty. The maximum live verification threshold must be tightened to 15 minutes (`LIVE_REVALIDATION_THRESHOLD_MINUTES = 15`), while observations between 15 and 120 minutes must be designated as cached/pending verification (`isLiveVerified: false`).
+- **Target 2 (`priceAnomaly.ts`)**: In `detectPriceAnomaly`, when checking for extreme data glitches (`src/domain/farely/priceAnomaly.ts#L133`):
   ```ts
-  baseFare = Math.max(0, q.rawQuotedPriceVND - taxes - baggage);
+  if (currentPrice < median * 0.05 || currentPrice > median * 10)
   ```
-  If an ill-formed quote provides `taxes + baggage > rawQuotedPriceVND`, `baseFare` silently collapses to 0 without warning or error! An all-inclusive flight quote where taxes and baggage exceed the total price is mathematically incoherent and indicates corrupt provider payloads.
-- **Target 3 (`airportAlternatives.ts`)**: In `calculateTimezoneAwareTiming` (`src/domain/farely/airportAlternatives.ts#L274-L276`), when arrival UTC time precedes departure UTC time, raw elapsed minutes is negative. The code executes:
-  ```ts
-  const rawElapsedMinutes = Math.round((arrUtcTime - depUtcTime) / 60000);
-  const trueElapsedMinutes = Math.max(15, rawElapsedMinutes);
-  ```
-  Clamping a negative flight duration (e.g., $-180$ minutes due to inverted scheduling data or inverted date formats) to $+15$ minutes conceals severe chronological corruption. The system must expose structured flags `isInvertedSchedule: boolean` and log diagnostic warnings.
+  If `currentPrice` is non-integer or floats near boundary thresholds, precision issues can occur. Moreover, Bessel's corrected variance in `calculateSampleStandardDeviation` rounds variance using `Math.round(sumSquaredDiffs / (n - 1))`, which can truncate small non-zero variances to 0.
+- **Target 3 (`travelIntent.ts`)**: In `createTravelIntent`, passenger numbers are assigned via `params.adults ?? 1`, `params.children ?? 0`, `params.infants ?? 0`. Non-integer inputs (e.g. `1.5` adults) or negative values for children/infants (`-1`) are never checked. Passenger counts must be validated as non-negative integers (`Number.isInteger(n) && n >= 0`).
 
 ### L02: Type-System Soundness & Invariant Enforcement
-- **Target 1 (`providerRights.ts`)**: Look at `getSafeProviderRights(providerId: string)` (`src/domain/farely/providerRights.ts#L276-L278`):
-  ```ts
-  export function getSafeProviderRights(providerId: string): ProviderSourceRights {
-    const existing = PROVIDER_SOURCE_RIGHTS_REGISTRY[providerId];
-    if (existing) return existing;
-  ```
-  `PROVIDER_SOURCE_RIGHTS_REGISTRY` keys are stored in lowercase (`vietjet_direct`, `vietnam_airlines`, etc.). While `getProviderSourceRights` executes `providerId.trim().toLowerCase()`, `getSafeProviderRights` performs a direct un-normalized index lookup `PROVIDER_SOURCE_RIGHTS_REGISTRY[providerId]`! As a result, calling `getSafeProviderRights('VIETJET_DIRECT')` or `getSafeProviderRights('  vietjet_direct  ')` returns the fallback `RESTRICTED` dummy object! This is an egregious type-normalization asymmetry. Furthermore, if `providerId` is null, undefined, or empty, `getProviderSourceRights` crashes with `TypeError: Cannot read properties of undefined (reading 'trim')`.
-- **Target 2 (`directAffiliateComparison.ts`)**: `affiliateCommissionRatePercent` is defined as optional `number` on `ProviderQuoteInput`. If a commercial payload injects `NaN`, `Infinity`, or negative commission percentages (e.g., `-5.0%`), the interface allows it through unvalidated.
-- **Target 3 (`airportAlternatives.ts`)**: In `GROUND_TRANSFER_CATALOG` (`src/domain/farely/airportAlternatives.ts#L22-L170`), `distanceKm`, `typicalMinutes`, and `estimatedCostVND` must be non-negative integers. `evaluateAlternativeAirportSavings` accepts `surfaceTransitCost` and `transferMinutes`, but lacks runtime validation against non-finite or `NaN` inputs.
+- **Target 1 (`pwaOfflineFreshness.ts`)**: In `enqueueOfflineAction` (`src/domain/farely/pwaOfflineFreshness.ts#L63-L65`), deduplication checks `item.payload?.dealId === newAction.payload?.dealId`. If the action targets a watch item (e.g. `PAUSE_WATCH` or `RESUME_WATCH`), the payload holds `watchId` rather than `dealId`! Consequently, `item.payload?.dealId` is `undefined` for both items, causing unrelated watch actions to collide and overwrite each other! Deduplication must check the entity key dynamically: `(item.payload?.dealId && item.payload.dealId === newAction.payload?.dealId) || (item.payload?.watchId && item.payload.watchId === newAction.payload?.watchId) || (item.payload?.id && item.payload.id === newAction.payload?.id)`.
+- **Target 2 (`priceAnomaly.ts`)**: `historicalCohortPrices` must be strictly sanitized to ensure finite positive numbers. If `historicalCohortPrices` is empty or undefined, it should handle it without throwing runtime errors.
+- **Target 3 (`travelIntent.ts`)**: In `createTravelIntent` (`src/domain/farely/travelIntent.ts#L88-L96`), for `ROUND_TRIP` journeys, the code verifies that `returnDate` is present, but NEVER verifies that `returnDate >= outboundDate`! If a user or API passes an outbound date of `2026-11-20` and a return date of `2026-11-10`, the system creates an invalid, inverted travel intent.
 
 ### L03: Epistemic Sincerity & Anti-Hallucination
-- **Target 1 (`providerRights.ts`)**: `amadeus_commercial_gds` and `sabre_enterprise_feed` are labeled with `canRedistributeB2B: true`, but have `declarationStatus: 'COMMERCIAL_STAGED_CONTRACT_REQUIRED'`. In `hasB2BRedistributionRights(providerId, options)` (`src/domain/farely/providerRights.ts#L169-L179`), if `options.requireExecutedContract` is not explicitly set to `true`, the function returns `true` for staged contracts! This risks misrepresenting architectural stubs as live commercial rights (violating AUD-08 and NEG-24). The default must be secure-by-default: require executed contracts unless explicitly bypassed.
-- **Target 2 (`directAffiliateComparison.ts`)**: `assertCommercialRankingIntegrity` verifies that the promoted provider's total cost is not greater than the minimum cost. However, if an affiliate aggregator and a direct airline have the exact same price (e.g. 1,500,000 VND), and the affiliate aggregator is promoted as the primary recommendation without disclosing commercial sponsorship, this deceives consumers. F43 strictly mandates that direct airline options retain tie-breaking priority unless commercial disclosures are explicitly flagged.
-- **Target 3 (`airportAlternatives.ts`)**: `findGroundTransfer` only contains 6 international pairs and 2 domestic pairs. The regional route between Hanoi (`HAN`) and Van Don International Airport (`VDO`) in Quang Ninh is a high-volume secondary gateway, yet it is uncataloged and falls back to heuristic algorithms without ground truth calibration.
+- **Target 1 (`pwaOfflineFreshness.ts`)**: `NEG-35`: Offline cache shown as fresh. The system must explicitly label all offline cached items with `offlineBadgeLabelVi: 'Dữ liệu lưu tạm ngoại tuyến (Offline)'` and prevent any direct booking claim while offline.
+- **Target 2 (`priceAnomaly.ts`)**: `NEG-09`: One scan creates false 12-sample STRONG evidence. Ingesting duplicate price points from the same batch without variance must not simulate a statistical sample. `MIN_ANOMALY_SAMPLE_SIZE = 10` must be enforced against distinct observations.
+- **Target 3 (`travelIntent.ts`)**: Under CAAV and international aviation safety regulations (ICAO Annex 6), infants traveling on lap require at least one accompanying adult: `infants <= adults`. A travel intent with 1 adult and 3 infants is illegal in commercial aviation and must be rejected with an informative error. Furthermore, standard commercial PNR booking limits permit at most 9 passengers total (`adults + children <= 9`). Beyond 9 passengers, it must direct to group booking.
 
 ### L04: State Space Completeness & Boundary Values
-- **Target 1 (`providerRights.ts`)**: What if `providerIds` passed to `validateB2BRedistributionScope` contains duplicates, empty strings, or whitespaces? Lines 193-195 handle deduplication, but `hasB2BRedistributionRights` and `isProviderQueryPermitted` do not sanitize input strings before querying.
-- **Target 2 (`directAffiliateComparison.ts`)**: `stalenessMinutes` calculation (`src/domain/farely/directAffiliateComparison.ts#L149-L152`):
-  ```ts
-  const stalenessMinutes = Math.max(0, Math.round((nowMs - new Date(q.observedAt).getTime()) / (1000 * 60)));
-  ```
-  If `q.observedAt` is malformed (e.g. `"2026-13-45"`), `new Date(q.observedAt).getTime()` evaluates to `NaN`. `Math.max(0, NaN)` returns `NaN`. Downstream sorting or UI display will render `NaN phút trước`, breaking serialization.
-- **Target 3 (`airportAlternatives.ts`)**: In `evaluateAirportAlternative`, if `baselinePrice === alternativePrice`, `airFareSavingsVND === 0`. The net savings is negative due to ground transfer cost. The tradeoff explanation should cleanly state that the fares are identical and traveling to an alternative airport incurs pure ground transfer loss.
+- **Target 1 (`pwaOfflineFreshness.ts`)**: Handle clock skew: `evictExpiredOfflineDeals` allows up to 5 minutes of future clock drift, but what if `nowIsoString` is corrupt or missing? It must default to `new Date().toISOString()`.
+- **Target 2 (`priceAnomaly.ts`)**: When all prices in the historical cohort are identical (`rawMad < 1e-6`), line 153 correctly detects homogeneous data. However, if the sample size is exactly 10, does it handle boundary checks cleanly?
+- **Target 3 (`travelIntent.ts`)**: For `ONE_WAY` journeys, `inbound` must strictly remain `undefined`. If a caller passes `returnDate` for a `ONE_WAY` journey, `createTravelIntent` should ignore or sanitize it to `undefined`.
 
 ### L05: Concurrency, Latency & Async Safety
-- **Target 1 (`providerRights.ts`)**: The registry `PROVIDER_SOURCE_RIGHTS_REGISTRY` is currently a mutable exported object. If any runtime worker mutates `PROVIDER_SOURCE_RIGHTS_REGISTRY.vietjet_direct.canRedistributeB2B = true`, all concurrent evaluations in the Node.js event loop are compromised. It must be frozen via `Object.freeze` with deep immutability.
-- **Target 2 (`directAffiliateComparison.ts`)**: Quote comparison must be completely synchronous and side-effect free. Deterministic sorting must have a total ordering that never varies between V8 engine runs.
-- **Target 3 (`airportAlternatives.ts`)**: Timezone offset calculation currently uses `new Date(date.toLocaleString('en-US', { timeZone: timezone }))`. Under high concurrency, invoking `toLocaleString` hundreds of times per second in high-throughput route scans can generate unnecessary GC pressure.
+- **Target 1 (`pwaOfflineFreshness.ts`)**: Action queue operations in `enqueueOfflineAction` must be pure and return a new array without mutating the input queue.
+- **Target 2 (`priceAnomaly.ts`)**: Cohort analysis slices to `MAX_COHORT_ANALYSIS_SIZE = 250` to bound sorting time to $< 0.1$ ms.
+- **Target 3 (`travelIntent.ts`)**: `serializeTravelIntent` and `deserializeTravelIntent` must execute synchronously without prototype leakage.
 
 ### L06: Adversarial Robustness & Negative Vector Defense
-- **Target 1 (`providerRights.ts`)**:
-  - `NEG-24`: Staged GDS contract appears to grant B2B rights. Defended by enforcing `requireExecutedContract: true` by default or requiring explicit execution confirmation.
-  - `NEG-38`: Unlicensed background scan continues. Defended by rejecting `canScrape: false` providers from automated ingestion pipelines.
-- **Target 2 (`directAffiliateComparison.ts`)**:
-  - `NEG-04`: Unknown mandatory fee becomes 0. Defended by verifying `mandatoryTaxesAndFeesVND` is finite and non-negative.
-  - `NEG-05`: Unknown baggage becomes free/included. Defended by verifying `checkedBaggageFeeVND` when `requiresCheckedBaggage` is true.
-  - Deep-link sanitization: If `deepLinkUrl` contains `javascript:`, `data:`, or malformed URLs, it represents an injection vector. Deep links must strictly match `^https?://`.
-- **Target 3 (`airportAlternatives.ts`)**:
-  - Inverted or negative flight schedules must be detected rather than swallowed by `Math.max(15, ...)`.
-  - Discrepancy between `evaluateAirportAlternative` (which allowed arbitrary transfer time as long as savings/hr > 250k) and `evaluateAlternativeAirportSavings` (which caps transfer time at 180 minutes) must be reconciled: alternative travel exceeding 180 minutes must be flagged as `NOT_RECOMMENDED` or `EXCESSIVE_DETOUR`.
+- **Target 1 (`pwaOfflineFreshness.ts`)**: Defends `NEG-35` (offline cache shown as fresh).
+- **Target 2 (`priceAnomaly.ts`)**: Defends `NEG-09` (one scan creates false 12-sample evidence) and data glitch attacks (negative, zero, 10x spike fares).
+- **Target 3 (`travelIntent.ts`)**: Defends against chronological inversion, negative passenger counts, and excessive lap infants.
 
 ### L07: Production Realism & Environmental Fidelity
-- **Target 1 (`providerRights.ts`)**: Vietnam domestic market has 5 active carriers: Vietnam Airlines (`VN`), Vietjet Air (`VJ`), Bamboo Airways (`QH`), Vietravel Airlines (`VU`), and Pacific Airlines (`BL`). `PROVIDER_SOURCE_RIGHTS_REGISTRY` lacks entries for `vietravel_airlines` and `pacific_airlines`, causing them to fall back to `RESTRICTED` unknown providers.
-- **Target 2 (`directAffiliateComparison.ts`)**: OTA partners commonly introduce booking/processing surcharges during checkout (e.g. payment fees). The model should support an optional `paymentFeeVND` or document total inclusive price guarantees.
-- **Target 3 (`airportAlternatives.ts`)**: Van Don International Airport (`VDO`) operates scheduled flights to Ho Chi Minh City (`SGN`) and Da Nang (`DAD`). Travelers in Quang Ninh or eastern Hai Phong frequently compare `HAN` vs `VDO`. Adding verified ground transfer for `HAN <-> VDO` (175 km, 150 min, 280,000 VND) grounds real-world choices for Northern Vietnam.
+- Domestic Vietnam aviation context:
+  - Lap infants must not exceed adult passengers.
+  - Standard domestic booking limits: 9 seats.
+  - PWA offline caching must reflect real network disconnection scenarios on mobile devices.
 
 ### L08: Architectural Cohesion & Clean Domain Kernel
-- Pure domain files must have 0 external npm dependencies and 0 network/I/O imports.
-- `providerRights.ts`, `directAffiliateComparison.ts`, and `airportAlternatives.ts` maintain pure TypeScript domain semantics.
+- Pure domain functions with zero network dependencies.
+- Remove stray terminal hook strings from bottom of `travelIntent.ts` and `pwaOfflineFreshness.ts`.
 
 ### L09: Regulatory Compliance & Consumer Protection (CAAV, FTC, VN Competition Law)
-- Under Vietnam Law on Protection of Consumer Rights (2023) and Decree 52/2013/NĐ-CP on E-Commerce (amended by Decree 85/2021/NĐ-CP):
-  - Metasearch and price comparison platforms must transparently disclose whether ranking is influenced by commercial affiliation or advertising fees.
-  - Displaying a sponsored OTA as "Cheapest" when an official airline website offers the same or lower total price constitutes deceptive advertising.
-  - Hidden fees (mandatory taxes, terminal fees, ticketing charges) must be displayed in total inclusive price format before handoff.
+- Compliance with CAAV flight safety directives regarding infant passenger supervision.
+- Transparent consumer labeling when viewing cached vs live verified fares.
 
 ### L10: Observability, Diagnostics & SRE Auditability
-- In `providerRights.ts`, rejection reasons must provide structured error codes (e.g. `ERR_UNREGISTERED_PROVIDER`, `ERR_STAGED_CONTRACT_REQUIRED`, `ERR_LICENSE_RESTRICTED`).
-- In `directAffiliateComparison.ts`, `DirectAffiliateComparisonResult` must export structured diagnostic telemetry: `cheapestChannelType`, `totalChannelsCompared`, and `isDirectCheaperOrEqual`.
-- In `airportAlternatives.ts`, `AirportAlternativeEvaluation` must export `transferFrictionCategory`: `'LOW'` (<60 min), `'MEDIUM'` (60-120 min), `'HIGH'` (120-180 min), `'EXCESSIVE'` (>180 min).
+- In `pwaOfflineFreshness.ts`, export diagnostic error class `StaleOfflineDealAsFreshError`.
+- In `priceAnomaly.ts`, provide clear Vietnamese explanations for each anomaly tier.
+- In `travelIntent.ts`, provide descriptive error messages: `[NC-006 InvertedDate]` and `[REQ-DOM-003 PassengerMixViolation]`.
 
 ### L11: Zero-Trust Security & Minimal Privilege
-- Safe URL parsing: `deepLinkUrl` in `directAffiliateComparison.ts` must be validated using `try { new URL(url) }` to prevent SSRF/XSS vectors.
-- Immutability of rights registry prevents malicious prototype poisoning or runtime rights elevation.
+- Safe JSON parsing in `deserializeTravelIntent`.
+- Bounded memory queue size `MAX_OFFLINE_ACTION_QUEUE_SIZE = 100`.
 
 ### L12: Backward Compatibility & Regression Invariance
-- All 11 tests in `providerRights.test.ts`, 7 tests in `directAffiliateComparison.test.ts`, and 12 tests in `airportAlternatives.test.ts` must pass with zero regression.
-- API signatures must remain fully backward-compatible while introducing safe, additive properties and stricter validation.
+- All existing tests in `pwaOfflineFreshness.test.ts` and `priceAnomaly.test.ts` must pass.
+- Create comprehensive test suite `src/domain/farely/travelIntent.test.ts`.
 
 ---
 
 ### ACTIONABLE RESEARCH SUMMARY & TRANSITION TO PASS R2
-Pass R1 establishes the concrete defects across the three modules. In Pass R2, we will initiate rigorous adversarial falsification, challenging any simplistic assumptions and proving the exact code diffs required.
+Pass R1 establishes the concrete defects across the three modules. In Pass R2, we will initiate adversarial falsification of these proposals.

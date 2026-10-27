@@ -10,6 +10,23 @@ export type JourneyType = 'ONE_WAY' | 'ROUND_TRIP';
 export type MarketScope = 'DOMESTIC' | 'INTERNATIONAL';
 export type CabinClass = 'ECONOMY' | 'PREMIUM_ECONOMY' | 'BUSINESS' | 'FIRST';
 
+export type TravelIntentErrorCode =
+  | 'ERR_INVERTED_DATES'
+  | 'ERR_PASSENGER_MIX_INVALID'
+  | 'ERR_LAP_INFANT_EXCESS'
+  | 'ERR_INVALID_CONSTRAINTS';
+
+export class TravelIntentValidationError extends Error {
+  public readonly code: TravelIntentErrorCode;
+
+  constructor(code: TravelIntentErrorCode, message: string) {
+    super(message);
+    this.name = 'TravelIntentValidationError';
+    this.code = code;
+    Object.setPrototypeOf(this, TravelIntentValidationError.prototype);
+  }
+}
+
 export interface PassengerMix {
   adults: number;
   children: number;
@@ -42,6 +59,7 @@ export interface TravelIntent {
   maxDurationMinutes?: number;
   baggagePreference?: 'ANY' | 'CARRY_ON' | 'CHECKED_20KG';
   currency: CurrencyCode;
+  isGroupBooking?: boolean;
 }
 
 /**
@@ -93,14 +111,70 @@ export function createTravelIntent(params: {
     inbound = typeof params.returnDate === 'string'
       ? { exact: params.returnDate }
       : params.returnDate;
+
+    // Chronological validation for round trips
+    if (outbound.exact && inbound.exact) {
+      if (inbound.exact < outbound.exact) {
+        throw new TravelIntentValidationError(
+          'ERR_INVERTED_DATES',
+          `Inverted round-trip dates: inbound (${inbound.exact}) cannot be earlier than outbound (${outbound.exact})`
+        );
+      }
+    } else {
+      const outboundEarliest = outbound.exact || outbound.from;
+      const inboundLatest = inbound.exact || inbound.to;
+      if (outboundEarliest && inboundLatest && inboundLatest < outboundEarliest) {
+        throw new TravelIntentValidationError(
+          'ERR_INVERTED_DATES',
+          `Inverted round-trip date window: inbound latest (${inboundLatest}) cannot precede outbound earliest (${outboundEarliest})`
+        );
+      }
+    }
   }
 
   const adults = params.adults ?? 1;
   const children = params.children ?? 0;
   const infants = params.infants ?? 0;
 
+  // Passenger integer & non-negative integrity
+  if (!Number.isInteger(adults) || !Number.isInteger(children) || !Number.isInteger(infants)) {
+    throw new TravelIntentValidationError('ERR_PASSENGER_MIX_INVALID', 'Passenger counts must be integers');
+  }
+
+  if (children < 0 || infants < 0) {
+    throw new TravelIntentValidationError('ERR_PASSENGER_MIX_INVALID', 'Passenger counts cannot be negative');
+  }
+
   if (adults < 1) {
     throw new RangeError('At least 1 adult passenger required');
+  }
+
+  // Lap infant safety rule: maximum 1 lap infant per adult
+  if (infants > adults) {
+    throw new TravelIntentValidationError(
+      'ERR_LAP_INFANT_EXCESS',
+      `Lap infants (${infants}) cannot exceed adult count (${adults}). Each infant requires an accompanying adult.`
+    );
+  }
+
+  const totalPassengers = adults + children + infants;
+  if (totalPassengers > 18) {
+    throw new TravelIntentValidationError(
+      'ERR_PASSENGER_MIX_INVALID',
+      `Total party size (${totalPassengers}) exceeds maximum party limit of 18`
+    );
+  }
+
+  // Individual airline PNR capacity threshold (9 seated passengers)
+  const isGroupBooking = (adults + children) > 9;
+
+  // Search filter constraints
+  if (params.maxStops !== undefined && (!Number.isInteger(params.maxStops) || params.maxStops < 0)) {
+    throw new TravelIntentValidationError('ERR_INVALID_CONSTRAINTS', 'maxStops must be a non-negative integer');
+  }
+
+  if (params.maxDurationMinutes !== undefined && (typeof params.maxDurationMinutes !== 'number' || params.maxDurationMinutes < 15)) {
+    throw new TravelIntentValidationError('ERR_INVALID_CONSTRAINTS', 'maxDurationMinutes must be at least 15 minutes');
   }
 
   return {
@@ -117,7 +191,8 @@ export function createTravelIntent(params: {
     maxStops: params.maxStops,
     maxDurationMinutes: params.maxDurationMinutes,
     baggagePreference: params.baggagePreference,
-    currency: params.currency ?? 'VND'
+    currency: params.currency ?? 'VND',
+    isGroupBooking,
   };
 }
 
