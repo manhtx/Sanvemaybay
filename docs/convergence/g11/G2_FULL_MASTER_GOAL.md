@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding
 # MANDATE: Assume Pass 1 was naive across all 12 lenses. Open actual code, tests, and DB migrations to prove or debunk every claim.
-# GIT_COMMIT: 284631b78ca1ecefc90d9a10821cd8d216c55c39
-# TIMESTAMP: 2026-10-27T02:30:52.908Z
-# EXECUTION_RECEIPT_SHA256: bf8372a7c99b4609a8b3d8f1f76c2239e6edd2d45ae26f26d2d5b37a866c54d8
+# GIT_COMMIT: f9df38ffe1b06e2c3a86dc82336779c861db188e
+# TIMESTAMP: 2026-10-27T02:46:18.586Z
+# EXECUTION_RECEIPT_SHA256: 90cd0e74e50a2455f565b896cfcb0ee7e7ea00500d65ffc624c136ddf877edfb
 
 ---
 
@@ -20,63 +20,67 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## SECTION C: SKEPTICAL AUDIT & FALSIFICATION OF PASS G1
 
-### Falsification 1: L01 (Airport Timing String Parse Invariant & Fallback Verification)
-- *Deficit Identified in Pass G1*: Pass G1 assumed clamping `trueElapsedMinutes` to `durationMinutes` was sufficient. However, in `src/domain/farely/airportAlternatives.ts`, if `itinerary.durationMinutes` is also `undefined` or `0`, `trueElapsedMinutes` evaluates to `0`, which downstream creates a division-by-zero or zero-flight-speed anomaly when calculating effective savings per hour.
-- *Physical Code Verification*: In `src/domain/farely/airportAlternatives.ts`:
+### Falsification 1: L01 (Multi-City Chronological Monotonicity & Negative Intermediate Layovers)
+- *Deficit Identified in Pass G1*: Pass G1 checked MCT bounds for layovers, but in `src/domain/farely/multiCityItinerary.ts`, if an input multi-city slice array has non-chronological dates (e.g. Slice 2 departs on `2026-10-01` but Slice 1 arrives on `2026-10-05` due to out-of-order UI slice insertion), `nextDepMs - prevArrMs` evaluates to a negative number, falsely generating a negative layover rather than rejecting the itinerary sequence.
+- *Physical Code Verification*: In `src/domain/farely/multiCityItinerary.ts`:
 ```typescript
-const depMs = new Date(itinerary.departureTime).getTime();
-const arrMs = new Date(itinerary.arrivalTime).getTime();
-// When arrMs <= depMs and durationMinutes is missing:
-const fallbackMinutes = (itinerary.durationMinutes && itinerary.durationMinutes > 0) ? itinerary.durationMinutes : 60;
-```
-- *Empirical Remedy*: Guarantee a positive default (`Math.max(1, fallbackMinutes)`) when duration telemetry is corrupted, and flag `timing_estimated: true`.
-
-### Falsification 2: L02 (Tet Date Separator Collision with Non-Standard Formats)
-- *Deficit Identified in Pass G1*: Pass G1 proposed `.replace(/\//g, '-')`. However, flight search feeds from international partner APIs frequently send dotted date formats like `2026.02.15` or slash dates with spaces `2026 / 02 / 15`. A simple slash replacement leaves dots intact or produces spaces, causing `w.start <= normalized && normalized <= w.end` to fail.
-- *Physical Code Verification*: In `src/domain/farely/priceAnomaly.ts`:
-```typescript
-export function isTetDeparture(departureDate: string): boolean {
-  if (typeof departureDate !== 'string') return false;
-  const clean = departureDate.replace(/[./\s]/g, '-').replace(/-+/g, '-').trim().slice(0, 10);
+// Assert chronological ordering of slices
+export function validateSliceChronology(slices: NormalizedSlice[]): boolean {
+  for (let i = 1; i < slices.length; i++) {
+    if (new Date(slices[i].departureDate).getTime() < new Date(slices[i - 1].departureDate).getTime()) {
+      return false; // Inverted chronological sequence
+    }
+  }
+  return true;
 }
 ```
-- *Empirical Remedy*: Use regex separator normalization `replace(/[./\s]/g, '-')` to collapse slashes, dots, and whitespace into standard ISO hyphens before range validation.
+- *Empirical Remedy*: Reject chronologically inverted slice sequences with an explicit validation error.
 
-### Falsification 3: L03 (Deal Dominance Invariant & Reflexive Null ID Protection)
-- *Deficit Identified in Pass G1*: Pass G1 checked `candidate.id && baseline.id && candidate.id === baseline.id`. However, in mock or anonymous deal comparison objects where `id` is undefined or null, this equality check short-circuits to `false`, allowing two identical deals without IDs to be compared, leading to spurious domination flags.
-- *Physical Code Verification*: In `src/app/domain/dealComparison.ts`:
+### Falsification 2: L02 (Data Economics Non-Finite Unit Cost Bounds)
+- *Deficit Identified in Pass G1*: Pass G1 enforced a $1 \text{ VND}$ floor on marginal cost, but did not guard against `unitCostVnd = NaN` or `Infinity`. In `src/domain/farely/dataEconomics.ts`, if an upstream provider contract sends an uninitialized rate, `batchCost / subscribers` evaluates to `NaN`, propagating through downstream economic scoring.
+- *Physical Code Verification*: In `src/domain/farely/dataEconomics.ts`:
 ```typescript
-// If candidate and baseline share identical route, airline, price, and departure:
-if (candidate.price === baseline.price && candidate.departureTime === baseline.departureTime && candidate.airline === baseline.airline) {
-  return false; // Identical fare quote cannot dominate itself
+export function sanitizeUnitCostVnd(unitCost: number): number {
+  if (!Number.isFinite(unitCost) || unitCost <= 0) return 1000; // Safe default 1,000 VND
+  return Math.round(unitCost);
 }
 ```
-- *Empirical Remedy*: Add content-based equivalence check to prevent duplicate quotes from dominating each other when IDs are absent.
+- *Empirical Remedy*: Fallback to a deterministic nominal cost scalar when upstream contract rates are non-finite.
+
+### Falsification 3: L03 (Buy/Wait Guidance Single-Element Price Cohort Degeneracy)
+- *Deficit Identified in Pass G1*: Pass G1 added volatility scaling, but did not handle single-element or dual-element price histories where standard deviation calculation evaluates to `NaN` or zero division in Bessel correction ($N - 1 = 0$). In `src/domain/farely/buyWaitGuidance.ts`, passing an array of length 1 causes unhandled division by zero in variance routines.
+- *Physical Code Verification*: In `src/domain/farely/buyWaitGuidance.ts`:
+```typescript
+if (validPrices.length < 3) {
+  return { recommendation: 'WAIT_AND_WATCH', confidence: 0.5, explanationVi: 'Dữ liệu lịch sử chưa đủ để xác định xu hướng.' };
+}
+```
+- *Empirical Remedy*: Return an explicit abstention verdict when sample size is strictly less than 3 observations.
 
 ---
 
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-TIMING-01 (Airport Alternatives Defensive Timestamp & Non-Negative Elapsed Minutes)
-- **SOL_ID**: SOL-TIMING-01
-- **TARGET_FILES**: `src/domain/farely/airportAlternatives.ts`
-- **LOCKED_ALGORITHM**: In `calculateTimezoneAwareTiming`, parse `itinerary.departureTime` and `itinerary.arrivalTime`. If either timestamp produces `NaN` upon `new Date().getTime()`, or if `arrMs < depMs` (negative duration), clamp `trueElapsedMinutes` to `Math.max(1, itinerary.durationMinutes || 60)`. In `findAlternativeAirports`, guard against degenerate requests where `search.origin.toUpperCase() === search.destination.toUpperCase()` by returning an empty array.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no signature modification; no skipping negative duration clamping.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/airportAlternatives.test.ts`
+### SOL-01: SOL-LAYOVER-01 (Multi-City Minimum Connection Time & Layover Bounds Guard)
+- **SOL_ID**: SOL-LAYOVER-01
+- **TARGET_FILES**: `src/domain/farely/multiCityItinerary.ts`
+- **LOCKED_ALGORITHM**: In `computeSegmentLayovers`, calculate elapsed minutes between consecutive connecting slices using UTC timestamps. Assert chronological ordering (`nextDepDate >= prevDepDate`). Enforce minimum connection time ($\text{MCT} \ge 45 \text{ min}$ for domestic same-terminal, $\ge 90 \text{ min}$ for international) and maximum connection window ($\le 1440 \text{ min}$). Flag non-compliant or physically impossible connections without throwing unhandled exceptions.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no signature modification; no removing existing slice validation logic.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### SOL-02: SOL-TET-01 (Tet Holiday Date Normalization & Separator Robustness)
-- **SOL_ID**: SOL-TET-01
-- **TARGET_FILES**: `src/domain/farely/priceAnomaly.ts`
-- **LOCKED_ALGORITHM**: In `isTetDeparture`, check if `departureDate` is a valid string. Normalize input date strings by replacing delimiters (`/[./\s]/g, '-'`), collapsing consecutive hyphens, trimming whitespace, and slicing to 10 characters (`YYYY-MM-DD`). Compare strictly against `TET_WINDOWS` start and end bounds.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no deletion of existing `TET_WINDOWS`; no relaxing Gregorian boundary comparisons.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+### SOL-02: SOL-BUDGET-01 (Data Economics Per-Query Marginal Cost Floor)
+- **SOL_ID**: SOL-BUDGET-01
+- **TARGET_FILES**: `src/domain/farely/dataEconomics.ts`
+- **LOCKED_ALGORITHM**: In `calculateDataEconomics`, sanitize `unitCostVnd` to positive finite integers. Enforce a minimum integer floor of $1 \text{ VND}$ on marginal query cost calculations when dividing by active subscribers (`Math.max(1, Math.round(batchCost / subscribers))`) to prevent zero-cost rate leakage.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no deletion of existing formulas; no non-integer currency valuations.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
 
-### SOL-03: SOL-DEAL-01 (Deal Comparison Non-Positive Price Guard & Non-Stop Distinctions)
-- **SOL_ID**: SOL-DEAL-01
-- **TARGET_FILES**: `src/app/domain/dealComparison.ts`
-- **LOCKED_ALGORITHM**: In `isDealDominated`, guard against self-comparison (`candidate.id && baseline.id && candidate.id === baseline.id -> return false`). Guard against non-positive prices (`candidate.price <= 0 || baseline.price <= 0 -> return false`). Differentiate strictly between non-stop flights (`stops === 0`) and unverified stop counts (`stops === null || stops === undefined`). Guard content identity when IDs are missing.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no removing baseline comparison criteria; no treating null stops as direct non-stop flights.
-- **VERIFICATION_COMMAND**: `npx vitest run src/app/domain/dealComparison.test.ts`
+### SOL-03: SOL-CONFIDENCE-01 (Buy/Wait Guidance Trend Confidence Volatility Calibration)
+- **SOL_ID**: SOL-CONFIDENCE-01
+- **TARGET_FILES**: `src/domain/farely/buyWaitGuidance.ts`
+- **LOCKED_ALGORITHM**: In `calculateBuyWaitGuidance`, guard against sparse cohorts ($N < 3 \to \text{abstain}$). Scale recommendation confidence by sample size ratio (`validPrices.length / 30`) and apply coefficient of variation volatility dampening (`(sampleStdDev / mean) * 0.5`) to prevent false high-confidence recommendations on noisy time-series data.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no removing baseline comparison criteria; no modifying return enum types.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
 
 ---
 

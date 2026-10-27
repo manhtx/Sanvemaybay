@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G3]
 # LEVEL: Pass 3: Hostile Boundary & Negative Vector Hardening
 # MANDATE: Assume Pass 2 missed edge cases across all 12 lenses. Attack with 24 negative vectors, race conditions, and error states.
-# GIT_COMMIT: 284631b78ca1ecefc90d9a10821cd8d216c55c39
-# TIMESTAMP: 2026-10-27T02:31:38.612Z
-# EXECUTION_RECEIPT_SHA256: 7701cf895603d617b4a66f2eb39a8729eff84f78729b8cfbbf8b25f7f6226f78
+# GIT_COMMIT: f9df38ffe1b06e2c3a86dc82336779c861db188e
+# TIMESTAMP: 2026-10-27T02:47:12.511Z
+# EXECUTION_RECEIPT_SHA256: 1be502e0794fe6707a1c03d707ec22095017c71d36c6635f96079bc1d44dd29c
 
 ---
 
@@ -20,116 +20,92 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## SECTION C: HOSTILE AUDIT & FALSIFICATION OF PASS G2
 
-### Falsification 1: L01 (Airport Timing Daylight Savings Jump & 25-Hour Local Days)
-- *Deficit Identified in Pass G2*: Pass G2 assumed calendar day differences always correspond to integer multiples of 24 hours. When itineraries cross Daylight Savings Time (DST) transitions (e.g., European or North American autumn clock rollbacks where a calendar day has 25 hours), `arrMs - depMs` yields an unexpected $\pm 60$ minute deviation that fails strict static duration assertions.
-- *Physical Code Verification*: In `src/domain/farely/airportAlternatives.ts`:
+### Falsification 1: L01 (Multi-City Circular Routing & Self-Loop Traversal)
+- *Deficit Identified in Pass G2*: Pass G2 checked chronological monotonic ordering between slices, but in `src/domain/farely/multiCityItinerary.ts`, if an input slice array contains a zero-duration or circular self-loop where origin equals destination on an intermediate leg (e.g., `HAN -> SGN` followed by `SGN -> SGN`), layover validation completes without detecting the degenerate leg, causing erroneous routing advice.
+- *Physical Code Verification*: In `src/domain/farely/multiCityItinerary.ts`:
 ```typescript
-const trueElapsedMinutes = Math.round((arrMs - depMs) / 60000);
-// Negative vector defense: enforce commercial bounds [15 min, 4320 min]
-const boundedElapsed = (trueElapsedMinutes >= 15 && trueElapsedMinutes <= 4320)
-  ? trueElapsedMinutes
-  : Math.max(15, itinerary.durationMinutes || 60);
-```
-- *Adversarial Negative Vector Remedy*: Enforce commercial aviation duration floor (15 min) and ceiling (72h / 4320 min) to reject corrupt upstream time offsets.
-
-### Falsification 2: L02 (Tet Date Year Boundary & Non-Gregorian Calendar Ingestion)
-- *Deficit Identified in Pass G2*: Pass G2 cleaned delimiters with regex, but failed to validate the parsed year string. If an adversarial payload sends an inverted date like `15-02-2026` (DD-MM-YYYY) or year outside `[2024..2030]`, lexicographical comparison against `2026-02-10` fails completely because `'15' < '20'`.
-- *Physical Code Verification*: In `src/domain/farely/priceAnomaly.ts`:
-```typescript
-export function isTetDeparture(departureDate: string): boolean {
-  if (typeof departureDate !== 'string') return false;
-  const clean = departureDate.replace(/[./\s]/g, '-').replace(/-+/g, '-').trim();
-  const parts = clean.split('-');
-  let normalized = clean;
-  // If date was sent as DD-MM-YYYY, reformat to YYYY-MM-DD
-  if (parts.length === 3 && parts[0].length === 2 && parts[2].length === 4) {
-    normalized = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  }
-  normalized = normalized.slice(0, 10);
-  return TET_WINDOWS.some(w => normalized >= w.start && normalized <= w.end);
+export function validateSliceEndpoints(slice: NormalizedSlice): boolean {
+  return slice.originAirport.toUpperCase() !== slice.destinationAirport.toUpperCase();
 }
 ```
-- *Adversarial Negative Vector Remedy*: Automatically detect and invert `DD-MM-YYYY` formats into ISO `YYYY-MM-DD` before evaluating holiday windows.
+- *Adversarial Vector Remedy*: Reject any individual slice where departure airport equals arrival airport.
 
-### Falsification 3: L03 (Deal Dominance Inverted Currency Units & Float Drift)
-- *Deficit Identified in Pass G2*: Pass G2 guarded against non-positive prices, but did not handle floating-point rounding errors where `candidate.price = 1499999.9999999998` and `baseline.price = 1500000`. In JavaScript, strict equality and subtraction can fail due to IEEE 754 precision, incorrectly identifying negligible sub-cent differences as genuine dominance.
-- *Physical Code Verification*: In `src/app/domain/dealComparison.ts`:
+### Falsification 2: L02 (Data Economics Float Truncation & Non-Integer Subscriber Volumes)
+- *Deficit Identified in Pass G2*: Pass G2 guarded unit costs, but did not guard against floating-point subscriber counts (e.g., `activeSubscribers = 10.5` or `0.0001`) from analytical sampling models. In `src/domain/farely/dataEconomics.ts`, dividing by fractional subscribers produces inflated non-deterministic unit quotes.
+- *Physical Code Verification*: In `src/domain/farely/dataEconomics.ts`:
 ```typescript
-// Round both prices to nearest integer VND before evaluating price dominance
-const candPrice = Math.round(candidate.price);
-const basePrice = Math.round(baseline.price);
-if (candPrice <= 0 || basePrice <= 0) return false;
-```
-- *Adversarial Negative Vector Remedy*: Enforce discrete VND integer rounding (`Math.round`) on all price operands prior to dominance comparisons.
-
-### Falsification 4: L04 (Tenant Token Injection & Forged Subject Identifiers)
-- *Deficit Identified in Pass G2*: Pass G2 verified table migration statements, but did not guard against JWT subject token injection where forged authorization headers pass synthetic claims. In `src/domain/farely/fareAlertEngine.ts`, validating user identity against regular expression patterns `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$` prevents SQL injection and tenant crossover even under corrupted downstream middleware contexts.
-- *Physical Code Verification*: In `src/domain/farely/fareAlertEngine.ts`:
-```typescript
-export function validateTenantIdentity(tenantId: string): boolean {
-  return typeof tenantId === 'string' && /^[0-9a-f-]{36}$/i.test(tenantId);
+export function sanitizeSubscriberCount(subscribers: number): number {
+  if (!Number.isFinite(subscribers) || subscribers <= 0) return 1;
+  return Math.floor(subscribers);
 }
 ```
-- *Adversarial Negative Vector Remedy*: Enforce cryptographic UUIDv4 verification at domain gatekeepers.
+- *Adversarial Vector Remedy*: Enforce discrete positive integer subscriber counts (`Math.floor(Math.max(1, subscribers))`).
 
-### Falsification 5: L05 (Asymmetric Partner Quota Depletion Attack)
-- *Deficit Identified in Pass G2*: Pass G2 tracked circuit breaker states, but did not guard against asymmetrical burst attacks where concurrent clients trigger redundant partner queries for identical origin-destination pairs. In `supabase/functions/_shared/flight-search.ts`, in-flight request coalescing (single-flight deduplication) collapses parallel searches within a 500ms sliding window into a single outbound upstream request.
+### Falsification 3: L03 (Buy/Wait Trend Regression Degeneracy on Bimodal Price Distributions)
+- *Deficit Identified in Pass G2*: Pass G2 abstained on cohorts under 3 items, but did not handle bimodal price distributions where business class fares ($10\text{M}$) and economy fares ($1.5\text{M}$) are mixed in the same historical cohort without cabin class segmentation. In `src/domain/farely/buyWaitGuidance.ts`, the linear trend slope oscillates wildly based on which cabin was queried most recently.
+- *Physical Code Verification*: In `src/domain/farely/buyWaitGuidance.ts`:
+```typescript
+// Filter historical observations to match candidate cabin class strictly
+export function filterCohortByCabin(prices: FlightObservation[], targetCabin: string): number[] {
+  return prices.filter(p => (p.cabinClass || 'economy').toLowerCase() === targetCabin.toLowerCase()).map(p => p.price);
+}
+```
+- *Adversarial Vector Remedy*: Enforce strict cabin class isolation before calculating buy/wait statistics.
+
+### Falsification 4: L05 (Circuit Breaker Outbound Request Timeout Leakage)
+- *Deficit Identified in Pass G2*: Pass G2 tracked half-open failure states, but did not bind an explicit `AbortController` signal to outbound HTTP requests in `src/domain/farely/providerRights.ts`. When an upstream partner hangs without returning HTTP headers, the node socket remains open indefinitely, exhausting connection pools.
 - *Physical Code Verification*: In `src/domain/farely/providerRights.ts`:
 ```typescript
-const inFlightRequests = new Map<string, Promise<any>>();
-export function coalesceInboundQueries<T>(cacheKey: string, fetcher: () => Promise<T>): Promise<T> {
-  if (inFlightRequests.has(cacheKey)) return inFlightRequests.get(cacheKey)!;
-  const p = fetcher().finally(() => inFlightRequests.delete(cacheKey));
-  inFlightRequests.set(cacheKey, p);
-  return p;
+export function createGuardedFetch(timeoutMs = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return { signal: controller.signal, cleanup: () => clearTimeout(timer) };
 }
 ```
-- *Adversarial Negative Vector Remedy*: Deduplicate concurrent partner API invocations via promise coalescing.
+- *Adversarial Vector Remedy*: Standardize 8000ms hard abort timeouts on all partner network calls.
 
-### Falsification 6: L07 (Heap Exhaustion via Recursive Error Object Prototype Chains)
-- *Deficit Identified in Pass G2*: Pass G2 restricted serialization depth, but did not handle prototype pollution or recursive Symbol properties in custom error objects. In `src/app/lib/analytics.ts`, `safeSerializeError` must avoid reflecting over non-enumerable prototype chains or symbols to prevent memory exhaustion during telemetry logging.
+### Falsification 5: L07 (Telemetry PII Leakage in URL Query Strings)
+- *Deficit Identified in Pass G2*: Pass G2 sanitized object keys, but did not scrub sensitive customer information embedded in deep-link URL query parameters (e.g., `?email=user@example.com&phone=0901234567`) before logging analytics page views.
 - *Physical Code Verification*: In `src/app/lib/analytics.ts`:
 ```typescript
-export function sanitizeLogPayload(input: unknown, depth = 0): unknown {
-  if (depth > 3) return '[TRUNCATED_DEPTH]';
-  if (input === null || typeof input !== 'object') return input;
-  const sanitized: Record<string, unknown> = {};
-  for (const key of Object.keys(input)) {
-    if (/password|token|secret|key/i.test(key)) {
-      sanitized[key] = '[REDACTED]';
-    } else {
-      sanitized[key] = sanitizeLogPayload((input as any)[key], depth + 1);
-    }
+export function sanitizeTelemetryUrl(url: string): string {
+  try {
+    const parsed = new URL(url, 'https://farely.vn');
+    parsed.searchParams.delete('email');
+    parsed.searchParams.delete('phone');
+    parsed.searchParams.delete('token');
+    return parsed.pathname + (parsed.searchParams.toString() ? '?' + parsed.searchParams.toString() : '');
+  } catch {
+    return '[INVALID_URL]';
   }
-  return sanitized;
 }
 ```
-- *Adversarial Negative Vector Remedy*: Strip prototype traversal and enforce key-whitelisting during telemetry serialization.
+- *Adversarial Vector Remedy*: Scrub PII query parameters from telemetry URLs.
 
 ---
 
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-TIMING-01 (Airport Alternatives Defensive Timestamp & Non-Negative Elapsed Minutes)
-- **SOL_ID**: SOL-TIMING-01
-- **TARGET_FILES**: `src/domain/farely/airportAlternatives.ts`
-- **LOCKED_ALGORITHM**: In `calculateTimezoneAwareTiming`, parse `itinerary.departureTime` and `itinerary.arrivalTime`. If either timestamp produces `NaN` upon `new Date().getTime()`, or if `arrMs < depMs` (negative duration), clamp `trueElapsedMinutes` to `Math.max(15, itinerary.durationMinutes || 60)`. In `findAlternativeAirports`, guard against degenerate requests where `search.origin.toUpperCase() === search.destination.toUpperCase()` by returning an empty array.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no signature modification; no skipping negative duration clamping.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/airportAlternatives.test.ts`
+### SOL-01: SOL-LAYOVER-01 (Multi-City Minimum Connection Time & Layover Bounds Guard)
+- **SOL_ID**: SOL-LAYOVER-01
+- **TARGET_FILES**: `src/domain/farely/multiCityItinerary.ts`
+- **LOCKED_ALGORITHM**: In `computeSegmentLayovers`, calculate elapsed minutes between consecutive connecting slices using UTC timestamps. Assert chronological ordering (`nextDepDate >= prevDepDate`). Guard against self-loop endpoints (`origin !== destination`). Enforce minimum connection time ($\text{MCT} \ge 45 \text{ min}$ for domestic same-terminal, $\ge 90 \text{ min}$ for international) and maximum connection window ($\le 1440 \text{ min}$). Flag non-compliant or physically impossible connections without throwing unhandled exceptions.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no signature modification; no removing existing slice validation logic.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### SOL-02: SOL-TET-01 (Tet Holiday Date Normalization & Separator Robustness)
-- **SOL_ID**: SOL-TET-01
-- **TARGET_FILES**: `src/domain/farely/priceAnomaly.ts`
-- **LOCKED_ALGORITHM**: In `isTetDeparture`, check if `departureDate` is a valid string. Normalize input date strings by replacing delimiters (`/[./\s]/g, '-'`), handling inverted `DD-MM-YYYY` payloads, trimming whitespace, and slicing to 10 characters (`YYYY-MM-DD`). Compare strictly against `TET_WINDOWS` start and end bounds.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no deletion of existing `TET_WINDOWS`; no relaxing Gregorian boundary comparisons.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+### SOL-02: SOL-BUDGET-01 (Data Economics Per-Query Marginal Cost Floor)
+- **SOL_ID**: SOL-BUDGET-01
+- **TARGET_FILES**: `src/domain/farely/dataEconomics.ts`
+- **LOCKED_ALGORITHM**: In `calculateDataEconomics`, sanitize `unitCostVnd` to positive finite integers. Floor subscriber volume to positive integers (`Math.floor(Math.max(1, subscribers))`). Enforce a minimum integer floor of $1 \text{ VND}$ on marginal query cost calculations when dividing by active subscribers (`Math.max(1, Math.round(batchCost / subscribers))`) to prevent zero-cost rate leakage.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no deletion of existing formulas; no non-integer currency valuations.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
 
-### SOL-03: SOL-DEAL-01 (Deal Comparison Non-Positive Price Guard & Non-Stop Distinctions)
-- **SOL_ID**: SOL-DEAL-01
-- **TARGET_FILES**: `src/app/domain/dealComparison.ts`
-- **LOCKED_ALGORITHM**: In `isDealDominated`, round candidate and baseline prices to whole VND (`Math.round`). Guard against self-comparison (`candidate.id && baseline.id && candidate.id === baseline.id -> return false`). Guard against non-positive prices (`candPrice <= 0 || basePrice <= 0 -> return false`). Differentiate strictly between non-stop flights (`stops === 0`) and unverified stop counts (`stops === null || stops === undefined`). Guard content identity when IDs are missing.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no removing baseline comparison criteria; no treating null stops as direct non-stop flights.
-- **VERIFICATION_COMMAND**: `npx vitest run src/app/domain/dealComparison.test.ts`
+### SOL-03: SOL-CONFIDENCE-01 (Buy/Wait Guidance Trend Confidence Volatility Calibration)
+- **SOL_ID**: SOL-CONFIDENCE-01
+- **TARGET_FILES**: `src/domain/farely/buyWaitGuidance.ts`
+- **LOCKED_ALGORITHM**: In `calculateBuyWaitGuidance`, guard against sparse cohorts ($N < 3 \to \text{abstain}$). Scale recommendation confidence by sample size ratio (`validPrices.length / 30`) and apply coefficient of variation volatility dampening (`(sampleStdDev / mean) * 0.5`) to prevent false high-confidence recommendations on noisy time-series data.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no removing baseline comparison criteria; no modifying return enum types.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
 
 ---
 

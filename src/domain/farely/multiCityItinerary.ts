@@ -70,6 +70,9 @@ export function validateMultiCityItinerary(params: {
   if (validSlices.length < 2) {
     throw new InvalidMultiCitySequenceError("Hành trình nhiều chặng (Multi-city) phải có ít nhất 2 chặng bay.");
   }
+  if (validSlices.length > 10) {
+    throw new InvalidMultiCitySequenceError("Hành trình nhiều chặng (Multi-city) không được vượt quá 10 chặng bay.");
+  }
 
   const sorted = [...validSlices].sort(
     (a, b) => (a.sliceIndex ?? 0) - (b.sliceIndex ?? 0) || (a.departDate || "").localeCompare(b.departDate || "")
@@ -82,6 +85,15 @@ export function validateMultiCityItinerary(params: {
 
   for (let i = 0; i < sorted.length; i++) {
     const current = sorted[i];
+    const orig = (current.originCode || "").trim().toUpperCase();
+    const dest = (current.destinationCode || "").trim().toUpperCase();
+
+    if (orig && dest && orig === dest) {
+      throw new InvalidMultiCitySequenceError(
+        `Chặng ${current.sliceIndex + 1} có điểm đi trùng với điểm đến (${orig} → ${dest}).`
+      );
+    }
+
     const safePrice = Number.isFinite(current.price) && current.price > 0 ? current.price : 0;
     totalPrice += Math.round(safePrice);
 
@@ -182,5 +194,16 @@ export function isMetropolitanAirportChange(fromAirport: string, toAirport: stri
  */
 export function getMetropolitanMinimumTransitMinutes(fromAirport: string, toAirport: string): number {
   return isMetropolitanAirportChange(fromAirport, toAirport) ? 210 : 0;
+}
+
+/**
+ * Computes elapsed connection layover in minutes between two UTC/ISO timestamps.
+ * Returns 0 if invalid or non-chronological.
+ */
+export function computeSegmentLayoverMinutes(arrTimeUtc: string, depTimeUtc: string): number {
+  const arrMs = new Date(arrTimeUtc).getTime();
+  const depMs = new Date(depTimeUtc).getTime();
+  if (isNaN(arrMs) || isNaN(depMs) || depMs <= arrMs) return 0;
+  return Math.round((depMs - arrMs) / 60000);
 }
 

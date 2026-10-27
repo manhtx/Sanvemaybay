@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G1]
 # LEVEL: Pass 1: Full-Battery Baseline Synthesis
 # MANDATE: Draft complete deliverable evaluating all 12 lenses simultaneously from current system knowledge and founder scope.
-# GIT_COMMIT: 284631b78ca1ecefc90d9a10821cd8d216c55c39
-# TIMESTAMP: 2026-10-27T02:30:10.442Z
-# EXECUTION_RECEIPT_SHA256: 178b17481538179cd3bf2eb534476f51e36156cea87eb1db736e91a4334f79d7
+# GIT_COMMIT: f9df38ffe1b06e2c3a86dc82336779c861db188e
+# TIMESTAMP: 2026-10-27T02:45:23.862Z
+# EXECUTION_RECEIPT_SHA256: 66bba5cbba0fd716ca9a7db54756e5f8f530c7258a126f189c7ff971abd41981
 
 ---
 
@@ -20,26 +20,26 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-TIMING-01 (Airport Alternatives Defensive Timestamp & Non-Negative Elapsed Minutes)
-- **SOL_ID**: SOL-TIMING-01
-- **TARGET_FILES**: `src/domain/farely/airportAlternatives.ts`
-- **LOCKED_ALGORITHM**: In `calculateTimezoneAwareTiming`, parse `itinerary.departureTime` and `itinerary.arrivalTime`. If either timestamp produces `NaN` upon `new Date().getTime()`, or if `arrMs < depMs` (negative duration), clamp `trueElapsedMinutes` to `Math.max(0, itinerary.durationMinutes || 0)`. In `findAlternativeAirports`, guard against degenerate requests where `search.origin.toUpperCase() === search.destination.toUpperCase()` by returning an empty array.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no signature modification; no skipping negative duration clamping.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/airportAlternatives.test.ts`
+### SOL-01: SOL-LAYOVER-01 (Multi-City Minimum Connection Time & Layover Bounds Guard)
+- **SOL_ID**: SOL-LAYOVER-01
+- **TARGET_FILES**: `src/domain/farely/multiCityItinerary.ts`
+- **LOCKED_ALGORITHM**: In `computeSegmentLayovers`, calculate elapsed minutes between consecutive connecting slices using UTC timestamps. Enforce minimum connection time ($\text{MCT} \ge 45 \text{ min}$ for domestic same-terminal, $\ge 90 \text{ min}$ for international) and maximum connection window ($\le 1440 \text{ min}$). Flag non-compliant or physically impossible connections without throwing unhandled exceptions.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no signature modification; no removing existing slice validation logic.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### SOL-02: SOL-TET-01 (Tet Holiday Date Normalization & Separator Robustness)
-- **SOL_ID**: SOL-TET-01
-- **TARGET_FILES**: `src/domain/farely/priceAnomaly.ts`
-- **LOCKED_ALGORITHM**: In `isTetDeparture`, check if `departureDate` is a valid string. Normalize input date strings by replacing forward slashes (`/`) with hyphens (`-`), trimming whitespace, and slicing to 10 characters (`YYYY-MM-DD`). Compare strictly against `TET_WINDOWS` start and end bounds.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no deletion of existing `TET_WINDOWS`; no relaxing Gregorian boundary comparisons.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+### SOL-02: SOL-BUDGET-01 (Data Economics Per-Query Marginal Cost Floor)
+- **SOL_ID**: SOL-BUDGET-01
+- **TARGET_FILES**: `src/domain/farely/dataEconomics.ts`
+- **LOCKED_ALGORITHM**: In `calculateDataEconomics`, enforce a minimum integer floor of $1 \text{ VND}$ on marginal query cost calculations when dividing by active subscribers (`Math.max(1, Math.round(batchCost / subscribers))`) to prevent zero-cost rate leakage.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no deletion of existing formulas; no non-integer currency valuations.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
 
-### SOL-03: SOL-DEAL-01 (Deal Comparison Non-Positive Price Guard & Non-Stop Distinctions)
-- **SOL_ID**: SOL-DEAL-01
-- **TARGET_FILES**: `src/app/domain/dealComparison.ts`
-- **LOCKED_ALGORITHM**: In `isDealDominated`, guard against self-comparison (`candidate.id && baseline.id && candidate.id === baseline.id -> return false`). Guard against non-positive prices (`candidate.price <= 0 || baseline.price <= 0 -> return false`). Differentiate strictly between non-stop flights (`stops === 0`) and unverified stop counts (`stops === null || stops === undefined`).
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no removing baseline comparison criteria; no treating null stops as direct non-stop flights.
-- **VERIFICATION_COMMAND**: `npx vitest run src/app/domain/dealComparison.test.ts`
+### SOL-03: SOL-CONFIDENCE-01 (Buy/Wait Guidance Trend Confidence Volatility Calibration)
+- **SOL_ID**: SOL-CONFIDENCE-01
+- **TARGET_FILES**: `src/domain/farely/buyWaitGuidance.ts`
+- **LOCKED_ALGORITHM**: In `calculateBuyWaitGuidance`, scale recommendation confidence by sample size ratio (`validPrices.length / 30`) and apply coefficient of variation volatility dampening (`(sampleStdDev / mean) * 0.5`) to prevent false high-confidence recommendations on noisy time-series data.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no removing baseline comparison criteria; no modifying return enum types.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
 
 ---
 

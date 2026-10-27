@@ -57,6 +57,14 @@ export class UneconomicScanExpansionError extends Error {
 }
 
 /**
+ * Computes safe integer unit cost with a 1 VND minimum floor for non-zero cost batches.
+ */
+export function computeSafeUnitCostVnd(totalCostVnd: number, totalScans: number): number {
+  if (!Number.isFinite(totalCostVnd) || totalCostVnd <= 0 || !Number.isFinite(totalScans) || totalScans <= 0) return 0;
+  return Math.max(1, Math.round(totalCostVnd / totalScans));
+}
+
+/**
  * Calculates historical unit economics across a scanned dataset.
  */
 export function calculateUnitEconomics(metrics: ScopeEconomicMetrics): UnitEconomicsSummary {
@@ -66,11 +74,17 @@ export function calculateUnitEconomics(metrics: ScopeEconomicMetrics): UnitEcono
   const opps = Math.max(0, Number.isFinite(metrics.verifiedOpportunitiesFound) ? metrics.verifiedOpportunitiesFound : 0);
   const alerts = Math.max(0, Number.isFinite(metrics.usefulWatchEventsDispatched) ? metrics.usefulWatchEventsDispatched : 0);
 
+  // SOL-BUDGET-01: When positive cost is incurred, enforce an integer minimum floor of 1 VND to prevent zero-cost rate leakage.
+  const costPerScannedScopeVnd = cost > 0 && scans > 0 ? Math.max(1, Math.round(cost / scans)) : 0;
+  const costPerEligibleOfferVnd = cost > 0 && offers > 0 ? Math.max(1, Math.round(cost / offers)) : (offers > 0 ? 0 : cost);
+  const costPerVerifiedOpportunityVnd = cost > 0 && opps > 0 ? Math.max(1, Math.round(cost / opps)) : (opps > 0 ? 0 : cost);
+  const costPerUsefulWatchEventVnd = cost > 0 && alerts > 0 ? Math.max(1, Math.round(cost / alerts)) : (alerts > 0 ? 0 : cost);
+
   return {
-    costPerScannedScopeVnd: Math.round(cost / scans),
-    costPerEligibleOfferVnd: offers > 0 ? Math.round(cost / offers) : cost,
-    costPerVerifiedOpportunityVnd: opps > 0 ? Math.round(cost / opps) : cost,
-    costPerUsefulWatchEventVnd: alerts > 0 ? Math.round(cost / alerts) : cost,
+    costPerScannedScopeVnd,
+    costPerEligibleOfferVnd,
+    costPerVerifiedOpportunityVnd,
+    costPerUsefulWatchEventVnd,
     eligibleOfferRatePercent: Math.round((offers / scans) * 100),
     verifiedOpportunityYieldPercent: Math.round((opps / scans) * 100),
   };
@@ -85,7 +99,8 @@ export function evaluateScanExpansionProposal(
 ): ScanExpansionDecision {
   const safeScopes = Math.floor(Math.max(0, proposal.additionalScopesCount || 0));
   const safeCostPerScope = Math.max(0, proposal.estimatedCostPerScopeVnd || 0);
-  const marginalCostVnd = safeScopes * safeCostPerScope;
+  const rawMarginalCost = safeScopes * safeCostPerScope;
+  const marginalCostVnd = Math.min(Number.MAX_SAFE_INTEGER, Math.round(rawMarginalCost));
 
   if (marginalCostVnd <= 0 || safeScopes <= 0) {
     return {

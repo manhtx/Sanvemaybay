@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
 # MANDATE: Assume Pass 3 relied on mock safety across all 12 lenses. Enforce deterministic oracles, real integrations, and zero-loss rollbacks.
-# GIT_COMMIT: 284631b78ca1ecefc90d9a10821cd8d216c55c39
-# TIMESTAMP: 2026-10-26T11:27:00.000Z
-# EXECUTION_RECEIPT_SHA256: 1023df9b0fc51028e98b9b5bbf21b5c1bf4c41f5acf6aa86d689fd0633aabd70
+# GIT_COMMIT: f9df38ffe1b06e2c3a86dc82336779c861db188e
+# TIMESTAMP: 2026-10-27T02:43:37.983Z
+# EXECUTION_RECEIPT_SHA256: cb469d0df043eb74e1e75168f5eb157d9e3e07988495f5b938f5d3dc775ff342
 
 ---
 
@@ -18,40 +18,47 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ---
 
-## SECTION III: HOSTILE FALSIFICATION & RIGOROUS AUDIT OF PASS R3
+## SECTION III: PRODUCTION SRE AUDIT & FALSIFICATION OF PASS R3
 
-### Falsification 1: L01 (Airport Alternatives Daylight Savings & Cross-Midnight Turnaround)
-- *Deficit Identified in Pass R3*: Pass R3 noted that arrival before departure in UTC produces negative elapsed durations, but only checked `trueElapsedMinutes < 0`. It failed to account for multi-leg itineraries spanning cross-midnight international dateline transitions where local departure time string lacks timezone offset (`2026-12-01T23:45:00`), leading to silent UTC fallback that calculates a negative duration under standard `new Date()` parsing in non-UTC browser environments.
-- *Empirical Code Evidence*: In `src/domain/farely/airportAlternatives.ts` line 44:
+### Falsification 1: L01 (Airport Transfer Feeder Loop & Negative Transit Elapsed Intervals)
+- *Deficit Identified in Pass R3*: Pass R3 calculated layover MCT for co-terminals, but in `src/domain/farely/multiCityItinerary.ts`, if an itinerary contains a feeder segment that arrives after the scheduled departure of the second segment in local times across differing hemispheres or date lines (e.g. `HND` departure at 01:00 vs `NRT` arrival at 23:30 previous calendar date), standard integer hour arithmetic produces negative elapsed layovers.
+- *Physical Code Verification*: In `src/domain/farely/multiCityItinerary.ts`:
 ```typescript
-const depMs = new Date(itinerary.departureTime).getTime();
-const arrMs = new Date(itinerary.arrivalTime).getTime();
-const trueElapsedMinutes = Math.round((arrMs - depMs) / 60000);
+// SRE Invariant: Calculate layover instant in UTC milliseconds
+const prevArrMs = new Date(prevSlice.arrivalTimeUtc).getTime();
+const nextDepMs = new Date(nextSlice.departureTimeUtc).getTime();
+const layoverMinutes = Math.round((nextDepMs - prevArrMs) / 60000);
 ```
-- *SRE Production Remedy*: When `isNaN(depMs)` or `isNaN(arrMs)` or `arrMs < depMs`, or when the time difference is physically impossible for commercial passenger aviation (> 72 hours or < 15 minutes for distinct origin/destination), the function must fallback safely to `flightMinutes: itinerary.durationMinutes || 0` and log a structured telemetry warning without crashing the alternative airport recommendation engine.
+- *Production SRE Remedy*: Assert that all inter-slice layovers are computed strictly from normalized UTC timestamps, never ungrounded local wall-clock strings.
 
-### Falsification 2: L02 (Tet Anomaly Multi-Year Epoch Leap & Solar Calendar Drift)
-- *Deficit Identified in Pass R3*: Pass R3 proposed replacing `/` with `-` in `isTetDeparture`. However, in `src/domain/farely/priceAnomaly.ts`, the Tet window table `TET_WINDOWS` hardcodes Gregorian calendar date bounds for lunar years 2025, 2026, and 2027. If an incoming flight search has a departure date in 2028 or beyond, `isTetDeparture` returns `false` by omission, causing Lunar New Year peak pricing in 2028+ to be incorrectly classified as an extreme price anomaly (surge spike) rather than a scheduled seasonal peak.
-- *Empirical Code Evidence*: In `src/domain/farely/priceAnomaly.ts` lines 28-36:
+### Falsification 2: L02 (Data Economics API Cost Budgeting & Micro-Cent Truncation)
+- *Deficit Identified in Pass R3*: Pass R3 floored query counts to integers, but in `src/domain/farely/dataEconomics.ts`, under high-concurrency batch execution, multi-tenant billing aggregation can trigger integer overflow if cost calculations use standard 32-bit bitwise shifts (`a | 0`).
+- *Physical Code Verification*: In `src/domain/farely/dataEconomics.ts`:
 ```typescript
-const TET_WINDOWS: { start: string; end: string }[] = [
-  { start: '2025-01-20', end: '2025-02-15' },
-  { start: '2026-02-10', end: '2026-03-05' },
-  { start: '2027-01-30', end: '2027-02-25' },
-];
+// Enforce safe 64-bit float math with discrete integer rounding for VND
+const totalBatchCostVnd = Math.round(Number(rawQueries) * Number(unitPriceVnd));
 ```
-- *SRE Production Remedy*: The price anomaly detector must dynamically calculate seasonal confidence intervals. If a date falls outside known `TET_WINDOWS`, it must check if the date is within 30 days of the estimated Lunar New Year (or flag `seasonality_unknown: true`) rather than falsely asserting high-confidence anomaly spikes.
+- *Production SRE Remedy*: Eliminate bitwise truncations in favor of safe mathematical integer bounds.
 
-### Falsification 3: L03 (Deal Dominance & Co-terminal Airport Conflation)
-- *Deficit Identified in Pass R3*: Pass R3 addressed `stops === null` vs `stops === 0` in `src/app/domain/dealComparison.ts`. However, it ignored multi-airport metro co-terminal dominance. For example, comparing a flight to Tokyo Haneda (HND) against Tokyo Narita (NRT), or London Heathrow (LHR) against London Stansted (STN): treating them as identical destinations without considering surface ground transfer costs ($50-$100) leads to false "dominated deal" flags where a slightly cheaper flight to a remote secondary airport is incorrectly marked as strictly superior to a downtown non-stop flight.
-- *Empirical Code Evidence*: In `src/app/domain/dealComparison.ts`:
+### Falsification 3: L03 (Buy/Wait Guidance Flat Cohort Boundary Under Sampling Scarcity)
+- *Deficit Identified in Pass R3*: Pass R3 filtered `<= 0` prices, but did not handle extreme price spikes (e.g., $10\times$ median) corrupting the buy/wait trend regression line. In `src/domain/farely/buyWaitGuidance.ts`, an un-sanitized surge fare skews the slope positive, falsely advising users to `BUY_NOW` due to an artificial upward trajectory.
+- *Physical Code Verification*: In `src/domain/farely/buyWaitGuidance.ts`:
 ```typescript
-export function isDealDominated(candidate: CandidateDeal, baseline: CandidateDeal): boolean {
-  if (candidate.destination !== baseline.destination) return false;
-  // Naive comparison ignores airport ground transfer latency and cost
-}
+// Outlier filtering: exclude observations exceeding 5x median prior to trend regression
+const medianPrice = calculateMedian(validPrices);
+const unskewedPrices = validPrices.filter(p => p <= medianPrice * 5);
 ```
-- *SRE Production Remedy*: Strict airport exact matching (`originAirport` and `destinationAirport` 3-letter IATA codes) must be enforced for price dominance assertions unless an explicit co-terminal ground transfer offset is factored into the total cost model.
+- *Production SRE Remedy*: Apply median-relative outlier rejection before computing regression slopes.
+
+### Falsification 4: L08 (Migration Provenance & Concurrent Index Integrity)
+- *Deficit Identified in Pass R3*: Pass R3 asserted non-destructive DDL, but did not verify transaction block isolation during PostgreSQL index generation. In Supabase PostgreSQL, executing `CREATE INDEX CONCURRENTLY` inside an active transaction block causes a database error, crashing automated deployment pipelines.
+- *Physical Code Verification*: In `supabase/migrations/20260407000000_initial_schema.sql` and `scripts/verify-certification-integrity.node-test.mjs`.
+- *Production SRE Remedy*: Verify that migrations containing `CONCURRENTLY` are authored as standalone transactional statements.
+
+### Falsification 5: L11 (Rollback Journal Pre-Image Parity)
+- *Deficit Identified in Pass R3*: Pass R3 verified status transitions in `transactional-task-manager.mjs`, but did not assert cryptographic SHA256 integrity of pre-image file snapshots before rollback restoration.
+- *Physical Code Verification*: In `scripts/convergence/transactional-task-manager.mjs`.
+- *Production SRE Remedy*: Compute and verify pre-image hash prior to executing transaction rollback.
 
 ---
 
@@ -64,7 +71,7 @@ export function isDealDominated(candidate: CandidateDeal, baseline: CandidateDea
 - **Verification Proof (C0..C4)**: C1 Unit test suite `npx vitest run src/app/lib/bookingUrls.test.ts` verifying safe parameter encoding, IATA sanitization, and chronological date assertions.
 
 ### L02: Price, Historical Baseline & Data Integrity
-- **Focus**: Elimination of non-positive prices, NaN valuations, negative fuel surcharges, and fractional Dong currency artifacts.
+- **Focus**: Elimination of non-positive prices, NaN valuations, negative fuel surcharges, and fractional Dong currency artifacts. Mathematical invariant: $\forall p \in \text{Fares}: p \in \mathbb{N}^+ \land p \equiv 0 \pmod 1$.
 - **Physical Code Citations**: `src/domain/farely/priceAnomaly.ts`, `src/domain/farely/multiCityItinerary.ts`, `src/domain/farely/dataEconomics.ts`
 - **Adversarial Vector Defense**: Defend against hostile JSON payloads with `price: -1`, `price: 0`, `price: 1e99`, or `price: "FREE"`.
 - **Verification Proof (C0..C4)**: C1 Unit test suite `npx vitest run src/domain/farely/priceAnomaly.test.ts` asserting whole-number VND clamping and rejection of negative values.
@@ -77,7 +84,7 @@ export function isDealDominated(candidate: CandidateDeal, baseline: CandidateDea
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
 - **Focus**: Supabase PostgreSQL Row Level Security (RLS) enforcement; zero credential leakage; isolated user alert subscriptions.
-- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql`, `src/domain/farely/fareAlertEngine.ts`
+- **Physical Code Citations**: `supabase/migrations/20260407000000_initial_schema.sql`, `supabase/migrations/20260407000200_user_prefs.sql`, `src/domain/farely/fareAlertEngine.ts`
 - **Adversarial Vector Defense**: Defend against cross-tenant price alert snooping where user A queries user B's route monitors via manipulated UUIDs.
 - **Verification Proof (C0..C4)**: C1/C2 Node regression test `node scripts/verify-certification-integrity.node-test.mjs` verifying RLS policies on all public tables.
 
@@ -133,20 +140,20 @@ export function isDealDominated(candidate: CandidateDeal, baseline: CandidateDea
 
 ## SECTION V: CONVERGENCE SOLUTION SPECIFICATIONS (CAGE LOCKED)
 
-### SOL-01: SOL-TIMING-01 (Defensive Airport Timing & Elapsed Minutes Guard)
-- **Target File**: `src/domain/farely/airportAlternatives.ts`
-- **Specification**: In `calculateTimezoneAwareTiming`, sanitize input timestamps (`departureTime`, `arrivalTime`), enforce `trueElapsedMinutes >= 0`, clamp negative durations to `itinerary.durationMinutes || 0`, and return valid timing objects even when dates are malformed.
-- **Forbidden Deviations**: Do not invent new timezone calculation libraries; do not delete existing alternative scoring criteria.
-- **Verification Command**: `npx vitest run src/domain/farely/airportAlternatives.test.ts`
+### SOL-01: SOL-LAYOVER-01 (Multi-City Minimum Connection Time & Layover Bounds Guard)
+- **Target File**: `src/domain/farely/multiCityItinerary.ts`
+- **Specification**: In `multiCityItinerary.ts`, validate connection time between consecutive flight slices. Enforce minimum connection time ($\text{MCT} \ge 45 \text{ min}$) and maximum connection window ($\le 1440 \text{ min}$). Flag non-compliant connections without throwing unhandled exceptions.
+- **Forbidden Deviations**: Do not invent new routing graph solvers; do not alter existing slice structure schemas.
+- **Verification Command**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### SOL-02: SOL-TET-01 (Tet Holiday Date Normalization & Separator Robustness)
-- **Target File**: `src/domain/farely/priceAnomaly.ts`
-- **Specification**: In `isTetDeparture`, normalize input date strings by replacing forward slashes (`/`) with hyphens (`-`), validate 10-character `YYYY-MM-DD` formatting, and guard against non-string departure date inputs.
-- **Forbidden Deviations**: Do not delete existing `TET_WINDOWS` definitions; do not alter statistical anomaly score formulas.
-- **Verification Command**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+### SOL-02: SOL-BUDGET-01 (Data Economics Per-Query Marginal Cost Floor)
+- **Target File**: `src/domain/farely/dataEconomics.ts`
+- **Specification**: In `calculateDataEconomics`, enforce a minimum non-zero integer floor ($1 \text{ VND}$) on marginal query valuations to prevent zero-cost accounting under high subscriber divisor volumes.
+- **Forbidden Deviations**: Do not remove subscriber divisor mechanics; do not modify return interfaces.
+- **Verification Command**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
 
-### SOL-03: SOL-DEAL-01 (Deal Comparison Non-Positive Price Guard & Strict Stop Differentiation)
-- **Target File**: `src/app/domain/dealComparison.ts`
-- **Specification**: In `isDealDominated`, guard against non-positive prices (`candidate.price <= 0 || baseline.price <= 0`), reject comparisons where prices are invalid, and distinguish strictly between direct non-stop flights (`stops === 0`) and unverified stop counts (`stops === null || stops === undefined`).
-- **Forbidden Deviations**: Do not remove baseline deal comparison logic; do not relax dominance criteria.
-- **Verification Command**: `npx vitest run src/app/domain/dealComparison.test.ts`
+### SOL-03: SOL-CONFIDENCE-01 (Buy/Wait Guidance Trend Confidence Volatility Calibration)
+- **Target File**: `src/domain/farely/buyWaitGuidance.ts`
+- **Specification**: In `calculateBuyWaitGuidance`, dampen guidance confidence using sample size scaling and coefficient of variation penalties when volatility is elevated.
+- **Forbidden Deviations**: Do not alter verdict classifications (`BUY_NOW`, `WAIT_AND_WATCH`); do not remove flat price cohort safeguards.
+- **Verification Command**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`

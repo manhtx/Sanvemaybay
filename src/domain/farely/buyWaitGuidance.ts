@@ -46,6 +46,19 @@ export const MIN_OBSERVATION_POINTS = 14;
 export const MIN_TIMESPAN_DAYS = 7;
 
 /**
+ * Calculates cohort standard deviation and coefficient of variation for price series.
+ */
+export function computeCohortVolatility(prices: number[]): { mean: number; stdDev: number; cv: number } {
+  if (!prices || prices.length < 2) return { mean: prices?.[0] || 0, stdDev: 0, cv: 0 };
+  const sum = prices.reduce((a, b) => a + b, 0);
+  const mean = sum / prices.length;
+  const variance = prices.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (prices.length - 1);
+  const stdDev = Math.sqrt(variance);
+  const cv = mean > 0 ? stdDev / mean : 0;
+  return { mean, stdDev, cv };
+}
+
+/**
  * Evaluates whether current price warrants a BUY_NOW or WAIT_AND_WATCH recommendation,
  * or safely fails closed to INSUFFICIENT_DATA when evidence is inadequate.
  * Enforces PriceScope strictness (AUD-04) so route trends are never confused with identical offer history.
@@ -157,6 +170,10 @@ export function evaluateBuyWaitGuidance(params: {
   // Calibration requires IDENTICAL_OFFER or COHORT scope with sufficient data.
   const isCalibrated = scopeType === "IDENTICAL_OFFER" || scopeType === "COHORT";
 
+  // SOL-CONFIDENCE-01: Calculate cohort volatility for confidence calibration
+  const volatility = computeCohortVolatility(prices);
+  const volatilityDamping = Math.max(0.6, 1.0 - Math.min(0.4, volatility.cv * 0.5));
+
   // If departing in less than 7 days, prices almost never drop (airline yield management)
   if (daysUntilDeparture <= 7 && currentPrice <= medianPrice * 1.1) {
     const rationaleVi = scopeType === "IDENTICAL_OFFER"
@@ -165,9 +182,12 @@ export function evaluateBuyWaitGuidance(params: {
       ? `Chuyến bay khởi hành trong ${daysUntilDeparture} ngày tới. Nhóm vé tương đương có xu hướng tăng giá mạnh cận ngày khởi hành. Nên đặt sớm.`
       : `Chuyến bay khởi hành trong ${daysUntilDeparture} ngày tới. Theo quy luật mở bán toàn chặng, các dải vé giá rẻ thường đóng sớm trước tuần khởi hành. Nên đặt sớm.`;
 
+    const rawConfidence = 0.85;
+    const confidence = Math.round(rawConfidence * volatilityDamping * 100) / 100;
+
     return {
       recommendation: "BUY_NOW",
-      confidence: 0.85,
+      confidence,
       isCalibrated,
       sampleCount: validPoints.length,
       timespanDays,
@@ -187,9 +207,12 @@ export function evaluateBuyWaitGuidance(params: {
       ? `Mức giá hiện tại (${currentPrice.toLocaleString("vi-VN")}đ) nằm trong top 5% thấp nhất nhóm vé tương đương (thấp hơn ${100 - percentile}% số mẫu). Khuyến nghị mua ngay.`
       : `Mức giá hiện tại (${currentPrice.toLocaleString("vi-VN")}đ) nằm trong top 5% thấp nhất toàn chu kỳ quan sát chặng bay (thấp hơn ${100 - percentile}% số mẫu toàn tuyến). Khuyến nghị mua ngay.`;
 
+    const rawConfidence = 0.9;
+    const confidence = Math.round(rawConfidence * volatilityDamping * 100) / 100;
+
     return {
       recommendation: "BUY_NOW",
-      confidence: 0.9,
+      confidence,
       isCalibrated,
       sampleCount: validPoints.length,
       timespanDays,

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   evaluateBuyWaitGuidance,
   evaluateRollingHorizonBacktest,
+  computeCohortVolatility,
   PricePoint,
 } from "./buyWaitGuidance";
 
@@ -200,6 +201,38 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
       expect(result.recommendation).toBe("WAIT_AND_WATCH");
       expect(result.confidence).toBe(0.5);
       expect(result.rationaleVi).toContain("duy trì cố định không biến động");
+    });
+
+    it("calibrates cohort volatility and dampens BUY confidence on high dispersion (SOL-CONFIDENCE-01)", () => {
+      const vol = computeCohortVolatility([1_000_000, 2_000_000, 3_000_000]);
+      expect(vol.mean).toBe(2_000_000);
+      expect(vol.stdDev).toBe(1_000_000);
+      expect(vol.cv).toBe(0.5);
+
+      // Low dispersion returns cv 0
+      const flatVol = computeCohortVolatility([1_500_000, 1_500_000]);
+      expect(flatVol.cv).toBe(0);
+
+      // High volatility series should dampen BUY confidence below 0.90
+      const volatileHistory: PricePoint[] = [];
+      const baseDate = new Date("2026-09-01T00:00:00Z").getTime();
+      for (let i = 0; i < 20; i++) {
+        const d = new Date(baseDate + i * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+        // Swings between 1M and 4M (high CV)
+        volatileHistory.push({ date: d, price: i % 2 === 0 ? 1_000_000 : 4_000_000 });
+      }
+
+      const evalResult = evaluateBuyWaitGuidance({
+        currentPrice: 1_000_000, // Lowest price (percentile <= 5)
+        priceHistory: volatileHistory,
+        departureDate: "2026-11-01",
+        evaluationDate: "2026-09-25",
+        scopeType: "COHORT",
+      });
+
+      expect(evalResult.recommendation).toBe("BUY_NOW");
+      expect(evalResult.confidence).toBeLessThan(0.9); // Dampened due to high volatility
+      expect(evalResult.confidence).toBeGreaterThanOrEqual(0.6);
     });
   });
 });

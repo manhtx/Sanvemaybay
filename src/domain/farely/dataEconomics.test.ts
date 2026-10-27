@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   calculateUnitEconomics,
   evaluateScanExpansionProposal,
+  computeSafeUnitCostVnd,
   ScanExpansionProposal,
   ScopeEconomicMetrics,
 } from "./dataEconomics";
@@ -25,6 +26,25 @@ describe("Data Economics Optimizer (F88)", () => {
       expect(summary.costPerUsefulWatchEventVnd).toBe(10_000);
       expect(summary.eligibleOfferRatePercent).toBe(80);
       expect(summary.verifiedOpportunityYieldPercent).toBe(10);
+    });
+
+    it("enforces a 1 VND minimum integer floor on unit scan cost for non-zero batches (SOL-BUDGET-01)", () => {
+      // 100 VND across 10,000 scans = 0.01 VND/scan. Naive round would be 0 VND!
+      const fractionalBatch: ScopeEconomicMetrics = {
+        routeScope: "SGN-UIH",
+        scannedScopesCount: 10_000,
+        totalScanCostVnd: 100,
+        eligibleOffersFound: 5_000,
+        verifiedOpportunitiesFound: 500,
+        usefulWatchEventsDispatched: 100,
+      };
+
+      const summary = calculateUnitEconomics(fractionalBatch);
+      expect(summary.costPerScannedScopeVnd).toBe(1); // Enforced 1 VND floor
+      expect(summary.costPerEligibleOfferVnd).toBe(1);
+      expect(computeSafeUnitCostVnd(100, 10_000)).toBe(1);
+      expect(computeSafeUnitCostVnd(0, 10_000)).toBe(0);
+      expect(computeSafeUnitCostVnd(100, 0)).toBe(0);
     });
   });
 

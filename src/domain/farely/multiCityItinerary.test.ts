@@ -6,6 +6,7 @@ import {
   ItinerarySlice,
   isMetropolitanAirportChange,
   getMetropolitanMinimumTransitMinutes,
+  computeSegmentLayoverMinutes,
 } from "./multiCityItinerary";
 
 describe("Multi-City Itinerary Coherence (F41)", () => {
@@ -215,6 +216,61 @@ describe("Multi-City Itinerary Coherence (F41)", () => {
       expect(validation.isValid).toBe(true);
       expect(validation.coherenceType).toBe("SINGLE_THROUGH_TICKET");
       expect(validation.totalPrice).toBe(2_500_000);
+    });
+
+    it("rejects degenerate self-loop slices where origin equals destination (SOL-LAYOVER-01)", () => {
+      const loopSlices: ItinerarySlice[] = [
+        {
+          sliceIndex: 0,
+          originCode: "SGN",
+          destinationCode: "SGN",
+          departDate: "2026-11-01",
+          airlineCode: "VN",
+          airlineName: "Vietnam Airlines",
+          price: 1_200_000,
+        },
+        {
+          sliceIndex: 1,
+          originCode: "SGN",
+          destinationCode: "HAN",
+          departDate: "2026-11-02",
+          airlineCode: "VN",
+          airlineName: "Vietnam Airlines",
+          price: 1_500_000,
+        },
+      ];
+
+      expect(() => validateMultiCityItinerary({ slices: loopSlices })).toThrow(
+        InvalidMultiCitySequenceError
+      );
+    });
+
+    it("rejects excessive multi-city slices exceeding 10 hops (SOL-LAYOVER-01)", () => {
+      const excessiveSlices: ItinerarySlice[] = Array.from({ length: 11 }, (_, i) => ({
+        sliceIndex: i,
+        originCode: "HAN",
+        destinationCode: "SGN",
+        departDate: `2026-11-${String(i + 1).padStart(2, "0")}`,
+        airlineCode: "VN",
+        airlineName: "Vietnam Airlines",
+        price: 1_000_000,
+      }));
+
+      expect(() => validateMultiCityItinerary({ slices: excessiveSlices })).toThrow(
+        InvalidMultiCitySequenceError
+      );
+    });
+
+    it("computes accurate connection layover in minutes using UTC timestamps (SOL-LAYOVER-01)", () => {
+      const layover = computeSegmentLayoverMinutes(
+        "2026-11-01T10:00:00Z",
+        "2026-11-01T12:30:00Z"
+      );
+      expect(layover).toBe(150);
+
+      // Inverted or invalid returns 0
+      expect(computeSegmentLayoverMinutes("2026-11-01T15:00:00Z", "2026-11-01T12:00:00Z")).toBe(0);
+      expect(computeSegmentLayoverMinutes("invalid", "2026-11-01T12:00:00Z")).toBe(0);
     });
   });
 });

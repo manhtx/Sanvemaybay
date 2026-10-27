@@ -1,9 +1,9 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G4]
 # LEVEL: Pass 4: Production SRE Rigor & Zero-Mock Verification
 # MANDATE: Assume Pass 3 relied on mock safety across all 12 lenses. Enforce deterministic oracles, real integrations, and zero-loss rollbacks.
-# GIT_COMMIT: 284631b78ca1ecefc90d9a10821cd8d216c55c39
-# TIMESTAMP: 2026-10-27T02:33:18.938Z
-# EXECUTION_RECEIPT_SHA256: ce75ba8427f9b341d27d0becd99b588d46b6924a34cfe7da49413fbda5e32a51
+# GIT_COMMIT: f9df38ffe1b06e2c3a86dc82336779c861db188e
+# TIMESTAMP: 2026-10-27T02:48:14.039Z
+# EXECUTION_RECEIPT_SHA256: 768a4d8d85a2583c22cf1b8ab5e24ff2e9167c063e3b4304b7a3cc499d4f31ae
 
 ---
 
@@ -20,79 +20,76 @@ Any deviation is a critical contract breach and will be rejected closed by the E
 
 ## SECTION C: PRODUCTION SRE AUDIT & FALSIFICATION OF PASS G3
 
-### Falsification 1: L01 (Airport Alternatives Zero-Ground-Distance Singularities)
-- *Deficit Identified in Pass G3*: Pass G3 enforced commercial duration bounds `[15 min, 4320 min]`. However, in `src/domain/farely/airportAlternatives.ts`, when computing overland diversion utility via `calculateOverlandSavings`, if two alternative co-terminal hubs have identical surface distance coordinates (or delta equals zero), the ground travel penalty model triggers a division-by-zero or zero-cost distortion ($0 \text{ VND}$ ground cost), artificially presenting distant secondary airfields as zero-friction substitutes.
-- *Physical Code Verification*: In `src/domain/farely/airportAlternatives.ts`:
+### Falsification 1: L01 (Multi-City Layover Daylight Savings Offset Anomaly)
+- *Deficit Identified in Pass G3*: Pass G3 guarded self-loop endpoints, but in `src/domain/farely/multiCityItinerary.ts`, when connecting segments span international date line or seasonal daylight savings shifts (e.g. crossing between Southern and Northern hemisphere timezones), naive local date arithmetic computes layover durations with $\pm 60$ minute systematic bias.
+- *Physical Code Verification*: In `src/domain/farely/multiCityItinerary.ts`:
 ```typescript
-// Surface transfer cost and latency must never default to zero for distinct IATA stations
-const groundTransferMinutes = Math.max(30, alternative.transferMinutes || 45);
-const groundTransferCostVnd = Math.max(50000, alternative.transferCostVnd || 100000);
-```
-- *Production SRE Remedy*: Inject lower bound surface friction ($30 \text{ min}$, $50{,}000 \text{ VND}$) for any distinct co-terminal transit.
-
-### Falsification 2: L02 (Tet Anomaly Year Wrap & Lunar Leap Months)
-- *Deficit Identified in Pass G3*: Pass G3 handled `DD-MM-YYYY` inversions, but did not guard against Vietnamese lunar calendar leap months (Nhuận). During a lunar leap year, Tet departure spikes can occur up to 30 days earlier or later than standard Gregorian estimations. In `src/domain/farely/priceAnomaly.ts`, checking strictly fixed 3-year static ranges (`TET_WINDOWS`) leaves year transitions (e.g., late January flights transitioning into February) vulnerable to abrupt threshold clipping.
-- *Physical Code Verification*: In `src/domain/farely/priceAnomaly.ts`:
-```typescript
-// Extend Tet window verification to incorporate a 3-day buffer on window boundaries
-export function isTetDeparture(departureDate: string): boolean {
-  if (typeof departureDate !== 'string') return false;
-  const clean = departureDate.replace(/[./\s]/g, '-').replace(/-+/g, '-').trim();
-  const parts = clean.split('-');
-  let normalized = clean;
-  if (parts.length === 3 && parts[0].length === 2 && parts[2].length === 4) {
-    normalized = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  }
-  normalized = normalized.slice(0, 10);
-  return TET_WINDOWS.some(w => normalized >= w.start && normalized <= w.end);
+// Enforce UTC millisecond timestamps for all inter-segment layovers
+export function computeSegmentLayoverMinutes(arrTimeUtc: string, depTimeUtc: string): number {
+  const arrMs = new Date(arrTimeUtc).getTime();
+  const depMs = new Date(depTimeUtc).getTime();
+  if (isNaN(arrMs) || isNaN(depMs) || depMs <= arrMs) return 0;
+  return Math.round((depMs - arrMs) / 60000);
 }
 ```
-- *Production SRE Remedy*: Assert date normalization deterministically across ISO string slicing without relying on client browser locale date parsers.
+- *Production SRE Remedy*: Assert that connection layover evaluation operates strictly on UTC millisecond differences.
 
-### Falsification 3: L03 (Deal Dominance Invariant & Strict Monotonic Duration Dominance)
-- *Deficit Identified in Pass G3*: Pass G3 checked price dominance with `Math.round`, but did not specify strict monotonicity on flight duration. If Deal A has price $1{,}000{,}000$ and duration $120 \text{ min}$, and Deal B has price $1{,}000{,}000$ and duration $120 \text{ min}$, evaluating `candidate.durationMinutes <= baseline.durationMinutes` causes both deals to be marked as dominated by each other, wiping out legitimate co-equal deals.
-- *Physical Code Verification*: In `src/app/domain/dealComparison.ts`:
+### Falsification 2: L02 (Data Economics Sub-Penny Valuation Clamping)
+- *Deficit Identified in Pass G3*: Pass G3 floored subscriber counts, but did not guard against integer overflow when aggregate batch volumes exceed $2^{31}-1$ VND in enterprise financial forecasts.
+- *Physical Code Verification*: In `src/domain/farely/dataEconomics.ts`:
 ```typescript
-// Dominance requires strictly lower price OR (equal price AND strictly lower duration)
-const strictlyCheaper = candPrice < basePrice;
-const strictlyFasterAtSamePrice = candPrice === basePrice && candidate.durationMinutes < baseline.durationMinutes;
+export function computeSafeAggregateCostVnd(queryCount: number, costPerQueryVnd: number): number {
+  const maxSafeVnd = Number.MAX_SAFE_INTEGER;
+  const rawCost = Number(queryCount) * Number(costPerQueryVnd);
+  return Math.min(maxSafeVnd, Math.round(Math.max(0, rawCost)));
+}
 ```
-- *Production SRE Remedy*: Enforce strict partial ordering on Pareto dominance: Deal A dominates Deal B if and only if $A \le B$ on all dimensions and $A < B$ on at least one dimension.
+- *Production SRE Remedy*: Clamp aggregate financial totals to `Number.MAX_SAFE_INTEGER` and enforce non-negative bounds.
 
-### Falsification 4: L08 (Migration Reversibility & Rollback Parity)
-- *Deficit Identified in Pass G3*: Pass G3 verified that all 47 migrations execute forward, but did not assert down-migration (rollback) safety. A production SRE standard requires every schema migration altering table definitions to have an idempotent down-migration script verifying that database rollback does not drop tenant data or corrupt relational constraints.
+### Falsification 3: L03 (Buy/Wait Guidance Monotonic Fallback on Zero Variance)
+- *Deficit Identified in Pass G3*: Pass G3 isolated cabin classes, but in `src/domain/farely/buyWaitGuidance.ts`, when all observed historical prices are identical ($P_1 = P_2 = \dots = P_N$), calculating standard deviation yields exactly zero. A naive division by standard deviation triggers `Infinity` or `NaN` in normalized z-score routines.
+- *Physical Code Verification*: In `src/domain/farely/buyWaitGuidance.ts`:
+```typescript
+if (sampleStdDev === 0 || mean === 0) {
+  return { recommendation: 'WAIT_AND_WATCH', confidence: 0.5, explanationVi: 'Giá vé hoàn toàn ổn định, không có biến động để xác định chiều hướng.' };
+}
+```
+- *Production SRE Remedy*: Guarantee clean neutral fallback when cohort variance is zero.
+
+### Falsification 4: L08 (Database Schema Migration Replay Parity)
+- *Deficit Identified in Pass G3*: Pass G3 verified migration statement syntax, but did not assert clean schema replay from scratch in a fresh staging environment. A production SRE standard requires migrations to run cleanly on empty databases without foreign key circular deadlocks.
 - *Physical Code Verification*: In `supabase/migrations/20260407000000_initial_schema.sql` and `scripts/verify-certification-integrity.node-test.mjs`.
-- *Production SRE Remedy*: Assert non-destructive DDL patterns across all versioned migrations.
+- *Production SRE Remedy*: Verify forward migration dependencies in strict topological order.
 
-### Falsification 5: L11 (ACID Transaction Journal Stale Recovery Locking)
-- *Deficit Identified in Pass G3*: Pass G3 verified transaction state transitions, but did not handle process signals (`SIGINT`, `SIGTERM`) interrupting intermediate writes. In `scripts/convergence/transactional-task-manager.mjs`, an active lock left behind after an unhandled crash blocks all subsequent tasks unless an automatic stale lock recovery mechanism with timestamp TTL (300s) is present.
+### Falsification 5: L11 (Atomic State Commit Rollback Verification)
+- *Deficit Identified in Pass G3*: Pass G3 verified journal locks, but did not verify that corrupted snapshots fail closed before modifying disk files.
 - *Physical Code Verification*: In `scripts/convergence/transactional-task-manager.mjs`.
-- *Production SRE Remedy*: Implement automatic crash-recovery journal validation on transaction initialization.
+- *Production SRE Remedy*: Fail closed on unparseable snapshots during transaction initialization.
 
 ---
 
 ## SECTION D: LOCKED ARCHITECTURAL SOLUTIONS
 
-### SOL-01: SOL-TIMING-01 (Airport Alternatives Defensive Timestamp & Non-Negative Elapsed Minutes)
-- **SOL_ID**: SOL-TIMING-01
-- **TARGET_FILES**: `src/domain/farely/airportAlternatives.ts`
-- **LOCKED_ALGORITHM**: In `calculateTimezoneAwareTiming`, parse `itinerary.departureTime` and `itinerary.arrivalTime`. If either timestamp produces `NaN` upon `new Date().getTime()`, or if `arrMs < depMs` (negative duration), clamp `trueElapsedMinutes` to `Math.max(15, itinerary.durationMinutes || 60)`. In `findAlternativeAirports`, guard against degenerate requests where `search.origin.toUpperCase() === search.destination.toUpperCase()` by returning an empty array.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no signature modification; no skipping negative duration clamping.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/airportAlternatives.test.ts`
+### SOL-01: SOL-LAYOVER-01 (Multi-City Minimum Connection Time & Layover Bounds Guard)
+- **SOL_ID**: SOL-LAYOVER-01
+- **TARGET_FILES**: `src/domain/farely/multiCityItinerary.ts`
+- **LOCKED_ALGORITHM**: In `computeSegmentLayovers`, calculate elapsed minutes between consecutive connecting slices using UTC timestamps. Assert chronological ordering (`nextDepDate >= prevDepDate`). Guard against self-loop endpoints (`origin !== destination`). Enforce minimum connection time ($\text{MCT} \ge 45 \text{ min}$ for domestic same-terminal, $\ge 90 \text{ min}$ for international) and maximum connection window ($\le 1440 \text{ min}$). Flag non-compliant or physically impossible connections without throwing unhandled exceptions.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no signature modification; no removing existing slice validation logic.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/multiCityItinerary.test.ts`
 
-### SOL-02: SOL-TET-01 (Tet Holiday Date Normalization & Separator Robustness)
-- **SOL_ID**: SOL-TET-01
-- **TARGET_FILES**: `src/domain/farely/priceAnomaly.ts`
-- **LOCKED_ALGORITHM**: In `isTetDeparture`, check if `departureDate` is a valid string. Normalize input date strings by replacing delimiters (`/[./\s]/g, '-'`), handling inverted `DD-MM-YYYY` payloads, trimming whitespace, and slicing to 10 characters (`YYYY-MM-DD`). Compare strictly against `TET_WINDOWS` start and end bounds.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no deletion of existing `TET_WINDOWS`; no relaxing Gregorian boundary comparisons.
-- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/priceAnomaly.test.ts`
+### SOL-02: SOL-BUDGET-01 (Data Economics Per-Query Marginal Cost Floor)
+- **SOL_ID**: SOL-BUDGET-01
+- **TARGET_FILES**: `src/domain/farely/dataEconomics.ts`
+- **LOCKED_ALGORITHM**: In `calculateDataEconomics`, sanitize `unitCostVnd` to positive finite integers. Floor subscriber volume to positive integers (`Math.floor(Math.max(1, subscribers))`). Enforce a minimum integer floor of $1 \text{ VND}$ on marginal query cost calculations when dividing by active subscribers (`Math.max(1, Math.round(batchCost / subscribers))`) to prevent zero-cost rate leakage.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no deletion of existing formulas; no non-integer currency valuations.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/dataEconomics.test.ts`
 
-### SOL-03: SOL-DEAL-01 (Deal Comparison Non-Positive Price Guard & Non-Stop Distinctions)
-- **SOL_ID**: SOL-DEAL-01
-- **TARGET_FILES**: `src/app/domain/dealComparison.ts`
-- **LOCKED_ALGORITHM**: In `isDealDominated`, round candidate and baseline prices to whole VND (`Math.round`). Guard against self-comparison (`candidate.id && baseline.id && candidate.id === baseline.id -> return false`). Guard against non-positive prices (`candPrice <= 0 || basePrice <= 0 -> return false`). Differentiate strictly between non-stop flights (`stops === 0`) and unverified stop counts (`stops === null || stops === undefined`). Enforce Pareto dominance: Deal A dominates Deal B if $A \le B$ on price and duration and $A < B$ on at least one metric.
-- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no removing baseline comparison criteria; no treating null stops as direct non-stop flights.
-- **VERIFICATION_COMMAND**: `npx vitest run src/app/domain/dealComparison.test.ts`
+### SOL-03: SOL-CONFIDENCE-01 (Buy/Wait Guidance Trend Confidence Volatility Calibration)
+- **SOL_ID**: SOL-CONFIDENCE-01
+- **TARGET_FILES**: `src/domain/farely/buyWaitGuidance.ts`
+- **LOCKED_ALGORITHM**: In `calculateBuyWaitGuidance`, guard against sparse cohorts ($N < 3 \to \text{abstain}$). Guard against zero variance (`sampleStdDev === 0 \to \text{WAIT_AND_WATCH}`). Scale recommendation confidence by sample size ratio (`validPrices.length / 30`) and apply coefficient of variation volatility dampening (`(sampleStdDev / mean) * 0.5`) to prevent false high-confidence recommendations on noisy time-series data.
+- **FORBIDDEN_DEVIATIONS**: No unverified external dependencies; no removing baseline comparison criteria; no modifying return enum types.
+- **VERIFICATION_COMMAND**: `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
 
 ---
 
