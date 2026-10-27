@@ -1010,7 +1010,55 @@
       "committed_at": "2026-10-27T08:48:54.306Z",
       "verification_output": "airportAlternatives tests passed: 12/12 green",
       "git_commit": null
+    },
+    {
+      "task_id": "WP01-BUYWAIT-CLOSE-IN-WINDOW-GUARD",
+      "cycleId": "G86",
+      "started_at": "2026-10-27T08:59:41.706Z",
+      "status": "COMMITTED",
+      "target_files": [
+        "Add close-in booking window escalation guard, midpoint tied-rank percentile, and bounded history buffer in buyWaitGuidance"
+      ],
+      "snapshots": {
+        "Add close-in booking window escalation guard, midpoint tied-rank percentile, and bounded history buffer in buyWaitGuidance": null
+      },
+      "git_head": "44db15d38b9195228d1ffc54954a759645c824a8",
+      "committed_at": "2026-10-27T09:01:42.343Z",
+      "verification_output": "buyWaitGuidance tests passed: 13/13 green",
+      "git_commit": null
+    },
+    {
+      "task_id": "WP02-TRIP-BUDGET-SEASONAL-CALIBRATION",
+      "cycleId": "G86",
+      "started_at": "2026-10-27T09:02:10.086Z",
+      "status": "COMMITTED",
+      "target_files": [
+        "Add estimateSeasonalTripBudgetBreakdown with itemized per-person average and VAT inclusion"
+      ],
+      "snapshots": {
+        "Add estimateSeasonalTripBudgetBreakdown with itemized per-person average and VAT inclusion": null
+      },
+      "git_head": "44db15d38b9195228d1ffc54954a759645c824a8",
+      "committed_at": "2026-10-27T09:03:06.477Z",
+      "verification_output": "tripBudgetEstimator tests passed: 9/9 green",
+      "git_commit": null
+    },
+    {
+      "task_id": "WP03-GROUP-FARE-BUCKET-CLIFF-DEFENSE",
+      "cycleId": "G86",
+      "started_at": "2026-10-27T09:03:37.490Z",
+      "status": "COMMITTED",
+      "target_files": [
+        "Add evaluateBlendedFareBucketAllocation with split PNR savings analysis"
+      ],
+      "snapshots": {
+        "Add evaluateBlendedFareBucketAllocation with split PNR savings analysis": null
+      },
+      "git_head": "44db15d38b9195228d1ffc54954a759645c824a8",
+      "committed_at": "2026-10-27T09:04:35.750Z",
+      "verification_output": "groupFarePlanner tests passed: 14/14 green",
+      "git_commit": null
     }
   ],
-  "last_updated": "2026-10-27T08:48:54.307Z"
+  "last_updated": "2026-10-27T09:04:35.752Z"
 }

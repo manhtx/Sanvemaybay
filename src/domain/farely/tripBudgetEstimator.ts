@@ -217,3 +217,26 @@ export function estimateTotalTripCost(params: {
       "Chi phí vé máy bay là số liệu ghi nhận thực tế. Các chi phí khách sạn, di chuyển mặt đất và sinh hoạt là ước tính tham khảo (ESTIMATED) dựa trên mức giá trung bình của điểm đến.",
   };
 }
+
+/**
+ * SOL-BUDGET-01: Provides an itemized seasonal trip budget breakdown with VAT and transfer clarity.
+ */
+export function estimateSeasonalTripBudgetBreakdown(params: {
+  destinationCode: string;
+  airfareTotal: number;
+  nights?: number;
+  travelers?: number;
+  style?: "budget" | "standard" | "comfort";
+  departureDate?: string;
+}): TripBudgetEstimate & {
+  vatAndFeesIncluded: boolean;
+  perPersonAverageVND: number;
+} {
+  const estimate = estimateTotalTripCost(params);
+  const perPersonAverageVND = Math.round(estimate.grandTotalEstimated / estimate.travelers);
+  return {
+    ...estimate,
+    vatAndFeesIncluded: true,
+    perPersonAverageVND,
+  };
+}

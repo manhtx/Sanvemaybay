@@ -219,3 +219,69 @@ export function assertTransparentGroupFareClaim(
     }
   }
 }
+
+export interface BlendedFareBucketEvaluation {
+  isBucketCliffDetected: boolean;
+  lowerBucketFarePerPerson: number;
+  higherBucketFarePerPerson: number;
+  availableSeatsInLowerBucket: number;
+  requestedSeats: number;
+  unifiedTotalFareVND: number;
+  blendedSplitTotalFareVND: number;
+  potentialSplitSavingsVND: number;
+  recommendationVi: string;
+}
+
+/**
+ * SOL-GROUP-01: Detects inventory bucket cliff and evaluates split-PNR blended savings.
+ */
+export function evaluateBlendedFareBucketAllocation(params: {
+  lowerBucketFarePerPerson: number;
+  higherBucketFarePerPerson: number;
+  availableSeatsInLowerBucket: number;
+  requestedSeats: number;
+}): BlendedFareBucketEvaluation {
+  const lowerFare = Math.max(0, Math.round(params.lowerBucketFarePerPerson));
+  const higherFare = Math.max(0, Math.round(params.higherBucketFarePerPerson));
+  const availableLower = Math.max(0, Math.floor(params.availableSeatsInLowerBucket));
+  const requested = Math.max(1, Math.floor(params.requestedSeats));
+
+  const isCliff = requested > availableLower && availableLower > 0 && higherFare > lowerFare;
+
+  if (!isCliff) {
+    const unitFare = availableLower >= requested ? lowerFare : higherFare;
+    const total = unitFare * requested;
+    return {
+      isBucketCliffDetected: false,
+      lowerBucketFarePerPerson: lowerFare,
+      higherBucketFarePerPerson: higherFare,
+      availableSeatsInLowerBucket: availableLower,
+      requestedSeats: requested,
+      unifiedTotalFareVND: total,
+      blendedSplitTotalFareVND: total,
+      potentialSplitSavingsVND: 0,
+      recommendationVi: "Số ghế yêu cầu nằm trong cùng một dải vé giá mở bán.",
+    };
+  }
+
+  // GDS single-PNR behavior: bumps entire party to higher fare bucket
+  const unifiedTotal = higherFare * requested;
+
+  // Split-PNR behavior: allocates available lower seats first, remainder at higher bucket
+  const lowerSeatsAllocated = availableLower;
+  const higherSeatsAllocated = requested - availableLower;
+  const blendedTotal = lowerSeatsAllocated * lowerFare + higherSeatsAllocated * higherFare;
+  const savings = Math.max(0, unifiedTotal - blendedTotal);
+
+  return {
+    isBucketCliffDetected: true,
+    lowerBucketFarePerPerson: lowerFare,
+    higherBucketFarePerPerson: higherFare,
+    availableSeatsInLowerBucket: availableLower,
+    requestedSeats: requested,
+    unifiedTotalFareVND: unifiedTotal,
+    blendedSplitTotalFareVND: blendedTotal,
+    potentialSplitSavingsVND: savings,
+    recommendationVi: `Dải vé thấp chỉ còn ${availableLower} chỗ. Tách 2 mã đặt chỗ (PNR) tiết kiệm được ${savings.toLocaleString('vi-VN')} đ so với đặt chung một mã.`,
+  };
+}

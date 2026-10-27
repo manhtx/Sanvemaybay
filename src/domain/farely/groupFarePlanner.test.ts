@@ -3,6 +3,7 @@ import {
   calculateGroupFamilyFare,
   validatePassengerParty,
   assertTransparentGroupFareClaim,
+  evaluateBlendedFareBucketAllocation,
   GroupFareValidationError,
   SingleAdultPricePromotedToFamilyTotalError,
   PassengerPartyComposition,
@@ -147,6 +148,40 @@ describe("Group & Family Fare Planner (F40 & F87)", () => {
       expect(() => {
         assertTransparentGroupFareClaim(1_000_000, breakdown);
       }).toThrow(SingleAdultPricePromotedToFamilyTotalError);
+    });
+  });
+
+  describe("SOL-GROUP-01: Blended Fare Bucket Allocation & Cliff Defense", () => {
+    it("detects bucket cliff and evaluates split-PNR savings accurately", () => {
+      // 5 seats requested, 2 remaining at 1,000,000 VND, next bucket is 1,500,000 VND
+      const res = evaluateBlendedFareBucketAllocation({
+        lowerBucketFarePerPerson: 1_000_000,
+        higherBucketFarePerPerson: 1_500_000,
+        availableSeatsInLowerBucket: 2,
+        requestedSeats: 5,
+      });
+
+      expect(res.isBucketCliffDetected).toBe(true);
+      // GDS unified single PNR: 5 * 1.5M = 7.5M
+      expect(res.unifiedTotalFareVND).toBe(7_500_000);
+      // Split PNR: 2 * 1M + 3 * 1.5M = 6.5M
+      expect(res.blendedSplitTotalFareVND).toBe(6_500_000);
+      // Savings: 7.5M - 6.5M = 1.0M
+      expect(res.potentialSplitSavingsVND).toBe(1_000_000);
+      expect(res.recommendationVi).toContain("tiết kiệm được 1.000.000 đ");
+    });
+
+    it("handles non-cliff scenario when all seats fit into lower bucket", () => {
+      const res = evaluateBlendedFareBucketAllocation({
+        lowerBucketFarePerPerson: 1_000_000,
+        higherBucketFarePerPerson: 1_500_000,
+        availableSeatsInLowerBucket: 10,
+        requestedSeats: 4,
+      });
+
+      expect(res.isBucketCliffDetected).toBe(false);
+      expect(res.unifiedTotalFareVND).toBe(4_000_000);
+      expect(res.potentialSplitSavingsVND).toBe(0);
     });
   });
 });

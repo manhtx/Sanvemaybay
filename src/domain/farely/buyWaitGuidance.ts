@@ -44,6 +44,7 @@ export interface BacktestResult {
 
 export const MIN_OBSERVATION_POINTS = 14;
 export const MIN_TIMESPAN_DAYS = 7;
+export const MAX_BUY_WAIT_HISTORY_POINTS = 300;
 
 /**
  * Calculates cohort standard deviation and coefficient of variation for price series.
@@ -87,7 +88,8 @@ export function evaluateBuyWaitGuidance(params: {
   // Filter valid points with finite positive prices and valid timestamps
   const validPoints = (params.priceHistory || [])
     .filter((p) => Number.isFinite(p.price) && p.price > 0 && Number.isFinite(Date.parse(p.date)))
-    .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    .sort((a, b) => Date.parse(a.date) - Date.parse(b.date) || a.price - b.price)
+    .slice(-MAX_BUY_WAIT_HISTORY_POINTS);
 
   // Compute timespan across observations
   let timespanDays = 0;
@@ -131,9 +133,10 @@ export function evaluateBuyWaitGuidance(params: {
     };
   }
 
-  // Calculate cohort percentile of current price
+  // Calculate cohort percentile of current price using midpoint tied-rank
   const countBelow = prices.filter((p) => p < currentPrice).length;
-  const percentile = Math.round((countBelow / prices.length) * 100);
+  const countEqual = prices.filter((p) => p === currentPrice).length;
+  const percentile = Math.round(((countBelow + 0.5 * countEqual) / prices.length) * 100);
 
   // Check days until flight departure
   const evalMs = params.evaluationDate ? Date.parse(params.evaluationDate) : Date.now();
@@ -173,6 +176,24 @@ export function evaluateBuyWaitGuidance(params: {
   // SOL-CONFIDENCE-01: Calculate cohort volatility for confidence calibration
   const volatility = computeCohortVolatility(prices);
   const volatilityDamping = Math.max(0.6, 1.0 - Math.min(0.4, volatility.cv * 0.5));
+
+  // SOL-BUYWAIT-01: Close-in booking window escalation guard (<= 3 days)
+  if (daysUntilDeparture <= 3) {
+    const sampleRatio = Math.min(1, validPoints.length / 14);
+    const dynamicConfidence = Number((0.60 + 0.35 * sampleRatio).toFixed(2));
+    return {
+      recommendation: "BUY_NOW",
+      confidence: dynamicConfidence,
+      isCalibrated,
+      sampleCount: validPoints.length,
+      timespanDays,
+      cohortPercentile: percentile,
+      historicalMin: minPrice,
+      historicalMedian: medianPrice,
+      rationaleVi: `Chuyến bay khởi hành trong ${Math.max(0, Math.ceil(daysUntilDeparture))} ngày tới. Giá vé cận ngày có xu hướng tăng nhanh do các dải giá thấp đã đóng, khuyến nghị mua ngay.`,
+      scopeType,
+    };
+  }
 
   // If departing in less than 7 days, prices almost never drop (airline yield management)
   if (daysUntilDeparture <= 7 && currentPrice <= medianPrice * 1.1) {

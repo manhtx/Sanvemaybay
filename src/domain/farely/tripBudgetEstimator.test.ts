@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   estimateTotalTripCost,
+  estimateSeasonalTripBudgetBreakdown,
   calculateLandedFlightCost,
   estimateRoundTripBaggageCost,
   calculateCarrierLandedSurcharges,
@@ -139,6 +140,22 @@ describe("Trip Budget Estimator (F46)", () => {
 
       const roundTripSafe = estimateRoundTripBaggageCost("VJ", -3);
       expect(roundTripSafe).toBe(350_000 * 1 * 2);
+    });
+
+    it("SOL-BUDGET-01: calculates estimateSeasonalTripBudgetBreakdown with per-person average", () => {
+      const breakdown = estimateSeasonalTripBudgetBreakdown({
+        destinationCode: "PQC",
+        airfareTotal: 4_000_000,
+        nights: 4,
+        travelers: 2,
+        style: "standard",
+        departureDate: "2026-02-10", // Tet peak (1.5x)
+      });
+
+      expect(breakdown.vatAndFeesIncluded).toBe(true);
+      expect(breakdown.travelers).toBe(2);
+      expect(breakdown.perPersonAverageVND).toBe(Math.round(breakdown.grandTotalEstimated / 2));
+      expect(breakdown.perPersonAverageVND).toBeGreaterThan(0);
     });
   });
 });

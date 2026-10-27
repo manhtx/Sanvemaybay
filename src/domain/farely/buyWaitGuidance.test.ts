@@ -3,6 +3,7 @@ import {
   evaluateBuyWaitGuidance,
   evaluateRollingHorizonBacktest,
   computeCohortVolatility,
+  MAX_BUY_WAIT_HISTORY_POINTS,
   PricePoint,
 } from "./buyWaitGuidance";
 
@@ -233,6 +234,28 @@ describe("Trust-Calibrated Buy/Wait Guidance (F36)", () => {
       expect(evalResult.recommendation).toBe("BUY_NOW");
       expect(evalResult.confidence).toBeLessThan(0.9); // Dampened due to high volatility
       expect(evalResult.confidence).toBeGreaterThanOrEqual(0.6);
+    });
+
+    it("SOL-BUYWAIT-01: caps history to MAX_BUY_WAIT_HISTORY_POINTS and enforces close-in purchase escalation", () => {
+      const largeHistory: PricePoint[] = [];
+      const baseDate = new Date("2026-01-01").getTime();
+      for (let i = 0; i < 450; i++) {
+        const d = new Date(baseDate + i * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+        largeHistory.push({ date: d, price: 1_500_000 + (i % 10) * 10_000 });
+      }
+
+      const res = evaluateBuyWaitGuidance({
+        currentPrice: 1_800_000,
+        priceHistory: largeHistory,
+        departureDate: "2027-04-03", // 2 days from eval
+        evaluationDate: "2027-04-01",
+        scopeType: "ROUTE_LEVEL",
+      });
+
+      expect(res.sampleCount).toBe(MAX_BUY_WAIT_HISTORY_POINTS);
+      expect(res.sampleCount).toBeLessThanOrEqual(300);
+      expect(res.recommendation).toBe("BUY_NOW");
+      expect(res.rationaleVi).toContain("khởi hành trong 2 ngày tới");
     });
   });
 });
