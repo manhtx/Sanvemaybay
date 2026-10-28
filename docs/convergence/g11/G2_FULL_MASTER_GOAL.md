@@ -1,199 +1,160 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G2]
-# LEVEL: Pass 2: Before/After Specification Deepening
-# MANDATE: Assume Pass 1 was naive across all 12 lenses. Deepen file-level before/after specifications, data structures, and deterministic verification.
-# GIT_COMMIT: fe54b1f527b82c304ef362570cf4daa235ec8443
-# TIMESTAMP: 2026-10-27T10:17:38.162Z
-# EXECUTION_RECEIPT_SHA256: 8f27cb1a4bf63aa77444948de790ac2f2c6fb02699840d72da7ded9b7c0ddcca
+# LEVEL: Pass 2: Skeptical Empirical Grounding
+# MANDATE: Subject G1 specifications to hostile negative vector analysis, zero-trust boundary validation, and empirical edge-case falsification across all 12 lenses.
+# GIT_COMMIT: 774b3d00f9bd9e105ba466c058e428935b211847
+# TIMESTAMP: 2026-10-27T10:37:18.580Z
+# EXECUTION_RECEIPT_SHA256: 11d9b070a4d7f4780184180d106dd3e369f3aa90ea27d418b3530e9f284cf7e0
 
 ---
 
-## AUDIT & FALSIFICATION OF PASS N-1
+## AUDIT & FALSIFICATION OF PASS G1
+Pass G1 established the structural baseline for Cycle G92. In Pass G2, we conduct skeptical adversarial review across the 12 lenses, demonstrating 3 naive assumptions in G1 that require empirical fortification:
 
-Pass G1 projected the structural A–K framework. In this Pass G2, we subject Pass G1 to empirical code-level scrutiny and falsify 3 underspecified implementation details:
+1. **Hostile Lens 2 & 6 Falsification: Non-String Timestamp Deserialization Crash in `comparator.ts`**:
+   - *G1 Deficit*: G1 assumed `o.observedAt` is always a sanitized string and called `.slice(0, 10)` directly.
+   - *G2 Empirical Correction*: If partner scrapers or JSON deserializers produce an integer Unix epoch timestamp (`1730000000000`) or a Date object, calling `.slice(0, 10)` throws `TypeError: o.observedAt.slice is not a function`, completely halting the comparator engine. G2 enforces defensive type checking: `typeof o.observedAt === 'string' && o.observedAt.length >= 10 && !isNaN(Date.parse(o.observedAt))`. If the type check fails, the observation is omitted from temporal cohorts without throwing.
 
-1. **Falsification 1: Underspecified Calendar Day Calculation in `buyWaitGuidance.ts` (L02 & L06)**:
-   - *Pass G1 Proposal*: Pass G1 stated "implement calendar-day difference calculation to avoid timezone offset errors" without concrete code specs.
-   - *Falsification & Concrete Before/After Spec*: In `src/domain/farely/buyWaitGuidance.ts#L142-L158`:
-     ```typescript
-     // BEFORE:
-     const evalMs = params.evaluationDate ? Date.parse(params.evaluationDate) : Date.now();
-     const evalDate = Number.isFinite(evalMs) ? new Date(evalMs) : new Date();
-     const depDate = new Date(params.departureDate);
-     const daysUntilDeparture = Math.round((depDate.getTime() - evalDate.getTime()) / (1000 * 60 * 60 * 24));
+2. **Hostile Lens 1 & 3 Falsification: Ambiguous `isBaggageExplicitlyIncluded: false` in `costEpistemics.ts`**:
+   - *G1 Deficit*: G1 checked `if (params.isBaggageExplicitlyIncluded)` but omitted handling for explicit false values.
+   - *G2 Empirical Correction*: On unbundled carriers or Basic Economy fares where a provider explicitly states `isBaggageExplicitlyIncluded: false`, legacy carrier heuristics could still mark baggage as `UNKNOWN`. G2 proves that when `isBaggageExplicitlyIncluded === false`, baggage must be classified as `ESTIMATED` with standard unbundled ancillary fees regardless of whether the carrier is legacy or budget, warning users that the ticket excludes luggage.
 
-     // AFTER:
-     const evalIso = (params.evaluationDate && !isNaN(Date.parse(params.evaluationDate)))
-       ? new Date(params.evaluationDate).toISOString().slice(0, 10)
-       : new Date().toISOString().slice(0, 10);
-     const depIso = (typeof params.departureDate === 'string' && params.departureDate.length >= 10)
-       ? params.departureDate.slice(0, 10)
-       : '';
-     if (!depIso || isNaN(Date.parse(depIso))) {
-       return {
-         recommendation: "INSUFFICIENT_DATA",
-         confidence: 0,
-         isCalibrated: false,
-         sampleCount: validPoints.length,
-         timespanDays,
-         rationaleVi: "Ngày khởi hành không hợp lệ hoặc không thể phân tích.",
-         scopeType,
-       };
-     }
-     const daysUntilDeparture = Math.round((Date.parse(depIso + "T00:00:00Z") - Date.parse(evalIso + "T00:00:00Z")) / 86400000);
-     ```
-
-2. **Falsification 2: Underspecified Date Normalization in `routeBest.ts` (L01 & L05)**:
-   - *Pass G1 Proposal*: Pass G1 stated "slice date strings to 10 characters" without specifying window boundary comparisons.
-   - *Falsification & Concrete Before/After Spec*: In `src/domain/farely/routeBest.ts#L96-L115`:
-     ```typescript
-     // BEFORE:
-     if (intent.journeyType === 'ROUND_TRIP') {
-       if (!offer.returnDate) {
-         reasons.push('MISSING_RETURN_DATE');
-       } else if (intent.inbound?.exact && offer.returnDate !== intent.inbound.exact) {
-         reasons.push('RETURN_DATE_MISMATCH');
-       }
-     }
-     if (intent.outbound.exact && offer.departDate !== intent.outbound.exact) {
-       reasons.push('OUTBOUND_DATE_MISMATCH');
-     }
-
-     // AFTER:
-     const offerDepart = (offer.departDate || '').slice(0, 10);
-     const intentDepart = intent.outbound.exact ? intent.outbound.exact.slice(0, 10) : undefined;
-     if (intentDepart && offerDepart !== intentDepart) {
-       reasons.push('OUTBOUND_DATE_MISMATCH');
-     } else if (intent.outbound.from && intent.outbound.to) {
-       const from = intent.outbound.from.slice(0, 10);
-       const to = intent.outbound.to.slice(0, 10);
-       if (offerDepart < from || offerDepart > to) {
-         reasons.push('OUTBOUND_DATE_MISMATCH');
-       }
-     }
-     ```
-
-3. **Falsification 3: Underspecified Non-Positive Observed Price Check in `watchCondition.ts` (L04 & L08)**:
-   - *Pass G1 Proposal*: Pass G1 mentioned "guard against non-positive prices" but did not specify the fail-closed return signature.
-   - *Falsification & Concrete Before/After Spec*: In `src/domain/farely/watchCondition.ts#L57-L67`:
-     ```typescript
-     // BEFORE:
-     if (
-       params.conditionInput === 'INSUFFICIENT_EVIDENCE' ||
-       params.observedPrice == null ||
-       !Number.isFinite(params.observedPrice)
-     )
-
-     // AFTER:
-     if (
-       params.conditionInput === 'INSUFFICIENT_EVIDENCE' ||
-       params.observedPrice == null ||
-       !Number.isFinite(params.observedPrice) ||
-       params.observedPrice <= 0
-     ) {
-       return {
-         nextEpisode: active,
-         stateChanged: false,
-         shouldAlert: false,
-         transitionReason: 'INSUFFICIENT_EVIDENCE: Scope unmonitored, no observations, or invalid non-positive price. Episode state preserved intact.'
-       };
-     }
-     ```
+3. **Hostile Lens 2 & 9 Falsification: Sub-Dong Floating Residue in `savings.ts`**:
+   - *G1 Deficit*: G1 checked for non-negative numbers but did not enforce integer currency quantization.
+   - *G2 Empirical Correction*: Vietnam Dong (VND) does not permit fractional currency units. Floating-point subtraction can generate `0.00000000001` or `1.1` dong. G2 mandates integer quantization: `savingsAmount = Math.max(0, Math.round(benchmarkPrice - observedPrice))`, guaranteeing exact integer currency alignment.
 
 ---
 
 ## SECTION B: INVARIANT EXECUTOR CAGE
 - `INVARIANT_EXECUTOR_LOCK: STRICT_NO_DEVIATION`
-- `NO_DIRECT_TICKETING`: Farely does not issue airline tickets, manage PNR records directly, or process ticket issuance.
-- `NO_PASSENGER_CHECKOUT`: Farely never collects passenger passport numbers, never handles credit card numbers, and never operates a checkout cart. All bookings route externally via deep links with verified affiliate parameters.
-- `NO_SELF_CERTIFICATION`: Every gate is certified strictly by automated Vitest and Node native test suites.
-- `NO_CONTRACT_SHRINKAGE`: All 89 capability contracts (F00..F88) and 267 historical acceptance gates remain immutable.
+- `NO_DIRECT_TICKETING`: Direct airline ticketing, reservation booking, PNR management strictly boundary excluded.
+- `NO_PASSENGER_CHECKOUT`: Direct passenger data handling, credit card input, checkout carts strictly boundary excluded.
+- `NO_SELF_CERTIFICATION`: Every fix must pass automated Vitest and Node native test suites.
+- `NO_CONTRACT_SHRINKAGE`: Preserves all 89 capability contracts (F00..F88) and 267 historical gates.
 
 ---
 
-## SECTION C: TARGET MODULES & WORK PACKAGES
-- **WP01-BUYWAIT-VOLATILITY-SANITIZATION**:
-  - Target: `src/domain/farely/buyWaitGuidance.ts`, `src/domain/farely/buyWaitGuidance.test.ts`
-  - Sanitize price series to finite numbers $> 0$ in `computeCohortVolatility`.
-  - Clamp sample variance to non-negative values before taking `Math.sqrt` (`Math.max(0, variance)`).
-  - Clamp `cv` to 0 when mean $\le 0$.
-  - Implement calendar-day difference calculation in `evaluateBuyWaitGuidance` to avoid timezone offset errors.
-  - Clamp `horizonDays >= 1` and `minTrainingPoints >= 14` in `evaluateRollingHorizonBacktest`.
+## SECTION C: TARGET WORK PACKAGES SPECIFICATION
+- **WP01-COMPARATOR-EVIDENCE-ROBUSTNESS**:
+  - Guard `compareAgainstCohort` with `if (!Number.isFinite(currentPrice) || currentPrice <= 0)` -> fail-closed to `INSUFFICIENT` evidence.
+  - Remove departure date fallback when `observedAt` is missing to enforce REQ-COMP-004.
+  - Guard timestamp operations against non-string or malformed inputs.
+  - Zero-dispersion cohort defense: if all cohort prices are identical, discounts $< 10\%$ yield `Giá tiêu chuẩn`.
+  - Comprehensive unit test in `src/domain/farely/comparator.test.ts` [PROPOSED_NEW].
 
-- **WP02-ROUTEBEST-DETERMINISTIC-ROBUSTNESS**:
-  - Target: `src/domain/farely/routeBest.ts`, `src/domain/farely/routeBest.test.ts` [PROPOSED_NEW]
-  - Round price comparisons to integer VND in `selectRouteBest` (`Math.round(a.price) - Math.round(b.price)`).
-  - Normalize non-positive prices to `0` in `normalizeOfferForIntent`.
-  - Slice date strings to 10 characters (`YYYY-MM-DD`) in `evaluateOfferEligibility`.
-  - Guard `a.id.localeCompare(b.id)` with `String(a.id || '').localeCompare(String(b.id || ''))`.
-  - Create comprehensive unit test suite in `src/domain/farely/routeBest.test.ts` [PROPOSED_NEW] covering all 14 ineligibility reasons.
+- **WP02-COSTEPISTEMICS-TRANSPARENCY-GUARD**:
+  - Sanitize `params.basePrice = Number.isFinite(params.basePrice) && params.basePrice >= 0 ? params.basePrice : 0`.
+  - Register Pacific Airlines (`BL`) in `BUDGET_CARRIER_CODES`.
+  - Enforce `params.isBaggageExplicitlyIncluded === true || params.providerVerifiedAllIn === true` precedence.
+  - Comprehensive unit test in `src/domain/farely/costEpistemics.test.ts` [PROPOSED_NEW].
 
-- **WP03-WATCHCONDITION-EPISODE-SOUNDNESS**:
-  - Target: `src/domain/farely/watchCondition.ts`, `src/domain/farely/watchCondition.test.ts` [PROPOSED_NEW]
-  - Guard `evaluateWatchCondition` against non-positive (`<= 0`) prices failing closed to `INSUFFICIENT_EVIDENCE`.
-  - Self-heal non-positive `active.bestPrice` values in `activeEpisode`.
-  - Handle `generationId` mismatch by closing prior episode before opening new generation.
-  - Create comprehensive unit test suite in `src/domain/farely/watchCondition.test.ts` [PROPOSED_NEW] verifying NC-017, NC-018, NC-019.
+- **WP03-SAVINGS-RELATIVE-VALUE-BOUNDS**:
+  - Validate `!Number.isFinite(observedPrice) || !Number.isFinite(benchmarkPrice) || observedPrice <= 0 || benchmarkPrice <= 0`.
+  - Enforce integer VND rounding on `savingsAmount = Math.max(0, Math.round(benchmarkPrice - observedPrice))`.
+  - Normalize non-positive savings to `{ savingsAmount: 0, savingsPercent: 0, isSaving: false }`.
+  - Comprehensive unit test in `src/domain/farely/savings.test.ts` [PROPOSED_NEW].
 
 ---
 
-## SECTION D: 12 ADVERSARIAL LENSES SPECIFICATION
-1. **L01: Product Truth & Founder Scope Integrity**: Mathematical minimum price selection; no commercial deal overrides; strict location scope satisfaction.
-2. **L02: Price, Historical Baseline & Data Integrity**: Rejection of NaN, negative, non-finite prices; integer rounding in VND; non-negative variance.
-3. **L03: Deal Score, Statistical Confidence & Cost Monotonicity**: 14 observation points over 7 days required; volatility damping prevents false high confidence.
-4. **L04: Auth, Privacy, Tenant Isolation & RLS Matrix**: Generation-aware watch condition episodes; isolated pure domain functions.
-5. **L05: Provider Drift, Circuit Breakers & Kill Switches**: Fail-closed `UNKNOWN_COMPATIBILITY` classification for unresolvable pricing units or party totals.
-6. **L06: Freshness, Stale Degradation & UX Honesty**: Calendar day normalization avoids timezone skew; departed flights return `INSUFFICIENT_DATA`.
-7. **L07: Observability, Secret Scrubbing & Error Boundaries**: Strongly-typed ineligibility reasons (`ORIGIN_MISMATCH`, `CABIN_MISMATCH`, etc.) without secrets.
-8. **L08: Database Architecture, Schema Drift & Migration Provenance**: Unique partial index on `(watch_id) WHERE closed_at IS NULL` preserves single open episode.
-9. **L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)**: C1 unit tests for algorithms; C2 integration tests for Supabase RLS.
-10. **L10: Anti-Shrinkage & 267 Historical Gates Traceability**: Preservation of 192 P0, 74 P1, 1 P2 gates verified by contract tests.
-11. **L11: Turnkey Execution, Topological DAG & Rollback Runbooks**: ACID transactions via `transactional-task-manager.mjs`.
-12. **L12: Zero-Trust Release & Remote Git Synchronization**: Push to `antigravity/farely-v12-product-convergence` with remote SHA equality.
+## THE 12 ADVERSARIAL LENSES EMPIRICAL MATRIX
+
+### L01: Product Truth & Founder Scope Integrity
+- **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
+- **Physical Code Citations**: `src/domain/farely/comparator.ts:97-165`, `src/domain/farely/costEpistemics.ts:1-75`
+- **Adversarial Vector Defense**: Defends against NEG-01 and NEG-34. True cost evaluation respects explicit provider inclusion over generic heuristics.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts:96-150`.
 
 ---
 
-## SECTION E: EXACT BEFORE/AFTER DELTAS
-(See detailed code specs in Audit & Falsification section above).
+### L02: Price, Historical Baseline & Data Integrity
+- **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).
+- **Physical Code Citations**: `src/domain/farely/savings.ts:17-38`, `src/domain/farely/comparator.ts:101-107`
+- **Adversarial Vector Defense**: Defends against NEG-04 and NEG-08. Input prices and fee amounts are strictly validated as positive finite numbers.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/domainKernel.test.ts:74-95`.
 
 ---
 
-## SECTION F: NEGATIVE VECTOR DEFENSE MATRIX
-- **NV01**: Defended by full candidate array evaluation in `selectRouteBest`.
-- **NV04**: Defended by strict `price > 0` validation in `buyWaitGuidance` and `routeBest`.
-- **NV08**: Defended by separate historical cohort evaluation and non-negative Bessel variance.
-- **NV10**: Defended by calendar day normalization in `buyWaitGuidance`.
-- **NV12**: Defended by typed `UNKNOWN_COMPATIBILITY` classification.
-- **NV20**: Defended by non-positive price fail-closed check in `watchCondition`.
+### L03: Deal Score, Statistical Confidence & Cost Monotonicity
+- **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.
+- **Physical Code Citations**: `src/domain/farely/comparator.ts:60-92`, `src/domain/farely/costEpistemics.ts:27-47`
+- **Adversarial Vector Defense**: Defends against NEG-09. Evidence level determines verdict labels; zero-dispersion cohorts cannot claim spurious discounts.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
 
 ---
 
-## SECTION G: TOPOLOGICAL TASK EXECUTION ORDER
-1. Task 1: `WP01-BUYWAIT-VOLATILITY-SANITIZATION`
-2. Task 2: `WP02-ROUTEBEST-DETERMINISTIC-ROBUSTNESS`
-3. Task 3: `WP03-WATCHCONDITION-EPISODE-SOUNDNESS`
+### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
+- **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts and user credentials.
+- **Physical Code Citations**: `src/domain/farely/costEpistemics.ts:27-47`, `supabase/migrations/20261022000001_watch_condition_episodes.sql:20-55`
+- **Adversarial Vector Defense**: Defends against NEG-19 and NEG-20. Pure domain functions do not touch user credentials or persist unvetted state.
+- **Verification Proof (C0..C4)**: C2 Integration test in `scripts/database-architecture-contract.node-test.mjs`.
 
 ---
 
-## SECTION H: VERIFICATION COMMAND SUITE
-- `npx vitest run src/domain/farely/buyWaitGuidance.test.ts`
-- `npx vitest run src/domain/farely/routeBest.test.ts`
-- `npx vitest run src/domain/farely/watchCondition.test.ts`
-- `npm test`
+### L05: Provider Drift, Circuit Breakers & Kill Switches
+- **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.
+- **Physical Code Citations**: `src/domain/farely/costEpistemics.ts:65-75`, `src/domain/farely/providerCapabilities.ts:1-50`
+- **Adversarial Vector Defense**: Defends against NEG-12. Unknown ancillary fees fail closed to `UNKNOWN` cost epistemic state.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
 
 ---
 
-## SECTION I: ROLLBACK & SRE RUNBOOK
-- On task failure: `node scripts/convergence/transactional-task-manager.mjs rollback <task_id>`
-- To inspect status: `node scripts/convergence/transactional-task-manager.mjs status`
+### L06: Freshness, Stale Degradation & UX Honesty
+- **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.
+- **Physical Code Citations**: `src/domain/farely/comparator.ts:8-12`, `src/domain/farely/pwaOfflineFreshness.ts:25-50`
+- **Adversarial Vector Defense**: Defends against NEG-10 and NEG-35. Observation dates must be authentic UTC timestamps and never alias departure dates.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/domainKernel.test.ts`.
 
 ---
 
-## SECTION J: ZERO-TRUST GIT SYNCHRONIZATION
-- Commit message format: `feat(convergence): complete Cycle G91 5x5 recursive convergence and lock WP01-WP03`
-- Push target: `origin/antigravity/farely-v12-product-convergence`
-- Parity command: `git ls-remote origin antigravity/farely-v12-product-convergence`
+### L07: Observability, Secret Scrubbing & Error Boundaries
+- **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.
+- **Physical Code Citations**: `src/domain/farely/comparator.ts:31-34`, `src/domain/farely/costEpistemics.ts:18-25`
+- **Adversarial Vector Defense**: Defends against NEG-39. Discrete typed error reasons ensure auditable system observability.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
 
 ---
 
-## SECTION K: COMMITMENT & HANDOFF CONTRACT
-This Master Goal is completely locked and self-contained. The executor must follow all steps sequentially using the transactional task manager.
+### L08: Database Architecture, Schema Drift & Migration Provenance
+- **Focus**: Zero unversioned migration drift; bidirectional migration parity; single open episode constraint.
+- **Physical Code Citations**: `supabase/migrations/20261022000001_watch_condition_episodes.sql:1-60`
+- **Adversarial Vector Defense**: Defends against NEG-22. Atomic transitions prevent duplicate notifications during retries.
+- **Verification Proof (C0..C4)**: C2 Integration test in `scripts/database-architecture-contract.node-test.mjs`.
+
+---
+
+### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
+- **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.
+- **Physical Code Citations**: `docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json:1-120`
+- **Adversarial Vector Defense**: Defends against NEG-40. Code proof (C1) does not substitute for contract proof (C0) or runtime proof (C3).
+- **Verification Proof (C0..C4)**: Full test execution suite (Vitest + Node test).
+
+---
+
+### L10: Anti-Shrinkage & 267 Historical Gates Traceability
+- **Focus**: Preservation of all 192 P0, 74 P1, 1 P2 gates; zero dropping of historical commitments.
+- **Physical Code Citations**: `scripts/verify-certification-integrity.node-test.mjs:1-120`
+- **Adversarial Vector Defense**: Defends against NEG-30 and NEG-33. Traceability verified across all historical gates.
+- **Verification Proof (C0..C4)**: C0 Contract proof in `scripts/verify-certification-integrity.node-test.mjs`.
+
+---
+
+### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
+- **Focus**: Zero-deadlock dependency order; file-level before/after specs; transactional ACID rollbacks.
+- **Physical Code Citations**: `scripts/convergence/transactional-task-manager.mjs:1-150`
+- **Adversarial Vector Defense**: Defends against partial file writes. The transactional task manager guarantees clean rollbacks.
+- **Verification Proof (C0..C4)**: C1 Verification in `scripts/convergence/transactional-task-manager.mjs`.
+
+---
+
+### L12: Zero-Trust Release & Remote Git Synchronization
+- **Focus**: Local tests passing != Done; mandatory push to antigravity/farely-v12-product-convergence with remote SHA match.
+- **Physical Code Citations**: `scripts/convergence/continuous_5x5_orchestrator.mjs:1-250`
+- **Adversarial Vector Defense**: Defends against NEG-27. Local commits must match remote GitHub SHA.
+- **Verification Proof (C0..C4)**: `git ls-remote origin antigravity/farely-v12-product-convergence` equality proof.
+
+---
+
+## SECTION J: EXECUTION RUNBOOK & ACID COMMITS
+1. Task 1: `WP01-COMPARATOR-EVIDENCE-ROBUSTNESS` -> run `npx vitest run src/domain/farely/comparator.test.ts`.
+2. Task 2: `WP02-COSTEPISTEMICS-TRANSPARENCY-GUARD` -> run `npx vitest run src/domain/farely/costEpistemics.test.ts`.
+3. Task 3: `WP03-SAVINGS-RELATIVE-VALUE-BOUNDS` -> run `npx vitest run src/domain/farely/savings.test.ts`.
+4. Full regression check -> `npm test`.

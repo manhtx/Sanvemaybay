@@ -50,7 +50,7 @@ function computeMedian(sortedValues: number[]): number {
   if (n % 2 !== 0) {
     return sortedValues[mid];
   }
-  return (sortedValues[mid - 1] + sortedValues[mid]) / 2;
+  return Math.round((sortedValues[mid - 1] + sortedValues[mid]) / 2);
 }
 
 /**
@@ -98,8 +98,22 @@ export function compareAgainstCohort(
   currentPrice: number,
   cohortObservations: HistoricalObservation[]
 ): ComparisonResult {
+  // Fail-closed guard against non-positive or non-finite current price
+  if (!Number.isFinite(currentPrice) || currentPrice <= 0) {
+    return {
+      currentPrice,
+      sampleSize: 0,
+      medianPrice: null,
+      lowestHistoricalPrice: null,
+      discountVsMedianPercent: null,
+      evidenceLevel: 'INSUFFICIENT',
+      verdictLabel: 'Không đủ dữ liệu',
+      uniqueEpochs: 0
+    };
+  }
+
   const validObservations = cohortObservations
-    .filter(o => Number.isFinite(o.price) && o.price > 0);
+    .filter(o => typeof o.price === 'number' && Number.isFinite(o.price) && o.price > 0);
 
   const validPrices = validObservations
     .map(o => o.price)
@@ -109,15 +123,34 @@ export function compareAgainstCohort(
 
   const epochs = new Set(
     validObservations
-      .map(o => o.scanEpoch || o.observedAt.slice(0, 13))
-      .filter(Boolean)
+      .map(o => {
+        if (o.scanEpoch) return o.scanEpoch;
+        if (typeof o.observedAt === 'string' && o.observedAt.length >= 10) {
+          const parsed = new Date(o.observedAt);
+          if (!isNaN(parsed.getTime())) {
+            return parsed.toISOString().slice(0, 13);
+          }
+        }
+        return null;
+      })
+      .filter((e): e is string => e !== null)
   );
   const uniqueEpochs = epochs.size;
 
+  // REQ-COMP-004: Observation date must never become travel date.
+  // Eradicate departLocalDate fallback; only authentic observedAt timestamps are accepted.
   const days = new Set(
     validObservations
-      .map(o => (o.observedAt ? o.observedAt.slice(0, 10) : o.departLocalDate))
-      .filter(Boolean)
+      .map(o => {
+        if (typeof o.observedAt === 'string' && o.observedAt.length >= 10) {
+          const parsed = new Date(o.observedAt);
+          if (!isNaN(parsed.getTime())) {
+            return parsed.toISOString().slice(0, 10);
+          }
+        }
+        return null;
+      })
+      .filter((d): d is string => d !== null)
   );
   const distinctDays = days.size;
 
@@ -143,12 +176,15 @@ export function compareAgainstCohort(
 
   const discountPercent = Math.round(((medianPrice - currentPrice) / medianPrice) * 100);
 
+  // Zero-dispersion cohort defense: when all observations are identical, require >= 10% drop
+  const isZeroDispersion = validPrices.length >= 2 && validPrices[0] === validPrices[validPrices.length - 1];
+
   let verdictLabel = 'Giá tiêu chuẩn';
   if (discountPercent >= 20 && evidenceLevel === 'STRONG') {
     verdictLabel = 'Giá rất tốt';
   } else if (discountPercent >= 10 && (evidenceLevel === 'STRONG' || evidenceLevel === 'MODERATE')) {
     verdictLabel = 'Giá đáng chú ý';
-  } else if (discountPercent > 0) {
+  } else if (discountPercent > 0 && !isZeroDispersion) {
     verdictLabel = 'Thấp hơn mức thông thường';
   }
 

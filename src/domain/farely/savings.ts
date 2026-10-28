@@ -15,24 +15,32 @@ export interface SavingsSummary {
  * Calculates absolute and relative savings against a benchmark price.
  */
 export function calculateSavings(observedPrice: number, benchmarkPrice: number): SavingsSummary {
-  if (benchmarkPrice <= 0 || observedPrice <= 0) {
+  // Eliminate IEEE 754 NaN and negative price bypasses
+  if (
+    !Number.isFinite(observedPrice) ||
+    !Number.isFinite(benchmarkPrice) ||
+    observedPrice <= 0 ||
+    benchmarkPrice <= 0
+  ) {
     return {
-      observedPrice,
-      benchmarkPrice,
+      observedPrice: Number.isFinite(observedPrice) ? observedPrice : 0,
+      benchmarkPrice: Number.isFinite(benchmarkPrice) ? benchmarkPrice : 0,
       savingsAmount: 0,
       savingsPercent: 0,
       isSaving: false
     };
   }
 
-  const savingsAmount = Math.max(0, benchmarkPrice - observedPrice);
-  const savingsPercent = Math.round((savingsAmount / benchmarkPrice) * 100);
+  const rawDiff = benchmarkPrice - observedPrice;
+  const savingsAmount = rawDiff > 0 ? Math.round(rawDiff) : 0;
+  const savingsPercent = savingsAmount > 0 ? Math.round((savingsAmount / benchmarkPrice) * 100) : 0;
+  const isSaving = savingsAmount > 0;
 
   return {
     observedPrice,
     benchmarkPrice,
     savingsAmount,
     savingsPercent,
-    isSaving: savingsAmount > 0
+    isSaving
   };
 }
