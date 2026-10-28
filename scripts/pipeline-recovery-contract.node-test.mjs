@@ -75,3 +75,32 @@ test("NODE CP-01 & CP-02: control plane evaluates proof dynamically and maintain
     );
   }
 });
+
+test("NODE COV-02: fast-flights-worker implements demand-aware priority scheduling using active Watch demand", async () => {
+  const workerCode = await readFile(new URL("../scripts/fast-flights-worker.py", import.meta.url), "utf8");
+  assert.ok(
+    workerCode.includes("active_watch_routes") && workerCode.includes("user_alerts"),
+    "worker must query active watches from user_alerts",
+  );
+  assert.ok(
+    workerCode.includes("route_sort_key") && workerCode.includes("has_demand"),
+    "worker must prioritize routes with active watch demand",
+  );
+});
+
+test("NODE COV-03: fast-flights-worker aggregates route & window health metrics summary", async () => {
+  const workerCode = await readFile(new URL("../scripts/fast-flights-worker.py", import.meta.url), "utf8");
+  assert.ok(
+    workerCode.includes("windows_empty_verified"),
+    "worker must track verified empty windows",
+  );
+  assert.ok(
+    workerCode.includes("windows_degraded"),
+    "worker must track degraded windows",
+  );
+  assert.ok(
+    workerCode.includes("summary_metrics"),
+    "worker must produce structured summary_metrics",
+  );
+});
+

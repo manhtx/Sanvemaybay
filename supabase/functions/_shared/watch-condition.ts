@@ -32,6 +32,43 @@ export interface EpisodeEvaluationResult {
 
 export type WatchConditionInput = 'MATCH' | 'CONFIRMED_NON_MATCH' | 'INSUFFICIENT_EVIDENCE';
 
+export interface WatchCriteriaInput {
+  origin_code?: string | null;
+  destination_code?: string | null;
+  date_from?: string | null;
+  date_to?: string | null;
+  return_date?: string | null;
+  max_stops?: number | string | null;
+  criteria_version?: number | string | null;
+  cabin?: string | null;
+  trip_type?: string | null;
+  passengers?: number | string | null;
+}
+
+export function buildConditionFingerprint(params: {
+  watchId: string;
+  targetPrice: number;
+  criteria?: WatchCriteriaInput | null;
+}): string {
+  if (!params.criteria) {
+    return `cond_${params.watchId}_${params.targetPrice}`;
+  }
+  const origin = (params.criteria.origin_code ?? "").trim().toUpperCase();
+  const dest = (params.criteria.destination_code ?? "").trim().toUpperCase();
+  const dateFrom = (params.criteria.date_from ?? "").trim();
+  const dateTo = (params.criteria.date_to ?? "").trim();
+  const returnDate = (params.criteria.return_date ?? "").trim();
+  const maxStops = params.criteria.max_stops == null ? "" : String(params.criteria.max_stops);
+  const version = params.criteria.criteria_version == null ? "" : String(params.criteria.criteria_version);
+  const cabin = (params.criteria.cabin ?? "").trim().toLowerCase();
+  const tripType = (params.criteria.trip_type ?? "").trim().toLowerCase();
+  const passengers = params.criteria.passengers == null ? "" : String(params.criteria.passengers);
+
+  const extra = (cabin || tripType || passengers) ? `_${cabin}_${tripType}_${passengers}` : "";
+
+  return `cond_${params.watchId}_${params.targetPrice}_${origin}_${dest}_${dateFrom}_${dateTo}_${returnDate}_${maxStops}_${version}${extra}`;
+}
+
 export function evaluateWatchCondition(params: {
   watchId: string;
   targetPrice: number;
@@ -40,9 +77,40 @@ export function evaluateWatchCondition(params: {
   activeEpisode: WatchConditionEpisode | null;
   generationId?: string | null;
   now?: string;
+  criteria?: WatchCriteriaInput | null;
 }): EpisodeEvaluationResult {
   const now = params.now || new Date().toISOString();
-  const active = params.activeEpisode;
+  let active = params.activeEpisode;
+  const currentFingerprint = buildConditionFingerprint({
+    watchId: params.watchId,
+    targetPrice: params.targetPrice,
+    criteria: params.criteria,
+  });
+
+  // RC-15: Criteria or target price mutation check
+  // If an active episode exists with a different fingerprint, criteria was modified
+  if (active && !active.closed_at && active.state !== 'EXITED' && active.condition_fingerprint) {
+    if (active.condition_fingerprint !== currentFingerprint) {
+      if (
+        params.conditionInput === 'CONFIRMED_NON_MATCH' ||
+        (params.observedPrice != null && Number.isFinite(params.observedPrice) && params.observedPrice > params.targetPrice)
+      ) {
+        return {
+          nextEpisode: {
+            ...active,
+            closed_at: now,
+            state: 'EXITED',
+            last_event_at: now,
+          },
+          stateChanged: true,
+          shouldAlert: false,
+          transitionReason: `Criteria mutated (${active.condition_fingerprint} -> ${currentFingerprint}) and candidate does not match. Previous episode EXITED.`,
+        };
+      }
+      // If eligible under new criteria, supersede old episode so a fresh episode enters
+      active = null;
+    }
+  }
 
   // Case 0: INSUFFICIENT_EVIDENCE (F18) - Preserve active episode state intact; never false EXIT
   if (
@@ -93,7 +161,7 @@ export function evaluateWatchCondition(params: {
     const newEpisode: WatchConditionEpisode = {
       id: `ep_${params.watchId}_${Date.now()}`,
       watch_id: params.watchId,
-      condition_fingerprint: `cond_${params.watchId}_${params.targetPrice}`,
+      condition_fingerprint: currentFingerprint,
       opened_at: now,
       closed_at: null,
       state: newState,

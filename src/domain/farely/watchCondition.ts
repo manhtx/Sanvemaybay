@@ -56,13 +56,29 @@ export function evaluateWatchCondition(params: {
   if (
     params.conditionInput === 'INSUFFICIENT_EVIDENCE' ||
     params.observedPrice == null ||
-    !Number.isFinite(params.observedPrice)
+    !Number.isFinite(params.observedPrice) ||
+    params.observedPrice <= 0
   ) {
     return {
       nextEpisode: active,
       stateChanged: false,
       shouldAlert: false,
-      transitionReason: 'INSUFFICIENT_EVIDENCE: Scope unmonitored or no observations. Episode state preserved intact.'
+      transitionReason: 'INSUFFICIENT_EVIDENCE: Scope unmonitored, no observations, or non-positive price. Episode state preserved intact.'
+    };
+  }
+
+  // Epoch boundary isolation: when watch search criteria changes (generationId mismatch)
+  if (active && active.state !== 'EXITED' && params.generationId && active.generationId && active.generationId !== params.generationId) {
+    return {
+      nextEpisode: {
+        ...active,
+        closedAt: now,
+        state: 'EXITED',
+        lastEventAt: now
+      },
+      stateChanged: true,
+      shouldAlert: false,
+      transitionReason: `GENERATION_EPOCH_MISMATCH: Watch condition generation modified (${active.generationId} -> ${params.generationId}). Prior episode closed.`
     };
   }
 
@@ -122,8 +138,12 @@ export function evaluateWatchCondition(params: {
   }
 
   // Sub-case 2b: Already inside active episode
+  // Self-heal corrupted non-positive bestPrice
+  const baselineBestPrice = (active.bestPrice > 0) ? active.bestPrice : active.entryPrice;
+  const cleanBestPrice = (baselineBestPrice > 0) ? baselineBestPrice : params.observedPrice;
+
   // Check for material improvement (NC-019: drop of at least 5% below previous best)
-  const dropPercent = ((active.bestPrice - params.observedPrice) / active.bestPrice) * 100;
+  const dropPercent = ((cleanBestPrice - params.observedPrice) / cleanBestPrice) * 100;
   if (dropPercent >= 5) {
     return {
       nextEpisode: {
@@ -140,7 +160,7 @@ export function evaluateWatchCondition(params: {
   }
 
   // Sub-case 2c: Still inside with minor or no improvement
-  const updatedBest = Math.min(active.bestPrice, params.observedPrice);
+  const updatedBest = Math.min(cleanBestPrice, params.observedPrice);
   return {
     nextEpisode: {
       ...active,

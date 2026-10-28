@@ -13,7 +13,7 @@
     "test:e2e": "playwright test",
     "test:all": "npm test && npm run test:functions && npm run test:e2e",
     "check:functions": "for f in supabase/functions/*/index.ts; do npx --yes deno check --quiet \"$f\" || exit 1; done",
-    "test:functions": "npx --yes deno test --allow-env supabase/functions/_shared",
+    "test:functions": "npx --yes deno test --allow-env --allow-read supabase/functions/_shared",
     "test:integration": "node scripts/supabase-smoke.mjs",
     "audit:production-truth": "node scripts/production-truth.mjs",
     "audit:security-read": "node scripts/security-smoke.mjs",
@@ -21,7 +21,16 @@
     "deploy": "node scripts/deploy.mjs",
     "supabase:link": "npx supabase link",
     "supabase:push": "npx supabase db push",
-    "supabase:functions": "npx supabase functions deploy flight-ingest && npx supabase functions deploy analyze-price && npx supabase functions deploy ai-explainer && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert && npx supabase functions deploy manage-user-data && npx supabase functions deploy feed-snapshot && npx supabase functions deploy refresh-observed-fares && npx supabase functions deploy observed-fares && npx supabase functions deploy deal-redirect && npx supabase functions deploy flight-search && npx supabase functions deploy track-event && npx supabase functions deploy retention-cleanup"
+    "supabase:functions": "npx supabase functions deploy flight-ingest && npx supabase functions deploy analyze-price && npx supabase functions deploy ai-explainer && npx supabase functions deploy alert-processor && npx supabase functions deploy setup-alert && npx supabase functions deploy manage-alert && npx supabase functions deploy manage-user-data && npx supabase functions deploy feed-snapshot && npx supabase functions deploy refresh-observed-fares && npx supabase functions deploy observed-fares && npx supabase functions deploy deal-redirect && npx supabase functions deploy flight-search && npx supabase functions deploy track-event && npx supabase functions deploy retention-cleanup",
+    "convergence:status": "node scripts/convergence/watchdog-convergence.mjs",
+    "convergence:integrity": "node scripts/convergence/watchdog-convergence.mjs integrity",
+    "convergence:ledger": "node scripts/convergence/watchdog-convergence.mjs ledger",
+    "convergence:scaffold": "node scripts/convergence/pass-scaffolder.mjs",
+    "convergence:recover": "node scripts/convergence/transactional-task-manager.mjs recover",
+    "convergence:rollback": "node scripts/convergence/transactional-task-manager.mjs rollback",
+    "convergence:receipt": "node scripts/convergence/generate-execution-receipt.mjs",
+    "convergence:resume": "node scripts/convergence/resume-convergence.mjs",
+    "convergence:prompt": "node scripts/convergence/continuous_5x5_orchestrator.mjs print-prompt"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

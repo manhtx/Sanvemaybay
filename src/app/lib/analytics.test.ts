@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { appendLocalProductEvent, readLocalProductEvents, sanitizeProductEvent } from "./analytics";
+import { appendLocalProductEvent, readLocalProductEvents, safeSerializeError, sanitizeProductEvent } from "./analytics";
 
 function storage(): Storage {
   const values = new Map<string, string>();
@@ -18,5 +18,64 @@ describe("product analytics", () => {
     for (let index = 0; index < 105; index += 1) appendLocalProductEvent({ eventType: "detail_view", entityId: String(index) }, store);
     expect(readLocalProductEvents(store)).toHaveLength(100);
     expect(readLocalProductEvents(store)[0].entityId).toBe("5");
+  });
+
+  it("safeSerializeError handles circular references without throwing", () => {
+    const circularObj: any = { name: "test", details: { code: 400 } };
+    circularObj.details.parent = circularObj;
+
+    const serialized = safeSerializeError(circularObj);
+    expect(serialized).toContain("\"name\":\"test\"");
+    expect(serialized).toContain("\"parent\":\"[Circular]\"");
+  });
+
+  it("safeSerializeError caps depth and truncates oversized strings", () => {
+    const deepObj = {
+      level1: {
+        level2: {
+          level3: {
+            level4: {
+              data: "deep value",
+            },
+          },
+        },
+      },
+      longText: "A".repeat(1500),
+    };
+
+    const serialized = safeSerializeError(deepObj, 3);
+    const parsed = JSON.parse(serialized);
+
+    expect(parsed.level1.level2.level3).toBe("[MaxDepthExceeded]");
+    expect(parsed.longText).toContain("...[TRUNCATED]");
+    expect(parsed.longText.length).toBeLessThan(1100);
+  });
+
+  it("safeSerializeError bounds object keys per level with maxKeysPerLevel", () => {
+    const wideObj: Record<string, number> = {};
+    for (let i = 0; i < 100; i++) {
+      wideObj[`key_${i}`] = i;
+    }
+
+    const serialized = safeSerializeError(wideObj, 3, 25);
+    const parsed = JSON.parse(serialized);
+
+    expect(Object.keys(parsed)).toHaveLength(25);
+    expect(parsed.key_0).toBe(0);
+    expect(parsed.key_24).toBe(24);
+    expect(parsed.key_25).toBeUndefined();
+  });
+
+  it("safeSerializeError preserves arrays and propagates recursive depth", () => {
+    const payload = {
+      items: [1, 2, { nested: "value" }],
+      deep: [[[["too deep"]]]],
+    };
+    const serialized = safeSerializeError(payload, 3, 50);
+    const parsed = JSON.parse(serialized);
+
+    expect(Array.isArray(parsed.items)).toBe(true);
+    expect(parsed.items[2].nested).toBe("value");
+    expect(parsed.deep[0][0]).toBe("[MaxDepthExceeded]");
   });
 });

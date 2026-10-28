@@ -3,6 +3,14 @@ import { Link } from "react-router";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { PASSWORD_MAX_LENGTH, safeAuthError, SIGN_UP_PASSWORD_MIN_LENGTH, validateAuthCredentials } from "../domain/authPolicy";
 import { DataRightsPanel } from "../components/DataRightsPanel";
+import {
+  inspectPendingGuestData,
+  purgeLocalUserDataOnSignOut,
+  resolveAccountContinuity,
+  GuestPendingData,
+} from "../domain/accountContinuity";
+import { mergeLocalBookmarksIntoServer } from "../lib/bookmarks";
+import { Info } from "lucide-react";
 
 type AuthMode = "sign-in" | "sign-up" | "forgot-password" | "reset-password";
 
@@ -15,12 +23,17 @@ export function AuthPage() {
   const [error, setError] = useState("");
   const [signedIn, setSignedIn] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [pendingGuest, setPendingGuest] = useState<GuestPendingData | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured) return;
     supabase.auth.getSession().then(({ data }) => {
-      setSignedIn(Boolean(data.session));
+      const isAuth = Boolean(data.session);
+      setSignedIn(isAuth);
       setUserEmail(data.session?.user?.email ?? null);
+      if (isAuth) {
+        setPendingGuest(inspectPendingGuestData());
+      }
     });
 
     // Check for password recovery hash
@@ -93,15 +106,43 @@ export function AuthPage() {
     } else {
       setSignedIn(true);
       setUserEmail(result.data.session?.user?.email ?? email.trim());
+      setPendingGuest(inspectPendingGuestData());
       setMessage("Đăng nhập thành công.");
+    }
+  }
+
+  async function handleGuestMigration(consent: boolean) {
+    if (!isSupabaseConfigured) return;
+    try {
+      const { data } = await supabase.auth.getSession();
+      const user = data.session?.user;
+      if (!user) return;
+
+      const res = resolveAccountContinuity({
+        currentUserId: user.id,
+        explicitConsentGiven: consent,
+      });
+
+      if (consent) {
+        await mergeLocalBookmarksIntoServer();
+        setMessage(`Đã đồng bộ thành công ${res.savedTransferred} cơ hội vào tài khoản.`);
+      } else {
+        setMessage("Đã hủy dữ liệu khách và giữ tài khoản độc lập.");
+      }
+    } catch {
+      setMessage("Không thể đồng bộ dữ liệu lúc này.");
+    } finally {
+      setPendingGuest(null);
     }
   }
 
   async function signOut() {
     await supabase.auth.signOut();
+    purgeLocalUserDataOnSignOut();
     setSignedIn(false);
     setUserEmail(null);
-    setMessage("Đã đăng xuất.");
+    setPendingGuest(null);
+    setMessage("Đã đăng xuất và bảo vệ cô lập danh tính.");
   }
 
   return (
@@ -120,6 +161,34 @@ export function AuthPage() {
                 {userEmail || "Tài khoản người dùng"}
               </p>
             </div>
+
+            {pendingGuest && pendingGuest.hasGuestData && (
+              <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-4 space-y-3" role="region" aria-label="Đồng bộ dữ liệu khách">
+                <div className="text-xs font-bold text-blue-950 flex items-center gap-1.5">
+                  <Info className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span>Dữ liệu tìm kiếm khi dùng ẩn danh (F44)</span>
+                </div>
+                <p className="text-xs text-stone-700 leading-relaxed">
+                  Bạn có {pendingGuest.savedCount > 0 ? `${pendingGuest.savedCount} cơ hội đã lưu` : ""}{pendingGuest.savedCount > 0 && pendingGuest.watchCount > 0 ? " và " : ""}{pendingGuest.watchCount > 0 ? `${pendingGuest.watchCount} tuyến theo dõi` : ""} được tạo trước khi đăng nhập. Bạn có muốn chuyển vào tài khoản này không?
+                </p>
+                <div className="flex gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => void handleGuestMigration(true)}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-3 rounded-lg transition-colors cursor-pointer shadow-xs"
+                  >
+                    Đồng bộ vào tài khoản
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void handleGuestMigration(false)}
+                    className="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium text-xs py-2 px-3 rounded-lg border border-stone-300 transition-colors cursor-pointer"
+                  >
+                    Bỏ qua (Bắt đầu mới)
+                  </button>
+                </div>
+              </div>
+            )}
 
             <div className="flex gap-2">
               <Link

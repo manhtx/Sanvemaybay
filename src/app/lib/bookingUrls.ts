@@ -17,13 +17,66 @@ export interface BookingParams {
   airlineCode?: string;
   tripType?: string;    // "domestic" | "international"
   price?: number;
+  passengers?: number;
+  passengerMix?: {
+    adults: number;
+    children?: number;
+    infants?: number;
+  };
+}
+
+export const APPROVED_BOOKING_DOMAINS = new Set([
+  "google.com",
+  "skyscanner.com",
+  "skyscanner.net",
+  "kayak.com",
+  "vietjetair.com",
+  "vietnamairlines.com",
+  "bambooairways.com",
+  "vietravelairlines.com",
+  "tripadvisor.com",
+  "partner.example",
+]);
+
+/**
+ * Validates that an outbound partner booking URL is HTTPS and belongs to an approved partner domain.
+ */
+export function isSafeOutboundBookingUrl(urlStr: string): boolean {
+  if (!urlStr || typeof urlStr !== "string") return false;
+  try {
+    const parsed = new URL(urlStr);
+    if (parsed.protocol !== "https:") return false;
+    // Reject embedded credentials (userinfo) in outbound URLs
+    if (parsed.username || parsed.password) return false;
+    // Disallow non-standard ports (must be default HTTPS port 443 or empty)
+    if (parsed.port && parsed.port !== "443") return false;
+    const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
+    return Array.from(APPROVED_BOOKING_DOMAINS).some(
+      (domain) => hostname === domain || hostname.endsWith("." + domain)
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Sanitizes and validates 3-letter IATA airport codes.
+ * Strips whitespace, uppercase converts, and ensures exactly 3 alphanumeric characters.
+ */
+export function sanitizeIataAirportCode(code: string): string {
+  const cleaned = (code || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3);
+  return cleaned.length === 3 ? cleaned : '';
 }
 
 /**
  * Converts YYYY-MM-DD → YYMMDD (Skyscanner URL format)
  */
 function toSkyDate(date: string): string {
-  return date.replace(/-/g, '').slice(2); // "2026-06-22" → "260622"
+  const digits = (date || '').replace(/\D/g, '');
+  if (digits.length >= 8) {
+    return digits.slice(2, 8); // YYMMDD
+  }
+  return digits;
 }
 
 /**
@@ -33,8 +86,13 @@ function toSkyDate(date: string): string {
  * Format: ?q=Flights to [DEST] from [ORIG] on [DEPART] through [RETURN]
  */
 export function buildGoogleFlightsUrl(p: BookingParams): string {
-  const parts = [`Flights to ${p.toCode} from ${p.fromCode} on ${p.departDate}`];
-  if (p.returnDate) parts.push(`through ${p.returnDate}`);
+  const from = sanitizeIataAirportCode(p.fromCode);
+  const to = sanitizeIataAirportCode(p.toCode);
+  if (!from || !to) {
+    return "https://www.google.com/travel/flights?hl=vi&curr=VND";
+  }
+  const parts = [`Flights to ${to} from ${from} on ${p.departDate}`];
+  if (p.returnDate && p.returnDate >= p.departDate) parts.push(`through ${p.returnDate}`);
   const query = encodeURIComponent(parts.join(' '));
   return `https://www.google.com/travel/flights?q=${query}&hl=vi&curr=VND`;
 }
@@ -43,24 +101,44 @@ export function buildGoogleFlightsUrl(p: BookingParams): string {
  * Skyscanner — format YYMMDD, stable API
  */
 export function buildSkyscannerUrl(p: BookingParams): string {
-  const dep = toSkyDate(p.departDate);
-  const from = p.fromCode.toLowerCase();
-  const to = p.toCode.toLowerCase();
-  if (p.returnDate) {
-    const ret = toSkyDate(p.returnDate);
-    return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/${ret}/?adults=1&cabinclass=economy&currency=vnd`;
+  const from = sanitizeIataAirportCode(p.fromCode).toLowerCase();
+  const to = sanitizeIataAirportCode(p.toCode).toLowerCase();
+  if (!from || !to) {
+    return "";
   }
-  return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/?adults=1&cabinclass=economy&currency=vnd`;
+  const dep = toSkyDate(p.departDate);
+  const adults = Math.floor(Math.max(1, p.passengerMix?.adults ?? p.passengers ?? 1));
+  const children = Math.floor(Math.max(0, p.passengerMix?.children ?? 0));
+  const infants = Math.floor(Math.max(0, p.passengerMix?.infants ?? 0));
+  let passParams = `adults=${adults}`;
+  if (children > 0) passParams += `&children=${children}`;
+  if (infants > 0) passParams += `&infants=${infants}`;
+
+  if (p.returnDate && p.returnDate >= p.departDate) {
+    const ret = toSkyDate(p.returnDate);
+    return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/${ret}/?${passParams}&cabinclass=economy&currency=vnd`;
+  }
+  return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/?${passParams}&cabinclass=economy&currency=vnd`;
 }
 
 /**
  * Kayak — reliable international aggregator
  */
 export function buildKayakUrl(p: BookingParams): string {
-  if (p.returnDate) {
-    return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}/${p.returnDate}?adults=1&currency=VND`;
+  const from = sanitizeIataAirportCode(p.fromCode);
+  const to = sanitizeIataAirportCode(p.toCode);
+  if (!from || !to) {
+    return "";
   }
-  return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}?adults=1&currency=VND`;
+  const adults = Math.floor(Math.max(1, p.passengerMix?.adults ?? p.passengers ?? 1));
+  const children = Math.floor(Math.max(0, p.passengerMix?.children ?? 0));
+  let passParams = `adults=${adults}`;
+  if (children > 0) passParams += `&children=${children}`;
+
+  if (p.returnDate && p.returnDate >= p.departDate) {
+    return `https://www.kayak.com/flights/${from}-${to}/${p.departDate}/${p.returnDate}?${passParams}&currency=VND`;
+  }
+  return `https://www.kayak.com/flights/${from}-${to}/${p.departDate}?${passParams}&currency=VND`;
 }
 
 /**
@@ -71,7 +149,7 @@ export function getBestBookingUrl(p: BookingParams): string {
   return buildGoogleFlightsUrl(p);
 }
 
-/** Use an affiliate URL only when the server marked it as live and approved. */
+/** Use an affiliate URL only when the server marked it as live and approved, and the target is verified safe. */
 export function getEffectiveDealBookingUrl(deal: {
   affiliateUrl?: string;
   affiliateNetwork?: string;
@@ -79,9 +157,14 @@ export function getEffectiveDealBookingUrl(deal: {
   bookingUrl?: string;
 }, fallback: string): string {
   if (deal.linkKind === "live_affiliate" && deal.affiliateNetwork && deal.affiliateUrl) {
-    return deal.affiliateUrl;
+    if (isSafeOutboundBookingUrl(deal.affiliateUrl)) {
+      return deal.affiliateUrl;
+    }
   }
-  return deal.bookingUrl || fallback;
+  if (deal.bookingUrl && isSafeOutboundBookingUrl(deal.bookingUrl)) {
+    return deal.bookingUrl;
+  }
+  return fallback;
 }
 
 /**

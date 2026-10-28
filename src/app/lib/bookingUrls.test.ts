@@ -4,6 +4,7 @@ import {
   buildSkyscannerUrl,
   getBestBookingUrl,
   getEffectiveDealBookingUrl,
+  isSafeOutboundBookingUrl,
 } from "./bookingUrls";
 
 const params = {
@@ -42,5 +43,44 @@ describe("booking URL builders", () => {
     expect(getBestBookingUrl({ ...params, airlineCode: "VN" })).toContain(
       "google.com/travel/flights",
     );
+  });
+
+  it("validates outbound booking URLs against whitelist and HTTPS protocol", () => {
+    expect(isSafeOutboundBookingUrl("https://www.google.com/travel/flights")).toBe(true);
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com/vi/flights")).toBe(true);
+    expect(isSafeOutboundBookingUrl("https://booking.bambooairways.com/search")).toBe(true);
+    expect(isSafeOutboundBookingUrl("https://google.com./travel/flights")).toBe(true); // Trailing dot FQDN
+    
+    // Insecure / spoofed / malicious protocols
+    expect(isSafeOutboundBookingUrl("http://www.google.com/travel/flights")).toBe(false); // Insecure HTTP
+    expect(isSafeOutboundBookingUrl("javascript:alert(1)")).toBe(false);
+    expect(isSafeOutboundBookingUrl("https://evilvietjetair.com/search")).toBe(false);
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com.attacker.com/steal")).toBe(false);
+    expect(isSafeOutboundBookingUrl("")).toBe(false);
+
+    // Credentials / Userinfo evasion
+    expect(isSafeOutboundBookingUrl("https://admin:pass@vietjetair.com/flight")).toBe(false);
+    expect(isSafeOutboundBookingUrl("https://user@vietnamairlines.com/search")).toBe(false);
+
+    // Port tampering
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com:8443/flight")).toBe(false);
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com:443/flight")).toBe(true);
+    expect(isSafeOutboundBookingUrl("https://vietjetair.com/flight")).toBe(true);
+  });
+
+  it("sanitizes IATA airport codes and ignores inverted return dates", () => {
+    // Dirty airport codes with spaces and lowercase
+    const dirtyParams = {
+      fromCode: " han ",
+      toCode: "bkk",
+      departDate: "2026/09/10",
+      returnDate: "2026/09/01", // Earlier than departure!
+      passengers: 2.5, // Non-integer
+    };
+
+    const url = buildSkyscannerUrl(dirtyParams);
+    expect(url).toContain("/han/bkk/260910/");
+    expect(url).not.toContain("260901"); // Inverted date dropped!
+    expect(url).toContain("adults=2"); // Truncated to integer
   });
 });

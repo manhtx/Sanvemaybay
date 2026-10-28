@@ -35,7 +35,7 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
     if (deal.fromCode === preferences.homeAirport) value += 8;
     if (preferences.favoriteRegions.includes(deal.region)) value += 12;
     if (preferences.preferredAirlines.length > 0 && preferences.preferredAirlines.includes(deal.airlineCode)) value += 10;
-    if (deal.stops > preferences.maxStops) value -= Math.min(20, (deal.stops - preferences.maxStops) * 10);
+    if (deal.stops != null && deal.stops > preferences.maxStops) value -= Math.min(20, (deal.stops - preferences.maxStops) * 10);
     if (deal.price > preferences.budget) value -= 15;
     if (preferences.maxFlightTimeMinutes && parseDurationMinutes(deal.duration) > preferences.maxFlightTimeMinutes) value -= 10;
     return value - index * 0.001;

@@ -61,6 +61,50 @@ export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
   };
 }
 
+/**
+ * Safe circular-reference-tolerant serializer for client error logging and telemetry.
+ * Prevents TypeError crashes ("Converting circular structure to JSON") and caps deep structures.
+ */
+export function safeSerializeError(err: unknown, maxDepth = 3, maxKeysPerLevel = 50): string {
+  const seen = new WeakSet();
+
+  function replacer(this: any, key: string, value: any, depth = 0): any {
+    if (typeof value === "string" && value.length > 1000) {
+      return value.slice(0, 1000) + "...[TRUNCATED]";
+    }
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return "[Circular]";
+      }
+      if (depth >= maxDepth) {
+        return "[MaxDepthExceeded]";
+      }
+      seen.add(value);
+      if (Array.isArray(value)) {
+        const outArr: any[] = [];
+        const limit = Math.min(value.length, maxKeysPerLevel);
+        for (let i = 0; i < limit; i++) {
+          outArr.push(replacer.call(outArr, String(i), value[i], depth + 1));
+        }
+        return outArr;
+      }
+      const out: any = {};
+      const keys = Object.keys(value).slice(0, maxKeysPerLevel);
+      for (const k of keys) {
+        out[k] = replacer.call(out, k, value[k], depth + 1);
+      }
+      return out;
+    }
+    return value;
+  }
+
+  try {
+    return JSON.stringify(replacer.call({ "": err }, "", err, 0));
+  } catch {
+    return JSON.stringify({ message: String(err) });
+  }
+}
+
 export function readLocalProductEvents(storage: Storage | undefined = typeof window === "undefined" ? undefined : window.localStorage): ProductEvent[] {
   if (!storage) return [];
   try {

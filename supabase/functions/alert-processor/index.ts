@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireInternalSecret } from "../_shared/internal-auth.ts";
-import { matchesAlert, selectDailyDeal } from "../_shared/alert-matching.ts";
+import { matchesAlert, matchesAlertIntent, matchesAlertRouteIntent, selectDailyDeal } from "../_shared/alert-matching.ts";
 import { nextNotificationRetry } from "../_shared/retry-policy.ts";
 import { approvedBookingHosts, isActiveLiveDeal } from "../_shared/live-deal.ts";
 import { safeOperationalErrorCode } from "../_shared/observability.ts";
@@ -37,7 +37,7 @@ async function signAlertId(alertId: string, secret: string): Promise<string> {
     .join("");
 }
 
-async function sendEmail(alert: any, deal: any, eventType = "ENTERED"): Promise<string> {
+async function sendEmail(alert: any, deal: any, eventType = "ENTERED", outboxId?: string): Promise<string> {
   const key = Deno.env.get("RESEND_API_KEY");
   const publicSiteUrl = (Deno.env.get("PUBLIC_SITE_URL") ?? "").replace(/\/$/, "");
   const unsubscribeSecret = Deno.env.get("UNSUBSCRIBE_SECRET") ?? "";
@@ -55,9 +55,17 @@ async function sendEmail(alert: any, deal: any, eventType = "ENTERED"): Promise<
     headline = "Giá vé vừa quay trở lại mức bạn mong muốn";
   }
 
+  const reqHeaders: Record<string, string> = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${key}`,
+  };
+  if (outboxId) {
+    reqHeaders["Idempotency-Key"] = `farely_notif_${outboxId}`;
+  }
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    headers: reqHeaders,
     body: JSON.stringify({
       from: Deno.env.get("ALERT_FROM_EMAIL") ?? "Farely Alerts <alerts@resend.dev>",
       to: [alert.email],
@@ -65,8 +73,8 @@ async function sendEmail(alert: any, deal: any, eventType = "ENTERED"): Promise<
       html: `<h2>${headline}</h2>
         <p>${escapeHtml(deal.from)} → ${escapeHtml(deal.to)}</p>
         <p><strong>${Number(deal.price).toLocaleString("vi-VN")} VND</strong></p>
-        <p>Ghi nhận lúc ${escapeHtml(deal.observed_at ?? new Date().toISOString())}.</p>
-        <p><a href="${publicSiteUrl}/deals">Kiểm tra giá hiện tại trên Farely</a></p>
+        <p>${deal.observed_at ? `Ghi nhận lúc ${escapeHtml(deal.observed_at)}.` : "Thời điểm ghi nhận: Chưa xác định chính xác."}</p>
+        <p><a href="${deal.id ? `${publicSiteUrl}/deal/${encodeURIComponent(deal.id)}` : `${publicSiteUrl}/deals`}">Kiểm tra giá hiện tại trên Farely</a></p>
         <hr/>
         <p><small><a href="${unsubscribeUrl}">Hủy theo dõi chặng bay này</a></small></p>`,
     }),
@@ -174,7 +182,7 @@ Deno.serve(async (request) => {
         row.return_date ?? "",
         row.airline_code,
         row.flight_number ?? "",
-        row.stops ?? 0,
+        row.stops == null ? "UNKNOWN" : String(row.stops),
       ].join(":");
       return {
         id: row.observation_id,
@@ -211,8 +219,8 @@ Deno.serve(async (request) => {
         continue;
       }
 
-      // 1. Find all candidates on this route matching base route/intent criteria (without target_price filter!)
-      const routeCandidates = allCandidates.filter((deal) => matchesAlert(alert, deal));
+      // 1. Find all candidates on this route matching base route/intent criteria (RC-01: without target_price filter!)
+      const routeCandidates = allCandidates.filter((deal) => matchesAlertRouteIntent(alert, deal));
 
       let conditionInput: "MATCH" | "CONFIRMED_NON_MATCH" | "INSUFFICIENT_EVIDENCE";
       let bestCandidate: any = null;
@@ -224,25 +232,55 @@ Deno.serve(async (request) => {
         // Preserves active episode state; never false EXITED.
         conditionInput = "INSUFFICIENT_EVIDENCE";
       } else {
-        // Filter by max_stops if specified
-        let stopFiltered = routeCandidates;
-        if (alert.max_stops != null && alert.max_stops >= 0) {
-          stopFiltered = routeCandidates.filter((deal) => deal.stops == null || Number(deal.stops) <= Number(alert.max_stops));
-        }
-
         const targetBudget = Number(alert.target_price ?? alert.budget ?? 0);
-        if (stopFiltered.length === 0) {
-          // Route exists, but all flights violate stop constraint -> CONFIRMED_NON_MATCH
-          conditionInput = "CONFIRMED_NON_MATCH";
-          const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
-          observedBestPrice = Number(sorted[0].price);
+        // D20: Require qualified coverage certificate (>= 3 candidates) before concluding CONFIRMED_NON_MATCH
+        const hasQualifiedCoverage = routeCandidates.length >= 3;
+
+        if (alert.max_stops != null && alert.max_stops >= 0) {
+          const knownStopCandidates = routeCandidates.filter((deal) => deal.stops != null);
+          const unknownStopCandidates = routeCandidates.filter((deal) => deal.stops == null);
+          const stopEligibleCandidates = knownStopCandidates.filter((deal) => Number(deal.stops) <= Number(alert.max_stops));
+
+          if (knownStopCandidates.length === 0) {
+            // E07: All candidates on this route have unknown stops; cannot confirm MATCH or NON_MATCH
+            conditionInput = "INSUFFICIENT_EVIDENCE";
+            const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
+            observedBestPrice = Number(sorted[0].price);
+          } else if (stopEligibleCandidates.length === 0) {
+            // No candidates meet the stop limit among known stops
+            if (unknownStopCandidates.length > 0 || !hasQualifiedCoverage) {
+              // If there are unknown stops, one of them could be direct -> INSUFFICIENT_EVIDENCE
+              conditionInput = "INSUFFICIENT_EVIDENCE";
+            } else {
+              // Full qualified coverage and all verified candidates exceed max_stops
+              conditionInput = "CONFIRMED_NON_MATCH";
+            }
+            const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
+            observedBestPrice = Number(sorted[0].price);
+          } else {
+            const sorted = [...stopEligibleCandidates].sort((a, b) => Number(a.price) - Number(b.price));
+            observedBestPrice = Number(sorted[0].price);
+            if (targetBudget > 0 && observedBestPrice <= targetBudget) {
+              conditionInput = "MATCH";
+              eligibleCandidates = sorted.filter((d) => Number(d.price) <= targetBudget);
+              bestCandidate = eligibleCandidates[0];
+            } else if (!hasQualifiedCoverage) {
+              // Sparse candidate data cannot prove confirmed price exit without qualified coverage
+              conditionInput = "INSUFFICIENT_EVIDENCE";
+            } else {
+              conditionInput = "CONFIRMED_NON_MATCH";
+            }
+          }
         } else {
-          const sorted = [...stopFiltered].sort((a, b) => Number(a.price) - Number(b.price));
+          // No max_stops constraint configured
+          const sorted = [...routeCandidates].sort((a, b) => Number(a.price) - Number(b.price));
           observedBestPrice = Number(sorted[0].price);
           if (targetBudget > 0 && observedBestPrice <= targetBudget) {
             conditionInput = "MATCH";
             eligibleCandidates = sorted.filter((d) => Number(d.price) <= targetBudget);
             bestCandidate = eligibleCandidates[0];
+          } else if (!hasQualifiedCoverage) {
+            conditionInput = "INSUFFICIENT_EVIDENCE";
           } else {
             conditionInput = "CONFIRMED_NON_MATCH";
           }
@@ -261,6 +299,18 @@ Deno.serve(async (request) => {
         activeEpisode: currentEpisode,
         generationId: activeGen?.active_generation_id ?? null,
         now: nowIso,
+        criteria: {
+          origin_code: alert.origin_code,
+          destination_code: alert.destination_code || alert.destination,
+          date_from: alert.depart_date_from,
+          date_to: alert.depart_date_to,
+          return_date: alert.return_date,
+          max_stops: alert.max_stops,
+          criteria_version: alert.criteria_version,
+          cabin: alert.cabin ?? alert.travel_intent_snapshot?.cabin,
+          trip_type: alert.trip_type ?? alert.travel_intent_snapshot?.tripType,
+          passengers: alert.passengers ?? alert.travel_intent_snapshot?.passengers,
+        },
       });
 
       // Determine episode transition action for atomic RPC
@@ -350,16 +400,38 @@ Deno.serve(async (request) => {
       const attemptNo = Number(item.attempt_count ?? 1);
       const { alert, deal, event_type } = item.payload;
 
+      // J22: Verify recipient subscription state immediately prior to dispatch
+      if (item.watch_id) {
+        const { data: currentWatch } = await supabase
+          .from("user_alerts")
+          .select("id, status")
+          .eq("id", item.watch_id)
+          .maybeSingle();
+
+        if (!currentWatch || currentWatch.status === "unsubscribed" || currentWatch.status === "paused") {
+          await supabase.rpc("resolve_notification_outbox", {
+            p_id: item.id,
+            p_claim_token: item.claim_token,
+            p_status: "PERMANENT_FAILED",
+            p_provider: item.channel === "EMAIL" ? "resend" : "telegram",
+            p_provider_message_id: null,
+            p_error_code: "RECIPIENT_UNSUBSCRIBED_OR_PAUSED",
+            p_next_attempt_at: null,
+          });
+          continue;
+        }
+      }
+
       try {
         let providerId = "";
         if (item.channel === "EMAIL") {
-          providerId = await sendEmail(alert, deal, event_type);
+          providerId = await sendEmail(alert, deal, event_type, item.id);
         } else if (item.channel === "TELEGRAM") {
           providerId = await sendTelegram(alert, deal);
         }
 
-        // S04 & S05: Atomic resolution RPC verifying lease claim_token and recording delivery attempt
-        const { error: resolveErr } = await supabase.rpc("resolve_notification_outbox", {
+        // S04 & S05 & D21: Atomic resolution RPC verifying lease claim_token and recording delivery attempt
+        const { data: resolveOk, error: resolveErr } = await supabase.rpc("resolve_notification_outbox", {
           p_id: item.id,
           p_claim_token: item.claim_token,
           p_status: "SENT",
@@ -369,11 +441,15 @@ Deno.serve(async (request) => {
           p_next_attempt_at: null,
         });
 
-        if (resolveErr) {
-          console.warn("resolve_notification_outbox warning:", resolveErr.message);
+        if (resolveErr || resolveOk !== true) {
+          console.warn("resolve_notification_outbox failed or stale:", resolveErr?.message ?? "returned false");
           failed++;
         } else {
           sent++;
+          const sentAtMs = Date.now();
+          const createdAtMs = item.created_at ? new Date(item.created_at).getTime() : sentAtMs;
+          const latencyMs = Math.max(0, sentAtMs - createdAtMs);
+          console.log(`[outbox_delivery_latency] outbox_id=${item.id} latency_ms=${latencyMs} created_at=${item.created_at} sent_at=${new Date(sentAtMs).toISOString()}`);
         }
       } catch (sendErr) {
         const errCode = safeOperationalErrorCode(sendErr, "delivery_failed");

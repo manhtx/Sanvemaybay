@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Bell, Check, ChevronDown, ChevronUp, Mail, ShieldCheck } from "lucide-react";
 import { formatVND } from "../data/deals";
 import { createWatch } from "../data/watchApi";
@@ -18,13 +18,36 @@ export interface WatchModalProps {
     price?: number;
     departDate?: string;
     returnDate?: string;
-    stops?: number;
+    stops?: number | null;
   } | null;
   initialOrigin?: string;
   initialDestination?: string;
   currentPrice?: number;
   targetPrice?: number;
   sourceContext?: string;
+  // F27: Prepopulate and explicitly preview exact TravelIntent, departure/return conditions, price, expiry and cadence
+  intent?: {
+    journeyType?: "one_way" | "round_trip";
+    outboundDate?: string;
+    outboundFrom?: string;
+    outboundTo?: string;
+    returnDate?: string;
+    returnDateFrom?: string;
+    returnDateTo?: string;
+    passengers?: {
+      adults: number;
+      children: number;
+      infants: number;
+    };
+    cabin?: "economy" | "premium_economy" | "business" | "first";
+  };
+  initialDepartDate?: string;
+  initialReturnDate?: string;
+  initialPassengers?: {
+    adults: number;
+    children: number;
+    infants: number;
+  };
 }
 
 export function WatchModal({
@@ -37,39 +60,138 @@ export function WatchModal({
   currentPrice,
   targetPrice: propTargetPrice,
   sourceContext,
+  intent,
+  initialDepartDate,
+  initialReturnDate,
+  initialPassengers,
 }: WatchModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   const effectiveOrigin = opportunity?.originCode || initialOrigin || "HAN";
   const effectiveDestination = opportunity?.destinationCode || initialDestination || "BKK";
   const effectiveCurrentPrice = opportunity?.price || currentPrice || 3000000;
+
+  // F27: Prepopulate exact dates and passenger composition without silent modification
+  const horizon90DaysStr = new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10);
+
+  const effectiveDepartDate =
+    opportunity?.departDate ||
+    intent?.outboundDate ||
+    intent?.outboundFrom ||
+    initialDepartDate ||
+    "";
+
+  const effectiveReturnDate =
+    opportunity?.returnDate ||
+    intent?.returnDate ||
+    intent?.returnDateFrom ||
+    initialReturnDate ||
+    "";
+
+  const effectiveJourneyType: "one_way" | "round_trip" =
+    effectiveReturnDate || intent?.journeyType === "round_trip"
+      ? "round_trip"
+      : "one_way";
+
+  const passengerMix = intent?.passengers || initialPassengers || {
+    adults: 1,
+    children: 0,
+    infants: 0,
+  };
+  const totalPassengerCount = passengerMix.adults + passengerMix.children + passengerMix.infants;
+
+  const effectiveCabin = intent?.cabin || "economy";
+  const watchExpiry = effectiveDepartDate || horizon90DaysStr;
 
   const [targetPrice, setTargetPrice] = useState<number>(
     propTargetPrice || Math.round(effectiveCurrentPrice * 0.95)
   );
   const [email, setEmail] = useState("");
-  const [frequency, setFrequency] = useState<"instant" | "daily">("instant");
-  const [maxStops, setMaxStops] = useState<number | undefined>(opportunity?.stops);
+  const [frequency, setFrequency] = useState<"instant" | "daily" | "weekly">("instant");
+  const [quietHours, setQuietHours] = useState(true);
+  const [maxStops, setMaxStops] = useState<number | undefined>(
+    opportunity?.stops != null ? opportunity.stops : undefined
+  );
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      setIsSuccess(false);
-      setError(null);
-      setTargetPrice(propTargetPrice || Math.round(effectiveCurrentPrice * 0.95));
-      setMaxStops(opportunity?.stops);
+    if (!isOpen) return;
 
-      // Try prefilling email if signed in
-      if (isSupabaseConfigured) {
-        supabase.auth.getSession().then(({ data }) => {
-          if (data.session?.user?.email) {
-            setEmail(data.session.user.email);
-          }
-        });
-      }
+    setIsSuccess(false);
+    setError(null);
+    setTargetPrice(propTargetPrice || Math.round(effectiveCurrentPrice * 0.95));
+    setMaxStops(opportunity?.stops != null ? opportunity.stops : undefined);
+
+    // Try prefilling email if signed in
+    if (isSupabaseConfigured) {
+      supabase.auth.getSession().then(({ data }) => {
+        if (data.session?.user?.email) {
+          setEmail(data.session.user.email);
+        }
+      });
     }
-  }, [isOpen, opportunity, propTargetPrice, effectiveCurrentPrice]);
+
+    // REQ-A11Y-005: Modal focus trap & restore
+    const previouslyFocusedElement = document.activeElement as HTMLElement | null;
+
+    // Focus first focusable element inside modal
+    const timer = setTimeout(() => {
+      const emailInput = document.getElementById("watch-email") as HTMLElement | null;
+      if (emailInput) {
+        emailInput.focus();
+      } else {
+        modalRef.current?.focus();
+      }
+    }, 50);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+
+      if (e.key === "Tab" && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const focusable = Array.from(focusableElements).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+        if (focusable.length === 0) return;
+
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("keydown", handleKeyDown);
+      // Restore focus on close
+      if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === "function") {
+        previouslyFocusedElement.focus();
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -83,6 +205,13 @@ export function WatchModal({
     setSubmitting(true);
     setError(null);
 
+    // REQ-FEAT-005: Any-Date Watch with explicit horizon (default to 90 days from today if unconstrained)
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const horizon90DaysStr = new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10);
+    const dateFrom = effectiveDepartDate || todayStr;
+    const dateTo = effectiveDepartDate || horizon90DaysStr;
+    const returnDate = effectiveReturnDate || undefined;
+
     try {
       const res = await createWatch({
         originCode: effectiveOrigin,
@@ -92,10 +221,20 @@ export function WatchModal({
         currentPrice: effectiveCurrentPrice,
         targetPrice,
         maxStops,
-        dateFrom: opportunity?.departDate,
-        dateTo: opportunity?.returnDate || opportunity?.departDate,
+        dateFrom,
+        dateTo,
+        returnDate,
+        returnDateFrom: returnDate,
+        returnDateTo: returnDate,
+        journeyType: effectiveJourneyType,
+        passengers: totalPassengerCount,
+        passengerMix,
+        cabin: effectiveCabin,
         email: email.trim(),
         frequency,
+        quietHoursEnabled: quietHours,
+        quietHoursStart: quietHours ? "22:00" : undefined,
+        quietHoursEnd: quietHours ? "07:00" : undefined,
         channel: "email",
       });
 
@@ -117,7 +256,7 @@ export function WatchModal({
           onClose();
         }, 1500);
       } else {
-        setError("Không thể tạo theo dõi lúc này. Vui lòng thử lại.");
+        setError(res.error || "Không thể tạo theo dõi lúc này. Vui lòng thử lại.");
       }
     } catch (err: any) {
       setError(err?.message || "Đã xảy ra lỗi khi tạo theo dõi.");
@@ -129,7 +268,9 @@ export function WatchModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in duration-150">
       <div
-        className="relative w-full max-w-lg rounded-xl border border-stone-200 bg-white p-6 shadow-2xl text-stone-900"
+        ref={modalRef}
+        tabIndex={-1}
+        className="relative w-full max-w-lg rounded-xl border border-stone-200 bg-white p-6 shadow-2xl text-stone-900 outline-none"
         role="dialog"
         aria-modal="true"
         aria-labelledby="watch-modal-title"
@@ -154,7 +295,7 @@ export function WatchModal({
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <div className="flex items-center gap-2 text-blue-600 text-xs font-semibold uppercase tracking-wider mb-1">
                 <Bell className="w-4 h-4" />
@@ -163,11 +304,49 @@ export function WatchModal({
               <h2 id="watch-modal-title" className="text-xl font-bold text-stone-900">
                 {opportunity?.originName || effectiveOrigin} ({effectiveOrigin}) → {opportunity?.destinationName || effectiveDestination} ({effectiveDestination})
               </h2>
-              {opportunity?.departDate && (
-                <p className="text-xs text-stone-500 mt-1">
-                  Ngày bay: {opportunity.departDate} {opportunity.returnDate ? `— ${opportunity.returnDate}` : "(Một chiều)"}
-                </p>
-              )}
+            </div>
+
+            {/* F27: Prepopulate and explicitly preview exact TravelIntent, departure/return conditions, price, expiry and cadence */}
+            <div className="rounded-xl border border-blue-200 bg-blue-50/60 p-3.5 space-y-2 text-xs">
+              <div className="flex items-center justify-between font-semibold text-blue-950">
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span>Xác nhận điều kiện theo dõi (TravelIntent Preview)</span>
+                </span>
+                <span className="text-[11px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-mono font-bold">
+                  {effectiveJourneyType === "round_trip" ? "Khứ hồi" : "Một chiều"}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-stone-700 pt-1">
+                <div>
+                  <span className="text-stone-500 block text-[11px]">Ngày đi:</span>
+                  <span className="font-semibold text-stone-900 font-mono">
+                    {effectiveDepartDate || "Linh hoạt (90 ngày tới)"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-stone-500 block text-[11px]">Ngày về:</span>
+                  <span className="font-semibold text-stone-900 font-mono">
+                    {effectiveReturnDate || "Không áp dụng (Một chiều)"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-stone-500 block text-[11px]">Thành phần hành khách:</span>
+                  <span className="font-semibold text-stone-900">
+                    {passengerMix.adults} Người lớn{passengerMix.children > 0 ? `, ${passengerMix.children} Trẻ em` : ""}{passengerMix.infants > 0 ? `, ${passengerMix.infants} Em bé` : ""}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-stone-500 block text-[11px]">Hạn theo dõi (Expiry):</span>
+                  <span className="font-semibold text-stone-900 font-mono">
+                    {watchExpiry}
+                  </span>
+                </div>
+              </div>
+              <div className="border-t border-blue-200/60 pt-2 flex items-center justify-between text-[11px] text-blue-900 font-medium">
+                <span>Tần suất: <strong>{frequency === "instant" ? "Tức thì" : frequency === "daily" ? "1 lần/ngày" : "1 lần/tuần"}</strong>{quietHours ? " (Yên lặng 22h-07h)" : ""}</span>
+                <span>Hạng vé: <strong className="capitalize">{effectiveCabin}</strong></span>
+              </div>
             </div>
 
             {/* Price context block */}
@@ -239,31 +418,59 @@ export function WatchModal({
               {showAdvanced && (
                 <div className="mt-3 p-3.5 rounded-xl border border-stone-200 bg-stone-50 space-y-3 animate-in fade-in duration-100">
                   <div className="space-y-1">
-                    <label className="block text-xs text-stone-600 font-medium">Tần suất gửi tin</label>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <label className="block text-xs text-stone-600 font-medium">Tần suất gửi tin (F34 Noise Control)</label>
+                    <div className="grid grid-cols-3 gap-1.5 text-xs">
                       <button
                         type="button"
                         onClick={() => setFrequency("instant")}
-                        className={`p-2 rounded-lg border text-center transition ${
+                        className={`p-2 rounded-lg border text-center transition cursor-pointer ${
                           frequency === "instant"
                             ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
                             : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                         }`}
                       >
-                        Khi có lượt quét phù hợp
+                        Tức thì
                       </button>
                       <button
                         type="button"
                         onClick={() => setFrequency("daily")}
-                        className={`p-2 rounded-lg border text-center transition ${
+                        className={`p-2 rounded-lg border text-center transition cursor-pointer ${
                           frequency === "daily"
                             ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
                             : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
                         }`}
                       >
-                        Tổng hợp 1 lần/ngày
+                        1 lần/ngày
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFrequency("weekly")}
+                        className={`p-2 rounded-lg border text-center transition cursor-pointer ${
+                          frequency === "weekly"
+                            ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
+                            : "border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
+                        }`}
+                      >
+                        1 lần/tuần
                       </button>
                     </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-stone-200/60">
+                    <label className="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={quietHours}
+                        onChange={(e) => setQuietHours(e.target.checked)}
+                        className="mt-0.5 rounded border-stone-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <div>
+                        <span className="font-semibold block text-stone-800">Khung giờ yên lặng (Quiet Hours)</span>
+                        <span className="text-[11px] text-stone-500 block">
+                          Tạm hoãn thông báo từ 22:00 đến 07:00 sáng hôm sau để không làm phiền giấc ngủ.
+                        </span>
+                      </div>
+                    </label>
                   </div>
 
                   <div className="space-y-1">
@@ -290,8 +497,8 @@ export function WatchModal({
 
             <div className="pt-2 flex items-center justify-between gap-3 border-t border-stone-100">
               <div className="flex items-center gap-1.5 text-[11px] text-stone-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-stone-400" />
-                <span>Không spam · Hủy bất kỳ lúc nào</span>
+                <ShieldCheck className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                <span>Không spam · Tối đa 1 tin/chu kỳ · Hủy 1-click</span>
               </div>
               <button
                 type="submit"

@@ -1,0 +1,321 @@
+import { describe, it, expect } from "vitest";
+import {
+  rankDealsByDecisionMode,
+  DECISION_MODES,
+  calculateEffectiveGeneralizedCost,
+  rankDealsByPersonalTimeValue,
+  verifyObjectivePriceSortInvariance,
+} from "./decisionModes";
+import { Deal } from "../data/deals";
+
+function createMockDeal(overrides: Partial<Deal>): Deal {
+  return {
+    id: "mock-deal",
+    from: "Hà Nội",
+    fromCode: "HAN",
+    to: "Bangkok",
+    toCode: "BKK",
+    country: "Thái Lan",
+    region: "asia",
+    price: 2000000,
+    normalPrice: 3000000,
+    discount: 10,
+    currency: "VND",
+    airline: "Vietnam Airlines",
+    airlineCode: "VN",
+    departDate: "2026-11-01",
+    duration: "2h 00m",
+    stops: 0,
+    stopCity: null,
+    seatsLeft: 5,
+    expiresIn: "3 ngày",
+    image: "",
+    flightNumber: "VN123",
+    aiInsight: {
+      reason: "Giá tốt",
+      tags: [],
+      risk: "low",
+      riskDetails: "",
+      recommendation: "buy_now",
+      recommendationNote: "",
+      savingScore: 80,
+    },
+    hiddenCosts: [],
+    advertisedTotal: 2000000,
+    realTotal: 2000000,
+    tripType: "international",
+    ...overrides,
+  };
+}
+
+describe("Decision Modes Contracts (F31)", () => {
+  const sampleDeals: Deal[] = [
+    createMockDeal({
+      id: "deal-1",
+      from: "Hà Nội",
+      to: "Bangkok",
+      fromCode: "HAN",
+      toCode: "BKK",
+      price: 2500000,
+      airline: "AirAsia",
+      airlineCode: "FD",
+      stops: 1,
+      duration: "4h 30m",
+      departDate: "2026-11-01",
+      discount: 10,
+      observedAt: new Date(Date.now() - 3600000).toISOString(), // 1 hr ago (fresh)
+    }),
+    createMockDeal({
+      id: "deal-2",
+      from: "Hà Nội",
+      to: "Bangkok",
+      fromCode: "HAN",
+      toCode: "BKK",
+      price: 2800000,
+      airline: "Vietnam Airlines",
+      airlineCode: "VN",
+      stops: 0,
+      duration: "1h 55m",
+      departDate: "2026-11-01",
+      discount: 25,
+      observedAt: new Date(Date.now() - 7200000).toISOString(), // 2 hrs ago (fresh)
+    }),
+    createMockDeal({
+      id: "deal-3",
+      from: "Hà Nội",
+      to: "Bangkok",
+      fromCode: "HAN",
+      toCode: "BKK",
+      price: 1800000,
+      airline: "Vietjet Air",
+      airlineCode: "VJ",
+      stops: 0,
+      duration: "2h 00m",
+      departDate: "2026-11-01",
+      discount: 35,
+      observedAt: new Date(Date.now() - 86400000 * 3).toISOString(), // 3 days ago (stale)
+    }),
+  ];
+
+  it("exposes all 4 canonical decision modes with metadata", () => {
+    expect(DECISION_MODES.CHEAPEST).toBeDefined();
+    expect(DECISION_MODES.CONVENIENT).toBeDefined();
+    expect(DECISION_MODES.BUDGET_FIT).toBeDefined();
+    expect(DECISION_MODES.LOWER_RISK).toBeDefined();
+    expect(DECISION_MODES.CHEAPEST.label).toContain("Rẻ nhất");
+  });
+
+  it("CHEAPEST provides objective price sort with inspectable ranking reasons", () => {
+    const ranked = rankDealsByDecisionMode(sampleDeals, "CHEAPEST");
+    expect(ranked).toHaveLength(3);
+    expect(ranked[0].deal.id).toBe("deal-3"); // 1.8M
+    expect(ranked[1].deal.id).toBe("deal-1"); // 2.5M
+    expect(ranked[2].deal.id).toBe("deal-2"); // 2.8M
+
+    // Ranking reasons are inspectable
+    expect(ranked[0].rankingReason).toContain("1.800.000₫");
+    expect(ranked[0].rank).toBe(1);
+    expect(ranked[1].rank).toBe(2);
+    expect(ranked[2].rank).toBe(3);
+  });
+
+  it("CONVENIENT prioritizes 0 stops and shortest duration", () => {
+    const ranked = rankDealsByDecisionMode(sampleDeals, "CONVENIENT");
+    expect(ranked).toHaveLength(3);
+    // deal-2 (0 stops, 1h 55m) should beat deal-3 (0 stops, 2h 00m) and deal-1 (1 stop)
+    expect(ranked[0].deal.id).toBe("deal-2");
+    expect(ranked[0].rankingReason).toContain("Bay thẳng");
+    expect(ranked[0].rankingReason).toContain("1h 55m");
+
+    expect(ranked[1].deal.id).toBe("deal-3"); // 0 stops, 2h 00m
+    expect(ranked[2].deal.id).toBe("deal-1"); // 1 stop
+    expect(ranked[2].rankingReason).toContain("1 điểm dừng transit");
+  });
+
+  it("BUDGET_FIT optimizes surplus within budget ceiling and explains headrooms", () => {
+    const budget = 5000000;
+    const ranked = rankDealsByDecisionMode(sampleDeals, "BUDGET_FIT", budget);
+    // deal-3 gives largest surplus (5M - 1.8M = 3.2M)
+    expect(ranked[0].deal.id).toBe("deal-3");
+    expect(ranked[0].rankingReason).toContain("Tiết kiệm 3.200.000₫");
+
+    // deal-1 gives surplus 2.5M
+    expect(ranked[1].deal.id).toBe("deal-1");
+    expect(ranked[1].rankingReason).toContain("Tiết kiệm 2.500.000₫");
+
+    // deal-2 gives surplus 2.2M
+    expect(ranked[2].deal.id).toBe("deal-2");
+    expect(ranked[2].rankingReason).toContain("Tiết kiệm 2.200.000₫");
+  });
+
+  it("LOWER_RISK prioritizes direct flights and fresh observations to avoid transit risk", () => {
+    const ranked = rankDealsByDecisionMode(sampleDeals, "LOWER_RISK");
+    // deal-2 is direct (0 stops) AND fresh (2h ago vs deal-3 which is 3 days stale)
+    expect(ranked[0].deal.id).toBe("deal-2");
+    expect(ranked[0].rankingReason).toContain("loại trừ hoàn toàn rủi ro");
+
+    // deal-3 is direct but older
+    expect(ranked[1].deal.id).toBe("deal-3");
+
+    // deal-1 has 1 stop (misconnect risk)
+    expect(ranked[2].deal.id).toBe("deal-1");
+    expect(ranked[2].rankingReason).toContain("khuyến nghị dự trù thời gian transit");
+  });
+
+  it("guarantees user can always return to objective price sort", () => {
+    // 1. Start in CONVENIENT
+    const convenient = rankDealsByDecisionMode(sampleDeals, "CONVENIENT");
+    expect(convenient[0].deal.id).toBe("deal-2"); // Not lowest price
+
+    // 2. Switch back to CHEAPEST
+    const objective = rankDealsByDecisionMode(sampleDeals, "CHEAPEST");
+    expect(objective[0].deal.id).toBe("deal-3"); // Lowest price guaranteed
+    expect(objective[0].deal.price).toBeLessThanOrEqual(objective[1].deal.price);
+    expect(objective[1].deal.price).toBeLessThanOrEqual(objective[2].deal.price);
+  });
+});
+
+describe("Personal Value of Time Contract (F24)", () => {
+  const sampleDeals: Deal[] = [
+    createMockDeal({
+      id: "slow-cheap",
+      price: 2000000,
+      duration: "6h 00m",
+      stops: 1,
+    }),
+    createMockDeal({
+      id: "fast-moderate",
+      price: 2400000,
+      duration: "1h 30m",
+      stops: 0,
+    }),
+  ];
+
+  it("calculates disclosed effective generalized travel cost with time and stop penalties", () => {
+    const preferences = {
+      enabled: true,
+      hourlyValueVND: 200000, // 200k / hr
+      stopPenaltyVND: 300000, // 300k / stop
+    };
+
+    const breakdownFast = calculateEffectiveGeneralizedCost(sampleDeals[1], preferences);
+    // 2.4M + (1.5 * 200k = 300k) + (0 * 300k = 0) = 2.7M
+    expect(breakdownFast.baseFare).toBe(2400000);
+    expect(breakdownFast.timeInconvenienceCost).toBe(300000);
+    expect(breakdownFast.stopsPenaltyCost).toBe(0);
+    expect(breakdownFast.totalGeneralizedCost).toBe(2700000);
+
+    const breakdownSlow = calculateEffectiveGeneralizedCost(sampleDeals[0], preferences);
+    // 2.0M + (6.0 * 200k = 1.2M) + (1 * 300k = 300k) = 3.5M
+    expect(breakdownSlow.baseFare).toBe(2000000);
+    expect(breakdownSlow.timeInconvenienceCost).toBe(1200000);
+    expect(breakdownSlow.stopsPenaltyCost).toBe(300000);
+    expect(breakdownSlow.totalGeneralizedCost).toBe(3500000);
+  });
+
+  it("ranks fast flight first when preferences are enabled due to time savings", () => {
+    const preferences = {
+      enabled: true,
+      hourlyValueVND: 250000,
+      stopPenaltyVND: 300000,
+    };
+    const ranked = rankDealsByPersonalTimeValue(sampleDeals, preferences);
+    expect(ranked[0].deal.id).toBe("fast-moderate");
+    expect(ranked[0].rank).toBe(1);
+    expect(ranked[0].effectiveCostBreakdown).toBeDefined();
+    expect(ranked[0].rankingReason).toContain("Tổng chi phí hữu dụng");
+  });
+
+  it("STRICT ACCEPTANCE (F24): Turning preferences off restores transparent price ranking", () => {
+    const preferencesOff = {
+      enabled: false,
+      hourlyValueVND: 500000,
+      stopPenaltyVND: 1000000,
+    };
+    const restored = rankDealsByPersonalTimeValue(sampleDeals, preferencesOff);
+    // With preferences off, slow-cheap (2.0M) MUST be ranked #1
+    expect(restored[0].deal.id).toBe("slow-cheap");
+    expect(restored[0].rank).toBe(1);
+    expect(restored[0].deal.price).toBe(2000000);
+    expect(restored[1].deal.id).toBe("fast-moderate");
+    expect(restored[1].deal.price).toBe(2400000);
+    expect(restored[0].mode).toBe("CHEAPEST");
+  });
+});
+
+describe("Transparent Partnership Ranking Contract (F76)", () => {
+  const dealsWithPartnership: Deal[] = [
+    createMockDeal({
+      id: "airline-direct-cheap",
+      price: 1500000,
+      airline: "Vietjet Air",
+      isSponsored: false,
+      referralRevenueVND: 0,
+      affiliateCommissionRate: 0,
+    }),
+    createMockDeal({
+      id: "airline-sponsored-expensive",
+      price: 2500000,
+      airline: "Partner Luxury Air",
+      isSponsored: true,
+      sponsorName: "Partner Luxury Air",
+      referralRevenueVND: 500000, // Huge commission
+      affiliateCommissionRate: 0.20,
+    }),
+    createMockDeal({
+      id: "airline-direct-mid",
+      price: 1800000,
+      airline: "Bamboo Airways",
+      isSponsored: false,
+      referralRevenueVND: 10000,
+      affiliateCommissionRate: 0.01,
+    }),
+  ];
+
+  it("separates editorial/affiliate promotion and preserves objective price ranking", () => {
+    const ranked = rankDealsByDecisionMode(dealsWithPartnership, "CHEAPEST");
+
+    // Must be strictly ordered by price: 1.5M -> 1.8M -> 2.5M
+    expect(ranked[0].deal.id).toBe("airline-direct-cheap");
+    expect(ranked[0].rank).toBe(1);
+    expect(ranked[1].deal.id).toBe("airline-direct-mid");
+    expect(ranked[1].rank).toBe(2);
+    expect(ranked[2].deal.id).toBe("airline-sponsored-expensive");
+    expect(ranked[2].rank).toBe(3);
+
+    // Sponsored item has explicit disclosure metadata without distorting rank
+    expect(ranked[2].partnershipMeta).toBeDefined();
+    expect(ranked[2].partnershipMeta?.isSponsored).toBe(true);
+    expect(ranked[2].partnershipMeta?.disclosureText).toContain("Tài trợ đối tác");
+    expect(ranked[2].partnershipMeta?.disclosureText).toContain("Thứ hạng giá khách quan: #3");
+  });
+
+  it("STRICT ACCEPTANCE (F76): Changing referral revenue cannot silently change price sort", () => {
+    // 1. Initial ranking
+    const initialRanked = rankDealsByDecisionMode(dealsWithPartnership, "CHEAPEST");
+    const initialOrder = initialRanked.map((r) => r.deal.id);
+
+    // 2. Dramatically inflate referral revenue on the most expensive deal to 100,000,000 VND
+    const inflatedDeals = dealsWithPartnership.map((d) => {
+      if (d.id === "airline-sponsored-expensive") {
+        return {
+          ...d,
+          referralRevenueVND: 100000000,
+          affiliateCommissionRate: 0.50,
+        };
+      }
+      return d;
+    });
+
+    const inflatedRanked = rankDealsByDecisionMode(inflatedDeals, "CHEAPEST");
+    const inflatedOrder = inflatedRanked.map((r) => r.deal.id);
+
+    // Order MUST remain completely identical
+    expect(inflatedOrder).toEqual(initialOrder);
+    expect(inflatedRanked[0].deal.id).toBe("airline-direct-cheap");
+    expect(inflatedRanked[2].deal.id).toBe("airline-sponsored-expensive");
+
+    // Invariance verification helper must return true
+    expect(verifyObjectivePriceSortInvariance(dealsWithPartnership)).toBe(true);
+  });
+});

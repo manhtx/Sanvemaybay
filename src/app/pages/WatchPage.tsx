@@ -40,6 +40,7 @@ export function WatchPage() {
   const [watches, setWatches] = useState<WatchIntent[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   async function loadData() {
     setLoading(true);
@@ -57,17 +58,21 @@ export function WatchPage() {
   }, []);
 
   async function handleTogglePause(watch: WatchIntent) {
-    if (watch.status === "paused") {
-      await resumeWatch(watch.id);
-    } else {
-      await pauseWatch(watch.id);
+    setActionError(null);
+    const res = watch.status === "paused" ? await resumeWatch(watch.id) : await pauseWatch(watch.id);
+    if (!res.success && res.error) {
+      setActionError(res.error);
     }
     await loadData();
   }
 
   async function handleDelete(id: string) {
     if (window.confirm("Bạn có chắc muốn ngừng theo dõi tuyến bay này?")) {
-      await deleteWatch(id);
+      setActionError(null);
+      const res = await deleteWatch(id);
+      if (!res.success && res.error) {
+        setActionError(res.error);
+      }
       await loadData();
     }
   }
@@ -75,6 +80,19 @@ export function WatchPage() {
   return (
     <main className="min-h-screen bg-[var(--canvas-bg)] text-stone-900 pt-24 pb-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-6">
+        {actionError && (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-800 flex items-center justify-between shadow-sm">
+            <span>{actionError} (Trạng thái đã được khôi phục tự động)</span>
+            <button
+              type="button"
+              onClick={() => setActionError(null)}
+              className="text-rose-600 hover:text-rose-800 font-bold ml-2 cursor-pointer"
+            >
+              Đóng
+            </button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-stone-200 pb-6">
           <div>

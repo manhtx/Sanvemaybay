@@ -1,0 +1,38 @@
+{
+  "checkpoint_id": "CHECKPOINT-G50-AUTHORITY-CLOSURE",
+  "timestamp": "2026-10-20T04:04:08.494Z",
+  "mission_id": "FARELY-10X-G50-AUTHORITY-AND-DESIGN-CLOSURE",
+  "branch": "antigravity/farely-v12-product-convergence",
+  "head_sha": "6665afe8d8414f4dc0c1e3e9b62f7d4be723535f",
+  "remote_sha": "6665afe8d8414f4dc0c1e3e9b62f7d4be723535f",
+  "pr_number": 1,
+  "pr_status": "OPEN",
+  "pr_mergeable": "MERGEABLE",
+  "delivery_class": "RECOVERY_INSTRUCTION_ISSUED__MASTER_GOAL_UNFULFILLED",
+  "terminal_state": "TECHNICAL_VERIFIED",
+  "research_full_certification": "0/20 VERIFIED",
+  "compiler_full_certification": "0/20 VERIFIED",
+  "target_proven": false,
+  "verified_test_counts": {
+    "vitest": 321,
+    "node": 382,
+    "deno": 68,
+    "playwright": 74,
+    "total_passing": 845,
+    "failures": 0
+  },
+  "concrete_defect_remediations": [
+    "RC-14 & D12: Strict Watch return date matching in alert-matching.ts",
+    "RC-01 & D13: Objective candidate sorting across merged pools in api.ts",
+    "RC-15 & D07: Complete criteria scope in buildConditionFingerprint in watch-condition.ts",
+    "RC-16 & D4: Exact-ID resolution & typed namespaces in observed-scope.ts resolving 7-component opportunity ID collision with dedupe_key"
+  ],
+  "artifacts_materialized": {
+    "historical_acceptance_267": "docs/convergence/v50/HISTORICAL_ACCEPTANCE_267.json",
+    "founder_approved_required_atoms": "docs/convergence/v50/FOUNDER_APPROVED_REQUIRED_ATOMS.json",
+    "p2_semantic_variant_reconciliation": "docs/convergence/v50/P2_SEMANTIC_VARIANT_RECONCILIATION.json",
+    "new_security_adversarial_and_outcome_gates": "docs/convergence/v50/NEW_SECURITY_ADVERSARIAL_AND_OUTCOME_GATES.json",
+    "release_tuple": "docs/convergence/v50/RELEASE_TUPLE.json",
+    "founder_strategic_decision_sheet": "docs/convergence/v50/FOUNDER_STRATEGIC_DECISION_SHEET.md"
+  }
+}

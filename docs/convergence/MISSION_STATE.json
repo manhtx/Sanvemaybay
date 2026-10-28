@@ -1,7 +1,7 @@
 {
   "mission_version": "2026-10-07",
-  "mission_state": "TARGET_PROVEN",
-  "terminal_state": "TARGET_PROVEN",
+  "mission_state": "EXECUTING",
+  "terminal_state": "EXECUTING",
   "mission_contract_sha256": "59d871a905eb0bffaa392e10fa2c30dc91628ae3f887f95d66e55dcb408bb620",
   "vector_state": {
     "engineering_state": "PROVEN",
@@ -10,9 +10,25 @@
     "market_state": "COLLECTING_EVIDENCE",
     "compliance_state": "CAPABILITY_PROVEN"
   },
-  "market_outcome_evidence": "COLLECTING_EVIDENCE",
-  "unresolved_p0": 0,
-  "unresolved_required_current_stage_p1": 0,
-  "source_sha": "3cca0e4b624521d1fe50c74728604458dbcc5962",
-  "timestamp": "2026-10-08T10:29:48.756Z"
+  "current_slice": "SLICE_5_TRUST_AND_OPERATIONS",
+  "current_node": "CP-06",
+  "open_critical_nodes": [
+    "CP-06"
+  ],
+  "latest_source_sha": "9aba47a222295373e83c5d854f95301cc7072ccc",
+  "latest_remote_sha": "50e40959feb08873f4b69eea4206b41b64055b17",
+  "dirty_files": [
+    "M scripts/generate-convergence-artifacts.mjs",
+    "?? docs/convergence/v37/BASELINE_REPORT.md",
+    "?? docs/convergence/v37/DURABLE_CHECKPOINT.json"
+  ],
+  "current_migration_head": "20261009000100_forward_recovery_and_durable_scheduler.sql",
+  "p0_total": 192,
+  "p0_proven": 192,
+  "p0_unresolved": 0,
+  "total_gates": 267,
+  "proven_gates": 267,
+  "blockers": [],
+  "exact_next_action": "Resolve remaining open P0 requirements",
+  "timestamp": "2026-10-19T03:33:33.030Z"
 }

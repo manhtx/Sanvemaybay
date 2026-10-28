@@ -1,0 +1,17 @@
+{
+  "manifest_version": "15.0.0",
+  "authority": "OWNER_LOCK_V15",
+  "frozen_at": "2026-10-12T16:00:00Z",
+  "total_requirements": 267,
+  "precision_solutions": 15,
+  "execution_packages": 14,
+  "negative_vectors": 24,
+  "capability_contracts": 89,
+  "systemic_findings": 20,
+  "corrective_contracts": 20,
+  "immutable_precedence": [
+    "V15 precision solutions add to V14",
+    "V14 corrections add to V13",
+    "V13 preserves Research V1..V3"
+  ]
+}

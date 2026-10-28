@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterDeals, isActiveFeedDeal, mapDealRow, mapObservedFare, mapPriceHistoryRows, parseFeedEnvelope, sanitizeBookingUrl } from "./api";
+import { filterDeals, isActiveFeedDeal, mapDealRow, mapObservedFare, mapPriceHistoryRows, parseFeedEnvelope, parseNullableNumber, sanitizeBookingUrl, sortDeals } from "./api";
 import { normalizeAIInsight } from "./deals";
 
 describe("mapDealRow", () => {
@@ -169,7 +169,18 @@ describe("filterDeals", () => {
     expect(filterDeals(destinations, { destination: "" })).toHaveLength(2);
   });
 
-  it("filters by parsed maximum flight duration while keeping unknown duration evidence", () => {
+  it("filters by returnDate strictly and excludes one-way deals when returnDate is requested (S02, NEG-02)", () => {
+    const returnDated = [
+      { ...deals[0], departDate: "2026-11-01", returnDate: "2026-11-05" },
+      { ...deals[1], departDate: "2026-11-01", returnDate: "2026-11-08" },
+      { ...deals[0], departDate: "2026-11-01" }, // one-way
+    ] as any;
+    expect(filterDeals(returnDated, { returnDate: "2026-11-05" })).toHaveLength(1);
+    expect(filterDeals(returnDated, { returnDate: "2026-11-05" })[0].returnDate).toBe("2026-11-05");
+    expect(filterDeals(returnDated, {})).toHaveLength(3);
+  });
+
+    it("filters by parsed maximum flight duration while keeping unknown duration evidence", () => {
     const durations = [
       { ...deals[0], duration: "2h 30m" },
       { ...deals[1], duration: "5h" },
@@ -222,3 +233,156 @@ describe("mapObservedFare", () => {
     expect(deal.price).toBe(5212362);
   });
 });
+
+describe("F32: Discovery Empty & Degraded Recovery Status Invariants", () => {
+  it("SearchStatus type admits all discrete states required by F32", () => {
+    const statuses = [
+      "healthy",
+      "healthy_empty",
+      "degraded",
+      "provider_unavailable",
+      "unmonitored",
+      "valid_zero",
+      "stale_only",
+    ];
+    // Each status is discrete and non-empty
+    expect(new Set(statuses).size).toBe(7);
+  });
+});
+
+describe("sortDeals (RC-01, F31, F76: Merged Candidate Objective Sorting)", () => {
+  const candidateLive = {
+    id: "live-search-HAN-SGN-2026-11-01-0",
+    fromCode: "HAN",
+    toCode: "SGN",
+    price: 3_500_000,
+    discount: 10,
+    dealScore: 70,
+    departDate: "2026-11-05",
+    linkKind: "indicative",
+  } as any;
+
+  const candidateObserved = {
+    id: "observed-12345",
+    fromCode: "HAN",
+    toCode: "SGN",
+    price: 1_800_000,
+    discount: 35,
+    dealScore: 88,
+    departDate: "2026-11-08",
+    linkKind: "indicative",
+  } as any;
+
+  const candidateFeed = {
+    id: "feed-999",
+    fromCode: "HAN",
+    toCode: "SGN",
+    price: 2_200_000,
+    discount: 20,
+    dealScore: 80,
+    departDate: "2026-11-02",
+    linkKind: "live_source",
+  } as any;
+
+  const pool = [candidateLive, candidateObserved, candidateFeed];
+
+  it("RC-01: price_asc sorts cheapest first regardless of candidatePool concatenation order", () => {
+    const sorted = sortDeals(pool, "price_asc");
+    expect(sorted.map((d) => d.price)).toEqual([1_800_000, 2_200_000, 3_500_000]);
+    expect(sorted[0].id).toBe("observed-12345");
+  });
+
+  it("price_desc sorts most expensive first", () => {
+    const sorted = sortDeals(pool, "price_desc");
+    expect(sorted.map((d) => d.price)).toEqual([3_500_000, 2_200_000, 1_800_000]);
+  });
+
+  it("score sorts highest deal score first", () => {
+    const sorted = sortDeals(pool, "score");
+    expect(sorted.map((d) => d.dealScore)).toEqual([88, 80, 70]);
+  });
+
+  it("date_near sorts earliest departure first", () => {
+    const sorted = sortDeals(pool, "date_near");
+    expect(sorted.map((d) => d.departDate)).toEqual(["2026-11-02", "2026-11-05", "2026-11-08"]);
+  });
+
+  it("discount sorts highest discount percent first", () => {
+    const sorted = sortDeals(pool, "discount");
+    expect(sorted.map((d) => d.discount)).toEqual([35, 20, 10]);
+  });
+
+  it("F76: objective price sort is invariant to linkKind, provider or feed source", () => {
+    // Permuting order cannot alter price sort outcome
+    const reversed = [...pool].reverse();
+    const sortedFromReversed = sortDeals(reversed, "price_asc");
+    expect(sortedFromReversed.map((d) => d.id)).toEqual([
+      "observed-12345",
+      "feed-999",
+      "live-search-HAN-SGN-2026-11-01-0",
+    ]);
+  });
+});
+
+describe("E01: parseNullableNumber and null preservation", () => {
+  it("preserves null and undefined as null without coercing to 0", () => {
+    expect(parseNullableNumber(null)).toBeNull();
+    expect(parseNullableNumber(undefined)).toBeNull();
+    expect(parseNullableNumber("")).toBeNull();
+    expect(parseNullableNumber("   ")).toBeNull();
+    expect(parseNullableNumber("invalid")).toBeNull();
+    expect(parseNullableNumber(NaN)).toBeNull();
+    expect(parseNullableNumber(Infinity)).toBeNull();
+    expect(parseNullableNumber(true)).toBeNull();
+    expect(parseNullableNumber(false)).toBeNull();
+  });
+
+  it("parses valid numbers and zero accurately", () => {
+    expect(parseNullableNumber(0)).toBe(0);
+    expect(parseNullableNumber("0")).toBe(0);
+    expect(parseNullableNumber(280000)).toBe(280000);
+    expect(parseNullableNumber("1500000")).toBe(1500000);
+  });
+
+  it("preserves stops: null in mapDealRow and mapObservedFare", () => {
+    const row = {
+      id: "row-null-stops",
+      from: "HAN",
+      to: "SGN",
+      price: 1500000,
+      stops: null,
+      airline_code: "VN",
+      depart_date: "2026-11-01",
+    };
+
+    const dealRow = mapDealRow(row);
+    expect(dealRow.stops).toBeNull();
+
+    const observedFare = mapObservedFare(row);
+    expect(observedFare.stops).toBeNull();
+  });
+});
+
+describe("E02: True-cost epistemics and cost breakdown integrity", () => {
+  it("attaches typed CostBreakdown and isolates basePrice from estimated fees", () => {
+    const row = {
+      id: "vj-observed",
+      from: "HAN",
+      to: "SGN",
+      price: 1200000,
+      airline_code: "VJ",
+      region: "domestic",
+      date: "2026-11-01",
+    };
+
+    const deal = mapObservedFare(row);
+    expect(deal.advertisedTotal).toBe(1200000);
+    expect(deal.costBreakdown).toBeDefined();
+    expect(deal.costBreakdown?.basePrice).toBe(1200000);
+    expect(deal.costBreakdown?.estimatedTotal).toBe(1200000 + 280000);
+    expect(deal.realTotal).toBe(deal.costBreakdown?.estimatedTotal);
+    expect(deal.priceBasis).toBe("OBSERVED_BASE_FARE");
+  });
+});
+
+

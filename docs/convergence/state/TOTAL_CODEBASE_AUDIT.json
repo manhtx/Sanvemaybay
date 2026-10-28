@@ -1,0 +1,1249 @@
+{
+  "timestamp": "2026-10-27T10:08:22.965Z",
+  "total_files_scanned": 314,
+  "subsystems": {
+    "farely_domain": {
+      "path": "src/domain/farely",
+      "file_count": 50,
+      "total_loc": 12061,
+      "files": [
+        {
+          "path": "src/domain/farely/airportAlternatives.test.ts",
+          "loc": 259
+        },
+        {
+          "path": "src/domain/farely/airportAlternatives.ts",
+          "loc": 601
+        },
+        {
+          "path": "src/domain/farely/buyWaitGuidance.test.ts",
+          "loc": 262
+        },
+        {
+          "path": "src/domain/farely/buyWaitGuidance.ts",
+          "loc": 374
+        },
+        {
+          "path": "src/domain/farely/comparator.ts",
+          "loc": 192
+        },
+        {
+          "path": "src/domain/farely/conditionalGrowthSafety.test.ts",
+          "loc": 185
+        },
+        {
+          "path": "src/domain/farely/conditionalGrowthSafety.ts",
+          "loc": 288
+        },
+        {
+          "path": "src/domain/farely/costEpistemics.ts",
+          "loc": 366
+        },
+        {
+          "path": "src/domain/farely/dataEconomics.test.ts",
+          "loc": 155
+        },
+        {
+          "path": "src/domain/farely/dataEconomics.ts",
+          "loc": 177
+        },
+        {
+          "path": "src/domain/farely/directAffiliateComparison.test.ts",
+          "loc": 371
+        },
+        {
+          "path": "src/domain/farely/directAffiliateComparison.ts",
+          "loc": 315
+        },
+        {
+          "path": "src/domain/farely/domainKernel.test.ts",
+          "loc": 394
+        },
+        {
+          "path": "src/domain/farely/editorialCollections.test.ts",
+          "loc": 292
+        },
+        {
+          "path": "src/domain/farely/editorialCollections.ts",
+          "loc": 245
+        },
+        {
+          "path": "src/domain/farely/groupFarePlanner.test.ts",
+          "loc": 188
+        },
+        {
+          "path": "src/domain/farely/groupFarePlanner.ts",
+          "loc": 288
+        },
+        {
+          "path": "src/domain/farely/identity.ts",
+          "loc": 316
+        },
+        {
+          "path": "src/domain/farely/index.ts",
+          "loc": 34
+        },
+        {
+          "path": "src/domain/farely/locationScope.ts",
+          "loc": 203
+        },
+        {
+          "path": "src/domain/farely/money.ts",
+          "loc": 86
+        },
+        {
+          "path": "src/domain/farely/multiCityItinerary.test.ts",
+          "loc": 331
+        },
+        {
+          "path": "src/domain/farely/multiCityItinerary.ts",
+          "loc": 215
+        },
+        {
+          "path": "src/domain/farely/partnerIntegrations.test.ts",
+          "loc": 179
+        },
+        {
+          "path": "src/domain/farely/partnerIntegrations.ts",
+          "loc": 182
+        },
+        {
+          "path": "src/domain/farely/personalizedFeedPrivacy.test.ts",
+          "loc": 237
+        },
+        {
+          "path": "src/domain/farely/personalizedFeedPrivacy.ts",
+          "loc": 226
+        },
+        {
+          "path": "src/domain/farely/priceAnomaly.test.ts",
+          "loc": 300
+        },
+        {
+          "path": "src/domain/farely/priceAnomaly.ts",
+          "loc": 297
+        },
+        {
+          "path": "src/domain/farely/priceScope.ts",
+          "loc": 131
+        },
+        {
+          "path": "src/domain/farely/productionSmokeTruth.ts",
+          "loc": 399
+        },
+        {
+          "path": "src/domain/farely/providerCapabilities.test.ts",
+          "loc": 171
+        },
+        {
+          "path": "src/domain/farely/providerCapabilities.ts",
+          "loc": 251
+        },
+        {
+          "path": "src/domain/farely/providerResult.ts",
+          "loc": 85
+        },
+        {
+          "path": "src/domain/farely/providerRights.test.ts",
+          "loc": 201
+        },
+        {
+          "path": "src/domain/farely/providerRights.ts",
+          "loc": 366
+        },
+        {
+          "path": "src/domain/farely/pwaOfflineFreshness.test.ts",
+          "loc": 346
+        },
+        {
+          "path": "src/domain/farely/pwaOfflineFreshness.ts",
+          "loc": 243
+        },
+        {
+          "path": "src/domain/farely/releaseTuple.ts",
+          "loc": 104
+        },
+        {
+          "path": "src/domain/farely/routeBest.ts",
+          "loc": 231
+        },
+        {
+          "path": "src/domain/farely/savings.ts",
+          "loc": 39
+        },
+        {
+          "path": "src/domain/farely/time.ts",
+          "loc": 99
+        },
+        {
+          "path": "src/domain/farely/travelIntent.test.ts",
+          "loc": 332
+        },
+        {
+          "path": "src/domain/farely/travelIntent.ts",
+          "loc": 214
+        },
+        {
+          "path": "src/domain/farely/tripBudgetEstimator.test.ts",
+          "loc": 163
+        },
+        {
+          "path": "src/domain/farely/tripBudgetEstimator.ts",
+          "loc": 243
+        },
+        {
+          "path": "src/domain/farely/truthKernelV2.test.ts",
+          "loc": 419
+        },
+        {
+          "path": "src/domain/farely/vietnamTravelContext.test.ts",
+          "loc": 120
+        },
+        {
+          "path": "src/domain/farely/vietnamTravelContext.ts",
+          "loc": 189
+        },
+        {
+          "path": "src/domain/farely/watchCondition.ts",
+          "loc": 157
+        }
+      ]
+    },
+    "app_domain": {
+      "path": "src/app/domain",
+      "file_count": 53,
+      "total_loc": 6060,
+      "files": [
+        {
+          "path": "src/app/domain/accountContinuity.test.ts",
+          "loc": 144
+        },
+        {
+          "path": "src/app/domain/accountContinuity.ts",
+          "loc": 186
+        },
+        {
+          "path": "src/app/domain/authPolicy.test.ts",
+          "loc": 21
+        },
+        {
+          "path": "src/app/domain/authPolicy.ts",
+          "loc": 23
+        },
+        {
+          "path": "src/app/domain/costEpistemic.test.ts",
+          "loc": 61
+        },
+        {
+          "path": "src/app/domain/costEpistemic.ts",
+          "loc": 16
+        },
+        {
+          "path": "src/app/domain/dealClaims.test.ts",
+          "loc": 16
+        },
+        {
+          "path": "src/app/domain/dealClaims.ts",
+          "loc": 11
+        },
+        {
+          "path": "src/app/domain/dealComparison.test.ts",
+          "loc": 369
+        },
+        {
+          "path": "src/app/domain/dealComparison.ts",
+          "loc": 300
+        },
+        {
+          "path": "src/app/domain/decisionModes.test.ts",
+          "loc": 322
+        },
+        {
+          "path": "src/app/domain/decisionModes.ts",
+          "loc": 344
+        },
+        {
+          "path": "src/app/domain/destinationInsights.test.ts",
+          "loc": 38
+        },
+        {
+          "path": "src/app/domain/destinationInsights.ts",
+          "loc": 58
+        },
+        {
+          "path": "src/app/domain/differentialAndMetamorphic.test.ts",
+          "loc": 241
+        },
+        {
+          "path": "src/app/domain/exhaustiveAnalyzer.test.ts",
+          "loc": 106
+        },
+        {
+          "path": "src/app/domain/exhaustiveAnalyzer.ts",
+          "loc": 98
+        },
+        {
+          "path": "src/app/domain/flightIntelligence.test.ts",
+          "loc": 160
+        },
+        {
+          "path": "src/app/domain/flightIntelligence.ts",
+          "loc": 299
+        },
+        {
+          "path": "src/app/domain/globalSearch.test.ts",
+          "loc": 106
+        },
+        {
+          "path": "src/app/domain/opportunityCohort.test.ts",
+          "loc": 83
+        },
+        {
+          "path": "src/app/domain/opportunityCohort.ts",
+          "loc": 202
+        },
+        {
+          "path": "src/app/domain/opportunityIdentity.test.ts",
+          "loc": 77
+        },
+        {
+          "path": "src/app/domain/opportunityIdentity.ts",
+          "loc": 57
+        },
+        {
+          "path": "src/app/domain/priceAnalytics.test.ts",
+          "loc": 47
+        },
+        {
+          "path": "src/app/domain/priceAnalytics.ts",
+          "loc": 52
+        },
+        {
+          "path": "src/app/domain/priceForecast.test.ts",
+          "loc": 20
+        },
+        {
+          "path": "src/app/domain/priceForecast.ts",
+          "loc": 39
+        },
+        {
+          "path": "src/app/domain/priceHistoryWindows.test.ts",
+          "loc": 51
+        },
+        {
+          "path": "src/app/domain/priceHistoryWindows.ts",
+          "loc": 57
+        },
+        {
+          "path": "src/app/domain/productionHealth.test.ts",
+          "loc": 89
+        },
+        {
+          "path": "src/app/domain/productionHealth.ts",
+          "loc": 246
+        },
+        {
+          "path": "src/app/domain/promotionMatching.test.ts",
+          "loc": 36
+        },
+        {
+          "path": "src/app/domain/promotionMatching.ts",
+          "loc": 67
+        },
+        {
+          "path": "src/app/domain/provenance.test.ts",
+          "loc": 141
+        },
+        {
+          "path": "src/app/domain/provenance.ts",
+          "loc": 141
+        },
+        {
+          "path": "src/app/domain/recheckFeedback.test.ts",
+          "loc": 78
+        },
+        {
+          "path": "src/app/domain/recheckFeedback.ts",
+          "loc": 71
+        },
+        {
+          "path": "src/app/domain/routeOptimization.test.ts",
+          "loc": 95
+        },
+        {
+          "path": "src/app/domain/routeOptimization.ts",
+          "loc": 107
+        },
+        {
+          "path": "src/app/domain/snapshotAtomicity.test.ts",
+          "loc": 65
+        },
+        {
+          "path": "src/app/domain/snapshotAtomicity.ts",
+          "loc": 77
+        },
+        {
+          "path": "src/app/domain/travelEntities.test.ts",
+          "loc": 66
+        },
+        {
+          "path": "src/app/domain/travelEntities.ts",
+          "loc": 420
+        },
+        {
+          "path": "src/app/domain/travelFeed.personalized.test.ts",
+          "loc": 27
+        },
+        {
+          "path": "src/app/domain/travelFeed.test.ts",
+          "loc": 24
+        },
+        {
+          "path": "src/app/domain/travelFeed.ts",
+          "loc": 54
+        },
+        {
+          "path": "src/app/domain/travelFeedSections.test.ts",
+          "loc": 25
+        },
+        {
+          "path": "src/app/domain/travelFeedSections.ts",
+          "loc": 36
+        },
+        {
+          "path": "src/app/domain/tripAdvisor.test.ts",
+          "loc": 28
+        },
+        {
+          "path": "src/app/domain/tripAdvisor.ts",
+          "loc": 36
+        },
+        {
+          "path": "src/app/domain/watch.test.ts",
+          "loc": 296
+        },
+        {
+          "path": "src/app/domain/watch.ts",
+          "loc": 231
+        }
+      ]
+    },
+    "ui_pages_components": {
+      "path": "src/app/pages & components",
+      "file_count": 79,
+      "total_loc": 12852,
+      "files": [
+        {
+          "path": "src/app/components/AIInsightPanel.tsx",
+          "loc": 118
+        },
+        {
+          "path": "src/app/components/AirportAlternativeCard.tsx",
+          "loc": 154
+        },
+        {
+          "path": "src/app/components/DataRightsPanel.tsx",
+          "loc": 92
+        },
+        {
+          "path": "src/app/components/DealCard.tsx",
+          "loc": 163
+        },
+        {
+          "path": "src/app/components/GroupFarePlannerCard.tsx",
+          "loc": 299
+        },
+        {
+          "path": "src/app/components/HiddenCostAnalyzer.tsx",
+          "loc": 170
+        },
+        {
+          "path": "src/app/components/Navbar.tsx",
+          "loc": 91
+        },
+        {
+          "path": "src/app/components/PriceHistoryChart.tsx",
+          "loc": 194
+        },
+        {
+          "path": "src/app/components/ProvenanceBadge.tsx",
+          "loc": 143
+        },
+        {
+          "path": "src/app/components/RecheckFeedbackWidget.tsx",
+          "loc": 237
+        },
+        {
+          "path": "src/app/components/RouteMetadata.tsx",
+          "loc": 45
+        },
+        {
+          "path": "src/app/components/SavedComparisonModal.tsx",
+          "loc": 330
+        },
+        {
+          "path": "src/app/components/TurnstileWidget.tsx",
+          "loc": 79
+        },
+        {
+          "path": "src/app/components/WatchModal.tsx",
+          "loc": 517
+        },
+        {
+          "path": "src/app/components/figma/ImageWithFallback.tsx",
+          "loc": 28
+        },
+        {
+          "path": "src/app/components/ui/accordion.tsx",
+          "loc": 67
+        },
+        {
+          "path": "src/app/components/ui/alert-dialog.tsx",
+          "loc": 158
+        },
+        {
+          "path": "src/app/components/ui/alert.tsx",
+          "loc": 67
+        },
+        {
+          "path": "src/app/components/ui/aspect-ratio.tsx",
+          "loc": 12
+        },
+        {
+          "path": "src/app/components/ui/avatar.tsx",
+          "loc": 54
+        },
+        {
+          "path": "src/app/components/ui/badge.tsx",
+          "loc": 47
+        },
+        {
+          "path": "src/app/components/ui/breadcrumb.tsx",
+          "loc": 110
+        },
+        {
+          "path": "src/app/components/ui/button.tsx",
+          "loc": 59
+        },
+        {
+          "path": "src/app/components/ui/calendar.tsx",
+          "loc": 76
+        },
+        {
+          "path": "src/app/components/ui/card.tsx",
+          "loc": 93
+        },
+        {
+          "path": "src/app/components/ui/carousel.tsx",
+          "loc": 242
+        },
+        {
+          "path": "src/app/components/ui/chart.tsx",
+          "loc": 354
+        },
+        {
+          "path": "src/app/components/ui/checkbox.tsx",
+          "loc": 33
+        },
+        {
+          "path": "src/app/components/ui/collapsible.tsx",
+          "loc": 34
+        },
+        {
+          "path": "src/app/components/ui/command.tsx",
+          "loc": 178
+        },
+        {
+          "path": "src/app/components/ui/context-menu.tsx",
+          "loc": 253
+        },
+        {
+          "path": "src/app/components/ui/dialog.tsx",
+          "loc": 136
+        },
+        {
+          "path": "src/app/components/ui/drawer.tsx",
+          "loc": 133
+        },
+        {
+          "path": "src/app/components/ui/dropdown-menu.tsx",
+          "loc": 258
+        },
+        {
+          "path": "src/app/components/ui/form.tsx",
+          "loc": 169
+        },
+        {
+          "path": "src/app/components/ui/hover-card.tsx",
+          "loc": 45
+        },
+        {
+          "path": "src/app/components/ui/input-otp.tsx",
+          "loc": 78
+        },
+        {
+          "path": "src/app/components/ui/input.tsx",
+          "loc": 22
+        },
+        {
+          "path": "src/app/components/ui/label.tsx",
+          "loc": 25
+        },
+        {
+          "path": "src/app/components/ui/menubar.tsx",
+          "loc": 277
+        },
+        {
+          "path": "src/app/components/ui/navigation-menu.tsx",
+          "loc": 169
+        },
+        {
+          "path": "src/app/components/ui/pagination.tsx",
+          "loc": 128
+        },
+        {
+          "path": "src/app/components/ui/popover.tsx",
+          "loc": 49
+        },
+        {
+          "path": "src/app/components/ui/progress.tsx",
+          "loc": 32
+        },
+        {
+          "path": "src/app/components/ui/radio-group.tsx",
+          "loc": 46
+        },
+        {
+          "path": "src/app/components/ui/resizable.tsx",
+          "loc": 57
+        },
+        {
+          "path": "src/app/components/ui/scroll-area.tsx",
+          "loc": 59
+        },
+        {
+          "path": "src/app/components/ui/select.tsx",
+          "loc": 190
+        },
+        {
+          "path": "src/app/components/ui/separator.tsx",
+          "loc": 29
+        },
+        {
+          "path": "src/app/components/ui/sheet.tsx",
+          "loc": 140
+        },
+        {
+          "path": "src/app/components/ui/sidebar.tsx",
+          "loc": 727
+        },
+        {
+          "path": "src/app/components/ui/skeleton.tsx",
+          "loc": 14
+        },
+        {
+          "path": "src/app/components/ui/slider.tsx",
+          "loc": 64
+        },
+        {
+          "path": "src/app/components/ui/sonner.tsx",
+          "loc": 26
+        },
+        {
+          "path": "src/app/components/ui/switch.tsx",
+          "loc": 32
+        },
+        {
+          "path": "src/app/components/ui/table.tsx",
+          "loc": 117
+        },
+        {
+          "path": "src/app/components/ui/tabs.tsx",
+          "loc": 67
+        },
+        {
+          "path": "src/app/components/ui/textarea.tsx",
+          "loc": 19
+        },
+        {
+          "path": "src/app/components/ui/toggle-group.tsx",
+          "loc": 74
+        },
+        {
+          "path": "src/app/components/ui/toggle.tsx",
+          "loc": 48
+        },
+        {
+          "path": "src/app/components/ui/tooltip.tsx",
+          "loc": 62
+        },
+        {
+          "path": "src/app/components/ui/use-mobile.ts",
+          "loc": 22
+        },
+        {
+          "path": "src/app/components/ui/utils.ts",
+          "loc": 7
+        },
+        {
+          "path": "src/app/pages/AlertActionPage.tsx",
+          "loc": 61
+        },
+        {
+          "path": "src/app/pages/AlertsPage.tsx",
+          "loc": 551
+        },
+        {
+          "path": "src/app/pages/AuthPage.tsx",
+          "loc": 400
+        },
+        {
+          "path": "src/app/pages/DealDetailPage.tsx",
+          "loc": 837
+        },
+        {
+          "path": "src/app/pages/DealsPage.tsx",
+          "loc": 672
+        },
+        {
+          "path": "src/app/pages/ExplorePage.tsx",
+          "loc": 276
+        },
+        {
+          "path": "src/app/pages/HistoricalDealsPage.tsx",
+          "loc": 43
+        },
+        {
+          "path": "src/app/pages/HomePage.tsx",
+          "loc": 482
+        },
+        {
+          "path": "src/app/pages/NotFoundPage.tsx",
+          "loc": 22
+        },
+        {
+          "path": "src/app/pages/PrivacyPage.tsx",
+          "loc": 49
+        },
+        {
+          "path": "src/app/pages/Root.tsx",
+          "loc": 94
+        },
+        {
+          "path": "src/app/pages/SavedDealsPage.tsx",
+          "loc": 433
+        },
+        {
+          "path": "src/app/pages/SearchPage.tsx",
+          "loc": 726
+        },
+        {
+          "path": "src/app/pages/TermsPage.tsx",
+          "loc": 41
+        },
+        {
+          "path": "src/app/pages/TripAdvisorPage.tsx",
+          "loc": 52
+        },
+        {
+          "path": "src/app/pages/WatchPage.tsx",
+          "loc": 295
+        }
+      ]
+    },
+    "edge_functions": {
+      "path": "supabase/functions",
+      "file_count": 53,
+      "total_loc": 4777,
+      "files": [
+        {
+          "path": "supabase/functions/_shared/abuse-protection.test.ts",
+          "loc": 24
+        },
+        {
+          "path": "supabase/functions/_shared/abuse-protection.ts",
+          "loc": 30
+        },
+        {
+          "path": "supabase/functions/_shared/alert-matching.test.ts",
+          "loc": 164
+        },
+        {
+          "path": "supabase/functions/_shared/alert-matching.ts",
+          "loc": 107
+        },
+        {
+          "path": "supabase/functions/_shared/alert-validation.test.ts",
+          "loc": 13
+        },
+        {
+          "path": "supabase/functions/_shared/alert-validation.ts",
+          "loc": 20
+        },
+        {
+          "path": "supabase/functions/_shared/amadeus-provider.ts",
+          "loc": 77
+        },
+        {
+          "path": "supabase/functions/_shared/buy-decision.test.ts",
+          "loc": 9
+        },
+        {
+          "path": "supabase/functions/_shared/buy-decision.ts",
+          "loc": 16
+        },
+        {
+          "path": "supabase/functions/_shared/feed-health.test.ts",
+          "loc": 21
+        },
+        {
+          "path": "supabase/functions/_shared/feed-health.ts",
+          "loc": 51
+        },
+        {
+          "path": "supabase/functions/_shared/feed-snapshot.test.ts",
+          "loc": 11
+        },
+        {
+          "path": "supabase/functions/_shared/feed-snapshot.ts",
+          "loc": 8
+        },
+        {
+          "path": "supabase/functions/_shared/flight-normalization.test.ts",
+          "loc": 49
+        },
+        {
+          "path": "supabase/functions/_shared/flight-normalization.ts",
+          "loc": 87
+        },
+        {
+          "path": "supabase/functions/_shared/flight-search.test.ts",
+          "loc": 90
+        },
+        {
+          "path": "supabase/functions/_shared/flight-search.ts",
+          "loc": 90
+        },
+        {
+          "path": "supabase/functions/_shared/internal-auth.test.ts",
+          "loc": 29
+        },
+        {
+          "path": "supabase/functions/_shared/internal-auth.ts",
+          "loc": 14
+        },
+        {
+          "path": "supabase/functions/_shared/live-deal.test.ts",
+          "loc": 33
+        },
+        {
+          "path": "supabase/functions/_shared/live-deal.ts",
+          "loc": 34
+        },
+        {
+          "path": "supabase/functions/_shared/observability.test.ts",
+          "loc": 21
+        },
+        {
+          "path": "supabase/functions/_shared/observability.ts",
+          "loc": 28
+        },
+        {
+          "path": "supabase/functions/_shared/observed-fares.test.ts",
+          "loc": 51
+        },
+        {
+          "path": "supabase/functions/_shared/observed-fares.ts",
+          "loc": 143
+        },
+        {
+          "path": "supabase/functions/_shared/observed-scope.test.ts",
+          "loc": 132
+        },
+        {
+          "path": "supabase/functions/_shared/observed-scope.ts",
+          "loc": 135
+        },
+        {
+          "path": "supabase/functions/_shared/price-history.test.ts",
+          "loc": 74
+        },
+        {
+          "path": "supabase/functions/_shared/price-history.ts",
+          "loc": 268
+        },
+        {
+          "path": "supabase/functions/_shared/product-event.test.ts",
+          "loc": 40
+        },
+        {
+          "path": "supabase/functions/_shared/product-event.ts",
+          "loc": 78
+        },
+        {
+          "path": "supabase/functions/_shared/retry-policy.test.ts",
+          "loc": 11
+        },
+        {
+          "path": "supabase/functions/_shared/retry-policy.ts",
+          "loc": 9
+        },
+        {
+          "path": "supabase/functions/_shared/turnstile.test.ts",
+          "loc": 23
+        },
+        {
+          "path": "supabase/functions/_shared/turnstile.ts",
+          "loc": 33
+        },
+        {
+          "path": "supabase/functions/_shared/user-data.test.ts",
+          "loc": 25
+        },
+        {
+          "path": "supabase/functions/_shared/user-data.ts",
+          "loc": 17
+        },
+        {
+          "path": "supabase/functions/_shared/watch-condition.test.ts",
+          "loc": 308
+        },
+        {
+          "path": "supabase/functions/_shared/watch-condition.ts",
+          "loc": 217
+        },
+        {
+          "path": "supabase/functions/ai-explainer/index.ts",
+          "loc": 63
+        },
+        {
+          "path": "supabase/functions/alert-processor/index.ts",
+          "loc": 487
+        },
+        {
+          "path": "supabase/functions/analyze-price/index.ts",
+          "loc": 384
+        },
+        {
+          "path": "supabase/functions/deal-redirect/index.ts",
+          "loc": 46
+        },
+        {
+          "path": "supabase/functions/feed-snapshot/index.ts",
+          "loc": 103
+        },
+        {
+          "path": "supabase/functions/flight-ingest/index.ts",
+          "loc": 128
+        },
+        {
+          "path": "supabase/functions/flight-search/index.ts",
+          "loc": 81
+        },
+        {
+          "path": "supabase/functions/manage-alert/index.ts",
+          "loc": 115
+        },
+        {
+          "path": "supabase/functions/manage-user-data/index.ts",
+          "loc": 106
+        },
+        {
+          "path": "supabase/functions/observed-fares/index.ts",
+          "loc": 234
+        },
+        {
+          "path": "supabase/functions/refresh-observed-fares/index.ts",
+          "loc": 164
+        },
+        {
+          "path": "supabase/functions/retention-cleanup/index.ts",
+          "loc": 40
+        },
+        {
+          "path": "supabase/functions/setup-alert/index.ts",
+          "loc": 194
+        },
+        {
+          "path": "supabase/functions/track-event/index.ts",
+          "loc": 42
+        }
+      ]
+    },
+    "database_migrations": {
+      "path": "supabase/migrations",
+      "file_count": 47,
+      "total_loc": 2739,
+      "files": [
+        {
+          "path": "supabase/migrations/20260407000000_initial_schema.sql",
+          "loc": 64
+        },
+        {
+          "path": "supabase/migrations/20260407000100_raw_data_schema.sql",
+          "loc": 37
+        },
+        {
+          "path": "supabase/migrations/20260407000200_user_prefs.sql",
+          "loc": 45
+        },
+        {
+          "path": "supabase/migrations/20260407000300_add_booking_url.sql",
+          "loc": 6
+        },
+        {
+          "path": "supabase/migrations/20260407000400_cron_schedule.sql",
+          "loc": 7
+        },
+        {
+          "path": "supabase/migrations/20260728000000_harden_data_pipeline.sql",
+          "loc": 38
+        },
+        {
+          "path": "supabase/migrations/20260728000100_complete_alerts.sql",
+          "loc": 47
+        },
+        {
+          "path": "supabase/migrations/20260728000200_route_operations.sql",
+          "loc": 55
+        },
+        {
+          "path": "supabase/migrations/20260728000300_alert_confirmation.sql",
+          "loc": 32
+        },
+        {
+          "path": "supabase/migrations/20260728000400_expand_real_deal_coverage.sql",
+          "loc": 14
+        },
+        {
+          "path": "supabase/migrations/20260728000500_configure_launch_routes.sql",
+          "loc": 43
+        },
+        {
+          "path": "supabase/migrations/20260728000600_secure_market_stats_view.sql",
+          "loc": 9
+        },
+        {
+          "path": "supabase/migrations/20260728000700_harden_database_functions.sql",
+          "loc": 16
+        },
+        {
+          "path": "supabase/migrations/20260731000100_alert_date_range.sql",
+          "loc": 13
+        },
+        {
+          "path": "supabase/migrations/20260731000200_public_price_history_read.sql",
+          "loc": 11
+        },
+        {
+          "path": "supabase/migrations/20260731000300_expand_user_preferences.sql",
+          "loc": 22
+        },
+        {
+          "path": "supabase/migrations/20260731000400_user_bookmarks.sql",
+          "loc": 18
+        },
+        {
+          "path": "supabase/migrations/20260731000500_notification_retry.sql",
+          "loc": 12
+        },
+        {
+          "path": "supabase/migrations/20260731000600_user_preference_dates.sql",
+          "loc": 13
+        },
+        {
+          "path": "supabase/migrations/20260731000700_feed_snapshots.sql",
+          "loc": 16
+        },
+        {
+          "path": "supabase/migrations/20260731000800_product_events.sql",
+          "loc": 20
+        },
+        {
+          "path": "supabase/migrations/20260731000900_refund_policy.sql",
+          "loc": 7
+        },
+        {
+          "path": "supabase/migrations/20260804000100_expand_hot_deal_scan_windows.sql",
+          "loc": 14
+        },
+        {
+          "path": "supabase/migrations/20260804000200_expand_launch_route_matrix.sql",
+          "loc": 55
+        },
+        {
+          "path": "supabase/migrations/20260804000300_expand_long_horizon_scan_windows.sql",
+          "loc": 18
+        },
+        {
+          "path": "supabase/migrations/20260804000400_expand_secondary_origin_matrix.sql",
+          "loc": 46
+        },
+        {
+          "path": "supabase/migrations/20260805000100_deal_snapshots.sql",
+          "loc": 36
+        },
+        {
+          "path": "supabase/migrations/20260805000200_backfill_deal_snapshots.sql",
+          "loc": 31
+        },
+        {
+          "path": "supabase/migrations/20260805000300_live_provider_affiliate_contract.sql",
+          "loc": 30
+        },
+        {
+          "path": "supabase/migrations/20260811000100_fail_closed_link_kind_defaults.sql",
+          "loc": 20
+        },
+        {
+          "path": "supabase/migrations/20260819000100_backfill_discovery_provenance.sql",
+          "loc": 19
+        },
+        {
+          "path": "supabase/migrations/20260820000100_observed_fare_read_model.sql",
+          "loc": 49
+        },
+        {
+          "path": "supabase/migrations/20260820000200_request_rate_limits.sql",
+          "loc": 60
+        },
+        {
+          "path": "supabase/migrations/20260820000300_operational_scan_health.sql",
+          "loc": 36
+        },
+        {
+          "path": "supabase/migrations/20260820000400_secure_product_events.sql",
+          "loc": 18
+        },
+        {
+          "path": "supabase/migrations/20260820000500_retention_cleanup.sql",
+          "loc": 52
+        },
+        {
+          "path": "supabase/migrations/20260820000600_web_vitals_event.sql",
+          "loc": 9
+        },
+        {
+          "path": "supabase/migrations/20260820000700_idempotent_account_deletion.sql",
+          "loc": 123
+        },
+        {
+          "path": "supabase/migrations/20261005000000_saved_opportunities_and_watch.sql",
+          "loc": 57
+        },
+        {
+          "path": "supabase/migrations/20261005010000_release_convergence_and_snapshot_atomicity.sql",
+          "loc": 124
+        },
+        {
+          "path": "supabase/migrations/20261006000100_telemetry_and_watch_convergence.sql",
+          "loc": 34
+        },
+        {
+          "path": "supabase/migrations/20261006000200_canonical_travel_intents_and_watch.sql",
+          "loc": 191
+        },
+        {
+          "path": "supabase/migrations/20261007000100_canonical_fare_observations.sql",
+          "loc": 111
+        },
+        {
+          "path": "supabase/migrations/20261007000200_scan_runs_health_status.sql",
+          "loc": 44
+        },
+        {
+          "path": "supabase/migrations/20261007000300_atomic_watch_evaluation_and_outbox.sql",
+          "loc": 225
+        },
+        {
+          "path": "supabase/migrations/20261008000100_security_lease_recovery_and_scheduler.sql",
+          "loc": 305
+        },
+        {
+          "path": "supabase/migrations/20261009000100_forward_recovery_and_durable_scheduler.sql",
+          "loc": 487
+        }
+      ]
+    }
+  },
+  "code_health_metrics": {
+    "potential_floating_point_currency": [
+      {
+        "path": "src/app/domain/globalSearch.test.ts",
+        "finding": "Direct float multiplication/division on price variable without explicit integer rounding"
+      }
+    ],
+    "potential_unhandled_rejections": [
+      {
+        "path": "supabase/functions/_shared/amadeus-provider.ts",
+        "finding": "External fetch invocation without wrapping try/catch block"
+      }
+    ],
+    "excessive_file_length_gt_500_loc": [
+      {
+        "path": "src/app/components/WatchModal.tsx",
+        "loc": 517
+      },
+      {
+        "path": "src/app/components/ui/sidebar.tsx",
+        "loc": 727
+      },
+      {
+        "path": "src/app/data/api.ts",
+        "loc": 1049
+      },
+      {
+        "path": "src/app/data/watchApi.ts",
+        "loc": 517
+      },
+      {
+        "path": "src/app/pages/AlertsPage.tsx",
+        "loc": 551
+      },
+      {
+        "path": "src/app/pages/DealDetailPage.tsx",
+        "loc": 837
+      },
+      {
+        "path": "src/app/pages/DealsPage.tsx",
+        "loc": 672
+      },
+      {
+        "path": "src/app/pages/SearchPage.tsx",
+        "loc": 726
+      },
+      {
+        "path": "src/domain/farely/airportAlternatives.ts",
+        "loc": 601
+      }
+    ],
+    "missing_error_boundaries": [],
+    "stale_cache_risks": []
+  },
+  "architectural_opportunities": [
+    {
+      "domain": "Trip Budget & Total Cost Engine",
+      "file": "src/domain/farely/tripBudgetEstimator.ts",
+      "opportunity": "Expand dynamic baggage and payment surcharge modeling for low-cost carriers (VietJet, Bamboo) to prevent hidden fee surprises.",
+      "impact": "HIGH"
+    },
+    {
+      "domain": "Price Anomaly & Deal Confidence Bayesian Scoring",
+      "file": "src/domain/farely/priceAnomaly.ts",
+      "opportunity": "Incorporate peak Tet holiday seasonal inflation priors into Bayesian anomaly baseline to avoid false anomaly triggers.",
+      "impact": "HIGH"
+    },
+    {
+      "domain": "PWA Offline & Client Stale-Data Graceful Degradation",
+      "file": "src/domain/farely/pwaOfflineFreshness.ts",
+      "opportunity": "Enforce transactional IndexedDB store versioning and strict 360-minute stale visual degradation barriers.",
+      "impact": "MEDIUM"
+    },
+    {
+      "domain": "Multi-City Flexible Date Matrix Performance",
+      "file": "src/domain/farely/multiCityMatrix.ts",
+      "opportunity": "Memoize combinatorial route graph traversals using Bloom filter or LRU cache to keep UI rendering below 16ms frame budget.",
+      "impact": "MEDIUM"
+    }
+  ]
+}

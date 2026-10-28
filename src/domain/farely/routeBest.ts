@@ -4,8 +4,8 @@
  * NC-001, NC-002, NC-004, NC-005, NC-006
  */
 
-import { TravelIntent } from './travelIntent';
-import { satisfiesLocationScope } from './locationScope';
+import type { TravelIntent } from './travelIntent.ts';
+import { satisfiesLocationScope } from './locationScope.ts';
 
 export interface RouteOffer {
   id: string;
@@ -36,6 +36,7 @@ export type IneligibilityReason =
   | 'INVALID_PRICE'
   | 'UNKNOWN_STOPS'
   | 'UNKNOWN_DURATION'
+  | 'UNKNOWN_CABIN'
   | 'UNKNOWN_COMPATIBILITY';
 
 export type EligibilityState = 'ELIGIBLE' | 'INELIGIBLE' | 'UNKNOWN_COMPATIBILITY';
@@ -49,17 +50,20 @@ export interface EligibilityResult {
 
 /**
  * Normalizes an offer for a given TravelIntent (e.g. party total -> per traveler).
- * NODE TK-05
+ * NODE TK-05, D14: Does not naively divide party total when children/infants are present without fare breakdown.
  */
 export function normalizeOfferForIntent(offer: RouteOffer, intent: TravelIntent): RouteOffer {
-  let normalizedPrice = offer.price;
+  let normalizedPrice = Number.isFinite(offer.price) && offer.price > 0 ? Math.round(offer.price) : 0;
   let normalizedPricingUnit = offer.pricingUnit || 'PER_TRAVELER';
 
-  if (normalizedPricingUnit === 'PARTY_TOTAL') {
-    const totalPax = (intent.passengers.adults || 1) + (intent.passengers.children || 0);
-    if (totalPax > 1) {
-      normalizedPrice = Math.round(offer.price / totalPax);
-      normalizedPricingUnit = 'PER_TRAVELER';
+  if (normalizedPricingUnit === 'PARTY_TOTAL' && normalizedPrice > 0) {
+    const hasChildrenOrInfants = (intent.passengers.children || 0) > 0 || (intent.passengers.infants || 0) > 0;
+    if (!hasChildrenOrInfants) {
+      const adults = intent.passengers.adults || 1;
+      if (adults > 1) {
+        normalizedPrice = Math.round(normalizedPrice / adults);
+        normalizedPricingUnit = 'PER_TRAVELER';
+      }
     }
   }
 
@@ -92,28 +96,43 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
   if (intent.journeyType === 'ROUND_TRIP') {
     if (!offer.returnDate) {
       reasons.push('MISSING_RETURN_DATE');
-    } else if (intent.inbound?.exact && offer.returnDate !== intent.inbound.exact) {
-      reasons.push('RETURN_DATE_MISMATCH');
-    } else if (intent.inbound?.from && intent.inbound?.to) {
-      if (offer.returnDate < intent.inbound.from || offer.returnDate > intent.inbound.to) {
+    } else {
+      const offerReturn = offer.returnDate.slice(0, 10);
+      const intentReturnExact = intent.inbound?.exact ? intent.inbound.exact.slice(0, 10) : undefined;
+      if (intentReturnExact && offerReturn !== intentReturnExact) {
         reasons.push('RETURN_DATE_MISMATCH');
+      } else if (intent.inbound?.from && intent.inbound?.to) {
+        const retFrom = intent.inbound.from.slice(0, 10);
+        const retTo = intent.inbound.to.slice(0, 10);
+        if (offerReturn < retFrom || offerReturn > retTo) {
+          reasons.push('RETURN_DATE_MISMATCH');
+        }
       }
     }
   }
 
   // 4. Outbound date & windows (S08 / C-13)
-  if (intent.outbound.exact && offer.departDate !== intent.outbound.exact) {
+  const offerDepart = (offer.departDate || '').slice(0, 10);
+  const intentDepartExact = intent.outbound.exact ? intent.outbound.exact.slice(0, 10) : undefined;
+  if (intentDepartExact && offerDepart !== intentDepartExact) {
     reasons.push('OUTBOUND_DATE_MISMATCH');
   } else if (intent.outbound.from && intent.outbound.to) {
-    if (offer.departDate < intent.outbound.from || offer.departDate > intent.outbound.to) {
+    const from = intent.outbound.from.slice(0, 10);
+    const to = intent.outbound.to.slice(0, 10);
+    if (offerDepart < from || offerDepart > to) {
       reasons.push('OUTBOUND_DATE_MISMATCH');
     }
   }
 
-  // 5. Cabin compatibility (NC-004: Business cannot match Economy intent)
-  const offerCabin = (offer.cabin || 'ECONOMY').toUpperCase();
-  if (offerCabin !== intent.cabin.toUpperCase()) {
-    reasons.push('CABIN_MISMATCH');
+  // 5. Cabin compatibility (NC-004: Business cannot match Economy intent, Unknown cabin is not Economy)
+  if (offer.cabin === 'UNKNOWN' || offer.cabin === 'UNKNOWN_CABIN') {
+    reasons.push('UNKNOWN_CABIN');
+  } else if (offer.cabin) {
+    if (offer.cabin.toUpperCase() !== intent.cabin.toUpperCase()) {
+      reasons.push('CABIN_MISMATCH');
+    }
+  } else if (intent.cabin && intent.cabin.toUpperCase() !== 'ECONOMY') {
+    reasons.push('UNKNOWN_CABIN');
   }
 
   // 6. Max stops constraint (S08 / A15: Unknown stops is not 0 stops)
@@ -142,6 +161,17 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
   // 9. Non-negative, finite price
   if (!Number.isFinite(offer.price) || offer.price <= 0) {
     reasons.push('INVALID_PRICE');
+  }
+
+  // 10. Commercial comparability and pricing scope (D14)
+  if (offer.pricingUnit === 'UNKNOWN_PRICING_SCOPE') {
+    reasons.push('UNKNOWN_COMPATIBILITY');
+  } else if (
+    offer.pricingUnit === 'PARTY_TOTAL' &&
+    ((intent.passengers.children || 0) > 0 || (intent.passengers.infants || 0) > 0)
+  ) {
+    // Incomparable without passenger-specific fare evidence
+    reasons.push('UNKNOWN_COMPATIBILITY');
   }
 
   // Tri-state classification
@@ -198,12 +228,14 @@ export function selectRouteBest(offers: RouteOffer[], intent: TravelIntent): Rou
 
   if (eligibleOffers.length === 0) return null;
 
-  // Sort deterministically by price ascending, with stable tie-breaker on offer ID
+  // Sort deterministically by price ascending (integer VND), with stable tie-breaker on offer ID
   eligibleOffers.sort((a, b) => {
-    if (a.price !== b.price) {
-      return a.price - b.price; // mathematical minimum
+    const priceA = Math.round(a.price);
+    const priceB = Math.round(b.price);
+    if (priceA !== priceB) {
+      return priceA - priceB; // mathematical minimum
     }
-    return a.id.localeCompare(b.id);
+    return String(a.id || '').localeCompare(String(b.id || ''));
   });
 
   return eligibleOffers[0];

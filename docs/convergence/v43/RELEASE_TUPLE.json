@@ -1,0 +1,28 @@
+{
+  "contract_id": "FARELY-V43-RELEASE-TUPLE",
+  "version": "43.0.0",
+  "tuple_id": "tuple_v43_continuous_master_convergence",
+  "frontend_release_sha": "084025b1f58a98655222ee4f8fc82461b286dd6a",
+  "edge_runtime_sha": "f08b4b42472faff1dcc132106ee30b5a54938571",
+  "convergence_target_sha": "88f2eab6ba5ae81c9adf77866d6bcaa510b3c7a1",
+  "db_migration_head": "20261009000100_forward_recovery_and_durable_scheduler.sql",
+  "worker_revision": "worker-v43.1",
+  "active_generation_id": "gen_live_v2",
+  "api_contract_version": "1.0.0",
+  "observation_schema_version": 1,
+  "identity_schema_version": 1,
+  "parity_mode": "COMPATIBLE_TUPLE",
+  "compatibility_matrix": {
+    "frontend_build_identity": "vite-6.4.3-react-19",
+    "edge_runtime_framework": "deno-2.0.0-supabase-edge",
+    "database_compatibility": "PostgreSQL-17-ap-southeast-1",
+    "cross_component_rules": [
+      "Frontend release SHA must match Edge runtime SHA under ATOMIC_SHA_PARITY mode",
+      "When independent revisions exist, a verified Release Tuple must certify cross-component API contract version compatibility",
+      "release.json manual mutations without deployment revision are rejected (PS35-02)",
+      "Edge DEPLOYED_COMMIT mutations without actual deployment are rejected (PS35-03)"
+    ]
+  },
+  "authorized_by": "FOUNDER_RELEASE_AUTHORITY",
+  "created_at": "2026-10-19T07:18:02.265Z"
+}

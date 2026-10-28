@@ -20,7 +20,7 @@ export interface ObservationData {
   departDate: string;
   returnDate?: string | null;
   price: number;
-  stops: number;
+  stops: number | null;
   airlineCode?: string;
   observedAt: string;
   scanRunId?: string;

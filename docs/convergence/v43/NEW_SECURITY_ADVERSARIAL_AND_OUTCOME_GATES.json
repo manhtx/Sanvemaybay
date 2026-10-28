@@ -1,0 +1,956 @@
+{
+  "contract_id": "FARELY-V43-NEW-SECURITY-ADVERSARIAL-AND-OUTCOME-GATES",
+  "version": "43.0.0",
+  "description": "The combined set of 186 new security, adversarial, outcome, production incident, and negative falsifier gates.",
+  "summary": {
+    "adversarial_challenges": 40,
+    "negative_vectors": 24,
+    "vertical_journeys": 32,
+    "v34_adversarial_falsifiers": 32,
+    "v35_production_smoke_gates": 18,
+    "v37_adversarial_falsifiers": 40,
+    "total_new_gates": 186
+  },
+  "adversarial_challenges": [
+    {
+      "id": "A01",
+      "requirement": "Adversarial defense challenge A01",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A02",
+      "requirement": "Adversarial defense challenge A02",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A03",
+      "requirement": "Adversarial defense challenge A03",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A04",
+      "requirement": "Adversarial defense challenge A04",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A05",
+      "requirement": "Adversarial defense challenge A05",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A06",
+      "requirement": "Adversarial defense challenge A06",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A07",
+      "requirement": "Adversarial defense challenge A07",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A08",
+      "requirement": "Adversarial defense challenge A08",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A09",
+      "requirement": "Adversarial defense challenge A09",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A10",
+      "requirement": "Adversarial defense challenge A10",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A11",
+      "requirement": "Adversarial defense challenge A11",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A12",
+      "requirement": "Adversarial defense challenge A12",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A13",
+      "requirement": "Adversarial defense challenge A13",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A14",
+      "requirement": "Adversarial defense challenge A14",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A15",
+      "requirement": "Adversarial defense challenge A15",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A16",
+      "requirement": "Adversarial defense challenge A16",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A17",
+      "requirement": "Adversarial defense challenge A17",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A18",
+      "requirement": "Adversarial defense challenge A18",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A19",
+      "requirement": "Adversarial defense challenge A19",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A20",
+      "requirement": "Adversarial defense challenge A20",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A21",
+      "requirement": "Adversarial defense challenge A21",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A22",
+      "requirement": "Adversarial defense challenge A22",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A23",
+      "requirement": "Adversarial defense challenge A23",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A24",
+      "requirement": "Adversarial defense challenge A24",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A25",
+      "requirement": "Adversarial defense challenge A25",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A26",
+      "requirement": "Adversarial defense challenge A26",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A27",
+      "requirement": "Adversarial defense challenge A27",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A28",
+      "requirement": "Adversarial defense challenge A28",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A29",
+      "requirement": "Adversarial defense challenge A29",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A30",
+      "requirement": "Adversarial defense challenge A30",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A31",
+      "requirement": "Adversarial defense challenge A31",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A32",
+      "requirement": "Adversarial defense challenge A32",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A33",
+      "requirement": "Adversarial defense challenge A33",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A34",
+      "requirement": "Adversarial defense challenge A34",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A35",
+      "requirement": "Adversarial defense challenge A35",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A36",
+      "requirement": "Adversarial defense challenge A36",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A37",
+      "requirement": "Adversarial defense challenge A37",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A38",
+      "requirement": "Adversarial defense challenge A38",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A39",
+      "requirement": "Adversarial defense challenge A39",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    },
+    {
+      "id": "A40",
+      "requirement": "Adversarial defense challenge A40",
+      "probe": "scripts/adversarial-corpus-a01-a24.node-test.mjs"
+    }
+  ],
+  "negative_vectors": [
+    {
+      "id": "NV01",
+      "requirement": "Negative vector defense NV01",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV02",
+      "requirement": "Negative vector defense NV02",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV03",
+      "requirement": "Negative vector defense NV03",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV04",
+      "requirement": "Negative vector defense NV04",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV05",
+      "requirement": "Negative vector defense NV05",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV06",
+      "requirement": "Negative vector defense NV06",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV07",
+      "requirement": "Negative vector defense NV07",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV08",
+      "requirement": "Negative vector defense NV08",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV09",
+      "requirement": "Negative vector defense NV09",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV10",
+      "requirement": "Negative vector defense NV10",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV11",
+      "requirement": "Negative vector defense NV11",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV12",
+      "requirement": "Negative vector defense NV12",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV13",
+      "requirement": "Negative vector defense NV13",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV14",
+      "requirement": "Negative vector defense NV14",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV15",
+      "requirement": "Negative vector defense NV15",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV16",
+      "requirement": "Negative vector defense NV16",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV17",
+      "requirement": "Negative vector defense NV17",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV18",
+      "requirement": "Negative vector defense NV18",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV19",
+      "requirement": "Negative vector defense NV19",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV20",
+      "requirement": "Negative vector defense NV20",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV21",
+      "requirement": "Negative vector defense NV21",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV22",
+      "requirement": "Negative vector defense NV22",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV23",
+      "requirement": "Negative vector defense NV23",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    },
+    {
+      "id": "NV24",
+      "requirement": "Negative vector defense NV24",
+      "probe": "scripts/v15-negative-vectors.node-test.mjs"
+    }
+  ],
+  "vertical_journeys": [
+    {
+      "id": "J01",
+      "requirement": "Vertical user journey J01",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J02",
+      "requirement": "Vertical user journey J02",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J03",
+      "requirement": "Vertical user journey J03",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J04",
+      "requirement": "Vertical user journey J04",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J05",
+      "requirement": "Vertical user journey J05",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J06",
+      "requirement": "Vertical user journey J06",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J07",
+      "requirement": "Vertical user journey J07",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J08",
+      "requirement": "Vertical user journey J08",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J09",
+      "requirement": "Vertical user journey J09",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J10",
+      "requirement": "Vertical user journey J10",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J11",
+      "requirement": "Vertical user journey J11",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J12",
+      "requirement": "Vertical user journey J12",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J13",
+      "requirement": "Vertical user journey J13",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J14",
+      "requirement": "Vertical user journey J14",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J15",
+      "requirement": "Vertical user journey J15",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J16",
+      "requirement": "Vertical user journey J16",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J17",
+      "requirement": "Vertical user journey J17",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J18",
+      "requirement": "Vertical user journey J18",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J19",
+      "requirement": "Vertical user journey J19",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J20",
+      "requirement": "Vertical user journey J20",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J21",
+      "requirement": "Vertical user journey J21",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J22",
+      "requirement": "Vertical user journey J22",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J23",
+      "requirement": "Vertical user journey J23",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J24",
+      "requirement": "Vertical user journey J24",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J25",
+      "requirement": "Vertical user journey J25",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J26",
+      "requirement": "Vertical user journey J26",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J27",
+      "requirement": "Vertical user journey J27",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J28",
+      "requirement": "Vertical user journey J28",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J29",
+      "requirement": "Vertical user journey J29",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J30",
+      "requirement": "Vertical user journey J30",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J31",
+      "requirement": "Vertical user journey J31",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    },
+    {
+      "id": "J32",
+      "requirement": "Vertical user journey J32",
+      "probe": "e2e/v22-vertical-journeys.spec.ts"
+    }
+  ],
+  "v34_adversarial_falsifiers": [
+    {
+      "id": "EV34-01",
+      "requirement": "V34 adversarial requirement EV34-01",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-02",
+      "requirement": "V34 adversarial requirement EV34-02",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-03",
+      "requirement": "V34 adversarial requirement EV34-03",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-04",
+      "requirement": "V34 adversarial requirement EV34-04",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-05",
+      "requirement": "V34 adversarial requirement EV34-05",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-06",
+      "requirement": "V34 adversarial requirement EV34-06",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-07",
+      "requirement": "V34 adversarial requirement EV34-07",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-08",
+      "requirement": "V34 adversarial requirement EV34-08",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-09",
+      "requirement": "V34 adversarial requirement EV34-09",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-10",
+      "requirement": "V34 adversarial requirement EV34-10",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-11",
+      "requirement": "V34 adversarial requirement EV34-11",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-12",
+      "requirement": "V34 adversarial requirement EV34-12",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-13",
+      "requirement": "V34 adversarial requirement EV34-13",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-14",
+      "requirement": "V34 adversarial requirement EV34-14",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-15",
+      "requirement": "V34 adversarial requirement EV34-15",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-16",
+      "requirement": "V34 adversarial requirement EV34-16",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-17",
+      "requirement": "V34 adversarial requirement EV34-17",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-18",
+      "requirement": "V34 adversarial requirement EV34-18",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-19",
+      "requirement": "V34 adversarial requirement EV34-19",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-20",
+      "requirement": "V34 adversarial requirement EV34-20",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-21",
+      "requirement": "V34 adversarial requirement EV34-21",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-22",
+      "requirement": "V34 adversarial requirement EV34-22",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-23",
+      "requirement": "V34 adversarial requirement EV34-23",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-24",
+      "requirement": "V34 adversarial requirement EV34-24",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-25",
+      "requirement": "V34 adversarial requirement EV34-25",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-26",
+      "requirement": "V34 adversarial requirement EV34-26",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-27",
+      "requirement": "V34 adversarial requirement EV34-27",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-28",
+      "requirement": "V34 adversarial requirement EV34-28",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-29",
+      "requirement": "V34 adversarial requirement EV34-29",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-30",
+      "requirement": "V34 adversarial requirement EV34-30",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-31",
+      "requirement": "V34 adversarial requirement EV34-31",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-32",
+      "requirement": "V34 adversarial requirement EV34-32",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    }
+  ],
+  "v35_production_smoke_gates": [
+    {
+      "id": "PS35-01",
+      "requirement": "V35 production smoke incident gate PS35-01",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-02",
+      "requirement": "V35 production smoke incident gate PS35-02",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-03",
+      "requirement": "V35 production smoke incident gate PS35-03",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-04",
+      "requirement": "V35 production smoke incident gate PS35-04",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-05",
+      "requirement": "V35 production smoke incident gate PS35-05",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-06",
+      "requirement": "V35 production smoke incident gate PS35-06",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-07",
+      "requirement": "V35 production smoke incident gate PS35-07",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-08",
+      "requirement": "V35 production smoke incident gate PS35-08",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-09",
+      "requirement": "V35 production smoke incident gate PS35-09",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-10",
+      "requirement": "V35 production smoke incident gate PS35-10",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-11",
+      "requirement": "V35 production smoke incident gate PS35-11",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-12",
+      "requirement": "V35 production smoke incident gate PS35-12",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-13",
+      "requirement": "V35 production smoke incident gate PS35-13",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-14",
+      "requirement": "V35 production smoke incident gate PS35-14",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-15",
+      "requirement": "V35 production smoke incident gate PS35-15",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-16",
+      "requirement": "V35 production smoke incident gate PS35-16",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-17",
+      "requirement": "V35 production smoke incident gate PS35-17",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    },
+    {
+      "id": "PS35-18",
+      "requirement": "V35 production smoke incident gate PS35-18",
+      "probe": "scripts/v35-production-smoke-requirements.node-test.mjs"
+    }
+  ],
+  "v37_adversarial_falsifiers": [
+    {
+      "id": "NEG-01",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-01",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-02",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-02",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-03",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-03",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-04",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-04",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-05",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-05",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-06",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-06",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-07",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-07",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-08",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-08",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-09",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-09",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-10",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-10",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-11",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-11",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-12",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-12",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-13",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-13",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-14",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-14",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-15",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-15",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-16",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-16",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-17",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-17",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-18",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-18",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-19",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-19",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-20",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-20",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-21",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-21",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-22",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-22",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-23",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-23",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-24",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-24",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-25",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-25",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-26",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-26",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-27",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-27",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-28",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-28",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-29",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-29",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-30",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-30",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-31",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-31",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-32",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-32",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-33",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-33",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-34",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-34",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-35",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-35",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-36",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-36",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-37",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-37",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-38",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-38",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-39",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-39",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    },
+    {
+      "id": "NEG-40",
+      "requirement": "V37 negative matrix adversarial falsifier NEG-40",
+      "probe": "scripts/v37-adversarial-negative-matrix.node-test.mjs"
+    }
+  ]
+}

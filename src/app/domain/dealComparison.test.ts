@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { compareDeals, explainTradeoff, identifyDominatedOptions } from "./dealComparison";
+import {
+  compareDeals,
+  compareSavedOpportunities,
+  checkOpportunitiesCompatibility,
+  explainTradeoff,
+  identifyDominatedOptions,
+  isDealDominated,
+  sortComparisonRowsMonotonically,
+} from "./dealComparison";
 
 describe("deal comparison", () => {
   it("compares total cost and parses duration without inventing missing values", () => {
@@ -78,6 +86,283 @@ describe("deal comparison", () => {
     expect(dominatedSet.has("opt-dominated")).toBe(true);
     expect(dominatedSet.has("opt-superior")).toBe(false);
     expect(dominatedSet.has("opt-cheapest-slow")).toBe(false);
+  });
+
+  it("compares saved opportunities without promoting unknown information to known (F28)", () => {
+    const savedItems = [
+      {
+        opportunityId: "opp-1",
+        fromCode: "HAN",
+        toCode: "SGN",
+        savedPrice: 1_200_000,
+        currentPrice: 1_350_000,
+        airline: "Vietnam Airlines",
+        stops: 0,
+        departDate: "2026-11-10",
+        snapshotData: { duration: "2h 10m" },
+      },
+      {
+        opportunityId: "opp-2",
+        fromCode: "HAN",
+        toCode: "SGN",
+        savedPrice: 900_000,
+        currentPrice: null,
+        airline: "Vietjet Air",
+        stops: null, // unknown
+        departDate: "2026-11-10",
+        snapshotData: null, // no duration
+      },
+    ];
+
+    const rows = compareSavedOpportunities(savedItems);
+    expect(rows).toHaveLength(2);
+
+    // First item
+    expect(rows[0].id).toBe("opp-1");
+    expect(rows[0].ticketPrice).toBe(1_350_000);
+    expect(rows[0].durationMinutes).toBe(130);
+    expect(rows[0].stops).toBe(0);
+
+    // Second item has unknown stops and duration
+    expect(rows[1].id).toBe("opp-2");
+    expect(rows[1].ticketPrice).toBe(900_000);
+    expect(rows[1].durationMinutes).toBeUndefined();
+    expect(rows[1].stops).toBeNull();
+    expect(rows[1].refundPolicy).toBeUndefined();
+    expect(rows[1].risk).toBe("unknown");
+    expect(rows[1].unverifiedFields).toContain("Thời gian bay");
+    expect(rows[1].unverifiedFields).toContain("Số điểm dừng");
+    expect(rows[1].unverifiedFields).toContain("Chính sách hoàn/đổi vé");
+  });
+
+  it("checks compatibility between saved opportunities and detects route/date divergences", () => {
+    const sameRouteRows = [
+      {
+        id: "1",
+        route: "HAN → SGN",
+        departDate: "2026-11-10",
+        ticketPrice: 1_000_000,
+        totalCost: 1_000_000,
+        durationMinutes: 130,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      },
+      {
+        id: "2",
+        route: "HAN → SGN",
+        departDate: "2026-11-12",
+        ticketPrice: 1_200_000,
+        totalCost: 1_200_000,
+        durationMinutes: 130,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      },
+    ];
+
+    const compat1 = checkOpportunitiesCompatibility(sameRouteRows);
+    expect(compat1.isCompatible).toBe(true);
+    expect(compat1.sameRoute).toBe(true);
+    expect(compat1.dateWarning).toBeUndefined();
+
+    const diffRouteRows = [
+      ...sameRouteRows,
+      {
+        id: "3",
+        route: "HAN → DAD",
+        departDate: "2026-12-01",
+        ticketPrice: 800_000,
+        totalCost: 800_000,
+        durationMinutes: 80,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      },
+    ];
+
+    const compat2 = checkOpportunitiesCompatibility(diffRouteRows);
+    expect(compat2.isCompatible).toBe(false);
+    expect(compat2.sameRoute).toBe(false);
+    expect(compat2.notes.some((n) => n.includes("chặng bay khác nhau"))).toBe(true);
+    expect(compat2.dateWarning).toBeDefined();
+  });
+
+  describe("AUD-06 & AUD-15: Truthful totalCost & Pareto Dominance Integrity", () => {
+    it("does not substitute ticket price for realTotal when unknown (AUD-06)", () => {
+      const rows = compareDeals([{
+        id: "deal-no-realtotal",
+        from: "Hà Nội", fromCode: "HAN", to: "Bangkok", toCode: "BKK", country: "Thái Lan", region: "asia",
+        price: 1_500_000, normalPrice: 2_000_000, discount: 25, currency: "VND", airline: "Air", airlineCode: "A",
+        departDate: "2026-10-01", duration: "2h", stops: 0, stopCity: null, seatsLeft: 5, expiresIn: "soon", image: "",
+        flightNumber: "A1", aiInsight: { reason: "data", tags: [], risk: "low", riskDetails: "", recommendation: "wait", recommendationNote: "", savingScore: 70 },
+        hiddenCosts: [], advertisedTotal: 1_500_000,
+        realTotal: undefined as any, // Unknown real total
+        tripType: "international",
+      }]);
+
+      expect(rows[0].ticketPrice).toBe(1_500_000);
+      expect(rows[0].totalCost).toBeUndefined();
+      expect(rows[0].unverifiedFields).toContain("Tổng chi phí thực tế (chưa có dữ liệu phụ phí)");
+    });
+
+    it("does not falsely mark option with unrecorded duration as Pareto-dominated (AUD-15)", () => {
+      const flightWithKnownStats = {
+        id: "flight-known",
+        route: "HAN → SGN",
+        ticketPrice: 1_500_000,
+        totalCost: 1_500_000,
+        durationMinutes: 120,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      };
+
+      const flightWithUnknownDuration = {
+        id: "flight-unknown-dur",
+        route: "HAN → SGN",
+        ticketPrice: 1_800_000,
+        totalCost: 1_800_000,
+        durationMinutes: undefined, // Missing duration! Must not be treated as Infinity!
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      };
+
+      const dominatedSet = identifyDominatedOptions([flightWithKnownStats, flightWithUnknownDuration]);
+      // Flight with unknown duration cannot be definitively declared dominated
+      expect(dominatedSet.has("flight-unknown-dur")).toBe(false);
+      expect(dominatedSet.has("flight-known")).toBe(false);
+    });
+  });
+
+  describe("SOL-03: Monotonic Comparison Sorting & Tie-Breaking", () => {
+    it("sorts rows monotonically by total cost ascending", () => {
+      const rows = [
+        { id: "opt-2", route: "HAN → SGN", ticketPrice: 1_800_000, totalCost: 1_800_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+        { id: "opt-1", route: "HAN → SGN", ticketPrice: 1_200_000, totalCost: 1_200_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+        { id: "opt-3", route: "HAN → SGN", ticketPrice: 2_100_000, totalCost: 2_100_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+      ];
+
+      const sorted = sortComparisonRowsMonotonically(rows as any);
+      expect(sorted.map((r) => r.id)).toEqual(["opt-1", "opt-2", "opt-3"]);
+    });
+
+    it("breaks ties using duration when total costs are identical", () => {
+      const rows = [
+        { id: "slow-flight", route: "HAN → SGN", ticketPrice: 1_500_000, totalCost: 1_500_000, durationMinutes: 160, stops: 0, refundPolicy: undefined, risk: "low" as const },
+        { id: "fast-flight", route: "HAN → SGN", ticketPrice: 1_500_000, totalCost: 1_500_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+      ];
+
+      const sorted = sortComparisonRowsMonotonically(rows as any);
+      expect(sorted.map((r) => r.id)).toEqual(["fast-flight", "slow-flight"]);
+    });
+
+    it("breaks ties deterministically using ID when cost and duration are equal", () => {
+      const rows = [
+        { id: "deal-b", route: "HAN → SGN", ticketPrice: 1_500_000, totalCost: 1_500_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+        { id: "deal-a", route: "HAN → SGN", ticketPrice: 1_500_000, totalCost: 1_500_000, durationMinutes: 120, stops: 0, refundPolicy: undefined, risk: "low" as const },
+      ];
+
+      const sorted = sortComparisonRowsMonotonically(rows as any);
+      expect(sorted.map((r) => r.id)).toEqual(["deal-a", "deal-b"]);
+    });
+
+    it("parses Vietnamese and compact duration strings robustly", () => {
+      const deals = [
+        {
+          id: "d1",
+          fromCode: "HAN",
+          toCode: "SGN",
+          price: 1_200_000,
+          airline: "VN",
+          duration: "2 giờ 15 phút",
+          stops: 0,
+          refundPolicy: "Có hoàn vé",
+          aiInsight: { risk: "low" as const },
+        },
+        {
+          id: "d2",
+          fromCode: "HAN",
+          toCode: "SGN",
+          price: 1_100_000,
+          airline: "VJ",
+          duration: "1h30",
+          stops: 0,
+          refundPolicy: "Không hoàn vé",
+          aiInsight: { risk: "low" as const },
+        },
+        {
+          id: "d3",
+          fromCode: "HAN",
+          toCode: "DAD",
+          price: 800_000,
+          airline: "QH",
+          duration: "45p",
+          stops: 0,
+          refundPolicy: "Đổi vé có phí",
+          aiInsight: { risk: "low" as const },
+        },
+      ];
+      const compared = compareDeals(deals as any);
+      expect(compared[0].durationMinutes).toBe(135);
+      expect(compared[1].durationMinutes).toBe(90);
+      expect(compared[2].durationMinutes).toBe(45);
+    });
+  });
+
+  describe("WP03: isDealDominated & Pareto sanity", () => {
+    it("rejects non-positive prices from dominating or being dominated", () => {
+      const valid = { id: "v1", price: 1_500_000, durationMinutes: 120, stops: 0 };
+      const zeroPrice = { id: "z1", price: 0, durationMinutes: 100, stops: 0 };
+      const negativePrice = { id: "n1", price: -500_000, durationMinutes: 60, stops: 0 };
+
+      expect(isDealDominated(valid, zeroPrice)).toBe(false);
+      expect(isDealDominated(zeroPrice, valid)).toBe(false);
+      expect(isDealDominated(valid, negativePrice)).toBe(false);
+    });
+
+    it("prevents self-domination when candidate and baseline have identical ID", () => {
+      const deal = { id: "same-id", price: 1_500_000, durationMinutes: 120, stops: 0 };
+      expect(isDealDominated(deal, deal)).toBe(false);
+    });
+
+    it("correctly identifies Pareto dominance across price, duration, and stops", () => {
+      const candidate = { id: "c1", price: 2_000_000, durationMinutes: 180, stops: 1 };
+      const baselineSuperior = { id: "b1", price: 1_500_000, durationMinutes: 120, stops: 0 };
+      const baselineTie = { id: "b2", price: 2_000_000, durationMinutes: 180, stops: 1 };
+
+      expect(isDealDominated(candidate, baselineSuperior)).toBe(true);
+      expect(isDealDominated(baselineSuperior, candidate)).toBe(false);
+      expect(isDealDominated(candidate, baselineTie)).toBe(false);
+    });
+
+    it("ignores deals with non-positive totalCost in identifyDominatedOptions", () => {
+      const normalDeal = {
+        id: "d1",
+        route: "HAN → SGN",
+        ticketPrice: 1_500_000,
+        totalCost: 1_500_000,
+        durationMinutes: 120,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      };
+      const glitchDeal = {
+        id: "d2",
+        route: "HAN → SGN",
+        ticketPrice: -1,
+        totalCost: -1,
+        durationMinutes: 60,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      };
+
+      const dominated = identifyDominatedOptions([normalDeal, glitchDeal]);
+      expect(dominated.has("d1")).toBe(false);
+      expect(dominated.has("d2")).toBe(false);
+    });
   });
 });
 

@@ -1,5 +1,6 @@
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import { Deal, normalizeAIInsight, PricePoint } from "./deals";
+import { evaluateTrueCost } from "../../domain/farely/costEpistemics";
 import { rankTravelFeed } from "../domain/travelFeed";
 import { readFeedCache, writeFeedCache, readObservedFaresCache, writeObservedFaresCache } from "../lib/feedCache";
 import { evidenceGatedDealLabel } from "../domain/dealClaims";
@@ -191,12 +192,20 @@ export async function getDealsResult(): Promise<DealFeedResult> {
   };
 }
 
+export function parseNullableNumber(val: unknown): number | null {
+  if (val == null || typeof val === "boolean") return null;
+  if (typeof val === "string" && val.trim() === "") return null;
+  const n = Number(val);
+  return Number.isFinite(n) ? n : null;
+}
+
 export function mapObservedFare(row: Record<string, any>): Deal {
-  const score = Math.max(0, Math.min(100, Number(row.deal_score) || 0));
-  const sampleSize = Math.max(0, Number(row.sample_size) || 0);
-  const confidencePercent = Math.max(0, Math.min(100, Number(row.confidence_percent) || Math.min(100, (sampleSize / 12) * 100)));
-  const discount = row.discount_percent == null ? 0 : Math.max(0, Number(row.discount_percent));
-  const baseline = row.baseline_price == null ? Number(row.price) : Number(row.baseline_price);
+  const score = Math.max(0, Math.min(100, parseNullableNumber(row.deal_score) ?? 0));
+  const sampleSize = Math.max(0, parseNullableNumber(row.sample_size) ?? 0);
+  const confidencePercent = Math.max(0, Math.min(100, parseNullableNumber(row.confidence_percent) ?? Math.min(100, (sampleSize / 12) * 100)));
+  const discount = row.discount_percent == null ? 0 : Math.max(0, parseNullableNumber(row.discount_percent) ?? 0);
+  const basePrice = parseNullableNumber(row.price) ?? 0;
+  const baseline = row.baseline_price == null ? basePrice : (parseNullableNumber(row.baseline_price) ?? basePrice);
   const safeLabel = evidenceGatedDealLabel(score, confidencePercent);
   const isBudgetAirline = ["VJ", "AK", "FD", "TR", "5J", "SL"].includes(String(row.airline_code || "").toUpperCase());
   const estimatedBaggage = isBudgetAirline ? (row.region === "domestic" ? 280000 : 550000) : 0;
@@ -205,15 +214,20 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     amount: estimatedBaggage,
     note: "Hãng bay giá rẻ thường chưa bao gồm kiện ký gửi tiêu chuẩn",
   }] : [];
-  const basePrice = Number(row.price);
-  const realTotal = basePrice + estimatedBaggage;
+  const costEval = evaluateTrueCost({
+    basePrice,
+    airlineCode: row.airline_code,
+    region: row.region,
+    providedHiddenCosts: hiddenCosts,
+  });
+  const realTotal = costEval.estimatedTotal;
   const opportunityId = String(row.opportunity_id || [
     row.origin_code,
     row.destination_code,
     row.date || row.depart_date,
     row.return_date || "",
     row.airline_code,
-    row.stops ?? 0,
+    row.stops == null ? "unknown" : row.stops,
   ].join(":"));
 
   return {
@@ -235,7 +249,7 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     departDate: row.date,
     returnDate: row.return_date ?? undefined,
     duration: row.duration,
-    stops: Number(row.stops),
+    stops: parseNullableNumber(row.stops),
     stopCity: null,
     seatsLeft: 0,
     expiresIn: row.freshness_minutes <= 60 ? "Quan sát trong 1 giờ" : `Quan sát ${Math.max(1, Math.round(Number(row.freshness_minutes) / 60))} giờ trước`,
@@ -255,6 +269,10 @@ export function mapObservedFare(row: Record<string, any>): Deal {
     hiddenCosts,
     advertisedTotal: basePrice,
     realTotal,
+    costBreakdown: costEval,
+    priceBasis: "OBSERVED_BASE_FARE",
+    verifiedTotal: costEval.hasUnknownMandatoryCost ? null : costEval.minVerifiableTotal,
+    hasUnknownMandatoryCost: costEval.hasUnknownMandatoryCost,
     isTrending: score >= 70 && confidencePercent >= 50,
     isFlashDeal: discount >= 30 && confidencePercent >= 65,
     tripType: row.region === "domestic" ? "domestic" : "international",
@@ -380,6 +398,53 @@ export async function getObservedFares(pageOrQuery: number | ObservedFareQuery =
   }
 }
 
+/**
+ * Server-side authoritative RouteBest query across complete eligible candidate universe (D09, W4).
+ * Evaluates entire available universe before pagination, eliminating client-side 60-row truncation.
+ */
+export async function getRouteBest(params: {
+  origin: string;
+  destination: string;
+  departDate: string;
+  currency?: string;
+  returnDate?: string;
+  directOnly?: boolean;
+  maxStops?: number;
+}): Promise<{
+  bestOffer: Deal | null;
+  eligibleCount: number;
+  totalCount: number;
+  status: string;
+} | null> {
+  if (!isSupabaseConfigured) return null;
+  try {
+    const body: Record<string, unknown> = {
+      route_best: true,
+      currency: params.currency || "VND",
+      origin: params.origin,
+      destination: params.destination,
+      depart_date_from: params.departDate,
+      depart_date_to: params.departDate,
+      sort: "price_asc",
+    };
+    if (params.returnDate) body.return_date = params.returnDate;
+    if (params.directOnly === true) body.direct_only = true;
+    if (params.maxStops != null) body.max_stops = params.maxStops;
+
+    const { data, error } = await supabase.functions.invoke("observed-fares", { body });
+    if (error || !data) return null;
+
+    return {
+      bestOffer: data.route_best ? mapObservedFare(data.route_best) : null,
+      eligibleCount: Number(data.eligible_candidate_count || 0),
+      totalCount: Number(data.total_candidate_count || 0),
+      status: String(data.status || "healthy"),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function getHistoricalDeals(): Promise<Deal[]> {
   if (!isSupabaseConfigured) return [];
   const { data, error } = await supabase
@@ -396,6 +461,10 @@ export async function getHistoricalDeals(): Promise<Deal[]> {
 }
 
 export function mapDealRow(row: Record<string, any>): Deal {
+  const basePrice = parseNullableNumber(row.price) ?? 0;
+  const normalPrice = parseNullableNumber(row.normal_price) ?? basePrice;
+  const advertisedTotal = parseNullableNumber(row.advertised_total) ?? basePrice;
+  const realTotal = parseNullableNumber(row.real_total) ?? advertisedTotal;
   return {
     id: row.id,
     from: row.from,
@@ -404,30 +473,30 @@ export function mapDealRow(row: Record<string, any>): Deal {
     toCode: row.to_code,
     country: row.country,
     region: row.region,
-    price: Number(row.price),
-    normalPrice: Number(row.normal_price),
-    discount: Number(row.discount),
+    price: basePrice,
+    normalPrice,
+    discount: parseNullableNumber(row.discount) ?? 0,
     currency: row.currency,
     airline: row.airline,
     airlineCode: row.airline_code,
     departDate: row.depart_date,
     returnDate: row.return_date ?? undefined,
     duration: row.duration,
-    stops: Number(row.stops),
-    stopCity: row.stop_city,
-    seatsLeft: Number(row.seats_left),
+    stops: parseNullableNumber(row.stops),
+    stopCity: row.stop_city ?? null,
+    seatsLeft: parseNullableNumber(row.seats_left) ?? 0,
     expiresIn: row.expires_in,
     image: row.image,
     flightNumber: row.flight_number ?? "",
     aiInsight: normalizeAIInsight(row.ai_insight),
-    hiddenCosts: row.hidden_costs,
-    advertisedTotal: Number(row.advertised_total),
-    realTotal: Number(row.real_total),
+    hiddenCosts: row.hidden_costs ?? [],
+    advertisedTotal,
+    realTotal,
     isTrending: row.is_trending,
     isFlashDeal: row.is_flash_deal,
     tripType: row.trip_type,
-    confidence: row.confidence == null ? undefined : Number(row.confidence),
-    dealScore: row.deal_score == null ? undefined : Number(row.deal_score),
+    confidence: parseNullableNumber(row.confidence) ?? undefined,
+    dealScore: parseNullableNumber(row.deal_score) ?? undefined,
     aiReasoning: row.ai_reasoning ?? undefined,
     bookingUrl: sanitizeBookingUrl(row.booking_url),
     affiliateUrl: sanitizeBookingUrl(row.affiliate_url),
@@ -489,7 +558,7 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
     cleanId.includes(":");
   if (isObservedCandidate) {
     try {
-      const page = await getObservedFares({ id: rawId, pageSize: 60 });
+      const page = await getObservedFares({ id: rawId, opportunityId: cleanId, pageSize: 60 });
       const matching = page.fares.find(
         (f) =>
           f.id === cleanId ||
@@ -501,7 +570,6 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
           (f as any).dedupe_key === rawId
       );
       if (matching) return matching;
-      if (page.fares.length > 0 && page.total === 1) return page.fares[0];
     } catch {
       // Fall through to database queries
     }
@@ -525,7 +593,24 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
     // Continue
   }
 
-  // 4. Fallback: check initial observed fares batch
+  // 4. Fallback: direct indexed lookup in database by exact ID or opportunity ID (beyond first 120)
+  try {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawId);
+    let query = supabase.from("fare_observations").select("*");
+    if (isUuid) {
+      query = query.eq("id", rawId);
+    } else {
+      query = query.eq("opportunity_id", cleanId);
+    }
+    const { data: obsData, error: obsErr } = await query.limit(1).maybeSingle();
+    if (!obsErr && obsData) {
+      return mapObservedFare(obsData);
+    }
+  } catch {
+    // Continue
+  }
+
+  // 5. Final fallback: check initial observed fares batch
   try {
     const fallbackPage = await getObservedFares(1, 120);
     const foundFallback = fallbackPage.fares.find(
@@ -547,6 +632,36 @@ export async function getDealById(id: string): Promise<Deal | undefined> {
   return undefined;
 }
 
+/**
+ * AUD-V34-05 & EV34-17: Exact-ID batch resolver for saved opportunities.
+ * Resolves current live/active offer state for saved items independently of search/feed pagination.
+ */
+export async function batchResolveSavedOpportunities(
+  opportunityIds: string[]
+): Promise<Map<string, Deal>> {
+  const result = new Map<string, Deal>();
+  if (!opportunityIds || opportunityIds.length === 0) return result;
+
+  const promises = opportunityIds.map(async (oppId) => {
+    try {
+      const deal = await getDealById(oppId);
+      if (deal) {
+        result.set(oppId, deal);
+        if (deal.opportunityId) result.set(deal.opportunityId, deal);
+        result.set(deal.id, deal);
+        if (deal.id.startsWith("observed-")) {
+          result.set(deal.id.slice("observed-".length), deal);
+        }
+      }
+    } catch {
+      // Graceful fallback
+    }
+  });
+
+  await Promise.all(promises);
+  return result;
+}
+
 export async function getFareObservations(fromCode: string, toCode: string): Promise<ObservationData[]> {
   if (!isSupabaseConfigured) return [];
   try {
@@ -566,7 +681,7 @@ export async function getFareObservations(fromCode: string, toCode: string): Pro
         departDate: String(d.depart_local_date),
         returnDate: d.return_local_date ? String(d.return_local_date) : null,
         price: Number(d.price),
-        stops: Number(d.stops ?? 0),
+        stops: d.stops == null || isNaN(Number(d.stops)) ? null : Number(d.stops),
         airlineCode: d.airline_code ? String(d.airline_code) : undefined,
         observedAt: String(d.observed_at),
         scanRunId: d.scan_run_id ? String(d.scan_run_id) : undefined,
@@ -587,17 +702,17 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
       .select("observed_at, price, depart_local_date")
       .eq("origin_airport", fromCode)
       .eq("destination_airport", toCode)
-      .order("observed_at", { ascending: true })
+      .order("observed_at", { ascending: false })
       .limit(180);
 
     if (!canonicalError && canonicalData && canonicalData.length > 0) {
       const points = canonicalData
         .map((d: any) => ({
-          date: d.observed_at ? String(d.observed_at).slice(0, 10) : String(d.depart_local_date),
+          date: d.observed_at ? String(d.observed_at).slice(0, 10) : null,
           price: Number(d.price),
         }))
-        .filter((p: PricePoint) => p.date && Number.isFinite(p.price) && p.price > 0);
-      if (points.length > 0) return points;
+        .filter((p: any): p is PricePoint => Boolean(p.date) && Number.isFinite(p.price) && p.price > 0);
+      if (points.length > 0) return points.sort((a, b) => a.date.localeCompare(b.date));
     }
 
     // 2. Fallback to legacy price_history with deduplication
@@ -606,11 +721,11 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
       .select("date, price")
       .eq("from_code", fromCode)
       .eq("to_code", toCode)
-      .order("date", { ascending: true })
+      .order("date", { ascending: false })
       .limit(180);
     if (!error && data && data.length > 0) {
       const mapped = mapPriceHistoryRows(data);
-      if (mapped.length > 0) return mapped;
+      if (mapped.length > 0) return mapped.sort((a, b) => a.date.localeCompare(b.date));
     }
   } catch {
     reportClientIssue("price_history_unavailable");
@@ -624,7 +739,8 @@ export async function getPriceHistory(fromCode: string, toCode: string): Promise
   if (cachedFares.length > 0) {
     const pointsMap = new Map<string, number>();
     for (const f of cachedFares) {
-      const dateKey = f.observedAt ? f.observedAt.slice(0, 10) : f.departDate;
+      if (!f.observedAt) continue; // RC-05: Never substitute departDate for observation time
+      const dateKey = f.observedAt.slice(0, 10);
       if (!pointsMap.has(dateKey) || f.price < pointsMap.get(dateKey)!) {
         pointsMap.set(dateKey, f.price);
       }
@@ -642,7 +758,14 @@ export function mapPriceHistoryRows(rows: Array<{ date?: unknown; price?: unknow
     .filter((point) => point.date && Number.isFinite(point.price) && point.price > 0);
 }
 
-export type SearchStatus = "healthy" | "healthy_empty" | "degraded" | "provider_unavailable";
+export type SearchStatus =
+  | "healthy"
+  | "healthy_empty"
+  | "degraded"
+  | "provider_unavailable"
+  | "unmonitored"
+  | "valid_zero"
+  | "stale_only";
 
 export interface SearchDealsResult {
   deals: Deal[];
@@ -657,7 +780,11 @@ export async function searchDealsWithStatus(params: {
   maxStops?: number;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
   maxFlightTimeMinutes?: number;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
 }): Promise<SearchDealsResult> {
   const canonicalDest = resolveCanonicalAirportOrCity(params.destination);
   const destinationCode = canonicalDest?.code || (params.destination && /^[A-Z]{3}$/i.test(params.destination.trim())
@@ -678,7 +805,10 @@ export async function searchDealsWithStatus(params: {
       maxStops: params.maxStops,
       departDateFrom: params.departureFrom,
       departDateTo: params.departureTo,
-      pageSize: 120,
+      returnDate: params.returnDate,
+      page: params.page ?? 1,
+      pageSize: params.pageSize ?? 120,
+      sort: params.sort ?? "price_asc",
     }).catch(() => {
       observedFailed = true;
       return { fares: [] as Deal[], total: 0, nextPage: null, retryable: true, status: "provider_unavailable" as const };
@@ -708,25 +838,59 @@ export async function searchDealsWithStatus(params: {
   }
 
   const filtered = filterDeals(uniquePool, params);
+  const sorted = sortDeals(filtered, params.sort ?? "price_asc");
 
   let status: SearchStatus = "healthy";
-  if (filtered.length === 0) {
-    if (observedFailed && (feedFailed || liveFailed)) {
+  if (sorted.length === 0) {
+    if (observedResult.status === "provider_unavailable" || (observedFailed && candidatePool.length === 0)) {
       status = "provider_unavailable";
-    } else if (observedFailed) {
+    } else if (observedResult.status === "unmonitored") {
+      status = "unmonitored";
+    } else if (observedResult.status === "valid_zero") {
+      status = "valid_zero";
+    } else if (observedResult.status === "stale_only" || observedResult.status === "degraded_freshness") {
+      status = "stale_only";
+    } else if (observedFailed || feedFailed || liveFailed) {
       status = "degraded";
     } else {
       status = "healthy_empty";
     }
-  } else if (observedFailed || feedFailed) {
+  } else if (observedResult.status === "stale_only") {
+    status = "stale_only";
+  } else if (observedFailed || feedFailed || liveFailed || observedResult.status === "degraded_freshness") {
     status = "degraded";
   }
 
   return {
-    deals: filtered,
+    deals: sorted,
     status,
-    retryable: status === "provider_unavailable" || status === "degraded",
+    retryable: status === "provider_unavailable" || status === "degraded" || status === "stale_only",
   };
+}
+
+/**
+ * Objective candidate sorting for search and discovery results (RC-01, F31, F76).
+ * Enforces strict objective sorting across merged pools (liveDeals, observedFares, feedDeals).
+ */
+export function sortDeals(deals: Deal[], sort = "price_asc"): Deal[] {
+  const sorted = [...deals];
+  if (sort === "price_asc") {
+    return sorted.sort((a, b) => a.price - b.price || (b.discount || 0) - (a.discount || 0) || a.id.localeCompare(b.id));
+  }
+  if (sort === "price_desc") {
+    return sorted.sort((a, b) => b.price - a.price || (b.discount || 0) - (a.discount || 0) || a.id.localeCompare(b.id));
+  }
+  if (sort === "score") {
+    return sorted.sort((a, b) => (b.dealScore || 0) - (a.dealScore || 0) || (b.discount || 0) - (a.discount || 0) || a.id.localeCompare(b.id));
+  }
+  if (sort === "date_near") {
+    return sorted.sort((a, b) => a.departDate.localeCompare(b.departDate) || a.price - b.price || a.id.localeCompare(b.id));
+  }
+  if (sort === "date_far") {
+    return sorted.sort((a, b) => b.departDate.localeCompare(a.departDate) || a.price - b.price || a.id.localeCompare(b.id));
+  }
+  // Default / "discount":
+  return sorted.sort((a, b) => (b.discount || 0) - (a.discount || 0) || (b.dealScore || 0) - (a.dealScore || 0) || a.price - b.price || a.id.localeCompare(b.id));
 }
 
 /** Filter observed deals only by fields returned by the data pipeline. */
@@ -737,7 +901,11 @@ export async function searchDeals(params: {
   maxStops?: number;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
   maxFlightTimeMinutes?: number;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
 }): Promise<Deal[]> {
   const result = await searchDealsWithStatus(params);
   return result.deals;
@@ -748,21 +916,28 @@ async function searchLiveDeals(params: {
   destination?: string;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
 }): Promise<Deal[]> {
   const destination = params.destination?.trim().toUpperCase() ?? "";
   const from = params.from?.trim().toUpperCase() ?? "";
   if (!isSupabaseConfigured || !/^[A-Z]{3}$/.test(from) || !/^[A-Z]{3}$/.test(destination) ||
-    !params.departureFrom || !params.departureTo) return [];
+    !params.departureFrom) return [];
+
+  const body: Record<string, string> = {
+    origin: from,
+    destination,
+    outbound_date: params.departureFrom,
+  };
+  // Explicit return date only: departureTo is the departure window boundary, never a fabricated return date (S08)
+  if (params.returnDate) {
+    body.return_date = params.returnDate;
+  }
+
   const { data, error } = await supabase.functions.invoke("flight-search", {
-    body: {
-      origin: from,
-      destination,
-      outbound_date: params.departureFrom,
-      return_date: params.departureTo,
-    },
+    body,
   });
   if (error || !Array.isArray(data?.results)) return [];
-  return data.results.flatMap((row: Record<string, unknown>, index: number) => {
+  return data.results.flatMap((row: Record<string, unknown>) => {
     const price = Number(row.price);
     const departDate = typeof row.depart_date === "string" ? row.depart_date : "";
     const returnDate = typeof row.return_date === "string" ? row.return_date : undefined;
@@ -770,8 +945,12 @@ async function searchLiveDeals(params: {
     const linkKind = row.link_kind === "live_affiliate" ? "live_affiliate" : "indicative";
     const bookingUrl = sanitizeBookingUrl(row.booking_url);
     const affiliateUrl = sanitizeBookingUrl(row.affiliate_url);
+    const carrier = typeof row.airline_code === "string" ? row.airline_code : "FL";
+    const flightNo = typeof row.flight_number === "string" ? row.flight_number : Math.round(price);
+    const stopsTag = row.stops == null || isNaN(Number(row.stops)) ? "u" : `s${row.stops}`;
+    const stableId = `live-search-${from}-${destination}-${departDate}-${returnDate ?? "ow"}-${carrier}-${flightNo}-${stopsTag}`;
     return [{
-      id: `live-search-${from}-${destination}-${departDate}-${index}`,
+      id: stableId,
       from: from,
       fromCode: from,
       to: destination,
@@ -787,7 +966,7 @@ async function searchLiveDeals(params: {
       departDate,
       returnDate,
       duration: "Chưa có dữ liệu",
-      stops: Number(row.stops ?? 0),
+      stops: row.stops == null || isNaN(Number(row.stops)) ? null : Number(row.stops),
       stopCity: null,
       seatsLeft: 0,
       expiresIn: "Kiểm tra lại trước khi đặt",
@@ -824,6 +1003,7 @@ export function filterDeals(deals: Deal[], params: {
   maxStops?: number;
   departureFrom?: string;
   departureTo?: string;
+  returnDate?: string;
   maxFlightTimeMinutes?: number;
 }): Deal[] {
   const fromDate = params.departureFrom && /^\d{4}-\d{2}-\d{2}$/.test(params.departureFrom) ? params.departureFrom : undefined;
@@ -857,9 +1037,10 @@ export function filterDeals(deals: Deal[], params: {
     } else if (destination && !`${d.to} ${d.toCode} ${d.country}`.toLocaleLowerCase("vi").includes(destination)) {
       return false;
     }
-    if (params.maxStops != null && d.stops > params.maxStops) return false;
+    if (params.maxStops != null && (d.stops == null || d.stops > params.maxStops)) return false;
     if (fromDate && d.departDate < fromDate) return false;
     if (toDate && d.departDate > toDate) return false;
+    if (params.returnDate && d.returnDate !== params.returnDate) return false;
     const duration = maxFlightTime == null ? undefined : durationInMinutes(d.duration);
     if (maxFlightTime != null && duration != null && duration > maxFlightTime) return false;
     return true;

@@ -62,10 +62,14 @@ export interface TrueCostInput {
   isBaggageExplicitlyIncluded?: boolean;
 }
 
-const BUDGET_CARRIER_CODES = new Set(['VJ', 'AK', 'FD', 'TR', '5J', 'SL', 'VU']);
+const BUDGET_CARRIER_CODES = new Set(['VJ', 'AK', 'FD', 'TR', '5J', 'SL', 'VU', 'BL']);
 const LEGACY_CARRIER_CODES = new Set([
   'VN', 'QH', 'SQ', 'TG', 'JL', 'NH', 'KE', 'OZ', 'CX', 'BR', 'CI', 'EK', 'QR', 'TK'
 ]);
+
+function sanitizeFeeAmount(amt: unknown): number | undefined {
+  return typeof amt === 'number' && Number.isFinite(amt) && amt >= 0 ? Math.round(amt) : undefined;
+}
 
 /**
  * Evaluates the true all-in cost with epistemic honesty.
@@ -83,7 +87,7 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
     params.isInternational ??
     (params.region === 'international' || params.region === 'asia' || params.region === 'europe' || params.region === 'americas');
 
-  // Normalize provided hidden costs
+  // Normalize provided hidden costs with non-negative finite clamping
   let baggageFeeProvided: number | undefined;
   let paymentFeeProvided: number | undefined;
   let airportTaxesProvided: number | undefined;
@@ -93,28 +97,32 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
       for (const item of params.providedHiddenCosts) {
         const label = item.label.toLowerCase();
         if (label.includes('hành lý') || label.includes('baggage')) {
-          baggageFeeProvided = item.amount;
+          baggageFeeProvided = sanitizeFeeAmount(item.amount);
         } else if (label.includes('thanh toán') || label.includes('payment')) {
-          paymentFeeProvided = item.amount;
+          paymentFeeProvided = sanitizeFeeAmount(item.amount);
         } else if (label.includes('thuế') || label.includes('tax')) {
-          airportTaxesProvided = item.amount;
+          airportTaxesProvided = sanitizeFeeAmount(item.amount);
         }
       }
     } else {
-      baggageFeeProvided = params.providedHiddenCosts.baggageFee;
-      paymentFeeProvided = params.providedHiddenCosts.paymentFee;
-      airportTaxesProvided = params.providedHiddenCosts.airportTaxes;
+      baggageFeeProvided = sanitizeFeeAmount(params.providedHiddenCosts.baggageFee);
+      paymentFeeProvided = sanitizeFeeAmount(params.providedHiddenCosts.paymentFee);
+      airportTaxesProvided = sanitizeFeeAmount(params.providedHiddenCosts.airportTaxes);
     }
   }
 
   const fees: FeeItem[] = [];
   const components: CostComponent[] = [];
 
-  // 1. Base Fare - Known
+  // 1. Base Fare - Known (sanitized to non-negative integer)
+  const sanitizedBasePrice = Number.isFinite(params.basePrice) && params.basePrice >= 0
+    ? Math.round(params.basePrice)
+    : 0;
+
   components.push({
     category: 'fare',
     label: 'Giá vé quan sát',
-    amount: params.basePrice,
+    amount: sanitizedBasePrice,
     state: 'KNOWN',
     note: 'Giá vé ghi nhận từ đợt quét'
   });
@@ -123,7 +131,7 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
   let baggageState: CostEpistemicState = 'UNKNOWN';
   let isBaggageIncluded = false;
 
-  if (params.isBaggageExplicitlyIncluded) {
+  if (params.isBaggageExplicitlyIncluded === true) {
     baggageState = 'KNOWN';
     isBaggageIncluded = true;
     fees.push({
@@ -159,10 +167,10 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
       note: 'Dữ liệu phí hành lý do nhà cung cấp báo'
     });
   } else {
-    const isBudget = BUDGET_CARRIER_CODES.has(carrier) || ['VJ', 'VU', 'AIRASIA', 'SCOOT'].some(a => carrier.includes(a));
+    const isBudget = BUDGET_CARRIER_CODES.has(carrier) || ['VJ', 'VU', 'AIRASIA', 'SCOOT', 'PACIFIC'].some(a => carrier.includes(a));
     const isLegacy = LEGACY_CARRIER_CODES.has(carrier);
 
-    if (isBudget) {
+    if (isBudget || params.isBaggageExplicitlyIncluded === false) {
       baggageState = 'ESTIMATED';
       const estimatedAmt = isInternational ? 450000 : 280000;
       fees.push({
@@ -171,14 +179,14 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
         amount: estimatedAmt,
         status: 'ESTIMATED',
         mandatory: false,
-        explanation: 'Hãng giá rẻ thường không bao gồm hành lý ký gửi'
+        explanation: 'Hãng giá rẻ hoặc hạng vé không bao gồm hành lý ký gửi'
       });
       components.push({
         category: 'checked_baggage',
         label: 'Hành lý ký gửi 20kg (ước tính)',
         amount: estimatedAmt,
         state: 'ESTIMATED',
-        note: 'Hãng bay giá rẻ thường chưa bao gồm kiện ký gửi tiêu chuẩn'
+        note: 'Hãng bay giá rẻ hoặc hạng vé siêu tiết kiệm chưa bao gồm kiện ký gửi tiêu chuẩn'
       });
     } else if (isLegacy) {
       // Negative control: Carrier identity alone is insufficient to mark baggage KNOWN
@@ -255,7 +263,7 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
     // REQ-COST-003 / NC-033: Unknown mandatory cost is UNKNOWN, not zero
     fees.push({
       id: 'taxes_and_fees',
-      name: 'Thuế & phụ phí sân bay',
+      name: 'Thuế & phí sân bay',
       amount: null,
       status: 'UNKNOWN',
       mandatory: true,
@@ -343,12 +351,12 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
   ) || hasUnknownMandatoryCost;
 
   return {
-    basePrice: params.basePrice,
+    basePrice: sanitizedBasePrice,
     knownMandatoryTotal: knownMandatory,
     estimatedMandatoryTotal: estimatedMandatory,
     estimatedOptionalTotal: estimatedOptional,
     hasUnknownMandatoryCost,
-    minVerifiableTotal: params.basePrice + knownMandatory,
+    minVerifiableTotal: sanitizedBasePrice + knownMandatory,
     itemizedFees: fees,
     pricingTransparencyDisclaimer: hasUnknownMandatoryCost
       ? 'Giá vé cơ bản có thể chưa bao gồm đầy đủ phụ phí xuất vé hoặc thuế địa phương tuỳ kênh đặt vé.'

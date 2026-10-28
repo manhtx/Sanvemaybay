@@ -1,0 +1,729 @@
+{
+  "contract_id": "FARELY-V50-P2-SEMANTIC-VARIANT-RECONCILIATION",
+  "version": "50.0.0",
+  "description": "Complete cross-ID reconciliation of 16 historical P2 semantic variant pairs into 32 distinct capabilities, explicitly identifying the 14 V13 canonical discrepancies and categorizing each variant under the 8 formal classification tags.",
+  "summary": {
+    "total_pairs": 16,
+    "total_reconciled_variants": 32,
+    "v1_canonical_count": 16,
+    "v2_alternative_count": 16
+  },
+  "reconciled_pairs": [
+    {
+      "id": "F36",
+      "v13_canonical_title": "Trust-calibrated Buy/Wait guidance",
+      "v13_canonical_solution": "Calibrated historical route distribution analysis providing justified BUY, MONITOR, or WAIT signals with uncertainty boundaries.",
+      "v47_v1_title": "Trust-calibrated Buy/Wait guidance",
+      "v47_v1_discrepancy": "Exact match with V13 canonical meaning.",
+      "v2_title": "Trip-Length Optimizer",
+      "v2_solution": "Multi-day stay length duration matrix optimizing cheapest return date offset based on observed departure cohorts.",
+      "v2_acceptance": "Matrix accurately identifies price inflection points across stay durations of 3 to 14 days.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F36-V1 (Buy/Wait Guidance) and F36-V2 (Trip-Length Optimizer)."
+    },
+    {
+      "id": "F37",
+      "v13_canonical_title": "Price anomaly detection",
+      "v13_canonical_solution": "Median Absolute Deviation (MAD) robust outlier detection distinguishing genuine price drops from data glitches.",
+      "v47_v1_title": "Price anomaly detection",
+      "v47_v1_discrepancy": "Exact match with V13 canonical meaning.",
+      "v2_title": "Cabin Class Comparison Matrix",
+      "v2_solution": "Cross-cabin fare multiplier comparator (Economy vs Premium Economy vs Business) on identical physical itineraries.",
+      "v2_acceptance": "Highlights premium cabin opportunities when fare premium is <= 1.5x economy baseline.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F37-V1 (Price Anomaly Detection) and F37-V2 (Cabin Class Comparison)."
+    },
+    {
+      "id": "F38",
+      "v13_canonical_title": "Personalized travel feed",
+      "v13_canonical_solution": "Client-side privacy-first preference scoring ranking observed opportunities matching traveler budget, cabin, and destination interests.",
+      "v47_v1_title": "Price confidence bounds",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F10 evidence confidence bounds rather than original F38 personalized travel feed.",
+      "v2_title": "Nearby Destination Finder",
+      "v2_solution": "Alternative destination discovery within 300km radius with significantly lower observed airfare.",
+      "v2_acceptance": "Computes airfare savings vs overland transfer cost to primary target destination.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F38-V1 (Personalized Travel Feed) and F38-V2 (Nearby Destination Finder)."
+    },
+    {
+      "id": "F39",
+      "v13_canonical_title": "Weekend escape templates",
+      "v13_canonical_solution": "Preconfigured regional weekend getaway packages combining flight schedules, estimated local ground transit, and departure convenience.",
+      "v47_v1_title": "Flight deal sharing with preserved context",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F45 sharing mechanics under F39.",
+      "v2_title": "Price Volatility Indicator",
+      "v2_solution": "Route-level fare volatility score indicating probability of price changes before scheduled departure.",
+      "v2_acceptance": "Accurately computes 30-day standard deviation across observed price changes.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F39-V1 (Weekend Escape Templates) and F39-V2 (Price Volatility Indicator)."
+    },
+    {
+      "id": "F40",
+      "v13_canonical_title": "Group/family fare planning",
+      "v13_canonical_solution": "Multi-passenger fare calculator accounting for mixed passenger types and seat availability cliff boundaries.",
+      "v47_v1_title": "Direct affiliate deeplink generation",
+      "v47_v1_discrepancy": "V47 V1 re-expressed affiliate deeplink generation (F43/F47) under F40.",
+      "v2_title": "Layover City Explorer",
+      "v2_solution": "Connecting flight duration optimizer highlighting itineraries with extended layovers (8-24h) suitable for city exploration.",
+      "v2_acceptance": "Identifies layover city opportunities with verified transit entry permissions.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F40-V1 (Group Fare Planning) and F40-V2 (Layover City Explorer)."
+    },
+    {
+      "id": "F41",
+      "v13_canonical_title": "Multi-city itinerary",
+      "v13_canonical_solution": "Multi-leg flight opportunity intelligence and open-jaw routing analysis.",
+      "v47_v1_title": "Personalized deal feed with privacy preservation",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F38 personalized travel feed under F41.",
+      "v2_title": "Multi-Leg Price Tracker",
+      "v2_solution": "Synchronized multi-segment price change tracker monitoring aggregate journey cost across legs.",
+      "v2_acceptance": "Accurately computes multi-leg itinerary delta when any leg experiences price modification.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F41-V1 (Multi-City Itinerary) and F41-V2 (Multi-Leg Price Tracker)."
+    },
+    {
+      "id": "F42",
+      "v13_canonical_title": "Deal curation and editorial collections",
+      "v13_canonical_solution": "Thematic editorial collections combining algorithmic scores with curated travel themes.",
+      "v47_v1_title": "Vietnam travel calendar context",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F86 Vietnam travel calendar under F42.",
+      "v2_title": "Weekend Escape Finder",
+      "v2_solution": "Automated Friday evening departure and Sunday evening return opportunity filter from home origin.",
+      "v2_acceptance": "Filters strictly to departure after 17:00 Friday and return before 23:00 Sunday with verified observed fares.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F42-V1 (Editorial Deal Collections) and F42-V2 (Weekend Escape Finder)."
+    },
+    {
+      "id": "F43",
+      "v13_canonical_title": "Direct/affiliate provider comparison",
+      "v13_canonical_solution": "Objective side-by-side comparison between airline direct booking and affiliate partner offers.",
+      "v47_v1_title": "Direct vs affiliate comparison",
+      "v47_v1_discrepancy": "Minor phrasing difference; semantically matches V13 canonical.",
+      "v2_title": "Airline Baggage Fee Calculator",
+      "v2_solution": "Route-specific and airline-specific baggage fee calculator resolving carry-on and checked allowance costs.",
+      "v2_acceptance": "Correctly binds airline baggage pricing policies to fare quotes across domestic and regional carriers.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F43-V1 (Provider Comparison) and F43-V2 (Baggage Fee Calculator)."
+    },
+    {
+      "id": "F44",
+      "v13_canonical_title": "Anonymous -> account continuity",
+      "v13_canonical_solution": "Seamless migration of anonymous local bookmarks and search preferences upon user account creation.",
+      "v47_v1_title": "Multi-city itinerary intelligence",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F41 multi-city itinerary under F44.",
+      "v2_title": "Carbon Offset Estimator",
+      "v2_solution": "Per-passenger carbon emission calculation based on aircraft type, distance, and seating class.",
+      "v2_acceptance": "Uses ICAO emission methodology with verified aircraft seat configurations.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F44-V1 (Account Continuity) and F44-V2 (Carbon Offset Estimator)."
+    },
+    {
+      "id": "F45",
+      "v13_canonical_title": "Sharing, referrals and viral loops",
+      "v13_canonical_solution": "Context-preserving share links allowing recipients to view identical opportunity snapshot data.",
+      "v47_v1_title": "Price prediction with uncertainty intervals",
+      "v47_v1_discrepancy": "V47 V1 re-expressed price prediction intervals (F23/F36) under F45.",
+      "v2_title": "Group Booking Optimizer",
+      "v2_solution": "Identifies split-booking strategies when group size spans two fare inventory buckets with large price delta.",
+      "v2_acceptance": "Recommends booking N seats in cheaper bucket and remainder in next bucket when total cost is lower.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F45-V1 (Context Sharing) and F45-V2 (Group Booking Optimizer)."
+    },
+    {
+      "id": "F46",
+      "v13_canonical_title": "Explore by total trip budget",
+      "v13_canonical_solution": "Reverse search finding all reachable destinations within explicit total financial threshold.",
+      "v47_v1_title": "Alternate airport suggestions",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F03 alternate airport scope under F46.",
+      "v2_title": "Flight Amenities Comparison",
+      "v2_solution": "In-flight service comparison (Wi-Fi, in-seat power, legroom pitch, complimentary meals) across competing offers.",
+      "v2_acceptance": "Displays verified carrier amenities for specific aircraft type and flight number.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F46-V1 (Total Budget Exploration) and F46-V2 (Flight Amenities Comparison)."
+    },
+    {
+      "id": "F47",
+      "v13_canonical_title": "Partner integrations",
+      "v13_canonical_solution": "B2B affiliate and partner API contracts for external opportunity syndication.",
+      "v47_v1_title": "Deal alert notification channels",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F19 notification channels under F47.",
+      "v2_title": "Fare Class Decoder",
+      "v2_solution": "Translates single-letter booking codes (Y, B, M, Q, V, etc.) into transparent change/refund rules and mileage accrual rates.",
+      "v2_acceptance": "Decodes fare rules for major carriers serving Vietnam and Southeast Asia.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F47-V1 (Partner Integrations) and F47-V2 (Fare Class Decoder)."
+    },
+    {
+      "id": "F48",
+      "v13_canonical_title": "Mobile-first PWA and push",
+      "v13_canonical_solution": "Progressive Web App offline caching, service worker background sync, and web push notifications.",
+      "v47_v1_title": "Historical route price distribution",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F33 route price distribution under F48.",
+      "v2_title": "Visa Requirement Alert",
+      "v2_solution": "Passport nationality transit and entry visa requirement advisor for international destinations.",
+      "v2_acceptance": "Provides timely advisory for transit destinations requiring separate transit visas.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F48-V1 (Mobile PWA & Push) and F48-V2 (Visa Alerts)."
+    },
+    {
+      "id": "F86",
+      "v13_canonical_title": "Vietnam-specific travel UX",
+      "v13_canonical_solution": "Lunar calendar date overlays, Vietnamese statutory holiday surge indicators, and local payment method pricing.",
+      "v47_v1_title": "Flexible date calendar grid",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F35 flexible date matrix under F86.",
+      "v2_title": "Flight Delay Predictor",
+      "v2_solution": "Historical on-time arrival performance and delay risk scoring based on historical flight records.",
+      "v2_acceptance": "Displays accurate historical on-time performance percentage for operating carriers.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F86-V1 (Vietnam Travel UX) and F86-V2 (Delay Predictor)."
+    },
+    {
+      "id": "F87",
+      "v13_canonical_title": "Intent-based itinerary group planner",
+      "v13_canonical_solution": "Collaborative travel intent sharing and vote-based itinerary selection for groups.",
+      "v47_v1_title": "Saved deal price tracking",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F18 saved deal tracking under F87.",
+      "v2_title": "Loyalty Program Valuator",
+      "v2_solution": "Frequent flyer mile valuation engine comparing cash price vs award ticket redemption value.",
+      "v2_acceptance": "Calculates cent-per-point value based on current cash fare.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F87-V1 (Group Itinerary Planner) and F87-V2 (Loyalty Valuator)."
+    },
+    {
+      "id": "F88",
+      "v13_canonical_title": "Data economics optimizer",
+      "v13_canonical_solution": "Adaptive crawl scheduling and cache tiering minimizing external provider API egress costs.",
+      "v47_v1_title": "Editorial deal collections",
+      "v47_v1_discrepancy": "V47 V1 re-expressed F42 editorial collections under F88.",
+      "v2_title": "Aircraft Model Details",
+      "v2_solution": "Operating aircraft equipment details (A321neo, B787-9, A350-900) with seat configuration maps.",
+      "v2_acceptance": "Displays verified aircraft model based on schedule observations.",
+      "classification_tags": [
+        "CANONICAL",
+        "DISTINCT_VARIANT",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "resolution": "Preserved as dual future capabilities F88-V1 (Data Economics Optimizer) and F88-V2 (Aircraft Model Details)."
+    }
+  ],
+  "variants": [
+    {
+      "atom_id": "ATOM-F36-V1",
+      "historical_capability_id": "F36",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Trust-calibrated Buy/Wait guidance",
+      "solution": "Calibrated historical route distribution analysis providing justified BUY, MONITOR, or WAIT signals with uncertainty boundaries.",
+      "classification_tags": [
+        "CANONICAL",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F36-V2",
+      "historical_capability_id": "F36",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Trip-Length Optimizer",
+      "solution": "Multi-day stay length duration matrix optimizing cheapest return date offset based on observed departure cohorts.",
+      "acceptance_criteria": "Matrix accurately identifies price inflection points across stay durations of 3 to 14 days.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F37-V1",
+      "historical_capability_id": "F37",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Price anomaly detection",
+      "solution": "Median Absolute Deviation (MAD) robust outlier detection distinguishing genuine price drops from data glitches.",
+      "classification_tags": [
+        "CANONICAL",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F37-V2",
+      "historical_capability_id": "F37",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Cabin Class Comparison Matrix",
+      "solution": "Cross-cabin fare multiplier comparator (Economy vs Premium Economy vs Business) on identical physical itineraries.",
+      "acceptance_criteria": "Highlights premium cabin opportunities when fare premium is <= 1.5x economy baseline.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F38-V1",
+      "historical_capability_id": "F38",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Personalized travel feed",
+      "solution": "Client-side privacy-first preference scoring ranking observed opportunities matching traveler budget, cabin, and destination interests.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F38-V2",
+      "historical_capability_id": "F38",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Nearby Destination Finder",
+      "solution": "Alternative destination discovery within 300km radius with significantly lower observed airfare.",
+      "acceptance_criteria": "Computes airfare savings vs overland transfer cost to primary target destination.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F39-V1",
+      "historical_capability_id": "F39",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Weekend escape templates",
+      "solution": "Preconfigured regional weekend getaway packages combining flight schedules, estimated local ground transit, and departure convenience.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F39-V2",
+      "historical_capability_id": "F39",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Price Volatility Indicator",
+      "solution": "Route-level fare volatility score indicating probability of price changes before scheduled departure.",
+      "acceptance_criteria": "Accurately computes 30-day standard deviation across observed price changes.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F40-V1",
+      "historical_capability_id": "F40",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Group/family fare planning",
+      "solution": "Multi-passenger fare calculator accounting for mixed passenger types and seat availability cliff boundaries.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F40-V2",
+      "historical_capability_id": "F40",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Layover City Explorer",
+      "solution": "Connecting flight duration optimizer highlighting itineraries with extended layovers (8-24h) suitable for city exploration.",
+      "acceptance_criteria": "Identifies layover city opportunities with verified transit entry permissions.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F41-V1",
+      "historical_capability_id": "F41",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Multi-city itinerary",
+      "solution": "Multi-leg flight opportunity intelligence and open-jaw routing analysis.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F41-V2",
+      "historical_capability_id": "F41",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Multi-Leg Price Tracker",
+      "solution": "Synchronized multi-segment price change tracker monitoring aggregate journey cost across legs.",
+      "acceptance_criteria": "Accurately computes multi-leg itinerary delta when any leg experiences price modification.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F42-V1",
+      "historical_capability_id": "F42",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Deal curation and editorial collections",
+      "solution": "Thematic editorial collections combining algorithmic scores with curated travel themes.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F42-V2",
+      "historical_capability_id": "F42",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Weekend Escape Finder",
+      "solution": "Automated Friday evening departure and Sunday evening return opportunity filter from home origin.",
+      "acceptance_criteria": "Filters strictly to departure after 17:00 Friday and return before 23:00 Sunday with verified observed fares.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F43-V1",
+      "historical_capability_id": "F43",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Direct/affiliate provider comparison",
+      "solution": "Objective side-by-side comparison between airline direct booking and affiliate partner offers.",
+      "classification_tags": [
+        "CANONICAL",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F43-V2",
+      "historical_capability_id": "F43",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Airline Baggage Fee Calculator",
+      "solution": "Route-specific and airline-specific baggage fee calculator resolving carry-on and checked allowance costs.",
+      "acceptance_criteria": "Correctly binds airline baggage pricing policies to fare quotes across domestic and regional carriers.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F44-V1",
+      "historical_capability_id": "F44",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Anonymous -> account continuity",
+      "solution": "Seamless migration of anonymous local bookmarks and search preferences upon user account creation.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F44-V2",
+      "historical_capability_id": "F44",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Carbon Offset Estimator",
+      "solution": "Per-passenger carbon emission calculation based on aircraft type, distance, and seating class.",
+      "acceptance_criteria": "Uses ICAO emission methodology with verified aircraft seat configurations.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F45-V1",
+      "historical_capability_id": "F45",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Sharing, referrals and viral loops",
+      "solution": "Context-preserving share links allowing recipients to view identical opportunity snapshot data.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F45-V2",
+      "historical_capability_id": "F45",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Group Booking Optimizer",
+      "solution": "Identifies split-booking strategies when group size spans two fare inventory buckets with large price delta.",
+      "acceptance_criteria": "Recommends booking N seats in cheaper bucket and remainder in next bucket when total cost is lower.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F46-V1",
+      "historical_capability_id": "F46",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Explore by total trip budget",
+      "solution": "Reverse search finding all reachable destinations within explicit total financial threshold.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F46-V2",
+      "historical_capability_id": "F46",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Flight Amenities Comparison",
+      "solution": "In-flight service comparison (Wi-Fi, in-seat power, legroom pitch, complimentary meals) across competing offers.",
+      "acceptance_criteria": "Displays verified carrier amenities for specific aircraft type and flight number.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F47-V1",
+      "historical_capability_id": "F47",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Partner integrations",
+      "solution": "B2B affiliate and partner API contracts for external opportunity syndication.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F47-V2",
+      "historical_capability_id": "F47",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Fare Class Decoder",
+      "solution": "Translates single-letter booking codes (Y, B, M, Q, V, etc.) into transparent change/refund rules and mileage accrual rates.",
+      "acceptance_criteria": "Decodes fare rules for major carriers serving Vietnam and Southeast Asia.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F48-V1",
+      "historical_capability_id": "F48",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Mobile-first PWA and push",
+      "solution": "Progressive Web App offline caching, service worker background sync, and web push notifications.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F48-V2",
+      "historical_capability_id": "F48",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Visa Requirement Alert",
+      "solution": "Passport nationality transit and entry visa requirement advisor for international destinations.",
+      "acceptance_criteria": "Provides timely advisory for transit destinations requiring separate transit visas.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F86-V1",
+      "historical_capability_id": "F86",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Vietnam-specific travel UX",
+      "solution": "Lunar calendar date overlays, Vietnamese statutory holiday surge indicators, and local payment method pricing.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F86-V2",
+      "historical_capability_id": "F86",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Flight Delay Predictor",
+      "solution": "Historical on-time arrival performance and delay risk scoring based on historical flight records.",
+      "acceptance_criteria": "Displays accurate historical on-time performance percentage for operating carriers.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F87-V1",
+      "historical_capability_id": "F87",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Intent-based itinerary group planner",
+      "solution": "Collaborative travel intent sharing and vote-based itinerary selection for groups.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F87-V2",
+      "historical_capability_id": "F87",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Loyalty Program Valuator",
+      "solution": "Frequent flyer mile valuation engine comparing cash price vs award ticket redemption value.",
+      "acceptance_criteria": "Calculates cent-per-point value based on current cash fare.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F88-V1",
+      "historical_capability_id": "F88",
+      "semantic_variant": "V1_CANONICAL",
+      "title": "Data economics optimizer",
+      "solution": "Adaptive crawl scheduling and cache tiering minimizing external provider API egress costs.",
+      "classification_tags": [
+        "CANONICAL",
+        "SEMANTIC_DUPLICATE",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    },
+    {
+      "atom_id": "ATOM-F88-V2",
+      "historical_capability_id": "F88",
+      "semantic_variant": "V2_ALTERNATIVE",
+      "title": "Aircraft Model Details",
+      "solution": "Operating aircraft equipment details (A321neo, B787-9, A350-900) with seat configuration maps.",
+      "acceptance_criteria": "Displays verified aircraft model based on schedule observations.",
+      "classification_tags": [
+        "DISTINCT_VARIANT",
+        "VERIFIED_CONDITIONAL"
+      ],
+      "owner_commitment_status": "CANDIDATE_FUTURE_P2",
+      "execution_wave": "W9_APPROVED_FUTURE_CAPABILITY_EXECUTION"
+    }
+  ]
+}

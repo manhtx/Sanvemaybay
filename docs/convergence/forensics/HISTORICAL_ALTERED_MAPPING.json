@@ -1,0 +1,536 @@
+[
+  {
+    "id": "F00",
+    "title": "Single Canonical State Authority",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F01",
+    "title": "Canonical TravelIntent V2",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F02",
+    "title": "Single Location Catalog",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F03",
+    "title": "Airport Scope vs Metro Scope Invariant",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F04",
+    "title": "PriceScope Fingerprinting",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F05",
+    "title": "Pricing Unit Normalization",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F06",
+    "title": "Offer Eligibility Engine",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F07",
+    "title": "Canonical RouteBest Selector",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F08",
+    "title": "Mathematical Minimum Rule",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F09",
+    "title": "Comparable Cohort Engine",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F10",
+    "title": "Evidence Level Classification",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F11",
+    "title": "Independent Epoch Calibration",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F12",
+    "title": "Cost Epistemics Honesty",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F13",
+    "title": "Physical Itinerary Identification",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F14",
+    "title": "Commercial Offer Identification",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F15",
+    "title": "Fare Observation Identification",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F16",
+    "title": "Public Opportunity Identification",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F17",
+    "title": "Four-Part Flight Identity Separation",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F18",
+    "title": "Provider Capability Registry",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F19",
+    "title": "Provider Timestamp Separation",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F20",
+    "title": "Provider Failure Classification",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F21",
+    "title": "Fast Flights Worker State Machine",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F22",
+    "title": "Demand-Aware Priority Scheduling",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F23",
+    "title": "Scan Run Telemetry & Health Summary",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F24",
+    "title": "Query-Scoped Coverage Certificates",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F25",
+    "title": "Candidate Generation Reconciled Manifest",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F26",
+    "title": "Atomic Generation Pointer Publication",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F27",
+    "title": "Last-Known-Good Generation Rollback",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F28",
+    "title": "Full-Universe Server-Side Search",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F29",
+    "title": "Pre-Pagination Filtering & Sorting",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F30",
+    "title": "Deterministic Search Keyset Pagination",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F31",
+    "title": "Search Request Lifecycle & Debounce",
+    "tier": "P1",
+    "status": "KEEP"
+  },
+  {
+    "id": "F32",
+    "title": "Same-Offer Historical Price Product",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F33",
+    "title": "Comparable Cohort Distribution Product",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F34",
+    "title": "Route-Level Macro Trend Product",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F35",
+    "title": "Authoritative Flexible Date Matrix",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F36",
+    "title": "Trip-Length Optimizer",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F37",
+    "title": "Weekend Escape Finder",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F38",
+    "title": "Holiday Discovery Calendar",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F39",
+    "title": "Nearby Airport Economics",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F40",
+    "title": "Itinerary Quality Score",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F41",
+    "title": "Consumer Opportunity Explanation",
+    "tier": "P1",
+    "status": "KEEP"
+  },
+  {
+    "id": "F42",
+    "title": "Intelligent Watch Episode Lifecycle",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F43",
+    "title": "Weekly Deal Digest System",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F44",
+    "title": "Rule-Based Personalized Feed",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F45",
+    "title": "Shareable Public Opportunity URLs",
+    "tier": "P1",
+    "status": "KEEP"
+  },
+  {
+    "id": "F46",
+    "title": "Dynamic Editorial Collections",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F47",
+    "title": "Provider Trust Metric",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F48",
+    "title": "Adaptive Scan Prioritization",
+    "tier": "P2",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F49",
+    "title": "AI Travel Assistant Copilot",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F50",
+    "title": "Predictive Buy/Wait Forecasting",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F51",
+    "title": "Premium Paid Watch Subscriptions",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F52",
+    "title": "Direct Booking Checkout Engine",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F53",
+    "title": "Commercial B2B Opportunity API",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F54",
+    "title": "Credit Card & Promotion Engine",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F55",
+    "title": "International Market Expansion",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F56",
+    "title": "Opportunity Detail Decision Hierarchy",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F57",
+    "title": "External Booking Verification CTA",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F58",
+    "title": "External Booking Link Classification",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F59",
+    "title": "Durable Saved Opportunities Shortlist",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F60",
+    "title": "Authenticated vs Guest Saved Sync",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F61",
+    "title": "Saved Price vs Current Price Tracking",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F62",
+    "title": "Full TravelIntent Watch Modal",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F63",
+    "title": "Return Date vs Departure Window Separation",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F64",
+    "title": "Single Open Episode Database Invariant",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F65",
+    "title": "Watch Episode State Transitions",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F66",
+    "title": "Transactional Notification Outbox",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F67",
+    "title": "Atomic Outbox Queue Claiming",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F68",
+    "title": "Outbox Dispatch Worker Lease Recovery",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F69",
+    "title": "Notification Idempotency & Deduping",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F70",
+    "title": "User Price Verification Feedback",
+    "tier": "P1",
+    "status": "KEEP"
+  },
+  {
+    "id": "F71",
+    "title": "Verified vs User-Reported Feedback Separation",
+    "tier": "P1",
+    "status": "KEEP"
+  },
+  {
+    "id": "F72",
+    "title": "Multi-Tenant Row Level Security (RLS)",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F73",
+    "title": "Service Role Restricted RPC Execution",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F74",
+    "title": "Security Definer Search Path Protection",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F75",
+    "title": "Cascading Account Deletion & Anonymization",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F76",
+    "title": "Privacy-Safe Logging & Audit Trail",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F77",
+    "title": "Database Disaster Recovery Replay Drill",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F78",
+    "title": "Additive Forward-Only Migration Chain",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F79",
+    "title": "Durable Cron Scheduler & Missed Runs",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F80",
+    "title": "Multi-Viewport Layout Integrity (320px..1920px)",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F81",
+    "title": "Accessible Keyboard Navigation & Focus",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F82",
+    "title": "Vietnamese Epistemic Domain Terminology",
+    "tier": "P0",
+    "status": "KEEP"
+  },
+  {
+    "id": "F83",
+    "title": "Structured Product Telemetry Events",
+    "tier": "P1",
+    "status": "KEEP"
+  },
+  {
+    "id": "F84",
+    "title": "Core Web Vitals Privacy Measurement",
+    "tier": "P1",
+    "status": "KEEP"
+  },
+  {
+    "id": "F85",
+    "title": "Controlled Feature Flag Infrastructure",
+    "tier": "P1",
+    "status": "KEEP"
+  },
+  {
+    "id": "F86",
+    "title": "Multi-City & Open-Jaw Routing",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F87",
+    "title": "Collaborative Travel Planning",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  },
+  {
+    "id": "F88",
+    "title": "Travel Readiness & Entry Requirement Feed",
+    "tier": "P3",
+    "status": "CONDITIONAL"
+  }
+]

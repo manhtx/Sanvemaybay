@@ -1,0 +1,692 @@
+{
+  "contract_id": "FARELY-V34-NEW-SECURITY-ADVERSARIAL-AND-OUTCOME-GATES",
+  "version": "34.0.0",
+  "description": "The combined set of 128 new security, adversarial, outcome, and real-path gates.",
+  "summary": {
+    "adversarial_challenges": 40,
+    "negative_vectors": 24,
+    "vertical_journeys": 32,
+    "v34_adversarial_falsifiers": 32,
+    "total_new_gates": 128
+  },
+  "adversarial_challenges": [
+    {
+      "id": "A01",
+      "name": "Two distinct flights collide under weak ID",
+      "target": "domainKernel.ts / itinerary ID"
+    },
+    {
+      "id": "A02",
+      "name": "Cheapest result beyond first pagination window is lost",
+      "target": "observed-fares pagination / full-universe sort"
+    },
+    {
+      "id": "A03",
+      "name": "Fresh Route A falsely freshens stale Route B",
+      "target": "coverage certificate / query-scoped freshness"
+    },
+    {
+      "id": "A04",
+      "name": "Unknown stops become direct",
+      "target": "mapDealRow / domain normalization"
+    },
+    {
+      "id": "A05",
+      "name": "Unknown baggage becomes zero cost",
+      "target": "costEpistemic.ts calculateTotalCost"
+    },
+    {
+      "id": "A06",
+      "name": "One scan manufactures strong historical confidence",
+      "target": "truthKernelV2 / epoch calibration"
+    },
+    {
+      "id": "A07",
+      "name": "Provider 503 becomes healthy empty",
+      "target": "api.ts getObservedFares / providerContracts.ts"
+    },
+    {
+      "id": "A08",
+      "name": "Parser failure becomes verified empty",
+      "target": "scan_runs parser mode / health"
+    },
+    {
+      "id": "A09",
+      "name": "ReturnDate changes outbound Watch window",
+      "target": "WatchDateScope / travelIntent.ts"
+    },
+    {
+      "id": "A10",
+      "name": "User A Watch appears to User B",
+      "target": "RLS tenant isolation / bookmarks.ts"
+    },
+    {
+      "id": "A11",
+      "name": "Pending confirmation appears active",
+      "target": "Watch lifecycle state machine"
+    },
+    {
+      "id": "A12",
+      "name": "Server Watch mutation failure appears successful",
+      "target": "optimistic mutation rollback"
+    },
+    {
+      "id": "A13",
+      "name": "Provider accepted email becomes delivered",
+      "target": "outbox receipt status"
+    },
+    {
+      "id": "A14",
+      "name": "Concurrent outbox workers send duplicate logical alert",
+      "target": "SKIP LOCKED queue claiming"
+    },
+    {
+      "id": "A15",
+      "name": "Refresh completed without published generation",
+      "target": "atomic generation manifest"
+    },
+    {
+      "id": "A16",
+      "name": "Unsafe API filter changes the intended query",
+      "target": "PostgREST filter sanitization"
+    },
+    {
+      "id": "A17",
+      "name": "SPA HTTP 200 but React hydration fails",
+      "target": "dist/index.html & router bundles"
+    },
+    {
+      "id": "A18",
+      "name": "Old worker SHA is treated as current release",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "A19",
+      "name": "Old source proof passes changed dependency",
+      "target": "dependency digest verification"
+    },
+    {
+      "id": "A20",
+      "name": "Synthetic timestamps prove 24-hour soak",
+      "target": "soak elapsed validator"
+    },
+    {
+      "id": "A21",
+      "name": "F21 semantics change while all 89 IDs remain",
+      "target": "semantic drift detector"
+    },
+    {
+      "id": "A22",
+      "name": "Work package claims COMPLETED without evidence",
+      "target": "dynamic status derivation"
+    },
+    {
+      "id": "A23",
+      "name": "Rules lacking frontmatter are treated as active",
+      "target": "agent rule YAML parser"
+    },
+    {
+      "id": "A24",
+      "name": "Toy-test function passes while production code remains broken",
+      "target": "production module import enforcement"
+    },
+    {
+      "id": "A25",
+      "name": "Affiliate economics alter objective cheapest order",
+      "target": "routeBest price sort purity"
+    },
+    {
+      "id": "A26",
+      "name": "Expired cache appears live",
+      "target": "cache TTL & source mode"
+    },
+    {
+      "id": "A27",
+      "name": "Cross-currency prices compare without FX evidence",
+      "target": "priceScope currency integrity"
+    },
+    {
+      "id": "A28",
+      "name": "User events leak across accounts",
+      "target": "telemetry session boundary"
+    },
+    {
+      "id": "A29",
+      "name": "Rights-revoked source remains commercially enabled",
+      "target": "provider killswitch"
+    },
+    {
+      "id": "A30",
+      "name": "Saved item points to wrong opportunity after migration",
+      "target": "stable opportunity ID & alias migration"
+    },
+    {
+      "id": "A31",
+      "name": "Email sends after unsubscribe",
+      "target": "outbox suppression verification"
+    },
+    {
+      "id": "A32",
+      "name": "UPDATE zero affected rows is shown as successful mutation",
+      "target": "affected row count ACK"
+    },
+    {
+      "id": "A33",
+      "name": "Concurrent generation writers corrupt publication integrity",
+      "target": "transactional pointer publication"
+    },
+    {
+      "id": "A34",
+      "name": "Performance passes from response 200 alone",
+      "target": "Web Vitals measurement gate"
+    },
+    {
+      "id": "A35",
+      "name": "Accessibility passes based only on DOM file existence",
+      "target": "a11y semantic flow verification"
+    },
+    {
+      "id": "A36",
+      "name": "Secrets appear in logs/artifacts",
+      "target": "secret hygiene scanner"
+    },
+    {
+      "id": "A37",
+      "name": "Notification lacks source observation ID",
+      "target": "notification payload fidelity"
+    },
+    {
+      "id": "A38",
+      "name": "Partial scan is called all-market coverage",
+      "target": "coverage certificate scope"
+    },
+    {
+      "id": "A39",
+      "name": "Generic booking URL is called exact offer",
+      "target": "link class gating"
+    },
+    {
+      "id": "A40",
+      "name": "User input date is mistaken for provider-supplied date",
+      "target": "provenance date validation"
+    }
+  ],
+  "negative_vectors": [
+    {
+      "id": "NV01",
+      "name": "Weak ID collision between distinct flights",
+      "target": "identity.ts"
+    },
+    {
+      "id": "NV02",
+      "name": "Full candidate universe database filtering lost in pagination",
+      "target": "observed-fares/index.ts"
+    },
+    {
+      "id": "NV03",
+      "name": "Fresh Route A falsely freshens stale Route B",
+      "target": "routeBest.ts"
+    },
+    {
+      "id": "NV04",
+      "name": "Unknown stops promoted to direct flight",
+      "target": "mapDealRow"
+    },
+    {
+      "id": "NV05",
+      "name": "Unknown baggage fee defaulted to zero",
+      "target": "costEpistemics.ts"
+    },
+    {
+      "id": "NV06",
+      "name": "Single scan manufactures high confidence",
+      "target": "truthKernelV2.ts"
+    },
+    {
+      "id": "NV07",
+      "name": "Provider 503 classified as healthy empty",
+      "target": "api.ts / providerContracts.ts"
+    },
+    {
+      "id": "NV08",
+      "name": "Parser failure classified as healthy empty",
+      "target": "scan_runs parser health"
+    },
+    {
+      "id": "NV09",
+      "name": "Return date alters outbound date scope in watch",
+      "target": "watch.ts / travelIntent.ts"
+    },
+    {
+      "id": "NV10",
+      "name": "User A watch visible to User B",
+      "target": "RLS policies / bookmarks.ts"
+    },
+    {
+      "id": "NV11",
+      "name": "Anonymous pending watch active without verification",
+      "target": "watchLifecycle.ts"
+    },
+    {
+      "id": "NV12",
+      "name": "Server error during watch pause triggers rollback",
+      "target": "watchApi.ts"
+    },
+    {
+      "id": "NV13",
+      "name": "Provider HTTP acceptance of email is NOT confirmed delivery",
+      "target": "outbox.ts"
+    },
+    {
+      "id": "NV14",
+      "name": "Duplicate leased workers prevented by SKIP LOCKED queue claims",
+      "target": "alert-processor/index.ts"
+    },
+    {
+      "id": "NV15",
+      "name": "Zero-row candidate generation published as healthy",
+      "target": "feed-snapshot.ts"
+    },
+    {
+      "id": "NV16",
+      "name": "Unsafe PostgREST filters containing injection characters fail closed",
+      "target": "postgrestSanitizer.ts"
+    },
+    {
+      "id": "NV17",
+      "name": "SPA HTTP 200 with client crash fails build",
+      "target": "dist/index.html"
+    },
+    {
+      "id": "NV18",
+      "name": "Stale worker SHA or mismatched SHA fails closed in EAC",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV19",
+      "name": "Stale proof revision SHA fails closed in EAC",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV20",
+      "name": "Synthetic soak timestamps without 24 elapsed hours fail closed",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV21",
+      "name": "Weakened acceptance criteria text fails closed in EAC",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV22",
+      "name": "Missing persistent rules file detected by handoff verifier",
+      "target": "verify-farely-v15-handoff.mjs"
+    },
+    {
+      "id": "NV23",
+      "name": "Forged pass without execution probe fails closed",
+      "target": "evidence-admission-controller.mjs"
+    },
+    {
+      "id": "NV24",
+      "name": "Non-terminal state EXECUTING cannot claim TARGET_PROVEN",
+      "target": "evidence-admission-controller.mjs"
+    }
+  ],
+  "vertical_journeys": [
+    {
+      "id": "J01",
+      "name": "User Journey J01: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J02",
+      "name": "User Journey J02: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J03",
+      "name": "User Journey J03: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J04",
+      "name": "User Journey J04: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J05",
+      "name": "User Journey J05: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J06",
+      "name": "User Journey J06: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J07",
+      "name": "User Journey J07: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J08",
+      "name": "User Journey J08: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J09",
+      "name": "User Journey J09: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J10",
+      "name": "User Journey J10: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J11",
+      "name": "User Journey J11: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J12",
+      "name": "User Journey J12: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J13",
+      "name": "User Journey J13: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J14",
+      "name": "User Journey J14: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J15",
+      "name": "User Journey J15: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J16",
+      "name": "User Journey J16: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J17",
+      "name": "User Journey J17: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J18",
+      "name": "User Journey J18: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J19",
+      "name": "User Journey J19: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J20",
+      "name": "User Journey J20: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J21",
+      "name": "User Journey J21: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J22",
+      "name": "User Journey J22: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J23",
+      "name": "User Journey J23: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J24",
+      "name": "User Journey J24: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J25",
+      "name": "User Journey J25: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J26",
+      "name": "User Journey J26: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J27",
+      "name": "User Journey J27: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J28",
+      "name": "User Journey J28: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J29",
+      "name": "User Journey J29: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J30",
+      "name": "User Journey J30: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J31",
+      "name": "User Journey J31: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "J32",
+      "name": "User Journey J32: End-to-end verified traveler outcome",
+      "target": "e2e/app.spec.ts",
+      "status": "VERIFIED"
+    }
+  ],
+  "v34_adversarial_falsifiers": [
+    {
+      "id": "EV34-01",
+      "requirement": "89 capability labels say APPROVED_REQUIRED, but no authentic owner approval -> authority admission rejected",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-02",
+      "requirement": "267 test mappings use an outdated source SHA -> affected proof invalidated",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-03",
+      "requirement": "Node script named database-rls-test exits zero without contacting PostgreSQL -> no database integration proof",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-04",
+      "requirement": "A proof JSON is manually changed to VERIFIED -> certifier rejects absent authentic receipt",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-05",
+      "requirement": "No independent reviewer receipt -> independent acceptance remains pending",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-06",
+      "requirement": "ApprovedRequiredAtomsComplete omitted -> not implicitly true",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-07",
+      "requirement": "Private table absent -> DB existence/RLS gate fails",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-08",
+      "requirement": "Anon can execute privileged RPC -> DB security fails",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-09",
+      "requirement": "User A can see B Watch -> security fails",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-10",
+      "requirement": "User A cannot access own valid Saved -> positive access test fails",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-11",
+      "requirement": "Token signed using repository-known secret -> activation rejected",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-12",
+      "requirement": "Caller fabricates P3 prerequisites -> activation rejected",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-13",
+      "requirement": "Old snapshot exists, latest scan failed -> no VERIFIED_EMPTY",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-14",
+      "requirement": "Two physical flights share route/date -> distinct exact IDs",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-15",
+      "requirement": "Unknown mandatory fee in apparent cheapest offer -> cannot claim cheapest payable total",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-16",
+      "requirement": "Cheapest appears beyond page 1,500 -> server-global ranking remains correct",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-17",
+      "requirement": "Saved opportunity lies outside page 120 -> exact-ID current resolution works",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-18",
+      "requirement": "Watch creation fails remotely -> only local draft, not ACTIVE",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-19",
+      "requirement": "Remote Watch read fails across account switch -> no data leakage or false success",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-20",
+      "requirement": "Watch exists but no adequate scan coverage -> PENDING_COVERAGE/DEGRADED",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-21",
+      "requirement": "Two workers claim one condition -> one logical episode notification",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-22",
+      "requirement": "Email provider accepts request without delivery receipt -> no DELIVERED status",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-23",
+      "requirement": "Route-level historical samples feed Buy/Wait -> no calibrated offer-specific probability",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-24",
+      "requirement": "MAD=0 and current price differs materially -> abstention/qualified anomaly handling",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-25",
+      "requirement": "Economic utility unavailable -> INSUFFICIENT_EVIDENCE, not REJECTED_UNECONOMIC",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-26",
+      "requirement": "Provider lacks background collection entitlement -> scanner mode disabled",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-27",
+      "requirement": "Preview runs latest SHA, production runs old SHA -> production acceptance denied",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-28",
+      "requirement": "All 267 historical gates pass, but approved P2/P3 atom remains incomplete -> TARGET_PROVEN denied",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-29",
+      "requirement": "Test oracle changed to agree with broken implementation -> protected oracle gate fails",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-30",
+      "requirement": "Mock-browser test claims full-stack acceptance -> proof ceiling rejected",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-31",
+      "requirement": "Fake organic users/events satisfy apparent KPI -> real-outcome gate rejects sample",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    },
+    {
+      "id": "EV34-32",
+      "requirement": "Runtime-soak JSON contains fictional elapsed time -> soak not proven",
+      "probe": "scripts/v34-adversarial-requirements.node-test.mjs"
+    }
+  ]
+}

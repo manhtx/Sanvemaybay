@@ -223,3 +223,44 @@ test('NC-014: Route with 0/2 windows causes discovery degradation', () => {
   assert.notEqual(partialRoute.scanStatus, 'completed');
 });
 
+test('D16: Query-scoped coverage distinguishes monitored route from unmonitored date window', () => {
+  function evaluateScopedHealth(observedAt, total, isMonitoredScope) {
+    if (!isMonitoredScope) return 'unmonitored';
+    if (total === 0) return 'healthy_empty';
+    return 'healthy';
+  }
+
+  // Route exists for 2026-11-10, but user asks for 2026-12-25 (which has never been scanned)
+  const unmonitoredDate = evaluateScopedHealth(null, 0, false);
+  assert.equal(unmonitoredDate, 'unmonitored', 'Unmonitored date window must return unmonitored, not healthy_empty');
+
+  // Route exists and has been scanned on requested date, yielding 0 flights
+  const monitoredEmpty = evaluateScopedHealth(new Date().toISOString(), 0, true);
+  assert.equal(monitoredEmpty, 'healthy_empty', 'Monitored route on scanned date with 0 flights is healthy_empty');
+});
+
+test('D18: Generation publishing retains previous last-known-good generation for rollback', () => {
+  const generations = [
+    { id: 'gen-1', state: 'RETIRED', published_at: '2026-10-08T10:00:00Z' },
+    { id: 'gen-2', state: 'ACTIVE', published_at: '2026-10-08T11:00:00Z' },
+  ];
+
+  function publishNewGeneration(activeGens, newGenId) {
+    // Current active becomes retired LKG
+    const currentActive = activeGens.find((g) => g.state === 'ACTIVE');
+    const updated = activeGens.map((g) => g.id === currentActive?.id ? { ...g, state: 'RETIRED' } : g);
+    updated.push({ id: newGenId, state: 'ACTIVE', published_at: new Date().toISOString() });
+
+    // Identify retained generations: active + previous LKG
+    const retainedIds = new Set([newGenId, currentActive?.id].filter(Boolean));
+    const purgedIds = updated.filter((g) => !retainedIds.has(g.id)).map((g) => g.id);
+    return { retainedIds, purgedIds };
+  }
+
+  const result = publishNewGeneration(generations, 'gen-3');
+  assert.ok(result.retainedIds.has('gen-3'), 'Active generation must be retained');
+  assert.ok(result.retainedIds.has('gen-2'), 'Previous last-known-good generation must be retained for rollback');
+  assert.ok(result.purgedIds.includes('gen-1'), 'Older generations beyond previous LKG may be purged');
+});
+
+

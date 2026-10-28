@@ -1,0 +1,133 @@
+{
+  "version": "17.0.0",
+  "contract_id": "FARELY-V17-CANONICAL-DAG",
+  "generated_at": "2026-10-13T04:21:00Z",
+  "nodes": [
+    {
+      "id": "WP00",
+      "name": "Owner contract, evidence authority, control-plane convergence",
+      "dependencies": [],
+      "capabilities": ["F00", "F01", "F78"],
+      "status": "VERIFYING",
+      "evidence_level": "C1",
+      "target_level": "C1"
+    },
+    {
+      "id": "WP01",
+      "name": "Identity, TravelIntent, domain models and client adapters",
+      "dependencies": ["WP00"],
+      "capabilities": ["F02", "F03", "F04", "F58", "F68", "F69"],
+      "status": "VERIFYING",
+      "evidence_level": "C1",
+      "target_level": "C1"
+    },
+    {
+      "id": "WP02",
+      "name": "Provider capability, source rights and coverage",
+      "dependencies": ["WP00", "WP01"],
+      "capabilities": ["F05", "F06", "F60", "F61", "F65", "F85"],
+      "status": "VERIFYING",
+      "evidence_level": "C1",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP03",
+      "name": "Demand scheduling, scanner and atomic generation",
+      "dependencies": ["WP01", "WP02"],
+      "capabilities": ["F07", "F08", "F70", "F71"],
+      "status": "VERIFYING",
+      "evidence_level": "C2",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP04",
+      "name": "Search and RouteBest",
+      "dependencies": ["WP01", "WP03"],
+      "capabilities": ["F09", "F10", "F62"],
+      "status": "VERIFYING",
+      "evidence_level": "C1",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP05",
+      "name": "Price truth, cohorts and history",
+      "dependencies": ["WP03", "WP04"],
+      "capabilities": ["F11", "F12", "F13", "F59", "F66", "F67"],
+      "status": "VERIFYING",
+      "evidence_level": "C1",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP06",
+      "name": "Opportunity Detail and Saved",
+      "dependencies": ["WP04", "WP05"],
+      "capabilities": ["F14", "F15", "F28", "F82"],
+      "status": "VERIFYING",
+      "evidence_level": "C2",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP07",
+      "name": "Watch and notification pipeline",
+      "dependencies": ["WP01", "WP04"],
+      "capabilities": ["F16", "F27", "F34", "F56", "F57", "F63", "F64", "F84"],
+      "status": "VERIFYING",
+      "evidence_level": "C2",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP08",
+      "name": "Database, RLS, security and disaster recovery",
+      "dependencies": ["WP00", "WP07"],
+      "capabilities": ["F17", "F74", "F77", "F83"],
+      "status": "VERIFYING",
+      "evidence_level": "C2",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP09",
+      "name": "Responsive UX, accessibility and localization",
+      "dependencies": ["WP04", "WP06", "WP07"],
+      "capabilities": ["F18", "F33", "F79", "F80", "F81"],
+      "status": "VERIFYING",
+      "evidence_level": "C2",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP10",
+      "name": "Differentiated opportunity intelligence and product journeys",
+      "dependencies": ["WP05", "WP06", "WP09"],
+      "capabilities": ["F21", "F22", "F23", "F24", "F25", "F26", "F29", "F30", "F31", "F32", "F35", "F72", "F75", "F76"],
+      "status": "VERIFYING",
+      "evidence_level": "C2",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP11",
+      "name": "Conditional P2 development and feasibility",
+      "dependencies": ["WP10"],
+      "capabilities": ["F36", "F37", "F38", "F39", "F40", "F41", "F42", "F43", "F44", "F45", "F46", "F47", "F48", "F86", "F87", "F88"],
+      "status": "WAITING_EXTERNAL",
+      "evidence_level": "C0",
+      "target_level": "C2"
+    },
+    {
+      "id": "WP12",
+      "name": "High-risk P3/commercial boundary",
+      "dependencies": ["WP11"],
+      "capabilities": ["F49", "F50", "F51", "F52", "F53", "F54", "F55"],
+      "status": "WAITING_EXTERNAL",
+      "evidence_level": "C0",
+      "target_level": "C3"
+    },
+    {
+      "id": "WP13",
+      "name": "Release tuple, staging/production acceptance and long-term outcome evidence",
+      "dependencies": ["WP00", "WP01", "WP02", "WP03", "WP04", "WP05", "WP06", "WP07", "WP08", "WP09", "WP10", "WP11", "WP12"],
+      "capabilities": ["F19", "F20", "F73"],
+      "status": "WAITING_EXTERNAL",
+      "evidence_level": "C3",
+      "target_level": "C4"
+    }
+  ]
+}

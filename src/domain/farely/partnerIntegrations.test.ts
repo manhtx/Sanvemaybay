@@ -1,0 +1,178 @@
+import { describe, expect, it } from 'vitest';
+import {
+  evaluatePartnerCommercialViability,
+  assertCommercialEnablementIntegrity,
+  UnauthorizedCommercialSourceError,
+  PartnerCommercialProfile,
+} from './partnerIntegrations';
+
+describe('F47: Partner Integrations & Commercial Enablement Governance', () => {
+  const viableAffiliateProfile: PartnerCommercialProfile = {
+    providerId: 'traveloka_affiliate',
+    providerName: 'Traveloka Affiliate',
+    hasActiveCommercialAgreement: false,
+    hasAffiliateRights: true,
+    isScrapingPermitted: true,
+    isRestrictedOrBlocked: false,
+    historicalSuccessRatePercent: 99.1,
+    averageLatencyMs: 1400,
+    supportsLiveRepricing: true,
+    estimatedRevenuePerBookingVND: 120_000,
+    marginalQueryCostVND: 500, // 500₫ per query
+    expectedQueriesPerBooking: 30, // 30 queries * 500₫ = 15,000₫ cost
+  };
+
+  it('approves a viable partner with positive unit economics and verified rights', () => {
+    const evaluation = evaluatePartnerCommercialViability(viableAffiliateProfile);
+
+    expect(evaluation.isCommerciallyEnabled).toBe(true);
+    expect(evaluation.commercialTier).toBe('APPROVED_AFFILIATE_PARTNER');
+    expect(evaluation.unitEconomics.isEconomicallyViable).toBe(true);
+    expect(evaluation.unitEconomics.marginalRoi).toBe(8.0); // 120k / 15k = 8.0
+    expect(evaluation.disqualificationReasons).toHaveLength(0);
+    expect(() => assertCommercialEnablementIntegrity(evaluation)).not.toThrow();
+  });
+
+  it('disqualifies a partner with negative unit economics (cost exceeds revenue)', () => {
+    const uneconomicProfile: PartnerCommercialProfile = {
+      ...viableAffiliateProfile,
+      providerId: 'expensive_gds_api',
+      estimatedRevenuePerBookingVND: 50_000,
+      marginalQueryCostVND: 3_000,
+      expectedQueriesPerBooking: 40, // 40 * 3,000₫ = 120,000₫ cost > 50,000₫ revenue
+    };
+
+    const evaluation = evaluatePartnerCommercialViability(uneconomicProfile);
+
+    expect(evaluation.isCommerciallyEnabled).toBe(false);
+    expect(evaluation.commercialTier).toBe('DISQUALIFIED_INDICATIVE_ONLY');
+    expect(evaluation.unitEconomics.isEconomicallyViable).toBe(false);
+    expect(evaluation.disqualificationReasons[0]).toContain('Hiệu quả kinh tế âm');
+  });
+
+  it('disqualifies a partner lacking legal/commercial scraping rights', () => {
+    const noRightsProfile: PartnerCommercialProfile = {
+      ...viableAffiliateProfile,
+      providerId: 'unauthorized_scraped_source',
+      hasActiveCommercialAgreement: false,
+      hasAffiliateRights: false, // NO RIGHTS
+      isScrapingPermitted: false,
+    };
+
+    const evaluation = evaluatePartnerCommercialViability(noRightsProfile);
+
+    expect(evaluation.isCommerciallyEnabled).toBe(false);
+    expect(evaluation.commercialTier).toBe('DISQUALIFIED_INDICATIVE_ONLY');
+    expect(evaluation.disqualificationReasons.some((r) => r.includes('Thiếu thỏa thuận thương mại'))).toBe(true);
+  });
+
+  it('disqualifies a partner failing operational reliability SLAs', () => {
+    const unreliableProfile: PartnerCommercialProfile = {
+      ...viableAffiliateProfile,
+      providerId: 'unstable_partner',
+      historicalSuccessRatePercent: 78.0, // < 90%
+      averageLatencyMs: 9500, // > 6000ms
+    };
+
+    const evaluation = evaluatePartnerCommercialViability(unreliableProfile);
+
+    expect(evaluation.isCommerciallyEnabled).toBe(false);
+    expect(evaluation.disqualificationReasons.some((r) => r.includes('Tỷ lệ thành công'))).toBe(true);
+    expect(evaluation.disqualificationReasons.some((r) => r.includes('Độ trễ phản hồi'))).toBe(true);
+  });
+
+  it('throws UnauthorizedCommercialSourceError when assertCommercialEnablementIntegrity encounters fraudulent enablement', () => {
+    const fraudulentEvaluation = {
+      providerId: 'bad_partner',
+      isCommerciallyEnabled: true, // ILLEGITIMATELY FORCED TO TRUE
+      commercialTier: 'APPROVED_AFFILIATE_PARTNER' as any,
+      disqualificationReasons: ['Thiếu thỏa thuận thương mại hoặc quyền tiếp thị liên kết hợp lệ.'],
+      unitEconomics: {
+        totalCostPerBookingVND: 100_000,
+        netMarginPerBookingVND: -50_000,
+        marginalRoi: 0.5,
+        isEconomicallyViable: false,
+      },
+      reliability: {
+        isReliabilitySlaMet: false,
+        slaNoteVi: 'Fail',
+      },
+    };
+
+    expect(() => assertCommercialEnablementIntegrity(fraudulentEvaluation)).toThrow(
+      UnauthorizedCommercialSourceError
+    );
+  });
+
+  it('disqualifies partners with negative or corrupt latency telemetry (L05/L09)', () => {
+    const negativeLatencyProfile: PartnerCommercialProfile = {
+      ...viableAffiliateProfile,
+      providerId: 'clock_skew_partner',
+      averageLatencyMs: -150, // Invalid negative latency from clock drift
+    };
+
+    const evaluation = evaluatePartnerCommercialViability(negativeLatencyProfile);
+
+    expect(evaluation.isCommerciallyEnabled).toBe(false);
+    expect(evaluation.commercialTier).toBe('DISQUALIFIED_INDICATIVE_ONLY');
+    expect(evaluation.disqualificationReasons.some((r) => r.includes('Độ trễ phản hồi'))).toBe(true);
+  });
+
+  it('designates DIRECT_COMMERCIAL_PARTNER tier when active direct contract exists (L01/L02)', () => {
+    const directPartnerProfile: PartnerCommercialProfile = {
+      ...viableAffiliateProfile,
+      providerId: 'vietnam_airlines_direct',
+      providerName: 'Vietnam Airlines Direct Corporate',
+      hasActiveCommercialAgreement: true,
+      hasAffiliateRights: true,
+    };
+
+    const evaluation = evaluatePartnerCommercialViability(directPartnerProfile);
+
+    expect(evaluation.isCommerciallyEnabled).toBe(true);
+    expect(evaluation.commercialTier).toBe('DIRECT_COMMERCIAL_PARTNER');
+  });
+
+  describe('SOL-PARTNER-01: Live Repricing & Diagnostic Codes', () => {
+    it('disqualifies partners without live repricing capability (ERR_NO_LIVE_REPRICING)', () => {
+      const noLiveRepricingProfile: PartnerCommercialProfile = {
+        ...viableAffiliateProfile,
+        providerId: 'cached_quotes_only_ota',
+        supportsLiveRepricing: false,
+      };
+
+      const evaluation = evaluatePartnerCommercialViability(noLiveRepricingProfile);
+      expect(evaluation.isCommerciallyEnabled).toBe(false);
+      expect(evaluation.diagnosticCodes).toContain('ERR_NO_LIVE_REPRICING');
+      expect(evaluation.disqualificationReasons.some((r) => r.includes('Live Repricing'))).toBe(true);
+    });
+
+    it('rejects unrealistically low latency (< 20ms) indicating spoofed or local mock telemetry', () => {
+      const spoofedLatencyProfile: PartnerCommercialProfile = {
+        ...viableAffiliateProfile,
+        providerId: 'spoofed_telemetry_ota',
+        averageLatencyMs: 5, // Physically impossible for external network hop
+      };
+
+      const evaluation = evaluatePartnerCommercialViability(spoofedLatencyProfile);
+      expect(evaluation.isCommerciallyEnabled).toBe(false);
+      expect(evaluation.diagnosticCodes).toContain('ERR_EXCESSIVE_LATENCY');
+    });
+
+    it('populates multiple diagnostic codes for compound violation profiles', () => {
+      const multiViolationProfile: PartnerCommercialProfile = {
+        ...viableAffiliateProfile,
+        providerId: 'unlicensed_unstable_partner',
+        hasActiveCommercialAgreement: false,
+        hasAffiliateRights: false, // ERR_UNCONTRACTED
+        historicalSuccessRatePercent: 65, // ERR_LOW_SUCCESS_RATE
+        supportsLiveRepricing: false, // ERR_NO_LIVE_REPRICING
+      };
+
+      const evaluation = evaluatePartnerCommercialViability(multiViolationProfile);
+      expect(evaluation.diagnosticCodes).toContain('ERR_UNCONTRACTED');
+      expect(evaluation.diagnosticCodes).toContain('ERR_LOW_SUCCESS_RATE');
+      expect(evaluation.diagnosticCodes).toContain('ERR_NO_LIVE_REPRICING');
+    });
+  });
+});
