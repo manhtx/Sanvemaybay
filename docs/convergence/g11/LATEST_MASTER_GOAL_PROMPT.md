@@ -1,35 +1,39 @@
 # FARELY PROJECT 10X — MASTER GOAL G11 [G5]
 # LEVEL: Pass 5: Sovereign Canonical Master Goal Prompt
 # MANDATE: Unassailable sovereign synthesis across all 12 adversarial lenses. Locked Solution Cage, turnkey execution specification, zero-mock proofs, and remote GitHub synchronization.
-# GIT_COMMIT: 774b3d00f9bd9e105ba466c058e428935b211847
-# TIMESTAMP: 2026-10-28T02:35:15.368Z
-# EXECUTION_RECEIPT_SHA256: 6ce0c7baafc218091f995d324d72af037763680a93a2dfc13173d90ebe9d85fd
+# GIT_COMMIT: 4cced89d2529003c9f16a1aa0667f7eff0e49fad
+# TIMESTAMP: 2026-10-28T02:50:17.436Z
+# EXECUTION_RECEIPT_SHA256: 43ff7bde4625efeaaba425a72bc038dea5ed9a7eff4c4482229bd224810dcd2b
 
 ---
 
 ## AUDIT & FALSIFICATION OF PASS G4
-Pass G4 reinforced type predicates and Proof Hierarchy invariants. In this Pass G5 Sovereign Canonical Synthesis, we subject Pass G4 to exhaustive adversarial scrutiny across all 12 lenses, isolating 3 subtle technical edges requiring sovereign lock-down:
 
-1. **[L01 & L03 FALSIFICATION] (Sovereign Dual-Flag Carrier Precedence Hierarchy in `costEpistemics.ts`)**:
-   - *G4 Deficit*: G4 established that `params.isBaggageExplicitlyIncluded === true` overrides budget carrier heuristics, but left ambiguous how conflicting signals (`isBaggageExplicitlyIncluded: false` vs `providerVerifiedAllIn: true`) are resolved.
-   - *G5 Sovereign Correction*: If a partner API payload asserts `providerVerifiedAllIn: true` (contractually guaranteeing that all mandatory taxes and standard inclusions are in the price) while omitting baggage, does the system still penalize Vietjet or Pacific Airlines flights with an estimated baggage fee? Under Sovereign Cost Epistemics, `providerVerifiedAllIn` specifically addresses mandatory ticketing costs (taxes, airport surcharges, system administration fees). Checked baggage on Ultra-Low-Cost Carriers (ULCCs) is an optional ancillary unless `params.isBaggageExplicitlyIncluded === true`. G5 locks the strict precedence:
-     $$ \text{BaggageState} = \begin{cases}
-     \text{'KNOWN'}, \, \text{amt} = 0 & \text{if } \text{isBaggageExplicitlyIncluded} \equiv \text{true} \\
-     \text{'KNOWN'}, \, \text{amt} = B_{\text{prov}} & \text{if } B_{\text{prov}} \in \mathbb{R}^+ \\
-     \text{'ESTIMATED'}, \, \text{amt} = B_{\text{LCC}} & \text{if } (\text{carrier} \in \text{LCC} \lor \text{isBaggageExplicitlyIncluded} \equiv \text{false}) \\
-     \text{'UNKNOWN'}, \, \text{amt} = \text{null} & \text{otherwise}
-     \end{cases} $$
-     This guarantees absolute transparency without falsely penalizing bundled fares or under-reporting unbundled LCCs.
+Pass G4 reinforced Proof Hierarchy invariants and unsigned bitwise shift arithmetic. In this Pass G5 Sovereign Canonical Synthesis, we subject Pass G4 to exhaustive adversarial scrutiny across all 12 lenses, isolating 3 subtle technical edges requiring sovereign lock-down:
 
-2. **[L02 & L06 FALSIFICATION] (Sovereign Temporal Epoch Discretization in `comparator.ts`)**:
-   - *G4 Deficit*: G4 removed the `departLocalDate` fallback, but relied on `.slice(0, 13)` for `uniqueEpochs` on strings with valid ISO format.
-   - *G5 Sovereign Correction*: In distributed crawls, scraper workers may report timestamps in varying ISO 8601 notations: UTC Zulu (`2026-10-28T02:30:00Z`), offset notation (`2026-10-28T09:30:00+07:00`), or millisecond precision (`2026-10-28T02:30:00.123Z`). Naive `.slice(0, 13)` on `+07:00` strings captures local civil hour rather than UTC hour, corrupting epoch deduplication across mixed worker timezones! G5 establishes canonical UTC normalization:
-     $$ T_{\text{epoch}} = \text{new Date}(o.\text{observedAt}).\text{toISOString}().\text{slice}(0, 13) $$
-     Observations are strictly parsed into UTC before temporal binning, guaranteeing invariant epoch cardinality.
+1. **[L01 & L02 FALSIFICATION] (Sovereign Big-Endian Length Trailer Arithmetic in `sha256Hex`)**:
+   - *G4 Deficit*: G4 specified unsigned shift packing, but left the 64-bit message length trailer arithmetic implicit.
+   - *G5 Sovereign Correction*: FIPS 180-4 Section 5.1.1 dictates that the original message length in bits $L = N_{\text{bytes}} \times 8$ must be appended as a 64-bit big-endian integer in the final two words of the padded message:
+     $$ W_{14} = \left\lfloor \frac{L}{2^{32}} \right\rfloor \ggg 0, \quad W_{15} = (L \land 0xFFFFFFFF) \ggg 0 $$
+     If $L$ is treated as an ordinary 32-bit shift (`L >> 32`), JavaScript evaluates `L >> 32` to $L$ due to bitwise mask $(32 \land 31 = 0)$, corrupting the high word! G5 formally locks division by $2^{32}$ (`Math.floor(bitLength / 4294967296)`) for $W_{14}$ and bitwise AND for $W_{15}$, guaranteeing exact 64-bit integer bit representation.
 
-3. **[L07 & L11 FALSIFICATION] (Sovereign Zero-Leakage Rollback & Transaction Atomicity)**:
-   - *G4 Deficit*: G4 prescribed transactional task management, but lacked explicit rollback verification for multi-file atomic writes when intermediate Vitest suites fail.
-   - *G5 Sovereign Correction*: The ACID transactional task manager (`scripts/convergence/transactional-task-manager.mjs`) must record initial disk hashes for every target file prior to modification. If any assertion fails during unit test execution, the task manager triggers an automatic rollback restoring original file contents byte-for-byte, leaving working directory cleanly unpolluted.
+2. **[L02 & L03 FALSIFICATION] (Sovereign Pre-Rounding Negative Sub-Dong Elimination in `createMoney`)**:
+   - *G4 Deficit*: G4 checked for signed zero, but did not guard against negative fractional dongs ($[-0.5, 0)$).
+   - *G5 Sovereign Correction*: If an upstream promo engine computes a negative rebate of $-0.3₫$, `amount < 0` check passes if performed after rounding (`Math.round(-0.3) = -0`). If checked before rounding, `-0.3 < 0` triggers correctly! G5 locks the strict order:
+     ```typescript
+     if (!Number.isFinite(amount) || amount < 0) {
+       throw new TypeError(`Invalid money amount: ${amount}`);
+     }
+     const rounded = Math.round(amount);
+     const normalizedAmount = rounded === 0 ? 0 : rounded;
+     ```
+     This strictly forbids negative currency values before any floating approximation occurs.
+
+3. **[L01 & L04 FALSIFICATION] (Sovereign Isolation of Airport vs Metro Scopes in `locationScope.ts`)**:
+   - *G4 Deficit*: G4 focused on 3-letter syntax, but left ambiguous how exact airport searches avoid metro pollution.
+   - *G5 Sovereign Correction*: In flight searches, if a user requests exact airport `BKK` (Suvarnabhumi) without specifying metro intent, `resolveLocationScope('BKK', 'EXACT_AIRPORT')` must strictly return `expandedCodes: ['BKK']`. Under no circumstances may `DMK` (Don Mueang) be injected into an `EXACT_AIRPORT` scope, preserving invariant NC-002:
+     $$ \text{satisfiesLocationScope}(\text{'DMK'}, \text{resolveLocationScope}(\text{'BKK'}, \text{'EXACT\_AIRPORT'})) \equiv \text{false} $$
+     G5 cements this boundary proof across all catalog operations.
 
 ---
 
@@ -41,114 +45,112 @@ The executor is FORBIDDEN from inventing new architectures, introducing alternat
 changing database schemas, or deviating from the specified file/function diffs.
 Any deviation is a critical contract breach and will be rejected closed by the Evidence Admission Controller.
 ```
-- `NO_DIRECT_TICKETING`: Direct ticketing, PNR booking, and reservation issuing are strictly boundary_excluded.
-- `NO_PASSENGER_CHECKOUT`: Passenger checkout, passenger passport storage, and checkout cart management are strictly boundary_excluded.
+- `NO_DIRECT_TICKETING`: Direct ticketing is strictly boundary_excluded. Farely is Flight Opportunity Intelligence only.
+- `NO_PASSENGER_CHECKOUT`: Passenger checkout is strictly boundary_excluded.
 - `NO_PAYMENT_COLLECTION`: Payment gateway integration and credit card processing are strictly boundary_excluded.
 - `NO_UNAUTHORIZED_SCRAPING`: Unauthorized scraping is strictly boundary_excluded.
-- `NO_SELF_CERTIFICATION`: Derived strictly from authentic, deterministic test proofs.
+- `NO_SELF_CERTIFICATION`: Derived strictly from authentic test proofs.
 - `NO_CONTRACT_SHRINKAGE`: Preserves all 89 capability contracts (F00..F88) and 267 historical gates.
 
 ---
 
 ## SECTION C: TARGET WORK PACKAGES SPECIFICATION
 
-### WP01-COMPARATOR-EVIDENCE-ROBUSTNESS
-- **Target Files**: `src/domain/farely/comparator.ts`, `src/domain/farely/comparator.test.ts` [PROPOSED_NEW]
+### WP01-IDENTITY-UNICODE-CANONICALIZATION
+- **Target Files**: `src/domain/farely/identity.ts`, `src/domain/farely/identity.test.ts` [PROPOSED_NEW]
 - **Locked Implementation Requirements**:
-  1. Fail closed on invalid `currentPrice`:
+  1. Universal UTF-8 byte serialization with URIError defensive fallback in `sha256Hex`:
      ```typescript
-     if (!Number.isFinite(currentPrice) || currentPrice <= 0) {
-       return {
-         currentPrice,
-         sampleSize: 0,
-         medianPrice: null,
-         lowestHistoricalPrice: null,
-         discountVsMedianPercent: null,
-         evidenceLevel: 'INSUFFICIENT',
-         verdictLabel: 'Không đủ dữ liệu',
-         uniqueEpochs: 0
-       };
+     function toUtf8Bytes(str: string): number[] {
+       try {
+         const utf8Str = unescape(encodeURIComponent(str));
+         const bytes: number[] = new Array(utf8Str.length);
+         for (let i = 0; i < utf8Str.length; i++) {
+           bytes[i] = utf8Str.charCodeAt(i);
+         }
+         return bytes;
+       } catch {
+         const bytes: number[] = new Array(str.length);
+         for (let i = 0; i < str.length; i++) {
+           bytes[i] = str.charCodeAt(i) & 0xFF;
+         }
+         return bytes;
+       }
      }
      ```
-  2. Handle empty cohort (`sampleSize === 0`):
+  2. Unsigned 32-bit big-endian packing and 64-bit length trailer:
      ```typescript
-     if (sampleSize === 0) {
-       return {
-         currentPrice,
-         sampleSize: 0,
-         medianPrice: null,
-         lowestHistoricalPrice: null,
-         discountVsMedianPercent: null,
-         evidenceLevel: 'INSUFFICIENT',
-         verdictLabel: 'Giá quan sát',
-         uniqueEpochs: 0
-       };
-     }
+     words[i >> 2] |= (bytes[i] << ((3 - (i % 4)) * 8)) >>> 0;
+     words[words.length] = Math.floor(bitLength / 0x100000000) >>> 0;
+     words[words.length] = (bitLength & 0xFFFFFFFF) >>> 0;
      ```
-  3. Eradicate `departLocalDate` fallback in distinct days calculation to enforce REQ-COMP-004:
+  3. Price rounding in `buildObservationId`:
      ```typescript
-     const days = new Set(
-       validObservations
-         .map(o => {
-           if (typeof o.observedAt === 'string' && o.observedAt.length >= 10) {
-             const parsed = new Date(o.observedAt);
-             if (!isNaN(parsed.getTime())) {
-               return parsed.toISOString().slice(0, 10);
-             }
-           }
-           return null;
-         })
-         .filter((d): d is string => d !== null)
-     );
+     params.offerVariantId,
+     params.provider.trim().toLowerCase(),
+     params.observedAt.trim(),
+     String(Math.round(params.price))
      ```
-  4. Enforce zero-dispersion caveat: when `validPrices.length >= 2 && validPrices[0] === validPrices[validPrices.length - 1]`, discounts below 10% must remain `'Giá tiêu chuẩn'`.
-  5. Create comprehensive unit test suite in `src/domain/farely/comparator.test.ts` [PROPOSED_NEW].
+  4. Create comprehensive unit test suite in `src/domain/farely/identity.test.ts` [PROPOSED_NEW].
 
-### WP02-COSTEPISTEMICS-TRANSPARENCY-GUARD
-- **Target Files**: `src/domain/farely/costEpistemics.ts`, `src/domain/farely/costEpistemics.test.ts` [PROPOSED_NEW]
+### WP02-MONEY-PRECISION-SANITIZATION
+- **Target Files**: `src/domain/farely/money.ts`, `src/domain/farely/money.test.ts` [PROPOSED_NEW]
 - **Locked Implementation Requirements**:
-  1. Guard `params.basePrice`:
+  1. Runtime currency validation:
      ```typescript
-     const sanitizedBasePrice = Number.isFinite(params.basePrice) && params.basePrice >= 0
-       ? Math.round(params.basePrice)
-       : 0;
-     ```
-  2. Register Pacific Airlines (`BL`) in `BUDGET_CARRIER_CODES`:
-     ```typescript
-     const BUDGET_CARRIER_CODES = new Set(['VJ', 'AK', 'FD', 'TR', '5J', 'SL', 'VU', 'BL']);
-     ```
-  3. Deep sanitize provided fee amounts (both object and array variants) with non-negative rounding:
-     ```typescript
-     function sanitizeFee(amt: unknown): number | undefined {
-       return typeof amt === 'number' && Number.isFinite(amt) && amt >= 0 ? Math.round(amt) : undefined;
+     const normalizedCurrency = (currency || 'VND').trim().toUpperCase() as CurrencyCode;
+     if (normalizedCurrency !== 'VND' && normalizedCurrency !== 'USD') {
+       throw new IncompatibleMoneyComparisonError(`Unsupported currency: ${currency}`);
      }
      ```
-  4. Explicit provider data (`isBaggageExplicitlyIncluded === true` or `providerVerifiedAllIn === true`) strictly takes precedence over budget carrier heuristics.
-  5. Create comprehensive unit test suite in `src/domain/farely/costEpistemics.test.ts` [PROPOSED_NEW].
+  2. Signed-zero and negative price rejection:
+     ```typescript
+     if (!Number.isFinite(amount) || amount < 0) {
+       throw new TypeError(`Invalid money amount: ${amount}`);
+     }
+     const rounded = Math.round(amount);
+     const normalizedAmount = rounded === 0 ? 0 : rounded;
+     ```
+  3. Defensive `compareMoney`:
+     ```typescript
+     if (!a || !b || !Number.isFinite(a.amount) || !Number.isFinite(b.amount)) {
+       throw new IncompatibleMoneyComparisonError('Invalid money comparison operands');
+     }
+     ```
+  4. Defensive `formatMoney`:
+     ```typescript
+     const amt = Number.isFinite(money?.amount) && money.amount >= 0 ? Math.round(money.amount) : 0;
+     if (money?.currency === 'USD') {
+       return `$${amt.toLocaleString('en-US')}`;
+     }
+     return `${amt.toLocaleString('vi-VN')}₫`;
+     ```
+  5. Create comprehensive unit test suite in `src/domain/farely/money.test.ts` [PROPOSED_NEW].
 
-### WP03-SAVINGS-RELATIVE-VALUE-BOUNDS
-- **Target Files**: `src/domain/farely/savings.ts`, `src/domain/farely/savings.test.ts` [PROPOSED_NEW]
+### WP03-LOCATIONSCOPE-METRO-DETERMINISM
+- **Target Files**: `src/domain/farely/locationScope.ts`, `src/domain/farely/locationScope.test.ts` [PROPOSED_NEW]
 - **Locked Implementation Requirements**:
-  1. Guard against non-finite or non-positive numbers:
+  1. Defensive `satisfiesLocationScope`:
      ```typescript
-     if (!Number.isFinite(observedPrice) || !Number.isFinite(benchmarkPrice) || observedPrice <= 0 || benchmarkPrice <= 0) {
-       return {
-         observedPrice: Number.isFinite(observedPrice) ? observedPrice : 0,
-         benchmarkPrice: Number.isFinite(benchmarkPrice) ? benchmarkPrice : 0,
-         savingsAmount: 0,
-         savingsPercent: 0,
-         isSaving: false
-       };
+     export function satisfiesLocationScope(actualAirport: string, scope: LocationScope): boolean {
+       if (!scope || typeof actualAirport !== 'string') return false;
+       const upper = actualAirport.trim().toUpperCase();
+       if (scope.type === 'EXACT_AIRPORT') {
+         return upper === (scope.primaryCode || '').trim().toUpperCase();
+       }
+       const codes = Array.isArray(scope.expandedCodes)
+         ? scope.expandedCodes.map(c => String(c).trim().toUpperCase())
+         : [];
+       return codes.includes(upper);
      }
      ```
-  2. Normalize non-positive raw differences eliminating IEEE 754 signed zero (`-0`):
+  2. Guard `resolveLocationScope` against empty string:
      ```typescript
-     const rawDiff = benchmarkPrice - observedPrice;
-     const savingsAmount = rawDiff > 0 ? Math.round(rawDiff) : 0;
-     const savingsPercent = savingsAmount > 0 ? Math.round((savingsAmount / benchmarkPrice) * 100) : 0;
-     const isSaving = savingsAmount > 0;
+     if (!codeOrMetro || !codeOrMetro.trim()) {
+       throw new TypeError('Location code must be a non-empty string');
+     }
      ```
-  3. Create comprehensive unit test suite in `src/domain/farely/savings.test.ts` [PROPOSED_NEW].
+  3. Create comprehensive unit test suite in `src/domain/farely/locationScope.test.ts` [PROPOSED_NEW] verifying NC-002, NC-003, and catalog invariants.
 
 ---
 
@@ -160,8 +162,8 @@ All solutions strictly derive from the Mathematical and Empirical proofs establi
 ## SECTION E: EXECUTION TOPOLOGY & ACID PIPELINE
 ```mermaid
 graph TD
-  WP01[WP01: comparator.ts + test] --> WP02[WP02: costEpistemics.ts + test]
-  WP02 --> WP03[WP03: savings.ts + test]
+  WP01[WP01: identity.ts + test] --> WP02[WP02: money.ts + test]
+  WP02 --> WP03[WP03: locationScope.ts + test]
   WP03 --> REGRESSION[Full Suite Vitest + Node native tests]
   REGRESSION --> RECEIPT[Cryptographic Execution Receipt]
   RECEIPT --> PUSH[Git Commit & Remote Parity Push]
@@ -173,31 +175,31 @@ graph TD
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
-- **Physical Code Citations**: `src/domain/farely/comparator.ts:97-165`, `src/domain/farely/costEpistemics.ts:1-75`
-- **Adversarial Vector Defense**: Defends against NEG-01 and NEG-34. True cost evaluation respects explicit provider inclusion over generic heuristics.
+- **Physical Code Citations**: `src/domain/farely/identity.ts:175-205`, `src/domain/farely/locationScope.ts:34-80`
+- **Adversarial Vector Defense**: Defends against NEG-01 and NEG-34. OfferVariantId never contains price (REQ-DOM-011), preserving identical flight identity across price fluctuations.
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts:96-150`.
 
 ---
 
 ### L02: Price, Historical Baseline & Data Integrity
 - **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).
-- **Physical Code Citations**: `src/domain/farely/savings.ts:17-38`, `src/domain/farely/comparator.ts:101-107`, `src/domain/farely/priceAnomaly.ts:40-75`
-- **Adversarial Vector Defense**: Defends against NEG-04 and NEG-08. Input prices and fee amounts are strictly validated as positive finite numbers.
+- **Physical Code Citations**: `src/domain/farely/money.ts:25-30`, `src/domain/farely/identity.ts:211-224`
+- **Adversarial Vector Defense**: Defends against NEG-04 and NEG-08. Input prices in `createMoney` and `buildObservationId` are strictly validated as positive finite numbers.
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/domainKernel.test.ts:74-95`.
 
 ---
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
 - **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.
-- **Physical Code Citations**: `src/domain/farely/comparator.ts:60-92`, `src/domain/farely/costEpistemics.ts:27-47`, `src/domain/farely/buyWaitGuidance.ts:80-120`
-- **Adversarial Vector Defense**: Defends against NEG-09. Evidence level determines verdict labels; zero-dispersion cohorts cannot claim spurious discounts.
+- **Physical Code Citations**: `src/domain/farely/money.ts:67-75`, `src/domain/farely/priceScope.ts:1-50`
+- **Adversarial Vector Defense**: Defends against NEG-09. Money comparison prevents silent 1-person pricing vs 2-person party total comparisons (NC-005).
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
 
 ---
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
 - **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts and user credentials.
-- **Physical Code Citations**: `src/domain/farely/costEpistemics.ts:27-47`, `supabase/migrations/20261022000001_watch_condition_episodes.sql:20-55`
+- **Physical Code Citations**: `src/domain/farely/identity.ts:1-60`, `supabase/migrations/20261022000001_watch_condition_episodes.sql:20-55`
 - **Adversarial Vector Defense**: Defends against NEG-19 and NEG-20. Pure domain functions do not touch user credentials or persist unvetted state.
 - **Verification Proof (C0..C4)**: C2 Integration test in `scripts/database-architecture-contract.node-test.mjs`.
 
@@ -205,24 +207,24 @@ graph TD
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
 - **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.
-- **Physical Code Citations**: `src/domain/farely/costEpistemics.ts:65-75`, `src/domain/farely/providerCapabilities.ts:1-50`
-- **Adversarial Vector Defense**: Defends against NEG-12. Unknown ancillary fees fail closed to `UNKNOWN` cost epistemic state.
+- **Physical Code Citations**: `src/domain/farely/money.ts:44-54`, `src/domain/farely/providerCapabilities.ts:1-50`
+- **Adversarial Vector Defense**: Defends against NEG-12. Unknown pricing units throw explicit `IncompatibleMoneyComparisonError`.
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
 
 ---
 
 ### L06: Freshness, Stale Degradation & UX Honesty
 - **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.
-- **Physical Code Citations**: `src/domain/farely/comparator.ts:8-12`, `src/domain/farely/pwaOfflineFreshness.ts:25-50`
-- **Adversarial Vector Defense**: Defends against NEG-10 and NEG-35. Observation dates must be authentic UTC timestamps and never alias departure dates.
+- **Physical Code Citations**: `src/domain/farely/identity.ts:208-224`, `src/domain/farely/time.ts:1-60`
+- **Adversarial Vector Defense**: Defends against NEG-10 and NEG-35. Observation timestamps are cryptographically bound into ObservationId.
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/domainKernel.test.ts`.
 
 ---
 
 ### L07: Observability, Secret Scrubbing & Error Boundaries
 - **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.
-- **Physical Code Citations**: `src/domain/farely/comparator.ts:31-34`, `src/domain/farely/costEpistemics.ts:18-25`
-- **Adversarial Vector Defense**: Defends against NEG-39. Discrete typed error reasons ensure auditable system observability.
+- **Physical Code Citations**: `src/domain/farely/money.ts:15-20`, `src/domain/farely/identity.ts:100-139`
+- **Adversarial Vector Defense**: Defends against NEG-39. Discrete typed error classes ensure auditable system observability.
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
 
 ---

@@ -1,109 +1,103 @@
 # FARELY PROJECT 10X — RESEARCH R10 [R2]
 # LEVEL: Pass 2: Skeptical Empirical Grounding
-# MANDATE: Re-examine all 12 lenses with zero-trust skepticism, falsify prior pass assumptions, and ground every claim in verifiable codebase evidence.
-# GIT_COMMIT: 774b3d00f9bd9e105ba466c058e428935b211847
-# TIMESTAMP: 2026-10-27T10:30:00.751Z
-# EXECUTION_RECEIPT_SHA256: f0e7e465481a9a692ca49aecdde8a3a90d77e9aac04b385782ebc129e8d9a9ca
+# MANDATE: Deepen research from Pass 1. Challenge all assumptions, verify every edge case, and expose latent deficits across all 12 lenses.
+# GIT_COMMIT: 4cced89d2529003c9f16a1aa0667f7eff0e49fad
+# TIMESTAMP: 2026-10-28T02:42:17.809Z
+# EXECUTION_RECEIPT_SHA256: 9cc2bebadb89d11b9b87efa018692621d21cd809520e52ceaf21edc430d63b54
 
 ---
 
 ## AUDIT & FALSIFICATION OF PASS N-1
 
-Pass R1 established the preliminary baseline for Cycle G92. In this Pass R2, we subject Pass R1 to adversarial skepticism across all 12 lenses and actively falsify 3 specific proposals:
+Pass R1 established the baseline specifications for Cycle G93. In Pass R2, we subject Pass R1 to empirical adversarial review across all 12 lenses, demonstrating 3 naive assumptions requiring technical correction:
 
-1. **Falsification 1: Departure Date Fallback Violation of REQ-COMP-004 in `comparator.ts` (L06 & L02 / REQ-COMP-004)**:
-   - *Pass R1 Claim*: Pass R1 proposed removing departure date fallback without addressing how observation timestamps are validated.
-   - *Falsification & Code Proof*: In `src/domain/farely/comparator.ts#L117-L123`:
-     ```typescript
-     const days = new Set(
-       validObservations
-         .map(o => (o.observedAt ? o.observedAt.slice(0, 10) : o.departLocalDate))
-         .filter(Boolean)
-     );
-     ```
-     REQ-COMP-004 explicitly mandates: "Observation date must never become travel date." If a crawler scrapes 20 future flight dates in a single run without populating `observedAt`, falling back to `departLocalDate` creates 20 synthetic "distinct days" (`days.size === 20`). This causes `determineEvidenceLevel` to award false `STRONG` evidence on a single scan! In Pass R2, we mandate that only valid UTC ISO timestamps in `observedAt` are counted towards `distinctDays`:
-     ```typescript
-     const days = new Set(
-       validObservations
-         .map(o => (o.observedAt && !isNaN(Date.parse(o.observedAt))) ? o.observedAt.slice(0, 10) : null)
-         .filter(Boolean)
-     );
-     ```
-     Any observation without a valid timestamp contributes 0 distinct days.
+1. **[L01 & L02 FALSIFICATION] (UTF-8 Bit Length Invariant in `sha256Hex`)**:
+   - *Pass R1 Claim*: Pass R1 assumed simply converting characters to UTF-8 bytes solves unicode hashing.
+   - *Falsification & Code Proof*: In `src/domain/farely/identity.ts#L22-L43`, `asciiBitLength = ascii.length * 8`. If a string containing multibyte UTF-8 characters (such as Vietnamese `Đà Nẵng` where `Đ` is 2 bytes `0xC4 0x90` and `ẵ` is 3 bytes `0xE1 0xBA 0xAF`) is encoded into a byte array, the number of bytes $M > \text{ascii.length}$! If the bit length appended to the 64-bit length trailer uses character count rather than actual byte count, the resulting SHA-256 digest is cryptographically corrupted and incompatible with standard NIST FIPS 180-4 implementations! Pass R2 mandates calculating bit length strictly over the post-encoding UTF-8 byte buffer:
+     $$ L_{\text{bits}} = N_{\text{bytes}} \times 8 $$
 
-2. **Falsification 2: Missing Pacific Airlines (`BL`) in Budget Carrier Registry in `costEpistemics.ts` (L01 & L05 / A16)**:
-   - *Pass R1 Claim*: Pass R1 claimed adding Vietravel Airlines (`VU`) is sufficient.
-   - *Falsification & Code Proof*: In `src/domain/farely/costEpistemics.ts#L65-L68`, `BUDGET_CARRIER_CODES` includes `['VJ', 'AK', 'FD', 'TR', '5J', 'SL', 'VU']`. However, Pacific Airlines (`BL`, formerly Jetstar Pacific) is a Vietnamese low-cost domestic carrier operating unbundled fares where checked baggage (20kg) and seat selection are not included in base tickets. Because `BL` is missing from `BUDGET_CARRIER_CODES`, `evaluateTrueCost` defaults to `LEGACY` carrier assumptions where baggage is considered included! This understates the true cost of a Pacific Airlines ticket by 250,000₫ to 350,000₫. `BL` must be added to `BUDGET_CARRIER_CODES`.
-
-3. **Falsification 3: IEEE 754 NaN Bypass in `savings.ts` (L02 & L03 / NV04)**:
-   - *Pass R1 Claim*: Pass R1 assumed checking `benchmarkPrice <= 0 || observedPrice <= 0` catches invalid prices.
-   - *Falsification & Code Proof*: In JavaScript, `NaN <= 0` evaluates to `false`! If callers pass `NaN` or `undefined` (which coerces to `NaN`), the guard in `src/domain/farely/savings.ts#L18` is bypassed completely. The code executes `Math.max(0, NaN - NaN)` which produces `NaN`, returning `{ savingsAmount: NaN, savingsPercent: NaN, isSaving: false }`. Pass R2 locks explicit finite validation:
+2. **[L02 & L03 FALSIFICATION] (Currency Casing & Truncation Skew in `normalizeToPerTraveler`)**:
+   - *Pass R1 Claim*: Pass R1 assumed dividing by `travelerCount` and taking `Math.round` is always reversible.
+   - *Falsification & Code Proof*: In `src/domain/farely/money.ts#L55-L60`:
      ```typescript
-     if (!Number.isFinite(benchmarkPrice) || !Number.isFinite(observedPrice) || benchmarkPrice <= 0 || observedPrice <= 0)
+     return {
+       amount: Math.round(money.amount / travelerCount),
+       currency: money.currency,
+       pricingUnit: 'PER_TRAVELER'
+     };
      ```
+     If `money.amount = 1000000` and `travelerCount = 3`, `1000000 / 3 = 333333.333...`, which rounds to `333333`. Multiplying back yields `999999`, losing 1₫. While rounding to integer VND is mandatory, downstream comparator aggregations must be aware that per-traveler normalization is a lossy projection. Furthermore, `money.currency` must be strictly sanitized to prevent mismatched comparison keys (e.g. `'vnd'` vs `'VND'`).
+
+3. **[L01 & L04 FALSIFICATION] (Airport Code Aliasing & Whitespace in `locationScope.ts`)**:
+   - *Pass R1 Claim*: Pass R1 assumed airport codes passed to `expandLocationScope` are already clean 3-letter IATA codes.
+   - *Falsification & Code Proof*: In `src/domain/farely/locationScope.ts#L100-L125`, external URL search queries often pass codes with leading/trailing spaces or lowercase characters (e.g. `'sgn '` or `' bkk'`). Direct dictionary lookup `AIRPORT_CATALOG[code]` or `METRO_CATALOG[code]` fails silently, causing valid airports to be treated as unknown locations. Pass R2 mandates universal key sanitization: `code.trim().toUpperCase()`.
 
 ---
 
 ## NON-OTA PRODUCT BOUNDARY INVARIANTS
-- `NO_DIRECT_TICKETING`: Farely does not issue airline tickets, manage PNR records directly, or process ticket issuance.
-- `NO_PASSENGER_CHECKOUT`: Farely never collects passenger passport numbers, never handles credit card numbers, and never operates a checkout cart. All bookings route externally via deep links with verified affiliate parameters.
+- `NO_DIRECT_TICKETING`: Direct ticketing is strictly boundary_excluded. Farely is Flight Opportunity Intelligence only.
+- `NO_PASSENGER_CHECKOUT`: Passenger checkout is strictly boundary_excluded.
+- `NO_PAYMENT_COLLECTION`: Payment gateway integration and credit card processing are strictly boundary_excluded.
+- `NO_UNAUTHORIZED_SCRAPING`: Unauthorized scraping is strictly boundary_excluded.
+- `NO_SELF_CERTIFICATION`: Derived strictly from authentic test proofs.
+- `NO_CONTRACT_SHRINKAGE`: Preserves all 89 capability contracts (F00..F88) and 267 historical gates.
 
 ---
 
-## THE 12 ADVERSARIAL LENSES EVALUATION MATRIX
+## THE 12 ADVERSARIAL LENSES EMPIRICAL MATRIX
 
 ### L01: Product Truth & Founder Scope Integrity
 - **Focus**: Anti-OTA conflation; exact jobs-to-be-done F1.1; no fake deal booking claims; preservation of F1..F26.
-- **Physical Code Citations**: `src/domain/farely/comparator.ts:97-165`, `src/domain/farely/truthKernelV2.test.ts:96-150`
-- **Adversarial Vector Defense**: Defends against NEG-01 and NEG-34. `compareAgainstCohort` preserves market truth: a deal cannot claim `Giá rất tốt` or `Giá đáng chú ý` without authentic statistical support.
-- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
+- **Physical Code Citations**: `src/domain/farely/identity.ts:175-205`, `src/domain/farely/locationScope.ts:34-80`
+- **Adversarial Vector Defense**: Defends against NEG-01 and NEG-34. OfferVariantId never contains price (REQ-DOM-011), preserving identical flight identity across price fluctuations.
+- **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts:96-150`.
 
 ---
 
 ### L02: Price, Historical Baseline & Data Integrity
 - **Focus**: Rejection of NaN, negative prices, unbounded numbers; exact price semantics (indicative vs observed vs bookable).
-- **Physical Code Citations**: `src/domain/farely/savings.ts:17-38`, `src/domain/farely/comparator.ts:101-107`
-- **Adversarial Vector Defense**: Defends against NEG-04 and NEG-08. Input prices are sanitized to positive finite numbers in VND.
+- **Physical Code Citations**: `src/domain/farely/money.ts:25-30`, `src/domain/farely/identity.ts:211-224`
+- **Adversarial Vector Defense**: Defends against NEG-04 and NEG-08. Input prices in `createMoney` and `buildObservationId` are strictly validated as positive finite numbers.
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/domainKernel.test.ts:74-95`.
 
 ---
 
 ### L03: Deal Score, Statistical Confidence & Cost Monotonicity
 - **Focus**: Anti-hallucinated discount claims; deal score must be backed by sample confidence and total cost of trip.
-- **Physical Code Citations**: `src/domain/farely/comparator.ts:60-92`, `src/domain/farely/costEpistemics.ts:27-47`
-- **Adversarial Vector Defense**: Defends against NEG-09. `determineEvidenceLevel` enforces discrete sample thresholds: $<3$ samples = `INSUFFICIENT`, $3..6$ = `WEAK`, $7..14$ = `MODERATE`, $\ge 15$ with $\ge 3$ distinct days = `STRONG`.
+- **Physical Code Citations**: `src/domain/farely/money.ts:67-75`, `src/domain/farely/priceScope.ts:1-50`
+- **Adversarial Vector Defense**: Defends against NEG-09. Money comparison prevents silent 1-person pricing vs 2-person party total comparisons (NC-005).
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
 
 ---
 
 ### L04: Auth, Privacy, Tenant Isolation & RLS Matrix
 - **Focus**: Multi-tenant isolation; strict Supabase RLS policies; protection of personal watch alerts and user credentials.
-- **Physical Code Citations**: `src/domain/farely/costEpistemics.ts:27-47`, `supabase/migrations/20261022000001_watch_condition_episodes.sql:20-55`
-- **Adversarial Vector Defense**: Defends against NEG-19 and NEG-20. True cost evaluation is a pure domain transformation that operates without tenant credential leakage.
+- **Physical Code Citations**: `src/domain/farely/identity.ts:1-60`, `supabase/migrations/20261022000001_watch_condition_episodes.sql:20-55`
+- **Adversarial Vector Defense**: Defends against NEG-19 and NEG-20. Pure domain functions do not touch user credentials or persist unvetted state.
 - **Verification Proof (C0..C4)**: C2 Integration test in `scripts/database-architecture-contract.node-test.mjs`.
 
 ---
 
 ### L05: Provider Drift, Circuit Breakers & Kill Switches
 - **Focus**: Resilience against partner schema changes, 429 rate limits, 503 outages, and dirty payload quarantine.
-- **Physical Code Citations**: `src/domain/farely/costEpistemics.ts:65-75`, `src/domain/farely/providerCapabilities.ts:1-50`
-- **Adversarial Vector Defense**: Defends against NEG-12. In `costEpistemics.ts`, unverified or unknown ancillary fee structures fail closed to `UNKNOWN` cost epistemic state rather than fabricating zero fees.
+- **Physical Code Citations**: `src/domain/farely/money.ts:44-54`, `src/domain/farely/providerCapabilities.ts:1-50`
+- **Adversarial Vector Defense**: Defends against NEG-12. Unknown pricing units throw explicit `IncompatibleMoneyComparisonError`.
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
 
 ---
 
 ### L06: Freshness, Stale Degradation & UX Honesty
 - **Focus**: Stale indicators for data >360m; no masking errors as 0 deals; transparent source attribution and observed_at.
-- **Physical Code Citations**: `src/domain/farely/comparator.ts:8-12`, `src/domain/farely/pwaOfflineFreshness.ts:25-50`
-- **Adversarial Vector Defense**: Defends against NEG-10 (departure date used as observation timestamp) and NEG-35 (offline cache shown as fresh). REQ-COMP-004 explicitly mandates that observation date must never become travel departure date.
+- **Physical Code Citations**: `src/domain/farely/identity.ts:208-224`, `src/domain/farely/time.ts:1-60`
+- **Adversarial Vector Defense**: Defends against NEG-10 and NEG-35. Observation timestamps are cryptographically bound into ObservationId.
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/domainKernel.test.ts`.
 
 ---
 
 ### L07: Observability, Secret Scrubbing & Error Boundaries
 - **Focus**: Zero secret leakage in client/browser logs; client error boundaries; structured telemetry for silent failures.
-- **Physical Code Citations**: `src/domain/farely/comparator.ts:31-34`, `src/domain/farely/costEpistemics.ts:18-25`
-- **Adversarial Vector Defense**: Defends against NEG-39. `ComparisonResult` exposes explicit `verdictLabel` and `evidenceLevel` for transparent user communication.
+- **Physical Code Citations**: `src/domain/farely/money.ts:15-20`, `src/domain/farely/identity.ts:100-139`
+- **Adversarial Vector Defense**: Defends against NEG-39. Discrete typed error classes ensure auditable system observability.
 - **Verification Proof (C0..C4)**: C1 Unit test in `src/domain/farely/truthKernelV2.test.ts`.
 
 ---
@@ -119,7 +113,7 @@ Pass R1 established the preliminary baseline for Cycle G92. In this Pass R2, we 
 ### L09: Proof Hierarchy & Anti-Self-Certification (C0..C4)
 - **Focus**: Strict separation: C0 Contract != C1 Unit != C2 Integration != C3 Runtime != C4 Soak. No self-awarded 10/10.
 - **Physical Code Citations**: `docs/convergence/ACCEPTANCE_REGISTRY_FINAL.json:1-120`
-- **Adversarial Vector Defense**: Defends against NEG-40. Distinct test suites validate each tier of the proof hierarchy.
+- **Adversarial Vector Defense**: Defends against NEG-40. Code proof (C1) does not substitute for contract proof (C0) or runtime proof (C3).
 - **Verification Proof (C0..C4)**: Full test execution suite (Vitest + Node test).
 
 ---
@@ -135,7 +129,7 @@ Pass R1 established the preliminary baseline for Cycle G92. In this Pass R2, we 
 ### L11: Turnkey Execution, Topological DAG & Rollback Runbooks
 - **Focus**: Zero-deadlock dependency order; file-level before/after specs; transactional ACID rollbacks.
 - **Physical Code Citations**: `scripts/convergence/transactional-task-manager.mjs:1-150`
-- **Adversarial Vector Defense**: Defends against incomplete file mutations. The transactional task manager enforces atomic commits and clean rollbacks.
+- **Adversarial Vector Defense**: Defends against partial file writes. The transactional task manager guarantees clean rollbacks.
 - **Verification Proof (C0..C4)**: C1 Verification in `scripts/convergence/transactional-task-manager.mjs`.
 
 ---
@@ -148,17 +142,25 @@ Pass R1 established the preliminary baseline for Cycle G92. In this Pass R2, we 
 
 ---
 
-## REFINED WORK PACKAGES SPECIFICATION FOR CYCLE G92
-1. **WP01-COMPARATOR-EVIDENCE-ROBUSTNESS**:
-   - Guard `compareAgainstCohort` against non-positive (`<= 0`) or non-finite `currentPrice`.
-   - Remove departure date fallback when `observedAt` is missing to enforce REQ-COMP-004.
-   - Create comprehensive unit test suite in `src/domain/farely/comparator.test.ts` [PROPOSED_NEW].
+## CANONICAL WORK PACKAGES SPECIFICATION (FARELY-XFER/6)
 
-2. **WP02-COSTEPISTEMICS-TRANSPARENCY-GUARD**:
-   - Guard `evaluateTrueCost` against negative base fares.
-   - Add Pacific Airlines (`BL`) to `BUDGET_CARRIER_CODES`.
-   - Create comprehensive unit test suite in `src/domain/farely/costEpistemics.test.ts` [PROPOSED_NEW].
+### WP01-IDENTITY-UNICODE-CANONICALIZATION
+- **Target Files**: `src/domain/farely/identity.ts`, `src/domain/farely/identity.test.ts` [PROPOSED_NEW]
+- **Implementation**:
+  - Implement standard UTF-8 byte conversion in `sha256Hex` before padding and hashing.
+  - Round price to integer in `buildObservationId`.
+  - Create `src/domain/farely/identity.test.ts` [PROPOSED_NEW].
 
-3. **WP03-SAVINGS-RELATIVE-VALUE-BOUNDS**:
-   - Guard `calculateSavings` against non-finite inputs (`!Number.isFinite`).
-   - Create comprehensive unit test suite in `src/domain/farely/savings.test.ts` [PROPOSED_NEW].
+### WP02-MONEY-PRECISION-SANITIZATION
+- **Target Files**: `src/domain/farely/money.ts`, `src/domain/farely/money.test.ts` [PROPOSED_NEW]
+- **Implementation**:
+  - Normalize currency casing in `createMoney`.
+  - Guard `compareMoney` against null or invalid Money objects.
+  - Guard `formatMoney` against invalid amounts.
+  - Create `src/domain/farely/money.test.ts` [PROPOSED_NEW].
+
+### WP03-LOCATIONSCOPE-METRO-DETERMINISM
+- **Target Files**: `src/domain/farely/locationScope.ts`, `src/domain/farely/locationScope.test.ts` [PROPOSED_NEW]
+- **Implementation**:
+  - Normalize lookup keys in location resolution.
+  - Create `src/domain/farely/locationScope.test.ts` [PROPOSED_NEW] verifying NC-002, NC-003, and `deriveMarketScopeFromLocation`.

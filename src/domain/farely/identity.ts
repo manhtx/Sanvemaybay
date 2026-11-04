@@ -9,8 +9,9 @@ export { calculateElapsedDurationMinutes } from './time.ts';
 /**
  * Pure SHA-256 Hex Digest Implementation
  * Synchronous and universal across Node, Deno, and Browser environments.
+ * Upgraded to full UTF-8 byte serialization for arbitrary Unicode and Vietnamese text.
  */
-export function sha256Hex(ascii: string): string {
+export function sha256Hex(str: string): string {
   function rightRotate(value: number, amount: number): number {
     return (value >>> amount) | (value << (32 - amount));
   }
@@ -19,7 +20,6 @@ export function sha256Hex(ascii: string): string {
   let i: number, j: number;
   let result = '';
   const words: number[] = [];
-  const asciiBitLength = ascii.length * 8;
   const hash: number[] = [];
   const k: number[] = [];
   let primeCounter = 0;
@@ -33,14 +33,41 @@ export function sha256Hex(ascii: string): string {
       k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
     }
   }
-  ascii += '\x80';
-  while (ascii.length % 64 - 56) ascii += '\x00';
-  for (i = 0; i < ascii.length; i++) {
-    j = ascii.charCodeAt(i);
-    words[i >> 2] |= j << ((3 - i) % 4) * 8;
+
+  // Convert input string to UTF-8 bytes safely without external Buffer dependencies
+  let bytes: number[];
+  try {
+    const utf8Str = unescape(encodeURIComponent(str));
+    bytes = new Array(utf8Str.length);
+    for (i = 0; i < utf8Str.length; i++) {
+      bytes[i] = utf8Str.charCodeAt(i) & 0xFF;
+    }
+  } catch {
+    bytes = new Array(str.length);
+    for (i = 0; i < str.length; i++) {
+      bytes[i] = str.charCodeAt(i) & 0xFF;
+    }
   }
-  words[words.length] = ((asciiBitLength / maxWord) | 0);
-  words[words.length] = asciiBitLength | 0;
+
+  const bitLength = bytes.length * 8;
+
+  // Append 0x80 padding byte
+  bytes.push(0x80);
+
+  // Pad with zeros until bytes.length % 64 === 56
+  while ((bytes.length % 64) !== 56) {
+    bytes.push(0x00);
+  }
+
+  // Pack bytes into 32-bit big-endian words
+  for (i = 0; i < bytes.length; i++) {
+    words[i >> 2] |= (bytes[i] << ((3 - (i % 4)) * 8)) >>> 0;
+  }
+
+  // Append 64-bit length trailer (big-endian)
+  words[words.length] = Math.floor(bitLength / 0x100000000) >>> 0;
+  words[words.length] = (bitLength & 0xFFFFFFFF) >>> 0;
+
   for (j = 0; j < words.length;) {
     const w = words.slice(j, (j += 16));
     const oldHash = hash.slice(0);
@@ -107,10 +134,10 @@ export function buildPhysicalItineraryId(params: {
   flightNumber?: string | null;
 }): string {
   const parts: string[] = [
-    params.origin.trim().toUpperCase(),
-    params.destination.trim().toUpperCase(),
-    params.departDate.trim(),
-    (params.returnDate || '').trim(),
+    String(params.origin || '').trim().toUpperCase(),
+    String(params.destination || '').trim().toUpperCase(),
+    String(params.departDate || '').trim(),
+    String(params.returnDate || '').trim(),
   ];
 
   if (params.segments && params.segments.length > 0) {
@@ -120,19 +147,19 @@ export function buildPhysicalItineraryId(params: {
     for (const seg of sortedSegments) {
       parts.push(
         [
-          seg.origin.trim().toUpperCase(),
-          seg.destination.trim().toUpperCase(),
-          seg.marketingCarrier.trim().toUpperCase(),
-          (seg.operatingCarrier || seg.marketingCarrier).trim().toUpperCase(),
-          seg.flightNumber.trim().toUpperCase(),
-          (seg.departureInstant || '').trim(),
-          (seg.arrivalInstant || '').trim(),
+          String(seg.origin || '').trim().toUpperCase(),
+          String(seg.destination || '').trim().toUpperCase(),
+          String(seg.marketingCarrier || '').trim().toUpperCase(),
+          String(seg.operatingCarrier || seg.marketingCarrier || '').trim().toUpperCase(),
+          String(seg.flightNumber || '').trim().toUpperCase(),
+          String(seg.departureInstant || '').trim(),
+          String(seg.arrivalInstant || '').trim(),
         ].join('>')
       );
     }
   } else {
-    parts.push((params.airline || '').trim().toUpperCase());
-    parts.push((params.flightNumber || '').trim().toUpperCase());
+    parts.push(String(params.airline || '').trim().toUpperCase());
+    parts.push(String(params.flightNumber || '').trim().toUpperCase());
   }
 
   return `itin:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;
@@ -156,7 +183,7 @@ export interface CommercialOfferProduct {
 
 export function buildOfferProductId(params: CommercialOfferProduct): string {
   const parts = [
-    params.itineraryId.trim(),
+    String(params.itineraryId || '').trim(),
     (params.cabin || 'ECONOMY').trim().toUpperCase(),
     (params.fareBrand || '').trim().toUpperCase(),
     params.baggageIncluded === true ? 'BAG:YES' : params.baggageIncluded === false ? 'BAG:NO' : 'BAG:UNKNOWN',
@@ -184,12 +211,12 @@ export function buildOfferVariantId(params: {
   segments?: PhysicalFlightSegment[];
 }): string {
   const parts = [
-    params.origin.trim().toUpperCase(),
-    params.destination.trim().toUpperCase(),
-    params.departDate.trim(),
-    (params.returnDate || '').trim(),
-    params.airline.trim().toUpperCase(),
-    (params.flightNumber || '').trim().toUpperCase(),
+    String(params.origin || '').trim().toUpperCase(),
+    String(params.destination || '').trim().toUpperCase(),
+    String(params.departDate || '').trim(),
+    String(params.returnDate || '').trim(),
+    String(params.airline || '').trim().toUpperCase(),
+    String(params.flightNumber || '').trim().toUpperCase(),
     (params.cabin || 'ECONOMY').trim().toUpperCase(),
     params.stops == null ? 'UNKNOWN' : String(params.stops)
   ];
@@ -215,10 +242,10 @@ export function buildObservationId(params: {
   price: number;
 }): string {
   const parts = [
-    params.offerVariantId,
-    params.provider.trim().toLowerCase(),
-    params.observedAt.trim(),
-    String(params.price)
+    String(params.offerVariantId || ''),
+    String(params.provider || '').trim().toLowerCase(),
+    String(params.observedAt || '').trim(),
+    String(Number.isFinite(params.price) ? Math.round(params.price) : 0)
   ];
   return `obs:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;
 }
@@ -236,11 +263,11 @@ export function buildOpportunityId(params: {
   cabin?: string;
 }): string {
   const parts = [
-    params.origin.trim().toUpperCase(),
-    params.destination.trim().toUpperCase(),
-    params.departDate.trim(),
-    (params.returnDate || '').trim(),
-    params.journeyType.trim().toUpperCase(),
+    String(params.origin || '').trim().toUpperCase(),
+    String(params.destination || '').trim().toUpperCase(),
+    String(params.departDate || '').trim(),
+    String(params.returnDate || '').trim(),
+    String(params.journeyType || '').trim().toUpperCase(),
     (params.cabin || 'ECONOMY').trim().toUpperCase()
   ];
   return `opp:v1:${sha256Hex(parts.join('|')).slice(0, 32)}`;

@@ -26,7 +26,13 @@ export function createMoney(amount: number, currency: CurrencyCode = 'VND', pric
   if (!Number.isFinite(amount) || amount < 0) {
     throw new TypeError(`Invalid money amount: ${amount}`);
   }
-  return { amount: Math.round(amount), currency, pricingUnit };
+  const normalizedCurrency = (currency || 'VND').trim().toUpperCase() as CurrencyCode;
+  if (normalizedCurrency !== 'VND' && normalizedCurrency !== 'USD') {
+    throw new IncompatibleMoneyComparisonError(`Unsupported currency: ${currency}. Farely only operates in VND and USD.`);
+  }
+  const rounded = Math.round(amount);
+  const normalizedAmount = rounded === 0 ? 0 : rounded;
+  return { amount: normalizedAmount, currency: normalizedCurrency, pricingUnit };
 }
 
 /**
@@ -38,8 +44,11 @@ export function normalizeToPerTraveler(
   travelerCount: number,
   paxComposition?: { adults: number; children: number; infants: number }
 ): Money {
-  if (travelerCount <= 0) {
-    throw new RangeError(`Traveler count must be positive, got ${travelerCount}`);
+  if (!Number.isInteger(travelerCount) || travelerCount <= 0) {
+    throw new RangeError(`Traveler count must be a positive integer, got ${travelerCount}`);
+  }
+  if (!money || !Number.isFinite(money.amount)) {
+    throw new IncompatibleMoneyComparisonError('Invalid money operand for normalization');
   }
   if (money.pricingUnit === 'UNKNOWN_PRICING_SCOPE') {
     throw new IncompatibleMoneyComparisonError('Cannot normalize UNKNOWN_PRICING_SCOPE to PER_TRAVELER');
@@ -65,6 +74,9 @@ export function normalizeToPerTraveler(
  * Returns negative if a < b, 0 if equal, positive if a > b.
  */
 export function compareMoney(a: Money, b: Money): number {
+  if (!a || !b || !Number.isFinite(a.amount) || !Number.isFinite(b.amount)) {
+    throw new IncompatibleMoneyComparisonError('Cannot compare invalid or undefined money operands');
+  }
   if (a.currency !== b.currency) {
     throw new IncompatibleMoneyComparisonError(`Cannot compare money in different currencies: ${a.currency} vs ${b.currency}`);
   }
@@ -78,8 +90,9 @@ export function compareMoney(a: Money, b: Money): number {
  * Formats money with Vietnamese or USD conventions.
  */
 export function formatMoney(money: Money): string {
-  if (money.currency === 'VND') {
-    return `${money.amount.toLocaleString('vi-VN')}₫`;
+  const amt = Number.isFinite(money?.amount) && money.amount >= 0 ? Math.round(money.amount) : 0;
+  if (money?.currency === 'USD') {
+    return `$${amt.toLocaleString('en-US')}`;
   }
-  return `$${money.amount.toLocaleString('en-US')}`;
+  return `${amt.toLocaleString('vi-VN')}₫`;
 }
