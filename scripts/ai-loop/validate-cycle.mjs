@@ -7,6 +7,7 @@ const state = await readJson(statePath, {});
 const policy = await readJson(join(root, '.ai-loop/loop-policy.json'), { minCyclesBeforeCompletion: 1_000_000_000 });
 const cycle = Number(process.argv[2] || state.cycle || 0);
 if (!cycle) fail('No cycle supplied and loop state has no cycle.');
+const expectedRounds = Number(process.env.AI_RESEARCH_ROUNDS || state.researchRounds || 20);
 
 const cycleDir = join(root, '.ai-loop/cycles', String(cycle).padStart(4, '0'));
 const issues = [];
@@ -15,7 +16,7 @@ const evidence = [];
 const completionEligible = cycle >= Number(policy.minCyclesBeforeCompletion);
 if (!completionEligible) warnings.push(`completion forbidden before cycle ${policy.minCyclesBeforeCompletion}; current cycle is ${cycle}`);
 
-for (let round = 1; round <= 20; round += 1) {
+for (let round = 1; round <= expectedRounds; round += 1) {
   const path = join(cycleDir, `round-${String(round).padStart(2, '0')}.md`);
   if (!(await exists(path))) issues.push(`missing research artifact: round-${String(round).padStart(2, '0')}.md`);
   else evidence.push(path);
@@ -93,6 +94,7 @@ const result = {
   minCyclesBeforeCompletion: Number(policy.minCyclesBeforeCompletion),
   issues,
   warnings,
+  expectedRounds,
   evidence,
   nextAction: issues.length === 0
     ? (completionEligible ? 'Completion may be considered after final policy review' : `Start independent research cycle ${cycle + 1}`)

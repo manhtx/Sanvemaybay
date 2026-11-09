@@ -92,8 +92,10 @@ Inspect:
 - visual composition, typography, grid, assets, motion, interaction, routes,
   responsive behavior, accessibility, performance, content truth and system
   risks;
-- crowd/person loader, route loading motion, fixed nav, footer reveal,
-  interactive `manhtx.com` particle wordmark and every existing route.
+- Farely flight-search and fare-opportunity journeys, source/provider rights,
+  ingestion and normalization, true price/tax/baggage calculations,
+  self-transfer and route risk, scoring versus confidence, RLS/privacy,
+  notifications/outbox, Edge Functions, freshness, and release evidence.
 
 For Farely, replace the portfolio-specific inspection with the full flight
 opportunity system: provider provenance and rights, ingestion and immutable

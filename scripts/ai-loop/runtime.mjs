@@ -48,8 +48,9 @@ export function hash(value) {
 export async function run(command, args = [], options = {}) {
   const cwd = options.cwd || ROOT;
   const timeoutMs = options.timeoutMs || 900000;
+  const normalized = normalizeCommand(command, args);
   return new Promise((resolveResult, reject) => {
-    const child = spawn(command, args, {
+    const child = spawn(normalized.command, normalized.args, {
       cwd,
       env: { ...process.env, ...(options.env || {}) },
       shell: false,
@@ -63,9 +64,18 @@ export async function run(command, args = [], options = {}) {
     child.on('error', reject);
     child.on('close', (code, signal) => {
       clearTimeout(timer);
-      resolveResult({ code: code ?? 1, signal, stdout, stderr, command: [command, ...args].join(' ') });
+      resolveResult({ code: code ?? 1, signal, stdout, stderr, command: [normalized.command, ...normalized.args].join(' ') });
     });
   });
+}
+
+function normalizeCommand(command, args) {
+  if (typeof command !== 'string' || !command.trim()) throw new Error('Command must be a non-empty string');
+  if (/[;&|<>$`()]/.test(command)) throw new Error('Shell metacharacters are not allowed; pass executable and args separately');
+  if (args.length) return { command, args };
+  const tokens = command.match(/[^\s"']+|"[^"]*"|'[^']*'/g)?.map((token) => token.replace(/^(["'])|(["'])$/g, '')) || [];
+  if (!tokens.length) throw new Error('Command produced no executable');
+  return { command: tokens[0], args: tokens.slice(1) };
 }
 
 export async function collectTextFiles(dir = ROOT, maxFiles = 80) {
