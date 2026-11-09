@@ -193,6 +193,16 @@ describe("Farely Pure Domain — Evidence-Gated Deal Claims (REQ-SCORE-001, NC-0
     expect(evidenceGatedDealLabel(Infinity, Infinity)).toBe("Deal cực nóng");
   });
 
+  it("preserves pure determinism: identical inputs across 1,000 runs produce identical label without side-effects", () => {
+    for (let i = 0; i < 1000; i++) {
+      expect(evidenceGatedDealLabel(92, 85)).toBe("Deal cực nóng");
+      expect(evidenceGatedDealLabel(85, 70)).toBe("Deal rất ngon");
+      expect(evidenceGatedDealLabel(75, 55)).toBe("Deal ngon");
+      expect(evidenceGatedDealLabel(65, 55)).toBe("Giá đáng chú ý");
+      expect(evidenceGatedDealLabel(50, 90)).toBe("Giá quan sát");
+    }
+  });
+
   it("benchmark: 10,000 evidence-gated deal label evaluations execute in sub-50ms", () => {
     const start = performance.now();
     for (let i = 0; i < 10000; i++) {

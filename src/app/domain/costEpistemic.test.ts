@@ -197,4 +197,107 @@ describe("evaluateTrueCost - Negative Controls & Epistemic Correctness", () => {
 
     expect(() => evaluateTrueCost(input)).not.toThrow();
   });
+
+  it("handles zero basePrice without crashing and computes estimated totals accurately", () => {
+    const result = evaluateTrueCost({
+      basePrice: 0,
+      airlineCode: "VJ",
+      region: "domestic",
+    });
+
+    expect(result.basePrice).toBe(0);
+    expect(result.estimatedAdditional).toBe(280000);
+    expect(result.estimatedTotal).toBe(280000);
+  });
+
+  it("evaluates known baggage with custom amount and verified status", () => {
+    const result = evaluateTrueCost({
+      basePrice: 2000000,
+      airlineCode: "VJ",
+      providedHiddenCosts: { baggageFee: 450000 }
+    });
+
+    expect(result.baggageState).toBe("KNOWN");
+    const baggageComp = result.components.find((c) => c.category === "checked_baggage");
+    expect(baggageComp?.amount).toBe(450000);
+    expect(baggageComp?.state).toBe("KNOWN");
+  });
+
+  it("evaluates payment fee as fixed fee and categorizes as mandatory", () => {
+    const result = evaluateTrueCost({
+      basePrice: 1500000,
+      providedHiddenCosts: { paymentFee: 65000 }
+    });
+
+    const paymentComp = result.components.find((c) => c.category === "payment_fee");
+    expect(paymentComp?.amount).toBe(65000);
+    expect(paymentComp?.state).toBe("KNOWN");
+  });
+
+  it("evaluates legacy carrier baggage state as UNKNOWN when not explicitly included", () => {
+    const result = evaluateTrueCost({
+      basePrice: 1800000,
+      airlineCode: "VN",
+    });
+
+    const baggageFee = result.itemizedFees.find((f) => f.id === "baggage_fee");
+    expect(baggageFee).toBeDefined();
+    expect(baggageFee?.status).toBe("UNKNOWN");
+    expect(baggageFee?.amount).toBeNull();
+    expect(result.baggageState).toBe("UNKNOWN");
+  });
+
+  it("handles extreme high base prices up to 100M VND without numeric overflow", () => {
+    const result = evaluateTrueCost({
+      basePrice: 100000000,
+      airlineCode: "VJ",
+      isInternational: true,
+    });
+
+    expect(result.basePrice).toBe(100000000);
+    expect(result.estimatedTotal).toBe(100450000);
+  });
+
+  it("evaluates providerVerifiedAllIn with explicit baggage included as fully known total", () => {
+    const result = evaluateTrueCost({
+      basePrice: 3500000,
+      airlineCode: "VN",
+      providerVerifiedAllIn: true,
+      isBaggageExplicitlyIncluded: true,
+      providedHiddenCosts: { paymentFee: 0 }
+    });
+
+    expect(result.hasUnknownMandatory).toBe(false);
+    expect(result.hasUnknownMandatoryCost).toBe(false);
+    expect(result.totalLabel).toBe("Tổng chi phí");
+  });
+
+  it("verifies components breakdown contains expected categories when verified with all fees", () => {
+    const result = evaluateTrueCost({
+      basePrice: 1200000,
+      airlineCode: "VJ",
+      providerVerifiedAllIn: true,
+      providedHiddenCosts: { paymentFee: 55000 }
+    });
+
+    const categories = result.components.map((c) => c.category);
+    expect(categories).toContain("fare");
+    expect(categories).toContain("checked_baggage");
+    expect(categories).toContain("payment_fee");
+    expect(categories).toContain("taxes_fees");
+    expect(categories).toContain("seat_selection");
+  });
+
+  it("evaluates 5,000 true cost evaluations in sub-50ms high-throughput benchmark", () => {
+    const start = performance.now();
+    for (let i = 0; i < 5000; i++) {
+      evaluateTrueCost({
+        basePrice: 1000000 + i * 1000,
+        airlineCode: i % 2 === 0 ? "VJ" : "VN",
+        region: i % 3 === 0 ? "domestic" : "asia",
+      });
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
+  });
 });
