@@ -190,4 +190,52 @@ describe("Farely Pure Domain — Comparable Cohort Intelligence (REQ-DOM-004, NC
     const higher = evaluateCohortComparison({ ...currentObs, price: 6_000_000 }, cohort);
     expect(higher.comparisonExplanation).toBe("20% cao hơn median của 5 mức giá tương đương (5 quan sát).");
   });
+
+  it("calculates exact median across odd and even observation sample counts", () => {
+    // Odd count: 5 observations [3M, 4M, 5M, 6M, 7M] -> median is 5M
+    const oddCohort: ObservationData[] = [3, 4, 5, 6, 7].map((p, i) => ({
+      ...currentObs,
+      id: `odd_${i}`,
+      price: p * 1_000_000
+    }));
+    const oddResult = evaluateCohortComparison(currentObs, oddCohort);
+    expect(oddResult.cohortMedian).toBe(5_000_000);
+
+    // Even count: 6 observations [3M, 4M, 5M, 6M, 7M, 8M] (sample >= 5) -> median is (5M + 6M) / 2 = 5.5M
+    const evenCohort: ObservationData[] = [3, 4, 5, 6, 7, 8].map((p, i) => ({
+      ...currentObs,
+      id: `even_${i}`,
+      price: p * 1_000_000
+    }));
+    const evenResult = evaluateCohortComparison(currentObs, evenCohort);
+    expect(evenResult.cohortMedian).toBe(5_500_000);
+  });
+
+  it("evaluates large observation cohorts (500+ items) efficiently in sub-50ms", () => {
+    const largeCohort: ObservationData[] = Array.from({ length: 500 }, (_, i) => ({
+      ...currentObs,
+      id: `cohort_perf_${i}`,
+      price: 3_000_000 + (i % 50) * 50_000,
+      scanRunId: `scan_${i % 10}`
+    }));
+
+    const start = performance.now();
+    const result = evaluateCohortComparison(currentObs, largeCohort);
+    const duration = performance.now() - start;
+
+    expect(duration).toBeLessThan(50);
+    expect(result.isSufficient).toBe(true);
+    expect(result.sampleSize).toBe(500);
+    expect(result.cohortMedian).toBeGreaterThan(0);
+  });
+
+  it("preserves pure immutability on Object.freeze protected observation inputs", () => {
+    const frozenCurrent = Object.freeze({ ...currentObs });
+    const frozenCohort = Object.freeze(
+      Array.from({ length: 5 }, (_, i) => Object.freeze({ ...currentObs, id: `f_${i}`, price: 4_000_000 + i * 100_000 }))
+    );
+
+    expect(() => evaluateCohortComparison(frozenCurrent, frozenCohort as any)).not.toThrow();
+    expect(frozenCurrent.price).toBe(4_500_000);
+  });
 });

@@ -223,5 +223,60 @@ describe("Watch Domain", () => {
 
     expect(statusAfterPriceRise).toBe("monitoring");
   });
+
+  it("evaluates all canonical global metropolitan hub expansions (TYO_ALL, LON_ALL, PAR_ALL, NYC_ALL)", () => {
+    // Tokyo
+    expect(evaluateWatchMatch({ originCode: "HAN", destinationCode: "TYO_ALL" }, {
+      originCode: "HAN", destinationCode: "NRT", price: 6000000
+    })).toBe(true);
+    expect(evaluateWatchMatch({ originCode: "HAN", destinationCode: "TYO_ALL" }, {
+      originCode: "HAN", destinationCode: "HND", price: 6000000
+    })).toBe(true);
+    expect(evaluateWatchMatch({ originCode: "HAN", destinationCode: "TYO_ALL" }, {
+      originCode: "HAN", destinationCode: "KIX", price: 6000000 // Osaka rejected
+    })).toBe(false);
+
+    // London
+    expect(evaluateWatchMatch({ originCode: "HAN", destinationCode: "LON_ALL" }, {
+      originCode: "HAN", destinationCode: "LHR", price: 12000000
+    })).toBe(true);
+    expect(evaluateWatchMatch({ originCode: "HAN", destinationCode: "LON_ALL" }, {
+      originCode: "HAN", destinationCode: "LGW", price: 12000000
+    })).toBe(true);
+
+    // Paris
+    expect(evaluateWatchMatch({ originCode: "HAN", destinationCode: "PAR_ALL" }, {
+      originCode: "HAN", destinationCode: "CDG", price: 11000000
+    })).toBe(true);
+    expect(evaluateWatchMatch({ originCode: "HAN", destinationCode: "PAR_ALL" }, {
+      originCode: "HAN", destinationCode: "ORY", price: 11000000
+    })).toBe(true);
+
+    // New York
+    expect(evaluateWatchMatch({ originCode: "SGN", destinationCode: "NYC_ALL" }, {
+      originCode: "SGN", destinationCode: "JFK", price: 15000000
+    })).toBe(true);
+    expect(evaluateWatchMatch({ originCode: "SGN", destinationCode: "NYC_ALL" }, {
+      originCode: "SGN", destinationCode: "EWR", price: 15000000
+    })).toBe(true);
+  });
+
+  it("preserves pure immutability on Object.freeze protected watch and candidate objects", () => {
+    const frozenWatch = Object.freeze({
+      originCode: "HAN",
+      destinationCode: "BKK",
+      targetPrice: 3500000,
+      status: "monitoring" as const
+    });
+
+    const frozenCandidate = Object.freeze({
+      originCode: "HAN",
+      destinationCode: "BKK",
+      price: 3000000
+    });
+
+    expect(() => evaluateWatchMatch(frozenWatch, frozenCandidate)).not.toThrow();
+    expect(frozenWatch.targetPrice).toBe(3500000);
+  });
 });
 
