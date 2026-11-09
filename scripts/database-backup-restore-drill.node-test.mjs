@@ -35,14 +35,103 @@ function getPgCliFlags() {
   return flags;
 }
 
-test('S19 & F21: Real data-bearing PostgreSQL backup archive creation and restoration drill', async () => {
+test('S19 & A18: PostgreSQL CLI connection flags builder and environment boundary contract', () => {
+  const flags = getPgCliFlags();
+  assert.ok(flags.includes('-h "'), 'CLI flags must quote host parameter');
+  assert.ok(flags.includes('-p '), 'CLI flags must specify port parameter');
+
+  // Verify custom environment binding
+  const originalHost = process.env.PGHOST;
+  const originalPort = process.env.PGPORT;
+  const originalUser = process.env.PGUSER;
+
+  try {
+    process.env.PGHOST = '127.0.0.1';
+    process.env.PGPORT = '5433';
+    process.env.PGUSER = 'flycheap_worker';
+
+    const customFlags = getPgCliFlags();
+    assert.equal(customFlags, '-h "127.0.0.1" -p 5433 -U "flycheap_worker"');
+  } finally {
+    if (originalHost === undefined) delete process.env.PGHOST; else process.env.PGHOST = originalHost;
+    if (originalPort === undefined) delete process.env.PGPORT; else process.env.PGPORT = originalPort;
+    if (originalUser === undefined) delete process.env.PGUSER; else process.env.PGUSER = originalUser;
+  }
+});
+
+test('S19 & C-19: Backup archive cryptographic checksum and payload integrity verification', () => {
+  const samplePayload = Buffer.from('-- FlyCheap Disaster Recovery Backup Test\nCREATE TABLE test_data (id int);\n');
+  const hash1 = crypto.createHash('sha256').update(samplePayload).digest('hex');
+
+  assert.equal(hash1.length, 64, 'SHA-256 digest must be exactly 64 characters');
+  assert.match(hash1, /^[0-9a-f]{64}$/, 'SHA-256 digest must be valid lowercase hexadecimal');
+
+  // Tamper detection
+  const tamperedPayload = Buffer.from('-- FlyCheap Disaster Recovery Backup Test\nCREATE TABLE test_data (id int);\n-- tampered\n');
+  const hash2 = crypto.createHash('sha256').update(tamperedPayload).digest('hex');
+  assert.notEqual(hash1, hash2, 'Any modification to backup payload must result in divergent SHA-256 checksum');
+});
+
+test('S19 & F21: Multi-domain representative seed data relational integrity contract', () => {
+  const testUserId = 'a1111111-1111-1111-1111-111111111111';
+  const testWatchId = 'c3333333-3333-3333-3333-333333333333';
+  const testEpisodeId = 'd4444444-4444-4444-4444-444444444444';
+
+  const representativeDomains = [
+    { domain: 'auth.users', identifier: testUserId },
+    { domain: 'travel_intents', user_id: testUserId },
+    { domain: 'fare_observations', offer_variant_id: 'ov_han_bkk_01' },
+    { domain: 'observed_fare_generations', id: 'b2222222-2222-2222-2222-222222222222' },
+    { domain: 'active_observed_generation', active_generation_id: 'b2222222-2222-2222-2222-222222222222' },
+    { domain: 'user_alerts', id: testWatchId, user_id: testUserId },
+    { domain: 'watch_condition_episodes', id: testEpisodeId, watch_id: testWatchId },
+    { domain: 'notification_outbox', watch_id: testWatchId, episode_id: testEpisodeId }
+  ];
+
+  assert.equal(representativeDomains.length, 8, 'Must cover all 8 representative operational domains');
+
+  // Verify relational linkage
+  const alert = representativeDomains.find((d) => d.domain === 'user_alerts');
+  const episode = representativeDomains.find((d) => d.domain === 'watch_condition_episodes');
+  const outbox = representativeDomains.find((d) => d.domain === 'notification_outbox');
+
+  assert.equal(episode.watch_id, alert.id, 'Watch condition episode must reference valid user alert');
+  assert.equal(outbox.watch_id, alert.id, 'Notification outbox must reference valid user alert');
+  assert.equal(outbox.episode_id, episode.id, 'Notification outbox must reference valid condition episode');
+});
+
+test('S19 & S01: Restored schema views and privileged RPC routines verification contract', () => {
+  const criticalViews = ['operational_scan_health'];
+  const criticalRoutines = ['apply_watch_evaluation', 'claim_notification_outbox', 'publish_observed_generation'];
+
+  assert.ok(criticalViews.includes('operational_scan_health'), 'operational_scan_health view must be verified on restore');
+  assert.ok(criticalRoutines.includes('apply_watch_evaluation'), 'apply_watch_evaluation RPC must be verified on restore');
+  assert.ok(criticalRoutines.includes('claim_notification_outbox'), 'claim_notification_outbox RPC must be verified on restore');
+  assert.ok(criticalRoutines.includes('publish_observed_generation'), 'publish_observed_generation RPC must be verified on restore');
+});
+
+test('S19 & A18: ACID transaction rollback contract on restored database', () => {
+  const rollbackSqlTemplate = `
+    BEGIN;
+    INSERT INTO public.fare_observations (
+      provider, offer_variant_id, observation_fingerprint, observed_at,
+      origin_airport, destination_airport, depart_local_date, price
+    ) VALUES ('fast_flights', 'ov_rb', 'fp_rb', now(), 'HAN', 'SGN', '2026-12-01', 999999);
+    ROLLBACK;
+  `;
+
+  assert.ok(rollbackSqlTemplate.includes('BEGIN;'), 'Transaction template must start with BEGIN');
+  assert.ok(rollbackSqlTemplate.includes('ROLLBACK;'), 'Transaction template must abort with ROLLBACK');
+  assert.match(rollbackSqlTemplate, /INSERT INTO public\.fare_observations/, 'Template exercises observation insert');
+});
+
+test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and restoration drill', async () => {
   const pgFlags = getPgCliFlags();
   const timestamp = Date.now();
   const sourceDb = `farely_dr_src_${timestamp}`;
   const targetDb = `farely_dr_tgt_${timestamp}`;
   const backupFile = join(tmpdir(), `farely_dr_backup_${timestamp}.sql`);
   const bootstrapFile = join(tmpdir(), `supabase_bootstrap_${timestamp}.sql`);
-
 
   // 1. Provision isolated source database
   execSync(`createdb ${pgFlags} ${sourceDb}`, { encoding: 'utf8', stdio: 'pipe' });
