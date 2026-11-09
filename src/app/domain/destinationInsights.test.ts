@@ -143,4 +143,85 @@ describe("Farely Pure Domain — Destination Insights (REQ-DOM-001, REQ-DOM-004,
     expect(insights[0].destination).toBe("Phuket");
     expect(insights[0].dealCount).toBe(2);
   });
+
+  it("preserves strict input array and object immutability", () => {
+    const deal1 = Object.freeze(makeDeal({ id: "d1", toCode: "HAN", dealScore: 90 }));
+    const deal2 = Object.freeze(makeDeal({ id: "d2", toCode: "HAN", dealScore: 85 }));
+    const deals = Object.freeze([deal1, deal2]);
+
+    expect(() => buildDestinationInsights(deals as any)).not.toThrow();
+    expect(deals[0].dealScore).toBe(90);
+  });
+
+  it("handles destination with a single deal cleanly without math errors", () => {
+    const singleDeal = makeDeal({
+      id: "solo",
+      toCode: "DAD",
+      to: "Đà Nẵng",
+      country: "Việt Nam",
+      realTotal: 1_250_000,
+      discount: 25,
+      dealScore: 88,
+      departDate: "2026-11-14" // Saturday
+    });
+
+    const insights = buildDestinationInsights([singleDeal]);
+    expect(insights).toHaveLength(1);
+    expect(insights[0].destinationCode).toBe("DAD");
+    expect(insights[0].destination).toBe("Đà Nẵng");
+    expect(insights[0].dealCount).toBe(1);
+    expect(insights[0].cheapestPrice).toBe(1_250_000);
+    expect(insights[0].averageDiscount).toBe(25);
+    expect(insights[0].bestDealScore).toBe(88);
+    expect(insights[0].hasWeekendDeal).toBe(true);
+  });
+
+  it("aggregates large deal volumes across diverse destinations efficiently", () => {
+    const destinations = ["BKK", "SIN", "TYO", "ICN", "KUL", "TPE", "HKG", "DPS", "SYD", "MEL"];
+    const largeDeals: Deal[] = [];
+
+    for (let i = 0; i < 500; i++) {
+      const dest = destinations[i % destinations.length];
+      largeDeals.push(
+        makeDeal({
+          id: `deal_perf_${i}`,
+          toCode: dest,
+          to: `City ${dest}`,
+          realTotal: 1_000_000 + (i * 10_000),
+          discount: 10 + (i % 50),
+          dealScore: 50 + (i % 45),
+          departDate: i % 7 === 0 ? "2026-10-03" : "2026-10-05" // alternating weekend/weekday
+        })
+      );
+    }
+
+    const start = performance.now();
+    const insights = buildDestinationInsights(largeDeals);
+    const duration = performance.now() - start;
+
+    expect(insights).toHaveLength(10);
+    expect(duration).toBeLessThan(100); // Must be fast (<100ms for 500 deals)
+
+    const totalCount = insights.reduce((sum, item) => sum + item.dealCount, 0);
+    expect(totalCount).toBe(500);
+
+    // Verify sorted descending
+    for (let i = 0; i < insights.length - 1; i++) {
+      expect(insights[i].bestDealScore).toBeGreaterThanOrEqual(insights[i + 1].bestDealScore);
+    }
+  });
+
+  it("Negative Control: zero and negative dealScores are preserved without crashing or dropping", () => {
+    const deals: Deal[] = [
+      makeDeal({ id: "d_zero", toCode: "CXR", dealScore: 0 }),
+      makeDeal({ id: "d_neg", toCode: "HPH", dealScore: -10 }),
+      makeDeal({ id: "d_pos", toCode: "VCA", dealScore: 60 })
+    ];
+
+    const insights = buildDestinationInsights(deals);
+    expect(insights).toHaveLength(3);
+    expect(insights[0].destinationCode).toBe("VCA"); // 60
+    expect(insights[1].destinationCode).toBe("CXR"); // 0
+    expect(insights[2].destinationCode).toBe("HPH"); // -10
+  });
 });

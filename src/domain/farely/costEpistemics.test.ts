@@ -154,4 +154,30 @@ describe('True Cost Epistemic Evaluation & Invariant Defense', () => {
     expect(taxFee?.amount).toBe(210000);
     expect(result.knownTotal).toBe(1710000);
   });
+
+  it('normalizes array of hidden cost objects with localized tokens', () => {
+    const result = evaluateTrueCost({
+      basePrice: 1800000,
+      providedHiddenCosts: [
+        { label: 'Kiện hành lý ký gửi 20kg', amount: 300000 },
+        { label: 'Phí thanh toán', amount: 50000 },
+        { label: 'Thuế phi trường', amount: 200000 }
+      ]
+    });
+
+    expect(result.baggageState).toBe('KNOWN');
+    expect(result.knownTotal).toBe(2350000); // 1800000 + 300000 + 50000 + 200000
+    expect(result.hasUnknownMandatoryCost).toBe(false);
+    expect(result.totalLabel).toBe('Tổng chi phí');
+  });
+
+  it('preserves minimum verifiable total invariant: basePrice + knownMandatory', () => {
+    const result = evaluateTrueCost({
+      basePrice: 2000000,
+      providedHiddenCosts: { airportTaxes: 300000, paymentFee: 45000 }
+    });
+
+    expect(result.knownMandatoryTotal).toBe(300000);
+    expect(result.minVerifiableTotal).toBe(2300000);
+  });
 });
