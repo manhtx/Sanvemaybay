@@ -109,6 +109,10 @@ describe("deal comparison", () => {
       expect(rows.find((r) => r.id === "composite")?.durationMinutes).toBe(75);
       expect(rows.find((r) => r.id === "malformed")?.durationMinutes).toBeUndefined();
     });
+
+    it("handles empty deal collections in compareDeals cleanly", () => {
+      expect(compareDeals([])).toEqual([]);
+    });
   });
 
   describe("explainTradeoff narratives & currency formatting", () => {
@@ -173,6 +177,39 @@ describe("deal comparison", () => {
       const explanation = explainTradeoff(cheaper, slightlyMore);
       expect(explanation).toBe("Rẻ hơn khoảng 400k với hành trình tương đương.");
     });
+
+    it("handles explainTradeoff with both hour difference and single stop difference", () => {
+      const cheaper = makeRow({ totalCost: 1_200_000, durationMinutes: 240, stops: 1 });
+      const expensiveDirect = makeRow({ totalCost: 2_500_000, durationMinutes: 120, stops: 0 });
+
+      const explanation = explainTradeoff(cheaper, expensiveDirect);
+      expect(explanation).toContain("1.3 triệu");
+      expect(explanation).toContain("mất thêm 2 giờ");
+      expect(explanation).toContain("thêm 1 điểm dừng");
+    });
+
+    it("explainTradeoff accurately formats sub-million amounts (e.g. 50k, 120k, 999k)", () => {
+      const row50k = explainTradeoff(makeRow({ totalCost: 1_000_000 }), makeRow({ totalCost: 1_050_000 }));
+      expect(row50k).toContain("50k");
+
+      const row120k = explainTradeoff(makeRow({ totalCost: 1_000_000 }), makeRow({ totalCost: 1_120_000 }));
+      expect(row120k).toContain("120k");
+
+      const row999k = explainTradeoff(makeRow({ totalCost: 1_000_000 }), makeRow({ totalCost: 1_999_000 }));
+      expect(row999k).toContain("999k");
+    });
+
+    it("evaluates 1,000 explainTradeoff calls in sub-50ms high-throughput benchmark", () => {
+      const rA = makeRow({ totalCost: 1_500_000, durationMinutes: 180, stops: 1 });
+      const rB = makeRow({ totalCost: 2_200_000, durationMinutes: 120, stops: 0 });
+
+      const start = performance.now();
+      for (let i = 0; i < 1000; i++) {
+        explainTradeoff(rA, rB);
+      }
+      const elapsed = performance.now() - start;
+      expect(elapsed).toBeLessThan(50);
+    });
   });
 
   describe("identifyDominatedOptions (Pareto efficiency)", () => {
@@ -212,6 +249,87 @@ describe("deal comparison", () => {
       expect(dominatedSet.has("opt-dominated")).toBe(true);
       expect(dominatedSet.has("opt-superior")).toBe(false);
       expect(dominatedSet.has("opt-cheapest-slow")).toBe(false);
+    });
+
+    it("identifies Pareto non-domination when one flight is cheaper but another is faster (Pareto frontier)", () => {
+      const cheaperSlower: DealComparisonRow = {
+        id: "frontier-cheap",
+        route: "HAN → BKK",
+        ticketPrice: 1_500_000,
+        totalCost: 1_500_000,
+        durationMinutes: 240,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low",
+      };
+      const costlierFaster: DealComparisonRow = {
+        id: "frontier-fast",
+        route: "HAN → BKK",
+        ticketPrice: 2_000_000,
+        totalCost: 2_000_000,
+        durationMinutes: 120,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low",
+      };
+
+      const dominated = identifyDominatedOptions([cheaperSlower, costlierFaster]);
+      expect(dominated.has("frontier-cheap")).toBe(false);
+      expect(dominated.has("frontier-fast")).toBe(false);
+    });
+
+    it("handles equal price and duration with strictly fewer stops dominating alternative", () => {
+      const direct: DealComparisonRow = {
+        id: "direct-equal",
+        route: "HAN → DAD",
+        ticketPrice: 1_200_000,
+        totalCost: 1_200_000,
+        durationMinutes: 80,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low",
+      };
+      const oneStop: DealComparisonRow = {
+        id: "one-stop-equal",
+        route: "HAN → DAD",
+        ticketPrice: 1_200_000,
+        totalCost: 1_200_000,
+        durationMinutes: 80,
+        stops: 1,
+        refundPolicy: undefined,
+        risk: "low",
+      };
+
+      const dominated = identifyDominatedOptions([direct, oneStop]);
+      expect(dominated.has("direct-equal")).toBe(false);
+      expect(dominated.has("one-stop-equal")).toBe(true);
+    });
+
+    it("handles equal price and stops with strictly shorter duration dominating alternative", () => {
+      const faster: DealComparisonRow = {
+        id: "fast-equal",
+        route: "HAN → SGN",
+        ticketPrice: 1_500_000,
+        totalCost: 1_500_000,
+        durationMinutes: 120,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low",
+      };
+      const slower: DealComparisonRow = {
+        id: "slow-equal",
+        route: "HAN → SGN",
+        ticketPrice: 1_500_000,
+        totalCost: 1_500_000,
+        durationMinutes: 180,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low",
+      };
+
+      const dominated = identifyDominatedOptions([faster, slower]);
+      expect(dominated.has("fast-equal")).toBe(false);
+      expect(dominated.has("slow-equal")).toBe(true);
     });
 
     it("treats undefined duration as Infinity, preventing incomplete options from dominating complete ones", () => {
@@ -316,10 +434,6 @@ describe("deal comparison", () => {
       expect(duration).toBeLessThan(50);
       expect(dominated.size).toBeGreaterThan(0);
       expect(dominated.has("perf-opt-0")).toBe(false); // Cheapest direct flight is not dominated
-    });
-
-    it("handles empty deal collections in compareDeals cleanly", () => {
-      expect(compareDeals([])).toEqual([]);
     });
 
     it("preserves pure immutability on Object.freeze protected deal comparison rows", () => {

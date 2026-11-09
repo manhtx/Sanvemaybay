@@ -128,6 +128,66 @@ describe("shareOrCopy (FLY-UX-005, REQ-DOM-001, NC-025)", () => {
     expect(share).toHaveBeenCalledWith(minimalTarget);
   });
 
+  it("returns 'shared' when share resolves and ignores rejecting clipboard", async () => {
+    const share = vi.fn().mockResolvedValue(undefined);
+    const rejectingWriteText = vi.fn().mockRejectedValue(new Error("Clipboard broken"));
+
+    const result = await shareOrCopy(target, { share, clipboard: { writeText: rejectingWriteText } });
+    expect(result).toBe("shared");
+    expect(rejectingWriteText).not.toHaveBeenCalled();
+  });
+
+  it("handles long URLs with deep pathing and unicode parameters in clipboard fallback", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    const unicodeTarget: ShareTarget = {
+      title: "Vé máy bay giá rẻ",
+      text: "Khuyến mại đặc biệt",
+      url: "https://farely.app/deals/search?city=H%C3%A0+N%E1%BB%99i&dest=Tokyo&depart=2026-11-20&fare_type=promo_verified",
+    };
+
+    const res = await shareOrCopy(unicodeTarget, { clipboard: { writeText } });
+    expect(res).toBe("copied");
+    expect(writeText).toHaveBeenCalledWith(unicodeTarget.url);
+  });
+
+  it("throws explicit Vietnamese error when navigator-like object has empty or null properties", async () => {
+    await expect(
+      shareOrCopy(target, { share: undefined, clipboard: undefined }),
+    ).rejects.toThrow("Trình duyệt không hỗ trợ chia sẻ hoặc sao chép liên kết.");
+  });
+
+  it("calls navigator.share with exact single argument containing title, text, and url", async () => {
+    const share = vi.fn().mockResolvedValue(undefined);
+    await shareOrCopy(target, { share });
+
+    expect(share.mock.calls[0]).toHaveLength(1);
+    expect(share.mock.calls[0][0]).toEqual(target);
+  });
+
+  it("differentiates return values ('shared' vs 'copied') deterministically", async () => {
+    const share = vi.fn().mockResolvedValue(undefined);
+    const writeText = vi.fn().mockResolvedValue(undefined);
+
+    const shareRes = await shareOrCopy(target, { share });
+    const copyRes = await shareOrCopy(target, { clipboard: { writeText } });
+
+    expect(shareRes).toBe("shared");
+    expect(copyRes).toBe("copied");
+    expect(shareRes).not.toBe(copyRes);
+  });
+
+  it("supports multi-request concurrent sharing operations without state corruption", async () => {
+    const share = vi.fn().mockResolvedValue(undefined);
+    const operations = Array.from({ length: 50 }, (_, i) =>
+      shareOrCopy({ ...target, url: `https://farely.app/deals/${i}` }, { share }),
+    );
+
+    const results = await Promise.all(operations);
+    expect(results).toHaveLength(50);
+    expect(results.every((r) => r === "shared")).toBe(true);
+    expect(share).toHaveBeenCalledTimes(50);
+  });
+
   it("performance benchmark: 10,000 share capability evaluations execute in < 50ms", async () => {
     const share = vi.fn().mockResolvedValue(undefined);
     const writeText = vi.fn().mockResolvedValue(undefined);
