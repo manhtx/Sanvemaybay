@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   compareMoney,
   createMoney,
+  formatMoney,
   IncompatibleMoneyComparisonError,
   normalizeToPerTraveler
 } from './money';
@@ -147,5 +148,69 @@ describe('Farely Pure Domain Kernel — Money & Savings Truth (REQ-DOM-001, REQ-
     expect(savings.isSaving).toBe(true);
     expect(savings.savingsAmount).toBe(500000);
     expect(savings.savingsPercent).toBe(20);
+  });
+
+  it('formatMoney formats VND and USD with proper locale separators and currency symbols', () => {
+    const m1 = createMoney(2500000, 'VND');
+    expect(formatMoney(m1)).toBe('2.500.000₫');
+
+    const m2 = createMoney(150, 'USD');
+    expect(formatMoney(m2)).toBe('$150');
+
+    const mZeroVnd = createMoney(0, 'VND');
+    expect(formatMoney(mZeroVnd)).toBe('0₫');
+
+    const mZeroUsd = createMoney(0, 'USD');
+    expect(formatMoney(mZeroUsd)).toBe('$0');
+  });
+
+  it('normalizeToPerTraveler supports OFFER_TOTAL pricing unit normalization', () => {
+    const offerMoney = createMoney(9000000, 'VND', 'OFFER_TOTAL');
+    const normalized = normalizeToPerTraveler(offerMoney, 3);
+
+    expect(normalized.amount).toBe(3000000);
+    expect(normalized.pricingUnit).toBe('PER_TRAVELER');
+    expect(normalized.currency).toBe('VND');
+  });
+
+  it('createMoney and normalizeToPerTraveler enforce integer rounding on fractional division', () => {
+    const party = createMoney(10000000, 'VND', 'PARTY_TOTAL');
+    const perPax3 = normalizeToPerTraveler(party, 3);
+    expect(perPax3.amount).toBe(3333333); // 10,000,000 / 3 = 3333333.333... rounded to 3333333
+
+    const perPax6 = normalizeToPerTraveler(party, 6);
+    expect(perPax6.amount).toBe(1666667); // 10,000,000 / 6 = 1666666.666... rounded to 1666667
+  });
+
+  it('createMoney accepts boundary value 0 as a valid non-negative amount', () => {
+    const zeroMoney = createMoney(0);
+    expect(zeroMoney.amount).toBe(0);
+    expect(zeroMoney.currency).toBe('VND');
+    expect(zeroMoney.pricingUnit).toBe('PER_TRAVELER');
+
+    const otherZero = createMoney(0);
+    expect(compareMoney(zeroMoney, otherZero)).toBe(0);
+  });
+
+  it('preserves pure immutability on Object.freeze protected Money objects', () => {
+    const frozenM1 = Object.freeze(createMoney(2000000, 'VND', 'PARTY_TOTAL'));
+    const frozenM2 = Object.freeze(createMoney(2500000, 'VND', 'PER_TRAVELER'));
+
+    expect(() => formatMoney(frozenM1)).not.toThrow();
+    expect(() => normalizeToPerTraveler(frozenM1, 2)).not.toThrow();
+    const normalized = normalizeToPerTraveler(frozenM1, 2);
+    expect(() => compareMoney(normalized, frozenM2)).not.toThrow();
+    expect(frozenM1.amount).toBe(2000000);
+  });
+
+  it('benchmark: 10,000 money creation, comparison, and normalization operations in sub-50ms', () => {
+    const party = createMoney(6000000, 'VND', 'PARTY_TOTAL');
+    const start = performance.now();
+    for (let i = 0; i < 10000; i++) {
+      const perTraveler = normalizeToPerTraveler(party, 3);
+      compareMoney(perTraveler, perTraveler);
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
   });
 });

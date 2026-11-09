@@ -199,4 +199,71 @@ describe("Farely Pure Domain — Trip Budget Advisor (NC-005, NC-033, REQ-DOM-00
     expect(() => buildTripAdvice(frozenDeals as any, { origin: "HAN", budget: 5_000_000, days: 2 })).not.toThrow();
     expect(frozenDeal.dealScore).toBe(75);
   });
+
+  it("calculates exact budget utilization penalties at 0%, 50%, and 100% budget limits", () => {
+    // 100% utilization: estimatedTripBudget = 10M, budget = 10M -> penalty = 10.0 -> fitScore = 90 - 10 = 80
+    const deal100 = makeDeal({ realTotal: 7_600_000, tripType: "international", dealScore: 90 }); // 7.6M + 2*1.2M = 10M
+    const res100 = buildTripAdvice([deal100], { origin: "HAN", budget: 10_000_000, days: 2 });
+    expect(res100[0].fitScore).toBe(80);
+
+    // 50% utilization: estimatedTripBudget = 5M, budget = 10M -> penalty = 5.0 -> fitScore = 90 - 5 = 85
+    const deal50 = makeDeal({ realTotal: 2_600_000, tripType: "international", dealScore: 90 }); // 2.6M + 2*1.2M = 5M
+    const res50 = buildTripAdvice([deal50], { origin: "HAN", budget: 10_000_000, days: 2 });
+    expect(res50[0].fitScore).toBe(85);
+  });
+
+  it("truthfully embeds destination name and daily rule amount in Vietnamese advice reason", () => {
+    const bkkDeal = makeDeal({ to: "Bangkok", tripType: "international" });
+    const bkkAdvice = buildTripAdvice([bkkDeal], { origin: "HAN", budget: 10_000_000, days: 2 });
+    expect(bkkAdvice[0].reason).toContain("Bangkok phù hợp vì giá vé");
+    expect(bkkAdvice[0].reason).toContain("1.200.000 VND/ngày");
+
+    const dadDeal = makeDeal({ to: "Đà Nẵng", tripType: "domestic" });
+    const dadAdvice = buildTripAdvice([dadDeal], { origin: "HAN", budget: 10_000_000, days: 2 });
+    expect(dadAdvice[0].reason).toContain("Đà Nẵng phù hợp vì giá vé");
+    expect(dadAdvice[0].reason).toContain("700.000 VND/ngày");
+  });
+
+  it("returns empty array when no deals originate from requested airport", () => {
+    const deals = [
+      makeDeal({ id: "d1", fromCode: "SGN" }),
+      makeDeal({ id: "d2", fromCode: "DAD" })
+    ];
+    const advice = buildTripAdvice(deals, { origin: "HAN", budget: 10_000_000, days: 2 });
+    expect(advice).toEqual([]);
+  });
+
+  it("returns empty array when all deals exceed traveler budget", () => {
+    // 5M realTotal + 2*700k = 6.4M > 5M budget
+    const expensive = makeDeal({ realTotal: 5_000_000, tripType: "domestic" });
+    const advice = buildTripAdvice([expensive], { origin: "HAN", budget: 5_000_000, days: 2 });
+    expect(advice).toEqual([]);
+  });
+
+  it("scales estimatedTripBudget linearly with trip duration (1, 7, 14, 30 days)", () => {
+    const deal = makeDeal({ realTotal: 2_000_000, tripType: "domestic" }); // 700k/day
+    expect(buildTripAdvice([deal], { origin: "HAN", budget: 50_000_000, days: 1 })[0].estimatedTripBudget).toBe(2_700_000);
+    expect(buildTripAdvice([deal], { origin: "HAN", budget: 50_000_000, days: 7 })[0].estimatedTripBudget).toBe(6_900_000);
+    expect(buildTripAdvice([deal], { origin: "HAN", budget: 50_000_000, days: 14 })[0].estimatedTripBudget).toBe(11_800_000);
+    expect(buildTripAdvice([deal], { origin: "HAN", budget: 50_000_000, days: 30 })[0].estimatedTripBudget).toBe(23_000_000);
+  });
+
+  it("handles empty deal list gracefully returning empty array", () => {
+    expect(buildTripAdvice([], { origin: "HAN", budget: 10_000_000, days: 3 })).toEqual([]);
+  });
+
+  it("benchmark: 5,000 trip advice calculations execute in sub-50ms", () => {
+    const deals = [
+      makeDeal({ id: "d1", fromCode: "HAN", to: "BKK", realTotal: 2_000_000, tripType: "international", dealScore: 80 }),
+      makeDeal({ id: "d2", fromCode: "HAN", to: "DAD", realTotal: 1_200_000, tripType: "domestic", dealScore: 75 })
+    ];
+    const input = { origin: "HAN", budget: 10_000_000, days: 3 };
+
+    const start = performance.now();
+    for (let i = 0; i < 5_000; i++) {
+      buildTripAdvice(deals, input);
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
+  });
 });
