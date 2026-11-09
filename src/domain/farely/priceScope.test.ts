@@ -261,5 +261,110 @@ describe('Farely Pure Domain Kernel — Price Scope Fingerprint (REQ-DOM-014)', 
       expect(() => buildPriceScopeFingerprintV2(frozenParams as any)).not.toThrow();
       expect(frozenParams.journeyType).toBe('ONE_WAY');
     });
+
+    it('V1 fingerprint handles missing returnDate, cabin, currency, maxStops with fallback defaults', () => {
+      const fp = buildPriceScopeFingerprint({
+        originScope: hanScope,
+        destinationScope: sgnScope,
+        journeyType: 'ONE_WAY',
+        departDate: '2026-12-15',
+      });
+
+      expect(fp).toBe('scope_HAN:SGN:ONE_WAY:2026-12-15::ECONOMY:VND:ANY');
+    });
+
+    it('V2 fingerprint handles complex passenger distribution (e.g. 4 adults, 2 children, 1 infant: 4A2C1I)', () => {
+      const fp = buildPriceScopeFingerprintV2({
+        originScope: hanScope,
+        destinationScope: sgnScope,
+        journeyType: 'ONE_WAY',
+        departDate: '2026-12-01',
+        passengers: { adults: 4, children: 2, infants: 1 },
+      });
+
+      expect(fp).toContain(':4A2C1I:');
+    });
+
+    it('V2 fingerprint handles explicit PARTY_TOTAL pricing unit and tripLength min/max bounds', () => {
+      const fp = buildPriceScopeFingerprintV2({
+        originScope: hanScope,
+        destinationScope: sgnScope,
+        journeyType: 'ROUND_TRIP',
+        departDate: '2026-12-01',
+        returnDate: '2026-12-15',
+        pricingUnit: 'PARTY_TOTAL',
+        tripLength: { minDays: 7, maxDays: 21 },
+      });
+
+      expect(fp).toContain(':7-21:1A0C0I:PARTY_TOTAL:');
+    });
+
+    it('TravelIntent with round-trip exact return date generates V2 matching expected token sequence', () => {
+      const intent: TravelIntent = {
+        schemaVersion: 1,
+        originScope: hanScope,
+        destinationScope: sgnScope,
+        journeyType: 'ROUND_TRIP',
+        marketScope: 'DOMESTIC',
+        passengers: { adults: 1, children: 0, infants: 0 },
+        currency: 'VND',
+        cabin: 'ECONOMY',
+        outbound: { exact: '2026-12-01' },
+        inbound: { exact: '2026-12-10' },
+      };
+
+      const fpV2 = buildPriceScopeFingerprintV2FromIntent(intent);
+      expect(fpV2).toBe('scope_v2:HAN:SGN:ROUND_TRIP:2026-12-01:2026-12-10:EXACT:1A0C0I:PER_TRAVELER:ECONOMY:VND:ANY:ANY');
+    });
+
+    it('deterministic ordering: uppercase primary codes and uppercase tokens regardless of input case', () => {
+      const fp = buildPriceScopeFingerprintV2({
+        originScope: { type: 'EXACT_AIRPORT', primaryCode: 'han', expandedCodes: ['han'] },
+        destinationScope: { type: 'EXACT_AIRPORT', primaryCode: 'sgn', expandedCodes: ['sgn'] },
+        journeyType: 'round_trip',
+        departDate: '2026-12-01',
+        returnDate: '2026-12-05',
+        cabin: 'business',
+        currency: 'usd',
+        pricingUnit: 'per_traveler',
+      });
+
+      expect(fp).toBe('scope_v2:HAN:SGN:ROUND_TRIP:2026-12-01:2026-12-05:EXACT:1A0C0I:PER_TRAVELER:BUSINESS:USD:ANY:ANY');
+    });
+
+    it('safe handling of boundary parameters: maxDurationMinutes 0, maxStops 0, boundary date strings', () => {
+      const fp = buildPriceScopeFingerprintV2({
+        originScope: hanScope,
+        destinationScope: sgnScope,
+        journeyType: 'ONE_WAY',
+        departDate: '2026-12-01',
+        maxStops: 0,
+        maxDurationMinutes: 0,
+      });
+
+      expect(fp.endsWith(':0:0')).toBe(true);
+    });
+
+    it('processes 5,000 V1 and V2 fingerprint evaluations within sub-50ms latency budget', () => {
+      const start = performance.now();
+      for (let i = 0; i < 2500; i++) {
+        buildPriceScopeFingerprint({
+          originScope: hanScope,
+          destinationScope: sgnScope,
+          journeyType: 'ONE_WAY',
+          departDate: '2026-12-01',
+        });
+        buildPriceScopeFingerprintV2({
+          originScope: hanScope,
+          destinationScope: sgnScope,
+          journeyType: 'ROUND_TRIP',
+          departDate: '2026-12-01',
+          returnDate: '2026-12-10',
+          passengers: { adults: 2, children: 0, infants: 0 },
+        });
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
+    });
   });
 });

@@ -207,5 +207,55 @@ describe('Location Scope Resolution & Invariant Verification (REQ-DOM-004, REQ-D
       expect(METRO_CATALOG.BKK_METRO.airports).toEqual(bkkMetroBefore);
       expect(METRO_CATALOG.BKK_METRO.airports).not.toContain('FAKE_AIRPORT');
     });
+
+    it('handles whitespace-padded, mixed-case, and uncataloged queries with safe EXACT_AIRPORT fallback', () => {
+      const scope = resolveLocationScope('   abc   ');
+      expect(scope.type).toBe('EXACT_AIRPORT');
+      expect(scope.primaryCode).toBe('ABC');
+      expect(scope.expandedCodes).toEqual(['ABC']);
+      expect(satisfiesLocationScope('abc', scope)).toBe(true);
+    });
+
+    it('satisfiesLocationScope returns false for empty string, blank whitespace, or mismatched airport codes', () => {
+      const hanScope = resolveLocationScope('HAN');
+      expect(satisfiesLocationScope('', hanScope)).toBe(false);
+      expect(satisfiesLocationScope('   ', hanScope)).toBe(false);
+      expect(satisfiesLocationScope('SGN', hanScope)).toBe(false);
+      expect(satisfiesLocationScope('XYZ', hanScope)).toBe(false);
+
+      const metroScope = resolveLocationScope('BKK_METRO');
+      expect(satisfiesLocationScope('', metroScope)).toBe(false);
+      expect(satisfiesLocationScope('   ', metroScope)).toBe(false);
+      expect(satisfiesLocationScope('HAN', metroScope)).toBe(false);
+    });
+
+    it('satisfiesLocationScope handles case-insensitive airport matching across both exact airport and metro scopes', () => {
+      const exactScope = resolveLocationScope('HAN');
+      expect(satisfiesLocationScope('han', exactScope)).toBe(true);
+      expect(satisfiesLocationScope('Han', exactScope)).toBe(true);
+      expect(satisfiesLocationScope(' HAN ', exactScope)).toBe(true);
+
+      const metroScope = resolveLocationScope('TYO_METRO');
+      expect(satisfiesLocationScope('hnd', metroScope)).toBe(true);
+      expect(satisfiesLocationScope('Nrt', metroScope)).toBe(true);
+      expect(satisfiesLocationScope(' nrt ', metroScope)).toBe(true);
+      expect(satisfiesLocationScope('kix', metroScope)).toBe(false);
+    });
+
+    it('processes 50,000 satisfiesLocationScope evaluations within sub-50ms latency budget', () => {
+      const exactScope = resolveLocationScope('HAN');
+      const metroScope = resolveLocationScope('BKK_METRO');
+
+      const start = performance.now();
+      let count = 0;
+      for (let i = 0; i < 25000; i++) {
+        if (satisfiesLocationScope('HAN', exactScope)) count++;
+        if (satisfiesLocationScope('DMK', metroScope)) count++;
+      }
+      const duration = performance.now() - start;
+
+      expect(count).toBe(50000);
+      expect(duration).toBeLessThan(50);
+    });
   });
 });
