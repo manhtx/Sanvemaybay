@@ -25,7 +25,14 @@ const state = await readJson(STATE, {
   history: [],
   bestSha: null,
 });
-state.researchRounds = state.researchRounds || rounds;
+if (process.env.AI_RESEARCH_ROUNDS) {
+  state.researchRounds = rounds;
+  state.researchRoundsSource = 'AI_RESEARCH_ROUNDS';
+} else {
+  state.researchRounds = state.researchRounds || rounds;
+  state.researchRoundsSource = state.researchRoundsSource || 'persisted-default';
+}
+await writeJson(STATE, state);
 const command = process.argv[2] || 'run';
 
 if (command === 'init') {

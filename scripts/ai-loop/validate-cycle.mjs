@@ -95,6 +95,9 @@ const result = {
   issues,
   warnings,
   expectedRounds,
+  researchRoundsSource: process.env.AI_RESEARCH_ROUNDS
+    ? 'AI_RESEARCH_ROUNDS'
+    : (state.researchRoundsSource || 'persisted-default'),
   evidence,
   nextAction: issues.length === 0
     ? (completionEligible ? 'Completion may be considered after final policy review' : `Start independent research cycle ${cycle + 1}`)
