@@ -76,6 +76,37 @@ describe("booking URL builders (FLY-SEC-003, NC-015, NC-016, REQ-AFF-001, REQ-BO
         "https://farely.app/default",
       );
     });
+
+    it("falls back to fallback argument when linkKind is undefined or unknown value", () => {
+      expect(
+        getEffectiveDealBookingUrl(
+          { linkKind: "unknown_kind" as any, bookingUrl: undefined },
+          "https://farely.app/fallback",
+        ),
+      ).toBe("https://farely.app/fallback");
+    });
+
+    it("fails closed when linkKind is historical or stale even if affiliateUrl is present", () => {
+      const historicalDeal = {
+        affiliateUrl: "https://approved-affiliate.example/deal?id=123",
+        affiliateNetwork: "accesstrade",
+        linkKind: "historical",
+        bookingUrl: "https://www.google.com/travel/flights?q=fallback",
+      };
+      expect(getEffectiveDealBookingUrl(historicalDeal, "default-fallback")).toBe(
+        "https://www.google.com/travel/flights?q=fallback",
+      );
+
+      const staleDeal = {
+        affiliateUrl: "https://approved-affiliate.example/deal?id=123",
+        affiliateNetwork: "accesstrade",
+        linkKind: "stale",
+        bookingUrl: "https://www.google.com/travel/flights?q=fallback",
+      };
+      expect(getEffectiveDealBookingUrl(staleDeal, "default-fallback")).toBe(
+        "https://www.google.com/travel/flights?q=fallback",
+      );
+    });
   });
 
   describe("buildGoogleFlightsUrl: public query builder", () => {
@@ -93,6 +124,12 @@ describe("booking URL builders (FLY-SEC-003, NC-015, NC-016, REQ-AFF-001, REQ-BO
       const url = buildGoogleFlightsUrl(oneWayParams);
       const decoded = decodeURIComponent(url);
       expect(decoded).toContain("Flights to ICN from SGN on 2026-10-15");
+      expect(decoded).not.toContain("through");
+    });
+
+    it("builds one-way query when returnDate is explicitly undefined or empty string", () => {
+      const url = buildGoogleFlightsUrl({ ...oneWayParams, returnDate: "" });
+      const decoded = decodeURIComponent(url);
       expect(decoded).not.toContain("through");
     });
   });
@@ -158,6 +195,47 @@ describe("booking URL builders (FLY-SEC-003, NC-015, NC-016, REQ-AFF-001, REQ-BO
       // Verify Traveloka is NOT included due to proprietary non-IATA code mappings
       const hasTraveloka = options.some((opt) => opt.label.toLowerCase().includes("traveloka"));
       expect(hasTraveloka).toBe(false);
+    });
+
+    it("handles leap year departure dates in Skyscanner (e.g. 2028-02-29 -> 280229)", () => {
+      const leapParams: BookingParams = {
+        fromCode: "HAN",
+        toCode: "NRT",
+        departDate: "2028-02-29",
+      };
+      const url = buildSkyscannerUrl(leapParams);
+      expect(url).toContain("/han/nrt/280229/");
+    });
+
+    it("preserves immutability of input BookingParams on Object.freeze", () => {
+      const frozenParams = Object.freeze({
+        fromCode: "SGN",
+        toCode: "SIN",
+        departDate: "2026-11-15",
+        returnDate: "2026-11-20",
+      });
+
+      expect(() => buildGoogleFlightsUrl(frozenParams)).not.toThrow();
+      expect(() => buildSkyscannerUrl(frozenParams)).not.toThrow();
+      expect(() => buildKayakUrl(frozenParams)).not.toThrow();
+      expect(() => getAllBookingOptions(frozenParams)).not.toThrow();
+    });
+
+    it("ensures all options returned by getAllBookingOptions have valid HTTPS URLs", () => {
+      const options = getAllBookingOptions(roundTripParams);
+      for (const opt of options) {
+        expect(opt.url.startsWith("https://")).toBe(true);
+        expect(opt.note.length).toBeGreaterThan(0);
+      }
+    });
+
+    it("high-volume booking URL generator benchmark: 5,000 URL builds in sub-50ms", () => {
+      const start = performance.now();
+      for (let i = 0; i < 5000; i++) {
+        buildGoogleFlightsUrl(roundTripParams);
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
     });
   });
 });

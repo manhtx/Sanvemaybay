@@ -114,4 +114,63 @@ describe("Core Web Vitals metric standards", () => {
     expect(isDeprecatedWebVital("FCP")).toBe(false);
     expect(isDeprecatedWebVital("inp")).toBe(false);
   });
+
+  it("validates exact boundary sampling rate: random < boundedRate", () => {
+    // Exactly at boundary: 0.5 < 0.5 is false -> not sampled
+    expect(shouldSampleWebVitals(0.5, createStorage(), () => 0.5)).toBe(false);
+    // Just below boundary: 0.499 < 0.5 is true -> sampled
+    expect(shouldSampleWebVitals(0.5, createStorage(), () => 0.499)).toBe(true);
+  });
+
+  it("validates sampleRate 0 strictly never samples even if random returns 0", () => {
+    // 0 < 0 is false
+    expect(shouldSampleWebVitals(0, createStorage(), () => 0)).toBe(false);
+  });
+
+  it("validates sampleRate 1 strictly always samples even if random returns 0.99999", () => {
+    // 0.99999 < 1 is true
+    expect(shouldSampleWebVitals(1, createStorage(), () => 0.99999)).toBe(true);
+  });
+
+  it("validates array integrity of constant web vitals lists", () => {
+    expect(Array.isArray(CURRENT_CORE_WEB_VITALS)).toBe(true);
+    expect(CURRENT_CORE_WEB_VITALS).toHaveLength(3);
+    expect(DIAGNOSTIC_WEB_VITALS).toHaveLength(1);
+    expect(DEPRECATED_WEB_VITALS).toHaveLength(1);
+  });
+
+  it("ensures no overlap across current, diagnostic, and deprecated web vital sets", () => {
+    const currentSet = new Set<string>(CURRENT_CORE_WEB_VITALS);
+    for (const diag of DIAGNOSTIC_WEB_VITALS) {
+      expect(currentSet.has(diag)).toBe(false);
+    }
+    for (const dep of DEPRECATED_WEB_VITALS) {
+      expect(currentSet.has(dep)).toBe(false);
+    }
+  });
+
+  it("preserves session sampling stability across 1,000 repetitive calls in the same session", () => {
+    const store = createStorage();
+    const firstDecision = shouldSampleWebVitals(0.3, store, () => 0.1);
+    expect(firstDecision).toBe(true);
+
+    for (let i = 0; i < 1000; i++) {
+      expect(shouldSampleWebVitals(0.3, store, () => 0.99)).toBe(true);
+    }
+  });
+
+  it("validates negative and positive extreme sample rates clamp between 0 and 1", () => {
+    expect(shouldSampleWebVitals(-999, createStorage(), () => 0.1)).toBe(false);
+    expect(shouldSampleWebVitals(999, createStorage(), () => 0.99)).toBe(true);
+  });
+
+  it("high-volume RUM sampling benchmark: 5,000 sampling decisions in sub-50ms", () => {
+    const store = createStorage();
+    const start = performance.now();
+    for (let i = 0; i < 5000; i++) {
+      shouldSampleWebVitals(0.25, store, () => 0.5);
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+  });
 });
