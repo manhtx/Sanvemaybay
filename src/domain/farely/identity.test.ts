@@ -331,6 +331,74 @@ describe('Farely Pure Domain Kernel — Identity & Invariants (REQ-DOM-010..013,
     expect(idA).toBe(idB);
   });
 
+  it('preserves pure immutability on Object.freeze protected parameters across buildPhysicalItineraryId and buildOfferProductId', () => {
+    const frozenSegments = Object.freeze([
+      Object.freeze({
+        origin: 'SGN',
+        destination: 'DAD',
+        flightNumber: 'VN120',
+        marketingCarrier: 'VN',
+        segmentOrder: 0
+      }),
+      Object.freeze({
+        origin: 'DAD',
+        destination: 'HAN',
+        flightNumber: 'VN160',
+        marketingCarrier: 'VN',
+        segmentOrder: 1
+      })
+    ]);
+
+    const frozenItinParams = Object.freeze({
+      origin: 'SGN',
+      destination: 'HAN',
+      departDate: '2026-12-01',
+      segments: frozenSegments
+    });
+
+    const itinId = buildPhysicalItineraryId(frozenItinParams);
+    expect(itinId).toMatch(/^itin:v1:[0-9a-f]{32}$/);
+
+    const frozenProdParams = Object.freeze({
+      itineraryId: itinId,
+      cabin: 'ECONOMY',
+      fareBrand: 'ECO_FLEX',
+      baggageIncluded: true,
+      refundable: false,
+      changeAllowed: true,
+      salesChannel: 'DIRECT'
+    });
+
+    const prodId = buildOfferProductId(frozenProdParams);
+    expect(prodId).toMatch(/^prod:v1:[0-9a-f]{32}$/);
+  });
+
+  it('resolveLegacyIdentity handles null, undefined, whitespace-only, and special character inputs safely', () => {
+    expect(resolveLegacyIdentity(null)).toEqual({
+      canonicalId: '',
+      version: 'legacy',
+      type: 'unknown'
+    });
+
+    expect(resolveLegacyIdentity(undefined)).toEqual({
+      canonicalId: '',
+      version: 'legacy',
+      type: 'unknown'
+    });
+
+    expect(resolveLegacyIdentity('   ')).toEqual({
+      canonicalId: '',
+      version: 'legacy',
+      type: 'unknown'
+    });
+
+    expect(resolveLegacyIdentity('weird_prefix_123')).toEqual({
+      canonicalId: 'weird_prefix_123',
+      version: 'legacy',
+      type: 'unknown'
+    });
+  });
+
   it('performance benchmark: 500 SHA-256 and identifier creations execute in < 50ms', () => {
     const flightParams = {
       origin: 'SGN',

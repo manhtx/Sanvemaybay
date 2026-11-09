@@ -38,14 +38,19 @@ export interface ProviderResult<T> {
 /**
  * Creates a verified successful result.
  */
-export function createSuccessResult<T>(provider: string, data: T[]): ProviderResult<T> {
+export function createSuccessResult<T>(
+  provider: string,
+  data: T[],
+  metadata?: ProviderResult<T>['metadata']
+): ProviderResult<T> {
   const status: ProviderResultStatus = data.length > 0 ? 'SUCCESS_NONEMPTY' : 'VERIFIED_EMPTY';
   return {
     status,
     provider,
     data,
     observedAt: new Date().toISOString(),
-    isDegraded: false
+    isDegraded: false,
+    ...(metadata ? { metadata } : {})
   };
 }
 
@@ -78,7 +83,9 @@ export function createErrorResult<T>(
 
 /**
  * Validates that a result status represents a truly healthy response.
+ * Defensively handles null, undefined, or non-object inputs without throwing.
  */
-export function isResultHealthy<T>(result: ProviderResult<T>): boolean {
+export function isResultHealthy<T>(result?: ProviderResult<T> | null): boolean {
+  if (!result || typeof result !== 'object') return false;
   return result.status === 'SUCCESS_NONEMPTY' || result.status === 'VERIFIED_EMPTY';
 }

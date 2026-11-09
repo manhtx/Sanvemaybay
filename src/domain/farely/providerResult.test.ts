@@ -222,6 +222,33 @@ describe('Farely Pure Domain Kernel — Provider Result & Contracts (REQ-PROV-00
       expect(isResultHealthy(unknown)).toBe(false);
     });
 
+    it('isResultHealthy safely handles null, undefined, empty object, and malformed envelopes without throwing', () => {
+      expect(isResultHealthy(null)).toBe(false);
+      expect(isResultHealthy(undefined)).toBe(false);
+      expect(isResultHealthy({} as any)).toBe(false);
+      expect(isResultHealthy({ status: 'INVALID_STATUS' } as any)).toBe(false);
+      expect(isResultHealthy('healthy' as any)).toBe(false);
+      expect(isResultHealthy(12345 as any)).toBe(false);
+    });
+
+    it('createSuccessResult safely attaches and preserves telemetry metadata when provided', () => {
+      const meta = {
+        routesAttempted: 10,
+        routesSucceeded: 10,
+        rawPayloadSize: 4096,
+        httpStatusCode: 200,
+        hasCaptcha: false
+      };
+      const result = createSuccessResult('vietjet', [{ id: 'vj_1', price: 900000 }], meta);
+
+      expect(result.status).toBe('SUCCESS_NONEMPTY');
+      expect(result.isDegraded).toBe(false);
+      expect(result.metadata).toEqual(meta);
+      expect(result.metadata?.routesAttempted).toBe(10);
+      expect(result.metadata?.routesSucceeded).toBe(10);
+      expect(isResultHealthy(result)).toBe(true);
+    });
+
     it('performance benchmark: 10,000 provider result operations execute in < 50ms', () => {
       const offers = [{ id: '1', price: 100 }];
       const start = performance.now();

@@ -101,7 +101,7 @@ export function buildPhysicalItineraryId(params: {
   destination: string;
   departDate: string;
   returnDate?: string | null;
-  segments?: PhysicalFlightSegment[];
+  segments?: readonly PhysicalFlightSegment[];
   airline?: string;
   flightNumber?: string | null;
 }): string {
@@ -276,12 +276,12 @@ export function buildConditionEpisodeId(watchId: string, episodeIndex: number): 
  * Legacy Identity Resolution & Migration (REQ-ID-006).
  * Ensures old Saved/Watch URLs and bookmark references do not break silently.
  */
-export function resolveLegacyIdentity(rawId: string): {
+export function resolveLegacyIdentity(rawId?: string | null): {
   canonicalId: string;
   version: 'v1' | 'legacy';
   type: 'offer_variant' | 'opportunity' | 'observation' | 'travel_intent' | 'unknown';
 } {
-  const trimmed = rawId.trim();
+  const trimmed = (rawId ?? '').trim();
 
   if (trimmed.startsWith('ov:v1:')) {
     return { canonicalId: trimmed, version: 'v1', type: 'offer_variant' };
