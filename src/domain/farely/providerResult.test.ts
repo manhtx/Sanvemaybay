@@ -93,6 +93,41 @@ describe('Farely Pure Domain Kernel — Provider Result & Contracts (REQ-PROV-00
         createErrorResult('amadeus', 'VERIFIED_EMPTY', 'invalid attempt')
       ).toThrowError('Cannot create error result with success status: VERIFIED_EMPTY');
     });
+
+    it('creates RATE_LIMITED status with HTTP 429 metadata', () => {
+      const result = createErrorResult('vietnam_airlines', 'RATE_LIMITED', 'Too Many Requests', {
+        httpStatusCode: 429,
+        routesAttempted: 1,
+        routesSucceeded: 0,
+      });
+
+      expect(result.status).toBe('RATE_LIMITED');
+      expect(result.metadata?.httpStatusCode).toBe(429);
+      expect(result.isDegraded).toBe(true);
+      expect(isResultHealthy(result)).toBe(false);
+    });
+
+    it('creates PARSER_SCHEMA_DRIFT status with payload size tracking', () => {
+      const result = createErrorResult('bamboo', 'PARSER_SCHEMA_DRIFT', 'Unexpected JSON schema missing fare table', {
+        rawPayloadSize: 8192,
+      });
+
+      expect(result.status).toBe('PARSER_SCHEMA_DRIFT');
+      expect(result.metadata?.rawPayloadSize).toBe(8192);
+      expect(result.isDegraded).toBe(true);
+      expect(isResultHealthy(result)).toBe(false);
+    });
+
+    it('creates AUTH_ERROR status with HTTP 401 code', () => {
+      const result = createErrorResult('amadeus', 'AUTH_ERROR', 'API key expired or invalid token', {
+        httpStatusCode: 401,
+      });
+
+      expect(result.status).toBe('AUTH_ERROR');
+      expect(result.metadata?.httpStatusCode).toBe(401);
+      expect(result.isDegraded).toBe(true);
+      expect(isResultHealthy(result)).toBe(false);
+    });
   });
 
   describe('isResultHealthy gate', () => {
@@ -165,6 +200,37 @@ describe('Farely Pure Domain Kernel — Provider Result & Contracts (REQ-PROV-00
       expect(errResult.metadata).toEqual(detailedMeta);
       expect(errResult.metadata?.routesAttempted).toBe(5);
       expect(errResult.metadata?.rawPayloadSize).toBe(2048);
+    });
+
+    it('distinguishes PARTIAL_RESULTS and DEGRADED_COVERAGE as degraded', () => {
+      const partial = createErrorResult('amadeus', 'PARTIAL_RESULTS', '2 of 5 routes timed out');
+      const degraded = createErrorResult('amadeus', 'DEGRADED_COVERAGE', 'Coverage below 50%');
+
+      expect(partial.isDegraded).toBe(true);
+      expect(degraded.isDegraded).toBe(true);
+      expect(isResultHealthy(partial)).toBe(false);
+      expect(isResultHealthy(degraded)).toBe(false);
+    });
+
+    it('distinguishes UNSUPPORTED and UNKNOWN_ERROR as degraded', () => {
+      const unsupported = createErrorResult('amadeus', 'UNSUPPORTED', 'Route not supported');
+      const unknown = createErrorResult('amadeus', 'UNKNOWN_ERROR', 'Unexpected exception');
+
+      expect(unsupported.isDegraded).toBe(true);
+      expect(unknown.isDegraded).toBe(true);
+      expect(isResultHealthy(unsupported)).toBe(false);
+      expect(isResultHealthy(unknown)).toBe(false);
+    });
+
+    it('performance benchmark: 10,000 provider result operations execute in < 50ms', () => {
+      const offers = [{ id: '1', price: 100 }];
+      const start = performance.now();
+      for (let i = 0; i < 5000; i++) {
+        const res = createSuccessResult('amadeus', offers);
+        isResultHealthy(res);
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
     });
   });
 });

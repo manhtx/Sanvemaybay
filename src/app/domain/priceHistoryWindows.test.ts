@@ -4,13 +4,13 @@ import {
   filterPriceHistoryByDays,
 } from "./priceHistoryWindows";
 
-describe("PRICE_HISTORY_WINDOWS constant", () => {
+describe("PRICE_HISTORY_WINDOWS constant (REQ-HIST-001)", () => {
   it("defines strictly [7, 30, 90, 180] as supported observation windows", () => {
     expect(PRICE_HISTORY_WINDOWS).toEqual([7, 30, 90, 180]);
   });
 });
 
-describe("filterPriceHistoryByDays", () => {
+describe("filterPriceHistoryByDays (REQ-HIST-001, GATE-DATA-TRUTH)", () => {
   const points = [
     { date: "2026-01-01", price: 100 },
     { date: "2026-01-07", price: 90 },
@@ -119,5 +119,95 @@ describe("filterPriceHistoryByDays", () => {
     const filtered = filterPriceHistoryByDays(original as any, 7);
     expect(filtered[0].date).toBe("2026-01-01");
     expect(original[0].date).toBe("2026-01-05");
+  });
+
+  it("handles multi-year and leap-year transitions accurately", () => {
+    // 2024 was a leap year (February has 29 days)
+    const leapYearPoints = [
+      { date: "2024-02-28", price: 150 },
+      { date: "2024-02-29", price: 140 },
+      { date: "2024-03-01", price: 130 },
+      { date: "2024-03-05", price: 120 },
+    ];
+    const filtered = filterPriceHistoryByDays(leapYearPoints, 7);
+    expect(filtered.map((p) => p.date)).toEqual([
+      "2024-02-28",
+      "2024-02-29",
+      "2024-03-01",
+      "2024-03-05",
+    ]);
+  });
+
+  it("handles multiple intra-day observations on the same calendar day", () => {
+    const intraDayPoints = [
+      { date: "2026-04-10T08:00:00Z", price: 2100000 },
+      { date: "2026-04-10T14:30:00Z", price: 1950000 },
+      { date: "2026-04-10T22:00:00Z", price: 2050000 },
+    ];
+    const filtered = filterPriceHistoryByDays(intraDayPoints, 7);
+    expect(filtered.length).toBe(3);
+    expect(filtered[0].price).toBe(2100000);
+    expect(filtered[1].price).toBe(1950000);
+    expect(filtered[2].price).toBe(2050000);
+  });
+
+  it("handles 180-day extended historical windows with dense point coverage", () => {
+    const densePoints = [];
+    for (let day = 1; day <= 200; day++) {
+      const dateStr = new Date(Date.UTC(2026, 0, day)).toISOString().slice(0, 10);
+      densePoints.push({ date: dateStr, price: 1000 + (day % 50) });
+    }
+    const filtered = filterPriceHistoryByDays(densePoints, 180);
+    expect(filtered.length).toBe(180);
+    expect(filtered[0].date).toBe("2026-01-21");
+    expect(filtered[filtered.length - 1].date).toBe("2026-07-19");
+  });
+
+  it("handles unsorted input points with arbitrary timestamp gaps", () => {
+    const scatteredPoints = [
+      { date: "2026-06-15", price: 300 },
+      { date: "2026-01-10", price: 100 },
+      { date: "2026-04-20", price: 200 },
+      { date: "2026-06-01", price: 250 },
+    ];
+    const filtered = filterPriceHistoryByDays(scatteredPoints, 30);
+    expect(filtered.map((p) => p.date)).toEqual(["2026-06-01", "2026-06-15"]);
+  });
+
+  it("handles single observation dataset across all 4 window sizes consistently", () => {
+    const single = [{ date: "2026-05-15", price: 500 }];
+    for (const w of PRICE_HISTORY_WINDOWS) {
+      const res = filterPriceHistoryByDays(single, w);
+      expect(res).toEqual([{ date: "2026-05-15", price: 500 }]);
+    }
+  });
+
+  it("filters points with non-finite prices (NaN, Infinity, -Infinity) while preserving valid points", () => {
+    const mixedPoints = [
+      { date: "2026-05-01", price: 100 },
+      { date: "2026-05-02", price: Number.NaN },
+      { date: "2026-05-03", price: Number.POSITIVE_INFINITY },
+      { date: "2026-05-04", price: Number.NEGATIVE_INFINITY },
+      { date: "2026-05-05", price: 150 },
+    ];
+    const filtered = filterPriceHistoryByDays(mixedPoints, 7);
+    expect(filtered.map((p) => p.date)).toEqual(["2026-05-01", "2026-05-05"]);
+  });
+
+  it("performance benchmark: 10,000 price point operations execute in < 50ms", () => {
+    const testPoints = [];
+    for (let i = 0; i < 1000; i++) {
+      testPoints.push({
+        date: `2026-01-${String((i % 28) + 1).padStart(2, "0")}`,
+        price: 1000000 + i,
+      });
+    }
+
+    const start = performance.now();
+    for (let i = 0; i < 10; i++) {
+      filterPriceHistoryByDays(testPoints, 30);
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
   });
 });
