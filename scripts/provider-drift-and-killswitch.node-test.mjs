@@ -189,3 +189,123 @@ test('Claim Lineage Consistency (Section 15 & 16): full pipeline traces determin
   assert.equal(decision.is_stale, false);
   assert.equal(decision.action, 'BUY_NOW');
 });
+
+test('Provider Contract Drift: whitespace normalization, flight number trimming, and multiple layover handling', () => {
+  const context = {
+    origin_code: 'HAN',
+    destination_code: 'SIN',
+    outbound_date: '2026-11-15',
+    observed_at: '2026-11-01T08:00:00Z',
+  };
+
+  // 1. Untrimmed flight number
+  const untrimmedOption = {
+    price: 1800000,
+    total_duration: 180,
+    flights: [{ flight_number: '   SQ 175 \t ', airline: 'Singapore Airlines' }],
+    layovers: [{ airport: 'KUL' }, { airport: 'BKK' }],
+  };
+  const normalized = normalizeOption(untrimmedOption, context);
+  assert.ok(normalized);
+  assert.equal(normalized.flight_number, 'SQ 175', 'Flight number must be trimmed');
+  assert.equal(normalized.stops, 2, 'Stops must match layovers length');
+  assert.equal(normalized.currency, 'VND');
+  assert.equal(normalized.origin_code, 'HAN');
+  assert.equal(normalized.destination_code, 'SIN');
+
+  // 2. Omitted layovers property defaults stops to 0
+  const noLayovers = {
+    price: 1500000,
+    total_duration: 120,
+    flights: [{ flight_number: 'VN630', airline: 'Vietnam Airlines' }],
+  };
+  const normalizedNoLayovers = normalizeOption(noLayovers, context);
+  assert.ok(normalizedNoLayovers);
+  assert.equal(normalizedNoLayovers.stops, 0);
+
+  // 3. Null flight leg within array fails closed
+  const nullLegOption = {
+    price: 1500000,
+    total_duration: 120,
+    flights: [null],
+  };
+  assert.equal(normalizeOption(nullLegOption, context), null);
+});
+
+test('Claim Kill Switch: edge-case pricing, negative discount suppression, and boundary score label transitions', () => {
+  const now = new Date('2026-11-01T12:00:00Z');
+  const freshTime = new Date('2026-11-01T11:45:00Z');
+
+  // 1. Higher price than baseline: discount must be 0, never negative
+  const standardCohort = [2000000, 2100000, 2200000];
+  const higherPriceDeal = scoreObservation(2500000, standardCohort, freshTime, now);
+  assert.equal(higherPriceDeal.baseline_price, 2100000);
+  assert.equal(higherPriceDeal.discount_percent, 0, 'Discount cannot be negative');
+  assert.equal(higherPriceDeal.deal_label, 'Giá quan sát');
+  assert.equal(higherPriceDeal.action, 'MONITOR');
+
+  // 2. Non-positive cohort values filtered out
+  const dirtyCohort = [2000000, 0, -100000, 2100000, null, undefined, 2200000];
+  const cleanedDeal = scoreObservation(1500000, dirtyCohort, freshTime, now);
+  assert.equal(cleanedDeal.baseline_price, 2100000, 'Baseline must ignore non-positive values');
+  assert.ok(cleanedDeal.discount_percent > 0);
+
+  // 3. Cohort with only 2 positive items -> falls below 3-item threshold
+  const twoItemCohort = [2000000, 2100000, -500000];
+  const insufficientDeal = scoreObservation(1000000, twoItemCohort, freshTime, now);
+  assert.equal(insufficientDeal.deal_score, 50);
+  assert.equal(insufficientDeal.deal_label, 'Giá quan sát');
+  assert.equal(insufficientDeal.action, 'MONITOR');
+
+  // 4. Score label boundary transitions with high confidence (12 samples)
+  const fullCohort = [2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000];
+  // baseline = 2,000,000, confidence = 100
+  // discount = 50% -> dealScore = round(50 * 1.5 + 100 * 0.3) = 75 + 30 = 105 -> clamped to 100 -> 'Deal cực nóng', 'BUY_NOW'
+  const hotDeal = scoreObservation(1000000, fullCohort, freshTime, now);
+  assert.equal(hotDeal.deal_label, 'Deal cực nóng');
+  assert.equal(hotDeal.action, 'BUY_NOW');
+
+  // discount = 35% -> dealScore = round(35 * 1.5 + 30) = 53 + 30 = 83 -> 'Deal rất ngon', 'BUY_NOW'
+  const veryGoodDeal = scoreObservation(1300000, fullCohort, freshTime, now);
+  assert.equal(veryGoodDeal.deal_label, 'Deal rất ngon');
+  assert.equal(veryGoodDeal.action, 'BUY_NOW');
+
+  // discount = 28% -> dealScore = round(28 * 1.5 + 30) = 42 + 30 = 72 -> 'Deal ngon', 'MONITOR'
+  const goodDeal = scoreObservation(1440000, fullCohort, freshTime, now);
+  assert.equal(goodDeal.deal_label, 'Deal ngon');
+  assert.equal(goodDeal.action, 'MONITOR');
+});
+
+test('Provider Drift & Scoring Performance Benchmark: 5,000 normalize and score cycles run under latency budget', () => {
+  const context = {
+    origin_code: 'HAN',
+    destination_code: 'DAD',
+    outbound_date: '2026-11-20',
+    observed_at: '2026-11-01T10:00:00Z',
+  };
+  const option = {
+    price: 900000,
+    total_duration: 120,
+    flights: [{ flight_number: 'VN123', airline: 'Vietnam Airlines' }],
+    layovers: [],
+  };
+  const cohort = [
+    1800000, 1850000, 1900000, 1750000, 1800000, 1950000,
+    1800000, 1850000, 1900000, 1750000, 1800000, 1950000,
+  ];
+  const now = new Date('2026-11-01T12:00:00Z');
+  const obsTime = new Date('2026-11-01T10:00:00Z');
+
+  const start = performance.now();
+  const iterations = 5000;
+
+  for (let i = 0; i < iterations; i++) {
+    const norm = normalizeOption(option, context);
+    const score = scoreObservation(norm.price, cohort, obsTime, now);
+    assert.equal(score.action, 'BUY_NOW');
+  }
+
+  const duration = performance.now() - start;
+  // 5,000 cycles should finish in under 100ms
+  assert.ok(duration < 100, `Benchmark took ${duration.toFixed(2)}ms, expected < 100ms`);
+});
