@@ -76,6 +76,13 @@ describe("isActiveFeedDeal", () => {
     expect(isActiveFeedDeal({ ...base, linkKind: undefined }, now)).toBe(false);
     expect(isActiveFeedDeal({ ...base, validUntil: "2026-08-10T00:00:00Z" }, now)).toBe(false);
   });
+
+  it("preserves pure immutability on Object.freeze protected deal objects", () => {
+    const frozen = Object.freeze({ ...base });
+    const now = new Date("2026-08-11T00:00:00Z");
+    expect(() => isActiveFeedDeal(frozen, now)).not.toThrow();
+    expect(frozen.id).toBe("live");
+  });
 });
 
 describe("parseFeedEnvelope", () => {
@@ -90,6 +97,13 @@ describe("parseFeedEnvelope", () => {
   it("rejects legacy and unknown status payloads", () => {
     expect(parseFeedEnvelope({ deals: [] })).toBeUndefined();
     expect(parseFeedEnvelope({ deals: [], status: "ok" })).toBeUndefined();
+  });
+
+  it("handles null, undefined, empty object, and malformed deals payload safely", () => {
+    expect(parseFeedEnvelope(null)).toBeUndefined();
+    expect(parseFeedEnvelope(undefined)).toBeUndefined();
+    expect(parseFeedEnvelope({})).toBeUndefined();
+    expect(parseFeedEnvelope({ status: "healthy", deals: "not-an-array" })).toBeUndefined();
   });
 });
 
@@ -131,6 +145,14 @@ describe("sanitizeBookingUrl", () => {
   it("rejects executable and unknown links", () => {
     expect(sanitizeBookingUrl("javascript:alert(1)")).toBeUndefined();
     expect(sanitizeBookingUrl("https://example.com/book")).toBeUndefined();
+  });
+
+  it("rejects non-HTTPS URLs, userinfo phishing URLs, and empty inputs", () => {
+    expect(sanitizeBookingUrl("http://google.com/flights")).toBeUndefined();
+    expect(sanitizeBookingUrl("https://google.com@evil.com/flights")).toBeUndefined();
+    expect(sanitizeBookingUrl(null)).toBeUndefined();
+    expect(sanitizeBookingUrl(undefined)).toBeUndefined();
+    expect(sanitizeBookingUrl("")).toBeUndefined();
   });
 });
 
@@ -176,6 +198,31 @@ describe("filterDeals", () => {
       { ...deals[0], duration: "unknown" },
     ] as any;
     expect(filterDeals(durations, { maxFlightTimeMinutes: 180 })).toHaveLength(2);
+  });
+
+  it("performance benchmark: filters 1,000 deals in sub-50ms", () => {
+    const syntheticDeals = Array.from({ length: 1000 }, (_, i) => ({
+      fromCode: i % 2 === 0 ? "HAN" : "SGN",
+      toCode: i % 3 === 0 ? "BKK" : "SIN",
+      to: i % 3 === 0 ? "Bangkok" : "Singapore",
+      country: i % 3 === 0 ? "Thái Lan" : "Singapore",
+      price: 1_000_000 + (i * 10_000),
+      stops: i % 2,
+      duration: "2h 30m",
+      departDate: `2026-09-${String((i % 28) + 1).padStart(2, "0")}`,
+    })) as any;
+
+    const start = performance.now();
+    const result = filterDeals(syntheticDeals, {
+      from: "HAN",
+      destination: "bkk",
+      maxStops: 0,
+      departureFrom: "2026-09-01",
+      departureTo: "2026-09-15",
+    });
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+    expect(result.length).toBeGreaterThan(0);
   });
 });
 

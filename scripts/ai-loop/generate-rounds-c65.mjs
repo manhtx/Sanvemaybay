@@ -37,7 +37,7 @@ const valueCase = `# Cycle 0065 Value Case: TravelIntent Invariants & Domain Ker
 
 ## 1. Real User / Product Problem
 1. **Corrupt Travel Intent & Cardinality Invariants (REQ-DOM-002, REQ-DOM-015):** When search forms or API clients send malformed intent payloads (e.g. negative infant counts or empty serialized strings), unvalidated systems can create distorted price queries or crash background workers. Farely enforces strict boundary validation on passenger counts and fails closed against invalid serialized schemas.
-2. **Cross-Currency Arithmetic & Cost Epistemic Transparency (REQ-DOM-006, REQ-COST-004):** Comparing a \$100 fare directly against a 2,500,000 VND fare without currency conversion leads to absurd price recommendations. Similarly, when an airline guarantees all-in pricing with baggage included, the cost engine must reflect zero unknown mandatory fees while preserving transparency on optional services.
+2. **Cross-Currency Arithmetic & Cost Epistemic Transparency (REQ-DOM-006, REQ-COST-004):** Comparing a 100 USD fare directly against a 2,500,000 VND fare without currency conversion leads to absurd price recommendations. Similarly, when an airline guarantees all-in pricing with baggage included, the cost engine must reflect zero unknown mandatory fees while preserving transparency on optional services.
 
 ## 2. Baseline Evidence
 - \`src/domain/farely/travelIntent.test.ts\` had 18 tests, lacking explicit negative child/infant cardinality boundary tests and defensive deserialize error validation.

@@ -415,4 +415,72 @@ describe('NODE TK-08: Cost Epistemics Single Authority', () => {
     expect(tax?.status).toBe('UNKNOWN');
     expect(tax?.amount).toBeNull(); // Never zero
   });
+
+  it('preserves pure immutability on Object.freeze protected observations across filterComparableCohort and compareAgainstCohort', () => {
+    const frozenObs: readonly HistoricalObservation[] = Object.freeze([
+      Object.freeze({
+        observationId: 'f1',
+        observedAt: '2026-10-01T00:00:00Z',
+        departLocalDate: '2026-11-10',
+        origin: 'HAN',
+        destination: 'BKK',
+        price: 2500000,
+        currency: 'VND',
+        cabin: 'ECONOMY',
+        stops: 0,
+        scanEpoch: 'epoch_1',
+        sourceQuality: 'PROVEN_PROVIDER'
+      }),
+      Object.freeze({
+        observationId: 'f2',
+        observedAt: '2026-10-02T00:00:00Z',
+        departLocalDate: '2026-11-10',
+        origin: 'HAN',
+        destination: 'BKK',
+        price: 2400000,
+        currency: 'VND',
+        cabin: 'ECONOMY',
+        stops: 0,
+        scanEpoch: 'epoch_2',
+        sourceQuality: 'PROVEN_PROVIDER'
+      }),
+      Object.freeze({
+        observationId: 'f3',
+        observedAt: '2026-10-03T00:00:00Z',
+        departLocalDate: '2026-11-10',
+        origin: 'HAN',
+        destination: 'BKK',
+        price: 2600000,
+        currency: 'VND',
+        cabin: 'ECONOMY',
+        stops: 0,
+        scanEpoch: 'epoch_3',
+        sourceQuality: 'PROVEN_PROVIDER'
+      })
+    ]);
+
+    expect(() => filterComparableCohort(frozenObs as any, { origin: 'HAN', destination: 'BKK', cabin: 'ECONOMY' })).not.toThrow();
+    expect(() => compareAgainstCohort(2450000, frozenObs as any)).not.toThrow();
+  });
+
+  it('performance benchmark: 5,000 truth kernel V2 operations execute in < 50ms', () => {
+    const originScope = resolveLocationScope('HAN');
+    const destinationScope = resolveLocationScope('BKK');
+    const start = performance.now();
+    for (let i = 0; i < 5000; i++) {
+      deriveMarketScope('HAN', 'BKK');
+      determineEvidenceLevel(7, { uniqueEpochs: 3 });
+      buildPriceScopeFingerprint({
+        originScope,
+        destinationScope,
+        journeyType: 'ONE_WAY',
+        departDate: '2026-11-10',
+        cabin: 'ECONOMY',
+        currency: 'VND',
+        maxStops: 0
+      });
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+  });
 });
