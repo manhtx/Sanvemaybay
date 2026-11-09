@@ -34,7 +34,7 @@ export function normalizePreferences(value: unknown): UserPreferences {
   const departureFrom = validDate(input.departureFrom);
   const departureTo = validDate(input.departureTo);
   return {
-    homeAirport: typeof input.homeAirport === "string" && input.homeAirport.trim() ? input.homeAirport.toUpperCase() : defaultPreferences.homeAirport,
+    homeAirport: typeof input.homeAirport === "string" && input.homeAirport.trim() ? input.homeAirport.trim().toUpperCase() : defaultPreferences.homeAirport,
     budget: typeof input.budget === "number" && Number.isFinite(input.budget) && input.budget > 0 ? input.budget : defaultPreferences.budget,
     favoriteRegions: Array.isArray(input.favoriteRegions) ? input.favoriteRegions.filter((region): region is string => typeof region === "string") : defaultPreferences.favoriteRegions,
     maxStops: typeof input.maxStops === "number" && Number.isInteger(input.maxStops) && input.maxStops >= 0 ? input.maxStops : defaultPreferences.maxStops,
