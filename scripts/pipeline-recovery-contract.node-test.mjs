@@ -75,3 +75,35 @@ test("NODE CP-01 & CP-02: control plane evaluates proof dynamically and maintain
     );
   }
 });
+
+test("NODE PIPE-05: discovery pipeline workflow enforces hourly schedule, non-cancellation concurrency, sequential execution stages, and internal authentication", async () => {
+  const workflow = await readFile(
+    new URL("../.github/workflows/fast-flights-pipeline.yml", import.meta.url),
+    "utf8",
+  );
+  // Hourly cron schedule
+  assert.match(workflow, /cron:\s*"17 \* \* \* \*"/, "fast-flights pipeline must pin hourly cron schedule at minute 17");
+
+  // Concurrency controls
+  assert.match(workflow, /concurrency:\s*\n\s*group:\s*flycheap-fast-flights-pipeline/, "fast-flights pipeline must isolate concurrency group");
+  assert.match(workflow, /cancel-in-progress:\s*false/, "fast-flights pipeline must never cancel in-progress pipeline runs");
+
+  // Stage 1: Discovery worker
+  assert.match(workflow, /name:\s*Discover and ingest indicative observations[\s\S]*run:\s*python scripts\/fast-flights-worker\.py/, "pipeline must execute discovery worker");
+
+  // Stage 2: Price analyzer
+  assert.match(workflow, /name:\s*Analyze eligible provider observations[\s\S]*run:\s*node scripts\/orchestrate-analyzer\.mjs/, "pipeline must execute orchestrate-analyzer");
+
+  // Stage 3: Read-model refresh
+  assert.match(workflow, /name:\s*Refresh precomputed observed-fare read model[\s\S]*refresh-observed-fares/, "pipeline must trigger refresh-observed-fares");
+
+  // Stage 4: Feed snapshot refresh
+  assert.match(workflow, /name:\s*Refresh public feed snapshot[\s\S]*?python scripts\/refresh-feed-snapshot\.py/, "pipeline must refresh feed snapshot");
+
+  // Stage 5: Bounded data retention
+  assert.match(workflow, /name:\s*Apply bounded data retention[\s\S]*retention-cleanup/, "pipeline must trigger retention-cleanup");
+
+  // Internal function secret passed for authenticated edge functions
+  assert.match(workflow, /-H "x-internal-secret: \$INTERNAL_FUNCTION_SECRET"/, "pipeline must authenticate edge functions with x-internal-secret");
+  assert.match(workflow, /--connect-timeout 15 --max-time 180/, "pipeline curl requests must bound connection and maximum time");
+});
