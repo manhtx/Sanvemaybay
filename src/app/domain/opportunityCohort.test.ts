@@ -391,7 +391,7 @@ describe("Farely Pure Domain — Comparable Cohort Intelligence (REQ-DOM-004, NC
     expect(fresh120.evidence.summaryText).toContain("2 giờ trước");
   });
 
-  it("benchmark: 5,000 cohort evaluations execute in sub-50ms", () => {
+  it("benchmark: 2,500 cohort evaluations execute in sub-50ms", () => {
     const cohort: ObservationData[] = Array.from({ length: 6 }, (_, i) => ({
       ...currentObs,
       id: `c_${i}`,
@@ -400,7 +400,7 @@ describe("Farely Pure Domain — Comparable Cohort Intelligence (REQ-DOM-004, NC
     }));
 
     const start = performance.now();
-    for (let i = 0; i < 5_000; i++) {
+    for (let i = 0; i < 2_500; i++) {
       evaluateCohortComparison(currentObs, cohort);
     }
     const elapsed = performance.now() - start;

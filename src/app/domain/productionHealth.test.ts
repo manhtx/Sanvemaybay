@@ -280,5 +280,96 @@ describe('Production Health & Execution-backed Coverage (Sections 16, 18, 30, 31
       expect(freshness.status).toBe('FRESH');
       expect(frozenRecord.route_id).toBe('r-frozen');
     });
+
+    it('exact freshness threshold boundaries: 240m (FRESH), 241m (DEGRADED), 720m (DEGRADED), 721m (STALE)', () => {
+      const base = '2026-10-05T12:00:00.000Z';
+      const makeRec = (successAt: string): RouteExecutionRecord => ({
+        route_id: 'r-test',
+        origin_code: 'HAN',
+        destination_code: 'DAD',
+        last_attempt_at: successAt,
+        last_success_at: successAt,
+        attempt_count: 1,
+        success_count: 1,
+        failure_count: 0,
+        last_failure_reason: null,
+      });
+
+      // 240 min ago = 08:00
+      expect(evaluateRouteFreshness(makeRec('2026-10-05T08:00:00.000Z'), base).status).toBe('FRESH');
+      // 241 min ago = 07:59
+      expect(evaluateRouteFreshness(makeRec('2026-10-05T07:59:00.000Z'), base).status).toBe('DEGRADED');
+      // 720 min ago = 00:00
+      expect(evaluateRouteFreshness(makeRec('2026-10-05T00:00:00.000Z'), base).status).toBe('DEGRADED');
+      // 721 min ago = 2026-10-04T23:59
+      expect(evaluateRouteFreshness(makeRec('2026-10-04T23:59:00.000Z'), base).status).toBe('STALE');
+    });
+
+    it('future timestamp clock-skew resilience: clamps age_minutes to 0 and evaluates FRESH', () => {
+      const base = '2026-10-05T12:00:00.000Z';
+      const futureRecord: RouteExecutionRecord = {
+        route_id: 'r-future',
+        origin_code: 'HAN',
+        destination_code: 'BKK',
+        last_attempt_at: '2026-10-05T12:10:00.000Z',
+        last_success_at: '2026-10-05T12:10:00.000Z', // 10 minutes in the future
+        attempt_count: 1,
+        success_count: 1,
+        failure_count: 0,
+        last_failure_reason: null,
+      };
+
+      const result = evaluateRouteFreshness(futureRecord, base);
+      expect(result.status).toBe('FRESH');
+      expect(result.age_minutes).toBe(0);
+    });
+
+    it('exact execution coverage rate boundaries: 50% coverage is AMBER, <50% coverage forces RED', () => {
+      const makeRoutes = (count: number): RouteExecutionRecord[] =>
+        Array.from({ length: count }, (_, i) => ({
+          route_id: `r-cov-${i}`,
+          origin_code: 'HAN',
+          destination_code: `DEST-${i}`,
+          last_attempt_at: '2026-10-05T10:00:00Z',
+          last_success_at: '2026-10-05T10:00:00Z',
+          attempt_count: 2,
+          success_count: 2,
+          failure_count: 0,
+          last_failure_reason: null,
+        }));
+
+      // 5 successful out of 10 configured = 50% coverage (>= 0.5 but < 0.8) -> AMBER
+      const amberResult = evaluateRouteCoverageHealth(10, makeRoutes(5));
+      expect(amberResult.status).toBe('AMBER');
+      expect(amberResult.evidence.execution_coverage_rate).toBe(0.5);
+
+      // 4 successful out of 10 configured = 40% coverage (< 0.5) -> RED
+      const redResult = evaluateRouteCoverageHealth(10, makeRoutes(4));
+      expect(redResult.status).toBe('RED');
+      expect(redResult.evidence.execution_coverage_rate).toBe(0.4);
+    });
+
+    it('high-scale stress test: processes 5,000 route execution records in sub-50ms', () => {
+      const heavyRoutes: RouteExecutionRecord[] = Array.from({ length: 5000 }, (_, i) => ({
+        route_id: `route-heavy-${i}`,
+        origin_code: 'HAN',
+        destination_code: `DEST-${i % 100}`,
+        last_attempt_at: '2026-10-05T10:00:00Z',
+        last_success_at: i % 20 === 0 ? null : '2026-10-05T10:00:00Z',
+        attempt_count: 3,
+        success_count: i % 20 === 0 ? 0 : 3,
+        failure_count: i % 20 === 0 ? 3 : 0,
+        last_failure_reason: i % 20 === 0 ? 'PROVIDER_ERROR' : null,
+      }));
+
+      const start = performance.now();
+      const coverage = evaluateRouteCoverageHealth(5000, heavyRoutes);
+      const elapsed = performance.now() - start;
+
+      expect(coverage.evidence.attempted).toBe(5000);
+      expect(coverage.evidence.successful).toBe(4750);
+      expect(coverage.status).toBe('GREEN'); // 5% failure rate (< 10%), 95% coverage (>= 80%)
+      expect(elapsed).toBeLessThan(50);
+    });
   });
 });

@@ -210,4 +210,69 @@ describe("filterPriceHistoryByDays (REQ-HIST-001, GATE-DATA-TRUTH)", () => {
     const duration = performance.now() - start;
     expect(duration).toBeLessThan(50);
   });
+
+  it("boundary precision: includes point at exact millisecond threshold and excludes threshold - 1ms", () => {
+    const anchorIso = "2026-06-10T12:00:00.000Z";
+    const anchorMs = Date.parse(anchorIso);
+    // For 7-day window, threshold is anchor - (7 - 1) * 86,400,000 ms
+    const thresholdMs = anchorMs - 6 * 86400 * 1000;
+    const exactThresholdIso = new Date(thresholdMs).toISOString();
+    const subThresholdIso = new Date(thresholdMs - 1).toISOString();
+
+    const points = [
+      { date: subThresholdIso, price: 900000 },
+      { date: exactThresholdIso, price: 950000 },
+      { date: anchorIso, price: 1100000 },
+    ];
+
+    const result = filterPriceHistoryByDays(points, 7);
+    expect(result.map((p) => p.date)).toEqual([exactThresholdIso, anchorIso]);
+  });
+
+  it("handles duplicate timestamps with stable chronological ordering", () => {
+    const timestamp = "2026-08-15T09:00:00.000Z";
+    const points = [
+      { date: timestamp, price: 1500000 },
+      { date: timestamp, price: 1400000 },
+      { date: "2026-08-16T10:00:00.000Z", price: 1600000 },
+    ];
+
+    const result = filterPriceHistoryByDays(points, 7);
+    expect(result.length).toBe(3);
+    expect(result.filter((p) => p.date === timestamp).length).toBe(2);
+    expect(result[result.length - 1].date).toBe("2026-08-16T10:00:00.000Z");
+  });
+
+  it("maintains sorting determinism across multi-decade dates without truncation", () => {
+    const multiDecade = [
+      { date: "2035-01-01T00:00:00.000Z", price: 5000000 },
+      { date: "2034-12-25T00:00:00.000Z", price: 4800000 },
+      { date: "2034-11-01T00:00:00.000Z", price: 4500000 },
+      { date: "2010-01-01T00:00:00.000Z", price: 1000000 },
+    ];
+
+    const result30 = filterPriceHistoryByDays(multiDecade, 30);
+    // Anchor is 2035-01-01; 30 days covers back to 2034-12-03
+    expect(result30.map((p) => p.date)).toEqual([
+      "2034-12-25T00:00:00.000Z",
+      "2035-01-01T00:00:00.000Z",
+    ]);
+  });
+
+  it("high-load scale: processes 50,000 price point operations in < 50ms", () => {
+    const testPoints = [];
+    for (let i = 0; i < 5000; i++) {
+      testPoints.push({
+        date: `2026-05-${String((i % 28) + 1).padStart(2, "0")}`,
+        price: 2000000 + (i % 1000),
+      });
+    }
+
+    const start = performance.now();
+    for (let i = 0; i < 10; i++) {
+      filterPriceHistoryByDays(testPoints, 7);
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+  });
 });
