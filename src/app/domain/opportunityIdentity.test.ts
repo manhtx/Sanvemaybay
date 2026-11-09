@@ -177,4 +177,85 @@ describe("Farely Pure Domain — Canonical Opportunity Identity (REQ-ID-002, REQ
     expect(() => isSameLogicalOpportunity(frozenInput, "DAD:ICN:2026-12-01:2026-12-07:KE:KE464:0")).not.toThrow();
     expect(frozenInput.airlineCode).toBe("KE");
   });
+
+  it("strips whitespace from all input fields during ID generation", () => {
+    const padded: OpportunityIdentityInput = {
+      originCode: "  HAN  ",
+      destinationCode: "  bkk  ",
+      departDate: "  2026-10-15  ",
+      returnDate: "  2026-10-20  ",
+      airlineCode: "  vj  ",
+      flightNumber: "  vj901  ",
+      stops: 0
+    };
+    expect(generateOpportunityId(padded)).toBe("HAN:BKK:2026-10-15:2026-10-20:VJ:VJ901:0");
+  });
+
+  it("handles null or missing flightNumber in 7-part ID generation and parsing", () => {
+    const inputWithoutFlight: OpportunityIdentityInput = {
+      ...baseInput,
+      flightNumber: null
+    };
+    const id = generateOpportunityId(inputWithoutFlight);
+    expect(id).toBe("HAN:BKK:2026-10-15:2026-10-20:VJ::0");
+
+    const parsed = parseOpportunityId(id);
+    expect(parsed?.flightNumber).toBeNull();
+    expect(parsed?.stops).toBe(0);
+  });
+
+  it("accurately serializes and parses multi-stop flights (stops >= 2)", () => {
+    const multiStop: OpportunityIdentityInput = {
+      originCode: "HAN",
+      destinationCode: "CDG",
+      departDate: "2026-11-01",
+      returnDate: "2026-11-15",
+      airlineCode: "QR",
+      flightNumber: "QR977",
+      stops: 2
+    };
+    const id = generateOpportunityId(multiStop);
+    expect(id).toBe("HAN:CDG:2026-11-01:2026-11-15:QR:QR977:2");
+
+    const parsed = parseOpportunityId(id);
+    expect(parsed?.stops).toBe(2);
+  });
+
+  it("polymorphic comparison differentiates differing flight numbers, stops, or dates", () => {
+    expect(isSameLogicalOpportunity(baseInput, { ...baseInput, flightNumber: "VJ902" })).toBe(false);
+    expect(isSameLogicalOpportunity(baseInput, { ...baseInput, stops: 1 })).toBe(false);
+    expect(isSameLogicalOpportunity(baseInput, { ...baseInput, departDate: "2026-10-16" })).toBe(false);
+    expect(isSameLogicalOpportunity(baseInput, { ...baseInput, returnDate: "2026-10-21" })).toBe(false);
+  });
+
+  it("handles leap year date representations truthfully", () => {
+    const leapInput: OpportunityIdentityInput = {
+      ...baseInput,
+      departDate: "2028-02-29",
+      returnDate: "2028-03-05"
+    };
+    const id = generateOpportunityId(leapInput);
+    expect(id).toBe("HAN:BKK:2028-02-29:2028-03-05:VJ:VJ901:0");
+    const parsed = parseOpportunityId(id);
+    expect(parsed?.departDate).toBe("2028-02-29");
+  });
+
+  it("benchmark: 10,000 generate, parse, and equality operations execute in sub-50ms", () => {
+    const sample = "HAN:BKK:2026-10-15:2026-10-20:VJ:VJ901:0";
+    const start = performance.now();
+    for (let i = 0; i < 10000; i++) {
+      const parsed = parseOpportunityId(sample);
+      if (parsed) {
+        generateOpportunityId(parsed);
+      }
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
+  });
+
+  it("preserves identical identity between object and canonical string representation", () => {
+    const canonicalStr = generateOpportunityId(baseInput);
+    expect(isSameLogicalOpportunity(baseInput, canonicalStr)).toBe(true);
+    expect(isSameLogicalOpportunity(canonicalStr, baseInput)).toBe(true);
+  });
 });

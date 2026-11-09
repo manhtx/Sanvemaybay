@@ -141,4 +141,34 @@ describe("CANONICAL_TRAVEL_ENTITIES catalog integrity", () => {
       expect(entity.aliases.length).toBeGreaterThan(0);
     }
   });
+
+  it("resolves full official Vietnamese airport names truthfully", () => {
+    expect(resolveCanonicalAirportOrCity("Sân bay Quốc tế Nội Bài")?.code).toBe("HAN");
+    expect(resolveCanonicalAirportOrCity("Sân bay Quốc tế Tân Sơn Nhất")?.code).toBe("SGN");
+    expect(resolveCanonicalAirportOrCity("Sân bay Quốc tế Đà Nẵng")?.code).toBe("DAD");
+    expect(resolveCanonicalAirportOrCity("Sân bay Quốc tế Cam Ranh")?.code).toBe("CXR");
+    expect(resolveCanonicalAirportOrCity("Sân bay Quốc tế Phú Quốc")?.code).toBe("PQC");
+  });
+
+  it("resolves secondary domestic Vietnamese airports by city or alias", () => {
+    expect(resolveCanonicalAirportOrCity("Hải Phòng")?.code).toBe("HPH");
+    expect(resolveCanonicalAirportOrCity("Cát Bi")?.code).toBe("HPH");
+    expect(resolveCanonicalAirportOrCity("Vinh")?.code).toBe("VII");
+  });
+
+  it("getServedAirports returns fallback single-element array for arbitrary non-metro airport codes", () => {
+    expect(getServedAirports("DAD")).toEqual(["DAD"]);
+    expect(getServedAirports("CXR")).toEqual(["CXR"]);
+    expect(getServedAirports("XYZ")).toEqual(["XYZ"]);
+  });
+
+  it("benchmark: 1,000 canonical entity resolutions execute in sub-50ms", () => {
+    const queries = ["HAN", "bkk", "Đà Nẵng", "Noi Bai", "SGN", "Tokyo", "Paris", "Singapore"];
+    const start = performance.now();
+    for (let i = 0; i < 1000; i++) {
+      resolveCanonicalAirportOrCity(queries[i % queries.length]);
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
+  });
 });
