@@ -180,4 +180,86 @@ describe('Farely Pure Domain Kernel — Price Scope Fingerprint (REQ-DOM-014)', 
       );
     });
   });
+
+  describe('PriceScope Invariants, Immutability & Performance (REQ-ID-002, REQ-DOM-014)', () => {
+    it('REQ-ID-002: decouples scope fingerprint completely from price points and fare numbers', () => {
+      const fpV1 = buildPriceScopeFingerprint({
+        originScope: hanScope,
+        destinationScope: sgnScope,
+        journeyType: 'ONE_WAY',
+        departDate: '2026-12-01',
+      });
+
+      const fpV2 = buildPriceScopeFingerprintV2({
+        originScope: hanScope,
+        destinationScope: sgnScope,
+        journeyType: 'ONE_WAY',
+        departDate: '2026-12-01',
+      });
+
+      // No price point amounts (e.g. 1000000, 2500000) inside scope fingerprint
+      expect(fpV1).not.toMatch(/\b\d{5,}\b/);
+      expect(fpV2).not.toMatch(/\b\d{5,}\b/);
+    });
+
+    it('enforces exact canonical token counts for V1 (8 tokens) and V2 (12 tokens)', () => {
+      const fpV1 = buildPriceScopeFingerprint({
+        originScope: hanScope,
+        destinationScope: sgnScope,
+        journeyType: 'ROUND_TRIP',
+        departDate: '2026-12-01',
+        returnDate: '2026-12-10',
+      });
+      const v1Tokens = fpV1.replace('scope_', '').split(':');
+      expect(v1Tokens.length).toBe(8);
+
+      const fpV2 = buildPriceScopeFingerprintV2({
+        originScope: hanScope,
+        destinationScope: sgnScope,
+        journeyType: 'ROUND_TRIP',
+        departDate: '2026-12-01',
+        returnDate: '2026-12-10',
+      });
+      const v2Tokens = fpV2.replace('scope_v2:', '').split(':');
+      expect(v2Tokens.length).toBe(12);
+    });
+
+    it('generates 1,000 V2 fingerprints within sub-50ms latency budget', () => {
+      const start = performance.now();
+      for (let i = 0; i < 1000; i++) {
+        buildPriceScopeFingerprintV2({
+          originScope: hanScope,
+          destinationScope: sgnScope,
+          journeyType: 'ROUND_TRIP',
+          departDate: '2026-12-01',
+          returnDate: '2026-12-10',
+          passengers: { adults: 2, children: 1, infants: 0 },
+          cabin: 'ECONOMY',
+          currency: 'VND',
+          maxStops: 1,
+        });
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
+    });
+
+    it('preserves pure immutability on Object.freeze protected parameters', () => {
+      const frozenScope = Object.freeze({
+        type: 'EXACT_AIRPORT' as const,
+        primaryCode: 'HAN',
+        expandedCodes: Object.freeze(['HAN']) as unknown as string[],
+      });
+
+      const frozenParams = Object.freeze({
+        originScope: frozenScope,
+        destinationScope: frozenScope,
+        journeyType: 'ONE_WAY',
+        departDate: '2026-12-01',
+        passengers: Object.freeze({ adults: 1, children: 0, infants: 0 }),
+      });
+
+      expect(() => buildPriceScopeFingerprintV2(frozenParams as any)).not.toThrow();
+      expect(frozenParams.journeyType).toBe('ONE_WAY');
+    });
+  });
 });

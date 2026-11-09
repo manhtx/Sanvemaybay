@@ -206,4 +206,71 @@ describe('Farely Pure Domain Kernel — Canonical TravelIntent (REQ-DOM-002..015
       'Invalid or unsupported TravelIntent schema version'
     );
   });
+
+  it('rejects passenger mixes with zero or negative adults (cardinality boundary)', () => {
+    expect(() =>
+      createTravelIntent({
+        origin: 'HAN',
+        destination: 'SGN',
+        journeyType: 'ONE_WAY',
+        outboundDate: '2026-12-01',
+        adults: 0,
+      })
+    ).toThrowError(RangeError);
+
+    expect(() =>
+      createTravelIntent({
+        origin: 'HAN',
+        destination: 'SGN',
+        journeyType: 'ONE_WAY',
+        outboundDate: '2026-12-01',
+        adults: -1,
+      })
+    ).toThrowError(RangeError);
+  });
+
+  it('resolves metropolitan multi-airport aliases inside intent creation (BKK_ALL, TYO_ALL)', () => {
+    const metroIntent = createTravelIntent({
+      origin: 'BKK_ALL',
+      destination: 'TYO_ALL',
+      journeyType: 'ONE_WAY',
+      outboundDate: '2026-12-01',
+    });
+
+    expect(metroIntent.originScope.primaryCode).toBe('BKK_METRO');
+    expect(metroIntent.originScope.expandedCodes).toEqual(['BKK', 'DMK']);
+    expect(metroIntent.destinationScope.primaryCode).toBe('TYO_METRO');
+    expect(metroIntent.destinationScope.expandedCodes).toEqual(['HND', 'NRT']);
+  });
+
+  it('creates and serializes 1,000 travel intents within sub-50ms latency budget', () => {
+    const start = performance.now();
+    for (let i = 0; i < 1000; i++) {
+      const intent = createTravelIntent({
+        origin: 'HAN',
+        destination: 'SGN',
+        journeyType: 'ONE_WAY',
+        outboundDate: '2026-12-01',
+        adults: 2,
+        children: 1,
+      });
+      serializeTravelIntent(intent);
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+  });
+
+  it('preserves pure immutability on Object.freeze protected TravelIntent objects', () => {
+    const intent = createTravelIntent({
+      origin: 'HAN',
+      destination: 'DAD',
+      journeyType: 'ROUND_TRIP',
+      outboundDate: '2026-12-01',
+      returnDate: '2026-12-08',
+    });
+
+    const frozen = Object.freeze(intent);
+    expect(() => serializeTravelIntent(frozen)).not.toThrow();
+    expect(frozen.journeyType).toBe('ROUND_TRIP');
+  });
 });
