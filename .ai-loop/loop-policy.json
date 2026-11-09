@@ -1,0 +1,29 @@
+{
+  "minCyclesBeforeCompletion": 1000000000,
+  "allowExplicitEmergencyStop": true,
+  "completionMode": "never-before-min-cycle",
+  "checkpointMode": "continue-until-completion-eligible",
+  "stateWriteMode": "atomic-after-every-artifact",
+  "heartbeatMode": "required",
+  "userInputRequiredForContinuation": false,
+  "reportMode": "checkpoint-with-continuation-state",
+  "projectAdapter": "FARELY_PROJECT_ADAPTER.md",
+  "sourceOfTruth": [
+    ".flycheap/MISSION.md",
+    ".flycheap/AUTONOMY_CONSTITUTION.md",
+    ".flycheap/ACCEPTANCE_CONTRACT.json",
+    ".flycheap/RELEASE_GATES.json",
+    ".flycheap/RUNTIME_GATES.json",
+    ".flycheap/PERFORMANCE_BUDGETS.json",
+    ".flycheap/STATE.json",
+    ".flycheap/STATUS.json"
+  ],
+  "projectVerificationCommands": [
+    "npm run check",
+    "npm run check:functions",
+    "npm run test:functions",
+    "npm run test:e2e",
+    "npm run test:integration",
+    "git diff --check"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "continuous": true,
+  "researchRounds": 20,
+  "maxCycles": 0,
+  "provider": {
+    "baseUrl": "http://localhost:11434/v1",
+    "model": "your-local-model",
+    "temperature": 0.2,
+    "timeoutMs": 600000
+  },
+  "execution": {
+    "pushAfterCycle": true,
+    "neverDeployProduction": true,
+    "worktreePerCycle": true,
+    "humanApproval": false
+  }
+}

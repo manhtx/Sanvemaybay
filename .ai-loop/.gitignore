@@ -1,0 +1,6 @@
+# Runtime state and historical evidence are local to each loop instance.
+cycles/
+reports/
+state/
+input/previous-response.md
+STOP
