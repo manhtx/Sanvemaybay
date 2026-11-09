@@ -224,4 +224,139 @@ describe("Farely Pure Domain — Destination Insights (REQ-DOM-001, REQ-DOM-004,
     expect(insights[1].destinationCode).toBe("CXR"); // 0
     expect(insights[2].destinationCode).toBe("HPH"); // -10
   });
+
+  it("handles multiple deals to same destination with identical scores maintaining top deal integrity", () => {
+    const deals: Deal[] = [
+      makeDeal({ id: "tie_1", toCode: "BKK", dealScore: 80, realTotal: 2_100_000 }),
+      makeDeal({ id: "tie_2", toCode: "BKK", dealScore: 80, realTotal: 1_900_000 })
+    ];
+
+    const insights = buildDestinationInsights(deals);
+    expect(insights).toHaveLength(1);
+    expect(insights[0].bestDealScore).toBe(80);
+    expect(insights[0].dealCount).toBe(2);
+    expect(insights[0].cheapestPrice).toBe(1_900_000);
+    expect(["tie_1", "tie_2"]).toContain(insights[0].topDealId);
+  });
+
+  it("accurately calculates cheapestPrice when realTotal contains zero or extreme values", () => {
+    const deals: Deal[] = [
+      makeDeal({ id: "free_promo", toCode: "SGN", realTotal: 0, dealScore: 95 }),
+      makeDeal({ id: "premium_fare", toCode: "SGN", realTotal: 45_000_000, dealScore: 60 }),
+      makeDeal({ id: "standard_fare", toCode: "SGN", realTotal: 1_500_000, dealScore: 75 })
+    ];
+
+    const insights = buildDestinationInsights(deals);
+    expect(insights[0].cheapestPrice).toBe(0);
+    expect(insights[0].dealCount).toBe(3);
+    expect(insights[0].bestDealScore).toBe(95);
+  });
+
+  it("preserves country and destination name from the winning top deal", () => {
+    const deals: Deal[] = [
+      makeDeal({
+        id: "lower_deal",
+        toCode: "NRT",
+        to: "Tokyo",
+        country: "Japan",
+        dealScore: 70
+      }),
+      makeDeal({
+        id: "winner_deal",
+        toCode: "NRT",
+        to: "Tokyo Narita",
+        country: "Nhật Bản",
+        dealScore: 92
+      })
+    ];
+
+    const insights = buildDestinationInsights(deals);
+    expect(insights[0].topDealId).toBe("winner_deal");
+    expect(insights[0].destination).toBe("Tokyo Narita");
+    expect(insights[0].country).toBe("Nhật Bản");
+  });
+
+  it("handles leap year and cross-month weekend departure dates accurately", () => {
+    // 2028 is leap year. 2028-02-26 is Saturday (day 6), 2028-02-29 is Tuesday (day 2)
+    const leapWeekend = makeDeal({ id: "leap_sat", toCode: "SIN", departDate: "2028-02-26" });
+    const leapWeekday = makeDeal({ id: "leap_tue", toCode: "SIN", departDate: "2028-02-29" });
+
+    const weekendInsight = buildDestinationInsights([leapWeekend]);
+    expect(weekendInsight[0].hasWeekendDeal).toBe(true);
+
+    const weekdayInsight = buildDestinationInsights([leapWeekday]);
+    expect(weekdayInsight[0].hasWeekendDeal).toBe(false);
+  });
+
+  it("handles 0% discount and 100% discount without division by zero or NaN average discount", () => {
+    const deals: Deal[] = [
+      makeDeal({ id: "d_zero_disc", toCode: "HAN", discount: 0 }),
+      makeDeal({ id: "d_full_disc", toCode: "HAN", discount: 100 })
+    ];
+
+    const insights = buildDestinationInsights(deals);
+    expect(insights[0].averageDiscount).toBe(50);
+  });
+
+  it("distinguishes destinations with same name but different toCode (sister airport handling NC-010)", () => {
+    const deals: Deal[] = [
+      makeDeal({ id: "bkk_deal", to: "Bangkok", toCode: "BKK", dealScore: 88, realTotal: 2_500_000 }),
+      makeDeal({ id: "dmk_deal", to: "Bangkok", toCode: "DMK", dealScore: 91, realTotal: 1_800_000 })
+    ];
+
+    const insights = buildDestinationInsights(deals);
+    expect(insights).toHaveLength(2);
+    // DMK has higher score (91 > 88), so DMK appears first
+    expect(insights[0].destinationCode).toBe("DMK");
+    expect(insights[0].bestDealScore).toBe(91);
+    expect(insights[0].cheapestPrice).toBe(1_800_000);
+
+    expect(insights[1].destinationCode).toBe("BKK");
+    expect(insights[1].bestDealScore).toBe(88);
+    expect(insights[1].cheapestPrice).toBe(2_500_000);
+  });
+
+  it("safely handles deals with undefined dealScore when aiInsight has savingScore 0", () => {
+    const deals: Deal[] = [
+      makeDeal({
+        id: "d_zero_saving",
+        toCode: "REP",
+        dealScore: undefined,
+        aiInsight: { savingScore: 0 } as any
+      })
+    ];
+
+    const insights = buildDestinationInsights(deals);
+    expect(insights[0].bestDealScore).toBe(0);
+    expect(insights[0].topDealId).toBe("d_zero_saving");
+  });
+
+  it("high-volume destination insights throughput benchmark: 2,000 deals aggregated in sub-50ms", () => {
+    const destinations = ["BKK", "DMK", "SIN", "NRT", "HND", "ICN", "KUL", "TPE", "HKG", "DPS"];
+    const testDeals: Deal[] = [];
+
+    for (let i = 0; i < 2000; i++) {
+      const dest = destinations[i % destinations.length];
+      testDeals.push(
+        makeDeal({
+          id: `bench_deal_${i}`,
+          toCode: dest,
+          to: `City ${dest}`,
+          realTotal: 1_000_000 + (i * 1000),
+          discount: 10 + (i % 40),
+          dealScore: 50 + (i % 50),
+          departDate: i % 7 === 0 ? "2026-10-03" : "2026-10-05"
+        })
+      );
+    }
+
+    const start = performance.now();
+    const insights = buildDestinationInsights(testDeals);
+    const duration = performance.now() - start;
+
+    expect(insights).toHaveLength(10);
+    expect(duration).toBeLessThan(50);
+    const totalCount = insights.reduce((sum, item) => sum + item.dealCount, 0);
+    expect(totalCount).toBe(2000);
+  });
 });
