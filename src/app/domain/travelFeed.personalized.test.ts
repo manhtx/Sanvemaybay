@@ -245,4 +245,33 @@ describe("rankPersonalizedFeed", () => {
     const elapsed = performance.now() - start;
     expect(elapsed).toBeLessThan(50);
   });
+
+  it("handles single-deal input array returning identical single deal without modification", () => {
+    const single = [deal({ id: "lonely_deal", dealScore: 82 })];
+    const result = rankPersonalizedFeed(single, defaultPreferences);
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe("lonely_deal");
+  });
+
+  it("compound constraints: applies both budget and excess stops penalties concurrently (-15 + -20 = -35)", () => {
+    const compoundPenalized = deal({
+      id: "penalized_deal",
+      toCode: "BKK",
+      dealScore: 90,
+      price: 10_000_000, // over budget (-15)
+      stops: 3, // 3 stops with maxStops=0 (-20 capped)
+    });
+    const cleanDeal = deal({
+      id: "clean_deal",
+      toCode: "SIN",
+      dealScore: 60,
+      price: 3_000_000,
+      stops: 0,
+    });
+
+    const prefs = { ...defaultPreferences, budget: 5_000_000, maxStops: 0 };
+    // compound: 90 - 35 = 55; clean: 60 -> clean wins
+    const result = rankPersonalizedFeed([compoundPenalized, cleanDeal], prefs);
+    expect(result.map((d) => d.id)).toEqual(["clean_deal", "penalized_deal"]);
+  });
 });

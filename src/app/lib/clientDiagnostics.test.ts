@@ -154,5 +154,42 @@ describe("client diagnostics boundary (REQ-SEC-002, NC-025, NC-026, REQ-DOM-001)
       expect(typeof error.stack).toBe("string");
       expect(error.toString()).toContain("PublicClientError: Kết nối mạng quá thời gian.");
     });
+
+    it("accepts complex valid codes mixing lowercase letters, digits, and underscores", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      reportClientIssue("flight_search_v2_step_3");
+      expect(warn).toHaveBeenCalledWith('{"event":"client_issue","code":"flight_search_v2_step_3"}');
+    });
+
+    it("rejects codes with unicode, accented characters, or emojis defensively", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      reportClientIssue("lỗi_hệ_thống");
+      expect(warn).toHaveBeenCalledWith('{"event":"client_issue","code":"client_issue_invalid_code"}');
+
+      reportClientIssue("deal_✈️_broken");
+      expect(warn).toHaveBeenCalledWith('{"event":"client_issue","code":"client_issue_invalid_code"}');
+    });
+
+    it("PublicClientError retains readonly code property and is catchable in standard try/catch blocks", () => {
+      try {
+        throw new PublicClientError("unauthorized_action", "Hành động không được phép.");
+      } catch (err) {
+        expect(err).toBeInstanceOf(PublicClientError);
+        if (err instanceof PublicClientError) {
+          expect(err.code).toBe("unauthorized_action");
+          expect(err.message).toBe("Hành động không được phép.");
+        }
+      }
+    });
+
+    it("scale stress test: 50,000 issue reports execute in < 50ms", () => {
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      const start = performance.now();
+      for (let i = 0; i < 50000; i++) {
+        reportClientIssue("batch_diagnostic_code");
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
+    });
   });
 });
