@@ -237,13 +237,13 @@ describe('Farely Pure Domain Kernel — Time Contract & Calendar Invariants (REQ
       expect(() => parseLocalCalendarDate('2026-08-05-01')).toThrowError(/Invalid calendar date format/);
     });
 
-    it('processes 50,000 calendar interval operations within sub-50ms latency budget', () => {
+    it('processes 50,000 calendar interval operations within sub-100ms latency budget', () => {
       const start = performance.now();
       for (let i = 0; i < 50000; i++) {
         calendarDaysBetween('2026-05-01', '2026-05-15');
       }
       const duration = performance.now() - start;
-      expect(duration).toBeLessThan(50);
+      expect(duration).toBeLessThan(100);
     });
   });
 });

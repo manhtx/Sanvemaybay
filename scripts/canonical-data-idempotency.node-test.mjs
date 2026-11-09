@@ -128,3 +128,31 @@ test("NODE DATA-07: Pure immutability on Object.freeze protected raw flight obse
   assert.equal(row.origin_airport, "HAN");
   assert.equal(row.destination_airport, "SGN");
 });
+
+test("NODE DATA-09: High-throughput canonical fare normalization and observation fingerprinting micro-benchmark", () => {
+  const flight = {
+    origin_code: "HAN",
+    destination_code: "BKK",
+    date: "2026-11-15",
+    return_date: "2026-11-20",
+    airline_code: "VJ",
+    flight_number: "VJ901",
+    price: 2150000,
+    timestamp: "2026-10-01T08:00:00Z",
+    source: "fast_flights",
+  };
+
+  const start = performance.now();
+  const iterations = 2000;
+
+  for (let i = 0; i < iterations; i++) {
+    const row = toFareObservationRow(flight);
+    assert.ok(row);
+    assert.ok(row.offer_variant_id.startsWith("ov:v1:"));
+    assert.equal(row.observation_fingerprint.length, 64);
+  }
+
+  const duration = performance.now() - start;
+  // 2,000 canonical rows must process within 100ms
+  assert.ok(duration < 100, `Normalization benchmark took ${duration.toFixed(2)}ms, expected < 100ms`);
+});
