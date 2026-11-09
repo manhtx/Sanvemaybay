@@ -141,4 +141,62 @@ describe("Farely Pure Domain — Trip Budget Advisor (NC-005, NC-033, REQ-DOM-00
     expect(advice[0].deal.id).toBe("cheaper");
     expect(advice[1].deal.id).toBe("pricier");
   });
+
+  it("accepts exact budget match where budgetRemaining is exactly 0", () => {
+    // 2.3M realTotal + 1 * 700k domestic = 3.0M estimated budget
+    const exactDeal = makeDeal({ id: "exact", realTotal: 2_300_000, tripType: "domestic" });
+    const advice = buildTripAdvice([exactDeal], { origin: "HAN", budget: 3_000_000, days: 1 });
+
+    expect(advice).toHaveLength(1);
+    expect(advice[0].budgetRemaining).toBe(0);
+    expect(advice[0].deal.id).toBe("exact");
+  });
+
+  it("cleanly falls back to aiInsight.savingScore when dealScore is undefined", () => {
+    const dealWithoutScore = makeDeal({
+      id: "fallback",
+      dealScore: undefined,
+      aiInsight: { savingScore: 85 } as any,
+      realTotal: 1_000_000,
+      tripType: "domestic"
+    });
+
+    const advice = buildTripAdvice([dealWithoutScore], { origin: "HAN", budget: 10_000_000, days: 1 });
+    // 1M + 700k = 1.7M / 10M = 17% utilization -> penalty 1.7 points
+    // 85 - 1.7 = 83.3 -> rounded to 83
+    expect(advice).toHaveLength(1);
+    expect(advice[0].fitScore).toBe(83);
+  });
+
+  it("processes large deal inventory (500+ deals) efficiently in sub-100ms", () => {
+    const largeDeals: Deal[] = Array.from({ length: 500 }, (_, i) =>
+      makeDeal({
+        id: `deal_perf_${i}`,
+        fromCode: i % 2 === 0 ? "HAN" : "SGN",
+        toCode: "BKK",
+        realTotal: 1_500_000 + (i % 20) * 100_000,
+        dealScore: 60 + (i % 35),
+        tripType: "international"
+      })
+    );
+
+    const start = performance.now();
+    const advice = buildTripAdvice(largeDeals, { origin: "HAN", budget: 8_000_000, days: 3 });
+    const duration = performance.now() - start;
+
+    expect(advice.length).toBeGreaterThan(0);
+    expect(duration).toBeLessThan(100);
+    for (const item of advice) {
+      expect(item.deal.fromCode).toBe("HAN");
+      expect(item.budgetRemaining).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it("preserves pure immutability on Object.freeze protected deal arrays", () => {
+    const frozenDeal = Object.freeze(makeDeal({ id: "frozen", realTotal: 1_200_000, dealScore: 75 }));
+    const frozenDeals = Object.freeze([frozenDeal]);
+
+    expect(() => buildTripAdvice(frozenDeals as any, { origin: "HAN", budget: 5_000_000, days: 2 })).not.toThrow();
+    expect(frozenDeal.dealScore).toBe(75);
+  });
 });

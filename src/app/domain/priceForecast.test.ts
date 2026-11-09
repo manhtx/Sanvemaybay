@@ -119,4 +119,37 @@ describe("Farely Pure Domain — Conservative Price Forecasting (REQ-SCORE-001, 
     expect(resForward).toEqual(resReversed);
     expect(resForward).toEqual(resShuffled);
   });
+
+  it("probability bounds [0.5, 0.9] and reaches theoretical linear maximum for sample length", () => {
+    // Monotonic linear ramp
+    const linearSeries = makeSeries(Array.from({ length: 14 }, (_, i) => 100 + i * 10));
+    const result = forecastPrice(linearSeries);
+
+    expect(result).toBeDefined();
+    expect(result?.direction).toBe("up");
+    expect(result?.probability).toBeGreaterThanOrEqual(0.5);
+    expect(result?.probability).toBeLessThanOrEqual(0.9);
+    expect(result?.probability).toBe(0.7);
+  });
+
+  it("defaults horizonDays to 7 when omitted", () => {
+    const series = makeSeries(Array.from({ length: 14 }, (_, i) => 100 + i));
+    const result = forecastPrice(series);
+
+    expect(result).toBeDefined();
+    expect(result?.horizonDays).toBe(7);
+  });
+
+  it("preserves pure immutability on Object.freeze protected price series", () => {
+    const frozenPoints = Object.freeze(
+      Array.from({ length: 14 }, (_, i) =>
+        Object.freeze({
+          date: `2026-09-${String(i + 1).padStart(2, "0")}`,
+          price: 1_000_000 + i * 10_000
+        })
+      )
+    );
+
+    expect(() => forecastPrice(frozenPoints as any)).not.toThrow();
+  });
 });
