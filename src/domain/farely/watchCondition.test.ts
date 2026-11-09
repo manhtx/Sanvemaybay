@@ -463,4 +463,101 @@ describe('Farely Pure Domain Kernel — Watch Condition Episodes (REQ-WATCH-015.
 
     expect(result.nextEpisode?.generationId).toBe('gen_batch_999');
   });
+
+  it('preserves pure immutability on Object.freeze protected activeEpisode and input parameters', () => {
+    const frozenEpisode = Object.freeze({
+      id: 'ep_frozen',
+      watchId,
+      conditionFingerprint: `cond_${watchId}_${targetPrice}`,
+      openedAt: t0,
+      closedAt: null,
+      state: 'STILL_INSIDE' as const,
+      entryPrice: 1950000,
+      bestPrice: 1950000,
+      lastEventAt: t0,
+    });
+
+    const result = evaluateWatchCondition({
+      watchId,
+      targetPrice,
+      observedPrice: 1800000,
+      activeEpisode: frozenEpisode,
+      now: t1,
+    });
+
+    expect(result.stateChanged).toBe(true);
+    expect(result.nextEpisode?.bestPrice).toBe(1800000);
+    expect(frozenEpisode.bestPrice).toBe(1950000);
+  });
+
+  it('material price improvement threshold (>= 5% drop): triggers MATERIAL_IMPROVEMENT state and shouldAlert: true', () => {
+    const activeEpisode: WatchConditionEpisode = {
+      id: 'ep_1',
+      watchId,
+      conditionFingerprint: `cond_${watchId}_${targetPrice}`,
+      openedAt: t0,
+      closedAt: null,
+      state: 'STILL_INSIDE',
+      entryPrice: 2000000,
+      bestPrice: 2000000,
+      lastEventAt: t0,
+    };
+
+    // Exactly 5% drop: 2,000,000 * 0.95 = 1,900,000
+    const result = evaluateWatchCondition({
+      watchId,
+      targetPrice,
+      observedPrice: 1900000,
+      activeEpisode,
+      now: t1,
+    });
+
+    expect(result.stateChanged).toBe(true);
+    expect(result.shouldAlert).toBe(true);
+    expect(result.nextEpisode?.state).toBe('MATERIAL_IMPROVEMENT');
+    expect(result.nextEpisode?.bestPrice).toBe(1900000);
+  });
+
+  it('REENTERED state: when a previously EXITED episode sees price drop below target again, triggers REENTERED and shouldAlert: true', () => {
+    const exitedEpisode: WatchConditionEpisode = {
+      id: 'ep_prev',
+      watchId,
+      conditionFingerprint: `cond_${watchId}_${targetPrice}`,
+      openedAt: t0,
+      closedAt: t1,
+      state: 'EXITED',
+      entryPrice: 1900000,
+      bestPrice: 1850000,
+      lastEventAt: t1,
+    };
+
+    const result = evaluateWatchCondition({
+      watchId,
+      targetPrice,
+      observedPrice: 1800000,
+      activeEpisode: exitedEpisode,
+      now: t2,
+    });
+
+    expect(result.stateChanged).toBe(true);
+    expect(result.shouldAlert).toBe(true);
+    expect(result.nextEpisode?.state).toBe('REENTERED');
+    expect(result.nextEpisode?.closedAt).toBeNull();
+    expect(result.nextEpisode?.entryPrice).toBe(1800000);
+  });
+
+  it('processes 10,000 watch condition evaluations within sub-50ms latency budget', () => {
+    const start = performance.now();
+    for (let i = 0; i < 10000; i++) {
+      evaluateWatchCondition({
+        watchId,
+        targetPrice,
+        observedPrice: 1900000 - (i % 50000),
+        activeEpisode: null,
+        now: t0,
+      });
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+  });
 });

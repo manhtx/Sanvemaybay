@@ -218,5 +218,32 @@ describe('Farely Pure Domain Kernel — Time Contract & Calendar Invariants (REQ
       expect(() => validateObservationVsDeparture(frozenInput.observedAtUtc, frozenInput.departLocalDate)).not.toThrow();
       expect(frozenInput.departLocalDate).toBe('2026-12-01');
     });
+
+    it('calendarDaysBetween handles century boundaries accurately (e.g. 2000 leap year vs 2100 common year)', () => {
+      // 2000 is divisible by 400 (leap century): Feb 28 to Mar 1 is 2 days
+      expect(calendarDaysBetween('2000-02-28', '2000-03-01')).toBe(2);
+      // 2100 is not divisible by 400 (non-leap century): Feb 28 to Mar 1 is 1 day
+      expect(calendarDaysBetween('2100-02-28', '2100-03-01')).toBe(1);
+    });
+
+    it('formatLocalCalendarDate handles multi-millennium and century transition dates cleanly', () => {
+      expect(formatLocalCalendarDate(1999, 12, 31)).toBe('1999-12-31');
+      expect(formatLocalCalendarDate(3000, 1, 1)).toBe('3000-01-01');
+    });
+
+    it('parseLocalCalendarDate parses single-digit components when padded or throws on missing fields', () => {
+      expect(parseLocalCalendarDate('2026-08-05')).toEqual({ year: 2026, month: 8, day: 5 });
+      expect(() => parseLocalCalendarDate('2026-08')).toThrowError(/Invalid calendar date format/);
+      expect(() => parseLocalCalendarDate('2026-08-05-01')).toThrowError(/Invalid calendar date format/);
+    });
+
+    it('processes 50,000 calendar interval operations within sub-50ms latency budget', () => {
+      const start = performance.now();
+      for (let i = 0; i < 50000; i++) {
+        calendarDaysBetween('2026-05-01', '2026-05-15');
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
+    });
   });
 });
