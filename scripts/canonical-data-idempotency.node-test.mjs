@@ -90,3 +90,41 @@ test("NODE DATA-05: Preserves provider quality lineage without false upgrades", 
   assert.ok(row);
   assert.equal(row.source_quality, "PROVEN_PROVIDER");
 });
+
+test("NODE DATA-06: Non-positive, NaN, and non-finite price observations fail closed (returns undefined)", () => {
+  const base = {
+    origin_code: "HAN",
+    destination_code: "BKK",
+    date: "2026-11-12",
+    timestamp: "2026-10-01T10:00:00Z"
+  };
+
+  assert.equal(toFareObservationRow({ ...base, price: 0 }), undefined);
+  assert.equal(toFareObservationRow({ ...base, price: -500_000 }), undefined);
+  assert.equal(toFareObservationRow({ ...base, price: Number.NaN }), undefined);
+  assert.equal(toFareObservationRow({ ...base, price: Number.POSITIVE_INFINITY }), undefined);
+  assert.equal(toFareObservationRow({ ...base, price: 2500000, origin_code: "" }), undefined);
+  assert.equal(toFareObservationRow({ ...base, price: 2500000, destination_code: "   " }), undefined);
+});
+
+test("NODE DATA-07: Pure immutability on Object.freeze protected raw flight observations", () => {
+  const frozenFlight = Object.freeze({
+    id: "raw-freeze-123",
+    scan_run_id: "scan-frozen",
+    origin_code: "HAN",
+    destination_code: "SGN",
+    date: "2026-12-01",
+    airline_code: "VN",
+    flight_number: "VN201",
+    price: 1800000,
+    currency: "VND",
+    timestamp: "2026-10-01T10:00:00Z",
+    source: "fast_flights"
+  });
+
+  assert.doesNotThrow(() => toFareObservationRow(frozenFlight));
+  const row = toFareObservationRow(frozenFlight);
+  assert.ok(row);
+  assert.equal(row.origin_airport, "HAN");
+  assert.equal(row.destination_airport, "SGN");
+});

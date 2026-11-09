@@ -165,3 +165,75 @@ test("Edge cases: Invalid prices, NaN, and stale offers quarantined", () => {
   assert.equal(best.price, 4_500_000, "Must skip non-positive, NaN, and stale offers to select valid fresh minimum");
   assert.equal(best.airline, "ValidAir");
 });
+
+test("Freshness boundary precision: candidate within 7 days is accepted, past 7 days is quarantined", () => {
+  const now = new Date("2026-10-08T00:00:00Z").getTime();
+  const maxAgeMs = 7 * 86_400_000;
+
+  const freshTimestamp = new Date(now - (maxAgeMs - 1000)).toISOString();
+  const staleTimestamp = new Date(now - (maxAgeMs + 1000)).toISOString();
+
+  const candidates = [
+    { origin: "HAN", destination: "SGN", outboundDate: "2026-10-16", stops: 0, airline: "StaleAir", price: 1_000_000, currency: "VND", timestamp: staleTimestamp },
+    { origin: "HAN", destination: "SGN", outboundDate: "2026-10-16", stops: 0, airline: "FreshAir", price: 2_000_000, currency: "VND", timestamp: freshTimestamp },
+  ];
+
+  const scope = { origin: "HAN", destination: "SGN", outboundDate: "2026-10-16" };
+  const best = computeRouteBest(candidates, scope, now);
+
+  assert.ok(best);
+  assert.equal(best.airline, "FreshAir");
+  assert.equal(best.price, 2_000_000);
+});
+
+test("Deterministic tie-breaking: identical minimum prices preserve first encountered candidate", () => {
+  const now = new Date("2026-10-06T10:00:00Z").getTime();
+  const candidates = [
+    { origin: "HAN", destination: "DAD", outboundDate: "2026-10-16", stops: 0, airline: "CarrierA", price: 1_500_000, currency: "VND", timestamp: "2026-10-06T09:00:00Z" },
+    { origin: "HAN", destination: "DAD", outboundDate: "2026-10-16", stops: 0, airline: "CarrierB", price: 1_500_000, currency: "VND", timestamp: "2026-10-06T09:00:00Z" },
+  ];
+
+  const scope = { origin: "HAN", destination: "DAD", outboundDate: "2026-10-16" };
+  const best = computeRouteBest(candidates, scope, now);
+
+  assert.ok(best);
+  assert.equal(best.airline, "CarrierA");
+});
+
+test("Currency isolation: USD candidate cannot satisfy VND intent even if numerically smaller", () => {
+  const now = new Date("2026-10-06T10:00:00Z").getTime();
+  const candidates = [
+    { origin: "HAN", destination: "BKK", outboundDate: "2026-10-16", stops: 0, airline: "UsdAir", price: 100, currency: "USD", timestamp: "2026-10-06T09:00:00Z" },
+    { origin: "HAN", destination: "BKK", outboundDate: "2026-10-16", stops: 0, airline: "VndAir", price: 2_500_000, currency: "VND", timestamp: "2026-10-06T09:00:00Z" },
+  ];
+
+  const scope = { origin: "HAN", destination: "BKK", outboundDate: "2026-10-16", currency: "VND" };
+  const best = computeRouteBest(candidates, scope, now);
+
+  assert.ok(best);
+  assert.equal(best.airline, "VndAir");
+  assert.equal(best.price, 2_500_000);
+});
+
+test("Case-insensitivity on scope: lowercase origin and destination match uppercase candidates", () => {
+  const now = new Date("2026-10-06T10:00:00Z").getTime();
+  const candidates = [
+    { origin: "HAN", destination: "SGN", outboundDate: "2026-10-16", stops: 0, airline: "VJ", price: 1_200_000, currency: "VND", timestamp: "2026-10-06T09:00:00Z" },
+  ];
+
+  const scope = { origin: "han", destination: "sgn", outboundDate: "2026-10-16" };
+  const best = computeRouteBest(candidates, scope, now);
+
+  assert.ok(best);
+  assert.equal(best.price, 1_200_000);
+});
+
+test("Pure immutability on Object.freeze protected candidate array", () => {
+  const now = new Date("2026-10-06T10:00:00Z").getTime();
+  const frozenCandidates = Object.freeze([
+    Object.freeze({ origin: "HAN", destination: "KUL", outboundDate: "2026-10-16", stops: 0, airline: "AK", price: 4_200_000, currency: "VND", timestamp: "2026-10-06T09:00:00Z" }),
+  ]);
+
+  const scope = Object.freeze({ origin: "HAN", destination: "KUL", outboundDate: "2026-10-16" });
+  assert.doesNotThrow(() => computeRouteBest(frozenCandidates, scope, now));
+});
