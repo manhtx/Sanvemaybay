@@ -104,4 +104,41 @@ describe("Farely Pure Domain — Evidence-Gated Deal Claims (REQ-SCORE-001, NC-0
       }
     }
   });
+
+  it("metamorphic monotonicity: increasing score never degrades label conviction for fixed confidence", () => {
+    const tierRanking: Record<string, number> = {
+      "Giá quan sát": 0,
+      "Giá đáng chú ý": 1,
+      "Deal ngon": 2,
+      "Deal rất ngon": 3,
+      "Deal cực nóng": 4
+    };
+
+    const testConfidences = [30, 50, 65, 75, 90];
+    for (const conf of testConfidences) {
+      let prevRank = -1;
+      for (let score = 0; score <= 100; score += 5) {
+        const label = evidenceGatedDealLabel(score, conf);
+        const currentRank = tierRanking[label];
+        expect(currentRank).toBeGreaterThanOrEqual(prevRank);
+        prevRank = currentRank;
+      }
+    }
+  });
+
+  it("verifies fine-grained decimal edge boundaries below and at thresholds", () => {
+    // Top tier (90, 75)
+    expect(evidenceGatedDealLabel(89.9, 75)).toBe("Deal rất ngon");
+    expect(evidenceGatedDealLabel(90, 74.9)).toBe("Deal rất ngon");
+    expect(evidenceGatedDealLabel(90.0, 75.0)).toBe("Deal cực nóng");
+
+    // Second tier (80, 65)
+    expect(evidenceGatedDealLabel(79.9, 65)).toBe("Deal ngon");
+    expect(evidenceGatedDealLabel(80, 64.9)).toBe("Deal ngon");
+    expect(evidenceGatedDealLabel(80.0, 65.0)).toBe("Deal rất ngon");
+
+    // Low confidence cap boundary (49.9 vs 50.0)
+    expect(evidenceGatedDealLabel(95, 49.9)).toBe("Giá đáng chú ý");
+    expect(evidenceGatedDealLabel(95, 50.0)).toBe("Deal ngon");
+  });
 });

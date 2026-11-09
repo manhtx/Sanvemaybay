@@ -115,4 +115,66 @@ describe("Farely Pure Domain — Canonical Opportunity Identity (REQ-ID-002, REQ
     // different destination
     expect(isSameLogicalOpportunity(baseInput, { ...baseInput, destinationCode: "NRT" })).toBe(false);
   });
+
+  it("normalizes one-way flights with null, undefined, or empty string returnDate identically", () => {
+    const oneWayNull: OpportunityIdentityInput = {
+      ...baseInput,
+      returnDate: null
+    };
+    const oneWayUndefined: OpportunityIdentityInput = {
+      ...baseInput,
+      returnDate: undefined
+    };
+    const oneWayEmpty: OpportunityIdentityInput = {
+      ...baseInput,
+      returnDate: "   "
+    };
+
+    const idNull = generateOpportunityId(oneWayNull);
+    const idUndefined = generateOpportunityId(oneWayUndefined);
+    const idEmpty = generateOpportunityId(oneWayEmpty);
+
+    expect(idNull).toBe(idUndefined);
+    expect(idNull).toBe(idEmpty);
+    expect(idNull).toBe("HAN:BKK:2026-10-15::VJ:VJ901:0");
+  });
+
+  it("symmetric polymorphic equality comparison (string first, object second)", () => {
+    const id = "HAN:BKK:2026-10-15:2026-10-20:VJ:VJ901:0";
+    expect(isSameLogicalOpportunity(id, baseInput)).toBe(true);
+    expect(isSameLogicalOpportunity(id, { ...baseInput, airlineCode: "VN" })).toBe(false);
+  });
+
+  it("verifies round-trip fidelity: parse(generate(input)) preserves all attributes", () => {
+    const input: OpportunityIdentityInput = {
+      originCode: "SGN",
+      destinationCode: "NRT",
+      departDate: "2026-11-20",
+      returnDate: "2026-11-28",
+      airlineCode: "JL",
+      flightNumber: "JL750",
+      stops: 1
+    };
+
+    const serialized = generateOpportunityId(input);
+    const parsed = parseOpportunityId(serialized);
+
+    expect(parsed).toEqual(input);
+  });
+
+  it("guarantees referential transparency and object immutability", () => {
+    const frozenInput = Object.freeze({
+      originCode: "DAD",
+      destinationCode: "ICN",
+      departDate: "2026-12-01",
+      returnDate: "2026-12-07",
+      airlineCode: "KE",
+      flightNumber: "KE464",
+      stops: 0
+    });
+
+    expect(() => generateOpportunityId(frozenInput)).not.toThrow();
+    expect(() => isSameLogicalOpportunity(frozenInput, "DAD:ICN:2026-12-01:2026-12-07:KE:KE464:0")).not.toThrow();
+    expect(frozenInput.airlineCode).toBe("KE");
+  });
 });
