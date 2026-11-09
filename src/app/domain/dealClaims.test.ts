@@ -141,4 +141,64 @@ describe("Farely Pure Domain — Evidence-Gated Deal Claims (REQ-SCORE-001, NC-0
     expect(evidenceGatedDealLabel(95, 49.9)).toBe("Giá đáng chú ý");
     expect(evidenceGatedDealLabel(95, 50.0)).toBe("Deal ngon");
   });
+
+  it("verifies exact thresholds for score 70 and score 60 when confidence is >= 50", () => {
+    // Score 70.0 with conf >= 50 is 'Deal ngon'
+    expect(evidenceGatedDealLabel(70.0, 50.0)).toBe("Deal ngon");
+    // Score 69.9 drops to 'Giá đáng chú ý'
+    expect(evidenceGatedDealLabel(69.9, 50.0)).toBe("Giá đáng chú ý");
+
+    // Score 60.0 with conf >= 50 is 'Giá đáng chú ý'
+    expect(evidenceGatedDealLabel(60.0, 50.0)).toBe("Giá đáng chú ý");
+    // Score 59.9 drops to 'Giá quan sát'
+    expect(evidenceGatedDealLabel(59.9, 50.0)).toBe("Giá quan sát");
+  });
+
+  it("suppresses top claims when score is 100 but confidence is low (<= 49.999)", () => {
+    expect(evidenceGatedDealLabel(100, 0)).toBe("Giá đáng chú ý");
+    expect(evidenceGatedDealLabel(100, 49.999)).toBe("Giá đáng chú ý");
+  });
+
+  it("suppresses low score deals regardless of 100% confidence", () => {
+    expect(evidenceGatedDealLabel(0, 100)).toBe("Giá quan sát");
+    expect(evidenceGatedDealLabel(59, 100)).toBe("Giá quan sát");
+    expect(evidenceGatedDealLabel(59.9, 100)).toBe("Giá quan sát");
+  });
+
+  it("defensively coerces null, boolean, and empty string inputs", () => {
+    expect(evidenceGatedDealLabel(null as any, null as any)).toBe("Giá quan sát");
+    expect(evidenceGatedDealLabel("" as any, "" as any)).toBe("Giá quan sát");
+    expect(evidenceGatedDealLabel(true as any, true as any)).toBe("Giá quan sát"); // score 1, conf 1
+    expect(evidenceGatedDealLabel(false as any, false as any)).toBe("Giá quan sát");
+  });
+
+  it("strictly maps all outputs to the canonical 5-label taxonomy", () => {
+    const validLabels = new Set([
+      "Giá quan sát",
+      "Giá đáng chú ý",
+      "Deal ngon",
+      "Deal rất ngon",
+      "Deal cực nóng"
+    ]);
+
+    for (let s = 0; s <= 100; s += 10) {
+      for (let c = 0; c <= 100; c += 10) {
+        expect(validLabels.has(evidenceGatedDealLabel(s, c))).toBe(true);
+      }
+    }
+  });
+
+  it("handles extreme negative and positive Infinity safely", () => {
+    expect(evidenceGatedDealLabel(-Infinity, -Infinity)).toBe("Giá quan sát");
+    expect(evidenceGatedDealLabel(Infinity, Infinity)).toBe("Deal cực nóng");
+  });
+
+  it("benchmark: 10,000 evidence-gated deal label evaluations execute in sub-50ms", () => {
+    const start = performance.now();
+    for (let i = 0; i < 10000; i++) {
+      evidenceGatedDealLabel((i * 13) % 100, (i * 17) % 100);
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
+  });
 });
