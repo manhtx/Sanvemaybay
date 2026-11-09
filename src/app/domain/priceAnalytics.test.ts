@@ -201,5 +201,113 @@ describe("buildPriceAnalytics", () => {
       expect(analytics?.average).toBe(200);
       expect(analytics?.median).toBe(200);
     });
+
+    it("derives exact distribution for a single observation set", () => {
+      const singlePoint = [{ date: "2026-09-15", price: 1_800_000 }];
+      const analytics = buildPriceAnalytics(singlePoint, 1_800_000);
+
+      expect(analytics).toBeDefined();
+      expect(analytics?.lowest).toBe(1_800_000);
+      expect(analytics?.highest).toBe(1_800_000);
+      expect(analytics?.median).toBe(1_800_000);
+      expect(analytics?.average).toBe(1_800_000);
+      expect(analytics?.volatilityPercent).toBe(0);
+      expect(analytics?.currentPercentile).toBe(100);
+      expect(analytics?.cheapestWeekday).toBeUndefined();
+    });
+
+    it("handles large pricing values (e.g. 100,000,000 VND) without overflow", () => {
+      const highValuePoints = [
+        { date: "2026-08-01", price: 80_000_000 },
+        { date: "2026-08-02", price: 100_000_000 },
+        { date: "2026-08-03", price: 120_000_000 },
+      ];
+      const analytics = buildPriceAnalytics(highValuePoints, 90_000_000);
+
+      expect(analytics?.lowest).toBe(80_000_000);
+      expect(analytics?.median).toBe(100_000_000);
+      expect(analytics?.highest).toBe(120_000_000);
+      expect(analytics?.average).toBe(100_000_000);
+      expect(analytics?.currentPercentile).toBe(33); // 1/3 <= 90M
+    });
+
+    it("handles leap year observation dates accurately", () => {
+      const leapPoints = [
+        { date: "2028-02-28", price: 200 },
+        { date: "2028-02-29", price: 180 }, // Tuesday leap day
+        { date: "2028-03-01", price: 220 },
+      ];
+      const analytics = buildPriceAnalytics(leapPoints);
+      expect(analytics).toBeDefined();
+      expect(analytics?.lowest).toBe(180);
+      expect(analytics?.median).toBe(200);
+      expect(analytics?.highest).toBe(220);
+    });
+
+    it("computes percentile 0 when currentPrice is lower than lowest observed price", () => {
+      const points = [
+        { date: "2026-08-01", price: 200 },
+        { date: "2026-08-02", price: 300 },
+      ];
+      const analytics = buildPriceAnalytics(points, 100);
+      expect(analytics?.currentPercentile).toBe(0); // 0/2
+    });
+
+    it("computes percentile 100 when currentPrice exceeds highest observed price", () => {
+      const points = [
+        { date: "2026-08-01", price: 200 },
+        { date: "2026-08-02", price: 300 },
+      ];
+      const analytics = buildPriceAnalytics(points, 500);
+      expect(analytics?.currentPercentile).toBe(100); // 2/2
+    });
+
+    it("preserves immutability of input price history points on Object.freeze", () => {
+      const frozenPoints = Object.freeze([
+        Object.freeze({ date: "2026-08-01", price: 150 }),
+        Object.freeze({ date: "2026-08-02", price: 250 }),
+      ]);
+
+      expect(() => buildPriceAnalytics(frozenPoints as any, 200)).not.toThrow();
+    });
+
+    it("Sunday (day 0) and Saturday (day 6) correctly qualify for cheapestWeekday evaluation", () => {
+      // 14 points across Weekend and Weekday (Sun, Sat, Mon, Tue)
+      const points = [
+        { date: "2026-08-02", price: 100 }, // Sun (day 0)
+        { date: "2026-08-09", price: 110 }, // Sun
+        { date: "2026-08-01", price: 120 }, // Sat (day 6)
+        { date: "2026-08-08", price: 130 }, // Sat
+        { date: "2026-08-03", price: 200 }, // Mon (day 1)
+        { date: "2026-08-10", price: 210 }, // Mon
+        { date: "2026-08-17", price: 220 }, // Mon
+        { date: "2026-08-24", price: 230 }, // Mon
+        { date: "2026-08-04", price: 300 }, // Tue (day 2)
+        { date: "2026-08-11", price: 310 }, // Tue
+        { date: "2026-08-18", price: 320 }, // Tue
+        { date: "2026-08-25", price: 330 }, // Tue
+        { date: "2026-08-15", price: 125 }, // Sat
+        { date: "2026-08-16", price: 105 }, // Sun
+      ];
+      expect(points.length).toBe(14);
+      const result = buildPriceAnalytics(points);
+      // Sunday has lowest average price (~105), day 0
+      expect(result?.cheapestWeekday).toBe(0);
+    });
+
+    it("high-volume price analytics throughput benchmark: 5,000 evaluations in sub-50ms", () => {
+      const benchmarkPoints = [
+        { date: "2026-08-01", price: 100 },
+        { date: "2026-08-02", price: 150 },
+        { date: "2026-08-03", price: 200 },
+        { date: "2026-08-04", price: 250 },
+      ];
+      const start = performance.now();
+      for (let i = 0; i < 5000; i++) {
+        buildPriceAnalytics(benchmarkPoints, 180);
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
+    });
   });
 });

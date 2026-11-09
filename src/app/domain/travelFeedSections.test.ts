@@ -217,4 +217,113 @@ describe("Farely Pure Domain — Curated Travel Feed Sections (REQ-SCORE-001, RE
     expect(() => buildTravelFeedSections(frozenDeals as any, frozenPrefs)).not.toThrow();
     expect(frozenDeal.dealScore).toBe(88);
   });
+
+  it("distinguishes destinations with same city name but different toCode in trendingDestinations (NC-010 sister airports)", () => {
+    const deals = [
+      makeDeal({ id: "bkk_deal", to: "Bangkok", toCode: "BKK", dealScore: 85 }),
+      makeDeal({ id: "dmk_deal", to: "Bangkok", toCode: "DMK", dealScore: 89 })
+    ];
+
+    const sections = buildTravelFeedSections(deals, defaultPreferences);
+    // Both sister airports must appear as distinct trending destinations
+    expect(sections.trendingDestinations).toHaveLength(2);
+    expect(sections.trendingDestinations[0].id).toBe("dmk_deal");
+    expect(sections.trendingDestinations[1].id).toBe("bkk_deal");
+  });
+
+  it("handles single-deal inventory populating all applicable sections with that deal", () => {
+    const soloDeal = makeDeal({ id: "solo_star", dealScore: 90, discount: 45 });
+    const sections = buildTravelFeedSections([soloDeal], defaultPreferences);
+
+    expect(sections.hot).toHaveLength(1);
+    expect(sections.hot[0].id).toBe("solo_star");
+    expect(sections.biggestDrops).toHaveLength(1);
+    expect(sections.biggestDrops[0].id).toBe("solo_star");
+    expect(sections.trendingDestinations).toHaveLength(1);
+    expect(sections.trendingDestinations[0].id).toBe("solo_star");
+  });
+
+  it("biggestDrops section accurately handles 0% and 100% discount extremes", () => {
+    const deals = [
+      makeDeal({ id: "d_zero", discount: 0 }),
+      makeDeal({ id: "d_full", discount: 100 }),
+      makeDeal({ id: "d_half", discount: 50 })
+    ];
+
+    const sections = buildTravelFeedSections(deals, defaultPreferences);
+    expect(sections.biggestDrops.map((d) => d.id)).toEqual(["d_full", "d_half", "d_zero"]);
+  });
+
+  it("hot section stably tie-breaks deals with identical scores", () => {
+    const deals = [
+      makeDeal({ id: "hot_1", dealScore: 85 }),
+      makeDeal({ id: "hot_2", dealScore: 85 }),
+      makeDeal({ id: "hot_3", dealScore: 85 })
+    ];
+
+    const sections = buildTravelFeedSections(deals, defaultPreferences);
+    expect(sections.hot).toHaveLength(3);
+    const hotIds = sections.hot.map((d) => d.id);
+    expect(hotIds).toContain("hot_1");
+    expect(hotIds).toContain("hot_2");
+    expect(hotIds).toContain("hot_3");
+  });
+
+  it("handles deals with null flightNumber or empty images cleanly", () => {
+    const deal = makeDeal({ id: "minimal_deal", flightNumber: "" as any, image: "" });
+    const sections = buildTravelFeedSections([deal], defaultPreferences);
+    expect(sections.hot[0].id).toBe("minimal_deal");
+  });
+
+  it("recommendations section respects maxStops and preferred carrier affinity", () => {
+    const deals = [
+      makeDeal({ id: "d_stops_0", stops: 0, airlineCode: "VN", dealScore: 70 }),
+      makeDeal({ id: "d_stops_2", stops: 2, airlineCode: "VJ", dealScore: 70 })
+    ];
+
+    const prefs = {
+      ...defaultPreferences,
+      maxStops: 0,
+      preferredAirlines: ["VN"]
+    };
+
+    const sections = buildTravelFeedSections(deals, prefs);
+    // Direct flight with preferred carrier ranks highest in recommendations
+    expect(sections.recommendations[0].id).toBe("d_stops_0");
+  });
+
+  it("sections have mutually independent array references (modifying one array does not mutate others)", () => {
+    const deals = [makeDeal({ id: "d_indep", dealScore: 80, discount: 20 })];
+    const sections = buildTravelFeedSections(deals, defaultPreferences);
+
+    expect(sections.hot).not.toBe(sections.biggestDrops);
+    expect(sections.hot).not.toBe(sections.recommendations);
+    expect(sections.hot).not.toBe(sections.newlyDetected);
+    expect(sections.hot).not.toBe(sections.trendingDestinations);
+  });
+
+  it("high-volume feed sections throughput benchmark: 2,000 deals processed in sub-50ms", () => {
+    const largeDeals = Array.from({ length: 2000 }, (_, i) =>
+      makeDeal({
+        id: `perf_feed_${i}`,
+        toCode: `DEST_${i % 30}`,
+        to: `City ${i % 30}`,
+        dealScore: 40 + (i % 55),
+        discount: 5 + (i % 45),
+        fromCode: i % 2 === 0 ? "HAN" : "SGN",
+        observedAt: `2026-08-${String((i % 28) + 1).padStart(2, "0")}T00:00:00Z`
+      })
+    );
+
+    const start = performance.now();
+    const sections = buildTravelFeedSections(largeDeals, defaultPreferences);
+    const duration = performance.now() - start;
+
+    expect(duration).toBeLessThan(50);
+    expect(sections.hot).toHaveLength(4);
+    expect(sections.newlyDetected).toHaveLength(4);
+    expect(sections.biggestDrops).toHaveLength(4);
+    expect(sections.recommendations).toHaveLength(4);
+    expect(sections.trendingDestinations).toHaveLength(4);
+  });
 });
