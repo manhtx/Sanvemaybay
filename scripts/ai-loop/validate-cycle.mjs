@@ -64,6 +64,25 @@ if (await exists(reportPath)) {
   evidence.push(reportPath);
 }
 
+const farelyAdapterPath = join(root, '.ai-loop/FARELY_PROJECT_ADAPTER.md');
+if (await exists(farelyAdapterPath)) {
+  const mastergoal = await readText(mastergoalPath);
+  const implementation = await readJson(implementationPath, null);
+  const valueCase = await readText(valueCasePath);
+  const projectEvidenceClasses = ['LOCAL_VERIFIED', 'STAGING_VERIFIED', 'PRODUCTION_VERIFIED', 'EMPIRICAL_PENDING', 'BLOCKED_EXTERNAL', 'NOT_APPLICABLE'];
+  if (!/FLY-[A-Z0-9-]+/i.test(mastergoal)) issues.push('Farely mastergoal has no FLY-* requirement mapping');
+  if (!/(?:GATE-[A-Z0-9-]+|RG\d+)/i.test(mastergoal)) issues.push('Farely mastergoal has no GATE-* or RG* gate mapping');
+  if (!/falsifier|counterexample|negative test/i.test(mastergoal)) issues.push('Farely mastergoal has no falsifier/negative-test plan');
+  if (!projectEvidenceClasses.some((name) => new RegExp(name, 'i').test(valueCase))) issues.push('Farely value-case.md has no explicit evidence class');
+  if (!/falsifier|counterexample|negative test/i.test(valueCase)) issues.push('Farely value-case.md has no falsifier/negative-test evidence');
+  if (implementation && typeof implementation === 'object') {
+    if (!Array.isArray(implementation.requirements) || !implementation.requirements.length) issues.push('Farely implementation.json has no mapped requirements[]');
+    if (!Array.isArray(implementation.gates) || !implementation.gates.length) issues.push('Farely implementation.json has no mapped gates[]');
+    if (!Array.isArray(implementation.falsifiers) || !implementation.falsifiers.length) issues.push('Farely implementation.json has no falsifiers[]');
+    if (!implementation.evidenceClass) issues.push('Farely implementation.json has no evidenceClass');
+  }
+}
+
 const result = {
   cycle,
   passed: issues.length === 0,

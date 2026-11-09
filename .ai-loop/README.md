@@ -35,6 +35,11 @@ This checks that the project mission, acceptance contract, feature contract,
 release/runtime gates, performance budgets, status, and blocker ledgers exist
 and reports external blockers separately from local evidence validity.
 
+`npm run ai-loop:audit -- <cycle>` additionally enforces Farely cycle evidence:
+the mastergoal must map to `FLY-*` and `GATE-*`/`RG*`, the value case must name
+an evidence class and falsifier, and `implementation.json` must carry mapped
+requirements, gates, falsifiers, and evidence class.
+
 ## Optional API runner
 
 ```bash

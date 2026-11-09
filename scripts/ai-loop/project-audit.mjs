@@ -37,6 +37,8 @@ const release = await readJson('.flycheap/RELEASE_GATES.json');
 const runtime = await readJson('.flycheap/RUNTIME_GATES.json');
 const blockers = await readJson('.flycheap/RELEASE_BLOCKERS.json');
 const status = await readJson('.flycheap/STATUS.json');
+const packageJson = await readJson('package.json');
+const requiredCommands = ['check', 'check:functions', 'test:functions', 'test:e2e', 'test:integration', 'ai-loop:project-audit', 'ai-loop:audit'];
 
 const requirementIds = new Set((acceptance?.requirements || []).map((item) => item.id).filter(Boolean));
 const featureIds = new Set((features?.features || []).map((item) => item.feature_id).filter(Boolean));
@@ -49,6 +51,9 @@ if (!requirementIds.size) issues.push('Farely acceptance contract contains no re
 if (!featureIds.size) issues.push('Farely feature contract contains no feature IDs');
 if (!releaseGates.length) issues.push('Farely release gate registry is empty');
 if (!runtimeGates.length) issues.push('Farely runtime gate registry is empty');
+for (const command of requiredCommands) {
+  if (!packageJson?.scripts?.[command]) issues.push(`package.json is missing required command: ${command}`);
+}
 if (openP0P1 > 0) warnings.push(`current STATUS reports ${openP0P1} open P0/P1 defects`);
 if (activeExternalBlockers.length) warnings.push(`${activeExternalBlockers.length} external blocker records require explicit evidence classification`);
 
@@ -63,6 +68,8 @@ const result = {
     features: featureIds.size,
     releaseGates: releaseGates.length,
     runtimeGates: runtimeGates.length,
+    requiredCommands,
+    missingCommands: requiredCommands.filter((command) => !packageJson?.scripts?.[command]),
   },
   currentState: {
     phase: status?.current_phase || null,
