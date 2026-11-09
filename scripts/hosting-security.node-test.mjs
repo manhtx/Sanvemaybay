@@ -41,3 +41,39 @@ test("static public assets (/robots.txt and /release.json) resolve to static con
   assert.doesNotMatch(robots, /<html/i);
 });
 
+test("hosting policy verifies all 5 critical security headers: CSP, Referrer-Policy, X-Content-Type-Options, X-Frame-Options, and Permissions-Policy", async () => {
+  const config = JSON.parse(await readFile(new URL("../vercel.json", import.meta.url), "utf8"));
+  const headers = config.headers?.find((rule) => rule.source === "/(.*)")?.headers ?? [];
+  const map = new Map(headers.map((h) => [h.key, h.value]));
+
+  assert.equal(map.get("Referrer-Policy"), "strict-origin-when-cross-origin");
+  assert.equal(map.get("X-Content-Type-Options"), "nosniff");
+  assert.equal(map.get("X-Frame-Options"), "DENY");
+  assert.equal(map.get("Permissions-Policy"), "camera=(), microphone=(), geolocation=(), payment=()");
+
+  const csp = map.get("Content-Security-Policy");
+  assert.ok(csp, "CSP header must be defined");
+  assert.match(csp, /default-src 'self'/);
+  assert.match(csp, /base-uri 'self'/);
+  assert.match(csp, /form-action 'self'/);
+  assert.match(csp, /upgrade-insecure-requests/);
+});
+
+test("hosting security performance benchmark: 10,000 policy parsing and validation cycles run under latency budget", async () => {
+  const raw = await readFile(new URL("../vercel.json", import.meta.url), "utf8");
+  const parsed = JSON.parse(raw);
+  const headers = parsed.headers[0].headers;
+
+  const start = performance.now();
+  const iterations = 10_000;
+
+  for (let i = 0; i < iterations; i++) {
+    const valMap = Object.fromEntries(headers.map((h) => [h.key, h.value]));
+    assert.equal(valMap["X-Frame-Options"], "DENY");
+    assert.equal(valMap["X-Content-Type-Options"], "nosniff");
+  }
+
+  const duration = performance.now() - start;
+  // 10,000 validations should execute within 50ms
+  assert.ok(duration < 50, `Benchmark took ${duration.toFixed(2)}ms, expected < 50ms`);
+});
