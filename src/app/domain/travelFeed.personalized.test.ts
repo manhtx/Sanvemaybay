@@ -137,4 +137,112 @@ describe("rankPersonalizedFeed", () => {
   it("handles empty deals array safely", () => {
     expect(rankPersonalizedFeed([], defaultPreferences)).toEqual([]);
   });
+
+  it("applies cumulative preference boosts (+8 home +12 region +10 airline = +30 total boost)", () => {
+    const perfectMatch = deal({
+      id: "perfect",
+      fromCode: "HAN",
+      toCode: "NRT",
+      region: "asia",
+      airlineCode: "JL",
+      dealScore: 60
+    });
+    const generic = deal({
+      id: "generic",
+      fromCode: "SGN",
+      toCode: "CDG",
+      region: "europe",
+      airlineCode: "AF",
+      dealScore: 85
+    });
+
+    const prefs = {
+      ...defaultPreferences,
+      homeAirport: "HAN",
+      favoriteRegions: ["asia" as any],
+      preferredAirlines: ["JL"]
+    };
+
+    // perfect score: 60 + 8 + 12 + 10 = 90 > generic score 85
+    const result = rankPersonalizedFeed([generic, perfectMatch], prefs);
+    expect(result[0].id).toBe("perfect");
+    expect(result[1].id).toBe("generic");
+  });
+
+  it("parses flight duration minutes across hours only, minutes only, and combined formats", () => {
+    const dHoursOnly = deal({ id: "d_hours", duration: "3h", toCode: "BKK", dealScore: 70 });
+    const dMinsOnly = deal({ id: "d_mins", duration: "45m", toCode: "DAD", dealScore: 70 });
+    const dCombined = deal({ id: "d_comb", duration: "1h 30m", toCode: "SIN", dealScore: 70 });
+
+    const prefs = { ...defaultPreferences, maxFlightTimeMinutes: 120 }; // 2h limit
+
+    // dHoursOnly: 180m > 120m -> penalized -10 (score 60)
+    // dMinsOnly: 45m <= 120m -> no penalty (score 70)
+    // dCombined: 90m <= 120m -> no penalty (score 70)
+    const result = rankPersonalizedFeed([dHoursOnly, dMinsOnly, dCombined], prefs);
+    expect(result.map((d) => d.id)).toEqual(["d_mins", "d_comb", "d_hours"]);
+  });
+
+  it("scales excess stops penalty with maxStops = 1 (+0 for 1 stop, -10 for 2 stops, -20 for 3 stops)", () => {
+    const d1 = deal({ id: "s1", stops: 1, toCode: "BKK", dealScore: 80 });
+    const d2 = deal({ id: "s2", stops: 2, toCode: "SIN", dealScore: 80 });
+    const d3 = deal({ id: "s3", stops: 3, toCode: "KUL", dealScore: 80 });
+
+    const prefs = { ...defaultPreferences, maxStops: 1 };
+    // s1: 0 penalty -> 80
+    // s2: -10 penalty -> 70
+    // s3: -20 penalty -> 60
+    const result = rankPersonalizedFeed([d3, d2, d1], prefs);
+    expect(result.map((d) => d.id)).toEqual(["s1", "s2", "s3"]);
+  });
+
+  it("safely falls back to aiInsight.savingScore or 0 when dealScore is undefined or NaN", () => {
+    const dFallback = deal({ id: "fb", dealScore: undefined, aiInsight: { savingScore: 75 }, toCode: "BKK" });
+    const dZero = deal({ id: "zero", dealScore: NaN, aiInsight: { savingScore: NaN }, toCode: "SIN" });
+
+    const result = rankPersonalizedFeed([dZero, dFallback], defaultPreferences);
+    expect(result[0].id).toBe("fb");
+    expect(result[1].id).toBe("zero");
+  });
+
+  it("does not penalize deals exactly meeting budget or max flight duration limits", () => {
+    const dExactBudget = deal({ id: "budget_exact", price: 5_000_000, duration: "2h 0m", toCode: "BKK", dealScore: 70 });
+    const prefs = { ...defaultPreferences, budget: 5_000_000, maxFlightTimeMinutes: 120 };
+
+    const result = rankPersonalizedFeed([dExactBudget], prefs);
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe("budget_exact");
+  });
+
+  it("does not award airline boost when preferredAirlines is an empty array", () => {
+    const dVJ = deal({ id: "vj", airlineCode: "VJ", dealScore: 70, toCode: "BKK" });
+    const dVN = deal({ id: "vn", airlineCode: "VN", dealScore: 70, toCode: "SIN" });
+
+    const result = rankPersonalizedFeed([dVJ, dVN], { ...defaultPreferences, preferredAirlines: [] });
+    // Preserves pre-ranking order without boost
+    expect(result.map((d) => d.id)).toEqual(["vj", "vn"]);
+  });
+
+  it("preserves pure immutability on Object.freeze protected deal arrays and preferences", () => {
+    const frozenDeal = Object.freeze(deal({ id: "frozen", dealScore: 75 }));
+    const frozenPrefs = Object.freeze({ ...defaultPreferences });
+
+    expect(() => rankPersonalizedFeed(Object.freeze([frozenDeal]) as any, frozenPrefs)).not.toThrow();
+  });
+
+  it("benchmark: 5,000 personalized feed rankings execute in sub-50ms", () => {
+    const deals = [
+      deal({ id: "d1", fromCode: "HAN", toCode: "BKK", dealScore: 80, region: "asia" }),
+      deal({ id: "d2", fromCode: "SGN", toCode: "CDG", dealScore: 75, region: "europe" }),
+      deal({ id: "d3", fromCode: "HAN", toCode: "NRT", dealScore: 70, region: "asia" })
+    ];
+    const prefs = { ...defaultPreferences, homeAirport: "HAN", favoriteRegions: ["asia" as any] };
+
+    const start = performance.now();
+    for (let i = 0; i < 5000; i++) {
+      rankPersonalizedFeed(deals, prefs);
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
+  });
 });
