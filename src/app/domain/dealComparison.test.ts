@@ -258,5 +258,98 @@ describe("deal comparison", () => {
         ]),
       ).toEqual(new Set());
     });
+
+    it("identifies transitive domination chains across multi-tier option hierarchies", () => {
+      const topTier: DealComparisonRow = {
+        id: "opt-A",
+        route: "HAN → BKK",
+        ticketPrice: 1_500_000,
+        totalCost: 1_500_000,
+        durationMinutes: 120,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low",
+      };
+      const midTier: DealComparisonRow = {
+        id: "opt-B",
+        route: "HAN → BKK",
+        ticketPrice: 2_000_000,
+        totalCost: 2_000_000,
+        durationMinutes: 180,
+        stops: 1,
+        refundPolicy: undefined,
+        risk: "medium",
+      };
+      const lowTier: DealComparisonRow = {
+        id: "opt-C",
+        route: "HAN → BKK",
+        ticketPrice: 2_500_000,
+        totalCost: 2_500_000,
+        durationMinutes: 240,
+        stops: 2,
+        refundPolicy: undefined,
+        risk: "high",
+      };
+
+      const dominatedSet = identifyDominatedOptions([topTier, midTier, lowTier]);
+      expect(dominatedSet.has("opt-A")).toBe(false);
+      expect(dominatedSet.has("opt-B")).toBe(true);
+      expect(dominatedSet.has("opt-C")).toBe(true);
+    });
+
+    it("evaluates 100 flight options in Pareto dominance check within sub-50ms latency budget", () => {
+      const rows: DealComparisonRow[] = Array.from({ length: 100 }, (_, i) => ({
+        id: `perf-opt-${i}`,
+        route: "HAN → NRT",
+        ticketPrice: 3_000_000 + i * 20_000,
+        totalCost: 3_000_000 + i * 20_000,
+        durationMinutes: 300 + (i % 10) * 15,
+        stops: i % 3,
+        refundPolicy: undefined,
+        risk: "low",
+      }));
+
+      const start = performance.now();
+      const dominated = identifyDominatedOptions(rows);
+      const duration = performance.now() - start;
+
+      expect(duration).toBeLessThan(50);
+      expect(dominated.size).toBeGreaterThan(0);
+      expect(dominated.has("perf-opt-0")).toBe(false); // Cheapest direct flight is not dominated
+    });
+
+    it("handles empty deal collections in compareDeals cleanly", () => {
+      expect(compareDeals([])).toEqual([]);
+    });
+
+    it("preserves pure immutability on Object.freeze protected deal comparison rows", () => {
+      const frozenRowA = Object.freeze({
+        id: "fr-A",
+        route: "HAN → SIN",
+        ticketPrice: 2_000_000,
+        totalCost: 2_000_000,
+        durationMinutes: 180,
+        stops: 0,
+        refundPolicy: undefined,
+        risk: "low" as const,
+      });
+
+      const frozenRowB = Object.freeze({
+        id: "fr-B",
+        route: "HAN → SIN",
+        ticketPrice: 2_500_000,
+        totalCost: 2_500_000,
+        durationMinutes: 240,
+        stops: 1,
+        refundPolicy: undefined,
+        risk: "medium" as const,
+      });
+
+      const pool = Object.freeze([frozenRowA, frozenRowB]);
+
+      expect(() => identifyDominatedOptions(pool as any)).not.toThrow();
+      expect(() => explainTradeoff(frozenRowA, frozenRowB)).not.toThrow();
+      expect(frozenRowA.ticketPrice).toBe(2_000_000);
+    });
   });
 });

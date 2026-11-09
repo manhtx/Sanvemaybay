@@ -131,5 +131,40 @@ describe('Farely Pure Domain Kernel — Provider Result & Contracts (REQ-PROV-00
       });
       expect(isResultHealthy(result503)).toBe(false);
     });
+
+    it('generates valid and recent ISO timestamp on observedAt', () => {
+      const before = Date.now();
+      const res = createSuccessResult('amadeus', [{ id: '1', price: 100 }]);
+      const after = Date.now();
+
+      const timestampMs = new Date(res.observedAt).getTime();
+      expect(timestampMs).toBeGreaterThanOrEqual(before);
+      expect(timestampMs).toBeLessThanOrEqual(after + 100);
+      expect(res.observedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    });
+
+    it('preserves pure immutability on Object.freeze protected offer array input', () => {
+      const frozenOffers = Object.freeze([
+        Object.freeze({ id: 'freeze_1', price: 2_000_000 })
+      ]);
+
+      expect(() => createSuccessResult('vietjet', frozenOffers as any)).not.toThrow();
+      expect(frozenOffers[0].price).toBe(2_000_000);
+    });
+
+    it('safely retains detailed diagnostic metadata across custom fields', () => {
+      const detailedMeta = {
+        routesAttempted: 5,
+        routesSucceeded: 5,
+        rawPayloadSize: 2048,
+        httpStatusCode: 200,
+        hasCaptcha: false
+      };
+
+      const errResult = createErrorResult('amadeus', 'TIMEOUT', 'Request timed out after 10000ms', detailedMeta);
+      expect(errResult.metadata).toEqual(detailedMeta);
+      expect(errResult.metadata?.routesAttempted).toBe(5);
+      expect(errResult.metadata?.rawPayloadSize).toBe(2048);
+    });
   });
 });
