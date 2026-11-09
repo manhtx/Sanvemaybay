@@ -44,6 +44,12 @@ must include `lastArtifact`, `heartbeatAt`, `nextAction`,
 `continuationRequired`, and `completionEligible`; the recorded round must
 match the latest round artifact on disk.
 
+Before accepting a Farely cycle checkpoint, run both `npm run
+ai-loop:project-audit` and `npm run ai-loop:audit -- <cycle>`. The project audit
+must pass its source-of-truth integrity checks; its warnings about external or
+empirical blockers must be preserved in the report, not converted into a
+fabricated PASS.
+
 ## Infinite cycle
 
 The completion policy is hard-coded in `.ai-loop/loop-policy.json`:

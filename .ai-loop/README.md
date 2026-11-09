@@ -25,6 +25,16 @@ Farely-specific behavior is defined in `FARELY_PROJECT_ADAPTER.md`. It is the
 project adapter for the portable core and must be read together with the
 `.flycheap` source-of-truth contracts.
 
+Run the Farely-specific contract audit with:
+
+```bash
+npm run ai-loop:project-audit
+```
+
+This checks that the project mission, acceptance contract, feature contract,
+release/runtime gates, performance budgets, status, and blocker ledgers exist
+and reports external blockers separately from local evidence validity.
+
 ## Optional API runner
 
 ```bash

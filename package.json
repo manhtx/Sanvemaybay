@@ -22,6 +22,7 @@
     "ai-loop:status": "node scripts/ai-loop/orchestrator.mjs status",
     "ai-loop:run": "node scripts/ai-loop/orchestrator.mjs host-instructions",
     "ai-loop:audit": "node scripts/ai-loop/validate-cycle.mjs",
+    "ai-loop:project-audit": "node scripts/ai-loop/project-audit.mjs",
     "ai-loop:state": "node scripts/ai-loop/update-state.mjs",
     "ai-loop:smoke": "node scripts/ai-loop/smoke-test.mjs",
     "deploy": "node scripts/deploy.mjs",
