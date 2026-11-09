@@ -309,4 +309,49 @@ describe("deal bookmarks (REQ-SAVED-001, REQ-SAVED-002, NC-030)", () => {
     const duration = performance.now() - start;
     expect(duration).toBeLessThan(50);
   });
+
+  it("toggleBookmarkedDeal idempotency: rapid sequential toggling alternates state cleanly", () => {
+    const store = storage();
+    const dealId = "rapid-toggle-deal";
+    const sampleDeal = { price: 2000000, fromCode: "HAN", toCode: "BKK" };
+
+    // Initial state: not bookmarked
+    expect(isBookmarkedDeal(dealId, store)).toBe(false);
+
+    // Toggle 1: Added
+    const r1 = toggleBookmarkedDeal(dealId, store, sampleDeal);
+    expect(r1).toBe(true);
+    expect(isBookmarkedDeal(dealId, store)).toBe(true);
+    expect(getBookmarkedDealIds(store)).toContain(dealId);
+
+    // Toggle 2: Removed
+    const r2 = toggleBookmarkedDeal(dealId, store);
+    expect(r2).toBe(false);
+    expect(isBookmarkedDeal(dealId, store)).toBe(false);
+    expect(getBookmarkedDealIds(store)).not.toContain(dealId);
+
+    // Toggle 3: Re-added
+    const r3 = toggleBookmarkedDeal(dealId, store, sampleDeal);
+    expect(r3).toBe(true);
+    expect(isBookmarkedDeal(dealId, store)).toBe(true);
+  });
+
+  it("scale stress test: 20,000 snapshot creations execute in < 50ms", () => {
+    const rawDeal = {
+      opportunityId: "SGN:NRT:2026-11-20:VJ:0",
+      fromCode: "SGN",
+      toCode: "NRT",
+      departDate: "2026-11-20",
+      price: 4500000,
+      normalPrice: 7000000,
+      confidence: 0.9,
+    };
+
+    const start = performance.now();
+    for (let i = 0; i < 20000; i++) {
+      createOpportunitySnapshot(rawDeal);
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+  });
 });

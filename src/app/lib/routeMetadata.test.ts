@@ -144,5 +144,22 @@ describe("getRouteMetadata (FLY-SEC-003, REQ-AFF-001, REQ-DOM-001, NC-025)", () 
       const duration = performance.now() - start;
       expect(duration).toBeLessThan(50);
     });
+
+    it("query parameter isolation: paths with unstripped query parameters fall back safely", () => {
+      // Direct exact match on pathname is expected; query parameters must be stripped by caller
+      const withQuery = getRouteMetadata("/deals?origin=HAN");
+      expect(withQuery.indexable).toBe(false);
+      expect(withQuery.title).toBe("Không tìm thấy trang | Farely");
+    });
+
+    it("scale stress test: 50,000 route metadata lookups execute in < 50ms", () => {
+      const paths = ["/", "/deals", "/deals/deal-abc", "/saved", "/terms", "/privacy"];
+      const start = performance.now();
+      for (let i = 0; i < 50000; i++) {
+        getRouteMetadata(paths[i % paths.length]);
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
+    });
   });
 });
