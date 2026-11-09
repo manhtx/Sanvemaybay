@@ -238,4 +238,172 @@ describe("Farely Pure Domain — Comparable Cohort Intelligence (REQ-DOM-004, NC
     expect(() => evaluateCohortComparison(frozenCurrent, frozenCohort as any)).not.toThrow();
     expect(frozenCurrent.price).toBe(4_500_000);
   });
+
+  it("handles duration computation boundary edge cases and invalid date strings", () => {
+    expect(computeDurationDays("invalid-date", "2026-10-10")).toBeUndefined();
+    expect(computeDurationDays("2026-10-10", "invalid-date")).toBeUndefined();
+    expect(computeDurationDays("2026-10-10", "")).toBeUndefined();
+    expect(computeDurationDays("2026-10-10", "2026-10-10")).toBe(0);
+
+    const sameDayCriteria = extractCohortCriteria({ ...currentObs, departDate: "2026-10-10", returnDate: "2026-10-10" });
+    expect(sameDayCriteria.durationDaysBucket).toBe("short");
+
+    const fiveDayCriteria = extractCohortCriteria({ ...currentObs, departDate: "2026-10-01", returnDate: "2026-10-06" });
+    expect(fiveDayCriteria.durationDaysBucket).toBe("medium");
+
+    const eightDayCriteria = extractCohortCriteria({ ...currentObs, departDate: "2026-10-01", returnDate: "2026-10-09" });
+    expect(eightDayCriteria.durationDaysBucket).toBe("medium");
+
+    const nineDayCriteria = extractCohortCriteria({ ...currentObs, departDate: "2026-10-01", returnDate: "2026-10-10" });
+    expect(nineDayCriteria.durationDaysBucket).toBe("long");
+  });
+
+  it("stopsClass cohort isolation: direct vs connecting flights never contaminate each other", () => {
+    const directCriteria = extractCohortCriteria({ ...currentObs, stops: 0 });
+    expect(directCriteria.stopsClass).toBe("direct");
+
+    const connectingCriteria = extractCohortCriteria({ ...currentObs, stops: 1 });
+    expect(connectingCriteria.stopsClass).toBe("connecting");
+
+    // Cohort consisting solely of connecting flights evaluated against a direct flight
+    const connectingCohort: ObservationData[] = Array.from({ length: 6 }, (_, i) => ({
+      ...currentObs,
+      id: `conn_${i}`,
+      stops: 1,
+      price: 2_000_000 // cheap connecting flight should not dilute direct flight cohort
+    }));
+
+    const result = evaluateCohortComparison(currentObs, connectingCohort);
+    expect(result.sampleSize).toBe(0);
+    expect(result.isSufficient).toBe(false);
+    expect(result.cohortMedian).toBeNull();
+  });
+
+  it("strict cohort filtering: rejects observations with mismatched route, month, or trip type", () => {
+    const mixedCohort: ObservationData[] = [
+      { ...currentObs, id: "diff_origin", originCode: "SGN" },
+      { ...currentObs, id: "diff_dest", destinationCode: "SIN" },
+      { ...currentObs, id: "diff_month", departDate: "2026-11-19" },
+      { ...currentObs, id: "diff_trip", returnDate: null } // oneway vs roundtrip
+    ];
+
+    const result = evaluateCohortComparison(currentObs, mixedCohort);
+    expect(result.sampleSize).toBe(0);
+    expect(result.isSufficient).toBe(false);
+  });
+
+  it("cleanses invalid prices: non-positive, NaN, and Infinity are excluded from cohort", () => {
+    const dirtyCohort: ObservationData[] = [
+      ...Array.from({ length: 4 }, (_, i) => ({ ...currentObs, id: `valid_${i}`, price: 5_000_000, scanRunId: `s_${i}` })),
+      { ...currentObs, id: "bad_zero", price: 0 },
+      { ...currentObs, id: "bad_neg", price: -100_000 },
+      { ...currentObs, id: "bad_nan", price: NaN },
+      { ...currentObs, id: "bad_inf", price: Infinity }
+    ];
+
+    // Only 4 valid observations remain, which is < 5 -> insufficient
+    const result = evaluateCohortComparison(currentObs, dirtyCohort);
+    expect(result.sampleSize).toBe(4);
+    expect(result.isSufficient).toBe(false);
+    expect(result.cohortMedian).toBeNull();
+  });
+
+  it("scan epoch fallback: calculates distinct epochs from observedAt date when scanRunId is absent", () => {
+    const fixedNow = new Date("2026-10-19T12:00:00Z").getTime();
+    const cohortWithoutRunId: ObservationData[] = [
+      { ...currentObs, id: "e1", scanRunId: undefined, observedAt: "2026-10-17T08:00:00Z" },
+      { ...currentObs, id: "e2", scanRunId: undefined, observedAt: "2026-10-17T12:00:00Z" },
+      { ...currentObs, id: "e3", scanRunId: undefined, observedAt: "2026-10-18T09:00:00Z" },
+      { ...currentObs, id: "e4", scanRunId: undefined, observedAt: "2026-10-18T18:00:00Z" },
+      { ...currentObs, id: "e5", scanRunId: undefined, observedAt: "2026-10-19T06:00:00Z" }
+    ];
+
+    const result = evaluateCohortComparison(currentObs, cohortWithoutRunId, fixedNow);
+    expect(result.sampleSize).toBe(5);
+    expect(result.evidence.scanEpochCount).toBe(3); // 2026-10-17, 2026-10-18, 2026-10-19
+    expect(result.evidence.tier).toBe("MODERATE");
+  });
+
+  it("evidence tier boundaries: degrades to MODERATE when freshness > 180m or sample < 12", () => {
+    const fixedNow = new Date("2026-10-19T12:00:00Z").getTime();
+    // 14 samples, 4 epochs, but 181 minutes old -> exceeds 180m freshness threshold
+    const cohortStale: ObservationData[] = Array.from({ length: 14 }, (_, i) => ({
+      ...currentObs,
+      id: `s_${i}`,
+      scanRunId: `scan_${i % 4}`,
+      observedAt: new Date(fixedNow - 181 * 60 * 1000).toISOString()
+    }));
+
+    const resultStale = evaluateCohortComparison(
+      { ...currentObs, observedAt: new Date(fixedNow - 181 * 60 * 1000).toISOString() },
+      cohortStale,
+      fixedNow
+    );
+    expect(resultStale.evidence.freshnessMinutes).toBe(181);
+    expect(resultStale.evidence.tier).toBe("MODERATE"); // Degraded from STRONG due to freshness > 180m
+
+    // 11 samples (less than 12) with fresh observations (30m) and 3 epochs
+    const cohortSmall: ObservationData[] = Array.from({ length: 11 }, (_, i) => ({
+      ...currentObs,
+      id: `sm_${i}`,
+      scanRunId: `scan_${i % 3}`,
+      observedAt: new Date(fixedNow - 30 * 60 * 1000).toISOString()
+    }));
+
+    const resultSmall = evaluateCohortComparison(
+      { ...currentObs, observedAt: new Date(fixedNow - 30 * 60 * 1000).toISOString() },
+      cohortSmall,
+      fixedNow
+    );
+    expect(resultSmall.evidence.tier).toBe("MODERATE"); // Degraded from STRONG due to sample < 12
+  });
+
+  it("formats freshness strings across sub-minute, minute, and multi-hour intervals", () => {
+    const fixedNow = new Date("2026-10-19T12:00:00Z").getTime();
+    const cohort: ObservationData[] = Array.from({ length: 5 }, (_, i) => ({
+      ...currentObs,
+      id: `c_${i}`,
+      scanRunId: `s_${i % 2}`
+    }));
+
+    // Freshness < 1 min -> "vừa xong"
+    const fresh0 = evaluateCohortComparison(
+      { ...currentObs, observedAt: new Date(fixedNow - 20 * 1000).toISOString() },
+      cohort,
+      fixedNow
+    );
+    expect(fresh0.evidence.summaryText).toContain("vừa xong");
+
+    // Freshness 45 min -> "45 phút trước"
+    const fresh45 = evaluateCohortComparison(
+      { ...currentObs, observedAt: new Date(fixedNow - 45 * 60 * 1000).toISOString() },
+      cohort,
+      fixedNow
+    );
+    expect(fresh45.evidence.summaryText).toContain("45 phút trước");
+
+    // Freshness 120 min -> "2 giờ trước"
+    const fresh120 = evaluateCohortComparison(
+      { ...currentObs, observedAt: new Date(fixedNow - 120 * 60 * 1000).toISOString() },
+      cohort,
+      fixedNow
+    );
+    expect(fresh120.evidence.summaryText).toContain("2 giờ trước");
+  });
+
+  it("benchmark: 5,000 cohort evaluations execute in sub-50ms", () => {
+    const cohort: ObservationData[] = Array.from({ length: 6 }, (_, i) => ({
+      ...currentObs,
+      id: `c_${i}`,
+      price: 5_000_000 + i * 50_000,
+      scanRunId: `s_${i % 2}`
+    }));
+
+    const start = performance.now();
+    for (let i = 0; i < 5_000; i++) {
+      evaluateCohortComparison(currentObs, cohort);
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
+  });
 });

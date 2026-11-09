@@ -152,4 +152,87 @@ describe("Farely Pure Domain — Conservative Price Forecasting (REQ-SCORE-001, 
 
     expect(() => forecastPrice(frozenPoints as any)).not.toThrow();
   });
+
+  it("evaluates deadband boundary where normalized slope is within [-0.03, 0.03]", () => {
+    // When prices fluctuate slightly around the mean without persistent directional trend
+    const slightOscillation = makeSeries([
+      200, 201, 200, 199, 200, 201, 200,
+      199, 200, 201, 200, 199, 200, 201
+    ]);
+    const res = forecastPrice(slightOscillation);
+    expect(res).toBeDefined();
+    expect(res?.direction).toBe("stable");
+    expect(res?.probability).toBe(0.5);
+  });
+
+  it("handles zero variance flat series with slope = 0 and deviation = 0", () => {
+    const completelyFlat = makeSeries(Array(20).fill(5_000_000));
+    const res = forecastPrice(completelyFlat);
+    expect(res).toBeDefined();
+    expect(res?.direction).toBe("stable");
+    expect(res?.probability).toBe(0.5);
+    expect(res?.sampleCount).toBe(20);
+    expect(res?.confidence).toBe(0.65); // 0.5 + (20 - 14)/40 = 0.65
+  });
+
+  it("quarantines empty array and entirely invalid series returning undefined", () => {
+    expect(forecastPrice([])).toBeUndefined();
+    expect(forecastPrice([
+      { date: "2026-10-01", price: 0 },
+      { date: "2026-10-02", price: -100 },
+      { date: "2026-10-03", price: NaN },
+      { date: "2026-10-04", price: Infinity },
+      { date: "invalid-iso", price: 500_000 }
+    ])).toBeUndefined();
+  });
+
+  it("accurately reports sampleCount reflecting strictly valid sanitized points", () => {
+    const valid16 = makeSeries(Array.from({ length: 16 }, (_, i) => 200 + i * 2));
+    const mixed = [
+      ...valid16,
+      { date: "invalid-date", price: 200 },
+      { date: "2026-09-01", price: -50 },
+      { date: "2026-09-02", price: 0 },
+      { date: "2026-09-03", price: NaN }
+    ];
+    const res = forecastPrice(mixed);
+    expect(res).toBeDefined();
+    expect(res?.sampleCount).toBe(16);
+  });
+
+  it("rounds and clamps horizonDays across negative, zero, and float values", () => {
+    const series = makeSeries(Array.from({ length: 14 }, (_, i) => 300 + i * 5));
+    expect(forecastPrice(series, 0.4)?.horizonDays).toBe(1);
+    expect(forecastPrice(series, -10)?.horizonDays).toBe(1);
+    expect(forecastPrice(series, 21.4)?.horizonDays).toBe(21);
+    expect(forecastPrice(series, 29.8)?.horizonDays).toBe(30);
+  });
+
+  it("caps confidence at 0.85 even with large observation series (100+ points)", () => {
+    const largeSeries = makeSeries(Array.from({ length: 120 }, (_, i) => 200 + i));
+    const res = forecastPrice(largeSeries);
+    expect(res).toBeDefined();
+    expect(res?.sampleCount).toBe(120);
+    expect(res?.confidence).toBe(0.85);
+  });
+
+  it("benchmark: 5,000 forecastPrice executions execute in sub-50ms", () => {
+    const series = makeSeries(Array.from({ length: 14 }, (_, i) => 200 + i * 5));
+    const start = performance.now();
+    for (let i = 0; i < 5_000; i++) {
+      forecastPrice(series);
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
+  });
+
+  it("matches analytical closed-form linear slope direction and bounded probability", () => {
+    // Exact linear sequence: y = 1000 + 10 * x for x=0..13
+    const linearSeq = makeSeries(Array.from({ length: 14 }, (_, i) => 1000 + 10 * i));
+    const res = forecastPrice(linearSeq);
+    expect(res).toBeDefined();
+    expect(res?.direction).toBe("up");
+    expect(res?.probability).toBeGreaterThanOrEqual(0.5);
+    expect(res?.probability).toBeLessThanOrEqual(0.9);
+  });
 });
