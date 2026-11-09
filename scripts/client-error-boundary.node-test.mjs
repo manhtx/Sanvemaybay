@@ -51,3 +51,56 @@ test("internal mutation and worker functions reject non-POST methods before auth
     assert.ok(methodGuard < authGuard, `${file}: method guard must precede auth and body work`);
   }
 });
+
+test("analytics metadata whitelist strictly isolates PII and bans sensitive user fields", async () => {
+  const source = await readFile(new URL("../src/app/lib/analytics.ts", import.meta.url), "utf8");
+
+  // Verify allowedMetadata definition exists and is a Set
+  assert.match(source, /const allowedMetadata = new Set\(\[/, "analytics.ts must define strict allowedMetadata Set");
+
+  // Verify prohibited sensitive/PII fields are completely absent from allowedMetadata
+  const piiFields = ["email", "phone", "password", "token", "secret", "user_id", "credit_card", "ssn", "name", "address"];
+  for (const field of piiFields) {
+    const fieldPattern = new RegExp(`"${field}"`);
+    assert.doesNotMatch(source, fieldPattern, `analytics allowedMetadata must not contain PII field: ${field}`);
+  }
+
+  // Verify sanitizeProductEvent filters both allowed keys and primitive types
+  assert.match(source, /allowedMetadata\.has\(key\)/, "sanitizeProductEvent must check allowedMetadata.has(key)");
+  assert.match(source, /typeof value === "string" \|\| typeof value === "number"/, "sanitizeProductEvent must validate primitive value types");
+});
+
+test("client diagnostic reporting pattern validates low-cardinality regex and quarantines freeform strings", async () => {
+  const source = await readFile(new URL("../src/app/lib/clientDiagnostics.ts", import.meta.url), "utf8");
+
+  // Verify CLIENT_ISSUE_PATTERN regex
+  assert.match(source, /const CLIENT_ISSUE_PATTERN = \/\^\[a-z\]\[a-z0-9_\]\{2,63\}\$\/;/, "clientDiagnostics must enforce bounded snake_case token regex");
+
+  // Test regex directly against valid and malicious patterns
+  const CLIENT_ISSUE_PATTERN = /^[a-z][a-z0-9_]{2,63}$/;
+
+  assert.ok(CLIENT_ISSUE_PATTERN.test("alert_create_failed"), "valid issue code passes");
+  assert.ok(CLIENT_ISSUE_PATTERN.test("product_analytics_unavailable"), "valid issue code passes");
+  assert.ok(CLIENT_ISSUE_PATTERN.test("tracked_routes_unavailable"), "valid issue code passes");
+
+  // Malicious or freeform strings must fail pattern
+  assert.ok(!CLIENT_ISSUE_PATTERN.test("SELECT * FROM users"), "SQL injection payload fails pattern");
+  assert.ok(!CLIENT_ISSUE_PATTERN.test("user@example.com"), "email address fails pattern");
+  assert.ok(!CLIENT_ISSUE_PATTERN.test("Alert Failed!"), "spaces and symbols fail pattern");
+  assert.ok(!CLIENT_ISSUE_PATTERN.test("a"), "too short token (<3 chars) fails pattern");
+  assert.ok(!CLIENT_ISSUE_PATTERN.test("A_CAPITAL_CODE"), "uppercase fails pattern");
+});
+
+test("client data layer endpoints ensure fail-closed safe fallbacks on transport or service failure", async () => {
+  const alertApiSource = await readFile(new URL("../src/app/data/alertApi.ts", import.meta.url), "utf8");
+  const routeApiSource = await readFile(new URL("../src/app/data/routeApi.ts", import.meta.url), "utf8");
+
+  // alertApi.ts must check isSupabaseConfigured before network calls
+  assert.match(alertApiSource, /if \(!isSupabaseConfigured\)/, "alertApi must verify Supabase configuration before dispatch");
+  // alertApi.ts must throw PublicClientError on error rather than raw objects
+  assert.match(alertApiSource, /throw new PublicClientError\(/, "alertApi must wrap failures in PublicClientError");
+
+  // routeApi.ts must return empty array fallback on missing configuration or transport error
+  assert.match(routeApiSource, /if \(!isSupabaseConfigured\) return \[\];/, "routeApi must return empty array if unconfigured");
+  assert.match(routeApiSource, /if \(error\) \{\s*reportClientIssue\("tracked_routes_unavailable"\);\s*return \[\];\s*\}/, "routeApi must return safe empty array fallback on error");
+});
