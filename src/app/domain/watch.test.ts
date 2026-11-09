@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeWatchStatus, evaluateWatchMatch, formatWatchStatusLabel, WatchIntent } from "./watch";
+import { computeWatchStatus, evaluateWatchMatch, formatWatchStatusLabel, matchLocationScope, WatchIntent } from "./watch";
 
 describe("Watch Domain", () => {
   it("evaluates matching route and target price correctly", () => {
@@ -278,5 +278,109 @@ describe("Watch Domain", () => {
     expect(() => evaluateWatchMatch(frozenWatch, frozenCandidate)).not.toThrow();
     expect(frozenWatch.targetPrice).toBe(3500000);
   });
-});
 
+  it("evaluates currency mismatch constraint: watch in VND rejects candidate in USD", () => {
+    const watchVnd = {
+      originCode: "HAN",
+      destinationCode: "BKK",
+      currency: "VND",
+    };
+
+    expect(evaluateWatchMatch(watchVnd, { originCode: "HAN", destinationCode: "BKK", price: 3000000, currency: "USD" })).toBe(false);
+    expect(evaluateWatchMatch(watchVnd, { originCode: "HAN", destinationCode: "BKK", price: 3000000, currency: "VND" })).toBe(true);
+    // When candidate currency is omitted, it is not rejected by currency check
+    expect(evaluateWatchMatch(watchVnd, { originCode: "HAN", destinationCode: "BKK", price: 3000000 })).toBe(true);
+  });
+
+  it("evaluates oneway tripType constraint: rejects candidates with returnDate", () => {
+    const onewayWatch = {
+      originCode: "HAN",
+      destinationCode: "DAD",
+      tripType: "oneway" as const,
+      targetPrice: 1500000,
+    };
+
+    expect(evaluateWatchMatch(onewayWatch, { originCode: "HAN", destinationCode: "DAD", price: 1200000, returnDate: "2026-11-20" })).toBe(false);
+    expect(evaluateWatchMatch(onewayWatch, { originCode: "HAN", destinationCode: "DAD", price: 1200000, returnDate: null })).toBe(true);
+    expect(evaluateWatchMatch(onewayWatch, { originCode: "HAN", destinationCode: "DAD", price: 1200000 })).toBe(true);
+  });
+
+  it("evaluates status sync_failed behavior across match evaluation and lifecycle status", () => {
+    const syncFailedWatch = {
+      originCode: "HAN",
+      destinationCode: "BKK",
+      status: "sync_failed" as const,
+      targetPrice: 5000000,
+    };
+
+    expect(evaluateWatchMatch(syncFailedWatch, { originCode: "HAN", destinationCode: "BKK", price: 3000000 })).toBe(false);
+    expect(computeWatchStatus({ status: "sync_failed" })).toBe("sync_failed");
+
+    const label = formatWatchStatusLabel("sync_failed");
+    expect(label.label).toBe("ĐỒNG BỘ THẤT BẠI");
+    expect(label.colorClass).toContain("rose");
+  });
+
+  it("evaluates status needs_attention in formatWatchStatusLabel", () => {
+    const label = formatWatchStatusLabel("needs_attention");
+    expect(label.label).toBe("CẦN CẬP NHẬT");
+    expect(label.description).toContain("Email chưa xác nhận");
+  });
+
+  it("evaluates locationScope targetCode edge cases and null targets in matchLocationScope", () => {
+    expect(matchLocationScope(null, "BKK")).toBe(true);
+    expect(matchLocationScope(undefined, "BKK")).toBe(true);
+    expect(matchLocationScope("HAN", null)).toBe(false);
+    expect(matchLocationScope("HAN", undefined)).toBe(false);
+    expect(matchLocationScope("HAN", "han")).toBe(true);
+    expect(matchLocationScope("  han  ", "HAN")).toBe(true);
+  });
+
+  it("evaluates exact target price boundary conditions (price <= targetPrice)", () => {
+    const watch = {
+      originCode: "HAN",
+      destinationCode: "BKK",
+      targetPrice: 3000000,
+    };
+
+    expect(evaluateWatchMatch(watch, { originCode: "HAN", destinationCode: "BKK", price: 3000000 })).toBe(true);
+    expect(evaluateWatchMatch(watch, { originCode: "HAN", destinationCode: "BKK", price: 2999999 })).toBe(true);
+    expect(evaluateWatchMatch(watch, { originCode: "HAN", destinationCode: "BKK", price: 3000001 })).toBe(false);
+  });
+
+  describe("High-Volume Performance & Pure Immutability", () => {
+    it("evaluates 10,000 watch evaluations in sub-50ms", () => {
+      const watch = {
+        originCode: "HAN",
+        destinationCode: "BKK_ALL",
+        targetPrice: 4000000,
+        maxStops: 1,
+        dateFrom: "2026-11-01",
+        dateTo: "2026-11-30",
+        tripType: "roundtrip" as const,
+        returnDate: "2026-11-15",
+        cabin: "economy" as const,
+      };
+
+      const candidate = {
+        originCode: "HAN",
+        destinationCode: "BKK",
+        price: 3500000,
+        stops: 0,
+        departDate: "2026-11-10",
+        returnDate: "2026-11-15",
+        cabin: "economy",
+      };
+
+      const start = performance.now();
+      let matchCount = 0;
+      for (let i = 0; i < 10000; i++) {
+        if (evaluateWatchMatch(watch, candidate)) matchCount++;
+      }
+      const elapsed = performance.now() - start;
+
+      expect(matchCount).toBe(10000);
+      expect(elapsed).toBeLessThan(50);
+    });
+  });
+});

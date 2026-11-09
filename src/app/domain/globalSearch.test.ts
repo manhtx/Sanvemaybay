@@ -175,10 +175,10 @@ describe('Global Canonical Search - Negative Controls & Deep Pagination (FLY-INT
 
   describe('Multi-Criteria Filtering Combinations', () => {
     const multiCorpus = [
-      makeDummyDeal(1, 'HAN', 'BKK', 'Bangkok', 2_500_000, { stops: 0, region: 'asia' }),
-      makeDummyDeal(2, 'HAN', 'BKK', 'Bangkok', 1_800_000, { stops: 1, region: 'asia' }),
-      makeDummyDeal(3, 'SGN', 'BKK', 'Bangkok', 2_200_000, { stops: 0, region: 'asia' }),
-      makeDummyDeal(4, 'HAN', 'DAD', 'Đà Nẵng', 1_100_000, { stops: 0, region: 'domestic' }),
+      makeDummyDeal(1, 'HAN', 'BKK', 'Bangkok', 2_500_000, { stops: 0, region: 'asia', departDate: '2026-11-05', duration: '2h 00m' }),
+      makeDummyDeal(2, 'HAN', 'BKK', 'Bangkok', 1_800_000, { stops: 1, region: 'asia', departDate: '2026-11-10', duration: '4h 30m' }),
+      makeDummyDeal(3, 'SGN', 'BKK', 'Bangkok', 2_200_000, { stops: 0, region: 'asia', departDate: '2026-11-15', duration: '1h 50m' }),
+      makeDummyDeal(4, 'HAN', 'DAD', 'Đà Nẵng', 1_100_000, { stops: 0, region: 'domestic', departDate: '2026-11-20', duration: '1h 20m' }),
     ];
 
     it('filters simultaneously by origin, destination, budget, and stops constraints', () => {
@@ -207,6 +207,103 @@ describe('Global Canonical Search - Negative Controls & Deep Pagination (FLY-INT
       expect(filterDeals(multiCorpus, { destination: 'Paris' })).toEqual([]);
       expect(filterDeals(multiCorpus, { from: 'DAD', destination: 'BKK' })).toEqual([]);
       expect(filterDeals([], { destination: 'Bangkok' })).toEqual([]);
+    });
+
+    it('filters by departure date window (departureFrom and departureTo)', () => {
+      const windowResults = filterDeals(multiCorpus, {
+        departureFrom: '2026-11-08',
+        departureTo: '2026-11-18',
+      });
+
+      expect(windowResults).toHaveLength(2);
+      expect(windowResults.map((d) => d.id)).toEqual(['deal-2', 'deal-3']);
+
+      // Exact single day match
+      const exactDay = filterDeals(multiCorpus, {
+        departureFrom: '2026-11-05',
+        departureTo: '2026-11-05',
+      });
+      expect(exactDay).toHaveLength(1);
+      expect(exactDay[0].id).toBe('deal-1');
+    });
+
+    it('immediately returns empty array when departureFrom is strictly after departureTo', () => {
+      const inverted = filterDeals(multiCorpus, {
+        departureFrom: '2026-11-25',
+        departureTo: '2026-11-10',
+      });
+      expect(inverted).toEqual([]);
+    });
+
+    it('filters by maximum flight time minutes (maxFlightTimeMinutes)', () => {
+      // Deals under 120 minutes: deal-1 (120m), deal-3 (110m), deal-4 (80m)
+      const under2Hours = filterDeals(multiCorpus, {
+        maxFlightTimeMinutes: 120,
+      });
+      expect(under2Hours).toHaveLength(3);
+      expect(under2Hours.map((d) => d.id)).toEqual(['deal-1', 'deal-3', 'deal-4']);
+
+      // Deals under 90 minutes: deal-4 (80m)
+      const under90Min = filterDeals(multiCorpus, {
+        maxFlightTimeMinutes: 90,
+      });
+      expect(under90Min).toHaveLength(1);
+      expect(under90Min[0].id).toBe('deal-4');
+    });
+
+    it('respects exact price budget boundary conditions (price <= budget)', () => {
+      const atExactBudget = filterDeals(multiCorpus, { budget: 2_200_000 });
+      // deal-2 (1.8M), deal-3 (2.2M), deal-4 (1.1M)
+      expect(atExactBudget).toHaveLength(3);
+      expect(atExactBudget.map((d) => d.id)).toEqual(['deal-2', 'deal-3', 'deal-4']);
+
+      const belowBudget = filterDeals(multiCorpus, { budget: 2_199_999 });
+      // deal-2 (1.8M), deal-4 (1.1M)
+      expect(belowBudget).toHaveLength(2);
+      expect(belowBudget.map((d) => d.id)).toEqual(['deal-2', 'deal-4']);
+    });
+
+    it('respects exact maxStops boundary conditions (stops <= maxStops)', () => {
+      const directOnly = filterDeals(multiCorpus, { maxStops: 0 });
+      expect(directOnly).toHaveLength(3);
+      expect(directOnly.every((d) => d.stops === 0)).toBe(true);
+
+      const oneStopAllowed = filterDeals(multiCorpus, { maxStops: 1 });
+      expect(oneStopAllowed).toHaveLength(4);
+    });
+
+    it('handles whitespace-padded search queries and case insensitivity', () => {
+      const paddedCode = filterDeals(multiCorpus, { destination: '  bkk  ' });
+      expect(paddedCode).toHaveLength(3);
+
+      const paddedCity = filterDeals(multiCorpus, { destination: '   Bangkok   ' });
+      expect(paddedCity).toHaveLength(3);
+    });
+
+    it('returns full deal catalog untouched when filter criteria object is completely empty', () => {
+      const unfiltered = filterDeals(multiCorpus, {});
+      expect(unfiltered).toHaveLength(4);
+      expect(unfiltered.map((d) => d.id)).toEqual(['deal-1', 'deal-2', 'deal-3', 'deal-4']);
+    });
+
+    it('filters with partial name or code substring fallback when destination is not an exact canonical match', () => {
+      const nẵngDeals = filterDeals(multiCorpus, { destination: 'nẵng' });
+      expect(nẵngDeals).toHaveLength(1);
+      expect(nẵngDeals[0].id).toBe('deal-4');
+
+      const dadCodeDeals = filterDeals(multiCorpus, { destination: 'dad' });
+      expect(dadCodeDeals).toHaveLength(1);
+      expect(dadCodeDeals[0].id).toBe('deal-4');
+    });
+
+    it('filters by canonical origin metropolitan expansion (e.g. from Tokyo TYO_ALL or HAN)', () => {
+      const hanOrigin = filterDeals(multiCorpus, { from: 'HAN' });
+      expect(hanOrigin).toHaveLength(3);
+      expect(hanOrigin.every((d) => d.fromCode === 'HAN')).toBe(true);
+
+      const sgnOrigin = filterDeals(multiCorpus, { from: 'SGN' });
+      expect(sgnOrigin).toHaveLength(1);
+      expect(sgnOrigin[0].fromCode === 'SGN').toBe(true);
     });
   });
 
