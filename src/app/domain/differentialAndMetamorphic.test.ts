@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { evidenceGatedDealLabel } from './dealClaims';
 import { assessDeal, calculateTotalCost } from './flightIntelligence';
+import { assessRoute, RouteOption } from './routeOptimization';
+import { forecastPrice } from './priceForecast';
 import { isApprovedHttpsUrl, approvedBookingHosts } from '../../../supabase/functions/_shared/live-deal';
 
 /**
@@ -236,5 +238,120 @@ describe('Metamorphic Invariants on Production Domain Engine (Section 29–33)',
     expect(isApprovedHttpsUrl('https://www.vietnamairlines.com/vn/vi/', approved)).toBe(true);
     expect(isApprovedHttpsUrl('https://bambooairways.com/booking', approved)).toBe(true);
     expect(isApprovedHttpsUrl('https://VietJetAir.com/booking', approved)).toBe(true); // Case insensitive
+  });
+
+  it('Metamorphic Invariant 6: Route Detour & Multi-Leg Cost/Duration Monotonicity', () => {
+    const directRoute: RouteOption = {
+      type: 'DIRECT',
+      legs: [
+        {
+          origin: 'HAN',
+          destination: 'BKK',
+          price: 2_000_000,
+          durationMinutes: 120,
+          departureAt: '2026-12-01T08:00:00.000Z',
+          arrivalAt: '2026-12-01T10:00:00.000Z',
+          baggageIncluded: true,
+        },
+      ],
+    };
+
+    const connectingRoute: RouteOption = {
+      type: 'MULTI_LEG',
+      legs: [
+        {
+          origin: 'HAN',
+          destination: 'DAD',
+          price: 1_200_000,
+          durationMinutes: 80,
+          departureAt: '2026-12-01T08:00:00.000Z',
+          arrivalAt: '2026-12-01T09:20:00.000Z',
+          baggageIncluded: true,
+        },
+        {
+          origin: 'DAD',
+          destination: 'BKK',
+          price: 1_500_000,
+          durationMinutes: 110,
+          departureAt: '2026-12-01T12:00:00.000Z',
+          arrivalAt: '2026-12-01T13:50:00.000Z',
+          baggageIncluded: true,
+        },
+      ],
+    };
+
+    const assessedDirect = assessRoute(directRoute);
+    const assessedConnecting = assessRoute(connectingRoute);
+
+    // Multi-leg total flight duration must be strictly greater than single leg direct duration
+    expect(assessedConnecting.totalDurationMinutes).toBeGreaterThan(assessedDirect.totalDurationMinutes);
+    // Additive cost across 2 legs must be strictly greater than either individual leg
+    expect(assessedConnecting.totalCost).toBe(2_700_000);
+    expect(assessedConnecting.totalCost).toBeGreaterThan(connectingRoute.legs[0].price);
+    expect(assessedConnecting.totalCost).toBeGreaterThan(connectingRoute.legs[1].price);
+  });
+
+  it('Metamorphic Invariant 7: Price Forecast Trend Slope Monotonicity with Price Trajectories', () => {
+    // 14 days of steadily decreasing prices: 5M down to 3.7M
+    const fallingPoints = Array.from({ length: 14 }, (_, i) => ({
+      date: `2026-10-${String(i + 1).padStart(2, '0')}`,
+      price: 5_000_000 - i * 100_000,
+    }));
+
+    const fallingForecast = forecastPrice(fallingPoints);
+    expect(fallingForecast).toBeDefined();
+    expect(fallingForecast?.direction).toBe('down');
+    expect(fallingForecast?.probability).toBeGreaterThan(0.5);
+
+    // 14 days of steadily rising prices: 3M up to 4.3M
+    const risingPoints = Array.from({ length: 14 }, (_, i) => ({
+      date: `2026-10-${String(i + 1).padStart(2, '0')}`,
+      price: 3_000_000 + i * 100_000,
+    }));
+
+    const risingForecast = forecastPrice(risingPoints);
+    expect(risingForecast).toBeDefined();
+    expect(risingForecast?.direction).toBe('up');
+    expect(risingForecast?.probability).toBeGreaterThan(0.5);
+
+    // 14 days of completely identical prices
+    const flatPoints = Array.from({ length: 14 }, (_, i) => ({
+      date: `2026-10-${String(i + 1).padStart(2, '0')}`,
+      price: 4_000_000,
+    }));
+
+    const flatForecast = forecastPrice(flatPoints);
+    expect(flatForecast).toBeDefined();
+    expect(flatForecast?.direction).toBe('stable');
+  });
+
+  it('Metamorphic Invariant 8: Hostile IP Addresses, Trailing Dots, and Non-Standard Ports', () => {
+    const approved = approvedBookingHosts('vietjetair.com,vietnamairlines.com');
+
+    const hostileUrls = [
+      'https://192.168.1.1/booking',
+      'https://10.0.0.1/vietjetair.com',
+      'https://127.0.0.1:8080/checkout',
+      'https://vietjetair.com.:443/flights',
+      'ftp://vietjetair.com/booking',
+      'file:///etc/passwd',
+      'https://vietjetair.com.evil.co/',
+    ];
+
+    for (const url of hostileUrls) {
+      expect(isApprovedHttpsUrl(url, approved)).toBe(false);
+    }
+  });
+
+  it('preserves pure immutability on Object.freeze protected deal assessment inputs', () => {
+    const frozenParams = Object.freeze({
+      currentPrice: 1_500_000,
+      baselinePrice: 2_000_000,
+      comparableSamples: 10,
+      historicalSamples: 10,
+    });
+
+    expect(() => assessDeal(frozenParams)).not.toThrow();
+    expect(frozenParams.currentPrice).toBe(1_500_000);
   });
 });
