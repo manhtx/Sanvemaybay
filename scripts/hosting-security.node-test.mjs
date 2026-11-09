@@ -77,3 +77,29 @@ test("hosting security performance benchmark: 10,000 policy parsing and validati
   // 10,000 validations should execute within 50ms
   assert.ok(duration < 50, `Benchmark took ${duration.toFixed(2)}ms, expected < 50ms`);
 });
+
+test("hosting build configuration contract, CSP frame-src restrictions, and device permissions lockdown", async () => {
+  const config = JSON.parse(await readFile(new URL("../vercel.json", import.meta.url), "utf8"));
+
+  // Build command and output directory contract
+  assert.equal(config.buildCommand, "npm run build", "Vercel buildCommand must remain npm run build");
+  assert.equal(config.outputDirectory, "dist", "Vercel outputDirectory must remain dist");
+
+  const headers = config.headers?.find((r) => r.source === "/(.*)")?.headers ?? [];
+  const headerMap = new Map(headers.map((h) => [h.key, h.value]));
+
+  // CSP frame-src isolation: allows only Cloudflare Turnstile
+  const csp = headerMap.get("Content-Security-Policy");
+  assert.ok(csp, "CSP must be configured");
+  assert.match(csp, /frame-src https:\/\/challenges\.cloudflare\.com/, "frame-src must allow Cloudflare Turnstile");
+  assert.doesNotMatch(csp, /script-src[^;]*\*/, "script-src must not allow wildcards");
+  assert.doesNotMatch(csp, /script-src[^;]*data:/, "script-src must not allow data: URIs");
+  assert.doesNotMatch(csp, /script-src[^;]*http:/, "script-src must not allow unencrypted http: origins");
+
+  // Permissions-Policy lockdown for invasive device APIs
+  const permissions = headerMap.get("Permissions-Policy");
+  assert.ok(permissions, "Permissions-Policy must be configured");
+  for (const feature of ["camera=()", "microphone=()", "geolocation=()", "payment=()"]) {
+    assert.ok(permissions.includes(feature), `Permissions-Policy must disable ${feature}`);
+  }
+});

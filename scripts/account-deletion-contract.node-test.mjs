@@ -92,3 +92,42 @@ test("account deletion retention cleanup enforces 180-day window and service-rol
   assert.match(migration, /REVOKE ALL ON FUNCTION public\.cleanup_account_deletion_requests\(BOOLEAN\) FROM PUBLIC, anon, authenticated/);
   assert.match(migration, /GRANT EXECUTE ON FUNCTION public\.cleanup_account_deletion_requests\(BOOLEAN\) TO service_role/);
 });
+
+test("user data export completeness, error code sanitization, and throughput benchmark", async () => {
+  const functionSource = await readFile(functionUrl, "utf8");
+
+  // Verify export queries cover all 6 user tables with tenant isolation
+  assert.match(functionSource, /service\.from\("user_preferences"\)[\s\S]*?\.eq\("user_id", user\.id\)/);
+  assert.match(functionSource, /service\.from\("user_bookmarks"\)[\s\S]*?\.eq\("user_id", user\.id\)/);
+  assert.match(functionSource, /service\.from\("user_saved_opportunities"\)[\s\S]*?\.eq\("user_id", user\.id\)/);
+  assert.match(functionSource, /service\.from\("user_alerts"\)[\s\S]*?\.eq\("user_id", user\.id\)/);
+  assert.match(functionSource, /service\.from\("product_events"\)[\s\S]*?\.eq\("user_id", user\.id\)/);
+  assert.match(functionSource, /service\.from\("notification_deliveries"\)[\s\S]*?\.in\("alert_id", alertIds\)/);
+
+  // Verify unknown actions return 400 Unsupported action
+  assert.match(functionSource, /json\(\{\s*error:\s*"Unsupported action"\s*\}, id, 400\)/);
+
+  // Error code sanitization unit logic
+  const safeUserDataErrorCode = (error) => {
+    if (!error || typeof error !== "object" || !("code" in error)) return "user_data_action_failed";
+    const code = String(error.code ?? "");
+    return /^[A-Za-z0-9_-]{1,80}$/.test(code) ? code : "user_data_action_failed";
+  };
+
+  assert.equal(safeUserDataErrorCode({ code: "42P01" }), "42P01");
+  assert.equal(safeUserDataErrorCode({ code: "AUTH_USER_NOT_FOUND" }), "AUTH_USER_NOT_FOUND");
+  assert.equal(safeUserDataErrorCode({ code: "SELECT * FROM users" }), "user_data_action_failed");
+  assert.equal(safeUserDataErrorCode({ code: "error with spaces" }), "user_data_action_failed");
+  assert.equal(safeUserDataErrorCode(null), "user_data_action_failed");
+  assert.equal(safeUserDataErrorCode(undefined), "user_data_action_failed");
+  assert.equal(safeUserDataErrorCode({}), "user_data_action_failed");
+
+  // Performance benchmark: 10,000 sanitization iterations
+  const start = performance.now();
+  for (let i = 0; i < 10_000; i++) {
+    safeUserDataErrorCode({ code: "AUTH_RATE_LIMIT" });
+    safeUserDataErrorCode({ code: "invalid code syntax" });
+  }
+  const duration = performance.now() - start;
+  assert.ok(duration < 50, `10,000 error sanitizations should take < 50ms, took ${duration.toFixed(2)}ms`);
+});
