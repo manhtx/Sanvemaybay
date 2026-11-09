@@ -270,4 +270,84 @@ describe('Farely Pure Domain Kernel — RouteBest & Price Truth (REQ-PRICE-001..
 
     expect(selectRouteBest(invalidOffers, baseIntent)).toBeNull();
   });
+
+  it('preserves pure immutability on Object.freeze protected offers and intent', () => {
+    const frozenOffer = Object.freeze({
+      id: 'off_frozen',
+      origin: 'SGN',
+      destination: 'HAN',
+      departDate: '2026-12-01',
+      airline: 'VJ',
+      price: 1800000,
+      cabin: 'ECONOMY',
+      stops: 0,
+      durationMinutes: 125,
+      currency: 'VND',
+    });
+
+    const frozenIntent = Object.freeze({ ...baseIntent });
+
+    expect(() => selectRouteBest([frozenOffer], frozenIntent as any)).not.toThrow();
+    expect(frozenOffer.price).toBe(1800000);
+  });
+
+  it('maxStops constraint: direct-only intent (maxStops: 0) strictly rejects 1-stop or 2-stop offers', () => {
+    const directIntent = createTravelIntent({
+      origin: 'SGN',
+      destination: 'HAN',
+      journeyType: 'ONE_WAY',
+      outboundDate: '2026-12-01',
+      maxStops: 0,
+    });
+
+    const oneStopOffer: RouteOffer = {
+      ...offer1,
+      stops: 1,
+    };
+
+    const twoStopOffer: RouteOffer = {
+      ...offer1,
+      stops: 2,
+    };
+
+    const result1 = evaluateOfferEligibility(oneStopOffer, directIntent);
+    expect(result1.isEligible).toBe(false);
+    expect(result1.state).toBe('INELIGIBLE');
+    expect(result1.reasons).toContain('STOPS_EXCEEDED');
+
+    const result2 = evaluateOfferEligibility(twoStopOffer, directIntent);
+    expect(result2.isEligible).toBe(false);
+    expect(result2.state).toBe('INELIGIBLE');
+    expect(result2.reasons).toContain('STOPS_EXCEEDED');
+  });
+
+  it('maxDurationMinutes constraint: rejects offers exceeding maximum travel duration', () => {
+    const cappedIntent = createTravelIntent({
+      origin: 'SGN',
+      destination: 'HAN',
+      journeyType: 'ONE_WAY',
+      outboundDate: '2026-12-01',
+      maxDurationMinutes: 120,
+    });
+
+    const longOffer: RouteOffer = {
+      ...offer1,
+      durationMinutes: 180,
+    };
+
+    const result = evaluateOfferEligibility(longOffer, cappedIntent);
+    expect(result.isEligible).toBe(false);
+    expect(result.state).toBe('INELIGIBLE');
+    expect(result.reasons).toContain('DURATION_EXCEEDED');
+  });
+
+  it('processes 10,000 route best evaluations within sub-50ms latency budget', () => {
+    const offers = [offer1, offer2, offer3];
+    const start = performance.now();
+    for (let i = 0; i < 10000; i++) {
+      selectRouteBest(offers, baseIntent);
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+  });
 });

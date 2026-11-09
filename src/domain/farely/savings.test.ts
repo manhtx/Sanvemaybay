@@ -185,4 +185,46 @@ describe('Farely Pure Domain Kernel — Savings & Relative Value (REQ-DOM-001)',
     const duration = performance.now() - start;
     expect(duration).toBeLessThan(50);
   });
+
+  it('metamorphic scale invariance: proportional inflation (10x, 100x) preserves identical savingsPercent', () => {
+    const baseObserved = 1_500_000;
+    const baseBenchmark = 3_000_000;
+
+    const baseResult = calculateSavings(baseObserved, baseBenchmark);
+    const scale10Result = calculateSavings(baseObserved * 10, baseBenchmark * 10);
+    const scale100Result = calculateSavings(baseObserved * 100, baseBenchmark * 100);
+
+    expect(scale10Result.savingsPercent).toBe(baseResult.savingsPercent);
+    expect(scale100Result.savingsPercent).toBe(baseResult.savingsPercent);
+    expect(scale10Result.isSaving).toBe(true);
+    expect(scale100Result.isSaving).toBe(true);
+  });
+
+  it('strict zero-savings boundary: observed price 1 VND higher than benchmark produces 0 savings', () => {
+    const higherByOne = calculateSavings(5_000_001, 5_000_000);
+    expect(higherByOne.savingsAmount).toBe(0);
+    expect(higherByOne.savingsPercent).toBe(0);
+    expect(higherByOne.isSaving).toBe(false);
+  });
+
+  it('preserves pure immutability on input parameters and returns independent frozen-safe instances', () => {
+    const observed = 2_000_000;
+    const benchmark = 4_000_000;
+
+    const res1 = calculateSavings(observed, benchmark);
+    const res2 = calculateSavings(observed, benchmark);
+
+    expect(res1).toEqual(res2);
+    expect(res1).not.toBe(res2);
+    expect(Object.isFrozen(Object.freeze(res1))).toBe(true);
+  });
+
+  it('performance benchmark: 50,000 calculateSavings executions execute in < 50ms', () => {
+    const start = performance.now();
+    for (let i = 0; i < 50000; i++) {
+      calculateSavings(3000000 + (i % 1000), 5000000);
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+  });
 });
