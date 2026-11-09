@@ -148,4 +148,41 @@ describe('Farely Pure Domain Kernel — Savings & Relative Value (REQ-DOM-001)',
     expect(run1).not.toBe(run2); // Independent objects
     expect(Object.isFrozen(Object.freeze(run1))).toBe(true);
   });
+
+  it('calculates 50% exact midpoint savings correctly', () => {
+    const halfPrice = calculateSavings(2_500_000, 5_000_000);
+    expect(halfPrice.savingsAmount).toBe(2_500_000);
+    expect(halfPrice.savingsPercent).toBe(50);
+    expect(halfPrice.isSaving).toBe(true);
+  });
+
+  it('calculates 1% minimum percentage threshold correctly', () => {
+    const onePercent = calculateSavings(990_000, 1_000_000);
+    expect(onePercent.savingsAmount).toBe(10_000);
+    expect(onePercent.savingsPercent).toBe(1);
+    expect(onePercent.isSaving).toBe(true);
+  });
+
+  it('calculates 99% extreme discount correctly', () => {
+    const extremeDiscount = calculateSavings(10_000, 1_000_000);
+    expect(extremeDiscount.savingsAmount).toBe(990_000);
+    expect(extremeDiscount.savingsPercent).toBe(99);
+    expect(extremeDiscount.isSaving).toBe(true);
+  });
+
+  it('calculates 100% near-complete discount when observed is 1 VND', () => {
+    const nearFree = calculateSavings(1, 1_000_000);
+    expect(nearFree.savingsAmount).toBe(999_999);
+    expect(nearFree.savingsPercent).toBe(100);
+    expect(nearFree.isSaving).toBe(true);
+  });
+
+  it('performance benchmark: 10,000 calculateSavings executions execute in < 50ms', () => {
+    const start = performance.now();
+    for (let i = 0; i < 10000; i++) {
+      calculateSavings(3000000 + (i % 1000), 5000000);
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
+  });
 });

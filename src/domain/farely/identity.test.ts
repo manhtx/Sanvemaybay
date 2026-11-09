@@ -21,6 +21,16 @@ describe('Farely Pure Domain Kernel — Identity & Invariants (REQ-DOM-010..013,
     expect(sha256Hex('hello')).toBe('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824');
   });
 
+  it('sha256Hex matches NIST test vector for single character "a"', () => {
+    expect(sha256Hex('a')).toBe('ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb');
+  });
+
+  it('sha256Hex matches NIST test vector for 56-byte multi-block padding boundary', () => {
+    // 56-byte string crosses single-block 55-byte threshold and triggers two-chunk padding
+    const msg56 = 'abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq';
+    expect(sha256Hex(msg56)).toBe('248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1');
+  });
+
   it('REQ-ID-002 & REQ-DOM-011: buildOfferVariantId strictly excludes price points', () => {
     const flightParams = {
       origin: 'SGN',
@@ -38,6 +48,24 @@ describe('Farely Pure Domain Kernel — Identity & Invariants (REQ-DOM-010..013,
     // Same flight parameters observed at different price points must produce the identical variantId
     const variantId2 = buildOfferVariantId({ ...flightParams });
     expect(variantId1).toBe(variantId2);
+  });
+
+  it('buildOfferVariantId distinguishes different airlines and stops', () => {
+    const base = {
+      origin: 'HAN',
+      destination: 'BKK',
+      departDate: '2026-12-01',
+      airline: 'VN',
+      flightNumber: 'VN611',
+      stops: 0
+    };
+
+    const idDirect = buildOfferVariantId(base);
+    const idWithStop = buildOfferVariantId({ ...base, stops: 1 });
+    const idDifferentAirline = buildOfferVariantId({ ...base, airline: 'VJ', flightNumber: 'VJ901' });
+
+    expect(idDirect).not.toBe(idWithStop);
+    expect(idDirect).not.toBe(idDifferentAirline);
   });
 
   it('S09 / A14: buildPhysicalItineraryId produces itin:v1:<32-hex> and normalizes segment order', () => {
@@ -79,6 +107,27 @@ describe('Farely Pure Domain Kernel — Identity & Invariants (REQ-DOM-010..013,
     expect(itinIdForward).toBe(itinIdReversed);
   });
 
+  it('buildPhysicalItineraryId handles direct flights without segments falling back to airline + flightNumber', () => {
+    const id1 = buildPhysicalItineraryId({
+      origin: 'HAN',
+      destination: 'DAD',
+      departDate: '2026-11-20',
+      airline: 'VN',
+      flightNumber: 'VN161',
+    });
+
+    const id2 = buildPhysicalItineraryId({
+      origin: 'HAN',
+      destination: 'DAD',
+      departDate: '2026-11-20',
+      airline: 'VN',
+      flightNumber: 'VN161',
+    });
+
+    expect(id1).toMatch(/^itin:v1:[0-9a-f]{32}$/);
+    expect(id1).toBe(id2);
+  });
+
   it('S10: buildOfferProductId decouples physical flight from commercial dimensions', () => {
     const itineraryId = 'itin:v1:0123456789abcdef0123456789abcdef';
 
@@ -106,6 +155,16 @@ describe('Farely Pure Domain Kernel — Identity & Invariants (REQ-DOM-010..013,
     expect(basicEconomyProd).not.toBe(flexibleProd);
   });
 
+  it('buildOfferProductId handles undefined commercial flags with safe defaults', () => {
+    const itineraryId = 'itin:v1:0123456789abcdef0123456789abcdef';
+    const minimalProd = buildOfferProductId({
+      itineraryId,
+      cabin: 'ECONOMY',
+    });
+
+    expect(minimalProd).toMatch(/^prod:v1:[0-9a-f]{32}$/);
+  });
+
   it('REQ-DOM-012 & REQ-ID-001: buildObservationId uniquely identifies provider observation events', () => {
     const offerVariantId = 'ov:v1:0123456789abcdef0123456789abcdef';
 
@@ -126,6 +185,25 @@ describe('Farely Pure Domain Kernel — Identity & Invariants (REQ-DOM-010..013,
     expect(obsDay1).toMatch(/^obs:v1:[0-9a-f]{32}$/);
     expect(obsDay2).toMatch(/^obs:v1:[0-9a-f]{32}$/);
     expect(obsDay1).not.toBe(obsDay2);
+  });
+
+  it('buildObservationId normalizes provider name to lowercase', () => {
+    const offerVariantId = 'ov:v1:0123456789abcdef0123456789abcdef';
+    const obsLower = buildObservationId({
+      offerVariantId,
+      provider: 'skyscanner',
+      observedAt: '2026-11-01T10:00:00Z',
+      price: 1500000,
+    });
+
+    const obsUpper = buildObservationId({
+      offerVariantId,
+      provider: 'SKYSCANNER',
+      observedAt: '2026-11-01T10:00:00Z',
+      price: 1500000,
+    });
+
+    expect(obsLower).toBe(obsUpper);
   });
 
   it('REQ-DOM-013 & REQ-ID-005: buildOpportunityId distinguishes journey types and cabins', () => {
@@ -251,5 +329,23 @@ describe('Farely Pure Domain Kernel — Identity & Invariants (REQ-DOM-010..013,
     });
 
     expect(idA).toBe(idB);
+  });
+
+  it('performance benchmark: 500 SHA-256 and identifier creations execute in < 50ms', () => {
+    const flightParams = {
+      origin: 'SGN',
+      destination: 'HAN',
+      departDate: '2026-12-01',
+      airline: 'VJ',
+      flightNumber: 'VJ123',
+    };
+
+    const start = performance.now();
+    for (let i = 0; i < 250; i++) {
+      sha256Hex(`benchmark-test-string-${i}`);
+      buildOfferVariantId(flightParams);
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
   });
 });
