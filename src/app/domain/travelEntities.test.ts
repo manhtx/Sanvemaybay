@@ -1,65 +1,144 @@
 import { describe, expect, it } from "vitest";
-import { getServedAirports, resolveCanonicalAirportOrCity } from "./travelEntities";
+import {
+  CANONICAL_TRAVEL_ENTITIES,
+  getServedAirports,
+  resolveCanonicalAirportOrCity,
+} from "./travelEntities";
 
 describe("resolveCanonicalAirportOrCity", () => {
-  it("resolves exact 3-letter IATA codes", () => {
-    expect(resolveCanonicalAirportOrCity("BKK")?.code).toBe("BKK");
-    expect(resolveCanonicalAirportOrCity("bkk")?.code).toBe("BKK");
-    expect(resolveCanonicalAirportOrCity("HAN")?.code).toBe("HAN");
-    expect(resolveCanonicalAirportOrCity("SGN")?.code).toBe("SGN");
-    expect(resolveCanonicalAirportOrCity("DAD")?.code).toBe("DAD");
+  describe("IATA code resolution", () => {
+    it("resolves exact 3-letter IATA codes case-insensitively", () => {
+      expect(resolveCanonicalAirportOrCity("BKK")?.code).toBe("BKK");
+      expect(resolveCanonicalAirportOrCity("bkk")?.code).toBe("BKK");
+      expect(resolveCanonicalAirportOrCity("HAN")?.code).toBe("HAN");
+      expect(resolveCanonicalAirportOrCity("han")?.code).toBe("HAN");
+      expect(resolveCanonicalAirportOrCity("SGN")?.code).toBe("SGN");
+      expect(resolveCanonicalAirportOrCity("sgn")?.code).toBe("SGN");
+      expect(resolveCanonicalAirportOrCity("DAD")?.code).toBe("DAD");
+      expect(resolveCanonicalAirportOrCity("dad")?.code).toBe("DAD");
+    });
   });
 
-  it("resolves city names with and without Vietnamese accents", () => {
-    expect(resolveCanonicalAirportOrCity("Bangkok")?.code).toBe("BKK_ALL");
-    expect(resolveCanonicalAirportOrCity("bangkok")?.code).toBe("BKK_ALL");
-    expect(resolveCanonicalAirportOrCity("Hà Nội")?.code).toBe("HAN");
-    expect(resolveCanonicalAirportOrCity("Ha Noi")?.code).toBe("HAN");
-    expect(resolveCanonicalAirportOrCity("Đà Nẵng")?.code).toBe("DAD");
-    expect(resolveCanonicalAirportOrCity("Da Nang")?.code).toBe("DAD");
-    expect(resolveCanonicalAirportOrCity("TP. Hồ Chí Minh")?.code).toBe("SGN");
-    expect(resolveCanonicalAirportOrCity("Saigon")?.code).toBe("SGN");
-    expect(resolveCanonicalAirportOrCity("Seoul")?.code).toBe("ICN");
-    expect(resolveCanonicalAirportOrCity("Tokyo")?.code).toBe("TYO_ALL");
+  describe("Vietnamese diacritics & city name normalization", () => {
+    it("resolves domestic Vietnamese cities with and without tone marks", () => {
+      expect(resolveCanonicalAirportOrCity("Hà Nội")?.code).toBe("HAN");
+      expect(resolveCanonicalAirportOrCity("Ha Noi")?.code).toBe("HAN");
+      expect(resolveCanonicalAirportOrCity("Đà Nẵng")?.code).toBe("DAD");
+      expect(resolveCanonicalAirportOrCity("Da Nang")?.code).toBe("DAD");
+      expect(resolveCanonicalAirportOrCity("TP. Hồ Chí Minh")?.code).toBe("SGN");
+      expect(resolveCanonicalAirportOrCity("TP. Ho Chi Minh")?.code).toBe("SGN");
+      expect(resolveCanonicalAirportOrCity("Saigon")?.code).toBe("SGN");
+      expect(resolveCanonicalAirportOrCity("Sai Gon")?.code).toBe("SGN");
+      expect(resolveCanonicalAirportOrCity("Phú Quốc")?.code).toBe("PQC");
+      expect(resolveCanonicalAirportOrCity("Phu Quoc")?.code).toBe("PQC");
+    });
+
+    it("resolves Asian international hub cities", () => {
+      expect(resolveCanonicalAirportOrCity("Bangkok")?.code).toBe("BKK_ALL");
+      expect(resolveCanonicalAirportOrCity("bangkok")?.code).toBe("BKK_ALL");
+      expect(resolveCanonicalAirportOrCity("Seoul")?.code).toBe("ICN");
+      expect(resolveCanonicalAirportOrCity("Tokyo")?.code).toBe("TYO_ALL");
+      expect(resolveCanonicalAirportOrCity("Singapore")?.code).toBe("SIN");
+      expect(resolveCanonicalAirportOrCity("Taipei")?.code).toBe("TPE");
+    });
   });
 
-  it("resolves country or airport aliases", () => {
-    expect(resolveCanonicalAirportOrCity("Thái Lan")?.code).toBe("BKK_ALL");
-    expect(resolveCanonicalAirportOrCity("Suvarnabhumi")?.code).toBe("BKK");
-    expect(resolveCanonicalAirportOrCity("Noi Bai")?.code).toBe("HAN");
-    expect(resolveCanonicalAirportOrCity("Tan Son Nhat")?.code).toBe("SGN");
-    expect(resolveCanonicalAirportOrCity("Narita")?.code).toBe("NRT");
+  describe("global geographic destinations (Europe, Middle East, Oceania)", () => {
+    it("resolves European gateways", () => {
+      expect(resolveCanonicalAirportOrCity("Paris")?.code).toBe("CDG");
+      expect(resolveCanonicalAirportOrCity("Amsterdam")?.code).toBe("AMS");
+      expect(resolveCanonicalAirportOrCity("Schiphol")?.code).toBe("AMS");
+      expect(resolveCanonicalAirportOrCity("Istanbul")?.code).toBe("IST");
+    });
+
+    it("resolves Middle Eastern hubs", () => {
+      expect(resolveCanonicalAirportOrCity("Dubai")?.code).toBe("DXB");
+      expect(resolveCanonicalAirportOrCity("Doha")?.code).toBe("DOH");
+    });
+
+    it("resolves Oceanic gateways", () => {
+      expect(resolveCanonicalAirportOrCity("Sydney")?.code).toBe("SYD");
+      expect(resolveCanonicalAirportOrCity("Melbourne")?.code).toBe("MEL");
+    });
   });
 
-  it("Negative Control: airport disambiguation between metropolitan sister airports", () => {
-    // Bangkok sister airports
-    expect(resolveCanonicalAirportOrCity("Don Mueang")?.code).toBe("DMK");
-    expect(resolveCanonicalAirportOrCity("don mueang")?.code).toBe("DMK");
-    expect(resolveCanonicalAirportOrCity("DMK")?.code).toBe("DMK");
-    expect(resolveCanonicalAirportOrCity("Suvarnabhumi")?.code).toBe("BKK");
-    expect(resolveCanonicalAirportOrCity("BKK")?.code).toBe("BKK");
+  describe("facility aliases & substring matching", () => {
+    it("resolves facility aliases like airport names", () => {
+      expect(resolveCanonicalAirportOrCity("Noi Bai")?.code).toBe("HAN");
+      expect(resolveCanonicalAirportOrCity("Tan Son Nhat")?.code).toBe("SGN");
+      expect(resolveCanonicalAirportOrCity("Suvarnabhumi")?.code).toBe("BKK");
+      expect(resolveCanonicalAirportOrCity("Narita")?.code).toBe("NRT");
+      expect(resolveCanonicalAirportOrCity("Charles de Gaulle")?.code).toBe("CDG");
+    });
 
-    // Tokyo sister airports
-    expect(resolveCanonicalAirportOrCity("Haneda")?.code).toBe("HND");
-    expect(resolveCanonicalAirportOrCity("haneda")?.code).toBe("HND");
-    expect(resolveCanonicalAirportOrCity("HND")?.code).toBe("HND");
-    expect(resolveCanonicalAirportOrCity("Narita")?.code).toBe("NRT");
-    expect(resolveCanonicalAirportOrCity("NRT")?.code).toBe("NRT");
+    it("handles compound queries via substring matching", () => {
+      expect(resolveCanonicalAirportOrCity("san bay noi bai")?.code).toBe("HAN");
+      expect(resolveCanonicalAirportOrCity("bangkok airport")?.code).toBe("BKK_ALL");
+    });
   });
 
-  it("returns undefined for unrecognized queries", () => {
-    expect(resolveCanonicalAirportOrCity("Atlantis")).toBeUndefined();
-    expect(resolveCanonicalAirportOrCity("")).toBeUndefined();
-    expect(resolveCanonicalAirportOrCity("xyz999")).toBeUndefined();
+  describe("Negative Control: sister airport disambiguation", () => {
+    it("strictly separates Bangkok sister airports", () => {
+      expect(resolveCanonicalAirportOrCity("Don Mueang")?.code).toBe("DMK");
+      expect(resolveCanonicalAirportOrCity("DMK")?.code).toBe("DMK");
+      expect(resolveCanonicalAirportOrCity("Suvarnabhumi")?.code).toBe("BKK");
+      expect(resolveCanonicalAirportOrCity("BKK")?.code).toBe("BKK");
+    });
+
+    it("strictly separates Tokyo sister airports", () => {
+      expect(resolveCanonicalAirportOrCity("Haneda")?.code).toBe("HND");
+      expect(resolveCanonicalAirportOrCity("HND")?.code).toBe("HND");
+      expect(resolveCanonicalAirportOrCity("Narita")?.code).toBe("NRT");
+      expect(resolveCanonicalAirportOrCity("NRT")?.code).toBe("NRT");
+    });
   });
 
-  it("resolves served airports for metro areas and individual airports", () => {
-    expect(getServedAirports("BKK_ALL")).toEqual(["BKK", "DMK"]);
-    expect(getServedAirports("BKK")).toEqual(["BKK"]);
-    expect(getServedAirports("DMK")).toEqual(["DMK"]);
-    expect(getServedAirports("TYO_ALL")).toEqual(["NRT", "HND"]);
-    expect(getServedAirports("NRT")).toEqual(["NRT"]);
-    expect(getServedAirports("HAN")).toEqual(["HAN"]);
+  describe("edge cases & negative queries", () => {
+    it("returns undefined for unrecognized, empty, or whitespace queries", () => {
+      expect(resolveCanonicalAirportOrCity("Atlantis")).toBeUndefined();
+      expect(resolveCanonicalAirportOrCity("")).toBeUndefined();
+      expect(resolveCanonicalAirportOrCity("   ")).toBeUndefined();
+      expect(resolveCanonicalAirportOrCity(undefined)).toBeUndefined();
+      expect(resolveCanonicalAirportOrCity("xyz999")).toBeUndefined();
+    });
   });
 });
 
+describe("getServedAirports", () => {
+  it("resolves served airports for metro aggregate codes", () => {
+    expect(getServedAirports("BKK_ALL")).toEqual(["BKK", "DMK"]);
+    expect(getServedAirports("TYO_ALL")).toEqual(["NRT", "HND"]);
+  });
+
+  it("preserves single individual airport codes without expansion", () => {
+    expect(getServedAirports("BKK")).toEqual(["BKK"]);
+    expect(getServedAirports("DMK")).toEqual(["DMK"]);
+    expect(getServedAirports("NRT")).toEqual(["NRT"]);
+    expect(getServedAirports("HAN")).toEqual(["HAN"]);
+    expect(getServedAirports("SGN")).toEqual(["SGN"]);
+  });
+
+  it("handles empty or falsy codes safely", () => {
+    expect(getServedAirports("")).toEqual([]);
+    expect(getServedAirports("   ")).toEqual([]);
+  });
+});
+
+describe("CANONICAL_TRAVEL_ENTITIES catalog integrity", () => {
+  it("guarantees unique primary entity codes across the entire registry", () => {
+    const codes = CANONICAL_TRAVEL_ENTITIES.map((e) => e.code);
+    const uniqueCodes = new Set(codes);
+    expect(uniqueCodes.size).toBe(codes.length);
+  });
+
+  it("ensures every entity has required metadata and non-empty aliases", () => {
+    for (const entity of CANONICAL_TRAVEL_ENTITIES) {
+      expect(entity.code).toBeTruthy();
+      expect(entity.name).toBeTruthy();
+      expect(entity.country).toBeTruthy();
+      expect(entity.region).toBeTruthy();
+      expect(Array.isArray(entity.aliases)).toBe(true);
+      expect(entity.aliases.length).toBeGreaterThan(0);
+    }
+  });
+});

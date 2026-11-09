@@ -410,6 +410,7 @@ export function resolveCanonicalAirportOrCity(query: string | undefined): Canoni
 export function getServedAirports(codeOrMetro: string): string[] {
   if (!codeOrMetro) return [];
   const upper = codeOrMetro.trim().toUpperCase();
+  if (!upper) return [];
   const entity = CANONICAL_TRAVEL_ENTITIES.find((e) => e.code === upper);
   if (entity?.servedAirports && entity.servedAirports.length > 0) {
     return entity.servedAirports;

@@ -3,15 +3,22 @@ import { filterDeals } from "../data/api";
 import { resolveCanonicalAirportOrCity } from "./travelEntities";
 import { Deal } from "../data/deals";
 
-function makeDummyDeal(index: number, origin: string, destination: string, destName: string, price: number): Deal {
+function makeDummyDeal(
+  index: number,
+  origin: string,
+  destination: string,
+  destName: string,
+  price: number,
+  overrides: Partial<Deal> = {},
+): Deal {
   return {
     id: `deal-${index}`,
     from: origin === "HAN" ? "Hà Nội" : origin,
     fromCode: origin,
     to: destName,
     toCode: destination,
-    country: destination === "BKK" ? "Thái Lan" : "Việt Nam",
-    region: destination === "BKK" ? "asia" : "domestic",
+    country: destination === "BKK" || destination === "DMK" ? "Thái Lan" : "Việt Nam",
+    region: destination === "BKK" || destination === "DMK" ? "asia" : "domestic",
     price,
     normalPrice: price * 1.3,
     discount: 23,
@@ -42,6 +49,7 @@ function makeDummyDeal(index: number, origin: string, destination: string, destN
     isTrending: false,
     isFlashDeal: false,
     tripType: "international",
+    ...overrides,
   };
 }
 
@@ -80,7 +88,7 @@ describe("Global Canonical Search - Negative Controls & Deep Pagination", () => 
     expect(resultsByName.length).toBe(3);
     expect(resultsByName.map((d) => d.id)).toEqual(["deal-65", "deal-150", "deal-1050"]);
 
-    // 3. Search with budget constraint <= 4.5M (should find deal-65 and deal-1050)
+    // 3. Search with budget constraint <= 4.55M (should find deal-65 and deal-1050)
     const resultsBudget = filterDeals(corpus, {
       from: "HAN",
       destination: "Bangkok",
@@ -101,5 +109,43 @@ describe("Global Canonical Search - Negative Controls & Deep Pagination", () => 
     });
     expect(results.length).toBe(1);
     expect(results[0].toCode).toBe("BKK");
+  });
+
+  it("expands metropolitan area search to match all constituent sister airports", () => {
+    const corpus = [
+      makeDummyDeal(1, "HAN", "BKK", "Bangkok", 3000000), // Suvarnabhumi
+      makeDummyDeal(2, "HAN", "DMK", "Bangkok", 2500000), // Don Mueang
+      makeDummyDeal(3, "HAN", "SIN", "Singapore", 3200000),
+    ];
+
+    // Searching generic city "Bangkok" returns deals to both BKK and DMK
+    const bangkokResults = filterDeals(corpus, { destination: "Bangkok" });
+    expect(bangkokResults).toHaveLength(2);
+    expect(bangkokResults.map((d) => d.toCode)).toEqual(["BKK", "DMK"]);
+
+    // Specific sister airport query "DMK" isolates Don Mueang and rejects BKK
+    const dmkResults = filterDeals(corpus, { destination: "DMK" });
+    expect(dmkResults).toHaveLength(1);
+    expect(dmkResults[0].toCode).toBe("DMK");
+  });
+
+  it("expands Tokyo metropolitan area to match both Narita and Haneda", () => {
+    const corpus = [
+      makeDummyDeal(1, "HAN", "NRT", "Tokyo", 6000000),
+      makeDummyDeal(2, "HAN", "HND", "Tokyo", 6500000),
+      makeDummyDeal(3, "HAN", "KIX", "Osaka", 5500000),
+    ];
+
+    const tokyoResults = filterDeals(corpus, { destination: "Tokyo" });
+    expect(tokyoResults).toHaveLength(2);
+    expect(tokyoResults.map((d) => d.toCode)).toEqual(["NRT", "HND"]);
+  });
+
+  it("returns empty array when no deals in corpus match search criteria", () => {
+    const corpus = [
+      makeDummyDeal(1, "HAN", "DAD", "Đà Nẵng", 1200000),
+    ];
+    expect(filterDeals(corpus, { destination: "Paris" })).toEqual([]);
+    expect(filterDeals([], { destination: "Bangkok" })).toEqual([]);
   });
 });
