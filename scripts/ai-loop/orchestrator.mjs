@@ -54,7 +54,7 @@ if (command === 'host-instructions') {
 
 await writeInstructionTemplates();
 while (!(await stopped()) && (!maxCycles || state.cycle < maxCycles)) {
-  const resumable = state.cycle > 0 && ['research', 'synthesis', 'implementation'].includes(state.phase);
+  const resumable = state.cycle > 0 && ['research', 'synthesis', 'implementation', 'evidence'].includes(state.phase);
   if (!resumable) {
     state.cycle += 1;
     state.round = 0;
@@ -104,14 +104,19 @@ while (!(await stopped()) && (!maxCycles || state.cycle < maxCycles)) {
     await persist(state, { nextAction: 'Implement every mastergoal wave and record verification evidence' });
   }
 
-  state.phase = 'implementation';
-  await persist(state, { nextAction: 'Implement every mastergoal wave and record verification evidence' });
-  const implementation = await executeAgent([
-    { role: 'system', content: await readText(join(INSTRUCTIONS, 'implementation-protocol.md')) },
-    { role: 'user', content: `${synthesis.content}\n\nCurrent cycle: ${state.cycle}. Implement, test, verify, and push a branch. Continue until the task is genuinely handled.` },
-  ]);
-  const implementationEvidence = normalizeImplementationEvidence(implementation);
-  await writeJson(join(cycleDir, 'implementation.json'), implementationEvidence);
+  let implementationEvidence = await readJson(join(cycleDir, 'implementation.json'), null);
+  if (state.phase !== 'evidence') {
+    state.phase = 'implementation';
+    await persist(state, { nextAction: 'Implement every mastergoal wave and record verification evidence' });
+    const implementation = await executeAgent([
+      { role: 'system', content: await readText(join(INSTRUCTIONS, 'implementation-protocol.md')) },
+      { role: 'user', content: `${synthesis.content}\n\nCurrent cycle: ${state.cycle}. Implement, test, verify, and push a branch. Continue until the task is genuinely handled.` },
+    ]);
+    implementationEvidence = normalizeImplementationEvidence(implementation);
+    await writeJson(join(cycleDir, 'implementation.json'), implementationEvidence);
+  }
+  state.phase = 'evidence';
+  await persist(state, { nextAction: 'Run Farely evidence and project validation before checkpointing' });
   await run('git', ['status', '--short', '--branch'], { timeoutMs: 120000 }).then((r) => writeText(join(cycleDir, 'git-status.txt'), `${r.stdout}\n${r.stderr}`));
   const head = await run('git', ['rev-parse', 'HEAD'], { timeoutMs: 120000 });
   state.bestSha = head.code === 0 ? head.stdout.trim() : state.bestSha;
