@@ -68,7 +68,7 @@ async function executeAction(action, mode = 'implementation') {
     throw new Error(`Research mode rejects mutating action: ${action.type}`);
   }
   if (mode === 'research' && action.type === 'run') {
-    const allowed = new Set(['rg', 'find', 'ls', 'pwd', 'sed', 'cat', 'curl', 'git']);
+    const allowed = new Set(['rg', 'find', 'ls', 'pwd', 'sed', 'cat', 'curl', 'git', 'node', 'python', 'python3']);
     const command = action.command || action.path;
     if (!allowed.has(command)) throw new Error(`Research mode rejects command: ${command}`);
     if (command === 'git' && !['status', 'log', 'show', 'diff', 'branch', 'remote'].includes(action.args?.[0])) {
@@ -91,7 +91,7 @@ async function executeAction(action, mode = 'implementation') {
     const { writeText } = await import('./runtime.mjs');
     const current = await readText(projectPath(action.path));
     if (!action.find || !current.includes(action.find)) return { type: action.type, path: action.path, ok: false, error: 'find text missing' };
-    await writeText(projectPath(action.path), current.replace(action.find, action.replace || ''));
+    await writeText(projectPath(action.path), current.replace(action.find, () => (action.replace || '')));
     return { type: action.type, path: action.path, ok: true };
   }
   if (action.type === 'git') return await run('git', action.args || [], { timeoutMs: 180000 });

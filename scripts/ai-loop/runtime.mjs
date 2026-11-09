@@ -2,8 +2,9 @@ import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile, access, readdir, rename } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-export const ROOT = resolve(new URL('../..', import.meta.url).pathname);
+export const ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 export const LOOP_DIR = join(ROOT, '.ai-loop');
 export const STATE_DIR = join(LOOP_DIR, 'state');
 export const STOP_FILE = join(LOOP_DIR, 'STOP');
@@ -87,7 +88,7 @@ export async function collectTextFiles(dir = ROOT, maxFiles = 80) {
       if (ignored.has(entry.name)) continue;
       const path = join(current, entry.name);
       if (entry.isDirectory()) await walk(path);
-      else if (/\.(md|json|ts|tsx|js|mjs|css|html|txt)$/.test(entry.name)) result.push(path);
+      else if (/\.(md|json|ts|tsx|js|mjs|css|html|txt|py)$/.test(entry.name)) result.push(path);
       if (result.length >= maxFiles) return;
     }
   }

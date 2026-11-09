@@ -1,7 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { ROOT } from './runtime.mjs';
 
-const root = process.cwd();
+const root = ROOT;
 const statePath = join(root, '.ai-loop/state/loop-state.json');
 const state = await readJson(statePath, {});
 const policy = await readJson(join(root, '.ai-loop/loop-policy.json'), { minCyclesBeforeCompletion: 1_000_000_000 });
