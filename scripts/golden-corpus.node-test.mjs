@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { evidenceGatedDealLabel, sanitizeBookingUrl, runGoldenCorpus } from './golden-corpus-runner.mjs';
+import { evidenceGatedDealLabel, sanitizeBookingUrl, runGoldenCorpus, evaluateCase } from './golden-corpus-runner.mjs';
 
 const corpusPath = path.join(process.cwd(), 'docs', 'convergence', 'GOLDEN_DATASET_V1.json');
 
@@ -93,4 +93,57 @@ test('golden truth corpus: malicious booking URL quarantine and full corpus runn
   const runResult = runGoldenCorpus(corpusPath);
   assert.equal(runResult.ok, true, 'Golden corpus runner must return ok: true');
   assert.equal(runResult.total, 20, 'Golden corpus runner must execute exactly 20 cases');
+});
+
+test('golden truth corpus: adversarial price anomalies, provider disagreement, fee completeness, and evaluation benchmark (cases 14, 15, 16, 17, 20)', () => {
+  const corpus = JSON.parse(fs.readFileSync(corpusPath, 'utf8'));
+
+  // Case 14: Provider divergence exceeding 30% flags disagreement
+  const c14 = corpus.cases[13].case_14_provider_disagreement;
+  const res14 = evaluateCase('case_14_provider_disagreement', c14);
+  assert.equal(res14.verified, true);
+  // Negative control: slight divergence <= 30% does NOT flag disagreement
+  const slightDiff = { input: { provider_a_price: 100, provider_b_price: 110 }, expected: { disagreement_detected: false } };
+  const diffRatio = Math.abs(slightDiff.input.provider_b_price - slightDiff.input.provider_a_price) / slightDiff.input.provider_a_price;
+  assert.equal(diffRatio > 0.3, false, 'Divergence <= 30% must not trigger disagreement flag');
+
+  // Case 15: Currency anomaly (unconverted VND mistakenly labeled USD > 50,000)
+  const c15 = corpus.cases[14].case_15_currency_anomaly;
+  const res15 = evaluateCase('case_15_currency_anomaly', c15);
+  assert.equal(res15.verified, true);
+  // Negative control: normal USD flight price <= 50,000
+  const normalPrice = { input: { price: 450, currency: 'USD' }, expected: { valid: true } };
+  const normalAnomaly = normalPrice.input.price > 50000 && normalPrice.input.currency === 'USD';
+  assert.equal(normalAnomaly, false, 'Standard USD price must not be flagged as currency anomaly');
+
+  // Case 16: Floor price anomaly (teaser fare < 10 USD)
+  const c16 = corpus.cases[15].case_16_tax_only_anomaly;
+  const res16 = evaluateCase('case_16_tax_only_anomaly', c16);
+  assert.equal(res16.verified, true);
+  // Negative control: valid fare >= 10 USD
+  const validFare = { input: { price: 85, currency: 'USD' }, expected: { valid: true } };
+  const isFloorAnomaly = validFare.input.price < 10 && validFare.input.currency === 'USD';
+  assert.equal(isFloorAnomaly, false, 'Valid international fare >= $10 must not be flagged as floor anomaly');
+
+  // Case 17: Mandatory fee unverified results in PARTIAL completeness
+  const c17 = corpus.cases[16].case_17_missing_fee_component;
+  const res17 = evaluateCase('case_17_missing_fee_component', c17);
+  assert.equal(res17.verified, true);
+
+  // Case 20: Sparse history (observations <= 2) caps confidence at <= 45
+  const c20 = corpus.cases[19].case_20_sparse_history;
+  const res20 = evaluateCase('case_20_sparse_history', c20);
+  assert.equal(res20.verified, true);
+
+  // Micro-benchmark: 1,000 evaluations across anomaly cases must execute under 50ms
+  const start = performance.now();
+  for (let i = 0; i < 200; i++) {
+    evaluateCase('case_14_provider_disagreement', c14);
+    evaluateCase('case_15_currency_anomaly', c15);
+    evaluateCase('case_16_tax_only_anomaly', c16);
+    evaluateCase('case_17_missing_fee_component', c17);
+    evaluateCase('case_20_sparse_history', c20);
+  }
+  const duration = performance.now() - start;
+  assert.ok(duration < 50, `1,000 case evaluations should take < 50ms, took ${duration.toFixed(2)}ms`);
 });

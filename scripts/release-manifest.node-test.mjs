@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
+import { readFileSync } from "node:fs";
 import { buildReleaseManifest, sha256 } from "./release-manifest.mjs";
 
 test("release manifest hashes are deterministic and exclude local secrets", () => {
@@ -82,4 +83,43 @@ test("performance benchmark: sha256 hashing and release manifest verification ru
   const duration = performance.now() - start;
   // 5 full directory traversals and SHA256 computations across hundreds of files should easily complete within 1,000ms
   assert.ok(duration < 1000, `Expected duration < 1000ms, took ${duration.toFixed(2)}ms`);
+});
+
+test("release manifest file entries conform to sha256 schema, match byte contents, and handle edge-case releaseSha types", () => {
+  const manifest = buildReleaseManifest("sha-format-validation");
+  assert.ok(manifest.files.length > 50, "Workspace manifest must contain multiple files");
+
+  // Every single file entry must have a valid 64-character lowercase hex SHA256 string
+  for (const entry of manifest.files) {
+    assert.match(
+      entry.sha256,
+      /^[a-f0-9]{64}$/,
+      `File entry ${entry.file} must have valid 64-char lowercase hex sha256`
+    );
+  }
+
+  // Byte-for-byte SHA256 reproducibility check on representative root files
+  const pkgEntry = manifest.files.find((e) => e.file === "package.json");
+  assert.ok(pkgEntry, "Manifest must include package.json");
+  assert.equal(pkgEntry.sha256, sha256(readFileSync("package.json")));
+
+  const vercelEntry = manifest.files.find((e) => e.file === "vercel.json");
+  assert.ok(vercelEntry, "Manifest must include vercel.json");
+  assert.equal(vercelEntry.sha256, sha256(readFileSync("vercel.json")));
+
+  // Edge case argument types
+  const mNum = buildReleaseManifest(12345);
+  assert.equal(mNum.release_sha, 12345);
+
+  const mEmpty = buildReleaseManifest("");
+  assert.equal(mEmpty.release_sha, "");
+
+  const mUndef = buildReleaseManifest(undefined);
+  assert.equal(mUndef.release_sha, "unknown");
+
+  // Repeated builds with same releaseSha yield identical source tree hash
+  const m1 = buildReleaseManifest("stable-sha");
+  const m2 = buildReleaseManifest("stable-sha");
+  assert.equal(m1.source_tree_sha256, m2.source_tree_sha256);
+  assert.equal(m1.files.length, m2.files.length);
 });

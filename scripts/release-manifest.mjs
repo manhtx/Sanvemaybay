@@ -32,6 +32,6 @@ export function buildReleaseManifest(releaseSha = "unknown") {
   };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   console.log(JSON.stringify(buildReleaseManifest(process.env.DEPLOYED_COMMIT ?? process.env.GITHUB_SHA ?? "unknown"), null, 2));
 }
