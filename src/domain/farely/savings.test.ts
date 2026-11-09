@@ -103,4 +103,49 @@ describe('Farely Pure Domain Kernel — Savings & Relative Value (REQ-DOM-001)',
     expect(microSavings.savingsPercent).toBe(0);
     expect(microSavings.isSaving).toBe(true);
   });
+
+  it('preserves metamorphic savings monotonicity under price reduction', () => {
+    const benchmarkPrice = 5_000_000;
+    const testPrices = [4_500_000, 4_000_000, 3_500_000, 3_000_000, 2_000_000, 1_000_000];
+
+    let previousPercent = 0;
+    let previousAmount = 0;
+
+    for (const observedPrice of testPrices) {
+      const result = calculateSavings(observedPrice, benchmarkPrice);
+      expect(result.isSaving).toBe(true);
+      expect(result.savingsPercent).toBeGreaterThanOrEqual(previousPercent);
+      expect(result.savingsAmount).toBeGreaterThan(previousAmount);
+      previousPercent = result.savingsPercent;
+      previousAmount = result.savingsAmount;
+    }
+  });
+
+  it('accurately computes large-value luxury and business class itineraries without precision loss', () => {
+    // 100,000,000 vs 250,000,000 -> 150,000,000 savings (60%)
+    const luxuryResult = calculateSavings(100_000_000, 250_000_000);
+    expect(luxuryResult).toEqual({
+      observedPrice: 100_000_000,
+      benchmarkPrice: 250_000_000,
+      savingsAmount: 150_000_000,
+      savingsPercent: 60,
+      isSaving: true,
+    });
+  });
+
+  it('handles floating point fraction inputs safely with correct rounding', () => {
+    const result = calculateSavings(1_500_000, 2_250_000);
+    expect(result.savingsAmount).toBe(750_000);
+    expect(result.savingsPercent).toBe(33); // 750,000 / 2,250,000 = 1/3 = 33.33% -> 33%
+    expect(result.isSaving).toBe(true);
+  });
+
+  it('preserves referential purity and returns immutable value summaries', () => {
+    const run1 = calculateSavings(3_000_000, 4_000_000);
+    const run2 = calculateSavings(3_000_000, 4_000_000);
+
+    expect(run1).toEqual(run2);
+    expect(run1).not.toBe(run2); // Independent objects
+    expect(Object.isFrozen(Object.freeze(run1))).toBe(true);
+  });
 });

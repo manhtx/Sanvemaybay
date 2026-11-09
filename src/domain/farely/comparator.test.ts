@@ -224,5 +224,104 @@ describe('Price Comparator & Evidence Engine Invariant Defense', () => {
       expect(filtered.length).toBe(1);
       expect(filtered[0].observationId).toBe('1');
     });
+
+    it('returns empty array when observation pool is empty', () => {
+      expect(filterComparableCohort([], { origin: 'HAN', destination: 'SGN' })).toEqual([]);
+    });
+  });
+
+  describe('Comparator Edge Cases, Monotonicity & Scalability', () => {
+    it('returns INSUFFICIENT and null median when observation cohort is completely empty', () => {
+      const emptyResult = compareAgainstCohort(1_500_000, []);
+      expect(emptyResult).toEqual({
+        currentPrice: 1_500_000,
+        sampleSize: 0,
+        medianPrice: null,
+        lowestHistoricalPrice: null,
+        discountVsMedianPercent: null,
+        evidenceLevel: 'INSUFFICIENT',
+        verdictLabel: 'Giá quan sát',
+        uniqueEpochs: 0,
+      });
+    });
+
+    it('preserves metamorphic price reduction monotonicity on discount percent and verdict label', () => {
+      // 16 observations across 5 days (STRONG evidence), median 2,000,000
+      const strongCohort: HistoricalObservation[] = Array.from({ length: 16 }, (_, i) => ({
+        observationId: `mono-${i}`,
+        observedAt: `2026-10-${String((i % 5) + 1).padStart(2, '0')}T10:00:00Z`,
+        departLocalDate: '2026-11-01',
+        origin: 'HAN',
+        destination: 'SGN',
+        price: 2_000_000,
+        currency: 'VND',
+        cabin: 'ECONOMY',
+        stops: 0,
+        scanEpoch: `epoch-${i % 4}`,
+      }));
+
+      const tierRanks: Record<string, number> = {
+        'Giá tiêu chuẩn': 1,
+        'Thấp hơn mức thông thường': 2,
+        'Giá đáng chú ý': 3,
+        'Giá rất tốt': 4,
+      };
+
+      const prices = [2_000_000, 1_900_000, 1_800_000, 1_500_000, 1_000_000];
+      let previousDiscount = -1;
+      let previousTierRank = 0;
+
+      for (const price of prices) {
+        const result = compareAgainstCohort(price, strongCohort);
+        expect(result.discountVsMedianPercent!).toBeGreaterThanOrEqual(previousDiscount);
+        expect(tierRanks[result.verdictLabel]).toBeGreaterThanOrEqual(previousTierRank);
+        previousDiscount = result.discountVsMedianPercent!;
+        previousTierRank = tierRanks[result.verdictLabel];
+      }
+    });
+
+    it('evaluates large historical cohorts (500+ items) within sub-50ms latency budget', () => {
+      const largeCohort: HistoricalObservation[] = Array.from({ length: 500 }, (_, i) => ({
+        observationId: `large-${i}`,
+        observedAt: `2026-10-${String((i % 25) + 1).padStart(2, '0')}T10:00:00Z`,
+        departLocalDate: '2026-11-01',
+        origin: 'HAN',
+        destination: 'SGN',
+        price: 1_800_000 + (i % 20) * 20_000,
+        currency: 'VND',
+        cabin: 'ECONOMY',
+        stops: 0,
+        scanEpoch: `epoch-${i % 10}`,
+      }));
+
+      const start = performance.now();
+      const result = compareAgainstCohort(1_500_000, largeCohort);
+      const duration = performance.now() - start;
+
+      expect(duration).toBeLessThan(50);
+      expect(result.sampleSize).toBe(500);
+      expect(result.evidenceLevel).toBe('STRONG');
+      expect(result.medianPrice).toBeGreaterThan(0);
+    });
+
+    it('preserves pure immutability on Object.freeze protected observation pools', () => {
+      const frozenObservation = Object.freeze({
+        observationId: 'freeze-1',
+        observedAt: '2026-10-01T10:00:00Z',
+        departLocalDate: '2026-11-01',
+        origin: 'HAN',
+        destination: 'SGN',
+        price: 2_000_000,
+        currency: 'VND',
+        cabin: 'ECONOMY',
+        stops: 0,
+      });
+
+      const frozenPool = Object.freeze([frozenObservation]);
+
+      expect(() => compareAgainstCohort(1_500_000, frozenPool as any)).not.toThrow();
+      expect(() => filterComparableCohort(frozenPool as any, { origin: 'HAN', destination: 'SGN' })).not.toThrow();
+      expect(frozenObservation.price).toBe(2_000_000);
+    });
   });
 });
