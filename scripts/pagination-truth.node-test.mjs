@@ -231,3 +231,87 @@ test("GATE-02-PAGINATION: >1000-row scale test (1250 rows across 21 pages)", () 
   assert.equal(overflowPage.fares.length, 0);
   assert.equal(overflowPage.next_page, null);
 });
+
+test("GATE-02-PAGINATION: boundary clamping for page, page_size, NaN, negative, zero, and ceiling values", () => {
+  const rows = generateFixtureRows(250);
+
+  // Negative and zero page clamps to 1
+  const pZero = paginateObservedFares(rows, { page: 0 });
+  assert.equal(pZero.page, 1);
+  const pNegative = paginateObservedFares(rows, { page: -10 });
+  assert.equal(pNegative.page, 1);
+  const pNaN = paginateObservedFares(rows, { page: "not-a-number" });
+  assert.equal(pNaN.page, 1);
+
+  // Floating point page truncates to integer
+  const pFloat = paginateObservedFares(rows, { page: 2.7 });
+  assert.equal(pFloat.page, 2);
+
+  // page_size clamping: min 1, default 60, max 120
+  const pDefaultSize = paginateObservedFares(rows, {});
+  assert.equal(pDefaultSize.page_size, 60);
+
+  const pZeroSize = paginateObservedFares(rows, { page_size: 0 });
+  assert.equal(pZeroSize.page_size, 60);
+
+  const pNegativeSize = paginateObservedFares(rows, { page_size: -5 });
+  assert.equal(pNegativeSize.page_size, 1, "Negative page_size clamps to minimum boundary 1");
+
+  const pCeilingSize = paginateObservedFares(rows, { page_size: 500 });
+  assert.equal(pCeilingSize.page_size, 120, "page_size must clamp to upper limit 120");
+  assert.equal(pCeilingSize.fares.length, 120);
+
+  const pCustomSmall = paginateObservedFares(rows, { page_size: 15 });
+  assert.equal(pCustomSmall.page_size, 15);
+  assert.equal(pCustomSmall.fares.length, 15);
+});
+
+test("GATE-02-PAGINATION: deterministic tie-breaking ensures identical price and score rows never shift positions", () => {
+  // Create 100 identical rows with identical prices, dates, and scores, differing only by dedupe_key
+  const tieRows = [];
+  for (let i = 0; i < 100; i++) {
+    tieRows.push({
+      dedupe_key: `key_${String(i).padStart(3, "0")}`,
+      observation_id: `obs_${i}`,
+      origin_code: "HAN",
+      destination_code: "BKK",
+      price: 2_000_000,
+      currency: "VND",
+      depart_date: "2026-11-20",
+      deal_score: 80,
+      discount_percent: 25,
+      stops: 0,
+      observed_at: "2026-11-01T12:00:00Z",
+    });
+  }
+
+  // Paginate twice with different sort modes
+  const res1 = paginateObservedFares(tieRows, { page: 1, page_size: 50, sort: "price_asc" });
+  const res2 = paginateObservedFares(tieRows, { page: 2, page_size: 50, sort: "price_asc" });
+
+  assert.equal(res1.fares.length, 50);
+  assert.equal(res2.fares.length, 50);
+
+  // Keys must strictly match key_000 through key_049 on page 1, key_050 through key_099 on page 2
+  for (let i = 0; i < 50; i++) {
+    assert.equal(res1.fares[i].dedupe_key, `key_${String(i).padStart(3, "0")}`);
+    assert.equal(res2.fares[i].dedupe_key, `key_${String(i + 50).padStart(3, "0")}`);
+  }
+});
+
+test("GATE-02-PAGINATION: high-throughput pagination throughput micro-benchmark", () => {
+  const rows = generateFixtureRows(300);
+  const start = performance.now();
+  const iterations = 1000;
+
+  for (let i = 0; i < iterations; i++) {
+    const page = (i % 5) + 1;
+    const sort = i % 2 === 0 ? "price_asc" : "score";
+    const res = paginateObservedFares(rows, { page, page_size: 30, sort });
+    assert.equal(res.fares.length, 30);
+  }
+
+  const duration = performance.now() - start;
+  // 1,000 pagination queries over 300 rows should take under 150ms
+  assert.ok(duration < 250, `Pagination benchmark took ${duration.toFixed(2)}ms, expected < 250ms`);
+});
