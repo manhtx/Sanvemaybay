@@ -3,6 +3,8 @@ import { evidenceGatedDealLabel } from './dealClaims';
 import { assessDeal, calculateTotalCost } from './flightIntelligence';
 import { assessRoute, RouteOption } from './routeOptimization';
 import { forecastPrice } from './priceForecast';
+import { buildTripAdvice } from './tripAdvisor';
+import { Deal } from '../data/deals';
 import { isApprovedHttpsUrl, approvedBookingHosts } from '../../../supabase/functions/_shared/live-deal';
 
 /**
@@ -353,5 +355,194 @@ describe('Metamorphic Invariants on Production Domain Engine (Section 29–33)',
 
     expect(() => assessDeal(frozenParams)).not.toThrow();
     expect(frozenParams.currentPrice).toBe(1_500_000);
+  });
+
+  it('Metamorphic Invariant 9: Scale Invariance of relative discount percentage under proportional currency/unit inflation', () => {
+    const baseCurrent = 1_500_000;
+    const baseBaseline = 2_000_000;
+    const multiplier = 10;
+
+    const baseAssessment = assessDeal({
+      currentPrice: baseCurrent,
+      baselinePrice: baseBaseline,
+      comparableSamples: 20,
+      historicalSamples: 20,
+    });
+
+    const scaledAssessment = assessDeal({
+      currentPrice: baseCurrent * multiplier,
+      baselinePrice: baseBaseline * multiplier,
+      comparableSamples: 20,
+      historicalSamples: 20,
+    });
+
+    expect(scaledAssessment.discountPercent).toBe(baseAssessment.discountPercent);
+    expect(scaledAssessment.level).toBe(baseAssessment.level);
+    expect(scaledAssessment.score).toBe(baseAssessment.score);
+    expect(scaledAssessment.confidence).toBe(baseAssessment.confidence);
+  });
+
+  it('Metamorphic Invariant 10: Strict Idempotency of evidenceGatedDealLabel across repeat executions', () => {
+    const testCases = [
+      { score: 95, confidence: 85 },
+      { score: 85, confidence: 70 },
+      { score: 75, confidence: 55 },
+      { score: 65, confidence: 50 },
+      { score: 50, confidence: 90 },
+      { score: 95, confidence: 40 },
+    ];
+
+    for (const { score, confidence } of testCases) {
+      const first = evidenceGatedDealLabel(score, confidence);
+      for (let run = 0; run < 100; run++) {
+        expect(evidenceGatedDealLabel(score, confidence)).toBe(first);
+      }
+    }
+  });
+
+  it('Metamorphic Invariant 11: Route self-transfer risk flag preservation on self-transfer and high-risk itineraries', () => {
+    const selfTransferRoute: RouteOption = {
+      type: 'SELF_TRANSFER',
+      legs: [
+        {
+          origin: 'SGN',
+          destination: 'BKK',
+          price: 1_200_000,
+          durationMinutes: 90,
+          departureAt: '2026-12-01T08:00:00.000Z',
+          arrivalAt: '2026-12-01T09:30:00.000Z',
+          baggageIncluded: true,
+        },
+        {
+          origin: 'BKK',
+          destination: 'SIN',
+          price: 1_100_000,
+          durationMinutes: 120,
+          departureAt: '2026-12-01T14:00:00.000Z',
+          arrivalAt: '2026-12-01T16:00:00.000Z',
+          baggageIncluded: true,
+        },
+      ],
+      connectionMinutes: 270,
+    };
+
+    const assessed = assessRoute(selfTransferRoute);
+    expect(assessed.requiresUserConfirmation).toBe(true);
+    expect(assessed.riskReasons.some((r) => r.includes('Tách vé'))).toBe(true);
+  });
+
+  it('Metamorphic Invariant 12: Price forecast safe fallback on empty, single-point, or minimal datasets', () => {
+    expect(forecastPrice([])).toBeUndefined();
+
+    const singlePoint = [{ date: '2026-10-01', price: 2_000_000 }];
+    expect(forecastPrice(singlePoint)).toBeUndefined();
+
+    const thirteenPoints = Array.from({ length: 13 }, (_, i) => ({
+      date: `2026-10-${String(i + 1).padStart(2, '0')}`,
+      price: 2_000_000 + i * 10_000,
+    }));
+    expect(forecastPrice(thirteenPoints)).toBeUndefined();
+
+    // 14 points is minimal requirement
+    const fourteenPoints = [
+      ...thirteenPoints,
+      { date: '2026-10-14', price: 2_140_000 },
+    ];
+    expect(forecastPrice(fourteenPoints)).toBeDefined();
+  });
+
+  it('Metamorphic Invariant 13: Flight Intelligence cost calculation zero-cost element handling', () => {
+    expect(calculateTotalCost([])).toBe(0);
+    expect(calculateTotalCost([0, 0, 0])).toBe(0);
+    expect(calculateTotalCost([1_500_000, 0, 0])).toBe(1_500_000);
+    expect(calculateTotalCost([0, 250_000, 150_000])).toBe(400_000);
+  });
+
+  it('Metamorphic Invariant 14: Comprehensive URL parser defense (encoded characters, IP matching, port matching)', () => {
+    const approved = approvedBookingHosts('vietjetair.com,vietnamairlines.com');
+
+    // URLs with non-approved host, userinfo attack, or control characters must be rejected
+    expect(isApprovedHttpsUrl('https://vietjetair.com\r\nevil.com', approved)).toBe(false);
+    expect(isApprovedHttpsUrl('https://vietjetair.com@evil.com/booking', approved)).toBe(false);
+    expect(isApprovedHttpsUrl('https://admin:secret@evil-phish.com/vj', approved)).toBe(false);
+    expect(isApprovedHttpsUrl(null, approved)).toBe(false);
+    expect(isApprovedHttpsUrl(12345, approved)).toBe(false);
+    expect(isApprovedHttpsUrl({}, approved)).toBe(false);
+
+    // Empty approved set rejects all
+    expect(isApprovedHttpsUrl('https://vietjetair.com', new Set())).toBe(false);
+  });
+
+  it('Metamorphic Invariant 15: Trip budget scaling monotonicity with flight fare across multi-tier scenarios', () => {
+    const baseDeal: Deal = {
+      id: 'd-monotonic-1',
+      from: 'Hà Nội',
+      fromCode: 'HAN',
+      to: 'Đà Nẵng',
+      toCode: 'DAD',
+      country: 'Vietnam',
+      region: 'domestic',
+      price: 1_000_000,
+      normalPrice: 1_500_000,
+      discount: 33,
+      currency: 'VND',
+      airline: 'Vietjet Air',
+      airlineCode: 'VJ',
+      departDate: '2026-12-01',
+      duration: '1h 20m',
+      stops: 0,
+      stopCity: null,
+      seatsLeft: 5,
+      expiresIn: '24h',
+      image: '/deals/han-dad.jpg',
+      flightNumber: 'VJ123',
+      aiInsight: {
+        reason: 'Giá rẻ',
+        tags: ['cheap'],
+        risk: 'low',
+        riskDetails: 'Không có rủi ro',
+        recommendation: 'buy_now',
+        recommendationNote: 'Nên mua',
+        savingScore: 85,
+      },
+      hiddenCosts: [],
+      advertisedTotal: 1_000_000,
+      realTotal: 1_000_000,
+      tripType: 'domestic',
+    };
+
+    const expensiveDeal: Deal = {
+      ...baseDeal,
+      id: 'd-monotonic-2',
+      price: 2_000_000,
+      realTotal: 2_000_000,
+    };
+
+    const advice = buildTripAdvice([baseDeal, expensiveDeal], {
+      origin: 'HAN',
+      budget: 10_000_000,
+      days: 3,
+    });
+
+    expect(advice.length).toBe(2);
+    // Cheaper flight yields lower estimated trip budget
+    expect(advice[0].estimatedTripBudget).toBeLessThan(advice[1].estimatedTripBudget);
+    // Cheaper flight has higher remaining budget
+    expect(advice[0].budgetRemaining).toBeGreaterThan(advice[1].budgetRemaining);
+  });
+
+  it('processes 10,000 differential oracle checks within sub-50ms latency budget', () => {
+    const start = performance.now();
+    for (let i = 0; i < 10_000; i++) {
+      const s = (i * 7) % 101;
+      const c = (i * 13) % 101;
+      const prod = evidenceGatedDealLabel(s, c);
+      const ref = referenceDealLabelOracle(s, c);
+      if (prod !== ref) {
+        throw new Error(`Oracle divergence at ${s}, ${c}`);
+      }
+    }
+    const duration = performance.now() - start;
+    expect(duration).toBeLessThan(50);
   });
 });

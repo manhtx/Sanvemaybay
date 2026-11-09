@@ -293,4 +293,181 @@ describe("Analyzer Exhaustiveness & Stable Keyset Pagination (Section 27)", () =
     expect(() => paginateKeyset(frozenRows as any, null, 10)).not.toThrow();
     expect(frozenRows[0].id).toBe("fr-2");
   });
+
+  it("preserves arbitrary custom metadata payload fields on KeysetRow without dropping properties", async () => {
+    interface RichKeysetRow extends KeysetRow {
+      airline: string;
+      fareClass: string;
+      tags: string[];
+      details: { score: number; seats: number };
+    }
+
+    const richRows: RichKeysetRow[] = [
+      {
+        id: "r-02",
+        timestamp: "2026-10-05T12:00:00.000Z",
+        airline: "VN",
+        fareClass: "ECO",
+        tags: ["deal", "direct"],
+        details: { score: 92, seats: 4 },
+      },
+      {
+        id: "r-01",
+        timestamp: "2026-10-05T11:00:00.000Z",
+        airline: "VJ",
+        fareClass: "PROMO",
+        tags: ["hot"],
+        details: { score: 88, seats: 2 },
+      },
+    ];
+
+    const fetchPage = async (cursor: KeysetCursor | null, batchLimit: number) => {
+      return paginateKeyset(richRows, cursor, batchLimit);
+    };
+
+    const result = await collectExhaustiveKeyset(fetchPage, { pageSize: 10 });
+    expect(result.rows.length).toBe(2);
+    expect(result.rows[0].airline).toBe("VN");
+    expect(result.rows[0].tags).toEqual(["deal", "direct"]);
+    expect(result.rows[0].details.score).toBe(92);
+    expect(result.rows[1].airline).toBe("VJ");
+    expect(result.rows[1].details.seats).toBe(2);
+  });
+
+  it("cursor stepping progresses strictly downward when batch contains identical timestamps and ids sorted descending", () => {
+    const tiedCorpus: KeysetRow[] = [
+      { id: "id-delta", timestamp: "2026-10-05T12:00:00.000Z" },
+      { id: "id-charlie", timestamp: "2026-10-05T12:00:00.000Z" },
+      { id: "id-bravo", timestamp: "2026-10-05T12:00:00.000Z" },
+      { id: "id-alpha", timestamp: "2026-10-05T12:00:00.000Z" },
+    ];
+
+    const cursor: KeysetCursor = {
+      cursor_timestamp: "2026-10-05T12:00:00.000Z",
+      cursor_id: "id-charlie",
+    };
+
+    const nextBatch = paginateKeyset(tiedCorpus, cursor, 10);
+    expect(nextBatch.length).toBe(2);
+    expect(nextBatch[0].id).toBe("id-bravo");
+    expect(nextBatch[1].id).toBe("id-alpha");
+  });
+
+  it("collectExhaustiveKeyset respects pageSize smaller than single timestamp cluster without infinite looping", async () => {
+    // 12 items with exact same timestamp, batch size 5
+    const tiedRows: KeysetRow[] = Array.from({ length: 12 }, (_, i) => ({
+      id: `cluster-${String(12 - i).padStart(2, "0")}`,
+      timestamp: "2026-10-05T15:00:00.000Z",
+    }));
+
+    let callCount = 0;
+    const fetchPage = async (cursor: KeysetCursor | null, batchLimit: number) => {
+      callCount++;
+      return paginateKeyset(tiedRows, cursor, batchLimit);
+    };
+
+    const result = await collectExhaustiveKeyset(fetchPage, { pageSize: 5, maxRows: 50 });
+    expect(result.rows.length).toBe(12);
+    expect(result.hasMore).toBe(false);
+    expect(result.isPartial).toBe(false);
+    expect(callCount).toBe(3); // 5 + 5 + 2 = 12 items
+  });
+
+  it("collectExhaustiveKeyset terminates immediately when fetchPage returns empty array on initial call", async () => {
+    let callCount = 0;
+    const fetchPage = async () => {
+      callCount++;
+      return [];
+    };
+
+    const result = await collectExhaustiveKeyset(fetchPage, { pageSize: 100, maxRows: 1000 });
+    expect(result.rows).toEqual([]);
+    expect(result.hasMore).toBe(false);
+    expect(result.isPartial).toBe(false);
+    expect(result.continuation).toBeNull();
+    expect(callCount).toBe(1);
+  });
+
+  it("pagination correctly filters multi-timestamp records across fine-grained time boundaries", () => {
+    const corpus: KeysetRow[] = [
+      { id: "a4", timestamp: "2026-10-05T14:00:00.000Z" },
+      { id: "a3", timestamp: "2026-10-05T13:00:00.000Z" },
+      { id: "a2", timestamp: "2026-10-05T12:00:00.000Z" },
+      { id: "a1", timestamp: "2026-10-05T11:00:00.000Z" },
+    ];
+
+    const cursor: KeysetCursor = {
+      cursor_timestamp: "2026-10-05T13:00:00.000Z",
+      cursor_id: "a3",
+    };
+
+    const page = paginateKeyset(corpus, cursor, 2);
+    expect(page.length).toBe(2);
+    expect(page[0].id).toBe("a2");
+    expect(page[1].id).toBe("a1");
+  });
+
+  it("maxRows exact boundary condition: distinguishes full completion vs partial ceiling accurately", async () => {
+    // Case A: corpus has 40 items, maxRows is 50 (batch of 40 < batchLimit 50) -> full completion
+    const smallerCorpus: KeysetRow[] = Array.from({ length: 40 }, (_, i) => ({
+      id: `small-${String(40 - i).padStart(2, "0")}`,
+      timestamp: new Date(1760000000000 - i * 1000).toISOString(),
+    }));
+
+    const fetchSmaller = async (cursor: KeysetCursor | null, batchLimit: number) => {
+      return paginateKeyset(smallerCorpus, cursor, batchLimit);
+    };
+
+    const resultA = await collectExhaustiveKeyset(fetchSmaller, { pageSize: 100, maxRows: 50 });
+    expect(resultA.rows.length).toBe(40);
+    expect(resultA.hasMore).toBe(false);
+    expect(resultA.isPartial).toBe(false);
+    expect(resultA.continuation).toBeNull();
+
+    // Case B: corpus has 50 items, maxRows is 50 (batch returns 50 == batchLimit) -> correctly partial
+    const exactCorpus: KeysetRow[] = Array.from({ length: 50 }, (_, i) => ({
+      id: `exact-${String(50 - i).padStart(2, "0")}`,
+      timestamp: new Date(1760000000000 - i * 1000).toISOString(),
+    }));
+
+    const fetchExact = async (cursor: KeysetCursor | null, batchLimit: number) => {
+      return paginateKeyset(exactCorpus, cursor, batchLimit);
+    };
+
+    const resultB = await collectExhaustiveKeyset(fetchExact, { pageSize: 100, maxRows: 50 });
+    expect(resultB.rows.length).toBe(50);
+    expect(resultB.hasMore).toBe(true);
+    expect(resultB.isPartial).toBe(true);
+    expect(resultB.continuation).not.toBeNull();
+  });
+
+  it("keyset pagination handles zero or edge-case batch limits safely", () => {
+    const corpus: KeysetRow[] = [
+      { id: "row-1", timestamp: "2026-10-05T12:00:00.000Z" },
+      { id: "row-2", timestamp: "2026-10-05T11:00:00.000Z" },
+    ];
+
+    expect(paginateKeyset(corpus, null, 0)).toEqual([]);
+    expect(paginateKeyset(corpus, null, 1).length).toBe(1);
+    expect(paginateKeyset(corpus, null, 10).length).toBe(2);
+  });
+
+  it("processes 5,000 keyset row batch pagination operations within sub-50ms latency budget", () => {
+    const corpus: KeysetRow[] = Array.from({ length: 5000 }, (_, i) => ({
+      id: `perf-row-${String(5000 - i).padStart(4, "0")}`,
+      timestamp: new Date(1760000000000 - i * 1000).toISOString(),
+    }));
+
+    const cursor: KeysetCursor = {
+      cursor_timestamp: corpus[2500].timestamp,
+      cursor_id: corpus[2500].id,
+    };
+
+    const start = performance.now();
+    const result = paginateKeyset(corpus, cursor, 500);
+    const duration = performance.now() - start;
+
+    expect(duration).toBeLessThan(50);
+    expect(result.length).toBe(500);
+  });
 });
