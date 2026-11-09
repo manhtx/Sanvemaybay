@@ -258,4 +258,23 @@ describe("Farely Pure Domain — Canonical Opportunity Identity (REQ-ID-002, REQ
     expect(isSameLogicalOpportunity(baseInput, canonicalStr)).toBe(true);
     expect(isSameLogicalOpportunity(canonicalStr, baseInput)).toBe(true);
   });
+
+  it("pure immutability: Object.freeze on input objects does not affect ID generation or parsing", () => {
+    const frozenInput = Object.freeze({
+      originCode: "HAN",
+      destinationCode: "NRT",
+      departDate: "2026-12-01",
+      returnDate: "2026-12-10",
+      airlineCode: "VJ",
+      flightNumber: "VJ932",
+      stops: 0,
+    });
+
+    const id = generateOpportunityId(frozenInput);
+    expect(id).toBe("HAN:NRT:2026-12-01:2026-12-10:VJ:VJ932:0");
+
+    const parsed = parseOpportunityId(id);
+    expect(parsed?.destinationCode).toBe("NRT");
+    expect(isSameLogicalOpportunity(frozenInput, parsed!)).toBe(true);
+  });
 });

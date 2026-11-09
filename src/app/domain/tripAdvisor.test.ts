@@ -266,4 +266,14 @@ describe("Farely Pure Domain — Trip Budget Advisor (NC-005, NC-033, REQ-DOM-00
     const elapsed = performance.now() - start;
     expect(elapsed).toBeLessThan(50);
   });
+
+  it("sorts recommendations by fitScore descending and breaks ties by estimatedTripBudget ascending", () => {
+    // Both deals with baseScore 80 and same penalty -> same fitScore
+    // But d_cheaper has estimatedTripBudget 2M + 2.1M = 4.1M vs d_pricier 3M + 2.1M = 5.1M
+    const dCheaper = makeDeal({ id: "d_cheaper", fromCode: "HAN", to: "DAD", realTotal: 2_000_000, tripType: "domestic", dealScore: 80 });
+    const dPricier = makeDeal({ id: "d_pricier", fromCode: "HAN", to: "CXR", realTotal: 3_000_000, tripType: "domestic", dealScore: 80 });
+
+    const advice = buildTripAdvice([dPricier, dCheaper], { origin: "HAN", budget: 20_000_000, days: 3 });
+    expect(advice.map((a) => a.deal.id)).toEqual(["d_cheaper", "d_pricier"]);
+  });
 });
