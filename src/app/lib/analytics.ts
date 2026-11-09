@@ -76,6 +76,11 @@ export function appendLocalProductEvent(event: ProductEvent, storage: Storage | 
   return local;
 }
 
+function isStorageLike(value: unknown): value is Storage {
+  if (typeof value !== "object" || value === null) return false;
+  return typeof (value as Storage).getItem === "function" && typeof (value as Storage).setItem === "function";
+}
+
 export async function trackProductEvent(
   inputOrType: ProductEvent | ProductEventType,
   metadataOrStorage?: Record<string, string | number | boolean | null> | Storage,
@@ -89,12 +94,12 @@ export async function trackProductEvent(
     event = {
       eventType: inputOrType,
       entityId,
-      metadata: (metadataOrStorage && !(metadataOrStorage instanceof Storage)) ? metadataOrStorage as Record<string, string | number | boolean | null> : undefined,
+      metadata: (metadataOrStorage && !isStorageLike(metadataOrStorage)) ? metadataOrStorage as Record<string, string | number | boolean | null> : undefined,
     };
     targetStorage = storageParam ?? (typeof window === "undefined" ? undefined : window.localStorage);
   } else {
     event = inputOrType;
-    targetStorage = (metadataOrStorage instanceof Storage) ? metadataOrStorage : (typeof window === "undefined" ? undefined : window.localStorage);
+    targetStorage = isStorageLike(metadataOrStorage) ? metadataOrStorage : (typeof window === "undefined" ? undefined : window.localStorage);
   }
 
   const sanitized = sanitizeProductEvent(event);
