@@ -1,35 +1,149 @@
 import { describe, expect, it } from "vitest";
 import { matchPromotions, Promotion } from "./promotionMatching";
 
-const base: Promotion = {
-  id: "p1", provider: "Airline", originCodes: ["HAN"], destinationCodes: ["BKK"], airlineCodes: ["VJ"],
-  validFrom: "2026-07-01T00:00:00Z", validUntil: "2026-08-31T23:59:59Z",
-  departureFrom: "2026-08-01", departureUntil: "2026-12-31", kind: "percent", amount: 20,
-  conditions: ["Thanh toán bằng thẻ đủ điều kiện"],
+const basePromo: Promotion = {
+  id: "p_base",
+  provider: "Vietjet",
+  code: "BAYHE2026",
+  originCodes: ["HAN"],
+  destinationCodes: ["BKK"],
+  airlineCodes: ["VJ"],
+  validFrom: "2026-07-01T00:00:00Z",
+  validUntil: "2026-08-31T23:59:59Z",
+  departureFrom: "2026-08-01",
+  departureUntil: "2026-12-31",
+  kind: "percent",
+  amount: 20,
+  conditions: ["Thanh toán qua ví điện tử"]
 };
-const deal = { fromCode: "HAN", toCode: "BKK", airlineCode: "VJ", departDate: "2026-09-10", price: 5_000_000 } as const;
 
-describe("matchPromotions", () => {
-  it("matches eligible route/date/airline and calculates capped saving", () => {
-    const result = matchPromotions(deal, [{ ...base, maxDiscount: 700_000 }], new Date("2026-07-31T12:00:00Z"));
-    expect(result[0].estimatedSaving).toBe(700_000);
+const baseDeal = {
+  fromCode: "HAN",
+  toCode: "BKK",
+  airlineCode: "VJ",
+  departDate: "2026-09-15",
+  price: 5_000_000
+};
+
+describe("Farely Pure Domain — Promotion Matching & Discount Gating (REQ-DOM-001, REQ-DOM-009)", () => {
+  const midPeriod = new Date("2026-07-31T12:00:00Z");
+
+  it("matches eligible promotion and calculates uncapped percentage discount", () => {
+    // 20% of 5,000,000 = 1,000,000
+    const matches = matchPromotions(baseDeal, [basePromo], midPeriod);
+
+    expect(matches).toHaveLength(1);
+    expect(matches[0].promotion.id).toBe("p_base");
+    expect(matches[0].estimatedSaving).toBe(1_000_000);
   });
 
-  it("rejects expired, route-mismatched, below-minimum and malformed promotions", () => {
-    const result = matchPromotions(deal, [
-      { ...base, id: "expired", validUntil: "2026-07-30" },
-      { ...base, id: "route", destinationCodes: ["NRT"] },
-      { ...base, id: "minimum", minimumFare: 6_000_000 },
-      { ...base, id: "invalid", amount: 0 },
-    ], new Date("2026-07-31T12:00:00Z"));
-    expect(result).toEqual([]);
+  it("strictly caps discount at maxDiscount when percentage savings exceed limit", () => {
+    // 20% of 5,000,000 = 1,000,000, but capped at 600,000
+    const cappedPromo: Promotion = {
+      ...basePromo,
+      id: "p_capped",
+      maxDiscount: 600_000
+    };
+
+    const matches = matchPromotions(baseDeal, [cappedPromo], midPeriod);
+    expect(matches[0].estimatedSaving).toBe(600_000);
   });
 
-  it("supports fixed promotions and preserves best-first ordering", () => {
-    const result = matchPromotions(deal, [
-      { ...base, id: "fixed", kind: "fixed", amount: 900_000 },
-      { ...base, id: "percent", amount: 25 },
-    ], new Date("2026-07-31T12:00:00Z"));
-    expect(result.map((item) => item.promotion.id)).toEqual(["percent", "fixed"]);
+  it("strictly caps discount at deal.price (never allowing negative net fare)", () => {
+    // Fixed discount of 10,000,000 on a 5,000,000 deal
+    const massivePromo: Promotion = {
+      ...basePromo,
+      id: "p_massive",
+      kind: "fixed",
+      amount: 10_000_000
+    };
+
+    const matches = matchPromotions(baseDeal, [massivePromo], midPeriod);
+    expect(matches[0].estimatedSaving).toBe(5_000_000);
+  });
+
+  it("enforces temporal validity: excludes expired and not-yet-active promotions", () => {
+    const expiredPromo: Promotion = {
+      ...basePromo,
+      id: "p_expired",
+      validFrom: "2026-06-01T00:00:00Z",
+      validUntil: "2026-07-15T00:00:00Z"
+    };
+
+    const futurePromo: Promotion = {
+      ...basePromo,
+      id: "p_future",
+      validFrom: "2026-09-01T00:00:00Z",
+      validUntil: "2026-09-30T00:00:00Z"
+    };
+
+    const matches = matchPromotions(baseDeal, [expiredPromo, futurePromo], midPeriod);
+    expect(matches).toEqual([]);
+  });
+
+  it("enforces departure date window: excludes flights departing out of eligible range", () => {
+    const departureWindowPromo: Promotion = {
+      ...basePromo,
+      departureFrom: "2026-10-01",
+      departureUntil: "2026-10-31"
+    };
+
+    // Deal departs 2026-09-15 (before departureFrom)
+    const matches = matchPromotions(baseDeal, [departureWindowPromo], midPeriod);
+    expect(matches).toEqual([]);
+
+    // Deal departing inside window
+    const eligibleDeal = { ...baseDeal, departDate: "2026-10-15" };
+    const eligibleMatches = matchPromotions(eligibleDeal, [departureWindowPromo], midPeriod);
+    expect(eligibleMatches).toHaveLength(1);
+  });
+
+  it("filters origin, destination, and airline codes while supporting wildcards", () => {
+    const wrongOrigin: Promotion = { ...basePromo, id: "wrong_origin", originCodes: ["SGN"] };
+    const wrongDest: Promotion = { ...basePromo, id: "wrong_dest", destinationCodes: ["TYO"] };
+    const wrongAirline: Promotion = { ...basePromo, id: "wrong_airline", airlineCodes: ["VN"] };
+    const wildcardPromo: Promotion = {
+      ...basePromo,
+      id: "wildcard",
+      originCodes: undefined,
+      destinationCodes: [],
+      airlineCodes: undefined
+    };
+
+    const matches = matchPromotions(baseDeal, [wrongOrigin, wrongDest, wrongAirline, wildcardPromo], midPeriod);
+    expect(matches).toHaveLength(1);
+    expect(matches[0].promotion.id).toBe("wildcard");
+  });
+
+  it("enforces minimum fare spend threshold", () => {
+    const promoWithMinFare: Promotion = {
+      ...basePromo,
+      id: "p_min",
+      minimumFare: 6_000_000 // Deal price is 5,000,000
+    };
+
+    expect(matchPromotions(baseDeal, [promoWithMinFare], midPeriod)).toEqual([]);
+
+    // Qualifying when price meets or exceeds minimumFare
+    const higherDeal = { ...baseDeal, price: 7_000_000 };
+    expect(matchPromotions(higherDeal, [promoWithMinFare], midPeriod)).toHaveLength(1);
+  });
+
+  it("sorts matched promotions by estimatedSaving descending", () => {
+    const promoSmall: Promotion = { ...basePromo, id: "small", kind: "fixed", amount: 200_000 };
+    const promoMed: Promotion = { ...basePromo, id: "med", kind: "fixed", amount: 500_000 };
+    const promoLarge: Promotion = { ...basePromo, id: "large", kind: "percent", amount: 30 }; // 30% of 5M = 1.5M
+
+    const matches = matchPromotions(baseDeal, [promoSmall, promoLarge, promoMed], midPeriod);
+    expect(matches.map((m) => m.promotion.id)).toEqual(["large", "med", "small"]);
+  });
+
+  it("safely rejects non-positive deal prices, invalid departure dates, and zero promo amounts", () => {
+    expect(matchPromotions({ ...baseDeal, price: 0 }, [basePromo], midPeriod)).toEqual([]);
+    expect(matchPromotions({ ...baseDeal, price: -100_000 }, [basePromo], midPeriod)).toEqual([]);
+    expect(matchPromotions({ ...baseDeal, departDate: "invalid-date" }, [basePromo], midPeriod)).toEqual([]);
+
+    const zeroAmountPromo: Promotion = { ...basePromo, id: "zero", amount: 0 };
+    expect(matchPromotions(baseDeal, [zeroAmountPromo], midPeriod)).toEqual([]);
   });
 });
