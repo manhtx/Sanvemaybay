@@ -114,3 +114,31 @@ test("performance benchmark: 1,000 release SHA resolutions execute in under 50ms
   const elapsed = performance.now() - start;
   assert.ok(elapsed < 50, `1,000 SHA resolutions must execute in under 50ms (took ${elapsed.toFixed(2)}ms)`);
 });
+
+test("frontend release metadata: directory creation resilience, file overwrite, and error handling", async () => {
+  const baseDir = await mkdtemp(join(tmpdir(), "flycheap-release-resilience-"));
+  const nestedDir = join(baseDir, "nested", "release", "dir");
+
+  try {
+    // 1. Recursive directory creation
+    const m1 = generateReleaseMetadata(nestedDir, { VITE_RELEASE_SHA: "1234567" });
+    assert.equal(m1.release_sha, "1234567");
+
+    // 2. Overwrite existing release.json atomically
+    const m2 = generateReleaseMetadata(nestedDir, { VITE_RELEASE_SHA: "7654321" });
+    assert.equal(m2.release_sha, "7654321");
+
+    const content = await readFile(join(nestedDir, "release.json"), "utf8");
+    const parsed = JSON.parse(content);
+    assert.equal(parsed.release_sha, "7654321");
+    assert.equal(parsed.schema_version, 1);
+
+    // 3. Invalid output directory path fails closed with error
+    assert.throws(
+      () => generateReleaseMetadata(join(nestedDir, "release.json", "forbidden")),
+      /ENOTDIR|ENOENT|Error/
+    );
+  } finally {
+    await rm(baseDir, { recursive: true, force: true });
+  }
+});

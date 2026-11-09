@@ -2,7 +2,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
-export const INDEXABLE_ROUTES = ["/", "/deals", "/historical-deals", "/explore", "/search", "/alerts", "/advisor", "/privacy", "/terms"];
+export const INDEXABLE_ROUTES = Object.freeze(["/", "/deals", "/historical-deals", "/explore", "/search", "/alerts", "/advisor", "/privacy", "/terms"]);
 
 export function productionOrigin(value) {
   try {

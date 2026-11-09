@@ -110,3 +110,23 @@ test("performance benchmark: 1,000 SEO asset evaluations execute in under 50ms",
   const elapsed = performance.now() - start;
   assert.ok(elapsed < 50, `1,000 SEO asset operations must execute in under 50ms (took ${elapsed.toFixed(2)}ms)`);
 });
+
+test("SEO asset generation determinism and INDEXABLE_ROUTES runtime immutability", () => {
+  const origin = "https://flycheap.example";
+  const sitemap1 = sitemapXml(origin);
+  const sitemap2 = sitemapXml(origin);
+  assert.equal(sitemap1, sitemap2, "sitemapXml must be purely deterministic");
+
+  const robots1 = robotsText(origin);
+  const robots2 = robotsText(origin);
+  assert.equal(robots1, robots2, "robotsText must be purely deterministic");
+
+  // Verify INDEXABLE_ROUTES is frozen with Object.freeze
+  assert.ok(Object.isFrozen(INDEXABLE_ROUTES), "INDEXABLE_ROUTES must be frozen with Object.freeze");
+  const initialLength = INDEXABLE_ROUTES.length;
+  assert.throws(
+    () => { INDEXABLE_ROUTES.push("/malicious-route"); },
+    /TypeError|Cannot add property|is not extensible/
+  );
+  assert.equal(INDEXABLE_ROUTES.length, initialLength, "INDEXABLE_ROUTES length must remain unaltered");
+});
