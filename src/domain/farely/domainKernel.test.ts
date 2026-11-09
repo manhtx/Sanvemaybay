@@ -58,6 +58,12 @@ describe('Farely Pure Domain Kernel — Money & Pricing Units (REQ-DOM-006, NC-0
     const normalizedParty = normalizeToPerTraveler(partyTotal, 2);
     expect(compareMoney(perTraveler, normalizedParty)).toBe(0);
   });
+
+  it('REQ-DOM-006: compareMoney strictly rejects cross-currency comparisons', () => {
+    const usdMoney = createMoney(100, 'USD');
+    const vndMoney = createMoney(2500000, 'VND');
+    expect(() => compareMoney(usdMoney, vndMoney)).toThrow(IncompatibleMoneyComparisonError);
+  });
 });
 
 describe('Farely Pure Domain Kernel — Time Invariants (REQ-DOM-009, NC-007)', () => {
@@ -259,6 +265,23 @@ describe('Farely Pure Domain Kernel — True Cost & Epistemics (REQ-COST-001..00
     expect(evalResult.hasUnknownMandatoryCost).toBe(false);
     expect(evalResult.knownMandatoryTotal).toBe(600000);
     expect(evalResult.minVerifiableTotal).toBe(3100000);
+  });
+
+  it('REQ-COST-004: evaluateTrueCost with all mandatory costs known computes exact minVerifiableTotal', () => {
+    const evalResult = evaluateTrueCost({
+      basePrice: 1800000,
+      airline: 'VN',
+      isInternational: false,
+      providerVerifiedAllIn: true,
+      isBaggageExplicitlyIncluded: true,
+      providedHiddenCosts: {
+        paymentFee: 0
+      }
+    });
+
+    expect(evalResult.hasUnknownMandatoryCost).toBe(false);
+    expect(evalResult.minVerifiableTotal).toBe(1800000);
+    expect(evalResult.isBaggageIncluded).toBe(true);
   });
 });
 

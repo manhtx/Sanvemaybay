@@ -260,6 +260,40 @@ describe('Farely Pure Domain Kernel — Canonical TravelIntent (REQ-DOM-002..015
     expect(duration).toBeLessThan(50);
   });
 
+  it('rejects negative children or infants passenger counts (cardinality boundary)', () => {
+    expect(() =>
+      createTravelIntent({
+        origin: 'HAN',
+        destination: 'SGN',
+        journeyType: 'ONE_WAY',
+        outboundDate: '2026-12-01',
+        children: -1,
+      })
+    ).toThrowError(RangeError);
+
+    expect(() =>
+      createTravelIntent({
+        origin: 'HAN',
+        destination: 'SGN',
+        journeyType: 'ONE_WAY',
+        outboundDate: '2026-12-01',
+        infants: -1,
+      })
+    ).toThrowError(RangeError);
+  });
+
+  it('deserializeTravelIntent rejects null, undefined, empty string, or non-string inputs', () => {
+    expect(() => deserializeTravelIntent(null as any)).toThrowError(
+      'Invalid or unsupported TravelIntent schema version'
+    );
+    expect(() => deserializeTravelIntent(undefined as any)).toThrowError(
+      'Invalid or unsupported TravelIntent schema version'
+    );
+    expect(() => deserializeTravelIntent('')).toThrowError(
+      'Invalid or unsupported TravelIntent schema version'
+    );
+  });
+
   it('preserves pure immutability on Object.freeze protected TravelIntent objects', () => {
     const intent = createTravelIntent({
       origin: 'HAN',

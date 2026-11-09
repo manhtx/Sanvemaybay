@@ -102,6 +102,9 @@ export function createTravelIntent(params: {
   if (adults < 1) {
     throw new RangeError('At least 1 adult passenger required');
   }
+  if (children < 0 || infants < 0) {
+    throw new RangeError('Passenger counts for children and infants cannot be negative');
+  }
 
   return {
     schemaVersion: 1,
@@ -130,6 +133,9 @@ export function serializeTravelIntent(intent: TravelIntent): string {
 }
 
 export function deserializeTravelIntent(raw: string): TravelIntent {
+  if (!raw || typeof raw !== 'string') {
+    throw new Error('Invalid or unsupported TravelIntent schema version');
+  }
   const parsed = JSON.parse(raw);
   if (!parsed || parsed.schemaVersion !== 1) {
     throw new Error('Invalid or unsupported TravelIntent schema version');
