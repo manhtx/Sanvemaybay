@@ -121,3 +121,24 @@ test('A24: Terminal evaluator admits legitimate evidence when all conditions hol
   assert.equal(evalResult.all_conditions_hold, true, 'All 22 predicates must hold simultaneously');
   assert.equal(evalResult.terminal_state, 'TARGET_PROVEN', 'Must admit TARGET_PROVEN when all conditions hold');
 });
+
+test('A06: Terminal evaluator rejects contract hash mutation and bounds evaluation latency', () => {
+  // Sabotage: contract mutation detected
+  const evalResult = evaluateAdmission({
+    simulateContractMutation: true
+  });
+
+  assert.notEqual(evalResult.terminal_state, 'TARGET_PROVEN', 'Must reject TARGET_PROVEN on contract mutation');
+  assert.equal(evalResult.terminal_state, 'EXECUTING');
+  assert.equal(evalResult.boolean_evaluations.contract_mutation_detected, true, 'contract_mutation_detected must be true');
+  assert.equal(evalResult.all_conditions_hold, false, 'all_conditions_hold must be false when contract mutation is detected');
+
+  // Micro-benchmark: 5 admission evaluations under 250ms
+  const start = performance.now();
+  const iterations = 5;
+  for (let i = 0; i < iterations; i++) {
+    evaluateAdmission();
+  }
+  const durationMs = performance.now() - start;
+  assert.ok(durationMs < 250, `5 admission evaluations must complete under 250ms, took ${durationMs.toFixed(2)}ms`);
+});

@@ -171,3 +171,41 @@ test("acceptance anti-shrinkage: baseline gate cardinality and priority distribu
   assert.ok(p2Count > 0, "Must have P2 priority gates");
   assert.equal(p0Count + p1Count + p2Count, baseline.gates.length, "All gates must have valid P0/P1/P2 priorities");
 });
+
+test("acceptance anti-shrinkage: requirement/title alteration rejection and comparison throughput benchmark", () => {
+  const { baseline, current } = loadRegistries();
+  const targetGate = baseline.gates[0];
+
+  // Negative control 1: altered requirement text
+  const mutatedReq = {
+    ...current,
+    gates: current.gates.map((g) =>
+      g.gate_id === targetGate.gate_id ? { ...g, requirement: "Altered requirement text that weakens original contract" } : g
+    ),
+  };
+  assert.throws(
+    () => validateAntiShrinkage(baseline, mutatedReq),
+    new RegExp(`Requirement for ${targetGate.gate_id} must not be weakened or altered`)
+  );
+
+  // Negative control 2: altered title
+  const mutatedTitle = {
+    ...current,
+    gates: current.gates.map((g) =>
+      g.gate_id === targetGate.gate_id ? { ...g, title: "Altered Title" } : g
+    ),
+  };
+  assert.throws(
+    () => validateAntiShrinkage(baseline, mutatedTitle),
+    new RegExp(`Title for ${targetGate.gate_id} must not be altered`)
+  );
+
+  // Micro-benchmark: 1,000 full registry validations under 100ms
+  const start = performance.now();
+  const iterations = 1000;
+  for (let i = 0; i < iterations; i++) {
+    validateAntiShrinkage(baseline, current);
+  }
+  const durationMs = performance.now() - start;
+  assert.ok(durationMs < 100, `1,000 anti-shrinkage validations must complete under 100ms, took ${durationMs.toFixed(2)}ms`);
+});
