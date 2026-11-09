@@ -137,6 +137,53 @@ describe("user preferences (FLY-UX-004, REQ-DOM-001, REQ-DOM-008, NC-005, NC-009
       expect(badDates.departureFrom).toBeUndefined();
       expect(badDates.departureTo).toBeUndefined();
     });
+
+    it("preserves single-day travel window when departureFrom equals departureTo", () => {
+      const singleDay = normalizePreferences({
+        departureFrom: "2026-11-20",
+        departureTo: "2026-11-20",
+      });
+      expect(singleDay.departureFrom).toBe("2026-11-20");
+      expect(singleDay.departureTo).toBe("2026-11-20");
+    });
+
+    it("preserves open-ended single-sided departure boundary dates", () => {
+      const fromOnly = normalizePreferences({ departureFrom: "2026-12-01" });
+      expect(fromOnly.departureFrom).toBe("2026-12-01");
+      expect(fromOnly.departureTo).toBeUndefined();
+
+      const toOnly = normalizePreferences({ departureTo: "2026-12-31" });
+      expect(toOnly.departureFrom).toBeUndefined();
+      expect(toOnly.departureTo).toBe("2026-12-31");
+    });
+
+    it("preserves input object immutability on Object.freeze protected inputs", () => {
+      const frozenInput = Object.freeze({
+        homeAirport: "HAN",
+        budget: 10_000_000,
+        preferredAirlines: Object.freeze(["VN", "VJ"]) as any,
+        favoriteRegions: Object.freeze(["asia"]) as any,
+      });
+
+      expect(() => normalizePreferences(frozenInput)).not.toThrow();
+      expect(frozenInput.homeAirport).toBe("HAN");
+    });
+
+    it("high-volume preferences normalization benchmark: 5,000 normalizations in sub-50ms", () => {
+      const start = performance.now();
+      for (let i = 0; i < 5000; i++) {
+        normalizePreferences({
+          homeAirport: i % 2 === 0 ? "han" : "sgn",
+          budget: 10_000_000 + (i * 1000),
+          maxStops: i % 3,
+          preferredAirlines: ["VN", "VJ"],
+          cabinClass: "ECONOMY",
+          allowSelfTransfer: i % 4 === 0,
+        });
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
+    });
   });
 
   describe("localStorage persistence and partial updates", () => {

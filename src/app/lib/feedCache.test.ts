@@ -94,6 +94,50 @@ describe("feedCache (NC-007, REQ-DOM-001, REQ-DOM-008)", () => {
       expect(readFeedCache(undefined, 1000)).toBeUndefined();
       expect(() => writeFeedCache(undefined, [mockDeal], 1000)).not.toThrow();
     });
+
+    it("recovers gracefully when storage.getItem throws SecurityError on readFeedCache", () => {
+      const throwingStore: Storage = {
+        getItem: () => {
+          throw new Error("SecurityError: Access is denied for this document");
+        },
+        setItem: () => {},
+        removeItem: () => {},
+        clear: () => {},
+        key: () => null,
+        length: 0,
+      };
+
+      expect(readFeedCache(throwingStore, 1000)).toBeUndefined();
+    });
+
+    it("preserves empty deals array ([] instead of null or undefined)", () => {
+      const store = createMockStorage();
+      writeFeedCache(store, [], 1000);
+
+      const cached = readFeedCache(store, 1500);
+      expect(cached).toBeDefined();
+      expect(cached?.deals).toEqual([]);
+    });
+
+    it("preserves input deals array immutability on Object.freeze", () => {
+      const store = createMockStorage();
+      const frozenDeals = Object.freeze([Object.freeze({ ...mockDeal })]);
+
+      expect(() => writeFeedCache(store, frozenDeals as any, 1000)).not.toThrow();
+      const cached = readFeedCache(store, 1500);
+      expect(cached?.deals).toHaveLength(1);
+    });
+
+    it("high-volume feed cache benchmark: 5,000 read and write operations in sub-50ms", () => {
+      const store = createMockStorage();
+      const start = performance.now();
+      for (let i = 0; i < 5000; i++) {
+        writeFeedCache(store, [mockDeal], 1000 + i);
+        readFeedCache(store, 1000 + i + 100);
+      }
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(50);
+    });
   });
 
   describe("readObservedFaresCache & writeObservedFaresCache: staleness gating and metadata", () => {
@@ -172,6 +216,68 @@ describe("feedCache (NC-007, REQ-DOM-001, REQ-DOM-008)", () => {
     it("handles undefined storage argument cleanly for observed fares cache", () => {
       expect(readObservedFaresCache(undefined, 1000)).toBeUndefined();
       expect(() => writeObservedFaresCache(undefined, { fares: [], total: 0, status: "healthy" }, 1000)).not.toThrow();
+    });
+
+    it("supports all 7 valid ObservedFaresCacheEntry status enum variants", () => {
+      const statuses = [
+        "healthy",
+        "healthy_empty",
+        "valid_zero",
+        "unmonitored",
+        "degraded_freshness",
+        "stale_only",
+        "provider_unavailable",
+      ] as const;
+
+      const store = createMockStorage();
+      for (const status of statuses) {
+        writeObservedFaresCache(store, { fares: [mockDeal], total: 1, status }, 1000);
+        const cached = readObservedFaresCache(store, 1100);
+        expect(cached?.status).toBe(status);
+      }
+    });
+
+    it("preserves optional feedAgeMinutes and latestObservedAt metadata properties", () => {
+      const store = createMockStorage();
+      writeObservedFaresCache(store, {
+        fares: [mockDeal],
+        total: 1,
+        status: "healthy",
+        feedAgeMinutes: 12,
+        latestObservedAt: "2026-10-01T08:00:00.000Z",
+      }, 2000);
+
+      const cached = readObservedFaresCache(store, 2100);
+      expect(cached?.feedAgeMinutes).toBe(12);
+      expect(cached?.latestObservedAt).toBe("2026-10-01T08:00:00.000Z");
+    });
+
+    it("recalculates total as fares.length when total is non-numeric or missing", () => {
+      const store = createMockStorage({
+        "farely.observed-cache": JSON.stringify({
+          savedAt: 1000,
+          fares: [mockDeal, { ...mockDeal, id: "deal-2" }],
+          total: undefined,
+        }),
+      });
+
+      const cached = readObservedFaresCache(store, 1100);
+      expect(cached?.total).toBe(2);
+    });
+
+    it("recovers gracefully when storage.getItem throws SecurityError on readObservedFaresCache", () => {
+      const throwingStore: Storage = {
+        getItem: () => {
+          throw new Error("SecurityError: Access is denied");
+        },
+        setItem: () => {},
+        removeItem: () => {},
+        clear: () => {},
+        key: () => null,
+        length: 0,
+      };
+
+      expect(readObservedFaresCache(throwingStore, 1000)).toBeUndefined();
     });
   });
 });
