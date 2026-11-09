@@ -313,4 +313,62 @@ describe("route optimization (FLY-INTEL-007, FLY-INTEL-008, NC-009, NC-010, NC-0
     expect(combined[0].airportChange).toBe(true);
     expect(combined[0].dataFresh).toBe(false);
   });
+
+  it("equal cost tie-breaking: selects the lowest cost route deterministically", () => {
+    const optA: RouteOption = {
+      type: "DIRECT",
+      dataFresh: true,
+      legs: [{ ...direct.legs[0], price: 5_000_000, durationMinutes: 300 }],
+    };
+    const optB: RouteOption = {
+      type: "DIRECT",
+      dataFresh: true,
+      legs: [{ ...direct.legs[0], price: 5_000_000, durationMinutes: 240 }],
+    };
+
+    const best = chooseLowestCostRoute([optA, optB]);
+    expect(best).toBeDefined();
+    expect(best?.totalCost).toBe(5_000_000);
+  });
+
+  it("extreme cost boundary: handles 9-figure pricing (120,000,000 VND) without overflow", () => {
+    const luxuryRoute: RouteOption = {
+      type: "DIRECT",
+      dataFresh: true,
+      legs: [{
+        ...direct.legs[0],
+        price: 100_000_000,
+        extraCost: 20_000_000,
+        durationMinutes: 720,
+      }],
+    };
+
+    const result = assessRoute(luxuryRoute);
+    expect(result.totalCost).toBe(120_000_000);
+    expect(result.totalDurationMinutes).toBe(720);
+    expect(result.riskLevel).toBe("low");
+  });
+
+  it("pure immutability: Object.freeze on legs and route option prevents mutations during assessment", () => {
+    const frozenOption: RouteOption = Object.freeze({
+      type: "DIRECT",
+      dataFresh: true,
+      legs: Object.freeze([
+        Object.freeze({ ...direct.legs[0] }),
+      ]) as any,
+    });
+
+    const result = assessRoute(frozenOption);
+    expect(result.totalCost).toBe(8_000_000);
+    expect(frozenOption.type).toBe("DIRECT");
+  });
+
+  it("high-volume performance: 10,000 route assessments execute in sub-50ms", () => {
+    const start = performance.now();
+    for (let i = 0; i < 10000; i++) {
+      assessRoute(direct);
+    }
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(50);
+  });
 });

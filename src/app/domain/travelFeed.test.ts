@@ -220,5 +220,62 @@ describe('Travel Feed Ranking & Destination Diversification (REQ-DOM-001, FLY-SC
       expect(result).toHaveLength(2);
       expect(frozenDeals[0].id).toBe('d1');
     });
+
+    it('stable tie-breaking preserves base feed ordering when personalized scores are equal', () => {
+      const deals = [
+        createDeal({ id: 'd-alpha', toCode: 'BKK', dealScore: 70 }),
+        createDeal({ id: 'd-beta', toCode: 'SIN', dealScore: 70 }),
+      ];
+      // With empty preferences, both have same base score; d-alpha was first
+      const result = rankPersonalizedFeed(deals, defaultPreferences);
+      expect(result.map((d) => d.id)).toEqual(['d-alpha', 'd-beta']);
+    });
+
+    it('handles varied duration formats (minutes only, hours only, hours and minutes) in flight time limit', () => {
+      const deals = [
+        createDeal({ id: 'min-only', duration: '90m', dealScore: 70 }), // 90 min <= 180 min
+        createDeal({ id: 'hour-only', duration: '4h', dealScore: 70 }), // 240 min > 180 min (-10)
+        createDeal({ id: 'mixed', duration: '3h 30m', dealScore: 70 }), // 210 min > 180 min (-10)
+      ];
+      const prefs: UserPreferences = { ...defaultPreferences, maxFlightTimeMinutes: 180 };
+      const result = rankPersonalizedFeed(deals, prefs);
+
+      expect(result[0].id).toBe('min-only');
+    });
+
+    it('applies preferred airline boost when user has multiple preferred airlines configured', () => {
+      const deals = [
+        createDeal({ id: 'airline-vj', airlineCode: 'VJ', dealScore: 70 }),
+        createDeal({ id: 'airline-vn', airlineCode: 'VN', dealScore: 70 }),
+        createDeal({ id: 'airline-sq', airlineCode: 'SQ', dealScore: 78 }),
+      ];
+      const prefs: UserPreferences = { ...defaultPreferences, preferredAirlines: ['VJ', 'VN'] };
+      const result = rankPersonalizedFeed(deals, prefs);
+
+      // VJ and VN get 70 + 10 = 80 vs SQ 78
+      expect(result.map((d) => d.id)).toEqual(['airline-vj', 'airline-vn', 'airline-sq']);
+    });
+
+    it('scale stress test: 5,000 deals ranked and personalized in sub-50ms', () => {
+      const destinations = ['BKK', 'SIN', 'KUL', 'TPE', 'ICN'];
+      const heavyDeals: Deal[] = [];
+      for (let i = 0; i < 5000; i++) {
+        heavyDeals.push(
+          createDeal({
+            id: `heavy-${i}`,
+            toCode: destinations[i % destinations.length],
+            dealScore: 60 + (i % 40),
+            price: 1_500_000 + (i % 30) * 100_000,
+          })
+        );
+      }
+
+      const start = performance.now();
+      const personalized = rankPersonalizedFeed(heavyDeals, defaultPreferences);
+      const elapsed = performance.now() - start;
+
+      expect(personalized).toHaveLength(5000);
+      expect(elapsed).toBeLessThan(50);
+    });
   });
 });
