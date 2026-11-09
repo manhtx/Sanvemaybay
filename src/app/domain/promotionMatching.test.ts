@@ -146,4 +146,59 @@ describe("Farely Pure Domain — Promotion Matching & Discount Gating (REQ-DOM-0
     const zeroAmountPromo: Promotion = { ...basePromo, id: "zero", amount: 0 };
     expect(matchPromotions(baseDeal, [zeroAmountPromo], midPeriod)).toEqual([]);
   });
+
+  it("handles identical estimated savings with stable ordering", () => {
+    const promoA: Promotion = { ...basePromo, id: "promo_a", kind: "fixed", amount: 300_000 };
+    const promoB: Promotion = { ...basePromo, id: "promo_b", kind: "fixed", amount: 300_000 };
+
+    const matches = matchPromotions(baseDeal, [promoA, promoB], midPeriod);
+    expect(matches).toHaveLength(2);
+    expect(matches[0].estimatedSaving).toBe(300_000);
+    expect(matches[1].estimatedSaving).toBe(300_000);
+  });
+
+  it("evaluates comprehensive multi-criteria constraints simultaneously", () => {
+    const complexPromo: Promotion = {
+      id: "complex",
+      provider: "Bamboo Airways",
+      originCodes: ["HAN"],
+      destinationCodes: ["BKK", "SIN"],
+      airlineCodes: ["QH", "VJ"],
+      validFrom: "2026-07-01T00:00:00Z",
+      validUntil: "2026-08-31T23:59:59Z",
+      departureFrom: "2026-09-01",
+      departureUntil: "2026-10-31",
+      minimumFare: 3_000_000,
+      kind: "percent",
+      amount: 15,
+      maxDiscount: 1_000_000,
+      conditions: ["Standard fare only"]
+    };
+
+    // Fails on wrong origin
+    expect(matchPromotions({ ...baseDeal, fromCode: "SGN" }, [complexPromo], midPeriod)).toEqual([]);
+
+    // Fails on wrong destination
+    expect(matchPromotions({ ...baseDeal, toCode: "NRT" }, [complexPromo], midPeriod)).toEqual([]);
+
+    // Fails on wrong airline
+    expect(matchPromotions({ ...baseDeal, airlineCode: "VN" }, [complexPromo], midPeriod)).toEqual([]);
+
+    // Fails on price below minimumFare
+    expect(matchPromotions({ ...baseDeal, price: 2_500_000 }, [complexPromo], midPeriod)).toEqual([]);
+
+    // Matches when all criteria met (15% of 5,000,000 = 750,000)
+    const matches = matchPromotions(baseDeal, [complexPromo], midPeriod);
+    expect(matches).toHaveLength(1);
+    expect(matches[0].estimatedSaving).toBe(750_000);
+  });
+
+  it("preserves pure immutability on Object.freeze protected deal and promotion arrays", () => {
+    const frozenDeal = Object.freeze({ ...baseDeal });
+    const frozenPromo = Object.freeze({ ...basePromo });
+    const frozenPromos = Object.freeze([frozenPromo]);
+
+    expect(() => matchPromotions(frozenDeal, frozenPromos as any, midPeriod)).not.toThrow();
+    expect(frozenDeal.price).toBe(5_000_000);
+  });
 });

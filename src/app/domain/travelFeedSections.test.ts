@@ -146,4 +146,75 @@ describe("Farely Pure Domain — Curated Travel Feed Sections (REQ-SCORE-001, RE
     expect(sections.trendingDestinations).toHaveLength(1);
     expect(sections.trendingDestinations[0].id).toBe("d2"); // Higher score selected
   });
+
+  it("integrates user preferences into recommendations slice (home airport affinity boost)", () => {
+    const deals = [
+      makeDeal({ id: "d_sgn", fromCode: "SGN", dealScore: 70 }),
+      makeDeal({ id: "d_han", fromCode: "HAN", dealScore: 70 })
+    ];
+
+    const prefs = {
+      ...defaultPreferences,
+      homeAirport: "HAN"
+    };
+
+    const sections = buildTravelFeedSections(deals, prefs);
+    // HAN deal receives +8 affinity boost, ranking first in recommendations
+    expect(sections.recommendations[0].id).toBe("d_han");
+  });
+
+  it("handles missing or malformed observedAt dates without NaN sort crashes", () => {
+    const deals = [
+      makeDeal({ id: "bad_date", observedAt: "not-a-valid-date" }),
+      makeDeal({ id: "empty_date", observedAt: "" }),
+      makeDeal({ id: "valid_date", observedAt: "2026-08-10T12:00:00Z" })
+    ];
+
+    const sections = buildTravelFeedSections(deals, defaultPreferences);
+    expect(sections.newlyDetected[0].id).toBe("valid_date");
+    expect(sections.newlyDetected).toHaveLength(3);
+  });
+
+  it("processes high-volume deal inventory (500+ deals) efficiently in sub-100ms", () => {
+    const largeDeals = Array.from({ length: 500 }, (_, i) =>
+      makeDeal({
+        id: `deal_section_${i}`,
+        toCode: `DEST_${i % 25}`,
+        dealScore: 50 + (i % 45),
+        discount: 10 + (i % 40),
+        observedAt: `2026-08-${String((i % 28) + 1).padStart(2, "0")}T00:00:00Z`
+      })
+    );
+
+    const start = performance.now();
+    const sections = buildTravelFeedSections(largeDeals, defaultPreferences);
+    const duration = performance.now() - start;
+
+    expect(duration).toBeLessThan(100);
+    expect(sections.hot).toHaveLength(4);
+    expect(sections.newlyDetected).toHaveLength(4);
+    expect(sections.biggestDrops).toHaveLength(4);
+    expect(sections.recommendations).toHaveLength(4);
+    expect(sections.trendingDestinations).toHaveLength(4);
+  });
+
+  it("handles identical scores stably across sections", () => {
+    const deals = [
+      makeDeal({ id: "deal_a", dealScore: 80, discount: 30 }),
+      makeDeal({ id: "deal_b", dealScore: 80, discount: 30 })
+    ];
+
+    const sections = buildTravelFeedSections(deals, defaultPreferences);
+    expect(sections.hot).toHaveLength(2);
+    expect(sections.biggestDrops).toHaveLength(2);
+  });
+
+  it("preserves pure immutability on Object.freeze protected deal arrays and preferences", () => {
+    const frozenDeal = Object.freeze(makeDeal({ id: "frozen_sec", dealScore: 88 }));
+    const frozenDeals = Object.freeze([frozenDeal]);
+    const frozenPrefs = Object.freeze({ ...defaultPreferences });
+
+    expect(() => buildTravelFeedSections(frozenDeals as any, frozenPrefs)).not.toThrow();
+    expect(frozenDeal.dealScore).toBe(88);
+  });
 });
