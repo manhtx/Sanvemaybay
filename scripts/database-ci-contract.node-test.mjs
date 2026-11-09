@@ -49,3 +49,11 @@ test("CI concurrency configuration cancels in-progress verification on branch up
   assert.match(workflow, /concurrency:\s*\n\s*group: verify-\$\{\{ github\.workflow \}\}-\$\{\{ github\.ref \}\}/, "ci.yml must group concurrency by ref");
   assert.match(workflow, /cancel-in-progress: true/, "ci.yml must cancel redundant in-flight runs");
 });
+
+test("CI workflow triggers on push/pull_request, runs on ubuntu-latest, and pins Node 22 with npm cache", async () => {
+  const workflow = await readFile(ciWorkflowUrl, "utf8");
+  assert.match(workflow, /on:\s*\n\s*push:\s*\n\s*pull_request:/, "ci.yml must trigger on push and pull_request");
+  assert.match(workflow, /runs-on: ubuntu-latest/, "ci.yml jobs must run on ubuntu-latest");
+  assert.match(workflow, /node-version: 22/, "ci.yml must pin Node 22 runtime");
+  assert.match(workflow, /cache: npm/, "ci.yml must enable npm caching");
+});

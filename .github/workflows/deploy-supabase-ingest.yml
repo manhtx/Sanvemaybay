@@ -20,6 +20,9 @@ concurrency:
   group: supabase-runtime-deploy-${{ inputs.target_environment }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

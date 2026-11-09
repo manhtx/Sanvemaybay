@@ -43,3 +43,12 @@ test("runtime deployment persists immutable release evidence artifacts with 90-d
   assert.match(workflow, /retention-days: 90/, "deploy artifacts must specify 90-day retention");
   assert.match(workflow, /if-no-files-found: error/, "deploy artifacts must fail closed on missing evidence");
 });
+
+test("deploy workflow enforces least-privilege permissions ('contents: read') and protects access token credentials", async () => {
+  const workflow = await readFile(workflowUrl, "utf8");
+  assert.match(workflow, /permissions:\s*\n\s*contents:\s*read/, "deploy workflow must enforce least-privilege contents: read");
+  assert.match(workflow, /SUPABASE_ACCESS_TOKEN: \$\{\{ secrets\.SUPABASE_ACCESS_TOKEN \}\}/, "deploy workflow must scope SUPABASE_ACCESS_TOKEN from secrets");
+  assert.match(workflow, /test -n "\$SUPABASE_ACCESS_TOKEN"/, "deploy workflow must validate token presence before execution");
+  assert.doesNotMatch(workflow, /echo .*SUPABASE_ACCESS_TOKEN/, "deploy workflow must never echo access tokens");
+  assert.doesNotMatch(workflow, /echo .*INTERNAL_FUNCTION_SECRET/, "deploy workflow must never echo internal secrets");
+});
