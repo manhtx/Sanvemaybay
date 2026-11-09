@@ -5,6 +5,8 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || "https://yefbpmqfsstcaeqfrmyn.supabase.co";
 const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllZmJwbXFmc3N0Y2FlcWZybXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2Mzk2MjQsImV4cCI6MjEwNjIxNTYyNH0.FxYMbfcX9Rg9Jj0L_D2VkX-Apzb6Iy5GqAeKlNpTRpc";
@@ -69,4 +71,49 @@ test('A06 & S01: Privileged worker RPC prepare_account_deletion denies anon exec
 
   assert.notEqual(res.status, 200, "prepare_account_deletion must never return 200 for anon key");
   assert.ok([401, 403, 404].includes(res.status), `Expected 401/403/404, got ${res.status}`);
+});
+
+test('A06 & S01: Privileged worker RPC cleanup_account_deletion_requests denies anon execution', async () => {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/cleanup_account_deletion_requests`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": ANON_KEY,
+      "Authorization": `Bearer ${ANON_KEY}`
+    },
+    body: JSON.stringify({ p_dry_run: true })
+  });
+
+  assert.notEqual(res.status, 200, "cleanup_account_deletion_requests must never return 200 for anon key");
+  assert.ok([401, 403, 404].includes(res.status), `Expected 401/403/404, got ${res.status}`);
+});
+
+test('A06 & S01: Static migration DDL audit verifies all 5 privileged worker RPCs enforce REVOKE FROM PUBLIC and GRANT TO service_role', () => {
+  const migrationsDir = path.resolve("supabase/migrations");
+  const files = fs.readdirSync(migrationsDir).filter((f) => f.endsWith(".sql"));
+  const concatenatedSql = files.map((f) => fs.readFileSync(path.join(migrationsDir, f), "utf8")).join("\n");
+
+  const privilegedRpcs = [
+    "claim_notification_outbox",
+    "apply_watch_evaluation",
+    "publish_observed_generation",
+    "prepare_account_deletion",
+    "cleanup_account_deletion_requests",
+  ];
+
+  for (const rpcName of privilegedRpcs) {
+    const revokeRegex = new RegExp(`REVOKE ALL ON FUNCTION public\\.${rpcName}[^;]*FROM [^;]*PUBLIC`, "i");
+    assert.match(
+      concatenatedSql,
+      revokeRegex,
+      `Migration DDL must revoke public execution for privileged RPC: ${rpcName}`
+    );
+
+    const grantRegex = new RegExp(`GRANT EXECUTE ON FUNCTION public\\.${rpcName}[^;]*TO service_role`, "i");
+    assert.match(
+      concatenatedSql,
+      grantRegex,
+      `Migration DDL must grant execution to service_role for privileged RPC: ${rpcName}`
+    );
+  }
 });

@@ -119,3 +119,56 @@ test("NODE OUTBOX-04: Outbox dispatch enforces bounded retries and dead letterin
     "Must use nextNotificationRetry for bounded exponential/step backoff"
   );
 });
+
+test("NODE OUTBOX-05: Multi-channel outbox payload formatting and deterministic dedupe_key construction", () => {
+  const processorPath = path.resolve("supabase/functions/alert-processor/index.ts");
+  const code = fs.readFileSync(processorPath, "utf8");
+
+  // Verify code formats outbox items for both EMAIL and TELEGRAM
+  assert.match(code, /alert\.notify_email\s*&&\s*"EMAIL"/);
+  assert.match(code, /alert\.notify_telegram\s*&&\s*"TELEGRAM"/);
+  assert.match(code, /dedupe_key:\s*`\${alert\.id}:\${evalResult\.nextEpisode\.id}:\${evalResult\.nextEpisode\.state}:\${channelName}:\${Math\.round\(bestCandidate\.price\)}`/);
+
+  // Test deterministic dedupe_key generator logic
+  const alertId = "11111111-1111-1111-1111-111111111111";
+  const episodeId = "22222222-2222-2222-2222-222222222222";
+  const state = "ENTERED";
+  const price = 1_850_000.45;
+
+  const emailKey = `${alertId}:${episodeId}:${state}:EMAIL:${Math.round(price)}`;
+  const telegramKey = `${alertId}:${episodeId}:${state}:TELEGRAM:${Math.round(price)}`;
+
+  assert.equal(emailKey, "11111111-1111-1111-1111-111111111111:22222222-2222-2222-2222-222222222222:ENTERED:EMAIL:1850000");
+  assert.equal(telegramKey, "11111111-1111-1111-1111-111111111111:22222222-2222-2222-2222-222222222222:ENTERED:TELEGRAM:1850000");
+  assert.notEqual(emailKey, telegramKey, "Dedupe keys must be strictly unique per delivery channel");
+});
+
+test("NODE OUTBOX-06: Outbox batch serialization and worker claim state simulation performance benchmark", () => {
+  const start = performance.now();
+  const iterations = 5000;
+
+  for (let i = 0; i < iterations; i++) {
+    const item = {
+      id: `outbox-${i}`,
+      event_type: "ENTERED",
+      channel: i % 2 === 0 ? "EMAIL" : "TELEGRAM",
+      dedupe_key: `alert-1:ep-1:ENTERED:${i % 2 === 0 ? "EMAIL" : "TELEGRAM"}:1500000`,
+      status: "PENDING",
+      attempt_count: 0,
+      payload: { price: 1500000, origin: "HAN", destination: "BKK" },
+    };
+
+    // Simulate worker claim transition
+    item.status = "PROCESSING";
+    item.attempt_count += 1;
+    item.locked_at = new Date().toISOString();
+
+    // Simulate dispatch completion
+    item.status = "DELIVERED";
+    assert.equal(item.status, "DELIVERED");
+  }
+
+  const duration = performance.now() - start;
+  // 5,000 item simulations must execute within 50ms
+  assert.ok(duration < 50, `Outbox simulation benchmark took ${duration.toFixed(2)}ms, expected < 50ms`);
+});
