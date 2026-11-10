@@ -315,3 +315,56 @@ test("GATE-02-PAGINATION: high-throughput pagination throughput micro-benchmark"
   // 1,000 pagination queries over 300 rows should take under 150ms
   assert.ok(duration < 250, `Pagination benchmark took ${duration.toFixed(2)}ms, expected < 250ms`);
 });
+
+test("GATE-02-PAGINATION: out-of-bounds page requests, input clamping, and multi-filter composition", () => {
+  const rows = generateFixtureRows(100);
+
+  // 1. Out of bounds page returns empty fares with null next_page
+  const outOfBounds = paginateObservedFares(rows, { page: 99, page_size: 20 });
+  assert.equal(outOfBounds.fares.length, 0);
+  assert.equal(outOfBounds.total, 100);
+  assert.equal(outOfBounds.page, 99);
+  assert.equal(outOfBounds.next_page, null);
+
+  // 2. Negative, NaN, or non-numeric page/page_size parameters clamp to defaults
+  const negativeClamped = paginateObservedFares(rows, { page: -5, page_size: -10 });
+  assert.equal(negativeClamped.page, 1);
+  assert.equal(negativeClamped.page_size, 1); // clamped to min(120, max(1, ...))
+
+  const stringClamped = paginateObservedFares(rows, { page: "invalid", page_size: "huge" });
+  assert.equal(stringClamped.page, 1);
+  assert.equal(stringClamped.page_size, 60); // default 60
+
+  // 3. Multi-filter composition: origin + direct_only + price ceiling
+  const filtered = paginateObservedFares(rows, {
+    origin: "han",
+    direct_only: true,
+    max_price: 3_000_000,
+    page: 1,
+    page_size: 10,
+  });
+  for (const fare of filtered.fares) {
+    assert.equal(fare.origin_code, "HAN");
+    assert.equal(fare.stops, 0);
+    assert.ok(fare.price <= 3_000_000);
+  }
+
+  // 4. Disjoint filter returns empty results cleanly
+  const disjoint = paginateObservedFares(rows, { origin: "HAN", destination: "NONEXISTENT_AIRPORT" });
+  assert.equal(disjoint.fares.length, 0);
+  assert.equal(disjoint.total, 0);
+  assert.equal(disjoint.next_page, null);
+
+  // 5. Throughput benchmark: 2,000 multi-filter paginated queries
+  const start = performance.now();
+  for (let i = 0; i < 2_000; i++) {
+    const res = paginateObservedFares(rows, {
+      origin: i % 2 === 0 ? "HAN" : "SGN",
+      page: (i % 3) + 1,
+      page_size: 15,
+    });
+    assert.ok(Array.isArray(res.fares));
+  }
+  const duration = performance.now() - start;
+  assert.ok(duration < 100, `2,000 multi-filter pagination queries took ${duration.toFixed(2)}ms, expected < 100ms`);
+});

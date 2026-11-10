@@ -107,3 +107,34 @@ test("NODE PIPE-05: discovery pipeline workflow enforces hourly schedule, non-ca
   assert.match(workflow, /-H "x-internal-secret: \$INTERNAL_FUNCTION_SECRET"/, "pipeline must authenticate edge functions with x-internal-secret");
   assert.match(workflow, /--connect-timeout 15 --max-time 180/, "pipeline curl requests must bound connection and maximum time");
 });
+
+test("NODE PIPE-06: pipeline workflow timeout budget, python runtime version, worker dependencies, and telemetry bindings", async () => {
+  const workflow = await readFile(
+    new URL("../.github/workflows/fast-flights-pipeline.yml", import.meta.url),
+    "utf8",
+  );
+
+  // Job execution timeout
+  assert.match(workflow, /timeout-minutes:\s*30/, "fast-flights pipeline must specify explicit 30-minute timeout budget");
+
+  // Python runtime and setup action
+  assert.match(workflow, /actions\/setup-python@v5/, "fast-flights pipeline must pin actions/setup-python@v5");
+  assert.match(workflow, /python-version:\s*"3\.12"/, "fast-flights pipeline must specify Python 3.12 runtime");
+
+  // Worker dependencies
+  assert.match(workflow, /fast-flights==3\.1\.0/, "fast-flights pipeline must pin fast-flights==3.1.0");
+  assert.match(workflow, /typing_extensions>=4\.12\.0/, "fast-flights pipeline must pin typing_extensions");
+
+  // Telemetry run id format
+  assert.match(workflow, /FLYCHEAP_RUN_ID:\s*github-\$\{\{\s*github\.run_id\s*\}\}-\$\{\{\s*github\.run_attempt\s*\}\}/, "pipeline must format stable telemetry run id");
+
+  // Micro-benchmark: 10,000 pipeline contract validations under 50ms
+  const start = performance.now();
+  for (let i = 0; i < 10_000; i++) {
+    const hasTimeout = workflow.includes("timeout-minutes: 30");
+    const hasPy312 = workflow.includes('python-version: "3.12"');
+    assert.equal(hasTimeout && hasPy312, true);
+  }
+  const duration = performance.now() - start;
+  assert.ok(duration < 50, `10,000 pipeline contract validations took ${duration.toFixed(2)}ms, expected < 50ms`);
+});
