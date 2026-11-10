@@ -30,6 +30,7 @@ if (!(await exists(mastergoalPath))) issues.push('missing mastergoal.md');
 else {
   const mastergoal = await readFile(mastergoalPath, 'utf8');
   if (/status:\s*implementing/i.test(mastergoal)) issues.push('mastergoal still says IMPLEMENTING');
+  for (const term of ['summary', 'exact solution', 'verification', 'rollback', 'user', 'business', 'continuation']) if (!new RegExp(term, 'i').test(mastergoal)) issues.push(`Farely mastergoal missing substantive term: ${term}`);
   evidence.push(mastergoalPath);
 }
 

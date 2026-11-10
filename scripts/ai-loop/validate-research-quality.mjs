@@ -12,9 +12,11 @@ for (let round = 1; round <= 20; round += 1) {
   const name = `round-${String(round).padStart(2, '0')}.md`;
   const text = await readText(join(dir, name), '');
   if (!text.trim()) { issues.push(`missing ${name}`); continue; }
+  if (text.length < 1200) issues.push(`${name} is too short to be a complete whole-product research pass`);
   if (forbidden.test(text)) issues.push(`${name} contains synthetic evidence language`);
   for (const term of requiredTerms) if (!new RegExp(term, 'i').test(text)) issues.push(`${name} missing ${term}`);
   if (!/prior|previous|challenge|reject|falsif/i.test(text)) issues.push(`${name} has no prior-claim challenge`);
+  for (const term of ['finding', 'solution', 'new evidence', 'rejected', 'next']) if (!new RegExp(term, 'i').test(text)) issues.push(`${name} missing substantive research field: ${term}`);
   fingerprints.push(text.replace(/\s+/g, ' ').slice(0, 8000).toLowerCase());
 }
 const duplicateCount = fingerprints.length - new Set(fingerprints).size;
