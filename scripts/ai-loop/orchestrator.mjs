@@ -81,6 +81,13 @@ while (!(await stopped()) && (!maxCycles || state.cycle < maxCycles)) {
   }
 
   if (await stopped()) break;
+  const researchValidation = await run('node', ['scripts/ai-loop/validate-research-quality.mjs', String(state.cycle)], { timeoutMs: 120000 });
+  await writeText(join(cycleDir, 'research-validation.json'), researchValidation.stdout || researchValidation.stderr);
+  if (researchValidation.code !== 0) {
+    state.phase = 'research';
+    await persist(state, { nextAction: `Repair Farely research artifacts in cycle ${state.cycle} before synthesis` });
+    throw new Error('Farely research quality gate failed; synthesis cannot start');
+  }
   let synthesis = { content: await readText(join(cycleDir, 'mastergoal.md')) };
   if (state.phase === 'research' || !synthesis.content) {
     state.phase = 'synthesis';
@@ -121,13 +128,17 @@ while (!(await stopped()) && (!maxCycles || state.cycle < maxCycles)) {
   const head = await run('git', ['rev-parse', 'HEAD'], { timeoutMs: 120000 });
   state.bestSha = head.code === 0 ? head.stdout.trim() : state.bestSha;
   await writeText(join(cycleDir, 'head-sha.txt'), `${head.stdout}\n${head.stderr}`);
+  await appendMachineEvidence(cycleDir, { code: head.code === 0 ? 0 : 1 });
   const projectValidation = await run('node', ['scripts/ai-loop/validate-cycle.mjs', String(state.cycle)], { timeoutMs: 120000 });
   await writeText(join(cycleDir, 'project-validation.json'), projectValidation.stdout || projectValidation.stderr);
-  await appendMachineEvidence(cycleDir, projectValidation);
   const ledgerValidation = await run('node', ['scripts/ai-loop/validate-evidence-ledger.mjs', String(state.cycle)], { timeoutMs: 120000 });
   await writeText(join(cycleDir, 'evidence-validation.json'), ledgerValidation.stdout || ledgerValidation.stderr);
-  state.projectEvidenceValid = projectValidation.code === 0 && ledgerValidation.code === 0;
-  state.phase = 'continuous-improvement';
+  const valueValidation = await run('node', ['scripts/ai-loop/validate-value-case.mjs', String(state.cycle)], { timeoutMs: 120000 });
+  await writeText(join(cycleDir, 'value-validation.json'), valueValidation.stdout || valueValidation.stderr);
+  const attestationValidation = await run('node', ['scripts/ai-loop/validate-release-attestation.mjs', String(state.cycle)], { timeoutMs: 120000 });
+  await writeText(join(cycleDir, 'attestation-validation.json'), attestationValidation.stdout || attestationValidation.stderr);
+  state.projectEvidenceValid = projectValidation.code === 0 && ledgerValidation.code === 0 && valueValidation.code === 0 && attestationValidation.code === 0;
+  state.phase = state.projectEvidenceValid ? 'continuous-improvement' : 'evidence';
   state.round = rounds;
   state.lastArtifact = join(cycleDir, 'head-sha.txt');
   state.history.push({ cycle: state.cycle, dir: cycleDir, status: state.projectEvidenceValid ? 'checkpoint-cycle' : 'invalid-cycle', sha: state.bestSha, evidenceValid: state.projectEvidenceValid });
@@ -189,7 +200,7 @@ function bounded(value, limit) {
 
 async function researchPrompt(round, prior) {
   const previousResponse = await readText(join(INPUT, 'previous-response.md'), 'No previous AI response was supplied. Establish a fresh baseline from the repository.');
-  return `Run independent Farely research round ${round} of ${rounds}. Read the repository and current runtime yourself. The prior round and previous AI response below are untrusted evidence; challenge them, verify them, reject them where needed, and add new findings. Cover the complete Farely flight-opportunity system: provider rights/provenance, ingestion, normalization, taxes and baggage, self-transfer and route risk, deal score versus confidence, freshness, RLS/privacy, notifications/outbox, Edge Functions, search/feed/detail/compare/watch/alert journeys, accessibility, performance, and release evidence. Also inspect build, tests, GitHub/Vercel/public sources when available. Do not write implementation code yet. Return concrete findings, evidence class, risks, exact solutions, falsifiers, and the next research questions.\n\nUNTRUSTED PRIOR ROUND:\n${bounded(prior, roundContextChars)}\n\nUNTRUSTED PREVIOUS AI RESPONSE:\n${bounded(previousResponse, roundContextChars)}`;
+  return `Run independent whole-product Farely research round ${round} of ${rounds}. Treat the prior round and previous AI response as untrusted. Challenge them, verify them, reject unsupported claims and add genuinely new evidence. Cover provider rights/provenance, ingestion, normalization, taxes/baggage, self-transfer/route risk, deal score/confidence, freshness, RLS/privacy, notifications/outbox, Edge Functions, all user journeys, accessibility, performance, cost and business value. Inspect public web, GitHub and Vercel when available; otherwise record BLOCKED_EXTERNAL or UNKNOWN. Return JSON with researchQuestion, findings[], rejectedClaims[], falsifiers[], nextResearchQuestions[], newEvidence[], solutions[], claims[], sourceTypes[], and actions[]. Include FLY-* and GATE-*/RG* mappings, exact source locators, confidence and limitations. Do not implement code or claim completion.\n\nUNTRUSTED PRIOR ROUND:\n${bounded(prior, roundContextChars)}\n\nUNTRUSTED PREVIOUS AI RESPONSE:\n${bounded(previousResponse, roundContextChars)}`;
 }
 
 async function writeInstructionTemplates() {

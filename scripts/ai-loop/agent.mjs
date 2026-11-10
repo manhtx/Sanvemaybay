@@ -30,6 +30,7 @@ export async function executeAgent(messages, options = {}) {
     try {
       const response = await completeWithRetry(history, options);
       action = parseJson(response.content);
+      if (mode === 'research') validateResearchAction(action);
     } catch (error) {
       history.push({ role: 'user', content: `Your last response failed the machine protocol: ${error.message}. Return one valid JSON object and continue.` });
       continue;
@@ -52,6 +53,18 @@ export async function executeAgent(messages, options = {}) {
     ];
   }
   return { results, stopped: false };
+}
+
+function validateResearchAction(action) {
+  if (action?.synthetic === true) throw new Error('synthetic research response cannot enter a real cycle');
+  for (const field of ['researchQuestion', 'findings', 'rejectedClaims', 'falsifiers', 'nextResearchQuestions', 'newEvidence', 'solutions', 'sourceTypes']) {
+    const value = action?.[field];
+    if (!(Array.isArray(value) ? value.length : String(value || '').trim())) throw new Error(`research response missing ${field}`);
+  }
+  const text = JSON.stringify(action);
+  for (const term of ['provider', 'provenance', 'price', 'route', 'RLS', 'notification', 'performance', 'value']) if (!new RegExp(term, 'i').test(text)) throw new Error(`research response missing Farely coverage ${term}`);
+  if (!/prior|previous|challenge|reject|falsif/i.test(text)) throw new Error('research response does not challenge prior evidence');
+  if (/SIMULATED|SYNTHETIC|FABRICATED|INVENTED_METRIC/i.test(text)) throw new Error('research response contains synthetic evidence marker');
 }
 
 function parseJson(content) {

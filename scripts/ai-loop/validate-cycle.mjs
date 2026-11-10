@@ -64,6 +64,13 @@ else evidence.push(shaPath);
 const ledgerPath = join(cycleDir, evidencePolicy.requiredLedgerFile);
 if (strictEvidence && !(await readText(ledgerPath)).trim()) issues.push(`missing ${evidencePolicy.requiredLedgerFile}`);
 else if (await exists(ledgerPath)) evidence.push(ledgerPath);
+if (strictEvidence) {
+  for (const name of ['evidence-index.json', 'release-attestation.json']) {
+    const path = join(cycleDir, name);
+    if (!(await exists(path))) issues.push(`missing ${name}`);
+    else evidence.push(path);
+  }
+}
 
 const reportPath = join(root, '.ai-loop/reports', `cycle-${String(cycle).padStart(4, '0')}-report.md`);
 if (await exists(reportPath)) {
