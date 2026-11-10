@@ -123,12 +123,15 @@ while (!(await stopped()) && (!maxCycles || state.cycle < maxCycles)) {
   await writeText(join(cycleDir, 'head-sha.txt'), `${head.stdout}\n${head.stderr}`);
   const projectValidation = await run('node', ['scripts/ai-loop/validate-cycle.mjs', String(state.cycle)], { timeoutMs: 120000 });
   await writeText(join(cycleDir, 'project-validation.json'), projectValidation.stdout || projectValidation.stderr);
-  state.projectEvidenceValid = projectValidation.code === 0;
+  await appendMachineEvidence(cycleDir, projectValidation);
+  const ledgerValidation = await run('node', ['scripts/ai-loop/validate-evidence-ledger.mjs', String(state.cycle)], { timeoutMs: 120000 });
+  await writeText(join(cycleDir, 'evidence-validation.json'), ledgerValidation.stdout || ledgerValidation.stderr);
+  state.projectEvidenceValid = projectValidation.code === 0 && ledgerValidation.code === 0;
   state.phase = 'continuous-improvement';
   state.round = rounds;
   state.lastArtifact = join(cycleDir, 'head-sha.txt');
-  state.history.push({ cycle: state.cycle, dir: cycleDir, status: projectValidation.code === 0 ? 'checkpoint-cycle' : 'invalid-cycle', sha: state.bestSha, evidenceValid: projectValidation.code === 0 });
-  await persist(state, { nextAction: projectValidation.code === 0
+  state.history.push({ cycle: state.cycle, dir: cycleDir, status: state.projectEvidenceValid ? 'checkpoint-cycle' : 'invalid-cycle', sha: state.bestSha, evidenceValid: state.projectEvidenceValid });
+  await persist(state, { nextAction: state.projectEvidenceValid
     ? `Start independent research cycle ${state.cycle + 1}`
     : `Repair failed Farely evidence gates in cycle ${state.cycle} before starting cycle ${state.cycle + 1}` });
 }
@@ -145,6 +148,29 @@ async function persist(value, metadata = {}) {
     heartbeatAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
+}
+
+async function appendMachineEvidence(cycleDir, validation) {
+  const path = join(cycleDir, 'evidence-ledger.jsonl');
+  const existing = await readText(path, '');
+  const entry = {
+    evidence_id: `machine-project-gates-${state.cycle}`,
+    claim_id: 'FARELY-LOCAL-GATES',
+    evidence_type: 'LOCAL_RUNTIME',
+    maturity: 'L5',
+    command: `node scripts/ai-loop/validate-cycle.mjs ${state.cycle}`,
+    timestamp: new Date().toISOString(),
+    result: validation.code === 0 ? 'PASS' : 'FAIL',
+    claim_supported: validation.code === 0 ? 'Current local Farely cycle gate checks passed.' : '',
+    claim_not_supported: 'This does not establish provider rights, staging, production, user savings, notification delivery, or business value.',
+    falsifier: 'Any failed requirement, gate, SHA, or source-of-truth check.',
+    negative_control: 'Run the same validation against a deliberately incomplete cycle and expect failure.',
+    limitations: 'Local repository evidence only; no live provider or longitudinal user measurement.',
+    artifact: 'project-validation.json',
+    environment: 'local-host',
+    commit: state.bestSha || 'UNKNOWN'
+  };
+  await writeText(path, `${existing.trimEnd()}${existing.trim() ? '\n' : ''}${JSON.stringify(entry)}\n`);
 }
 
 async function readRounds(dir) {

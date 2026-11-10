@@ -4,5 +4,7 @@ You have full authority over this Farely repository. Implement the mastergoal, i
 
 Before reporting the cycle, write machine-readable implementation evidence with
 `requirements[]`, `gates[]`, `falsifiers[]`, `evidenceClass`, command results,
-and source/runtime references. A local green test cannot satisfy a staging,
+and source/runtime references. Also append one JSON object per material claim
+to `.ai-loop/cycles/<cycle>/evidence-ledger.jsonl` using
+`.ai-loop/evidence-policy.json`. A local green test cannot satisfy a staging,
 provider-rights, production, or empirical obligation.

@@ -25,6 +25,7 @@
     "ai-loop:api-run": "node scripts/ai-loop/orchestrator.mjs run",
     "ai-loop:audit": "node scripts/ai-loop/validate-cycle.mjs",
     "ai-loop:project-audit": "node scripts/ai-loop/project-audit.mjs",
+    "ai-loop:evidence-audit": "node scripts/ai-loop/validate-evidence-ledger.mjs",
     "ai-loop:state": "node scripts/ai-loop/update-state.mjs",
     "ai-loop:smoke": "node scripts/ai-loop/smoke-test.mjs",
     "deploy": "node scripts/deploy.mjs",

@@ -18,6 +18,10 @@
     ".flycheap/STATE.json",
     ".flycheap/STATUS.json"
   ],
+  "evidencePolicy": ".ai-loop/evidence-policy.json",
+  "evidenceAuditCommand": "npm run ai-loop:evidence-audit -- <cycle-number>",
+  "strictEvidenceFromCycle": 2,
+  "completionEvidenceRule": "No claim is complete without ledger evidence, falsifier, environment, commit, and limitations",
   "projectVerificationCommands": [
     "npm run check",
     "npm run check:functions",

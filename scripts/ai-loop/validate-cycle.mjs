@@ -6,6 +6,7 @@ const root = ROOT;
 const statePath = join(root, '.ai-loop/state/loop-state.json');
 const state = await readJson(statePath, {});
 const policy = await readJson(join(root, '.ai-loop/loop-policy.json'), { minCyclesBeforeCompletion: 1_000_000_000 });
+const evidencePolicy = await readJson(join(root, '.ai-loop/evidence-policy.json'), { requiredLedgerFile: 'evidence-ledger.jsonl' });
 const cycle = Number(process.argv[2] || state.cycle || 0);
 if (!cycle) fail('No cycle supplied and loop state has no cycle.');
 const expectedRounds = Number(process.env.AI_RESEARCH_ROUNDS || state.researchRounds || 20);
@@ -15,6 +16,7 @@ const issues = [];
 const warnings = [];
 const evidence = [];
 const completionEligible = cycle >= Number(policy.minCyclesBeforeCompletion);
+const strictEvidence = cycle >= Number(policy.strictEvidenceFromCycle || 2);
 if (!completionEligible) warnings.push(`completion forbidden before cycle ${policy.minCyclesBeforeCompletion}; current cycle is ${cycle}`);
 
 for (let round = 1; round <= expectedRounds; round += 1) {
@@ -59,6 +61,10 @@ const sha = (await readText(shaPath)).trim().split(/\s+/)[0];
 if (!/^[0-9a-f]{40}$/i.test(sha)) issues.push('missing or invalid 40-character Git SHA evidence');
 else evidence.push(shaPath);
 
+const ledgerPath = join(cycleDir, evidencePolicy.requiredLedgerFile);
+if (strictEvidence && !(await readText(ledgerPath)).trim()) issues.push(`missing ${evidencePolicy.requiredLedgerFile}`);
+else if (await exists(ledgerPath)) evidence.push(ledgerPath);
+
 const reportPath = join(root, '.ai-loop/reports', `cycle-${String(cycle).padStart(4, '0')}-report.md`);
 if (await exists(reportPath)) {
   const report = await readFile(reportPath, 'utf8');
@@ -95,6 +101,7 @@ const result = {
   minCyclesBeforeCompletion: Number(policy.minCyclesBeforeCompletion),
   issues,
   warnings,
+  strictEvidence,
   expectedRounds,
   researchRoundsSource: process.env.AI_RESEARCH_ROUNDS
     ? 'AI_RESEARCH_ROUNDS'

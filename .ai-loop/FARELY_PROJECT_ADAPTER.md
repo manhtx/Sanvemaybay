@@ -44,6 +44,13 @@ production path. Credential, provider-rights, elapsed-time, and deployment
 claims must be marked `EMPIRICAL_PENDING`, `BLOCKED_EXTERNAL`, or `VERIFIED`
 with matching evidence.
 
+Each cycle also maintains an append-only `evidence-ledger.jsonl`. Every
+material claim must include its maturity level, exact artifact/command,
+environment, commit, limitation, falsifier and negative control. The ledger
+must distinguish local verification from staging, production and longitudinal
+evidence; it must never turn a local green build into proof of live fares,
+provider rights, notification delivery, user savings or business value.
+
 ## Implementation rules
 
 - Derive waves from the current capability dependency graph; never copy a

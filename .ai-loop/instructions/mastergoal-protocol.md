@@ -6,3 +6,5 @@ The mastergoal must contain explicit `FLY-*` mappings, `GATE-*`/`RG*` mappings,
 and a falsifier or negative test for every material claim. The accompanying
 `implementation.json` must include `requirements[]`, `gates[]`,
 `falsifiers[]`, `evidenceClass`, and wave-level evidence references.
+Specify the evidence-ledger entries and maturity level required for each
+acceptance claim.

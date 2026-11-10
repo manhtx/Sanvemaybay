@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "requiredLedgerFile": "evidence-ledger.jsonl",
+  "requiredKeys": [
+    "evidence_id",
+    "claim_id",
+    "evidence_type",
+    "maturity",
+    "command",
+    "timestamp",
+    "result",
+    "claim_supported",
+    "claim_not_supported",
+    "falsifier",
+    "negative_control",
+    "limitations",
+    "artifact",
+    "environment",
+    "commit"
+  ],
+  "results": ["PASS", "FAIL", "BLOCKED", "UNKNOWN", "PENDING"],
+  "allowedEvidenceTypes": [
+    "LOCAL_CODE", "LOCAL_RUNTIME", "UNIT_FIXTURE", "INTEGRATION",
+    "USER_RESEARCH", "PRODUCT_ANALYTICS", "EXPERIMENTAL", "BUSINESS_EVIDENCE",
+    "PUBLIC_PRIMARY_SOURCE", "BLOCKED_EXTERNAL", "UNKNOWN"
+  ],
+  "maturityLevels": [
+    {"id": "L0", "name": "CLAIM_ONLY", "completionEligible": false},
+    {"id": "L1", "name": "CODE_PRESENT", "completionEligible": false},
+    {"id": "L2", "name": "STATIC_INSPECTION", "completionEligible": false},
+    {"id": "L3", "name": "UNIT_FIXTURE", "completionEligible": false},
+    {"id": "L4", "name": "LOCAL_INTEGRATION", "completionEligible": false},
+    {"id": "L5", "name": "LOCAL_FULLSTACK", "completionEligible": false},
+    {"id": "L6", "name": "REMOTE_STAGING", "completionEligible": false},
+    {"id": "L7", "name": "LIVE_EXTERNAL", "completionEligible": false},
+    {"id": "L8", "name": "PRODUCTION", "completionEligible": false},
+    {"id": "L9", "name": "LONGITUDINAL", "completionEligible": true}
+  ],
+  "strictExternalEvidenceTypes": ["USER_RESEARCH", "PRODUCT_ANALYTICS", "BUSINESS_EVIDENCE", "EXPERIMENTAL", "BLOCKED_EXTERNAL"],
+  "forbiddenClaimTokens": ["PROVEN", "VERIFIED", "COMPLETE", "10/10", "100/100"]
+}

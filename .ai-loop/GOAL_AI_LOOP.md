@@ -50,6 +50,15 @@ must pass its source-of-truth integrity checks; its warnings about external or
 empirical blockers must be preserved in the report, not converted into a
 fabricated PASS.
 
+Also run `npm run ai-loop:evidence-audit -- <cycle>`. The cycle must contain
+an append-only `evidence-ledger.jsonl` using `.ai-loop/evidence-policy.json`.
+Each claim needs a command/source, maturity level, environment, commit,
+limitation, falsifier and negative control. A local build, test, certification
+file or AI assertion does not prove production, provider, user or business
+outcomes. Use `BLOCKED_EXTERNAL`, `UNKNOWN` or `PENDING` when those outcomes
+cannot be measured, and never use PROVEN, VERIFIED, COMPLETE, 10/10 or 100/100
+as substitutes for evidence.
+
 ## Infinite cycle
 
 The completion policy is hard-coded in `.ai-loop/loop-policy.json`:
@@ -106,7 +115,8 @@ adversarial corpus, performance budgets, and staging/production/empirical
 boundaries. Use the project adapter's required research lenses.
 
 Do not implement code during research. Record every round with findings,
-evidence, rejected claims, unresolved questions and exact proposed solutions.
+evidence, rejected claims, unresolved questions, falsifiers and exact proposed
+solutions. Keep negative and blocked findings in the ledger.
 
 ### 2. Mastergoal synthesis
 
