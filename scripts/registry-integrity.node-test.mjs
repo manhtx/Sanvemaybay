@@ -128,3 +128,39 @@ test("performance benchmark: complete registry parsing and 267-gate validation f
   // 20 full file reads, JSON parses, and assertions must complete in under 100ms
   assert.ok(duration < 100, `Expected duration < 100ms, took ${duration.toFixed(2)}ms`);
 });
+
+test("registry integrity: evidence level taxonomy, unique identifiers, and gate schema completeness across all 267 gates", () => {
+  const registry = loadMasterRegistry();
+  assert.equal(registry.total_gates, 267, "Expected exactly 267 gates");
+
+  const gateIds = new Set();
+  const validEvidenceLevels = new Set(["E2", "E3", "E4", "E5", "E6", "E7"]);
+  const validPriorities = new Set(["P0", "P1", "P2"]);
+
+  for (const gate of registry.gates) {
+    // Assert strictly unique gate IDs
+    assert.ok(!gateIds.has(gate.gate_id), `Duplicate gate_id detected: ${gate.gate_id}`);
+    gateIds.add(gate.gate_id);
+
+    // Taxonomy assertions
+    assert.ok(
+      validEvidenceLevels.has(gate.required_evidence_level),
+      `Gate ${gate.gate_id} has invalid required_evidence_level: "${gate.required_evidence_level}"`
+    );
+    assert.ok(
+      validPriorities.has(gate.priority),
+      `Gate ${gate.gate_id} has invalid priority: "${gate.priority}"`
+    );
+
+    // Schema field completeness
+    assert.ok(typeof gate.title === "string" && gate.title.length > 0, `Missing title on ${gate.gate_id}`);
+    assert.ok(typeof gate.category === "string" && gate.category.length > 0, `Missing category on ${gate.gate_id}`);
+    assert.ok(typeof gate.requirement === "string" && gate.requirement.length >= 10, `Short requirement text on ${gate.gate_id}`);
+    assert.ok(typeof gate.acceptance_criteria === "string" && gate.acceptance_criteria.length >= 10, `Short acceptance criteria on ${gate.gate_id}`);
+    assert.ok(Array.isArray(gate.implementation_paths), `implementation_paths must be an array on ${gate.gate_id}`);
+    assert.ok(Array.isArray(gate.test_paths), `test_paths must be an array on ${gate.gate_id}`);
+    assert.ok(Array.isArray(gate.evidence), `evidence must be an array on ${gate.gate_id}`);
+  }
+
+  assert.equal(gateIds.size, 267, "All 267 gate IDs must be unique");
+});

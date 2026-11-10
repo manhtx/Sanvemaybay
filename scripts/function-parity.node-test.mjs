@@ -75,3 +75,42 @@ test("function parity performance benchmark: 5,000 parity evaluations execute un
   // 5,000 comparisons should finish well within 100ms
   assert.ok(duration < 100, `Benchmark took ${duration.toFixed(2)}ms, expected < 100ms`);
 });
+
+test("function parser handles edge-case payloads, malformed JSON, and deduplication contracts", () => {
+  // Edge-case payload inputs in remoteFunctionNames
+  assert.deepEqual(remoteFunctionNames(null), []);
+  assert.deepEqual(remoteFunctionNames(undefined), []);
+  assert.deepEqual(remoteFunctionNames({}), []);
+  assert.deepEqual(remoteFunctionNames({ functions: "not-an-array" }), []);
+  assert.deepEqual(remoteFunctionNames(["feed-snapshot", 12345, null, undefined, { slug: 42 }]), ["feed-snapshot"]);
+
+  // Slug regex boundaries: /^[a-z0-9-]{1,80}$/
+  assert.deepEqual(
+    remoteFunctionNames([
+      "valid-slug",
+      "UPPERCASE-REJECTED",
+      "spaces in slug",
+      "special$chars",
+      "a".repeat(81), // oversized > 80 chars
+      "a".repeat(80), // valid exactly 80 chars
+    ]),
+    ["a".repeat(80), "valid-slug"]
+  );
+
+  // parseFunctionText robustness on invalid JSON and non-string inputs
+  assert.deepEqual(parseFunctionText(null), []);
+  assert.deepEqual(parseFunctionText(undefined), []);
+  assert.deepEqual(parseFunctionText(12345), []);
+  assert.deepEqual(parseFunctionText("{ broken json"), []);
+
+  // evaluateFunctionParity deduplication and sorting
+  const result = evaluateFunctionParity(
+    ["feed", "search", "feed", "search"],
+    ["feed", "drift", "drift", "feed"]
+  );
+  assert.equal(result.ok, false);
+  assert.equal(result.local_count, 2);
+  assert.equal(result.remote_count, 2);
+  assert.deepEqual(result.pending_deploy, ["search"]);
+  assert.deepEqual(result.remote_only_functions, ["drift"]);
+});

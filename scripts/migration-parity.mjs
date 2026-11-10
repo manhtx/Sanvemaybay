@@ -81,7 +81,7 @@ export function evaluateMigrationParity(localVersions, remoteVersions) {
   };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const input = process.argv[2];
   if (!input) throw new Error("Usage: node scripts/migration-parity.mjs <supabase-migration-list.json>");
   const content = readFileSync(input, "utf8");

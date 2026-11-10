@@ -63,7 +63,7 @@ export function evaluateFunctionParity(localNames, remoteNames) {
   };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const input = process.argv[2];
   if (!input) throw new Error("Usage: node scripts/function-parity.mjs <supabase-functions-list.json>");
   const content = readFileSync(input, "utf8");
