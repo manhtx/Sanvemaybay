@@ -123,3 +123,36 @@ test("performance benchmark: 10,000 deal evaluations execute well under latency 
   // 10,000 evaluations should easily finish within 100ms
   assert.ok(duration < 100, `Benchmark took ${duration.toFixed(2)}ms, expected < 100ms`);
 });
+
+test("production truth: booking URL protocol validation, empty summary resilience, and malformed date fail-closed gating", () => {
+  // Empty array summary produces clean empty counters
+  const emptySummary = summarizeDeals([], config);
+  assert.equal(emptySummary.totalRows, 0);
+  assert.equal(emptySummary.qualifiedLiveDeals, 0);
+  assert.equal(emptySummary.launchCohortRows, 0);
+  assert.deepEqual(emptySummary.qualifiedIds, []);
+
+  // URL protocol and hostname security: rejects non-HTTPS and unapproved hosts
+  const insecureHttp = rejectionReasons({ ...liveDeal, booking_url: "http://provider.example/offer" }, config);
+  assert.ok(insecureHttp.includes("invalid_booking_url"), "HTTP URLs must be rejected");
+
+  const unapprovedHost = rejectionReasons({ ...liveDeal, booking_url: "https://phishing-scam.com/offer" }, config);
+  assert.ok(unapprovedHost.includes("invalid_booking_url"), "Unapproved host must be rejected");
+
+  const malformedUrl = rejectionReasons({ ...liveDeal, booking_url: "not-a-valid-url" }, config);
+  assert.ok(malformedUrl.includes("invalid_booking_url"), "Malformed URL string must be rejected");
+
+  // Subdomain of approved host must be accepted
+  const validSubdomain = rejectionReasons({ ...liveDeal, booking_url: "https://booking.provider.example/offer" }, config);
+  assert.equal(validSubdomain.includes("invalid_booking_url"), false, "Subdomain of approved host must be accepted");
+
+  // Malformed date strings fail closed
+  const badDates = {
+    ...liveDeal,
+    depart_date: "not-a-date",
+    valid_until: "bad-timestamp",
+  };
+  const dateReasons = rejectionReasons(badDates, config);
+  assert.ok(dateReasons.includes("departure_not_future"), "Invalid depart_date must fail closed");
+  assert.ok(dateReasons.includes("expired_or_missing_validity"), "Invalid valid_until must fail closed");
+});

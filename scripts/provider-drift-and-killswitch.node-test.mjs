@@ -7,7 +7,7 @@ function normalizeOption(option, context) {
   const price = option.price;
   const totalDuration = option.total_duration;
 
-  if (!firstLeg?.flight_number || !firstLeg.airline || price == null || totalDuration == null) {
+  if (!firstLeg?.flight_number?.trim() || !firstLeg?.airline?.trim() || price == null || totalDuration == null) {
     return null;
   }
   if (!Number.isFinite(price) || !Number.isFinite(totalDuration)) {
@@ -308,4 +308,46 @@ test('Provider Drift & Scoring Performance Benchmark: 5,000 normalize and score 
   const duration = performance.now() - start;
   // 5,000 cycles should finish in under 100ms
   assert.ok(duration < 100, `Benchmark took ${duration.toFixed(2)}ms, expected < 100ms`);
+});
+
+test('Provider Drift: empty flights quarantine, non-finite duration rejection, staleness penalty collapse, and discount monotonicity', () => {
+  const context = {
+    origin_code: 'HAN',
+    destination_code: 'SGN',
+    outbound_date: '2026-11-20',
+    observed_at: '2026-11-01T10:00:00Z',
+  };
+
+  // 1. Empty flights array or missing flight number fails closed to null
+  assert.equal(normalizeOption({ flights: [] }, context), null, 'Empty flights array must return null');
+  assert.equal(normalizeOption({ flights: [{ flight_number: '', airline: 'VN' }], price: 100, total_duration: 100 }, context), null);
+  assert.equal(normalizeOption({ flights: [{ flight_number: '   ', airline: 'VN' }], price: 100, total_duration: 100 }, context), null);
+  assert.equal(normalizeOption({ flights: [{ flight_number: 'VN123', airline: '' }], price: 100, total_duration: 100 }, context), null);
+
+  // 2. Non-finite or non-positive total_duration fails closed to null
+  assert.equal(normalizeOption({ flights: [{ flight_number: 'VN123', airline: 'VN' }], price: 100, total_duration: 0 }, context), null);
+  assert.equal(normalizeOption({ flights: [{ flight_number: 'VN123', airline: 'VN' }], price: 100, total_duration: -50 }, context), null);
+  assert.equal(normalizeOption({ flights: [{ flight_number: 'VN123', airline: 'VN' }], price: 100, total_duration: Infinity }, context), null);
+  assert.equal(normalizeOption({ flights: [{ flight_number: 'VN123', airline: 'VN' }], price: 100, total_duration: NaN }, context), null);
+
+  // 3. Stale observation (> 24 hours) applies 30-point score penalty and sets action to WAIT_FOR_REFRESH
+  const now = new Date('2026-11-03T12:00:00Z');
+  const staleObsTime = new Date('2026-11-01T10:00:00Z'); // 49 hours ago (> 1440m)
+  const freshObsTime = new Date('2026-11-03T11:45:00Z'); // 15 minutes ago
+  const cohort = [2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000, 2000000];
+
+  const freshResult = scoreObservation(1000000, cohort, freshObsTime, now);
+  const staleResult = scoreObservation(1000000, cohort, staleObsTime, now);
+
+  assert.equal(freshResult.is_stale, false);
+  assert.equal(staleResult.is_stale, true);
+  assert.equal(staleResult.action, 'WAIT_FOR_REFRESH');
+  assert.equal(freshResult.deal_score - staleResult.deal_score, 30, 'Stale observations must receive exactly 30-point penalty');
+
+  // 4. Discount monotonicity invariant: priceA < priceB => discountA >= discountB
+  const p1 = scoreObservation(800000, cohort, freshObsTime, now);
+  const p2 = scoreObservation(1200000, cohort, freshObsTime, now);
+  const p3 = scoreObservation(1600000, cohort, freshObsTime, now);
+  assert.ok(p1.discount_percent >= p2.discount_percent, 'Monotonic discount: 800k >= 1200k');
+  assert.ok(p2.discount_percent >= p3.discount_percent, 'Monotonic discount: 1200k >= 1600k');
 });
