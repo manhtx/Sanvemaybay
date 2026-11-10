@@ -52,3 +52,26 @@ test("deploy workflow enforces least-privilege permissions ('contents: read') an
   assert.doesNotMatch(workflow, /echo .*SUPABASE_ACCESS_TOKEN/, "deploy workflow must never echo access tokens");
   assert.doesNotMatch(workflow, /echo .*INTERNAL_FUNCTION_SECRET/, "deploy workflow must never echo internal secrets");
 });
+
+test("deploy workflow dispatch inputs define strict environment choices, concurrency, and validation benchmark", async () => {
+  const workflow = await readFile(workflowUrl, "utf8");
+
+  // Inputs definition contract
+  assert.match(workflow, /workflow_dispatch:/, "deploy workflow must be triggered by workflow_dispatch");
+  assert.match(workflow, /type: choice/, "target_environment must be a choice input");
+  assert.match(workflow, /options:\s*\n\s*- Preview\s*\n\s*- Production/, "target_environment options must strictly be Preview and Production");
+  assert.match(workflow, /type: string/, "production_confirmation must be a string input");
+
+  // Concurrency contract
+  assert.match(workflow, /group: supabase-runtime-deploy-\$\{\{ inputs\.target_environment \}\}/, "concurrency group must isolate environment deploys");
+  assert.match(workflow, /cancel-in-progress: false/, "deploy concurrency must not cancel in-progress deploys");
+
+  // Micro-benchmark: 10,000 deployment boundary checks under 50ms
+  const start = performance.now();
+  for (let i = 0; i < 10_000; i++) {
+    const isTargetSafe = workflow.includes("default: Preview") && workflow.includes("DEPLOY_PRODUCTION");
+    assert.equal(isTargetSafe, true);
+  }
+  const duration = performance.now() - start;
+  assert.ok(duration < 50, `10,000 deploy boundary checks took ${duration.toFixed(2)}ms, expected < 50ms`);
+});

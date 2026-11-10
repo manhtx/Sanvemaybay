@@ -57,3 +57,30 @@ test("CI workflow triggers on push/pull_request, runs on ubuntu-latest, and pins
   assert.match(workflow, /node-version: 22/, "ci.yml must pin Node 22 runtime");
   assert.match(workflow, /cache: npm/, "ci.yml must enable npm caching");
 });
+
+test("CI workflow enforces timeout budgets, runner actions versions, and Postgres service bindings", async () => {
+  const workflow = await readFile(ciWorkflowUrl, "utf8");
+
+  // Timeout budget assertions
+  assert.match(workflow, /timeout-minutes: 20/, "Jobs must specify explicit 20-minute timeout budget");
+
+  // Pinned action versions
+  assert.match(workflow, /actions\/checkout@v4/, "Workflow must pin actions/checkout@v4");
+  assert.match(workflow, /actions\/setup-node@v4/, "Workflow must pin actions/setup-node@v4");
+  assert.match(workflow, /supabase\/setup-cli@v1/, "Workflow must pin supabase/setup-cli@v1");
+
+  // Postgres environment variables in job
+  assert.match(workflow, /PGHOST: localhost/, "Workflow must configure PGHOST");
+  assert.match(workflow, /PGPORT: "5432"/, "Workflow must configure PGPORT");
+  assert.match(workflow, /PGUSER: postgres/, "Workflow must configure PGUSER");
+
+  // Micro-benchmark: 10,000 workflow syntax assertions under 50ms
+  const start = performance.now();
+  for (let i = 0; i < 10_000; i++) {
+    const hasAudit = workflow.includes("audit-level=high");
+    const hasReset = workflow.includes("supabase db reset");
+    assert.equal(hasAudit && hasReset, true);
+  }
+  const duration = performance.now() - start;
+  assert.ok(duration < 50, `10,000 CI contract checks took ${duration.toFixed(2)}ms, expected < 50ms`);
+});
