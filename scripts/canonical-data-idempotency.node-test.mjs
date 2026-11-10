@@ -156,3 +156,65 @@ test("NODE DATA-09: High-throughput canonical fare normalization and observation
   // 1,000 canonical rows must process within 150ms
   assert.ok(duration < 150, `Normalization benchmark took ${duration.toFixed(2)}ms, expected < 150ms`);
 });
+
+test("NODE DATA-10: Whitespace normalization, duration parsing, return date variance, and edge-case fuzzing", () => {
+  const base = {
+    origin_code: " han ",
+    destination_code: "  bkk  ",
+    date: "2026-11-20",
+    price: 3500000,
+    airline_code: " vn ",
+    flight_number: " vn611 ",
+    airline: " Vietnam Airlines ",
+    duration: "2h 30m",
+    currency: " vnd ",
+    source: "  Fast_Flights  ",
+    timestamp: "2026-10-01T09:00:00Z"
+  };
+
+  const row = toFareObservationRow(base);
+  assert.ok(row);
+  assert.equal(row.origin_airport, "HAN");
+  assert.equal(row.destination_airport, "BKK");
+  assert.equal(row.airline_code, "VN");
+  assert.equal(row.flight_number, "VN611");
+  assert.equal(row.airline, "Vietnam Airlines");
+  assert.equal(row.duration_minutes, 150);
+  assert.equal(row.currency, "VND");
+  assert.equal(row.provider, "fast_flights");
+  assert.equal(row.journey_type, "ONE_WAY");
+  assert.equal(row.return_local_date, null);
+
+  // When return date is added, journey_type becomes ROUND_TRIP and offer_variant_id differs
+  const roundtrip = toFareObservationRow({ ...base, return_date: "2026-11-28" });
+  assert.ok(roundtrip);
+  assert.equal(roundtrip.journey_type, "ROUND_TRIP");
+  assert.equal(roundtrip.return_local_date, "2026-11-28");
+  assert.notEqual(roundtrip.offer_variant_id, row.offer_variant_id);
+
+  // Invalid date format fails closed
+  assert.equal(toFareObservationRow({ ...base, date: "20-11-2026" }), undefined);
+  assert.equal(toFareObservationRow({ ...base, date: "not-a-date" }), undefined);
+
+  // Edge case duration parsing: numeric minutes, minutes only, or missing duration
+  const rowMinutesOnly = toFareObservationRow({ ...base, duration: "45m" });
+  assert.equal(rowMinutesOnly?.duration_minutes, 45);
+  const rowNumDuration = toFareObservationRow({ ...base, duration: 180 });
+  assert.equal(rowNumDuration?.duration_minutes, 180);
+  const rowNullDuration = toFareObservationRow({ ...base, duration: null });
+  assert.equal(rowNullDuration?.duration_minutes, null);
+
+  // Micro-fuzzing benchmark: 1,000 randomized variant generations
+  const start = performance.now();
+  for (let i = 0; i < 1_000; i++) {
+    const f = toFareObservationRow({
+      ...base,
+      price: 1_000_000 + (i * 100),
+      flight_number: `VN${100 + (i % 50)}`,
+      timestamp: `2026-10-01T${String(i % 24).padStart(2, "0")}:00:00Z`
+    });
+    assert.ok(f);
+  }
+  const duration = performance.now() - start;
+  assert.ok(duration < 100, `1,000 fuzzing iterations took ${duration.toFixed(2)}ms, expected < 100ms`);
+});

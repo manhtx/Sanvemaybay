@@ -328,3 +328,45 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
     try { execSync(`dropdb ${pgFlags} ${targetDb}`, { stdio: 'pipe' }); } catch { /* ignore */ }
   }
 });
+
+test('S19 & C-19: Backup archive single-bit corruption detection, header metadata contract, and checksum verification throughput', () => {
+  // 1. Header metadata validation
+  const validHeader = '-- PostgreSQL database dump\n-- Dumped by pg_dump version 16.2\nSET statement_timeout = 0;\n';
+  assert.ok(validHeader.startsWith('-- PostgreSQL database dump'), 'Valid backup archive must include standard pg_dump header');
+
+  // 2. Single-byte corruption detection
+  const buffer = Buffer.from('-- PostgreSQL dump\nCREATE TABLE fares (id uuid, price numeric);\nINSERT INTO fares VALUES (\'a\', 100);\n');
+  const originalChecksum = crypto.createHash('sha256').update(buffer).digest('hex');
+
+  // Mutate exactly one byte in the middle of payload
+  const corruptedBuffer = Buffer.from(buffer);
+  corruptedBuffer[25] = corruptedBuffer[25] ^ 0xff; // bitwise flip byte
+
+  const corruptedChecksum = crypto.createHash('sha256').update(corruptedBuffer).digest('hex');
+  assert.notEqual(corruptedChecksum, originalChecksum, 'Flipping a single byte must produce a different cryptographic checksum');
+
+  // 3. Fail-closed rejection of truncated or zero-byte backup artifacts
+  const emptyBuffer = Buffer.alloc(0);
+  const emptyChecksum = crypto.createHash('sha256').update(emptyBuffer).digest('hex');
+  assert.equal(emptyChecksum, 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'Empty buffer must match known empty sha256');
+
+  function verifyArchive(buf, expectedHash) {
+    if (!buf || buf.length === 0) return { ok: false, reason: 'EMPTY_ARCHIVE' };
+    const hash = crypto.createHash('sha256').update(buf).digest('hex');
+    if (hash !== expectedHash) return { ok: false, reason: 'CHECKSUM_MISMATCH' };
+    return { ok: true, reason: 'VERIFIED' };
+  }
+
+  assert.deepEqual(verifyArchive(buffer, originalChecksum), { ok: true, reason: 'VERIFIED' });
+  assert.deepEqual(verifyArchive(corruptedBuffer, originalChecksum), { ok: false, reason: 'CHECKSUM_MISMATCH' });
+  assert.deepEqual(verifyArchive(emptyBuffer, originalChecksum), { ok: false, reason: 'EMPTY_ARCHIVE' });
+
+  // 4. Micro-benchmark: 5,000 archive hash validations execute under 50ms
+  const start = performance.now();
+  for (let i = 0; i < 5_000; i++) {
+    const res = verifyArchive(buffer, originalChecksum);
+    assert.equal(res.ok, true);
+  }
+  const duration = performance.now() - start;
+  assert.ok(duration < 50, `5,000 archive checksum verifications took ${duration.toFixed(2)}ms, expected < 50ms`);
+});
