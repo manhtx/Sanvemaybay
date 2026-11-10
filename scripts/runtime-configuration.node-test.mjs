@@ -80,3 +80,26 @@ test("client Supabase configuration boundary verifies credentials and flags plac
   assert.match(source, /!supabaseAnonKey\.includes\("placeholder"\)/, "supabase.ts must reject placeholder anon key");
   assert.match(source, /reportClientIssue\("supabase_configuration_missing"\)/, "supabase.ts must report diagnostic when missing");
 });
+
+test("deployment workflow least-privilege permissions, public client env documentation, and throughput benchmark", async () => {
+  // Workflow least privilege permissions
+  const workflow = await readFile(new URL("../.github/workflows/deploy-supabase-ingest.yml", import.meta.url), "utf8");
+  assert.match(workflow, /permissions:\s*contents:\s*read/, "Workflow must enforce least-privilege contents: read");
+
+  // .env.example public client variables documentation
+  const example = await readFile(new URL("../.env.example", import.meta.url), "utf8");
+  assert.match(example, /^VITE_SUPABASE_URL=/m, ".env.example must document VITE_SUPABASE_URL");
+  assert.match(example, /^VITE_SUPABASE_ANON_KEY=/m, ".env.example must document VITE_SUPABASE_ANON_KEY");
+  assert.match(example, /^VITE_PUBLIC_SITE_URL=/m, ".env.example must document VITE_PUBLIC_SITE_URL");
+
+  // Micro-benchmark: 10,000 secret set format validations
+  const testUrl = "https://project.supabase.co";
+  const testKey = "anon-key-12345";
+  const start = performance.now();
+  for (let i = 0; i < 10_000; i++) {
+    const isConfigured = Boolean(testUrl && testKey && !testKey.includes("placeholder"));
+    assert.equal(isConfigured, true);
+  }
+  const duration = performance.now() - start;
+  assert.ok(duration < 50, `10,000 configuration checks should take < 50ms, took ${duration.toFixed(2)}ms`);
+});

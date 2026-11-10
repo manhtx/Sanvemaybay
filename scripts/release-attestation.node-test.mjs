@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, rmSync, readFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
@@ -106,4 +106,36 @@ test('release attestation: non-destructive in-memory mode vs execution latency b
   const duration = performance.now() - start;
   // 5 full attestations (each hashing migrations + 14 functions + contracts) should finish in under 500ms
   assert.ok(duration < 500, `Expected duration < 500ms, took ${duration.toFixed(2)}ms`);
+});
+
+test('release attestation: disk output persistence, hash schema format integrity, and contract tamper sensitivity', () => {
+  const tempProject = mkdtempSync(join(tmpdir(), 'flycheap-att-'));
+  try {
+    const tempFlycheap = join(tempProject, '.flycheap');
+    mkdirSync(tempFlycheap, { recursive: true });
+
+    // Seed mock contract file
+    const contractPath = join(tempFlycheap, 'ACCEPTANCE_CONTRACT.json');
+    writeFileSync(contractPath, JSON.stringify({ version: '1.0.0', gates: [] }), 'utf8');
+
+    // Run with writeToDisk: true
+    const att = generateReleaseAttestation(tempProject, '1234567890123456789012345678901234567890', true);
+    assert.equal(att.git_sha, '1234567890123456789012345678901234567890');
+    assert.equal(att.version, '7.0.0');
+    assert.equal(att.worktree_status, 'CLEAN');
+
+    // Verify file written to disk
+    const diskPath = join(tempFlycheap, 'RELEASE_ATTESTATION.json');
+    const diskContent = JSON.parse(readFileSync(diskPath, 'utf8'));
+    assert.equal(diskContent.git_sha, att.git_sha);
+    assert.equal(diskContent.hashes.acceptance_contract_hash, att.hashes.acceptance_contract_hash);
+    assert.match(diskContent.hashes.acceptance_contract_hash, /^[a-f0-9]{64}$/);
+
+    // Tamper test: modify contract file and regenerate
+    writeFileSync(contractPath, JSON.stringify({ version: '2.0.0', gates: ['tampered'] }), 'utf8');
+    const tamperedAtt = generateReleaseAttestation(tempProject, att.git_sha, false);
+    assert.notEqual(tamperedAtt.hashes.acceptance_contract_hash, att.hashes.acceptance_contract_hash, 'Modifying contract must change acceptance_contract_hash');
+  } finally {
+    rmSync(tempProject, { recursive: true, force: true });
+  }
 });
