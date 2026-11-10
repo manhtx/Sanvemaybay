@@ -1,10 +1,11 @@
 {
   "continuous": true,
-  "researchRounds": 20,
+  "researchRounds": 10,
+  "mastergoalRounds": 5,
   "maxCycles": 0,
   "provider": {
-    "baseUrl": "http://localhost:11434/v1",
-    "model": "your-local-model",
+    "mode": "host-native",
+    "note": "Use the currently selected Codex/Antigravity model and tools; do not configure Ollama or a local provider.",
     "temperature": 0.2,
     "timeoutMs": 600000
   },

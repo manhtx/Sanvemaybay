@@ -87,9 +87,9 @@ the overall loop is complete.
 
 ### 1. Independent research
 
-Run exactly 20 independent research rounds using fresh reasoning/context. Each
+Run exactly 10 independent full-product research rounds using fresh reasoning/context. Each
 round may read the previous round only as untrusted evidence and must challenge
-it. Round 20 must still be a research round; synthesis belongs in the separate
+it. Round 10 must still be a research round; synthesis belongs in the separate
 `mastergoal.md` artifact.
 Inspect:
 
@@ -118,9 +118,16 @@ Do not implement code during research. Record every round with findings,
 evidence, rejected claims, unresolved questions, falsifiers and exact proposed
 solutions. Keep negative and blocked findings in the ledger.
 
+Persist every round twice: `round-XX.json` is the machine packet with action,
+retained tool-output and evidence provenance; `round-XX.md` is the human deep
+dossier. The dossier must connect traveler/product/business problem to root
+cause, exact Farely solution, acceptance and falsifier. IDs, headings or
+repeated templates without linked observations do not count. After round 1
+require new evidence and revised/rejected claims.
+
 ### 2. Mastergoal synthesis
 
-After all 20 round artifacts exist, run `npm run ai-loop:audit -- <cycle>`.
+After all 10 round artifacts exist, run `npm run ai-loop:research-audit -- <cycle>` and `npm run ai-loop:audit -- <cycle>`.
 Treat `evidenceValid`, `checkpointComplete`, and `completionEligible` as
 separate fields. A cycle below 1,000,000,000 can have valid evidence and a
 completed checkpoint while remaining ineligible for final completion. The
@@ -142,7 +149,11 @@ Include the complete scope, changes from the prior mastergoal, exact solutions,
 affected files/routes/assets, execution waves, dependencies, invariants,
 acceptance criteria, evidence requirements, all verification commands and
 GitHub push instructions. Do not delegate important solution design to the
-executor.
+executor. After research passes, perform exactly 5 independent mastergoal
+refinement rounds. Each refinement rereads all 10 research dossiers and the
+prior mastergoal as untrusted evidence, persists `mastergoal-round-01.md`
+through `mastergoal-round-05.md`, and only the fifth passing refinement may
+enter implementation. This is a semantic evidence gate, not a length gate.
 
 ### 3. Implementation
 
@@ -177,3 +188,12 @@ At the end of every turn, leave the current cycle/phase, evidence paths,
 rejected claims, exact next action, GitHub push status, and confirmation that
 the next cycle must continue even if the current cycle passed. The only
 non-threshold stop is an explicit emergency `.ai-loop/STOP` file.
+
+## Evidence-failure continuation
+
+If any Farely cycle, provider/provenance audit, value-case,
+release-attestation, or evidence gate fails after implementation, mark the
+cycle invalid, retain every failed validation output, and advance to a new
+corrective cycle in `research` phase. The next cycle must independently
+re-read Farely and repair the failure; repeatedly re-running the same failed
+evidence phase is not progress.

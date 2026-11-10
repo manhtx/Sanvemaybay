@@ -7,6 +7,10 @@
   "heartbeatMode": "required",
   "userInputRequiredForContinuation": false,
   "reportMode": "checkpoint-with-continuation-state",
+  "researchRounds": 10,
+  "mastergoalRounds": 5,
+  "researchMinimumTurns": 24,
+  "researchMinimumActions": 24,
   "projectAdapter": "FARELY_PROJECT_ADAPTER.md",
   "sourceOfTruth": [
     ".flycheap/MISSION.md",

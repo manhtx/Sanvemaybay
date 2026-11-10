@@ -7,7 +7,7 @@ every cycle.
 
 ## Research lenses
 
-Every 20-round cycle must independently challenge the current state across:
+Every 10-round cycle must independently challenge the current state across:
 
 1. Product truth, user value, opportunity discovery, and decision usefulness.
 2. Provider rights, provenance, quotas, source coverage, fallback, and cost.

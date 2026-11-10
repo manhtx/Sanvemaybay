@@ -6,10 +6,13 @@ const root = ROOT;
 const statePath = join(root, '.ai-loop/state/loop-state.json');
 const state = await readJson(statePath, {});
 const policy = await readJson(join(root, '.ai-loop/loop-policy.json'), { minCyclesBeforeCompletion: 1_000_000_000 });
+const researchContract = await readJson(join(root, '.ai-loop/research-quality-contract.json'), { expectedRounds: 10 });
 const evidencePolicy = await readJson(join(root, '.ai-loop/evidence-policy.json'), { requiredLedgerFile: 'evidence-ledger.jsonl' });
+const mastergoalContract = await readJson(join(root, '.ai-loop/mastergoal-quality-contract.json'), { refinementRounds: 5 });
 const cycle = Number(process.argv[2] || state.cycle || 0);
 if (!cycle) fail('No cycle supplied and loop state has no cycle.');
-const expectedRounds = Number(process.env.AI_RESEARCH_ROUNDS || state.researchRounds || 20);
+const expectedRounds = Number(researchContract.researchDepth?.expectedRounds || researchContract.expectedRounds || policy.researchRounds || 10);
+const expectedMastergoalRounds = Number(policy.mastergoalRounds || mastergoalContract.refinementRounds || 5);
 
 const cycleDir = join(root, '.ai-loop/cycles', String(cycle).padStart(4, '0'));
 const issues = [];
@@ -23,6 +26,9 @@ for (let round = 1; round <= expectedRounds; round += 1) {
   const path = join(cycleDir, `round-${String(round).padStart(2, '0')}.md`);
   if (!(await exists(path))) issues.push(`missing research artifact: round-${String(round).padStart(2, '0')}.md`);
   else evidence.push(path);
+  const packetPath = join(cycleDir, `round-${String(round).padStart(2, '0')}.json`);
+  if (!(await exists(packetPath))) issues.push(`missing research packet companion: round-${String(round).padStart(2, '0')}.json`);
+  else evidence.push(packetPath);
 }
 
 const mastergoalPath = join(cycleDir, 'mastergoal.md');
@@ -32,6 +38,20 @@ else {
   if (/status:\s*implementing/i.test(mastergoal)) issues.push('mastergoal still says IMPLEMENTING');
   for (const term of ['summary', 'exact solution', 'verification', 'rollback', 'user', 'business', 'continuation']) if (!new RegExp(term, 'i').test(mastergoal)) issues.push(`Farely mastergoal missing substantive term: ${term}`);
   evidence.push(mastergoalPath);
+}
+if (strictEvidence) {
+  const mastergoalAuditPath = join(cycleDir, 'mastergoal-audit.json');
+  if (!(await exists(mastergoalAuditPath))) issues.push('missing mastergoal-audit.json');
+  else {
+    const audit = await readJson(mastergoalAuditPath, null);
+    if (!audit?.passed) issues.push('deep mastergoal audit did not pass');
+    evidence.push(mastergoalAuditPath);
+  }
+  for (let refinement = 1; refinement <= expectedMastergoalRounds; refinement += 1) {
+    const refinementPath = join(cycleDir, `mastergoal-round-${String(refinement).padStart(2, '0')}.md`);
+    if (!(await exists(refinementPath))) issues.push(`missing mastergoal refinement artifact: mastergoal-round-${String(refinement).padStart(2, '0')}.md`);
+    else evidence.push(refinementPath);
+  }
 }
 
 const implementationPath = join(cycleDir, 'implementation.json');
@@ -111,9 +131,8 @@ const result = {
   warnings,
   strictEvidence,
   expectedRounds,
-  researchRoundsSource: process.env.AI_RESEARCH_ROUNDS
-    ? 'AI_RESEARCH_ROUNDS'
-    : (state.researchRoundsSource || 'persisted-default'),
+  expectedMastergoalRounds,
+  researchRoundsSource: 'research-quality-contract',
   evidence,
   nextAction: issues.length === 0
     ? (completionEligible ? 'Completion may be considered after final policy review' : `Start independent research cycle ${cycle + 1}`)

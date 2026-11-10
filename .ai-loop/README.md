@@ -78,11 +78,16 @@ touch .ai-loop/STOP
 ## Safe end-to-end smoke run
 
 ```bash
-AI_MOCK=1 AI_RESEARCH_ROUNDS=2 AI_MAX_CYCLES=1 npm run ai-loop:run
+AI_MOCK=1 AI_RESEARCH_ROUNDS=2 AI_MAX_CYCLES=1 npm run ai-loop:api-run
 ```
 
 The mock mode only tests orchestration and state persistence; it does not
 pretend to prove product quality.
+
+Production safety: `AI_RESEARCH_ROUNDS`, `AI_MASTERGOAL_ROUNDS`,
+`AI_MAX_CYCLES`, depth limits and context limits are ignored unless
+`AI_MOCK=1` or `AI_TEST_MODE=1`. A real host-native goal therefore cannot be
+shortened or made shallow through environment variables.
 
 Farely verification is broader than the generic loop and normally includes:
 
@@ -94,3 +99,18 @@ npm run test:e2e
 npm run test:integration
 git diff --check
 ```
+
+Every research round is one complete Farely product dossier, persisted as both
+`round-XX.json` and `round-XX.md`. It must cover traveler/product/business,
+system/architecture, UX/content/interaction, and delivery/measurement/
+operations in the same round. Each important claim must be traceable through
+an action, retained output, evidence, finding, exact solution and acceptance
+test. Provider rights/provenance, freshness, true cost, baggage/tax,
+self-transfer risk, confidence, RLS/outbox and production/user evidence must
+remain explicit; UNKNOWN and BLOCKED_EXTERNAL are valid outcomes.
+
+After 10 research rounds, the host compiles and independently refines one
+implementation mastergoal five times. Research diagnoses the Farely system;
+the mastergoal fixes execution order, affected modules/contracts, gates,
+negative tests, value measurement, rollback and continuation. Neither round
+count nor document length is a quality proof.

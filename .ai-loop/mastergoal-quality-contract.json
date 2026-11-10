@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "artifact": "mastergoal.md",
+  "researchRounds": 10,
+  "refinementRounds": 5,
+  "requiredSections": [
+    "summary", "delta", "mission and scope", "users and jobs", "journey and friction",
+    "product value", "complete capability inventory", "exact solution architecture",
+    "execution waves", "verification matrix", "unknowns and evidence",
+    "anti premature done", "github handoff"
+  ],
+  "farelyRequiredSignals": [
+    "FLY-", "GATE-", "provenance", "true cost", "self-transfer", "freshness",
+    "RLS", "outbox", "provider rights", "falsifier", "rollback"
+  ],
+  "traceability": {
+    "minimumRecords": 3,
+    "requiredEdges": ["finding", "solution", "affected scope", "acceptance", "falsifier", "evidence"],
+    "evidenceBoundaryRequired": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "version": "2.0",
+  "expectedRounds": 10,
+  "purpose": "Every round is a complete Farely product/user/business research dossier, not a narrow technical summary.",
+  "requiredSubpasses": ["PRODUCT_USER_BUSINESS", "SYSTEM_ARCHITECTURE", "UX_CONTENT_INTERACTION", "DELIVERY_MEASUREMENT_OPERATIONS"],
+  "requiredLenses": ["mission", "traveler", "journey", "value", "fare-truth", "interaction", "accessibility", "performance", "architecture", "security", "delivery", "evidence"],
+  "requiredPacketFields": ["researchQuestion", "systemReview", "subpassCoverage", "lensCoverage", "findings", "evidenceLedger", "solutions", "rejectedClaims", "falsifiers", "limitations", "newEvidence", "revisedClaims", "acceptanceMatrix", "nextResearchQuestions"],
+  "requiredEvidenceFields": ["id", "actionId", "sourceLocator", "evidenceClass", "observedResult", "limitation", "falsifier"],
+  "completionRules": ["full-product-coverage", "action-output-provenance", "finding-solution-acceptance-graph", "novelty-after-baseline", "unknown-boundaries-explicit"]
+}

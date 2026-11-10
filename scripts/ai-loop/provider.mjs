@@ -1,17 +1,20 @@
 import { readFile } from 'node:fs/promises';
 
 export function providerConfig(env = process.env) {
+  if (!env.AI_BASE_URL) throw new Error('No external AI provider is configured. Use the host-native goal loop with the currently selected Codex/Antigravity model, or explicitly set AI_BASE_URL for api-run.');
+  if (/ollama|127\.0\.0\.1:11434|localhost:11434/i.test(env.AI_BASE_URL)) throw new Error('Ollama is not supported. Use the host-native loop with the currently selected model.');
   return {
-    baseUrl: (env.AI_BASE_URL || 'http://localhost:11434/v1').replace(/\/$/, ''),
-    apiKey: env.AI_API_KEY || 'local',
-    model: requiredFrom(env, 'AI_MODEL', 'local-model'),
+    baseUrl: env.AI_BASE_URL.replace(/\/$/, ''),
+    apiKey: requiredFrom(env, 'AI_API_KEY'),
+    model: requiredFrom(env, 'AI_MODEL'),
     temperature: Number(env.AI_TEMPERATURE || 0.2),
     timeoutMs: Number(env.AI_TIMEOUT_MS || 600000),
   };
 }
 
-function requiredFrom(env, name, fallback) {
-  return env[name] || fallback;
+function requiredFrom(env, name) {
+  if (!env[name]) throw new Error(`Missing ${name} for explicit api-run`);
+  return env[name];
 }
 
 export async function complete(messages, options = {}) {

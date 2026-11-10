@@ -8,3 +8,15 @@ and a falsifier or negative test for every material claim. The accompanying
 `falsifiers[]`, `evidenceClass`, and wave-level evidence references.
 Specify the evidence-ledger entries and maturity level required for each
 acceptance claim.
+
+Every material execution decision must retain stable references to the research
+graph: `F-*` finding(s) → `S-*` solution(s) → affected scope → acceptance/
+negative test → evidence class. Include all round references (`R01`–`R10`) and
+write `UNKNOWN` or `BLOCKED_EXTERNAL` for unavailable provider, user, business,
+staging or production evidence. Bare IDs without the actual problem,
+mechanism, outcome and implementation details do not satisfy the contract.
+Include at least three explicit traceability records in separate paragraphs;
+each must contain an `F-*` finding, `S-*` solution, `E-*` evidence reference,
+affected route/function/migration/schema scope, acceptance or verification
+test, a negative test/falsifier, and its evidence class or boundary. A global
+list of IDs is not a traceability record.
