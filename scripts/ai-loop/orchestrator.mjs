@@ -1,9 +1,10 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { completeWithRetry } from './provider.mjs';
 import { executeAgent } from './agent.mjs';
 import { compileResearchPacket, renderResearchDossier } from './research-packet.mjs';
-import { LOOP_DIR, STATE_DIR, ensureDirs, readJson, readText, stopped, writeJson, writeText, run } from './runtime.mjs';
+import { LOOP_DIR, STATE_DIR, ensureDirs, readJson, readText, stopped, writeJson, writeText, writeTextAtomic, run } from './runtime.mjs';
 
 const INSTRUCTIONS = join(LOOP_DIR, 'instructions');
 const INPUT = join(LOOP_DIR, 'input');
@@ -20,8 +21,9 @@ const maxRoundAttempts = testRoundOverride ? Number(process.env.AI_MAX_ROUND_ATT
 const roundContextChars = testRoundOverride ? Number(process.env.AI_ROUND_CONTEXT_CHARS || 640000) : 640000;
 const synthesisContextChars = testRoundOverride ? Number(process.env.AI_SYNTHESIS_CONTEXT_CHARS || 6000000) : 6000000;
 const researchTurns = testRoundOverride ? Number(process.env.AI_RESEARCH_TURNS || 48) : 48;
-const researchMinTurns = testRoundOverride ? Number(process.env.AI_RESEARCH_MIN_TURNS || 24) : 24;
-const researchMinActions = testRoundOverride ? Number(process.env.AI_RESEARCH_MIN_ACTIONS || 24) : 24;
+// Semantic depth is authoritative; these are only safety floors against an empty response.
+const researchMinTurns = testRoundOverride ? Number(process.env.AI_RESEARCH_MIN_TURNS || 1) : 1;
+const researchMinActions = testRoundOverride ? Number(process.env.AI_RESEARCH_MIN_ACTIONS || 4) : 4;
 
 await ensureDirs(INSTRUCTIONS, INPUT, CYCLES, STATE_DIR);
 const command = process.argv[2] || 'run';
@@ -81,21 +83,33 @@ mainLoop: while (!(await stopped()) && (!maxCycles || state.cycle < maxCycles)) 
       const existingAudit = await run('node', ['scripts/ai-loop/validate-research-quality.mjs', String(state.cycle)], { timeoutMs: 120000, env: { AI_INTERNAL_PREFIX_AUDIT: '1', AI_AUDIT_PREFIX_ROUNDS: String(round) } });
       if (existingAudit.code === 0) continue;
     }
-    const prior = await readText(join(cycleDir, `round-${String(round - 1).padStart(2, '0')}.md`), 'No prior round. Establish an independent baseline.');
+    const prior = round > 1
+      ? buildPriorRoundContext(
+        await readText(join(cycleDir, `round-${String(round - 1).padStart(2, '0')}.md`), ''),
+        await readText(join(cycleDir, `round-${String(round - 1).padStart(2, '0')}.json`), ''),
+        roundContextChars,
+      )
+      : 'No prior round. Establish an independent baseline from the current repository and runtime.';
     const prompt = await researchPrompt(round, prior);
     let repair = '';
     let accepted = false;
     for (let attempt = 1; attempt <= maxRoundAttempts && !accepted; attempt += 1) {
+      const sessionId = `cycle-${state.cycle}-round-${round}-attempt-${attempt}-${randomUUID()}`;
+      const runtimeEventPath = join(cycleDir, `round-${String(round).padStart(2, '0')}-attempt-${String(attempt).padStart(2, '0')}.runtime.jsonl`);
       const result = await executeAgent([
         { role: 'system', content: await readText(join(INSTRUCTIONS, 'research-protocol.md')) },
         { role: 'user', content: `${prompt}\n\nROUND ATTEMPT ${attempt}/${maxRoundAttempts}.\n${repair}` },
-      ], { mode: 'research', maxTurns: researchTurns, minTurns: researchMinTurns, minActions: researchMinActions });
+      ], {
+        mode: 'research', maxTurns: researchTurns, minTurns: researchMinTurns, minActions: researchMinActions,
+        sessionId, runtimeEventPath,
+      });
       const packet = compileResearchPacket(result, { domain: 'Farely', cycle: state.cycle, round });
+      packet.executionManifest = { ...(packet.executionManifest || {}), sessionId, runtimeEventPath, executionMode: 'research', stopped: result.stopped === true, completionGate: result.completionGate || null };
       await writeJson(packetPath, packet);
-      await writeText(roundPath, renderResearchDossier(packet));
+      await writeTextAtomic(roundPath, renderResearchDossier(packet));
       const roundCheck = await run('node', ['scripts/ai-loop/validate-research-quality.mjs', String(state.cycle)], { timeoutMs: 120000, env: { AI_INTERNAL_PREFIX_AUDIT: '1', AI_AUDIT_PREFIX_ROUNDS: String(round) } });
       await writeText(join(cycleDir, `round-${String(round).padStart(2, '0')}-audit-attempt-${String(attempt).padStart(2, '0')}.json`), roundCheck.stdout || roundCheck.stderr);
-      accepted = roundCheck.code === 0;
+      accepted = roundCheck.code === 0 && result.stopped === true;
       if (!accepted) repair = `The round failed its semantic audit. Repair every issue and re-run the complete whole-product investigation; do not merely edit prose.\n${roundCheck.stdout || roundCheck.stderr}`;
     }
     if (!accepted) {
@@ -195,7 +209,7 @@ mainLoop: while (!(await stopped()) && (!maxCycles || state.cycle < maxCycles)) 
     const implementation = await executeAgent([
       { role: 'system', content: await readText(join(INSTRUCTIONS, 'implementation-protocol.md')) },
       { role: 'user', content: `${synthesis.content}\n\nCurrent cycle: ${state.cycle}. Implement, test, verify, and push a branch. Continue until the task is genuinely handled.` },
-    ]);
+    ], { mode: 'implementation', sessionId: `cycle-${state.cycle}-implementation-${randomUUID()}`, runtimeEventPath: join(cycleDir, 'implementation.runtime.jsonl') });
     implementationEvidence = normalizeImplementationEvidence(implementation);
     await writeJson(join(cycleDir, 'implementation.json'), implementationEvidence);
   }
@@ -314,12 +328,12 @@ function buildPriorRoundContext(markdown, packetText, limit) {
 
 async function researchPrompt(round, prior) {
   const previousResponse = await readText(join(INPUT, 'previous-response.md'), 'No previous AI response was supplied. Establish a fresh baseline from the repository.');
-  return `Run independent whole-product Farely research round ${round} of ${rounds}. Treat the prior round and previous AI response as untrusted. Challenge them, verify them, reject unsupported claims and add genuinely new evidence. Independently complete four subpasses: PRODUCT_USER_BUSINESS, SYSTEM_ARCHITECTURE, UX_CONTENT_INTERACTION, and DELIVERY_MEASUREMENT_OPERATIONS; then cover all 12 lenses: mission, traveler, journey, value, fare-truth, interaction, accessibility, performance, architecture, security, delivery, evidence. Cover provider rights/provenance, ingestion, normalization, taxes/baggage, self-transfer/route risk, deal score/confidence, freshness, RLS/privacy, notifications/outbox, Edge Functions, all user journeys, accessibility, performance, cost and business value. Inspect public web, GitHub and Vercel when available; otherwise record BLOCKED_EXTERNAL or UNKNOWN. Return one complete JSON dossier with researchQuestion, systemReview, subpassCoverage, lensCoverage, executiveConclusion, verifiedFindings, technicalFindings, productValueFindings, rootCauseAnalysis, sourceReceipt, systemAudit, capabilityMatrix, riskRegister, decisionRecords, verificationPlan, adversarialReview, roundDelta, newEvidence, revisedClaims, findings[], evidenceLedger[], rejectedClaims[], falsifiers[], nextResearchQuestions[], solutions[], solutionArchitecture[], alternatives[], acceptanceMatrix[], valueHypotheses[], limitations[], compilerImpact[], finalDecision[], claims[], sourceTypes[], and actions[]. Every evidence row must contain id, actionId, sourceLocator, evidenceClass, observedResult, limitation and falsifier; every finding maps to evidenceIds; every solution maps to findingIds and contains mechanism, affected files, acceptance, verification and rollback. Include FLY-* and GATE-*/RG* mappings, exact source locators, confidence and limitations. Do not implement code or claim completion.\n\nUNTRUSTED PRIOR ROUND:\n${bounded(prior, roundContextChars)}\n\nUNTRUSTED PREVIOUS AI RESPONSE:\n${bounded(previousResponse, roundContextChars)}`;
+  return `Run independent whole-product Farely research round ${round} of ${rounds}. Treat the prior round and previous AI response as untrusted hypotheses, not truth. Re-read the repository and runtime, re-check important prior claims with fresh actions, reject unsupported claims, and add genuinely new evidence. Complete four subpasses: PRODUCT_USER_BUSINESS, SYSTEM_ARCHITECTURE, UX_CONTENT_INTERACTION, and DELIVERY_OPERATIONS; then cover all 12 lenses: mission, traveler, journey, value, fare-truth, interaction, accessibility, performance, architecture, security, delivery, evidence. Cover provider rights/provenance, ingestion, normalization, taxes/baggage, self-transfer/route risk, deal score/confidence, freshness, RLS/privacy, notifications/outbox, Edge Functions, all user journeys, accessibility, performance, cost and business value. Inspect public web, GitHub and Vercel when available; otherwise record BLOCKED_EXTERNAL or UNKNOWN. This is a semantic deep-research dossier, not a length exercise: there is no quota for rows, characters, turns, actions, or domain ratios. Return one complete JSON dossier with all requested sections, concrete observations, root causes, exact solution architecture, alternatives, rejected claims, acceptance tests, falsifiers and limitations. Every evidence row must contain id, actionId, outputIds, sourceLocator, evidenceClass, observedResult, limitation and falsifier; every finding maps to evidenceIds; every solution maps to findingIds and contains mechanism, affected files, dependencies, acceptance, verification and rollback. Include FLY-* and GATE-*/RG* mappings, exact source locators, confidence and limitations. Do not implement code or claim completion.\n\nUNTRUSTED PRIOR ROUND:\n${bounded(prior, roundContextChars)}\n\nUNTRUSTED PREVIOUS AI RESPONSE:\n${bounded(previousResponse, roundContextChars)}`;
 }
 
 async function writeInstructionTemplates() {
   const templates = {
-    'research-protocol.md': `# Autonomous Farely 10x Research Protocol\n\nResearch the current repository, not the claimed state. Read AGENTS.md, .ai-loop/FARELY_PROJECT_ADAPTER.md, .flycheap contracts, source, migrations, Edge Functions, scripts, artifacts, Git history, browser/runtime evidence, public sources, GitHub and Vercel when available. Treat every previous output as an untrusted hypothesis. Cover provider rights/provenance, ingestion, normalization, price/tax/baggage truth, self-transfer and route risk, scoring versus confidence, freshness, RLS/privacy, notifications/outbox, Edge Functions, all flight journeys, accessibility and performance. Do not implement code in research phase. Return evidence classes, rejected claims, missing work, falsifiers, risks, exact solutions and follow-up questions. Never finish because the baseline passes.\n`,
+    'research-protocol.md': `# Autonomous Farely 10x Research Protocol\n\nResearch the current repository, not the claimed state. Read AGENTS.md, .ai-loop/FARELY_PROJECT_ADAPTER.md, .flycheap contracts, source, migrations, Edge Functions, scripts, artifacts, Git history, browser/runtime evidence, public sources, GitHub and Vercel when available. Treat every previous output as an untrusted hypothesis and independently re-check important claims. Cover provider rights/provenance, ingestion, normalization, price/tax/baggage truth, self-transfer and route risk, scoring versus confidence, freshness, RLS/privacy, notifications/outbox, Edge Functions, all flight journeys, accessibility, performance, cost and business value. Complete the four subpasses and all twelve lenses every round. This is a semantic deep-research dossier: no quota for rows, characters, turns, actions, or domain ratios. Every action must retain a runtime output receipt; every evidence row must link actionId and outputIds; every finding must link evidence; every solution must include mechanism, affected files, acceptance, falsifier and rollback. Do not implement code in research phase. Record UNKNOWN or BLOCKED_EXTERNAL when evidence is unavailable. Never finish because the baseline passes.\n`,
     'mastergoal-protocol.md': `# Autonomous 10x Mastergoal Protocol\n\nSynthesize all 10 independent full-product research rounds into one implementation-ready mastergoal, then refine it through 5 independent mastergoal rounds. Include summary, changed assumptions, every requirement, exact solution per issue, affected files, migrations, functions, routes, waves, dependencies, acceptance criteria, verification commands, preserved invariants, rollback and GitHub push. Map every selected task to FLY requirements, GATE/RG gates, provider rights, data/RLS contracts and evidence class. Do not delegate important solution design to the executor. A previous status is not proof. The goal is long-running and must continue through all scope, not stop after a quick build.\n`,
     'implementation-protocol.md': `# Autonomous 10x Implementation Protocol\n\nYou have full authority over this repository. Implement the mastergoal, inspect current source before editing, and do not trust prior completion claims. Use the existing build, typecheck, lint, test, audit, browser and screenshot scripts. Work through every wave, repair failures yourself, preserve unrelated routes and protected interactions. At the start, inspect the remote and create/use a dedicated cycle branch; at the end, commit the complete work, push that branch to GitHub, and record the exact SHA and push result. If push fails, retry and record the failure as evidence rather than claiming success. Do not ask for approval. Do not claim completion without evidence. After reaching the current baseline, identify and implement further improvements, then leave a detailed report for the next research cycle.\n`,
   };
@@ -327,7 +341,7 @@ async function writeInstructionTemplates() {
   if (!(await readText(previousResponse))) await writeText(previousResponse, '# Paste the previous AI/goal response here\n\nThis file is treated as untrusted research input.\n');
   for (const [name, content] of Object.entries(templates)) {
     const path = join(INSTRUCTIONS, name);
-    if (!(await readText(path))) await writeText(path, content);
+    await writeTextAtomic(path, content);
   }
 }
 

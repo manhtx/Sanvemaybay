@@ -1,24 +1,11 @@
-# Farely Autonomous Deep-Research Protocol
+# Autonomous Farely 10x Research Protocol
 
-Run exactly 10 accepted rounds. Every round is a complete whole-product dossier, not a narrow technical topic and not a length exercise. Independently complete four subpasses: PRODUCT_USER_BUSINESS, SYSTEM_ARCHITECTURE, UX_CONTENT_INTERACTION, and DELIVERY_MEASUREMENT_OPERATIONS. Cover all 12 lenses in every round: mission, traveler, journey, value, fare-truth, interaction, accessibility, performance, architecture, security, delivery, evidence. Read the current repository/runtime again; treat every prior round, previous AI response and completion claim as an untrusted hypothesis.
+Research the current repository, not the claimed state. Read `AGENTS.md`, `.ai-loop/FARELY_PROJECT_ADAPTER.md`, the `.flycheap` contracts, source, migrations, Edge Functions, scripts, artifacts, Git history, browser/runtime evidence, and public sources, GitHub and Vercel when available. Treat every previous output as an untrusted hypothesis and independently re-check important claims.
 
-Read AGENTS.md, FARELY_PROJECT_ADAPTER.md, .flycheap contracts/gates, source, migrations, Edge Functions, scripts, artifacts, Git history, browser/runtime evidence, public sources, GitHub and Vercel when available. If unavailable, record BLOCKED_EXTERNAL or UNKNOWN with attempted locator and limitation; never infer provider rights, prices, savings, production performance or user/business value.
+Every round is a complete whole-product dossier. Complete four subpasses: `PRODUCT_USER_BUSINESS`, `SYSTEM_ARCHITECTURE`, `UX_CONTENT_INTERACTION`, and `DELIVERY_OPERATIONS`. Cover the twelve lenses: mission, traveler, journey, value, fare-truth, interaction, accessibility, performance, architecture, security, delivery and evidence. Review provider rights/provenance, ingestion, normalization, price/tax/baggage truth, self-transfer and route risk, scoring versus confidence, freshness, RLS/privacy, notifications/outbox, Edge Functions, all flight journeys, accessibility, performance, cost and business value.
 
-Every round must cover provider rights/provenance, ingestion, normalization, taxes/baggage, true cost, self-transfer/route risk, deal score versus confidence, freshness, RLS/privacy, notifications/outbox, Edge Functions, feed/search/detail/compare/watch/alert journeys, accessibility, performance, cost and business value. Review architecture before local fixes.
+This is semantic deep research, not a length exercise. There is no quota for rows, characters, turns, actions or domain ratios. Depth must follow the actual product surface and evidence discovered. Use real read/search/run actions, retain their output, and distinguish `LOCAL_CODE`, `LOCAL_RUNTIME`, `EXPERIMENTAL`, `USER_RESEARCH`, `PRODUCT_ANALYTICS`, `BUSINESS_EVIDENCE`, `PUBLIC_PRIMARY_SOURCE`, `BLOCKED_EXTERNAL` and `UNKNOWN`.
 
-This is a deep full-product dossier, not a short report. In the same round
-return at least 10 product-value findings, 8 journey stages, 10 UX/content
-frictions, 8 business-value mechanisms, 7 experience-blueprint moments and
-10 ranked product opportunities, plus 5 user-research plans and 5 business
-experiment plans. Include provenanceReconciliation, systemContradictions,
-visualContentAudit, runtimeAcceptanceMatrix, boundedProbes, rootCauseMap,
-adversarialScenarioMatrix (at least 20 scenarios, at least 12 product/UX),
-implementationWaves (at least 5, at least 3 product/UX), and releaseHandoff.
-The first 24 successful investigation actions must contain at least 18
-PRODUCT_USER_BUSINESS or UX_CONTENT_INTERACTION actions; every action must
-declare domain, decisionType and a concrete question. These are semantic
-coverage requirements, not a line-count requirement.
+Every action must have a unique `actionId`, domain, decision type and concrete question. Every evidence row must link `actionId` and retained `outputIds`, with source locator, observed result, limitation and falsifier. Every finding must link evidence. Every solution must link findings and include mechanism, affected files/modules, dependencies, acceptance, verification, falsifier and rollback. Record exact FLY, GATE and RG mappings when applicable. A passing test/build is one observation, never proof of user or business value.
 
-Return one complete JSON dossier with researchQuestion, systemReview, subpassCoverage, lensCoverage, executiveConclusion, verifiedFindings, technicalFindings, productValueFindings, rootCauseAnalysis, sourceReceipt, systemAudit, capabilityMatrix, riskRegister, decisionRecords, verificationPlan, adversarialReview, roundDelta, newEvidence, revisedClaims, findings, evidenceLedger, rejectedClaims, solutions, solutionArchitecture, alternatives, acceptanceMatrix, valueHypotheses, falsifiers, limitations, nextResearchQuestions, compilerImpact, finalDecision, claims, sourceTypes and actions. Every action has a unique actionId and produces retained output. Every evidence row has id, actionId, sourceLocator, evidenceClass, observedResult, limitation and falsifier. Every finding references evidenceIds. Every solution references findingIds and includes mechanism, affected files/modules, dependencies, acceptance, verification, rollback and falsifier. Include FLY-* and GATE-*/RG* mappings. Round N>1 must include at least 3 genuinely new evidence items, 2 revised/rejected claims, one new system-level finding and one changed or defended solution, while rechecking the whole product.
-
-Do not implement code in research mode. Do not return a summary-only response, copied template, synthetic fact or completion claim. A passing test/build is only one observation, never product proof.
+Read and challenge the entire previous dossier again. Re-check important claims, record what changed or was rejected, add new system-level insight, and mark unavailable analytics, provider, deployment or user evidence as `UNKNOWN` or `BLOCKED_EXTERNAL`. Do not implement code in research mode, do not ask for approval, do not claim completion because the baseline passes, and do not produce a summary-only or template-only response.

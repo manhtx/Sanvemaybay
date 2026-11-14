@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, writeFile, access, readdir, rename } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, writeFile, access, readdir, rename } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,6 +23,18 @@ export async function readText(path, fallback = '') {
 export async function writeText(path, content) {
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, content, 'utf8');
+}
+
+export async function writeTextAtomic(path, content) {
+  await mkdir(dirname(path), { recursive: true });
+  const temporaryPath = `${path}.tmp-${process.pid}-${Date.now()}`;
+  await writeFile(temporaryPath, content, 'utf8');
+  await rename(temporaryPath, path);
+}
+
+export async function appendJsonLine(path, value) {
+  await mkdir(dirname(path), { recursive: true });
+  await appendFile(path, `${JSON.stringify(value)}\n`, 'utf8');
 }
 
 export async function readJson(path, fallback) {

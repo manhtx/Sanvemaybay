@@ -9,8 +9,8 @@
   "reportMode": "checkpoint-with-continuation-state",
   "researchRounds": 10,
   "mastergoalRounds": 5,
-  "researchMinimumTurns": 24,
-  "researchMinimumActions": 24,
+  "researchMinimumTurns": 1,
+  "researchMinimumActions": 4,
   "projectAdapter": "FARELY_PROJECT_ADAPTER.md",
   "sourceOfTruth": [
     ".flycheap/MISSION.md",

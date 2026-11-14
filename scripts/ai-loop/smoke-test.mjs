@@ -36,13 +36,13 @@ for (const required of [
   "const rounds = testRoundOverride ? Number(process.env.AI_RESEARCH_ROUNDS || 10) : 10",
   "const mastergoalRounds = testRoundOverride ? Number(process.env.AI_MASTERGOAL_ROUNDS || 5) : 5",
   "const maxCycles = testRoundOverride ? Number(process.env.AI_MAX_CYCLES || 0) : 0",
-  "const researchMinActions = testRoundOverride ? Number(process.env.AI_RESEARCH_MIN_ACTIONS || 24) : 24",
+  "const researchMinActions = testRoundOverride ? Number(process.env.AI_RESEARCH_MIN_ACTIONS || 4) : 4",
 ]) {
   if (!loopOrchestratorSource.includes(required)) throw new Error(`production 10/5 lock missing: ${required}`);
 }
 console.log('PASS production 10 research / 5 mastergoal lock');
 const agentSource = await (await import('node:fs/promises')).readFile(join(ROOT, 'scripts', 'ai-loop', 'agent.mjs'), 'utf8');
-for (const required of ['product/UX investigation actions 18/18', 'adversarialScenarioMatrix', 'userResearchPlan', 'decisionType/question', 'lens ${id} lacks substantive proof', 'testMode', 'safeMinTurns', 'safeMinActions', 'Math.max(safeMaxTurns, minTurns)']) {
+for (const required of ['runtimeSeal', 'adversarialScenarioMatrix', 'userResearchPlan', 'decisionType/question', 'lens ${id} lacks substantive proof', 'safeMinTurns', 'safeMinActions', 'Math.max(safeMaxTurns, minTurns)']) {
   if (!agentSource.includes(required)) throw new Error(`research stop guard missing ${required}`);
 }
 console.log('PASS product-led deep research stop guard is installed');
