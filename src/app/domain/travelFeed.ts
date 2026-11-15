@@ -2,48 +2,61 @@ import { Deal } from "../data/deals";
 import { UserPreferences } from "../lib/preferences";
 
 export function rankTravelFeed(deals: Deal[]): Deal[] {
-  const score = (deal: Deal) => {
-    const value = Number(deal.dealScore ?? deal.aiInsight.savingScore);
-    return Number.isFinite(value) ? value : 0;
-  };
-  const timestamp = (deal: Deal) => {
-    const value = new Date(deal.observedAt ?? 0).getTime();
-    return Number.isFinite(value) ? value : 0;
-  };
-  const ranked = [...deals].sort((a, b) =>
-    score(b) - score(a) || timestamp(b) - timestamp(a),
-  );
+  if (deals.length <= 1) return [...deals];
+  const items = deals.map((deal) => {
+    const scoreVal = Number(deal.dealScore ?? deal.aiInsight.savingScore);
+    const ts = deal.observedAt ? Date.parse(deal.observedAt) : 0;
+    return {
+      deal,
+      score: Number.isFinite(scoreVal) ? scoreVal : 0,
+      timestamp: Number.isFinite(ts) ? ts : 0,
+    };
+  });
+  items.sort((a, b) => b.score - a.score || b.timestamp - a.timestamp);
+
   const diversified: Deal[] = [];
+  const remaining: Deal[] = [];
   const seenDestinations = new Set<string>();
-  for (const deal of ranked) {
-    if (!seenDestinations.has(deal.toCode)) {
-      diversified.push(deal);
-      seenDestinations.add(deal.toCode);
+  for (let i = 0; i < items.length; i++) {
+    const d = items[i].deal;
+    if (!seenDestinations.has(d.toCode)) {
+      diversified.push(d);
+      seenDestinations.add(d.toCode);
+    } else {
+      remaining.push(d);
     }
   }
-  return diversified.concat(ranked.filter((deal) => !diversified.includes(deal)));
+  return diversified.concat(remaining);
 }
 
 /** Rank the already validated feed against explicit user preferences.
  * This is a transparent ranking layer, not a claim of ML personalization.
  */
 export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences): Deal[] {
+  if (deals.length <= 1) return [...deals];
   const baseRanked = rankTravelFeed(deals);
-  const score = (deal: Deal, index: number) => {
+  const homeAirport = preferences.homeAirport;
+  const favoriteRegions = new Set(preferences.favoriteRegions);
+  const preferredAirlines = new Set(preferences.preferredAirlines);
+  const hasPreferredAirlines = preferences.preferredAirlines.length > 0;
+  const maxStops = preferences.maxStops;
+  const budget = preferences.budget;
+  const maxFlightTimeMinutes = preferences.maxFlightTimeMinutes;
+
+  const items = baseRanked.map((deal, index) => {
     let value = Number(deal.dealScore ?? deal.aiInsight.savingScore);
     if (!Number.isFinite(value)) value = 0;
-    if (deal.fromCode === preferences.homeAirport) value += 8;
-    if (preferences.favoriteRegions.includes(deal.region)) value += 12;
-    if (preferences.preferredAirlines.length > 0 && preferences.preferredAirlines.includes(deal.airlineCode)) value += 10;
-    if (deal.stops > preferences.maxStops) value -= Math.min(20, (deal.stops - preferences.maxStops) * 10);
-    if (deal.price > preferences.budget) value -= 15;
-    if (preferences.maxFlightTimeMinutes && parseDurationMinutes(deal.duration) > preferences.maxFlightTimeMinutes) value -= 10;
-    return value - index * 0.001;
-  };
-  return baseRanked
-    .map((deal, index) => ({ deal, index }))
-    .sort((a, b) => score(b.deal, b.index) - score(a.deal, a.index))
-    .map(({ deal }) => deal);
+    if (deal.fromCode === homeAirport) value += 8;
+    if (favoriteRegions.has(deal.region)) value += 12;
+    if (hasPreferredAirlines && preferredAirlines.has(deal.airlineCode)) value += 10;
+    if (deal.stops > maxStops) value -= Math.min(20, (deal.stops - maxStops) * 10);
+    if (deal.price > budget) value -= 15;
+    if (maxFlightTimeMinutes && parseDurationMinutes(deal.duration) > maxFlightTimeMinutes) value -= 10;
+    return { deal, score: value - index * 0.001 };
+  });
+
+  items.sort((a, b) => b.score - a.score);
+  return items.map((item) => item.deal);
 }
 
 function parseDurationMinutes(value: string): number {
