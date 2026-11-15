@@ -225,7 +225,8 @@ function isBudgetCarrier(carrier: string): boolean {
  * - NODE TK-08: Unified single authority across domain kernel and consumer components.
  */
 export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
-  const carrier = (params.airline || params.airlineCode || '').trim().toUpperCase();
+  const raw = params.airline || params.airlineCode || '';
+  const carrier = raw.length <= 3 ? raw.toUpperCase() : raw.trim().toUpperCase();
   const isInternational =
     params.isInternational ??
     (params.region === 'international' || params.region === 'asia' || params.region === 'europe' || params.region === 'americas');
@@ -256,6 +257,15 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
 
   const fees: FeeItem[] = [];
   const components: CostComponent[] = [];
+
+  let knownMandatory = 0;
+  let estimatedMandatory = 0;
+  let estimatedOptional = 0;
+  let hasUnknownMandatoryCost = false;
+
+  let knownTotal = params.basePrice;
+  let estimatedAdditional = 0;
+  let hasUnknownMandatoryComp = false;
 
   // 1. Base Fare - Known
   components.push({
@@ -292,23 +302,30 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
       state: 'KNOWN',
       note: 'Dữ liệu phí hành lý do nhà cung cấp báo'
     });
+    estimatedOptional += baggageFeeProvided;
+    knownTotal += baggageFeeProvided;
   } else {
     const isBudget = isBudgetCarrier(carrier);
     const isLegacy = LEGACY_CARRIER_CODES.has(carrier);
 
     if (isBudget) {
       baggageState = 'ESTIMATED';
-      fees.push(isInternational ? BAGGAGE_BUDGET_INTL_FEE : BAGGAGE_BUDGET_DOM_FEE);
-      components.push(isInternational ? BAGGAGE_BUDGET_INTL_COMPONENT : BAGGAGE_BUDGET_DOM_COMPONENT);
+      const fee = isInternational ? BAGGAGE_BUDGET_INTL_FEE : BAGGAGE_BUDGET_DOM_FEE;
+      const comp = isInternational ? BAGGAGE_BUDGET_INTL_COMPONENT : BAGGAGE_BUDGET_DOM_COMPONENT;
+      fees.push(fee);
+      components.push(comp);
+      estimatedOptional += fee.amount!;
+      estimatedAdditional += comp.amount!;
     } else if (isLegacy) {
-      // Negative control: Carrier identity alone is insufficient to mark baggage KNOWN
       baggageState = 'UNKNOWN';
       fees.push(BAGGAGE_LEGACY_FEE);
       components.push(BAGGAGE_LEGACY_COMPONENT);
+      hasUnknownMandatoryComp = true;
     } else {
       baggageState = 'UNKNOWN';
       fees.push(BAGGAGE_UNKNOWN_FEE);
       components.push(BAGGAGE_UNKNOWN_COMPONENT);
+      hasUnknownMandatoryComp = true;
     }
   }
 
@@ -329,12 +346,15 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
       state: 'KNOWN',
       note: 'Thuế và phụ phí sân bay đã xác nhận'
     });
+    knownMandatory += airportTaxesProvided;
+    knownTotal += airportTaxesProvided;
   } else if (params.providerVerifiedAllIn) {
     fees.push(TAXES_ALL_IN_FEE);
     components.push(TAXES_ALL_IN_COMPONENT);
   } else {
-    // REQ-COST-003 / NC-033: Unknown mandatory cost is UNKNOWN, not zero
     fees.push(TAXES_UNKNOWN_FEE);
+    hasUnknownMandatoryCost = true;
+    hasUnknownMandatoryComp = true;
   }
 
   // 4. Seat selection (Optional)
@@ -357,45 +377,13 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
       state: 'KNOWN',
       note: 'Phí xử lý giao dịch'
     });
+    estimatedOptional += paymentFeeProvided;
+    knownTotal += paymentFeeProvided;
   } else {
     fees.push(PAYMENT_UNKNOWN_FEE);
     components.push(PAYMENT_UNKNOWN_COMPONENT);
-  }
-
-  let knownMandatory = 0;
-  let estimatedMandatory = 0;
-  let estimatedOptional = 0;
-  let hasUnknownMandatoryCost = false;
-
-  for (let i = 0; i < fees.length; i++) {
-    const fee = fees[i];
-    if (fee.mandatory) {
-      if (fee.status === 'KNOWN' && fee.amount !== null) {
-        knownMandatory += fee.amount;
-      } else if (fee.status === 'ESTIMATED' && fee.amount !== null) {
-        estimatedMandatory += fee.amount;
-      } else if (fee.status === 'UNKNOWN') {
-        hasUnknownMandatoryCost = true;
-      }
-    } else if (fee.amount !== null) {
-      estimatedOptional += fee.amount;
-    }
-  }
-
-  let knownTotal = 0;
-  let estimatedAdditional = 0;
-  let hasUnknownMandatoryComp = false;
-
-  for (let i = 0; i < components.length; i++) {
-    const c = components[i];
-    if (c.state === 'KNOWN' && c.amount !== null) {
-      knownTotal += c.amount;
-    } else if (c.state === 'ESTIMATED' && c.amount !== null) {
-      estimatedAdditional += c.amount;
-    }
-    if (!hasUnknownMandatoryComp && c.state === 'UNKNOWN' && (c.category === 'payment_fee' || c.category === 'checked_baggage' || c.category === 'taxes_fees')) {
-      hasUnknownMandatoryComp = true;
-    }
+    hasUnknownMandatoryCost = true;
+    hasUnknownMandatoryComp = true;
   }
 
   const estimatedTotal = knownTotal + estimatedAdditional;
