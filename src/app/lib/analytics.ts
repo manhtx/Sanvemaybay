@@ -50,14 +50,24 @@ const allowedMetadata = new Set([
   "page",
 ]);
 
+let lastTimestampMs = 0;
+let cachedIsoString = "";
+
+function getFastIsoString(): string {
+  const now = Date.now();
+  if (now === lastTimestampMs) {
+    return cachedIsoString;
+  }
+  lastTimestampMs = now;
+  cachedIsoString = new Date(now).toISOString();
+  return cachedIsoString;
+}
+
 export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
   const rawMeta = input.metadata;
   const metadata: Record<string, string | number | boolean | null> = {};
   if (rawMeta && typeof rawMeta === "object") {
-    const keys = Object.keys(rawMeta);
-    const keyLen = keys.length;
-    for (let i = 0; i < keyLen; i++) {
-      const key = keys[i];
+    for (const key in rawMeta) {
       if (allowedMetadata.has(key)) {
         const value = rawMeta[key];
         if (typeof value === "string" || typeof value === "number" || typeof value === "boolean" || value === null) {
@@ -71,7 +81,7 @@ export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
     eventType: input.eventType,
     entityId: typeof entityId === "string" ? (entityId.length <= 120 ? entityId : entityId.slice(0, 120)) : undefined,
     metadata,
-    createdAt: input.createdAt ?? new Date().toISOString(),
+    createdAt: input.createdAt ?? getFastIsoString(),
   };
 }
 
