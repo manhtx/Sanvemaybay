@@ -1,5 +1,3 @@
-import { calculateTotalCost } from "./flightIntelligence";
-
 export interface RouteLeg {
   origin: string;
   destination: string;
