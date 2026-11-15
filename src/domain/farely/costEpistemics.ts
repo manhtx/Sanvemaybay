@@ -259,7 +259,7 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
   const components: CostComponent[] = [];
 
   let knownMandatory = 0;
-  let estimatedMandatory = 0;
+  const estimatedMandatory = 0;
   let estimatedOptional = 0;
   let hasUnknownMandatoryCost = false;
 

@@ -105,16 +105,6 @@ export function extractCohortCriteria(observation: Pick<ObservationData, "origin
   };
 }
 
-function calculateMedian(values: number[]): number {
-  const len = values.length;
-  if (len === 0) return 0;
-  if (len === 1) return values[0];
-  const sorted = new Float64Array(values);
-  sorted.sort();
-  const mid = Math.floor(len / 2);
-  return len % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
-}
-
 function calculateMedianFromObs(validCohort: ObservationData[]): number {
   const len = validCohort.length;
   if (len === 0) return 0;

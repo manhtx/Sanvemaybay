@@ -35,6 +35,19 @@ export interface ProviderResult<T> {
   };
 }
 
+let lastTimestampMs = 0;
+let cachedIsoString = '';
+
+function getFastIsoString(): string {
+  const now = Date.now();
+  if (now === lastTimestampMs) {
+    return cachedIsoString;
+  }
+  lastTimestampMs = now;
+  cachedIsoString = new Date(now).toISOString();
+  return cachedIsoString;
+}
+
 /**
  * Creates a verified successful result.
  */
@@ -44,14 +57,17 @@ export function createSuccessResult<T>(
   metadata?: ProviderResult<T>['metadata']
 ): ProviderResult<T> {
   const status: ProviderResultStatus = data.length > 0 ? 'SUCCESS_NONEMPTY' : 'VERIFIED_EMPTY';
-  return {
+  const result: ProviderResult<T> = {
     status,
     provider,
     data,
-    observedAt: new Date().toISOString(),
-    isDegraded: false,
-    ...(metadata ? { metadata } : {})
+    observedAt: getFastIsoString(),
+    isDegraded: false
   };
+  if (metadata !== undefined) {
+    result.metadata = metadata;
+  }
+  return result;
 }
 
 /**
@@ -70,15 +86,18 @@ export function createErrorResult<T>(
     throw new Error(`Cannot create error result with success status: ${status}`);
   }
 
-  return {
+  const result: ProviderResult<T> = {
     status,
     provider,
     data: [], // empty data, but status exposes failure
     error,
-    observedAt: new Date().toISOString(),
-    isDegraded: true,
-    metadata
+    observedAt: getFastIsoString(),
+    isDegraded: true
   };
+  if (metadata !== undefined) {
+    result.metadata = metadata;
+  }
+  return result;
 }
 
 /**
@@ -86,6 +105,7 @@ export function createErrorResult<T>(
  * Defensively handles null, undefined, or non-object inputs without throwing.
  */
 export function isResultHealthy<T>(result?: ProviderResult<T> | null): boolean {
-  if (!result || typeof result !== 'object') return false;
-  return result.status === 'SUCCESS_NONEMPTY' || result.status === 'VERIFIED_EMPTY';
+  if (result == null || typeof result !== 'object') return false;
+  const status = result.status;
+  return status === 'SUCCESS_NONEMPTY' || status === 'VERIFIED_EMPTY';
 }
