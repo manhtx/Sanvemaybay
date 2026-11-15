@@ -125,16 +125,17 @@ test('S19 & A18: ACID transaction rollback contract on restored database', () =>
   assert.match(rollbackSqlTemplate, /INSERT INTO public\.fare_observations/, 'Template exercises observation insert');
 });
 
-test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and restoration drill', async () => {
+test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and restoration drill', () => {
   const pgFlags = getPgCliFlags();
   const timestamp = Date.now();
   const sourceDb = `farely_dr_src_${timestamp}`;
   const targetDb = `farely_dr_tgt_${timestamp}`;
   const backupFile = join(tmpdir(), `farely_dr_backup_${timestamp}.sql`);
   const bootstrapFile = join(tmpdir(), `supabase_bootstrap_${timestamp}.sql`);
+  const execOptions = { encoding: 'utf8', stdio: 'pipe', timeout: 15000 };
 
   // 1. Provision isolated source database
-  execSync(`createdb ${pgFlags} ${sourceDb}`, { encoding: 'utf8', stdio: 'pipe' });
+  execSync(`createdb ${pgFlags} ${sourceDb}`, execOptions);
 
   writeFileSync(bootstrapFile, `
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -153,7 +154,7 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
 
   try {
     // 2. Bootstrap auth schema and apply all contiguous migrations
-    execSync(`psql ${pgFlags} -d ${sourceDb} -f "${bootstrapFile}"`, { stdio: 'pipe' });
+    execSync(`psql ${pgFlags} -d ${sourceDb} -f "${bootstrapFile}"`, execOptions);
 
     const migrationsDir = join(process.cwd(), 'supabase', 'migrations');
     const migrationFiles = readdirSync(migrationsDir)
@@ -164,10 +165,7 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
 
     for (const file of migrationFiles) {
       const sqlPath = join(migrationsDir, file);
-      execSync(`psql ${pgFlags} -d ${sourceDb} -v ON_ERROR_STOP=1 -f "${sqlPath}"`, {
-        encoding: 'utf8',
-        stdio: 'pipe'
-      });
+      execSync(`psql ${pgFlags} -d ${sourceDb} -v ON_ERROR_STOP=1 -f "${sqlPath}"`, execOptions);
     }
 
     // 3. Populate representative operational records BEFORE taking the backup
@@ -235,7 +233,8 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
     execSync(`psql ${pgFlags} -d ${sourceDb} -v ON_ERROR_STOP=1`, {
       input: seedDataSql,
       encoding: 'utf8',
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe'],
+      timeout: 15000
     });
 
     // Count source rows for verification
@@ -246,11 +245,11 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
         (SELECT count(*) FROM public.watch_condition_episodes),
         (SELECT count(*) FROM public.notification_outbox);
     `;
-    const sourceCounts = execSync(`psql ${pgFlags} -d ${sourceDb} -t -A -F"," -c "${countSql}"`, { encoding: 'utf8' }).trim();
+    const sourceCounts = execSync(`psql ${pgFlags} -d ${sourceDb} -t -A -F"," -c "${countSql}"`, execOptions).trim();
     assert.equal(sourceCounts, '3,1,1,1', 'Source database must contain exact seeded counts (3 fares, 1 alert, 1 episode, 1 outbox)');
 
     // 4. Generate actual physical data-bearing backup archive via pg_dump
-    execSync(`pg_dump ${pgFlags} -d ${sourceDb} -f "${backupFile}"`, { encoding: 'utf8', stdio: 'pipe' });
+    execSync(`pg_dump ${pgFlags} -d ${sourceDb} -f "${backupFile}"`, execOptions);
 
     const archiveStat = statSync(backupFile);
     assert.ok(archiveStat.size > 1000, `Backup archive size (${archiveStat.size} bytes) must be substantial and contain schema + data`);
@@ -260,21 +259,18 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
     assert.equal(archiveSha256.length, 64, 'Backup archive must have verifiable SHA-256 checksum');
 
     // 5. Provision separate isolated target database
-    execSync(`createdb ${pgFlags} ${targetDb}`, { encoding: 'utf8', stdio: 'pipe' });
+    execSync(`createdb ${pgFlags} ${targetDb}`, execOptions);
 
     // 6. Restore from the data-bearing backup archive into targetDb
     const restoreStart = Date.now();
-    execSync(`psql ${pgFlags} -d ${targetDb} -v ON_ERROR_STOP=1 -f "${backupFile}"`, {
-      encoding: 'utf8',
-      stdio: 'pipe'
-    });
+    execSync(`psql ${pgFlags} -d ${targetDb} -v ON_ERROR_STOP=1 -f "${backupFile}"`, execOptions);
     const restoreDurationMs = Date.now() - restoreStart;
 
     assert.ok(restoreDurationMs > 0, 'Restore duration must be positive');
     assert.ok(restoreDurationMs < 30000, `Restore duration (${restoreDurationMs}ms) must remain well within 30s budget`);
 
     // 7. Verify pre-existing data in targetDb WITHOUT any new inserts!
-    const targetCounts = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -F"," -c "${countSql}"`, { encoding: 'utf8' }).trim();
+    const targetCounts = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -F"," -c "${countSql}"`, execOptions).trim();
     assert.equal(targetCounts, sourceCounts, 'Target database must contain exact record counts restored from backup archive');
 
     // Verify specific restored records and price values
@@ -283,7 +279,7 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
       FROM public.fare_observations
       ORDER BY origin_airport;
     `;
-    const faresOut = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -F"," -c "${queryRestoredFares}"`, { encoding: 'utf8' }).trim();
+    const faresOut = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -F"," -c "${queryRestoredFares}"`, execOptions).trim();
     const fareLines = faresOut.split('\n').map((l) => l.trim()).filter(Boolean);
     assert.deepEqual(fareLines, [
       'DAD,KUL,2450000',
@@ -292,18 +288,18 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
     ], 'Restored fare observation records and prices must match source data exactly');
 
     // Verify active generation restored
-    const genCheck = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -c "SELECT active_generation_id FROM public.active_observed_generation WHERE id = 1;"`, { encoding: 'utf8' }).trim();
+    const genCheck = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -c "SELECT active_generation_id FROM public.active_observed_generation WHERE id = 1;"`, execOptions).trim();
     assert.equal(genCheck, testGenId, 'Active generation pointer must be restored from archive');
 
     // Verify watch and condition episode relationship
-    const epCheck = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -F"," -c "SELECT watch_id, state, entry_price FROM public.watch_condition_episodes WHERE id = '${testEpisodeId}';"`, { encoding: 'utf8' }).trim();
+    const epCheck = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -F"," -c "SELECT watch_id, state, entry_price FROM public.watch_condition_episodes WHERE id = '${testEpisodeId}';"`, execOptions).trim();
     assert.equal(epCheck, `${testWatchId},ENTERED,2150000`, 'Watch condition episode must preserve relational linkage and state');
 
     // 8. Verify critical views and RPC routines
-    const viewCheck = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -c "SELECT count(*) FROM public.operational_scan_health;"`, { encoding: 'utf8' }).trim();
+    const viewCheck = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -c "SELECT count(*) FROM public.operational_scan_health;"`, execOptions).trim();
     assert.ok(Number.isInteger(Number(viewCheck)), 'View operational_scan_health must be queryable on restored database');
 
-    const fnCheck = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -c "SELECT count(*) FROM information_schema.routines WHERE routine_schema = 'public' AND routine_name = 'apply_watch_evaluation';"`, { encoding: 'utf8' }).trim();
+    const fnCheck = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -c "SELECT count(*) FROM information_schema.routines WHERE routine_schema = 'public' AND routine_name = 'apply_watch_evaluation';"`, execOptions).trim();
     assert.equal(fnCheck, '1', 'RPC apply_watch_evaluation must be present in restored database');
 
     // 9. Verify transactional rollback compatibility on restored database
@@ -315,8 +311,8 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
       ) VALUES ('fast_flights', 'ov_rb', 'fp_rb', now(), 'HAN', 'SGN', '2026-12-01', 999999);
       ROLLBACK;
     `;
-    execSync(`psql ${pgFlags} -d ${targetDb} -c "${rollbackSql}"`, { encoding: 'utf8', stdio: 'pipe' });
-    const checkRb = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -c "SELECT count(*) FROM public.fare_observations WHERE observation_fingerprint = 'fp_rb';"`, { encoding: 'utf8' }).trim();
+    execSync(`psql ${pgFlags} -d ${targetDb} -c "${rollbackSql}"`, execOptions);
+    const checkRb = execSync(`psql ${pgFlags} -d ${targetDb} -t -A -c "SELECT count(*) FROM public.fare_observations WHERE observation_fingerprint = 'fp_rb';"`, execOptions).trim();
     assert.equal(checkRb, '0', 'Rollback must properly abort transaction on restored database');
 
     console.log(`Disaster Recovery Drill Completed: Dump + Restore verified in ${restoreDurationMs}ms (Archive SHA: ${archiveSha256.slice(0, 16)}...)`);
@@ -324,8 +320,12 @@ test('S19, C-19, A18, F21: End-to-end data-bearing backup archive creation and r
     // 10. Clean up temporary databases and files
     try { unlinkSync(bootstrapFile); } catch { /* ignore */ }
     try { unlinkSync(backupFile); } catch { /* ignore */ }
-    try { execSync(`dropdb ${pgFlags} ${sourceDb}`, { stdio: 'pipe' }); } catch { /* ignore */ }
-    try { execSync(`dropdb ${pgFlags} ${targetDb}`, { stdio: 'pipe' }); } catch { /* ignore */ }
+    try { execSync(`dropdb ${pgFlags} --force ${sourceDb}`, { stdio: 'pipe', timeout: 10000 }); } catch {
+      try { execSync(`dropdb ${pgFlags} ${sourceDb}`, { stdio: 'pipe', timeout: 10000 }); } catch { /* ignore */ }
+    }
+    try { execSync(`dropdb ${pgFlags} --force ${targetDb}`, { stdio: 'pipe', timeout: 10000 }); } catch {
+      try { execSync(`dropdb ${pgFlags} ${targetDb}`, { stdio: 'pipe', timeout: 10000 }); } catch { /* ignore */ }
+    }
   }
 });
 
