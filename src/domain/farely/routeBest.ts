@@ -63,6 +63,10 @@ export function normalizeOfferForIntent(offer: RouteOffer, intent: TravelIntent)
     }
   }
 
+  if (normalizedPrice === offer.price && offer.pricingUnit === normalizedPricingUnit) {
+    return offer;
+  }
+
   return {
     ...offer,
     price: normalizedPrice,
@@ -188,23 +192,21 @@ export function isOfferCompatible(offer: RouteOffer, intent: TravelIntent): bool
 export function selectRouteBest(offers: RouteOffer[], intent: TravelIntent): RouteOffer | null {
   if (!offers || offers.length === 0) return null;
 
-  const eligibleOffers: RouteOffer[] = [];
-  for (const offer of offers) {
+  let best: RouteOffer | null = null;
+  for (let i = 0; i < offers.length; i++) {
+    const offer = offers[i];
     const evalResult = evaluateOfferEligibility(offer, intent);
     if (evalResult.isEligible && evalResult.normalizedOffer) {
-      eligibleOffers.push(evalResult.normalizedOffer);
+      const candidate = evalResult.normalizedOffer;
+      if (
+        best === null ||
+        candidate.price < best.price ||
+        (candidate.price === best.price && candidate.id.localeCompare(best.id) < 0)
+      ) {
+        best = candidate;
+      }
     }
   }
 
-  if (eligibleOffers.length === 0) return null;
-
-  // Sort deterministically by price ascending, with stable tie-breaker on offer ID
-  eligibleOffers.sort((a, b) => {
-    if (a.price !== b.price) {
-      return a.price - b.price; // mathematical minimum
-    }
-    return a.id.localeCompare(b.id);
-  });
-
-  return eligibleOffers[0];
+  return best;
 }
