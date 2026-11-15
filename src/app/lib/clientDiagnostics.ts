@@ -1,21 +1,20 @@
 const CLIENT_ISSUE_PATTERN = /^[a-z][a-z0-9_]{2,63}$/;
 const MSG_CACHE = new Map<string, string>();
 
-let lastIssueTick = 0;
-let tickReportCount = 0;
+let lastCode = "";
+let lastCodeCount = 0;
 
 /**
  * Emit a low-cardinality, PII-free browser diagnostic. Error objects and
  * free-form context are intentionally not accepted by this boundary.
  */
 export function reportClientIssue(issueCode: string): void {
-  const now = Date.now();
-  if (now === lastIssueTick) {
-    tickReportCount++;
-    if (tickReportCount > 25) return;
+  if (issueCode === lastCode) {
+    lastCodeCount++;
+    if (lastCodeCount > 2) return;
   } else {
-    lastIssueTick = now;
-    tickReportCount = 1;
+    lastCode = issueCode;
+    lastCodeCount = 1;
   }
 
   let msg = MSG_CACHE.get(issueCode);
