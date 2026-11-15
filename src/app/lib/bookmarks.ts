@@ -10,7 +10,21 @@ export interface SavedOpportunityRecord {
   savedAt: string;
 }
 
+let lastTimestampMs = 0;
+let cachedIsoString = "";
+
+function getFastIsoString(): string {
+  const now = Date.now();
+  if (now === lastTimestampMs) {
+    return cachedIsoString;
+  }
+  lastTimestampMs = now;
+  cachedIsoString = new Date(now).toISOString();
+  return cachedIsoString;
+}
+
 export function createOpportunitySnapshot(deal: any): Record<string, any> {
+  const price = Number(deal.price) || 0;
   return {
     opportunityId: deal.opportunityId || deal.id,
     fromCode: deal.fromCode,
@@ -19,14 +33,14 @@ export function createOpportunitySnapshot(deal: any): Record<string, any> {
     toCity: deal.to,
     departDate: deal.departDate,
     returnDate: deal.returnDate ?? null,
-    savedPrice: Number(deal.price) || 0,
-    normalPrice: Number(deal.normalPrice) || Number(deal.price) || 0,
+    savedPrice: price,
+    normalPrice: Number(deal.normalPrice) || price,
     airline: deal.airline ?? "",
     airlineCode: deal.airlineCode ?? "",
     flightNumber: deal.flightNumber ?? "",
     stops: Number(deal.stops) || 0,
     duration: deal.duration ?? "",
-    savedAt: new Date().toISOString(),
+    savedAt: getFastIsoString(),
     comparatorContext: {
       cohortMedian: deal.comparator?.cohortMedian ?? deal.normalPrice ?? null,
       discountPercentage: deal.discount ?? 0,
