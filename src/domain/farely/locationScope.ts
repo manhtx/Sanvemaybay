@@ -156,7 +156,7 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
       return {
         type: cached.type,
         primaryCode: cached.primaryCode,
-        expandedCodes: [...cached.expandedCodes]
+        expandedCodes: cached.expandedCodes.slice()
       };
     }
   }
@@ -172,10 +172,14 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
       const res: LocationScope = {
         type: 'METRO',
         primaryCode: metro.metroId,
-        expandedCodes: [...metro.airports]
+        expandedCodes: metro.airports.slice()
       };
       if (!requestedType && SCOPE_CACHE.size < 500) SCOPE_CACHE.set(codeOrMetro, res);
-      return res;
+      return {
+        type: res.type,
+        primaryCode: res.primaryCode,
+        expandedCodes: res.expandedCodes.slice()
+      };
     }
   }
 
@@ -186,7 +190,7 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
       return {
         type: 'METRO',
         primaryCode: airport.metroId,
-        expandedCodes: [...METRO_CATALOG[airport.metroId].airports]
+        expandedCodes: METRO_CATALOG[airport.metroId].airports.slice()
       };
     }
     const res: LocationScope = {
@@ -195,7 +199,11 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
       expandedCodes: [upper]
     };
     if (!requestedType && SCOPE_CACHE.size < 500) SCOPE_CACHE.set(codeOrMetro, res);
-    return res;
+    return {
+      type: res.type,
+      primaryCode: res.primaryCode,
+      expandedCodes: res.expandedCodes.slice()
+    };
   }
 
   // Fallback for codes not yet in catalog
@@ -205,15 +213,23 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
     expandedCodes: [upper]
   };
   if (!requestedType && SCOPE_CACHE.size < 500) SCOPE_CACHE.set(codeOrMetro, res);
-  return res;
+  return {
+    type: res.type,
+    primaryCode: res.primaryCode,
+    expandedCodes: res.expandedCodes.slice()
+  };
 }
 
 export function areCodesEqualCaseInsensitive(a: string, b: string): boolean {
   if (a === b) return true;
-  const len = a.length;
-  if (len !== b.length) return false;
-  for (let i = 0; i < len; i++) {
-    const c1 = a.charCodeAt(i);
+  let startA = 0;
+  let endA = a.length;
+  while (startA < endA && a.charCodeAt(startA) <= 32) startA++;
+  while (endA > startA && a.charCodeAt(endA - 1) <= 32) endA--;
+  const lenA = endA - startA;
+  if (lenA !== b.length) return false;
+  for (let i = 0; i < lenA; i++) {
+    const c1 = a.charCodeAt(startA + i);
     const c2 = b.charCodeAt(i);
     if (c1 === c2) continue;
     if ((c1 ^ 32) !== c2 || !((c1 >= 65 && c1 <= 90) || (c1 >= 97 && c1 <= 122))) {
@@ -228,12 +244,13 @@ export function areCodesEqualCaseInsensitive(a: string, b: string): boolean {
  * Invariant: DMK satisfies Bangkok Metro, but DMK CANNOT satisfy exact BKK.
  */
 export function satisfiesLocationScope(actualAirport: string, scope: LocationScope): boolean {
-  if (scope.type === 'EXACT_AIRPORT' && areCodesEqualCaseInsensitive(actualAirport, scope.primaryCode)) {
-    return true;
-  }
-  const upper = actualAirport.trim().toUpperCase();
   if (scope.type === 'EXACT_AIRPORT') {
-    return upper === scope.primaryCode;
+    return areCodesEqualCaseInsensitive(actualAirport, scope.primaryCode);
   }
-  return scope.expandedCodes.includes(upper);
+  const codes = scope.expandedCodes;
+  const n = codes.length;
+  for (let i = 0; i < n; i++) {
+    if (areCodesEqualCaseInsensitive(actualAirport, codes[i])) return true;
+  }
+  return false;
 }
