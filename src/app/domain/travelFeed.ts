@@ -1,6 +1,21 @@
 import { Deal } from "../data/deals";
 import { UserPreferences } from "../lib/preferences";
 
+function parseIsoTimestamp(iso: string | undefined): number {
+  if (!iso) return 0;
+  if (iso.length >= 19 && iso.charCodeAt(4) === 45 && iso.charCodeAt(7) === 45) {
+    const year = (iso.charCodeAt(0) - 48) * 1000 + (iso.charCodeAt(1) - 48) * 100 + (iso.charCodeAt(2) - 48) * 10 + (iso.charCodeAt(3) - 48);
+    const month = (iso.charCodeAt(5) - 48) * 10 + (iso.charCodeAt(6) - 48) - 1;
+    const day = (iso.charCodeAt(8) - 48) * 10 + (iso.charCodeAt(9) - 48);
+    const hour = (iso.charCodeAt(11) - 48) * 10 + (iso.charCodeAt(12) - 48);
+    const min = (iso.charCodeAt(14) - 48) * 10 + (iso.charCodeAt(15) - 48);
+    const sec = (iso.charCodeAt(17) - 48) * 10 + (iso.charCodeAt(18) - 48);
+    return Date.UTC(year, month, day, hour, min, sec);
+  }
+  const parsed = Date.parse(iso);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 export function rankTravelFeed(deals: Deal[]): Deal[] {
   if (deals.length <= 1) return [...deals];
   const len = deals.length;
@@ -8,11 +23,11 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
   for (let i = 0; i < len; i++) {
     const deal = deals[i];
     const scoreVal = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
-    const ts = deal.observedAt ? Date.parse(deal.observedAt) : 0;
+    const ts = parseIsoTimestamp(deal.observedAt);
     items[i] = {
       deal,
       score: Number.isFinite(scoreVal) ? scoreVal : 0,
-      timestamp: Number.isFinite(ts) ? ts : 0,
+      timestamp: ts,
     };
   }
   items.sort((a, b) => b.score - a.score || b.timestamp - a.timestamp);
@@ -40,9 +55,11 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
   const baseRanked = rankTravelFeed(deals);
   const homeAirport = preferences.homeAirport;
   const favoriteRegions = preferences.favoriteRegions;
-  const favoriteRegionsSet = favoriteRegions && favoriteRegions.length > 0 ? new Set(favoriteRegions) : null;
+  const favRegionSingle = favoriteRegions?.length === 1 ? favoriteRegions[0] : null;
+  const favoriteRegionsSet = favoriteRegions && favoriteRegions.length > 1 ? new Set(favoriteRegions) : null;
   const preferredAirlines = preferences.preferredAirlines;
-  const preferredAirlinesSet = preferredAirlines && preferredAirlines.length > 0 ? new Set(preferredAirlines) : null;
+  const prefAirlineSingle = preferredAirlines?.length === 1 ? preferredAirlines[0] : null;
+  const preferredAirlinesSet = preferredAirlines && preferredAirlines.length > 1 ? new Set(preferredAirlines) : null;
   const maxStops = preferences.maxStops;
   const budget = preferences.budget;
   const maxFlightTimeMinutes = preferences.maxFlightTimeMinutes;
@@ -54,8 +71,12 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
     let value = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
     if (!Number.isFinite(value)) value = 0;
     if (deal.fromCode === homeAirport) value += 8;
-    if (favoriteRegionsSet && favoriteRegionsSet.has(deal.region as any)) value += 12;
-    if (preferredAirlinesSet && preferredAirlinesSet.has(deal.airlineCode)) value += 10;
+    if (favRegionSingle ? deal.region === favRegionSingle : (favoriteRegionsSet && favoriteRegionsSet.has(deal.region as any))) {
+      value += 12;
+    }
+    if (prefAirlineSingle ? deal.airlineCode === prefAirlineSingle : (preferredAirlinesSet && preferredAirlinesSet.has(deal.airlineCode))) {
+      value += 10;
+    }
     if (deal.stops > maxStops) value -= Math.min(20, (deal.stops - maxStops) * 10);
     if (deal.price > budget) value -= 15;
     if (maxFlightTimeMinutes && parseDurationMinutes(deal.duration) > maxFlightTimeMinutes) value -= 10;
