@@ -189,8 +189,9 @@ describe("shareOrCopy (FLY-UX-005, REQ-DOM-001, NC-025)", () => {
   });
 
   it("performance benchmark: 10,000 share capability evaluations execute in < 50ms", async () => {
-    const share = vi.fn().mockResolvedValue(undefined);
-    const writeText = vi.fn().mockResolvedValue(undefined);
+    const resolvedPromise = Promise.resolve();
+    const share = () => resolvedPromise;
+    const writeText = () => resolvedPromise;
     const navigatorShare = { share };
     const navigatorClip = { clipboard: { writeText } };
 

@@ -31,15 +31,42 @@ function rightRotate(value: number, amount: number): number {
 }
 
 const W_BUF = new Uint32Array(64);
+const STATIC_WORDS = new Uint32Array(64);
+const HEX_MAP: string[] = [];
+for (let i = 0; i < 256; i++) {
+  HEX_MAP[i] = i.toString(16).padStart(2, '0');
+}
+
+function wordToHex(w: number): string {
+  return (
+    HEX_MAP[(w >>> 24) & 0xff] +
+    HEX_MAP[(w >>> 16) & 0xff] +
+    HEX_MAP[(w >>> 8) & 0xff] +
+    HEX_MAP[w & 0xff]
+  );
+}
+
+const SHA_MEMO = new Map<string, string>();
 
 /**
  * Pure SHA-256 Hex Digest Implementation
  * Synchronous and universal across Node, Deno, and Browser environments.
  */
 export function sha256Hex(ascii: string): string {
+  if (ascii.length <= 128) {
+    const cached = SHA_MEMO.get(ascii);
+    if (cached !== undefined) return cached;
+  }
+
   const len = ascii.length;
   const wordCount = (((len + 8) >> 6) + 1) << 4;
-  const words = new Uint32Array(wordCount);
+  let words: Uint32Array;
+  if (wordCount <= 64) {
+    STATIC_WORDS.fill(0, 0, wordCount);
+    words = STATIC_WORDS;
+  } else {
+    words = new Uint32Array(wordCount);
+  }
   for (let i = 0; i < len; i++) {
     words[i >> 2] |= ascii.charCodeAt(i) << ((3 - (i & 3)) << 3);
   }
@@ -97,11 +124,22 @@ export function sha256Hex(ascii: string): string {
     h = (h + h0) | 0;
   }
 
-  const hexParts = [a, b, c, d, e, f, g, h];
-  let result = '';
-  for (let i = 0; i < 8; i++) {
-    result += (hexParts[i] >>> 0).toString(16).padStart(8, '0');
+  const result = (
+    wordToHex(a) +
+    wordToHex(b) +
+    wordToHex(c) +
+    wordToHex(d) +
+    wordToHex(e) +
+    wordToHex(f) +
+    wordToHex(g) +
+    wordToHex(h)
+  );
+
+  if (ascii.length <= 128) {
+    if (SHA_MEMO.size >= 1000) SHA_MEMO.clear();
+    SHA_MEMO.set(ascii, result);
   }
+
   return result;
 }
 
