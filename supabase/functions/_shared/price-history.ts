@@ -18,14 +18,22 @@ const K_CONSTANTS: number[] = [];
   }
 })();
 
+function rightRotate(value: number, amount: number): number {
+  return (value >>> amount) | (value << (32 - amount));
+}
+
+const SHA256_CACHE = new Map<string, string>();
+const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const DURATION_PARSER_REGEX = /(?:(\d+)\s*h(?:ours?)?)?\s*(?:(\d+)\s*m(?:inutes?)?)?/i;
+
 /**
  * Pure SHA-256 Hex Digest Implementation
  * Synchronous and universal across Node, Deno, and Browser environments.
  */
 export function sha256Hex(ascii: string): string {
-  function rightRotate(value: number, amount: number): number {
-    return (value >>> amount) | (value << (32 - amount));
-  }
+  const cached = SHA256_CACHE.get(ascii);
+  if (cached !== undefined) return cached;
+
   const maxWord = 4294967296;
   let i: number, j: number;
   let result = "";
@@ -33,10 +41,10 @@ export function sha256Hex(ascii: string): string {
   const asciiBitLength = ascii.length * 8;
   const hash = INITIAL_HASH.slice(0);
   const k = K_CONSTANTS;
-  ascii += "\x80";
-  while (ascii.length % 64 - 56) ascii += "\x00";
-  for (i = 0; i < ascii.length; i++) {
-    j = ascii.charCodeAt(i);
+  let padded = ascii + "\x80";
+  while (padded.length % 64 - 56) padded += "\x00";
+  for (i = 0; i < padded.length; i++) {
+    j = padded.charCodeAt(i);
     words[i >> 2] |= j << ((3 - i) % 4) * 8;
   }
   words[words.length] = ((asciiBitLength / maxWord) | 0);
@@ -77,6 +85,9 @@ export function sha256Hex(ascii: string): string {
       const b = (hash[i] >> (j * 8)) & 255;
       result += (b < 16 ? "0" : "") + b.toString(16);
     }
+  }
+  if (SHA256_CACHE.size < 2000) {
+    SHA256_CACHE.set(ascii, result);
   }
   return result;
 }
@@ -185,12 +196,12 @@ export function toFareObservationRow(flight: FlightObservation): FareObservation
   const destination = (flight.destination_code || "").trim().toUpperCase();
   if (!origin || !destination) return undefined;
 
-  const departDate = typeof flight.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(flight.date)
+  const departDate = typeof flight.date === "string" && DATE_FORMAT_REGEX.test(flight.date)
     ? flight.date
     : null;
   if (!departDate) return undefined;
 
-  const returnDate = typeof flight.return_date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(flight.return_date)
+  const returnDate = typeof flight.return_date === "string" && DATE_FORMAT_REGEX.test(flight.return_date)
     ? flight.return_date
     : null;
 
@@ -214,7 +225,7 @@ export function toFareObservationRow(flight: FlightObservation): FareObservation
   if (typeof flight.duration === "number") {
     durationMinutes = flight.duration;
   } else if (typeof flight.duration === "string") {
-    const match = flight.duration.match(/(?:(\d+)\s*h(?:ours?)?)?\s*(?:(\d+)\s*m(?:inutes?)?)?/i);
+    const match = flight.duration.match(DURATION_PARSER_REGEX);
     if (match && (match[1] || match[2])) {
       durationMinutes = (parseInt(match[1] || "0", 10) * 60) + parseInt(match[2] || "0", 10);
     }
