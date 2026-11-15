@@ -37,6 +37,48 @@ const BUF_INDICES = new Int32Array(MAX_BUF);
 const BUF_PERS_SCORES = new Float64Array(MAX_BUF);
 const BUF_PERS_INDICES = new Int32Array(MAX_BUF);
 
+function sortFeedIndices(arr: Int32Array, left: number, right: number): void {
+  if (left >= right) return;
+  const pivotIdx = arr[(left + right) >> 1];
+  const pivotScore = BUF_SCORES[pivotIdx];
+  const pivotTs = BUF_TIMESTAMPS[pivotIdx];
+  let i = left;
+  let j = right;
+  while (i <= j) {
+    while (
+      BUF_SCORES[arr[i]] > pivotScore ||
+      (BUF_SCORES[arr[i]] === pivotScore && (BUF_TIMESTAMPS[arr[i]] > pivotTs || (BUF_TIMESTAMPS[arr[i]] === pivotTs && arr[i] < pivotIdx)))
+    ) i++;
+    while (
+      BUF_SCORES[arr[j]] < pivotScore ||
+      (BUF_SCORES[arr[j]] === pivotScore && (BUF_TIMESTAMPS[arr[j]] < pivotTs || (BUF_TIMESTAMPS[arr[j]] === pivotTs && arr[j] > pivotIdx)))
+    ) j--;
+    if (i <= j) {
+      const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+      i++; j--;
+    }
+  }
+  if (left < j) sortFeedIndices(arr, left, j);
+  if (i < right) sortFeedIndices(arr, i, right);
+}
+
+function sortPersIndices(arr: Int32Array, left: number, right: number): void {
+  if (left >= right) return;
+  const pivotScore = BUF_PERS_SCORES[arr[(left + right) >> 1]];
+  let i = left;
+  let j = right;
+  while (i <= j) {
+    while (BUF_PERS_SCORES[arr[i]] > pivotScore) i++;
+    while (BUF_PERS_SCORES[arr[j]] < pivotScore) j--;
+    if (i <= j) {
+      const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+      i++; j--;
+    }
+  }
+  if (left < j) sortPersIndices(arr, left, j);
+  if (i < right) sortPersIndices(arr, i, right);
+}
+
 export function rankTravelFeed(deals: Deal[]): Deal[] {
   const len = deals.length;
   if (len <= 1) return [...deals];
@@ -108,7 +150,7 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
       BUF_INDICES[i] = i;
     }
     const idx = BUF_INDICES.subarray(0, len);
-    idx.sort((a, b) => BUF_SCORES[b] - BUF_SCORES[a] || BUF_TIMESTAMPS[b] - BUF_TIMESTAMPS[a]);
+    sortFeedIndices(idx, 0, len - 1);
 
     const diversified: Deal[] = [];
     const remaining: Deal[] = [];
@@ -243,7 +285,7 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
     }
 
     const pIdx = BUF_PERS_INDICES.subarray(0, n);
-    pIdx.sort((a, b) => BUF_PERS_SCORES[b] - BUF_PERS_SCORES[a]);
+    sortPersIndices(pIdx, 0, n - 1);
     const result = new Array(n);
     for (let i = 0; i < n; i++) {
       result[i] = baseRanked[pIdx[i]];
