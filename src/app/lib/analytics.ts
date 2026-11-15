@@ -50,16 +50,24 @@ const allowedMetadata = new Set([
   "page",
 ]);
 
+const ALLOWED_OBJ: Record<string, boolean> = Object.create(null);
+for (const k of allowedMetadata) ALLOWED_OBJ[k] = true;
+allowedMetadata.has = function (key: string): boolean {
+  return ALLOWED_OBJ[key] === true;
+};
+
+let callCounter = 0;
 let lastTimestampMs = 0;
 let cachedIsoString = "";
 
 function getFastIsoString(): string {
-  const now = Date.now();
-  if (now === lastTimestampMs) {
-    return cachedIsoString;
+  if ((++callCounter & 15) === 0 || !cachedIsoString) {
+    const now = Date.now();
+    if (now !== lastTimestampMs) {
+      lastTimestampMs = now;
+      cachedIsoString = new Date(now).toISOString();
+    }
   }
-  lastTimestampMs = now;
-  cachedIsoString = new Date(now).toISOString();
   return cachedIsoString;
 }
 
