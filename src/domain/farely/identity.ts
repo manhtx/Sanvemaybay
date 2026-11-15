@@ -26,64 +26,81 @@ const K_CONSTANTS: number[] = [];
   }
 })();
 
+function rightRotate(value: number, amount: number): number {
+  return (value >>> amount) | (value << (32 - amount));
+}
+
+const W_BUF = new Uint32Array(64);
+
 /**
  * Pure SHA-256 Hex Digest Implementation
  * Synchronous and universal across Node, Deno, and Browser environments.
  */
 export function sha256Hex(ascii: string): string {
-  function rightRotate(value: number, amount: number): number {
-    return (value >>> amount) | (value << (32 - amount));
+  const len = ascii.length;
+  const wordCount = (((len + 8) >> 6) + 1) << 4;
+  const words = new Uint32Array(wordCount);
+  for (let i = 0; i < len; i++) {
+    words[i >> 2] |= ascii.charCodeAt(i) << ((3 - (i & 3)) << 3);
   }
-  let i: number, j: number;
+  words[len >> 2] |= 0x80 << ((3 - (len & 3)) << 3);
+  words[wordCount - 1] = len * 8;
+
+  let a = INITIAL_HASH[0];
+  let b = INITIAL_HASH[1];
+  let c = INITIAL_HASH[2];
+  let d = INITIAL_HASH[3];
+  let e = INITIAL_HASH[4];
+  let f = INITIAL_HASH[5];
+  let g = INITIAL_HASH[6];
+  let h = INITIAL_HASH[7];
+
+  for (let j = 0; j < wordCount; j += 16) {
+    for (let i = 0; i < 16; i++) {
+      W_BUF[i] = words[j + i];
+    }
+    for (let i = 16; i < 64; i++) {
+      const w15 = W_BUF[i - 15];
+      const w2 = W_BUF[i - 2];
+      const s0 = (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3));
+      const s1 = (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10));
+      W_BUF[i] = (W_BUF[i - 16] + s0 + W_BUF[i - 7] + s1) | 0;
+    }
+
+    let a0 = a, b0 = b, c0 = c, d0 = d, e0 = e, f0 = f, g0 = g, h0 = h;
+
+    for (let i = 0; i < 64; i++) {
+      const s1 = (rightRotate(e0, 6) ^ rightRotate(e0, 11) ^ rightRotate(e0, 25));
+      const ch = (e0 & f0) ^ (~e0 & g0);
+      const temp1 = (h0 + s1 + ch + K_CONSTANTS[i] + W_BUF[i]) | 0;
+      const s0 = (rightRotate(a0, 2) ^ rightRotate(a0, 13) ^ rightRotate(a0, 22));
+      const maj = (a0 & b0) ^ (a0 & c0) ^ (b0 & c0);
+      const temp2 = (s0 + maj) | 0;
+
+      h0 = g0;
+      g0 = f0;
+      f0 = e0;
+      e0 = (d0 + temp1) | 0;
+      d0 = c0;
+      c0 = b0;
+      b0 = a0;
+      a0 = (temp1 + temp2) | 0;
+    }
+
+    a = (a + a0) | 0;
+    b = (b + b0) | 0;
+    c = (c + c0) | 0;
+    d = (d + d0) | 0;
+    e = (e + e0) | 0;
+    f = (f + f0) | 0;
+    g = (g + g0) | 0;
+    h = (h + h0) | 0;
+  }
+
+  const hexParts = [a, b, c, d, e, f, g, h];
   let result = '';
-  const words: number[] = [];
-  const asciiBitLength = ascii.length * 8;
-  const hash = INITIAL_HASH.slice(0);
-  const k = K_CONSTANTS;
-  ascii += '\x80';
-  while (ascii.length % 64 - 56) ascii += '\x00';
-  for (i = 0; i < ascii.length; i++) {
-    j = ascii.charCodeAt(i);
-    words[i >> 2] |= j << ((3 - i) % 4) * 8;
-  }
-  words[words.length] = ((asciiBitLength / maxWord) | 0);
-  words[words.length] = asciiBitLength | 0;
-  for (j = 0; j < words.length;) {
-    const w = words.slice(j, (j += 16));
-    const oldHash = hash.slice(0);
-    for (i = 0; i < 64; i++) {
-      const w15 = w[i - 15], w2 = w[i - 2];
-      const a = hash[0], e = hash[4];
-      const temp1 = hash[7] +
-        (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) +
-        ((e & hash[5]) ^ (~e & hash[6])) +
-        k[i] +
-        (w[i] = (i < 16)
-          ? w[i]
-          : (w[i - 16] +
-            (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) +
-            w[i - 7] +
-            (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
-      const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) +
-        ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
-      hash[7] = hash[6];
-      hash[6] = hash[5];
-      hash[5] = hash[4];
-      hash[4] = (hash[3] + temp1) | 0;
-      hash[3] = hash[2];
-      hash[2] = hash[1];
-      hash[1] = a;
-      hash[0] = (temp1 + temp2) | 0;
-    }
-    for (i = 0; i < 8; i++) {
-      hash[i] = (hash[i] + oldHash[i]) | 0;
-    }
-  }
-  for (i = 0; i < 8; i++) {
-    for (j = 3; j + 1; j--) {
-      const b = (hash[i] >> (j * 8)) & 255;
-      result += (b < 16 ? '0' : '') + b.toString(16);
-    }
+  for (let i = 0; i < 8; i++) {
+    result += (hexParts[i] >>> 0).toString(16).padStart(8, '0');
   }
   return result;
 }
