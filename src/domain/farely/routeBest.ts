@@ -63,7 +63,7 @@ export function normalizeOfferForIntent(offer: RouteOffer, intent: TravelIntent)
     }
   }
 
-  if (normalizedPrice === offer.price && offer.pricingUnit === normalizedPricingUnit) {
+  if (normalizedPrice === offer.price && (offer.pricingUnit === normalizedPricingUnit || (!offer.pricingUnit && normalizedPricingUnit === 'PER_TRAVELER'))) {
     return offer;
   }
 
@@ -74,12 +74,26 @@ export function normalizeOfferForIntent(offer: RouteOffer, intent: TravelIntent)
   };
 }
 
+const EVAL_CACHE = new WeakMap<object, WeakMap<object, EligibilityResult>>();
+
 /**
  * Evaluates offer eligibility against canonical TravelIntent, emitting typed reasons and tri-state result.
  * S08: ELIGIBLE, INELIGIBLE, UNKNOWN_COMPATIBILITY.
  * Unknown stops is not zero stops. Unknown duration does not satisfy duration constraint.
  */
 export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent): EligibilityResult {
+  let intentMap: WeakMap<object, EligibilityResult> | undefined;
+  if (typeof offer === 'object' && offer !== null && typeof intent === 'object' && intent !== null) {
+    intentMap = EVAL_CACHE.get(offer);
+    if (!intentMap) {
+      intentMap = new WeakMap();
+      EVAL_CACHE.set(offer, intentMap);
+    } else {
+      const cached = intentMap.get(intent);
+      if (cached !== undefined) return cached;
+    }
+  }
+
   const reasons: IneligibilityReason[] = [];
   let hasUnknown = false;
 
@@ -151,29 +165,34 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
     reasons.push('INVALID_PRICE');
   }
 
+  let result: EligibilityResult;
   // Tri-state classification
   if (hasUnknown) {
-    return {
+    result = {
       isEligible: false,
       state: 'UNKNOWN_COMPATIBILITY',
       reasons,
     };
-  }
-
-  if (reasons.length > 0) {
-    return {
+  } else if (reasons.length > 0) {
+    result = {
       isEligible: false,
       state: 'INELIGIBLE',
       reasons,
     };
+  } else {
+    result = {
+      isEligible: true,
+      state: 'ELIGIBLE',
+      reasons: [],
+      normalizedOffer: normalizeOfferForIntent(offer, intent),
+    };
   }
 
-  return {
-    isEligible: true,
-    state: 'ELIGIBLE',
-    reasons: [],
-    normalizedOffer: normalizeOfferForIntent(offer, intent),
-  };
+  if (intentMap) {
+    intentMap.set(intent, result);
+  }
+
+  return result;
 }
 
 /**
