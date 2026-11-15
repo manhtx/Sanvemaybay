@@ -1,11 +1,25 @@
 const CLIENT_ISSUE_PATTERN = /^[a-z][a-z0-9_]{2,63}$/;
 const MSG_CACHE = new Map<string, string>();
 
+let lastIssueCode = "";
+let lastIssueTime = 0;
+let consecutiveCount = 0;
+
 /**
  * Emit a low-cardinality, PII-free browser diagnostic. Error objects and
  * free-form context are intentionally not accepted by this boundary.
  */
 export function reportClientIssue(issueCode: string): void {
+  const now = Date.now();
+  if (issueCode === lastIssueCode && now === lastIssueTime) {
+    consecutiveCount++;
+    if (consecutiveCount > 10) return;
+  } else {
+    lastIssueCode = issueCode;
+    lastIssueTime = now;
+    consecutiveCount = 1;
+  }
+
   let msg = MSG_CACHE.get(issueCode);
   if (msg === undefined) {
     const code = CLIENT_ISSUE_PATTERN.test(issueCode) ? issueCode : "client_issue_invalid_code";
