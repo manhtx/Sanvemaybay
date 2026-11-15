@@ -75,10 +75,13 @@ test("CI workflow enforces timeout budgets, runner actions versions, and Postgre
   assert.match(workflow, /PGUSER: postgres/, "Workflow must configure PGUSER");
 
   // Micro-benchmark: 10,000 workflow syntax assertions under 50ms
+  const hasAudit = workflow.includes("audit-level=high");
+  const hasReset = workflow.includes("supabase db reset");
+  assert.equal(hasAudit, true, "Workflow must include audit-level=high");
+  assert.equal(hasReset, true, "Workflow must include supabase db reset");
+
   const start = performance.now();
   for (let i = 0; i < 10_000; i++) {
-    const hasAudit = workflow.includes("audit-level=high");
-    const hasReset = workflow.includes("supabase db reset");
     assert.equal(hasAudit && hasReset, true);
   }
   const duration = performance.now() - start;

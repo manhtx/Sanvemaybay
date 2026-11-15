@@ -58,6 +58,27 @@ export function parseMigrationText(content) {
 }
 
 export function evaluateMigrationParity(localVersions, remoteVersions) {
+  if (localVersions === remoteVersions) {
+    let hasDupes = false;
+    for (let i = 1; i < localVersions.length; i++) {
+      if (localVersions[i] === localVersions[i - 1]) {
+        hasDupes = true;
+        break;
+      }
+    }
+    if (!hasDupes) {
+      return {
+        ok: true,
+        local_versions: localVersions,
+        remote_versions: remoteVersions,
+        pending: [],
+        remote_only_versions: [],
+        missing_before_applied: [],
+        duplicate_local_versions: []
+      };
+    }
+  }
+
   const seen = new Set();
   const duplicates = [];
   for (let i = 0; i < localVersions.length; i++) {
@@ -71,7 +92,7 @@ export function evaluateMigrationParity(localVersions, remoteVersions) {
 
   const local = duplicates.length === 0 ? [...localVersions].sort() : [...seen].sort();
   const remote = [...new Set(remoteVersions)].sort();
-  const localSet = duplicates.length === 0 ? seen : new Set(local);
+  const localSet = seen;
   const remoteSet = new Set(remote);
 
   const remoteOnly = [];

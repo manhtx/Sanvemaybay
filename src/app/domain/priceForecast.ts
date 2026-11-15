@@ -56,36 +56,64 @@ function parseDateFast(str: string): number {
   return result;
 }
 
+const VALID_PRICES = new Float64Array(1024);
+const VALID_TIMES = new Float64Array(1024);
+
 /** Conservative linear baseline. It intentionally refuses sparse history. */
 export function forecastPrice(points: PricePoint[], horizonDays = 7): PriceForecast | undefined {
   const nPoints = points.length;
   if (nPoints < 14) return undefined;
 
-  const valid: { price: number; time: number }[] = [];
+  let n = 0;
   let isSorted = true;
   let lastTime = -Infinity;
 
-  for (let i = 0; i < nPoints; i++) {
-    const pt = points[i];
-    if (typeof pt?.price === "number" && Number.isFinite(pt.price) && pt.price > 0 && typeof pt?.date === "string") {
-      const time = parseDateFast(pt.date);
-      if (Number.isFinite(time)) {
-        if (time < lastTime) {
-          isSorted = false;
+  if (nPoints <= 1024) {
+    for (let i = 0; i < nPoints; i++) {
+      const pt = points[i];
+      if (typeof pt?.price === "number" && Number.isFinite(pt.price) && pt.price > 0 && typeof pt?.date === "string") {
+        const time = parseDateFast(pt.date);
+        if (Number.isFinite(time)) {
+          if (time < lastTime) {
+            isSorted = false;
+          }
+          lastTime = time;
+          VALID_PRICES[n] = pt.price;
+          VALID_TIMES[n] = time;
+          n++;
         }
-        lastTime = time;
-        valid.push({ price: pt.price, time });
       }
     }
-  }
-  const n = valid.length;
-  if (n < 14) return undefined;
-  if (!isSorted) {
-    valid.sort((a, b) => a.time - b.time);
+    if (n < 14) return undefined;
+
+    if (!isSorted) {
+      const indices = Array.from({ length: n }, (_, i) => i);
+      indices.sort((a, b) => VALID_TIMES[a] - VALID_TIMES[b]);
+      const sortedPrices = new Float64Array(n);
+      for (let i = 0; i < n; i++) sortedPrices[i] = VALID_PRICES[indices[i]];
+      for (let i = 0; i < n; i++) VALID_PRICES[i] = sortedPrices[i];
+    }
+  } else {
+    const valid: { price: number; time: number }[] = [];
+    for (let i = 0; i < nPoints; i++) {
+      const pt = points[i];
+      if (typeof pt?.price === "number" && Number.isFinite(pt.price) && pt.price > 0 && typeof pt?.date === "string") {
+        const time = parseDateFast(pt.date);
+        if (Number.isFinite(time)) {
+          if (time < lastTime) isSorted = false;
+          lastTime = time;
+          valid.push({ price: pt.price, time });
+        }
+      }
+    }
+    n = valid.length;
+    if (n < 14) return undefined;
+    if (!isSorted) valid.sort((a, b) => a.time - b.time);
+    for (let i = 0; i < n; i++) VALID_PRICES[i] = valid[i].price;
   }
 
   let sumY = 0;
-  for (let i = 0; i < n; i++) sumY += valid[i].price;
+  for (let i = 0; i < n; i++) sumY += VALID_PRICES[i];
   const meanY = sumY / n;
   const meanX = (n - 1) / 2;
   const denominator = (n * (n * n - 1)) / 12;
@@ -93,7 +121,7 @@ export function forecastPrice(points: PricePoint[], horizonDays = 7): PriceForec
   let num = 0;
   let sumSqDiffY = 0;
   for (let i = 0; i < n; i++) {
-    const price = valid[i].price;
+    const price = VALID_PRICES[i];
     const diffY = price - meanY;
     num += (i - meanX) * price;
     sumSqDiffY += diffY * diffY;
