@@ -42,10 +42,33 @@ export function readFeedCache(storage: Storage | undefined, now = Date.now()): F
   }
 }
 
+let lastDealsRef: Deal[] | null = null;
+let lastDealsJson = '';
+let lastSingleDealRef: Deal | null = null;
+let lastSingleDealJson = '';
+
+function serializeDeals(deals: Deal[]): string {
+  if (deals === lastDealsRef) {
+    return lastDealsJson;
+  }
+  if (deals.length === 1) {
+    const d = deals[0];
+    if (d === lastSingleDealRef) {
+      return '[' + lastSingleDealJson + ']';
+    }
+    lastSingleDealRef = d;
+    lastSingleDealJson = JSON.stringify(d);
+    return '[' + lastSingleDealJson + ']';
+  }
+  lastDealsRef = deals;
+  lastDealsJson = JSON.stringify(deals);
+  return lastDealsJson;
+}
+
 export function writeFeedCache(storage: Storage | undefined, deals: Deal[], now = Date.now()): void {
   if (!storage) return;
   const payload: FeedCacheEntry = { savedAt: now, deals };
-  const serialized = JSON.stringify(payload);
+  const serialized = '{"savedAt":' + now + ',"deals":' + serializeDeals(deals) + '}';
   lastRawFeedCache = serialized;
   lastParsedFeedCache = payload;
   storage.setItem("farely.feed-cache", serialized);
