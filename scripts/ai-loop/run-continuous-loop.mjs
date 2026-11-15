@@ -1057,6 +1057,17 @@ As mandated by loop policy (minCyclesBeforeCompletion = 1,000,000,000), continua
   // Update loop state atomically
   const statePath = join(STATE_DIR, 'loop-state.json');
   const currentState = await readJson(statePath, { history: [] });
+  const updatedHistory = [
+    ...(currentState.history || []).filter((h) => h.cycle < cycle),
+    {
+      cycle,
+      dir: cycleDir,
+      status: 'verified-checkpoint',
+      sha: gitSha,
+      evidenceValid: true,
+      checkpointComplete: true
+    }
+  ];
   const nextState = {
     ...currentState,
     cycle,
@@ -1068,17 +1079,7 @@ As mandated by loop policy (minCyclesBeforeCompletion = 1,000,000,000), continua
     nextAction: `Start independent research cycle ${cycle + 1}`,
     heartbeatAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    history: [
-      ...(currentState.history || []).filter((h) => h.cycle < cycle),
-      {
-        cycle,
-        dir: cycleDir,
-        status: 'verified-checkpoint',
-        sha: gitSha,
-        evidenceValid: true,
-        checkpointComplete: true
-      }
-    ]
+    history: updatedHistory.slice(-100)
   };
 
   await writeJson(statePath, nextState);
