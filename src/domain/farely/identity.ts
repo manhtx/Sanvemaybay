@@ -5,6 +5,27 @@
 
 import { TravelIntent } from './travelIntent';
 
+const mathPow = Math.pow;
+const maxWord = mathPow(2, 32);
+const INITIAL_HASH: number[] = [];
+const K_CONSTANTS: number[] = [];
+
+(() => {
+  let primeCounter = 0;
+  const isComposite: Record<number, number> = {};
+  for (let candidate = 2; primeCounter < 64; candidate++) {
+    if (!isComposite[candidate]) {
+      for (let i = 0; i < 313; i += candidate) {
+        isComposite[i] = candidate;
+      }
+      if (primeCounter < 8) {
+        INITIAL_HASH[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+      }
+      K_CONSTANTS[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+    }
+  }
+})();
+
 /**
  * Pure SHA-256 Hex Digest Implementation
  * Synchronous and universal across Node, Deno, and Browser environments.
@@ -13,25 +34,12 @@ export function sha256Hex(ascii: string): string {
   function rightRotate(value: number, amount: number): number {
     return (value >>> amount) | (value << (32 - amount));
   }
-  const mathPow = Math.pow;
-  const maxWord = mathPow(2, 32);
   let i: number, j: number;
   let result = '';
   const words: number[] = [];
   const asciiBitLength = ascii.length * 8;
-  const hash: number[] = [];
-  const k: number[] = [];
-  let primeCounter = 0;
-  const isComposite: Record<number, number> = {};
-  for (let candidate = 2; primeCounter < 64; candidate++) {
-    if (!isComposite[candidate]) {
-      for (i = 0; i < 313; i += candidate) {
-        isComposite[i] = candidate;
-      }
-      hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
-      k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
-    }
-  }
+  const hash = INITIAL_HASH.slice(0);
+  const k = K_CONSTANTS;
   ascii += '\x80';
   while (ascii.length % 64 - 56) ascii += '\x00';
   for (i = 0; i < ascii.length; i++) {
