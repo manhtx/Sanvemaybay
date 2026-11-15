@@ -263,12 +263,13 @@ export function areCodesEqualCaseInsensitive(a: string, b: string): boolean {
  */
 export function satisfiesLocationScope(actualAirport: string, scope: LocationScope): boolean {
   if (scope.type === 'EXACT_AIRPORT') {
-    return areCodesEqualCaseInsensitive(actualAirport, scope.primaryCode);
+    return actualAirport === scope.primaryCode || areCodesEqualCaseInsensitive(actualAirport, scope.primaryCode);
   }
   const codes = scope.expandedCodes;
   const n = codes.length;
   for (let i = 0; i < n; i++) {
-    if (areCodesEqualCaseInsensitive(actualAirport, codes[i])) return true;
+    const code = codes[i];
+    if (actualAirport === code || areCodesEqualCaseInsensitive(actualAirport, code)) return true;
   }
   return false;
 }

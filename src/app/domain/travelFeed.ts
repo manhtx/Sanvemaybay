@@ -153,12 +153,29 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
   return diversified.concat(remaining);
 }
 
+const PERSONALIZED_FEED_CACHE = new WeakMap<object, WeakMap<object, Deal[]>>();
+
 /** Rank the already validated feed against explicit user preferences.
  * This is a transparent ranking layer, not a claim of ML personalization.
  */
 export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences): Deal[] {
   const n = deals.length;
   if (n <= 1) return [...deals];
+
+  let prefsMap: WeakMap<object, Deal[]> | undefined;
+  if (typeof deals === "object" && deals !== null && typeof preferences === "object" && preferences !== null) {
+    prefsMap = PERSONALIZED_FEED_CACHE.get(deals);
+    if (!prefsMap) {
+      prefsMap = new WeakMap();
+      PERSONALIZED_FEED_CACHE.set(deals, prefsMap);
+    } else {
+      const cached = prefsMap.get(preferences);
+      if (cached !== undefined) {
+        return cached.slice();
+      }
+    }
+  }
+
   const baseRanked = rankTravelFeed(deals);
   const homeAirport = preferences.homeAirport;
   const favoriteRegions = preferences.favoriteRegions;
@@ -170,6 +187,8 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
   const maxStops = preferences.maxStops;
   const budget = preferences.budget;
   const maxFlightTimeMinutes = preferences.maxFlightTimeMinutes;
+
+  let finalRanked: Deal[];
 
   if (n <= 8) {
     for (let index = 0; index < n; index++) {
@@ -203,10 +222,8 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
       SCRATCH_SCORES[j + 1] = curScore;
     }
 
-    return SCRATCH_DEALS.slice(0, n);
-  }
-
-  if (n <= MAX_BUF) {
+    finalRanked = SCRATCH_DEALS.slice(0, n);
+  } else if (n <= MAX_BUF) {
     for (let index = 0; index < n; index++) {
       const deal = baseRanked[index];
       let value = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
@@ -231,33 +248,39 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
     for (let i = 0; i < n; i++) {
       result[i] = baseRanked[pIdx[i]];
     }
-    return result;
+    finalRanked = result;
+  } else {
+    const items = new Array(n);
+    for (let index = 0; index < n; index++) {
+      const deal = baseRanked[index];
+      let value = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
+      if (!Number.isFinite(value)) value = 0;
+      if (deal.fromCode === homeAirport) value += 8;
+      if (favRegionSingle ? deal.region === favRegionSingle : (favoriteRegionsSet && favoriteRegionsSet.has(deal.region as any))) {
+        value += 12;
+      }
+      if (prefAirlineSingle ? deal.airlineCode === prefAirlineSingle : (preferredAirlinesSet && preferredAirlinesSet.has(deal.airlineCode))) {
+        value += 10;
+      }
+      if (deal.stops > maxStops) value -= Math.min(20, (deal.stops - maxStops) * 10);
+      if (deal.price > budget) value -= 15;
+      if (maxFlightTimeMinutes && parseDurationMinutes(deal.duration) > maxFlightTimeMinutes) value -= 10;
+      items[index] = { deal, score: value - index * 0.001 };
+    }
+
+    items.sort((a, b) => b.score - a.score);
+    const result = new Array(n);
+    for (let i = 0; i < n; i++) {
+      result[i] = items[i].deal;
+    }
+    finalRanked = result;
   }
 
-  const items = new Array(n);
-  for (let index = 0; index < n; index++) {
-    const deal = baseRanked[index];
-    let value = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
-    if (!Number.isFinite(value)) value = 0;
-    if (deal.fromCode === homeAirport) value += 8;
-    if (favRegionSingle ? deal.region === favRegionSingle : (favoriteRegionsSet && favoriteRegionsSet.has(deal.region as any))) {
-      value += 12;
-    }
-    if (prefAirlineSingle ? deal.airlineCode === prefAirlineSingle : (preferredAirlinesSet && preferredAirlinesSet.has(deal.airlineCode))) {
-      value += 10;
-    }
-    if (deal.stops > maxStops) value -= Math.min(20, (deal.stops - maxStops) * 10);
-    if (deal.price > budget) value -= 15;
-    if (maxFlightTimeMinutes && parseDurationMinutes(deal.duration) > maxFlightTimeMinutes) value -= 10;
-    items[index] = { deal, score: value - index * 0.001 };
+  if (prefsMap) {
+    prefsMap.set(preferences, finalRanked.slice());
   }
 
-  items.sort((a, b) => b.score - a.score);
-  const result = new Array(n);
-  for (let i = 0; i < n; i++) {
-    result[i] = items[i].deal;
-  }
-  return result;
+  return finalRanked;
 }
 
 const DURATION_CACHE = new Map<string, number>();
