@@ -51,6 +51,10 @@ export interface CohortComparison {
 
 const DURATION_CACHE = new Map<string, number | undefined>();
 const OBS_TIME_CACHE = new Map<string, number>();
+const CRITERIA_CACHE = new WeakMap<object, ComparableCohortCriteria>();
+const COHORT_KEY_CACHE = new WeakMap<ComparableCohortCriteria, string>();
+const SCRATCH_VALID_COHORT: ObservationData[] = [];
+const MEDIAN_BUFFER = new Float64Array(256);
 
 export function computeDurationDays(departDate: string, returnDate?: string | null): number | undefined {
   if (!returnDate) return undefined;
@@ -71,13 +75,23 @@ export function computeDurationDays(departDate: string, returnDate?: string | nu
 }
 
 export function buildCohortKey(criteria: ComparableCohortCriteria): string {
+  const cached = COHORT_KEY_CACHE.get(criteria);
+  if (cached !== undefined) return cached;
+
   const o = criteria.originCode.toUpperCase();
   const d = criteria.destinationCode.toUpperCase();
   const base = o + ":" + d + ":" + criteria.tripType + ":" + criteria.departMonth + ":" + criteria.stopsClass;
-  return criteria.durationDaysBucket ? base + ":" + criteria.durationDaysBucket : base;
+  const res = criteria.durationDaysBucket ? base + ":" + criteria.durationDaysBucket : base;
+  COHORT_KEY_CACHE.set(criteria, res);
+  return res;
 }
 
 export function extractCohortCriteria(observation: Pick<ObservationData, "originCode" | "destinationCode" | "departDate" | "returnDate" | "stops">): ComparableCohortCriteria {
+  if (typeof observation === "object" && observation !== null) {
+    const cached = CRITERIA_CACHE.get(observation);
+    if (cached) return cached;
+  }
+
   const isRoundtrip = Boolean(observation.returnDate && observation.returnDate.trim());
   const departMonth = observation.departDate.slice(0, 7);
   const stopsClass = (observation.stops ?? 0) === 0 ? "direct" : "connecting";
@@ -90,7 +104,7 @@ export function extractCohortCriteria(observation: Pick<ObservationData, "origin
     }
   }
 
-  return {
+  const result: ComparableCohortCriteria = {
     originCode: observation.originCode,
     destinationCode: observation.destinationCode,
     tripType: isRoundtrip ? "roundtrip" : "oneway",
@@ -98,16 +112,21 @@ export function extractCohortCriteria(observation: Pick<ObservationData, "origin
     durationDaysBucket,
     stopsClass,
   };
+
+  if (typeof observation === "object" && observation !== null) {
+    CRITERIA_CACHE.set(observation, result);
+  }
+
+  return result;
 }
 
-function calculateMedianFromObs(validCohort: ObservationData[]): number {
-  const len = validCohort.length;
+function calculateMedianFromObs(validCohort: ObservationData[], len: number): number {
   if (len === 0) return 0;
   if (len === 1) return validCohort[0].price;
   if (len === 2) return Math.round((validCohort[0].price + validCohort[1].price) / 2);
-  const p = new Array(len);
+  const p = len <= 256 ? MEDIAN_BUFFER.subarray(0, len) : new Float64Array(len);
   for (let i = 0; i < len; i++) p[i] = validCohort[i].price;
-  p.sort((a, b) => a - b);
+  p.sort();
   const mid = Math.floor(len / 2);
   return len % 2 !== 0 ? p[mid] : Math.round((p[mid - 1] + p[mid]) / 2);
 }
@@ -128,7 +147,7 @@ export function evaluateCohortComparison(
   const durationDaysBucket = criteria.durationDaysBucket;
 
   // Filter valid observations in the same cohort with direct field checks
-  const validCohort: ObservationData[] = [];
+  SCRATCH_VALID_COHORT.length = 0;
   for (let i = 0; i < cohortObservations.length; i++) {
     const obs = cohortObservations[i];
     const price = obs.price;
@@ -145,10 +164,10 @@ export function evaluateCohortComparison(
       const obsBucket = days != null ? (days <= 4 ? "short" : days <= 8 ? "medium" : "long") : undefined;
       if (obsBucket !== durationDaysBucket) continue;
     }
-    validCohort.push(obs);
+    SCRATCH_VALID_COHORT.push(obs);
   }
 
-  const sampleSize = validCohort.length;
+  const sampleSize = SCRATCH_VALID_COHORT.length;
   const currentPrice = current.price;
 
   // Calculate distinct scan epochs or observation dates without Set allocation for small cohorts
@@ -158,7 +177,7 @@ export function evaluateCohortComparison(
       let e0 = "", e1 = "", e2 = "", e3 = "";
       let count = 0;
       for (let i = 0; i < sampleSize; i++) {
-        const obs = validCohort[i];
+        const obs = SCRATCH_VALID_COHORT[i];
         const e = obs.scanRunId || (obs.observedAt ? obs.observedAt.slice(0, 10) : "");
         if (e && e !== e0 && e !== e1 && e !== e2 && e !== e3) {
           if (count === 0) e0 = e;
@@ -172,7 +191,7 @@ export function evaluateCohortComparison(
     } else {
       const epochs = new Set<string>();
       for (let i = 0; i < sampleSize; i++) {
-        const obs = validCohort[i];
+        const obs = SCRATCH_VALID_COHORT[i];
         if (obs.scanRunId) epochs.add(obs.scanRunId);
         else if (obs.observedAt) epochs.add(obs.observedAt.slice(0, 10));
       }
@@ -235,7 +254,7 @@ export function evaluateCohortComparison(
     };
   }
 
-  const cohortMedian = calculateMedianFromObs(validCohort);
+  const cohortMedian = calculateMedianFromObs(SCRATCH_VALID_COHORT, sampleSize);
   const delta = Math.round(((cohortMedian - currentPrice) / cohortMedian) * 100);
 
   let comparisonExplanation = "";
