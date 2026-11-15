@@ -71,15 +71,10 @@ export function computeDurationDays(departDate: string, returnDate?: string | nu
 }
 
 export function buildCohortKey(criteria: ComparableCohortCriteria): string {
-  const parts = [
-    criteria.originCode.toUpperCase(),
-    criteria.destinationCode.toUpperCase(),
-    criteria.tripType,
-    criteria.departMonth,
-    criteria.stopsClass,
-  ];
-  if (criteria.durationDaysBucket) parts.push(criteria.durationDaysBucket);
-  return parts.join(":");
+  const o = criteria.originCode.toUpperCase();
+  const d = criteria.destinationCode.toUpperCase();
+  const base = o + ":" + d + ":" + criteria.tripType + ":" + criteria.departMonth + ":" + criteria.stopsClass;
+  return criteria.durationDaysBucket ? base + ":" + criteria.durationDaysBucket : base;
 }
 
 export function extractCohortCriteria(observation: Pick<ObservationData, "originCode" | "destinationCode" | "departDate" | "returnDate" | "stops">): ComparableCohortCriteria {
@@ -109,9 +104,10 @@ function calculateMedianFromObs(validCohort: ObservationData[]): number {
   const len = validCohort.length;
   if (len === 0) return 0;
   if (len === 1) return validCohort[0].price;
-  const p = new Float64Array(len);
+  if (len === 2) return Math.round((validCohort[0].price + validCohort[1].price) / 2);
+  const p = new Array(len);
   for (let i = 0; i < len; i++) p[i] = validCohort[i].price;
-  p.sort();
+  p.sort((a, b) => a - b);
   const mid = Math.floor(len / 2);
   return len % 2 !== 0 ? p[mid] : Math.round((p[mid - 1] + p[mid]) / 2);
 }
@@ -137,8 +133,8 @@ export function evaluateCohortComparison(
     const obs = cohortObservations[i];
     const price = obs.price;
     if (price <= 0 || !Number.isFinite(price)) continue;
-    if (obs.originCode.toUpperCase() !== originUpper) continue;
-    if (obs.destinationCode.toUpperCase() !== destUpper) continue;
+    if (obs.originCode !== originUpper && obs.originCode.toUpperCase() !== originUpper) continue;
+    if (obs.destinationCode !== destUpper && obs.destinationCode.toUpperCase() !== destUpper) continue;
     const isRoundtrip = Boolean(obs.returnDate && obs.returnDate.trim());
     if ((isRoundtrip ? "roundtrip" : "oneway") !== tripType) continue;
     if (obs.departDate.slice(0, 7) !== departMonth) continue;
