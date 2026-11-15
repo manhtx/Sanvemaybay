@@ -16,6 +16,16 @@ export interface PriceScopeOfferMatch {
   currency: string;
 }
 
+let lastOrig = '';
+let lastDest = '';
+let lastJt = '';
+let lastDate = '';
+let lastRet = '';
+let lastCab = '';
+let lastCurr = '';
+let lastStops: number | undefined | string = '';
+let lastResult = '';
+
 /**
  * Builds the canonical PriceScopeFingerprint for RouteBest, comparator,
  * Cheaper Alternative, Watch matching, and Saved price resolution.
@@ -31,17 +41,39 @@ export function buildPriceScopeFingerprint(params: {
   currency?: string;
   maxStops?: number;
 }): string {
-  const parts = [
-    params.originScope.primaryCode.toUpperCase(),
-    params.destinationScope.primaryCode.toUpperCase(),
-    params.journeyType.toUpperCase(),
-    params.departDate,
-    params.returnDate || '',
-    (params.cabin || 'ECONOMY').toUpperCase(),
-    (params.currency || 'VND').toUpperCase(),
-    params.maxStops !== undefined ? String(params.maxStops) : 'ANY'
-  ];
-  return `scope_${parts.join(':')}`;
+  const orig = params.originScope.primaryCode;
+  const dest = params.destinationScope.primaryCode;
+  const jt = params.journeyType;
+  const date = params.departDate;
+  const ret = params.returnDate || '';
+  const cab = params.cabin || 'ECONOMY';
+  const curr = params.currency || 'VND';
+  const stops = params.maxStops !== undefined ? params.maxStops : 'ANY';
+
+  if (
+    orig === lastOrig &&
+    dest === lastDest &&
+    jt === lastJt &&
+    date === lastDate &&
+    ret === lastRet &&
+    cab === lastCab &&
+    curr === lastCurr &&
+    stops === lastStops
+  ) {
+    return lastResult;
+  }
+
+  const result = `scope_${orig.toUpperCase()}:${dest.toUpperCase()}:${jt.toUpperCase()}:${date}:${ret}:${cab.toUpperCase()}:${curr.toUpperCase()}:${stops}`;
+  lastOrig = orig;
+  lastDest = dest;
+  lastJt = jt;
+  lastDate = date;
+  lastRet = ret;
+  lastCab = cab;
+  lastCurr = curr;
+  lastStops = stops;
+  lastResult = result;
+  return result;
 }
 
 export interface PriceScopeV2Params {
