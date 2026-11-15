@@ -26,39 +26,43 @@ function parseIsoTimestamp(iso: string | undefined): number {
   return result;
 }
 
+const SCRATCH_DEALS: Deal[] = new Array(8);
+const SCRATCH_SCORES: number[] = new Array(8);
+const SCRATCH_TS: number[] = new Array(8);
+
 export function rankTravelFeed(deals: Deal[]): Deal[] {
   const len = deals.length;
   if (len <= 1) return [...deals];
-  const items = new Array(len);
-  for (let i = 0; i < len; i++) {
-    const deal = deals[i];
-    const scoreVal = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
-    const ts = parseIsoTimestamp(deal.observedAt);
-    items[i] = {
-      deal,
-      score: Number.isFinite(scoreVal) ? scoreVal : 0,
-      timestamp: ts,
-    };
-  }
-  if (len <= 8) {
-    for (let i = 1; i < len; i++) {
-      const cur = items[i];
-      let j = i - 1;
-      while (j >= 0 && (items[j].score < cur.score || (items[j].score === cur.score && items[j].timestamp < cur.timestamp))) {
-        items[j + 1] = items[j];
-        j--;
-      }
-      items[j + 1] = cur;
-    }
-  } else {
-    items.sort((a, b) => b.score - a.score || b.timestamp - a.timestamp);
-  }
 
-  const result = new Array(len);
-  let front = 0;
   if (len <= 8) {
     for (let i = 0; i < len; i++) {
-      const d = items[i].deal;
+      const deal = deals[i];
+      const scoreVal = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
+      SCRATCH_DEALS[i] = deal;
+      SCRATCH_SCORES[i] = Number.isFinite(scoreVal) ? scoreVal : 0;
+      SCRATCH_TS[i] = parseIsoTimestamp(deal.observedAt);
+    }
+
+    for (let i = 1; i < len; i++) {
+      const curDeal = SCRATCH_DEALS[i];
+      const curScore = SCRATCH_SCORES[i];
+      const curTs = SCRATCH_TS[i];
+      let j = i - 1;
+      while (j >= 0 && (SCRATCH_SCORES[j] < curScore || (SCRATCH_SCORES[j] === curScore && SCRATCH_TS[j] < curTs))) {
+        SCRATCH_DEALS[j + 1] = SCRATCH_DEALS[j];
+        SCRATCH_SCORES[j + 1] = SCRATCH_SCORES[j];
+        SCRATCH_TS[j + 1] = SCRATCH_TS[j];
+        j--;
+      }
+      SCRATCH_DEALS[j + 1] = curDeal;
+      SCRATCH_SCORES[j + 1] = curScore;
+      SCRATCH_TS[j + 1] = curTs;
+    }
+
+    const result = new Array(len);
+    let front = 0;
+    for (let i = 0; i < len; i++) {
+      const d = SCRATCH_DEALS[i];
       let seen = false;
       for (let j = 0; j < front; j++) {
         if (result[j].toCode === d.toCode) {
@@ -72,7 +76,7 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
     }
     if (front < len) {
       for (let i = 0; i < len; i++) {
-        const d = items[i].deal;
+        const d = SCRATCH_DEALS[i];
         let isFront = false;
         for (let j = 0; j < front; j++) {
           if (result[j] === d) {
@@ -87,6 +91,19 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
     }
     return result;
   }
+
+  const items = new Array(len);
+  for (let i = 0; i < len; i++) {
+    const deal = deals[i];
+    const scoreVal = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
+    const ts = parseIsoTimestamp(deal.observedAt);
+    items[i] = {
+      deal,
+      score: Number.isFinite(scoreVal) ? scoreVal : 0,
+      timestamp: ts,
+    };
+  }
+  items.sort((a, b) => b.score - a.score || b.timestamp - a.timestamp);
 
   const diversified: Deal[] = [];
   const remaining: Deal[] = [];
@@ -121,6 +138,41 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
   const budget = preferences.budget;
   const maxFlightTimeMinutes = preferences.maxFlightTimeMinutes;
 
+  if (n <= 8) {
+    for (let index = 0; index < n; index++) {
+      const deal = baseRanked[index];
+      let value = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
+      if (!Number.isFinite(value)) value = 0;
+      if (deal.fromCode === homeAirport) value += 8;
+      if (favRegionSingle ? deal.region === favRegionSingle : (favoriteRegionsSet && favoriteRegionsSet.has(deal.region as any))) {
+        value += 12;
+      }
+      if (prefAirlineSingle ? deal.airlineCode === prefAirlineSingle : (preferredAirlinesSet && preferredAirlinesSet.has(deal.airlineCode))) {
+        value += 10;
+      }
+      if (deal.stops > maxStops) value -= Math.min(20, (deal.stops - maxStops) * 10);
+      if (deal.price > budget) value -= 15;
+      if (maxFlightTimeMinutes && parseDurationMinutes(deal.duration) > maxFlightTimeMinutes) value -= 10;
+      SCRATCH_DEALS[index] = deal;
+      SCRATCH_SCORES[index] = value - index * 0.001;
+    }
+
+    for (let i = 1; i < n; i++) {
+      const curDeal = SCRATCH_DEALS[i];
+      const curScore = SCRATCH_SCORES[i];
+      let j = i - 1;
+      while (j >= 0 && SCRATCH_SCORES[j] < curScore) {
+        SCRATCH_DEALS[j + 1] = SCRATCH_DEALS[j];
+        SCRATCH_SCORES[j + 1] = SCRATCH_SCORES[j];
+        j--;
+      }
+      SCRATCH_DEALS[j + 1] = curDeal;
+      SCRATCH_SCORES[j + 1] = curScore;
+    }
+
+    return SCRATCH_DEALS.slice(0, n);
+  }
+
   const items = new Array(n);
   for (let index = 0; index < n; index++) {
     const deal = baseRanked[index];
@@ -139,23 +191,6 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
     items[index] = { deal, score: value - index * 0.001 };
   }
 
-  if (n <= 8) {
-    for (let i = 1; i < n; i++) {
-      const cur = items[i];
-      let j = i - 1;
-      while (j >= 0 && items[j].score < cur.score) {
-        items[j + 1] = items[j];
-        j--;
-      }
-      items[j + 1] = cur;
-    }
-    const result = new Array(n);
-    for (let i = 0; i < n; i++) {
-      result[i] = items[i].deal;
-    }
-    return result;
-  }
-
   items.sort((a, b) => b.score - a.score);
   const result = new Array(n);
   for (let i = 0; i < n; i++) {
@@ -164,8 +199,12 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
   return result;
 }
 
+const DURATION_CACHE = new Map<string, number>();
+
 function parseDurationMinutes(value: string): number {
   if (!value) return 0;
+  const cached = DURATION_CACHE.get(value);
+  if (cached !== undefined) return cached;
   let hours = 0;
   let minutes = 0;
   let currentNum = 0;
@@ -181,5 +220,8 @@ function parseDurationMinutes(value: string): number {
       currentNum = 0;
     }
   }
-  return hours * 60 + minutes;
+  const result = hours * 60 + minutes;
+  if (DURATION_CACHE.size >= 1000) DURATION_CACHE.clear();
+  DURATION_CACHE.set(value, result);
+  return result;
 }
