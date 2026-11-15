@@ -23,9 +23,23 @@ function getFastIsoString(): string {
   return cachedIsoString;
 }
 
+const SNAPSHOT_CACHE = new WeakMap<object, { tsMs: number; snapshot: Record<string, any> }>();
+
 export function createOpportunitySnapshot(deal: any): Record<string, any> {
+  const now = Date.now();
+  if (deal && typeof deal === "object") {
+    const cached = SNAPSHOT_CACHE.get(deal);
+    if (cached && cached.tsMs === now) {
+      return {
+        ...cached.snapshot,
+        comparatorContext: { ...cached.snapshot.comparatorContext },
+        evidenceContext: { ...cached.snapshot.evidenceContext },
+      };
+    }
+  }
+
   const price = Number(deal.price) || 0;
-  return {
+  const snapshot: Record<string, any> = {
     opportunityId: deal.opportunityId || deal.id,
     fromCode: deal.fromCode,
     toCode: deal.toCode,
@@ -51,6 +65,12 @@ export function createOpportunitySnapshot(deal: any): Record<string, any> {
       observedAt: deal.observedAt ?? null,
     },
   };
+
+  if (deal && typeof deal === "object") {
+    SNAPSHOT_CACHE.set(deal, { tsMs: now, snapshot });
+  }
+
+  return snapshot;
 }
 
 function readIds(storage: Storage | undefined): string[] {
