@@ -106,10 +106,24 @@ export function extractCohortCriteria(observation: Pick<ObservationData, "origin
 }
 
 function calculateMedian(values: number[]): number {
-  if (values.length === 0) return 0;
-  const sorted = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+  const len = values.length;
+  if (len === 0) return 0;
+  if (len === 1) return values[0];
+  const sorted = new Float64Array(values);
+  sorted.sort();
+  const mid = Math.floor(len / 2);
+  return len % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+}
+
+function calculateMedianFromObs(validCohort: ObservationData[]): number {
+  const len = validCohort.length;
+  if (len === 0) return 0;
+  if (len === 1) return validCohort[0].price;
+  const p = new Float64Array(len);
+  for (let i = 0; i < len; i++) p[i] = validCohort[i].price;
+  p.sort();
+  const mid = Math.floor(len / 2);
+  return len % 2 !== 0 ? p[mid] : Math.round((p[mid - 1] + p[mid]) / 2);
 }
 
 export function evaluateCohortComparison(
@@ -151,14 +165,34 @@ export function evaluateCohortComparison(
   const sampleSize = validCohort.length;
   const currentPrice = current.price;
 
-  // Calculate distinct scan epochs or observation dates
-  const epochs = new Set<string>();
-  for (let i = 0; i < validCohort.length; i++) {
-    const obs = validCohort[i];
-    if (obs.scanRunId) epochs.add(obs.scanRunId);
-    else if (obs.observedAt) epochs.add(obs.observedAt.slice(0, 10));
+  // Calculate distinct scan epochs or observation dates without Set allocation for small cohorts
+  let scanEpochCount = 1;
+  if (sampleSize > 1) {
+    if (sampleSize <= 8) {
+      let e0 = "", e1 = "", e2 = "", e3 = "";
+      let count = 0;
+      for (let i = 0; i < sampleSize; i++) {
+        const obs = validCohort[i];
+        const e = obs.scanRunId || (obs.observedAt ? obs.observedAt.slice(0, 10) : "");
+        if (e && e !== e0 && e !== e1 && e !== e2 && e !== e3) {
+          if (count === 0) e0 = e;
+          else if (count === 1) e1 = e;
+          else if (count === 2) e2 = e;
+          else if (count === 3) e3 = e;
+          count++;
+        }
+      }
+      scanEpochCount = Math.max(1, count);
+    } else {
+      const epochs = new Set<string>();
+      for (let i = 0; i < sampleSize; i++) {
+        const obs = validCohort[i];
+        if (obs.scanRunId) epochs.add(obs.scanRunId);
+        else if (obs.observedAt) epochs.add(obs.observedAt.slice(0, 10));
+      }
+      scanEpochCount = Math.max(1, epochs.size);
+    }
   }
-  const scanEpochCount = Math.max(1, epochs.size);
 
   let obsTime = nowMs;
   if (current.observedAt) {
@@ -215,8 +249,7 @@ export function evaluateCohortComparison(
     };
   }
 
-  const prices = validCohort.map((obs) => obs.price);
-  const cohortMedian = calculateMedian(prices);
+  const cohortMedian = calculateMedianFromObs(validCohort);
   const delta = Math.round(((cohortMedian - currentPrice) / cohortMedian) * 100);
 
   let comparisonExplanation = "";

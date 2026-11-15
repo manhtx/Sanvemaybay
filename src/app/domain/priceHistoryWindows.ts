@@ -91,28 +91,10 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
   const n = points.length;
   if (!n) return [];
 
-  // Pass 1: Find anchor among valid points
+  // Pass 1: Collect valid points & timestamps and find anchor
+  const validPts: PricePoint[] = [];
+  const validTs: number[] = [];
   let anchor = -Infinity;
-  let hasValid = false;
-  for (let i = 0; i < n; i++) {
-    const pt = points[i];
-    const price = pt.price;
-    if (price > 0 && Number.isFinite(price)) {
-      const ts = parseTimestampFast(pt.date);
-      if (Number.isFinite(ts)) {
-        hasValid = true;
-        if (ts > anchor) anchor = ts;
-      }
-    }
-  }
-
-  if (!hasValid) return [];
-
-  const threshold = anchor - (days - 1) * 86400000;
-
-  // Pass 2: Filter points inside window
-  const filtered: PricePoint[] = [];
-  const filteredTs: number[] = [];
   let isSorted = true;
   let prevTs = -Infinity;
 
@@ -121,14 +103,30 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
     const price = pt.price;
     if (price > 0 && Number.isFinite(price)) {
       const ts = parseTimestampFast(pt.date);
-      if (ts >= threshold && ts <= anchor) {
-        filtered.push(pt);
-        filteredTs.push(ts);
-        if (ts < prevTs) {
-          isSorted = false;
-        }
+      if (Number.isFinite(ts)) {
+        validPts.push(pt);
+        validTs.push(ts);
+        if (ts > anchor) anchor = ts;
+        if (ts < prevTs) isSorted = false;
         prevTs = ts;
       }
+    }
+  }
+
+  const validLen = validPts.length;
+  if (!validLen) return [];
+
+  const threshold = anchor - (days - 1) * 86400000;
+
+  // Pass 2: Filter points inside window using pre-parsed timestamps
+  const filtered: PricePoint[] = [];
+  const filteredTs: number[] = [];
+
+  for (let i = 0; i < validLen; i++) {
+    const ts = validTs[i];
+    if (ts >= threshold && ts <= anchor) {
+      filtered.push(validPts[i]);
+      if (!isSorted) filteredTs.push(ts);
     }
   }
 
