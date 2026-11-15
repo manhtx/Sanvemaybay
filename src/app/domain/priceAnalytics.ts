@@ -10,23 +10,46 @@ export interface PriceAnalytics {
   cheapestWeekday: number | undefined;
 }
 
+const WEEKDAY_CACHE = new Map<string, number>();
+
+function getWeekday(dateStr: string): number {
+  const cached = WEEKDAY_CACHE.get(dateStr);
+  if (cached !== undefined) return cached;
+  const d = new Date(dateStr);
+  const time = d.getTime();
+  if (!Number.isFinite(time)) {
+    if (WEEKDAY_CACHE.size < 5000) WEEKDAY_CACHE.set(dateStr, -1);
+    return -1;
+  }
+  const day = d.getDay();
+  if (WEEKDAY_CACHE.size < 5000) WEEKDAY_CACHE.set(dateStr, day);
+  return day;
+}
+
 export function buildPriceAnalytics(points: PricePoint[], currentPrice?: number): PriceAnalytics | undefined {
   const n = points.length;
   if (!n) return undefined;
-  const valid: { price: number; dateObj: Date }[] = [];
+  const valid: { price: number; weekday: number }[] = [];
+  let isSorted = true;
+  let prevPrice = -Infinity;
+
   for (let i = 0; i < n; i++) {
     const pt = points[i];
     const price = pt.price;
-    if (price > 0 && Number.isFinite(price)) {
-      const d = new Date(pt.date);
-      if (Number.isFinite(d.getTime())) {
-        valid.push({ price, dateObj: d });
+    if (price > 0 && Number.isFinite(price) && typeof pt.date === "string") {
+      const weekday = getWeekday(pt.date);
+      if (weekday >= 0) {
+        if (price < prevPrice) isSorted = false;
+        prevPrice = price;
+        valid.push({ price, weekday });
       }
     }
   }
   const len = valid.length;
   if (!len) return undefined;
-  valid.sort((a, b) => a.price - b.price);
+  if (!isSorted) {
+    valid.sort((a, b) => a.price - b.price);
+  }
 
   let sum = 0;
   const values = new Array<number>(len);
@@ -45,12 +68,12 @@ export function buildPriceAnalytics(points: PricePoint[], currentPrice?: number)
   }
   const standardDeviation = Math.sqrt(varianceSum / len);
 
-  const weekdaySums = new Float64Array(7);
-  const weekdayCounts = new Uint32Array(7);
+  const weekdaySums = [0, 0, 0, 0, 0, 0, 0];
+  const weekdayCounts = [0, 0, 0, 0, 0, 0, 0];
   let distinctWeekdays = 0;
 
   for (let i = 0; i < len; i++) {
-    const weekday = valid[i].dateObj.getDay();
+    const weekday = valid[i].weekday;
     if (weekdayCounts[weekday] === 0) distinctWeekdays++;
     weekdaySums[weekday] += valid[i].price;
     weekdayCounts[weekday]++;
