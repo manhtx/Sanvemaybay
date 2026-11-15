@@ -53,12 +53,13 @@ const DURATION_CACHE = new Map<string, number | undefined>();
 const OBS_TIME_CACHE = new Map<string, number>();
 const CRITERIA_CACHE = new WeakMap<object, ComparableCohortCriteria>();
 const COHORT_KEY_CACHE = new WeakMap<ComparableCohortCriteria, string>();
+const DURATION_OBS_CACHE = new WeakMap<object, number | undefined>();
 const SCRATCH_VALID_COHORT: ObservationData[] = [];
 const MEDIAN_BUFFER = new Float64Array(256);
 
 export function computeDurationDays(departDate: string, returnDate?: string | null): number | undefined {
   if (!returnDate) return undefined;
-  const key = `${departDate}_${returnDate}`;
+  const key = departDate + "_" + returnDate;
   const cached = DURATION_CACHE.get(key);
   if (cached !== undefined) return cached;
 
@@ -156,11 +157,15 @@ export function evaluateCohortComparison(
     if (obs.destinationCode !== destUpper && obs.destinationCode.toUpperCase() !== destUpper) continue;
     const isRoundtrip = Boolean(obs.returnDate && obs.returnDate.trim());
     if ((isRoundtrip ? "roundtrip" : "oneway") !== tripType) continue;
-    if (obs.departDate.slice(0, 7) !== departMonth) continue;
+    if (!obs.departDate.startsWith(departMonth)) continue;
     const obsStops = (obs.stops ?? 0) === 0 ? "direct" : "connecting";
     if (obsStops !== stopsClass) continue;
     if (isRoundtrip && obs.returnDate) {
-      const days = computeDurationDays(obs.departDate, obs.returnDate);
+      let days = typeof obs === "object" && obs !== null ? DURATION_OBS_CACHE.get(obs) : undefined;
+      if (days === undefined) {
+        days = computeDurationDays(obs.departDate, obs.returnDate);
+        if (typeof obs === "object" && obs !== null) DURATION_OBS_CACHE.set(obs, days);
+      }
       const obsBucket = days != null ? (days <= 4 ? "short" : days <= 8 ? "medium" : "long") : undefined;
       if (obsBucket !== durationDaysBucket) continue;
     }
