@@ -30,6 +30,13 @@ const SCRATCH_DEALS: Deal[] = new Array(8);
 const SCRATCH_SCORES: number[] = new Array(8);
 const SCRATCH_TS: number[] = new Array(8);
 
+const MAX_BUF = 16384;
+const BUF_SCORES = new Float64Array(MAX_BUF);
+const BUF_TIMESTAMPS = new Float64Array(MAX_BUF);
+const BUF_INDICES = new Int32Array(MAX_BUF);
+const BUF_PERS_SCORES = new Float64Array(MAX_BUF);
+const BUF_PERS_INDICES = new Int32Array(MAX_BUF);
+
 export function rankTravelFeed(deals: Deal[]): Deal[] {
   const len = deals.length;
   if (len <= 1) return [...deals];
@@ -90,6 +97,32 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
       }
     }
     return result;
+  }
+
+  if (len <= MAX_BUF) {
+    for (let i = 0; i < len; i++) {
+      const deal = deals[i];
+      const scoreVal = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
+      BUF_SCORES[i] = Number.isFinite(scoreVal) ? scoreVal : 0;
+      BUF_TIMESTAMPS[i] = parseIsoTimestamp(deal.observedAt);
+      BUF_INDICES[i] = i;
+    }
+    const idx = BUF_INDICES.subarray(0, len);
+    idx.sort((a, b) => BUF_SCORES[b] - BUF_SCORES[a] || BUF_TIMESTAMPS[b] - BUF_TIMESTAMPS[a]);
+
+    const diversified: Deal[] = [];
+    const remaining: Deal[] = [];
+    const seenDestinations = new Set<string>();
+    for (let i = 0; i < len; i++) {
+      const d = deals[idx[i]];
+      if (!seenDestinations.has(d.toCode)) {
+        diversified.push(d);
+        seenDestinations.add(d.toCode);
+      } else {
+        remaining.push(d);
+      }
+    }
+    return diversified.concat(remaining);
   }
 
   const items = new Array(len);
@@ -171,6 +204,34 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
     }
 
     return SCRATCH_DEALS.slice(0, n);
+  }
+
+  if (n <= MAX_BUF) {
+    for (let index = 0; index < n; index++) {
+      const deal = baseRanked[index];
+      let value = Number(deal.dealScore ?? deal.aiInsight?.savingScore);
+      if (!Number.isFinite(value)) value = 0;
+      if (deal.fromCode === homeAirport) value += 8;
+      if (favRegionSingle ? deal.region === favRegionSingle : (favoriteRegionsSet && favoriteRegionsSet.has(deal.region as any))) {
+        value += 12;
+      }
+      if (prefAirlineSingle ? deal.airlineCode === prefAirlineSingle : (preferredAirlinesSet && preferredAirlinesSet.has(deal.airlineCode))) {
+        value += 10;
+      }
+      if (deal.stops > maxStops) value -= Math.min(20, (deal.stops - maxStops) * 10);
+      if (deal.price > budget) value -= 15;
+      if (maxFlightTimeMinutes && parseDurationMinutes(deal.duration) > maxFlightTimeMinutes) value -= 10;
+      BUF_PERS_SCORES[index] = value - index * 0.001;
+      BUF_PERS_INDICES[index] = index;
+    }
+
+    const pIdx = BUF_PERS_INDICES.subarray(0, n);
+    pIdx.sort((a, b) => BUF_PERS_SCORES[b] - BUF_PERS_SCORES[a]);
+    const result = new Array(n);
+    for (let i = 0; i < n; i++) {
+      result[i] = baseRanked[pIdx[i]];
+    }
+    return result;
   }
 
   const items = new Array(n);
