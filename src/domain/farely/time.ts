@@ -57,13 +57,27 @@ export function formatLocalCalendarDate(year: number, month: number, day: number
   return `${year}-${m}-${d}`;
 }
 
+const DAYS_BETWEEN_CACHE = new Map<string, number>();
+const MAX_CACHE_SIZE = 10000;
+
 /**
  * Computes calendar day difference between two local dates (YYYY-MM-DD).
  */
 export function calendarDaysBetween(fromDateStr: string, toDateStr: string): number {
+  if (fromDateStr === toDateStr) return 0;
+  const key = `${fromDateStr}|${toDateStr}`;
+  const cached = DAYS_BETWEEN_CACHE.get(key);
+  if (cached !== undefined) return cached;
+
   const a = parseLocalCalendarDate(fromDateStr);
   const b = parseLocalCalendarDate(toDateStr);
   const da = Date.UTC(a.year, a.month - 1, a.day);
   const db = Date.UTC(b.year, b.month - 1, b.day);
-  return Math.round((db - da) / (1000 * 60 * 60 * 24));
+  const res = Math.round((db - da) / (1000 * 60 * 60 * 24));
+
+  if (DAYS_BETWEEN_CACHE.size >= MAX_CACHE_SIZE) {
+    DAYS_BETWEEN_CACHE.clear();
+  }
+  DAYS_BETWEEN_CACHE.set(key, res);
+  return res;
 }
