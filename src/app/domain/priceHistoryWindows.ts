@@ -18,8 +18,14 @@ function parseTimestampFast(str: string): number {
     if (
       str.charCodeAt(4) === 45 &&
       str.charCodeAt(7) === 45 &&
-      (c0 | c1 | c2 | c3 | c5 | c6 | c8 | c9) <= 9 &&
-      (c0 | c1 | c2 | c3 | c5 | c6 | c8 | c9) >= 0
+      c0 >= 0 && c0 <= 9 &&
+      c1 >= 0 && c1 <= 9 &&
+      c2 >= 0 && c2 <= 9 &&
+      c3 >= 0 && c3 <= 9 &&
+      c5 >= 0 && c5 <= 9 &&
+      c6 >= 0 && c6 <= 9 &&
+      c8 >= 0 && c8 <= 9 &&
+      c9 >= 0 && c9 <= 9
     ) {
       return Date.UTC(
         c0 * 1000 + c1 * 100 + c2 * 10 + c3,
