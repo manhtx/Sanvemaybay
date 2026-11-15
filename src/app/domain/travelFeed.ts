@@ -1,8 +1,14 @@
 import { Deal } from "../data/deals";
 import { UserPreferences } from "../lib/preferences";
 
+const ISO_TS_CACHE = new Map<string, number>();
+
 function parseIsoTimestamp(iso: string | undefined): number {
   if (!iso) return 0;
+  const cached = ISO_TS_CACHE.get(iso);
+  if (cached !== undefined) return cached;
+
+  let result = 0;
   if (iso.length >= 19 && iso.charCodeAt(4) === 45 && iso.charCodeAt(7) === 45) {
     const year = (iso.charCodeAt(0) - 48) * 1000 + (iso.charCodeAt(1) - 48) * 100 + (iso.charCodeAt(2) - 48) * 10 + (iso.charCodeAt(3) - 48);
     const month = (iso.charCodeAt(5) - 48) * 10 + (iso.charCodeAt(6) - 48) - 1;
@@ -10,10 +16,14 @@ function parseIsoTimestamp(iso: string | undefined): number {
     const hour = (iso.charCodeAt(11) - 48) * 10 + (iso.charCodeAt(12) - 48);
     const min = (iso.charCodeAt(14) - 48) * 10 + (iso.charCodeAt(15) - 48);
     const sec = (iso.charCodeAt(17) - 48) * 10 + (iso.charCodeAt(18) - 48);
-    return Date.UTC(year, month, day, hour, min, sec);
+    result = Date.UTC(year, month, day, hour, min, sec);
+  } else {
+    const parsed = Date.parse(iso);
+    result = Number.isFinite(parsed) ? parsed : 0;
   }
-  const parsed = Date.parse(iso);
-  return Number.isFinite(parsed) ? parsed : 0;
+  if (ISO_TS_CACHE.size > 5000) ISO_TS_CACHE.clear();
+  ISO_TS_CACHE.set(iso, result);
+  return result;
 }
 
 export function rankTravelFeed(deals: Deal[]): Deal[] {
@@ -30,22 +40,15 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
       timestamp: ts,
     };
   }
-  if (len === 2) {
-    const a = items[0];
-    const b = items[1];
-    if (b.score > a.score || (b.score === a.score && b.timestamp > a.timestamp)) {
-      items[0] = b;
-      items[1] = a;
-    }
-  } else if (len === 3) {
-    if (items[1].score > items[0].score || (items[1].score === items[0].score && items[1].timestamp > items[0].timestamp)) {
-      const t = items[0]; items[0] = items[1]; items[1] = t;
-    }
-    if (items[2].score > items[1].score || (items[2].score === items[1].score && items[2].timestamp > items[1].timestamp)) {
-      const t = items[1]; items[1] = items[2]; items[2] = t;
-      if (items[1].score > items[0].score || (items[1].score === items[0].score && items[1].timestamp > items[0].timestamp)) {
-        const t2 = items[0]; items[0] = items[1]; items[1] = t2;
+  if (len <= 8) {
+    for (let i = 1; i < len; i++) {
+      const cur = items[i];
+      let j = i - 1;
+      while (j >= 0 && (items[j].score < cur.score || (items[j].score === cur.score && items[j].timestamp < cur.timestamp))) {
+        items[j + 1] = items[j];
+        j--;
       }
+      items[j + 1] = cur;
     }
   } else {
     items.sort((a, b) => b.score - a.score || b.timestamp - a.timestamp);
@@ -136,22 +139,21 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
     items[index] = { deal, score: value - index * 0.001 };
   }
 
-  if (n === 2) {
-    if (items[1].score > items[0].score) {
-      return [items[1].deal, items[0].deal];
-    }
-    return [items[0].deal, items[1].deal];
-  } else if (n === 3) {
-    if (items[1].score > items[0].score) {
-      const t = items[0]; items[0] = items[1]; items[1] = t;
-    }
-    if (items[2].score > items[1].score) {
-      const t = items[1]; items[1] = items[2]; items[2] = t;
-      if (items[1].score > items[0].score) {
-        const t2 = items[0]; items[0] = items[1]; items[1] = t2;
+  if (n <= 8) {
+    for (let i = 1; i < n; i++) {
+      const cur = items[i];
+      let j = i - 1;
+      while (j >= 0 && items[j].score < cur.score) {
+        items[j + 1] = items[j];
+        j--;
       }
+      items[j + 1] = cur;
     }
-    return [items[0].deal, items[1].deal, items[2].deal];
+    const result = new Array(n);
+    for (let i = 0; i < n; i++) {
+      result[i] = items[i].deal;
+    }
+    return result;
   }
 
   items.sort((a, b) => b.score - a.score);
