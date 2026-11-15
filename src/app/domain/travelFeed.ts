@@ -152,19 +152,25 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
     const idx = BUF_INDICES.subarray(0, len);
     sortFeedIndices(idx, 0, len - 1);
 
-    const diversified: Deal[] = [];
-    const remaining: Deal[] = [];
+    const result = new Array(len);
+    let front = 0;
     const seenDestinations = new Set<string>();
     for (let i = 0; i < len; i++) {
       const d = deals[idx[i]];
       if (!seenDestinations.has(d.toCode)) {
-        diversified.push(d);
         seenDestinations.add(d.toCode);
-      } else {
-        remaining.push(d);
+        result[front++] = d;
       }
     }
-    return diversified.concat(remaining);
+    for (let i = 0; i < len; i++) {
+      const d = deals[idx[i]];
+      if (seenDestinations.has(d.toCode)) {
+        seenDestinations.delete(d.toCode);
+      } else {
+        result[front++] = d;
+      }
+    }
+    return result;
   }
 
   const items = new Array(len);
@@ -319,7 +325,7 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
   }
 
   if (prefsMap) {
-    prefsMap.set(preferences, finalRanked.slice());
+    prefsMap.set(preferences, finalRanked);
   }
 
   return finalRanked;

@@ -5,7 +5,7 @@ export default defineConfig({
     exclude: ["**/node_modules/**", "**/e2e/**", "**/supabase/**"],
     poolOptions: {
       threads: {
-        maxThreads: 2,
+        maxThreads: 1,
         minThreads: 1,
       },
     },
