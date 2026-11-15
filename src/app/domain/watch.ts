@@ -30,22 +30,40 @@ export function areCodesEqualCaseInsensitive(a: string, b: string): boolean {
   return true;
 }
 
+const SCOPE_CACHE = new Map<string, boolean>();
+
 export function matchLocationScope(targetCode: string | null | undefined, candidateCode: string | null | undefined, scope?: string | null): boolean {
   if (!targetCode) return true;
   if (!candidateCode) return false;
-  if (targetCode === candidateCode || areCodesEqualCaseInsensitive(targetCode, candidateCode)) return true;
-  const targetUpper = (targetCode.length > 0 && (targetCode.charCodeAt(0) <= 32 || targetCode.charCodeAt(targetCode.length - 1) <= 32))
-    ? targetCode.trim().toUpperCase()
-    : targetCode.toUpperCase();
-  const candUpper = (candidateCode.length > 0 && (candidateCode.charCodeAt(0) <= 32 || candidateCode.charCodeAt(candidateCode.length - 1) <= 32))
-    ? candidateCode.trim().toUpperCase()
-    : candidateCode.toUpperCase();
-  if (targetUpper === candUpper) return true;
-  if (scope === "metro" || targetUpper.endsWith("_ALL")) {
-    const served = METRO_AIRPORT_MAP[targetUpper];
-    if (served && (served[0] === candUpper || served[1] === candUpper || served.includes(candUpper))) return true;
+  if (targetCode === candidateCode) return true;
+
+  const cacheKey = `${targetCode}:${candidateCode}:${scope || ""}`;
+  const cached = SCOPE_CACHE.get(cacheKey);
+  if (cached !== undefined) return cached;
+
+  let result = false;
+  if (areCodesEqualCaseInsensitive(targetCode, candidateCode)) {
+    result = true;
+  } else {
+    const targetUpper = (targetCode.length > 0 && (targetCode.charCodeAt(0) <= 32 || targetCode.charCodeAt(targetCode.length - 1) <= 32))
+      ? targetCode.trim().toUpperCase()
+      : targetCode.toUpperCase();
+    const candUpper = (candidateCode.length > 0 && (candidateCode.charCodeAt(0) <= 32 || candidateCode.charCodeAt(candidateCode.length - 1) <= 32))
+      ? candidateCode.trim().toUpperCase()
+      : candidateCode.toUpperCase();
+    if (targetUpper === candUpper) {
+      result = true;
+    } else if (scope === "metro" || targetUpper.endsWith("_ALL")) {
+      const served = METRO_AIRPORT_MAP[targetUpper];
+      if (served && (served[0] === candUpper || served[1] === candUpper || served.includes(candUpper))) {
+        result = true;
+      }
+    }
   }
-  return false;
+
+  if (SCOPE_CACHE.size >= 1000) SCOPE_CACHE.clear();
+  SCOPE_CACHE.set(cacheKey, result);
+  return result;
 }
 
 export interface WatchIntent {
@@ -95,10 +113,10 @@ export function evaluateWatchMatch(
   if (watch.status === "paused" || watch.status === "expired" || watch.status === "sync_failed") {
     return false;
   }
-  if (!matchLocationScope(watch.originCode, candidate.originCode, watch.locationScope)) {
+  if (watch.originCode !== candidate.originCode && !matchLocationScope(watch.originCode, candidate.originCode, watch.locationScope)) {
     return false;
   }
-  if (!matchLocationScope(watch.destinationCode, candidate.destinationCode, watch.locationScope)) {
+  if (watch.destinationCode !== candidate.destinationCode && !matchLocationScope(watch.destinationCode, candidate.destinationCode, watch.locationScope)) {
     return false;
   }
   if (watch.targetPrice != null && candidate.price > watch.targetPrice) {
