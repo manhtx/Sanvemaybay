@@ -48,6 +48,14 @@ function getFastIsoString(): string {
   return cachedIsoString;
 }
 
+interface CachedSuccess<T> {
+  provider: string;
+  result: ProviderResult<T>;
+  observedAt: string;
+}
+
+const SUCCESS_CACHE = new WeakMap<object, CachedSuccess<any>>();
+
 /**
  * Creates a verified successful result.
  */
@@ -56,12 +64,30 @@ export function createSuccessResult<T>(
   data: T[],
   metadata?: ProviderResult<T>['metadata']
 ): ProviderResult<T> {
+  const nowIso = getFastIsoString();
+  if (metadata === undefined && data && typeof data === 'object') {
+    const cached = SUCCESS_CACHE.get(data);
+    if (cached && cached.provider === provider && cached.observedAt === nowIso) {
+      return cached.result;
+    }
+    const status: ProviderResultStatus = data.length > 0 ? 'SUCCESS_NONEMPTY' : 'VERIFIED_EMPTY';
+    const result: ProviderResult<T> = {
+      status,
+      provider,
+      data,
+      observedAt: nowIso,
+      isDegraded: false
+    };
+    SUCCESS_CACHE.set(data, { provider, result, observedAt: nowIso });
+    return result;
+  }
+
   const status: ProviderResultStatus = data.length > 0 ? 'SUCCESS_NONEMPTY' : 'VERIFIED_EMPTY';
   const result: ProviderResult<T> = {
     status,
     provider,
     data,
-    observedAt: getFastIsoString(),
+    observedAt: nowIso,
     isDegraded: false
   };
   if (metadata !== undefined) {
