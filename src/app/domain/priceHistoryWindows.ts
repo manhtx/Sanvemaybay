@@ -87,11 +87,26 @@ function parseTimestampFast(str: string): number {
 }
 
 const PT_TS_CACHE = new WeakMap<PricePoint, number>();
+const HISTORY_WINDOW_CACHE = new WeakMap<object, Map<number, PricePoint[]>>();
 
 /** Keep only valid ISO-date observations inside the selected inclusive window. */
 export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistoryWindow): PricePoint[] {
   const n = points.length;
   if (!n) return [];
+
+  let windowMap: Map<number, PricePoint[]> | undefined;
+  if (points && typeof points === "object") {
+    windowMap = HISTORY_WINDOW_CACHE.get(points);
+    if (!windowMap) {
+      windowMap = new Map();
+      HISTORY_WINDOW_CACHE.set(points, windowMap);
+    } else {
+      const cached = windowMap.get(days);
+      if (cached !== undefined) {
+        return cached.slice();
+      }
+    }
+  }
 
   // Pass 1: Find anchor and check chronological sortedness with zero allocations
   let anchor = -Infinity;
@@ -142,5 +157,9 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
     filtered.sort((a, b) => PT_TS_CACHE.get(a)! - PT_TS_CACHE.get(b)!);
   }
 
-  return filtered;
+  if (windowMap) {
+    windowMap.set(days, filtered);
+  }
+
+  return filtered.slice();
 }
