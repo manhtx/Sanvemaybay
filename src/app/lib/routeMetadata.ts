@@ -4,11 +4,29 @@ export interface RouteMetadata {
   indexable: boolean;
 }
 
-const DEFAULT_METADATA: RouteMetadata = {
+const DEFAULT_METADATA: RouteMetadata = Object.freeze({
   title: "Farely — Nền tảng săn cơ hội vé máy bay",
   description: "Theo dõi giá vé máy bay, so sánh với lịch sử thị trường và nhận thông báo khi có mức giá tốt bất thường.",
   indexable: true,
-};
+});
+
+const DEAL_DETAIL_METADATA: RouteMetadata = Object.freeze({
+  title: "Chi tiết deal vé máy bay | Farely",
+  description: "Chi tiết giá, mức tham chiếu, độ tin cậy và lịch sử quan sát của deal vé máy bay.",
+  indexable: true,
+});
+
+const AUTH_ALERT_METADATA: RouteMetadata = Object.freeze({
+  title: "Tài khoản và cảnh báo | Farely",
+  description: DEFAULT_METADATA.description,
+  indexable: false,
+});
+
+const NOT_FOUND_METADATA: RouteMetadata = Object.freeze({
+  title: "Không tìm thấy trang | Farely",
+  description: DEFAULT_METADATA.description,
+  indexable: false,
+});
 
 const ROUTE_METADATA: Record<string, RouteMetadata> = {
   "/": DEFAULT_METADATA,
@@ -59,26 +77,24 @@ const ROUTE_METADATA: Record<string, RouteMetadata> = {
   },
 };
 
+const DEAL_PATH_REGEX = /^\/deals\/[^/]+$/;
+const ROUTE_CACHE = new Map<string, RouteMetadata>();
+
 export function getRouteMetadata(pathname: string): RouteMetadata {
-  if (/^\/deals\/[^/]+$/.test(pathname)) {
-    return {
-      title: "Chi tiết deal vé máy bay | Farely",
-      description: "Chi tiết giá, mức tham chiếu, độ tin cậy và lịch sử quan sát của deal vé máy bay.",
-      indexable: true,
-    };
+  const cached = ROUTE_CACHE.get(pathname);
+  if (cached !== undefined) return cached;
+
+  let meta: RouteMetadata;
+  if (DEAL_PATH_REGEX.test(pathname)) {
+    meta = DEAL_DETAIL_METADATA;
+  } else if (pathname === "/auth" || pathname.startsWith("/alerts/")) {
+    meta = AUTH_ALERT_METADATA;
+  } else {
+    meta = ROUTE_METADATA[pathname] ?? NOT_FOUND_METADATA;
   }
 
-  if (pathname === "/auth" || pathname.startsWith("/alerts/")) {
-    return {
-      title: "Tài khoản và cảnh báo | Farely",
-      description: DEFAULT_METADATA.description,
-      indexable: false,
-    };
+  if (ROUTE_CACHE.size < 500) {
+    ROUTE_CACHE.set(pathname, meta);
   }
-
-  return ROUTE_METADATA[pathname] ?? {
-    title: "Không tìm thấy trang | Farely",
-    description: DEFAULT_METADATA.description,
-    indexable: false,
-  };
+  return meta;
 }
