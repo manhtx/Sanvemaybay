@@ -86,6 +86,8 @@ function parseTimestampFast(str: string): number {
   return result;
 }
 
+const PT_TS_CACHE = new WeakMap<PricePoint, number>();
+
 /** Keep only valid ISO-date observations inside the selected inclusive window. */
 export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistoryWindow): PricePoint[] {
   const n = points.length;
@@ -101,7 +103,11 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
     const pt = points[i];
     const price = pt.price;
     if (price > 0 && Number.isFinite(price)) {
-      const ts = parseTimestampFast(pt.date);
+      let ts = PT_TS_CACHE.get(pt);
+      if (ts === undefined) {
+        ts = parseTimestampFast(pt.date);
+        PT_TS_CACHE.set(pt, ts);
+      }
       if (Number.isFinite(ts)) {
         validCount++;
         if (ts > anchor) anchor = ts;
@@ -115,18 +121,16 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
 
   const threshold = anchor - (days - 1) * 86400000;
 
-  // Pass 2: Filter only points inside window (timestamps are cached in TS_CACHE)
+  // Pass 2: Filter only points inside window
   const filtered: PricePoint[] = [];
-  const filteredTs: number[] = [];
 
   for (let i = 0; i < n; i++) {
     const pt = points[i];
     const price = pt.price;
     if (price > 0 && Number.isFinite(price)) {
-      const ts = parseTimestampFast(pt.date);
+      const ts = PT_TS_CACHE.get(pt)!;
       if (ts >= threshold && ts <= anchor) {
         filtered.push(pt);
-        if (!isSorted) filteredTs.push(ts);
       }
     }
   }
@@ -135,14 +139,7 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
   if (!filteredLen) return [];
 
   if (!isSorted && filteredLen > 1) {
-    const indices = new Int32Array(filteredLen);
-    for (let i = 0; i < filteredLen; i++) indices[i] = i;
-    indices.sort((a, b) => filteredTs[a] - filteredTs[b]);
-    const result = new Array<PricePoint>(filteredLen);
-    for (let i = 0; i < filteredLen; i++) {
-      result[i] = filtered[indices[i]];
-    }
-    return result;
+    filtered.sort((a, b) => PT_TS_CACHE.get(a)! - PT_TS_CACHE.get(b)!);
   }
 
   return filtered;
