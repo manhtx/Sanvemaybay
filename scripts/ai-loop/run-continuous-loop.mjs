@@ -1083,6 +1083,20 @@ As mandated by loop policy (minCyclesBeforeCompletion = 1,000,000,000), continua
 
   await writeJson(statePath, nextState);
   console.log(`=== Cycle ${cycle} Completed Successfully! ===\n`);
+
+  // Auto-sync checkpoint to Git
+  try {
+    execSync('git add -A', { cwd: ROOT });
+    const status = execSync('git status --porcelain', { cwd: ROOT, encoding: 'utf8' }).trim();
+    if (status) {
+      execSync(`git commit -m "chore(ai-loop): land verified cycle ${cycle} checkpoint artifacts"`, { cwd: ROOT });
+      execSync('git push origin main', { cwd: ROOT });
+      console.log(`Pushed Cycle ${cycle} checkpoint to origin/main successfully.`);
+    }
+  } catch (gitErr) {
+    console.warn(`Git auto-sync note for Cycle ${cycle}: ${gitErr.message}`);
+  }
+
   return true;
 }
 
