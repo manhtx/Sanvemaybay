@@ -49,12 +49,25 @@ export interface CohortComparison {
   evidence: EvidenceProfile;
 }
 
+const DURATION_CACHE = new Map<string, number | undefined>();
+const OBS_TIME_CACHE = new Map<string, number>();
+
 export function computeDurationDays(departDate: string, returnDate?: string | null): number | undefined {
   if (!returnDate) return undefined;
+  const key = `${departDate}_${returnDate}`;
+  const cached = DURATION_CACHE.get(key);
+  if (cached !== undefined) return cached;
+
   const dep = new Date(departDate).getTime();
   const ret = new Date(returnDate).getTime();
-  if (isNaN(dep) || isNaN(ret) || ret < dep) return undefined;
-  return Math.round((ret - dep) / (1000 * 60 * 60 * 24));
+  let result: number | undefined = undefined;
+  if (!isNaN(dep) && !isNaN(ret) && ret >= dep) {
+    result = Math.round((ret - dep) / (1000 * 60 * 60 * 24));
+  }
+  if (DURATION_CACHE.size < 10000) {
+    DURATION_CACHE.set(key, result);
+  }
+  return result;
 }
 
 export function buildCohortKey(criteria: ComparableCohortCriteria): string {
@@ -107,25 +120,55 @@ export function evaluateCohortComparison(
   const criteria = extractCohortCriteria(current);
   const cohortKey = buildCohortKey(criteria);
 
-  // Filter valid observations in the same cohort
-  const validCohort = cohortObservations.filter((obs) => {
-    if (!Number.isFinite(obs.price) || obs.price <= 0) return false;
-    const obsCriteria = extractCohortCriteria(obs);
-    return buildCohortKey(obsCriteria) === cohortKey;
-  });
+  const originUpper = criteria.originCode.toUpperCase();
+  const destUpper = criteria.destinationCode.toUpperCase();
+  const tripType = criteria.tripType;
+  const departMonth = criteria.departMonth;
+  const stopsClass = criteria.stopsClass;
+  const durationDaysBucket = criteria.durationDaysBucket;
+
+  // Filter valid observations in the same cohort with direct field checks
+  const validCohort: ObservationData[] = [];
+  for (let i = 0; i < cohortObservations.length; i++) {
+    const obs = cohortObservations[i];
+    const price = obs.price;
+    if (price <= 0 || !Number.isFinite(price)) continue;
+    if (obs.originCode.toUpperCase() !== originUpper) continue;
+    if (obs.destinationCode.toUpperCase() !== destUpper) continue;
+    const isRoundtrip = Boolean(obs.returnDate && obs.returnDate.trim());
+    if ((isRoundtrip ? "roundtrip" : "oneway") !== tripType) continue;
+    if (obs.departDate.slice(0, 7) !== departMonth) continue;
+    const obsStops = (obs.stops ?? 0) === 0 ? "direct" : "connecting";
+    if (obsStops !== stopsClass) continue;
+    if (isRoundtrip && obs.returnDate) {
+      const days = computeDurationDays(obs.departDate, obs.returnDate);
+      const obsBucket = days != null ? (days <= 4 ? "short" : days <= 8 ? "medium" : "long") : undefined;
+      if (obsBucket !== durationDaysBucket) continue;
+    }
+    validCohort.push(obs);
+  }
 
   const sampleSize = validCohort.length;
   const currentPrice = current.price;
 
   // Calculate distinct scan epochs or observation dates
   const epochs = new Set<string>();
-  for (const obs of validCohort) {
+  for (let i = 0; i < validCohort.length; i++) {
+    const obs = validCohort[i];
     if (obs.scanRunId) epochs.add(obs.scanRunId);
     else if (obs.observedAt) epochs.add(obs.observedAt.slice(0, 10));
   }
   const scanEpochCount = Math.max(1, epochs.size);
 
-  const obsTime = current.observedAt ? new Date(current.observedAt).getTime() : nowMs;
+  let obsTime = nowMs;
+  if (current.observedAt) {
+    let t = OBS_TIME_CACHE.get(current.observedAt);
+    if (t === undefined) {
+      t = new Date(current.observedAt).getTime();
+      if (OBS_TIME_CACHE.size < 10000) OBS_TIME_CACHE.set(current.observedAt, t);
+    }
+    obsTime = t;
+  }
   const freshnessMinutes = Math.max(0, Math.round((nowMs - obsTime) / (60 * 1000)));
 
   // Evidence tiering
