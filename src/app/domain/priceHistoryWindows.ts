@@ -3,8 +3,14 @@ import { PricePoint } from "../data/deals";
 export const PRICE_HISTORY_WINDOWS = [7, 30, 90, 180] as const;
 export type PriceHistoryWindow = (typeof PRICE_HISTORY_WINDOWS)[number];
 
+const TS_CACHE = new Map<string, number>();
+
 function parseTimestampFast(str: string): number {
   if (typeof str !== "string") return NaN;
+  const cached = TS_CACHE.get(str);
+  if (cached !== undefined) return cached;
+
+  let result = NaN;
   const len = str.length;
   if (len === 10) {
     const c0 = str.charCodeAt(0) - 48;
@@ -27,7 +33,7 @@ function parseTimestampFast(str: string): number {
       c8 >= 0 && c8 <= 9 &&
       c9 >= 0 && c9 <= 9
     ) {
-      return Date.UTC(
+      result = Date.UTC(
         c0 * 1000 + c1 * 100 + c2 * 10 + c3,
         c5 * 10 + c6 - 1,
         c8 * 10 + c9,
@@ -60,7 +66,7 @@ function parseTimestampFast(str: string): number {
         const msStr = str.slice(20, -1);
         ms = Number(msStr.padEnd(3, "0").slice(0, 3));
       }
-      return Date.UTC(
+      result = Date.UTC(
         c0 * 1000 + c1 * 100 + c2 * 10 + c3,
         c5 * 10 + c6 - 1,
         c8 * 10 + c9,
@@ -70,8 +76,14 @@ function parseTimestampFast(str: string): number {
         ms,
       );
     }
+  } else {
+    result = Date.parse(str);
   }
-  return Date.parse(str);
+
+  if (TS_CACHE.size < 10000) {
+    TS_CACHE.set(str, result);
+  }
+  return result;
 }
 
 /** Keep only valid ISO-date observations inside the selected inclusive window. */
@@ -79,37 +91,44 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
   const n = points.length;
   if (!n) return [];
 
-  const valid: { point: PricePoint; timestamp: number }[] = [];
+  // Pass 1: Find anchor among valid points
   let anchor = -Infinity;
+  let hasValid = false;
   for (let i = 0; i < n; i++) {
     const pt = points[i];
     const price = pt.price;
     if (price > 0 && Number.isFinite(price)) {
       const ts = parseTimestampFast(pt.date);
       if (Number.isFinite(ts)) {
-        valid.push({ point: pt, timestamp: ts });
+        hasValid = true;
         if (ts > anchor) anchor = ts;
       }
     }
   }
 
-  const validLen = valid.length;
-  if (!validLen) return [];
+  if (!hasValid) return [];
 
   const threshold = anchor - (days - 1) * 86400000;
-  const filtered: { point: PricePoint; timestamp: number }[] = [];
+
+  // Pass 2: Filter points inside window
+  const filtered: PricePoint[] = [];
+  const filteredTs: number[] = [];
   let isSorted = true;
   let prevTs = -Infinity;
 
-  for (let i = 0; i < validLen; i++) {
-    const item = valid[i];
-    const ts = item.timestamp;
-    if (ts >= threshold && ts <= anchor) {
-      filtered.push(item);
-      if (ts < prevTs) {
-        isSorted = false;
+  for (let i = 0; i < n; i++) {
+    const pt = points[i];
+    const price = pt.price;
+    if (price > 0 && Number.isFinite(price)) {
+      const ts = parseTimestampFast(pt.date);
+      if (ts >= threshold && ts <= anchor) {
+        filtered.push(pt);
+        filteredTs.push(ts);
+        if (ts < prevTs) {
+          isSorted = false;
+        }
+        prevTs = ts;
       }
-      prevTs = ts;
     }
   }
 
@@ -117,12 +136,15 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
   if (!filteredLen) return [];
 
   if (!isSorted) {
-    filtered.sort((a, b) => a.timestamp - b.timestamp);
+    const indices = new Int32Array(filteredLen);
+    for (let i = 0; i < filteredLen; i++) indices[i] = i;
+    indices.sort((a, b) => filteredTs[a] - filteredTs[b]);
+    const result = new Array<PricePoint>(filteredLen);
+    for (let i = 0; i < filteredLen; i++) {
+      result[i] = filtered[indices[i]];
+    }
+    return result;
   }
 
-  const result = new Array<PricePoint>(filteredLen);
-  for (let i = 0; i < filteredLen; i++) {
-    result[i] = filtered[i].point;
-  }
-  return result;
+  return filtered;
 }
