@@ -25,25 +25,70 @@ export const defaultPreferences: UserPreferences = {
 
 const STORAGE_KEY = "flycheap.user-preferences";
 const cabins = new Set<UserPreferences["cabinClass"]>(["ECONOMY", "PREMIUM_ECONOMY", "BUSINESS", "FIRST"]);
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
+function cleanStringArray(arr: unknown, fallback: string[]): string[] {
+  if (!Array.isArray(arr)) return fallback;
+  const len = arr.length;
+  if (len === 0) return fallback;
+  let allStrings = true;
+  for (let i = 0; i < len; i++) {
+    if (typeof arr[i] !== "string") {
+      allStrings = false;
+      break;
+    }
+  }
+  if (allStrings) return arr.slice();
+  return arr.filter((x): x is string => typeof x === "string");
+}
 
 export function normalizePreferences(value: unknown): UserPreferences {
   if (!value || typeof value !== "object") return { ...defaultPreferences };
   const input = value as Partial<UserPreferences>;
-  const validDate = (candidate: unknown): string | undefined =>
-    typeof candidate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(candidate) ? candidate : undefined;
-  const departureFrom = validDate(input.departureFrom);
-  const departureTo = validDate(input.departureTo);
+
+  const rawHome = input.homeAirport;
+  let homeAirport = defaultPreferences.homeAirport;
+  if (typeof rawHome === "string") {
+    const trimmed = rawHome.trim();
+    if (trimmed) homeAirport = trimmed.toUpperCase();
+  }
+
+  const rawBudget = input.budget;
+  const budget = typeof rawBudget === "number" && Number.isFinite(rawBudget) && rawBudget > 0 ? rawBudget : defaultPreferences.budget;
+
+  const rawStops = input.maxStops;
+  const maxStops = typeof rawStops === "number" && Number.isInteger(rawStops) && rawStops >= 0 ? rawStops : defaultPreferences.maxStops;
+
+  const rawCabin = input.cabinClass;
+  const cabinClass = typeof rawCabin === "string" && cabins.has(rawCabin as UserPreferences["cabinClass"]) ? (rawCabin as UserPreferences["cabinClass"]) : defaultPreferences.cabinClass;
+
+  const rawFlightTime = input.maxFlightTimeMinutes;
+  const maxFlightTimeMinutes = typeof rawFlightTime === "number" && rawFlightTime > 0 ? rawFlightTime : undefined;
+
+  const rawDepFrom = input.departureFrom;
+  const rawDepTo = input.departureTo;
+  let departureFrom: string | undefined;
+  let departureTo: string | undefined;
+  if (rawDepFrom !== undefined || rawDepTo !== undefined) {
+    departureFrom = typeof rawDepFrom === "string" && DATE_REGEX.test(rawDepFrom) ? rawDepFrom : undefined;
+    departureTo = typeof rawDepTo === "string" && DATE_REGEX.test(rawDepTo) ? rawDepTo : undefined;
+    if (departureFrom && departureTo && departureFrom > departureTo) {
+      departureFrom = undefined;
+      departureTo = undefined;
+    }
+  }
+
   return {
-    homeAirport: typeof input.homeAirport === "string" && input.homeAirport.trim() ? input.homeAirport.trim().toUpperCase() : defaultPreferences.homeAirport,
-    budget: typeof input.budget === "number" && Number.isFinite(input.budget) && input.budget > 0 ? input.budget : defaultPreferences.budget,
-    favoriteRegions: Array.isArray(input.favoriteRegions) ? input.favoriteRegions.filter((region): region is string => typeof region === "string") : defaultPreferences.favoriteRegions,
-    maxStops: typeof input.maxStops === "number" && Number.isInteger(input.maxStops) && input.maxStops >= 0 ? input.maxStops : defaultPreferences.maxStops,
-    preferredAirlines: Array.isArray(input.preferredAirlines) ? input.preferredAirlines.filter((airline): airline is string => typeof airline === "string") : defaultPreferences.preferredAirlines,
-    cabinClass: typeof input.cabinClass === "string" && cabins.has(input.cabinClass as UserPreferences["cabinClass"]) ? input.cabinClass as UserPreferences["cabinClass"] : defaultPreferences.cabinClass,
-    maxFlightTimeMinutes: typeof input.maxFlightTimeMinutes === "number" && input.maxFlightTimeMinutes > 0 ? input.maxFlightTimeMinutes : undefined,
+    homeAirport,
+    budget,
+    favoriteRegions: cleanStringArray(input.favoriteRegions, defaultPreferences.favoriteRegions),
+    maxStops,
+    preferredAirlines: cleanStringArray(input.preferredAirlines, defaultPreferences.preferredAirlines),
+    cabinClass,
+    maxFlightTimeMinutes,
     allowSelfTransfer: input.allowSelfTransfer === true,
-    departureFrom: departureFrom && departureTo && departureFrom > departureTo ? undefined : departureFrom,
-    departureTo: departureFrom && departureTo && departureFrom > departureTo ? undefined : departureTo,
+    departureFrom,
+    departureTo,
   };
 }
 
