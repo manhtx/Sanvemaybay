@@ -91,12 +91,11 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
   const n = points.length;
   if (!n) return [];
 
-  // Pass 1: Collect valid points & timestamps and find anchor
-  const validPts: PricePoint[] = [];
-  const validTs: number[] = [];
+  // Pass 1: Find anchor and check chronological sortedness with zero allocations
   let anchor = -Infinity;
   let isSorted = true;
   let prevTs = -Infinity;
+  let validCount = 0;
 
   for (let i = 0; i < n; i++) {
     const pt = points[i];
@@ -104,8 +103,7 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
     if (price > 0 && Number.isFinite(price)) {
       const ts = parseTimestampFast(pt.date);
       if (Number.isFinite(ts)) {
-        validPts.push(pt);
-        validTs.push(ts);
+        validCount++;
         if (ts > anchor) anchor = ts;
         if (ts < prevTs) isSorted = false;
         prevTs = ts;
@@ -113,27 +111,30 @@ export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistor
     }
   }
 
-  const validLen = validPts.length;
-  if (!validLen) return [];
+  if (!validCount) return [];
 
   const threshold = anchor - (days - 1) * 86400000;
 
-  // Pass 2: Filter points inside window using pre-parsed timestamps
+  // Pass 2: Filter only points inside window (timestamps are cached in TS_CACHE)
   const filtered: PricePoint[] = [];
   const filteredTs: number[] = [];
 
-  for (let i = 0; i < validLen; i++) {
-    const ts = validTs[i];
-    if (ts >= threshold && ts <= anchor) {
-      filtered.push(validPts[i]);
-      if (!isSorted) filteredTs.push(ts);
+  for (let i = 0; i < n; i++) {
+    const pt = points[i];
+    const price = pt.price;
+    if (price > 0 && Number.isFinite(price)) {
+      const ts = parseTimestampFast(pt.date);
+      if (ts >= threshold && ts <= anchor) {
+        filtered.push(pt);
+        if (!isSorted) filteredTs.push(ts);
+      }
     }
   }
 
   const filteredLen = filtered.length;
   if (!filteredLen) return [];
 
-  if (!isSorted) {
+  if (!isSorted && filteredLen > 1) {
     const indices = new Int32Array(filteredLen);
     for (let i = 0; i < filteredLen; i++) indices[i] = i;
     indices.sort((a, b) => filteredTs[a] - filteredTs[b]);
