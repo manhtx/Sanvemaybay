@@ -224,7 +224,13 @@ function isBudgetCarrier(carrier: string): boolean {
  * - REQ-COST-005: No universal "taxes included" claim without provider verification.
  * - NODE TK-08: Unified single authority across domain kernel and consumer components.
  */
+const TRUE_COST_CACHE = new WeakMap<object, TrueCostEvaluation>();
+
 export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
+  if (typeof params === "object" && params !== null) {
+    const cached = TRUE_COST_CACHE.get(params);
+    if (cached !== undefined) return cached;
+  }
   const raw = params.airline || params.airlineCode || '';
   const carrier = raw.length <= 3 ? raw.toUpperCase() : raw.trim().toUpperCase();
   const isInternational =
@@ -389,7 +395,7 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
   const estimatedTotal = knownTotal + estimatedAdditional;
   const hasUnknownMandatory = hasUnknownMandatoryComp || hasUnknownMandatoryCost;
 
-  return {
+  const result: TrueCostEvaluation = {
     basePrice: params.basePrice,
     knownMandatoryTotal: knownMandatory,
     estimatedMandatoryTotal: estimatedMandatory,
@@ -407,4 +413,10 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
     isBaggageIncluded,
     baggageState
   };
+
+  if (typeof params === "object" && params !== null) {
+    TRUE_COST_CACHE.set(params, result);
+  }
+
+  return result;
 }
