@@ -63,17 +63,16 @@ export interface TrueCostInput {
 }
 
 const BUDGET_CARRIER_CODES = new Set(['VJ', 'AK', 'FD', 'TR', '5J', 'SL', 'VU']);
-const BUDGET_SUBSTRINGS = ['VJ', 'VU', 'AIRASIA', 'SCOOT'];
 const LEGACY_CARRIER_CODES = new Set([
   'VN', 'QH', 'SQ', 'TG', 'JL', 'NH', 'KE', 'OZ', 'CX', 'BR', 'CI', 'EK', 'QR', 'TK'
 ]);
 
 function isBudgetCarrier(carrier: string): boolean {
   if (BUDGET_CARRIER_CODES.has(carrier)) return true;
-  for (let i = 0; i < BUDGET_SUBSTRINGS.length; i++) {
-    if (carrier.includes(BUDGET_SUBSTRINGS[i])) return true;
+  if (carrier.length >= 4) {
+    if (carrier.includes('AIRASIA') || carrier.includes('SCOOT')) return true;
   }
-  return false;
+  return carrier.includes('VJ') || carrier.includes('VU');
 }
 
 /**
@@ -321,7 +320,8 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
   let estimatedOptional = 0;
   let hasUnknownMandatoryCost = false;
 
-  for (const fee of fees) {
+  for (let i = 0; i < fees.length; i++) {
+    const fee = fees[i];
     if (fee.mandatory) {
       if (fee.status === 'KNOWN' && fee.amount !== null) {
         knownMandatory += fee.amount;
@@ -330,10 +330,8 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
       } else if (fee.status === 'UNKNOWN') {
         hasUnknownMandatoryCost = true;
       }
-    } else {
-      if (fee.amount !== null) {
-        estimatedOptional += fee.amount;
-      }
+    } else if (fee.amount !== null) {
+      estimatedOptional += fee.amount;
     }
   }
 
