@@ -112,12 +112,21 @@ function includesOrUnrestricted(values: string[] | undefined, value: string): bo
   return false;
 }
 
+const PROMO_CACHE = new WeakMap<object, { promotions: Promotion[]; nowTime: number; results: MatchedPromotion[] }>();
+
 export function matchPromotions(
   deal: Pick<Deal, "fromCode" | "toCode" | "airlineCode" | "departDate" | "price">,
   promotions: Promotion[],
   now = new Date(),
 ): MatchedPromotion[] {
   const current = now.getTime();
+  if (deal && typeof deal === "object" && promotions && typeof promotions === "object") {
+    const cached = PROMO_CACHE.get(deal);
+    if (cached && cached.promotions === promotions && cached.nowTime === current) {
+      return cached.results.slice();
+    }
+  }
+
   const departure = date(deal.departDate);
   if (!Number.isFinite(departure) || !Number.isFinite(deal.price) || deal.price <= 0) return [];
 
@@ -172,5 +181,9 @@ export function matchPromotions(
     }
   }
 
-  return results;
+  if (deal && typeof deal === "object" && promotions && typeof promotions === "object") {
+    PROMO_CACHE.set(deal, { promotions, nowTime: current, results });
+  }
+
+  return results.slice();
 }
