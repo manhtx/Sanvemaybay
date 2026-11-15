@@ -189,11 +189,29 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
   };
 }
 
+export function areCodesEqualCaseInsensitive(a: string, b: string): boolean {
+  if (a === b) return true;
+  const len = a.length;
+  if (len !== b.length) return false;
+  for (let i = 0; i < len; i++) {
+    const c1 = a.charCodeAt(i);
+    const c2 = b.charCodeAt(i);
+    if (c1 === c2) continue;
+    if ((c1 ^ 32) !== c2 || !((c1 >= 65 && c1 <= 90) || (c1 >= 97 && c1 <= 122))) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /**
  * Checks whether an actual flight airport satisfies the required LocationScope.
  * Invariant: DMK satisfies Bangkok Metro, but DMK CANNOT satisfy exact BKK.
  */
 export function satisfiesLocationScope(actualAirport: string, scope: LocationScope): boolean {
+  if (scope.type === 'EXACT_AIRPORT' && areCodesEqualCaseInsensitive(actualAirport, scope.primaryCode)) {
+    return true;
+  }
   const upper = actualAirport.trim().toUpperCase();
   if (scope.type === 'EXACT_AIRPORT') {
     return upper === scope.primaryCode;

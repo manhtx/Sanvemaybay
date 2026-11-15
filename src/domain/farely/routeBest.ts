@@ -5,7 +5,7 @@
  */
 
 import { TravelIntent } from './travelIntent';
-import { satisfiesLocationScope } from './locationScope';
+import { satisfiesLocationScope, areCodesEqualCaseInsensitive } from './locationScope';
 
 export interface RouteOffer {
   id: string;
@@ -81,6 +81,7 @@ export function normalizeOfferForIntent(offer: RouteOffer, intent: TravelIntent)
  */
 export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent): EligibilityResult {
   const reasons: IneligibilityReason[] = [];
+  let hasUnknown = false;
 
   // 1. Origin scope (NC-002: DMK cannot satisfy exact BKK)
   if (!satisfiesLocationScope(offer.origin, intent.originScope)) {
@@ -115,8 +116,8 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
   }
 
   // 5. Cabin compatibility (NC-004: Business cannot match Economy intent)
-  const offerCabin = (offer.cabin || 'ECONOMY').toUpperCase();
-  if (offerCabin !== intent.cabin.toUpperCase()) {
+  const offerCabin = offer.cabin || 'ECONOMY';
+  if (offerCabin !== intent.cabin && !areCodesEqualCaseInsensitive(offerCabin, intent.cabin)) {
     reasons.push('CABIN_MISMATCH');
   }
 
@@ -124,6 +125,7 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
   if (intent.maxStops !== undefined) {
     if (offer.stops === undefined || offer.stops === null || !Number.isFinite(offer.stops)) {
       reasons.push('UNKNOWN_STOPS');
+      hasUnknown = true;
     } else if (offer.stops > intent.maxStops) {
       reasons.push('STOPS_EXCEEDED');
     }
@@ -133,6 +135,7 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
   if (intent.maxDurationMinutes !== undefined) {
     if (offer.durationMinutes === undefined || offer.durationMinutes === null || !Number.isFinite(offer.durationMinutes)) {
       reasons.push('UNKNOWN_DURATION');
+      hasUnknown = true;
     } else if (offer.durationMinutes > intent.maxDurationMinutes) {
       reasons.push('DURATION_EXCEEDED');
     }
@@ -149,7 +152,6 @@ export function evaluateOfferEligibility(offer: RouteOffer, intent: TravelIntent
   }
 
   // Tri-state classification
-  const hasUnknown = reasons.some((r) => r.startsWith('UNKNOWN_'));
   if (hasUnknown) {
     return {
       isEligible: false,
@@ -201,7 +203,7 @@ export function selectRouteBest(offers: RouteOffer[], intent: TravelIntent): Rou
       if (
         best === null ||
         candidate.price < best.price ||
-        (candidate.price === best.price && candidate.id.localeCompare(best.id) < 0)
+        (candidate.price === best.price && candidate.id < best.id)
       ) {
         best = candidate;
       }

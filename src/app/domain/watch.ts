@@ -15,10 +15,25 @@ export const METRO_AIRPORT_MAP: Record<string, string[]> = {
   NYC_ALL: ["JFK", "EWR", "LGA"],
 };
 
+export function areCodesEqualCaseInsensitive(a: string, b: string): boolean {
+  if (a === b) return true;
+  const len = a.length;
+  if (len !== b.length) return false;
+  for (let i = 0; i < len; i++) {
+    const c1 = a.charCodeAt(i);
+    const c2 = b.charCodeAt(i);
+    if (c1 === c2) continue;
+    if ((c1 ^ 32) !== c2 || !((c1 >= 65 && c1 <= 90) || (c1 >= 97 && c1 <= 122))) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function matchLocationScope(targetCode: string | null | undefined, candidateCode: string | null | undefined, scope?: string | null): boolean {
   if (!targetCode) return true;
   if (!candidateCode) return false;
-  if (targetCode === candidateCode) return true;
+  if (targetCode === candidateCode || areCodesEqualCaseInsensitive(targetCode, candidateCode)) return true;
   const targetUpper = (targetCode.length > 0 && (targetCode.charCodeAt(0) <= 32 || targetCode.charCodeAt(targetCode.length - 1) <= 32))
     ? targetCode.trim().toUpperCase()
     : targetCode.toUpperCase();
@@ -107,10 +122,10 @@ export function evaluateWatchMatch(
   if (watch.tripType === "oneway" && candidate.returnDate) {
     return false;
   }
-  if (watch.cabin && candidate.cabin && candidate.cabin !== watch.cabin) {
+  if (watch.cabin && candidate.cabin && watch.cabin !== candidate.cabin && !areCodesEqualCaseInsensitive(watch.cabin, candidate.cabin)) {
     return false;
   }
-  if (watch.currency && candidate.currency && candidate.currency !== watch.currency) {
+  if (watch.currency && candidate.currency && watch.currency !== candidate.currency && !areCodesEqualCaseInsensitive(watch.currency, candidate.currency)) {
     return false;
   }
   return true;
