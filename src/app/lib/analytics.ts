@@ -51,11 +51,25 @@ const allowedMetadata = new Set([
 ]);
 
 export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
-  const metadata = Object.fromEntries(Object.entries(input.metadata ?? {})
-    .filter(([key, value]) => allowedMetadata.has(key) && (typeof value === "string" || typeof value === "number" || typeof value === "boolean" || value === null)));
+  const rawMeta = input.metadata;
+  const metadata: Record<string, string | number | boolean | null> = {};
+  if (rawMeta && typeof rawMeta === "object") {
+    const keys = Object.keys(rawMeta);
+    const keyLen = keys.length;
+    for (let i = 0; i < keyLen; i++) {
+      const key = keys[i];
+      if (allowedMetadata.has(key)) {
+        const value = rawMeta[key];
+        if (typeof value === "string" || typeof value === "number" || typeof value === "boolean" || value === null) {
+          metadata[key] = value;
+        }
+      }
+    }
+  }
+  const entityId = input.entityId;
   return {
     eventType: input.eventType,
-    entityId: typeof input.entityId === "string" ? input.entityId.slice(0, 120) : undefined,
+    entityId: typeof entityId === "string" ? (entityId.length <= 120 ? entityId : entityId.slice(0, 120)) : undefined,
     metadata,
     createdAt: input.createdAt ?? new Date().toISOString(),
   };
