@@ -18,12 +18,17 @@ export const METRO_AIRPORT_MAP: Record<string, string[]> = {
 export function matchLocationScope(targetCode: string | null | undefined, candidateCode: string | null | undefined, scope?: string | null): boolean {
   if (!targetCode) return true;
   if (!candidateCode) return false;
-  const targetUpper = targetCode.trim().toUpperCase();
-  const candUpper = candidateCode.trim().toUpperCase();
+  if (targetCode === candidateCode) return true;
+  const targetUpper = (targetCode.length > 0 && (targetCode.charCodeAt(0) <= 32 || targetCode.charCodeAt(targetCode.length - 1) <= 32))
+    ? targetCode.trim().toUpperCase()
+    : targetCode.toUpperCase();
+  const candUpper = (candidateCode.length > 0 && (candidateCode.charCodeAt(0) <= 32 || candidateCode.charCodeAt(candidateCode.length - 1) <= 32))
+    ? candidateCode.trim().toUpperCase()
+    : candidateCode.toUpperCase();
   if (targetUpper === candUpper) return true;
   if (scope === "metro" || targetUpper.endsWith("_ALL")) {
     const served = METRO_AIRPORT_MAP[targetUpper];
-    if (served && served.includes(candUpper)) return true;
+    if (served && (served[0] === candUpper || served[1] === candUpper || served.includes(candUpper))) return true;
   }
   return false;
 }
