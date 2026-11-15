@@ -17,8 +17,8 @@ function parseIsoTimestamp(iso: string | undefined): number {
 }
 
 export function rankTravelFeed(deals: Deal[]): Deal[] {
-  if (deals.length <= 1) return [...deals];
   const len = deals.length;
+  if (len <= 1) return [...deals];
   const items = new Array(len);
   for (let i = 0; i < len; i++) {
     const deal = deals[i];
@@ -30,12 +30,65 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
       timestamp: ts,
     };
   }
-  items.sort((a, b) => b.score - a.score || b.timestamp - a.timestamp);
+  if (len === 2) {
+    const a = items[0];
+    const b = items[1];
+    if (b.score > a.score || (b.score === a.score && b.timestamp > a.timestamp)) {
+      items[0] = b;
+      items[1] = a;
+    }
+  } else if (len === 3) {
+    if (items[1].score > items[0].score || (items[1].score === items[0].score && items[1].timestamp > items[0].timestamp)) {
+      const t = items[0]; items[0] = items[1]; items[1] = t;
+    }
+    if (items[2].score > items[1].score || (items[2].score === items[1].score && items[2].timestamp > items[1].timestamp)) {
+      const t = items[1]; items[1] = items[2]; items[2] = t;
+      if (items[1].score > items[0].score || (items[1].score === items[0].score && items[1].timestamp > items[0].timestamp)) {
+        const t2 = items[0]; items[0] = items[1]; items[1] = t2;
+      }
+    }
+  } else {
+    items.sort((a, b) => b.score - a.score || b.timestamp - a.timestamp);
+  }
+
+  const result = new Array(len);
+  let front = 0;
+  if (len <= 8) {
+    for (let i = 0; i < len; i++) {
+      const d = items[i].deal;
+      let seen = false;
+      for (let j = 0; j < front; j++) {
+        if (result[j].toCode === d.toCode) {
+          seen = true;
+          break;
+        }
+      }
+      if (!seen) {
+        result[front++] = d;
+      }
+    }
+    if (front < len) {
+      for (let i = 0; i < len; i++) {
+        const d = items[i].deal;
+        let isFront = false;
+        for (let j = 0; j < front; j++) {
+          if (result[j] === d) {
+            isFront = true;
+            break;
+          }
+        }
+        if (!isFront) {
+          result[front++] = d;
+        }
+      }
+    }
+    return result;
+  }
 
   const diversified: Deal[] = [];
   const remaining: Deal[] = [];
   const seenDestinations = new Set<string>();
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < len; i++) {
     const d = items[i].deal;
     if (!seenDestinations.has(d.toCode)) {
       diversified.push(d);
@@ -51,7 +104,8 @@ export function rankTravelFeed(deals: Deal[]): Deal[] {
  * This is a transparent ranking layer, not a claim of ML personalization.
  */
 export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences): Deal[] {
-  if (deals.length <= 1) return [...deals];
+  const n = deals.length;
+  if (n <= 1) return [...deals];
   const baseRanked = rankTravelFeed(deals);
   const homeAirport = preferences.homeAirport;
   const favoriteRegions = preferences.favoriteRegions;
@@ -64,7 +118,6 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
   const budget = preferences.budget;
   const maxFlightTimeMinutes = preferences.maxFlightTimeMinutes;
 
-  const n = baseRanked.length;
   const items = new Array(n);
   for (let index = 0; index < n; index++) {
     const deal = baseRanked[index];
@@ -81,6 +134,24 @@ export function rankPersonalizedFeed(deals: Deal[], preferences: UserPreferences
     if (deal.price > budget) value -= 15;
     if (maxFlightTimeMinutes && parseDurationMinutes(deal.duration) > maxFlightTimeMinutes) value -= 10;
     items[index] = { deal, score: value - index * 0.001 };
+  }
+
+  if (n === 2) {
+    if (items[1].score > items[0].score) {
+      return [items[1].deal, items[0].deal];
+    }
+    return [items[0].deal, items[1].deal];
+  } else if (n === 3) {
+    if (items[1].score > items[0].score) {
+      const t = items[0]; items[0] = items[1]; items[1] = t;
+    }
+    if (items[2].score > items[1].score) {
+      const t = items[1]; items[1] = items[2]; items[2] = t;
+      if (items[1].score > items[0].score) {
+        const t2 = items[0]; items[0] = items[1]; items[1] = t2;
+      }
+    }
+    return [items[0].deal, items[1].deal, items[2].deal];
   }
 
   items.sort((a, b) => b.score - a.score);
