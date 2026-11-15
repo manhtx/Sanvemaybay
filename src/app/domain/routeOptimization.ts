@@ -38,29 +38,43 @@ function parseTime(value: string): number {
 }
 
 export function assessRoute(option: RouteOption): OptimizedRoute {
-  if (!option.legs.length) throw new Error("A route must contain at least one leg.");
+  const legs = option.legs;
+  const n = legs.length;
+  if (!n) throw new Error("A route must contain at least one leg.");
   const riskReasons: string[] = [];
-  const totalCost = calculateTotalCost(option.legs.flatMap((leg) => [leg.price, leg.extraCost ?? 0]));
-  const totalDurationMinutes = option.legs.reduce((sum, leg) => sum + leg.durationMinutes, 0);
+  let totalCost = 0;
+  let totalDurationMinutes = 0;
   let derivedConnectionMinutes: number | undefined;
+  let hasUnincludedBaggage = false;
 
-  option.legs.forEach((leg, index) => {
-    if (leg.price < 0 || leg.durationMinutes <= 0) throw new Error("Route leg values are invalid.");
-    if (index === 0) return;
-    const previous = option.legs[index - 1];
-    const connectionMinutes = Math.floor((parseTime(leg.departureAt) - parseTime(previous.arrivalAt)) / 60000);
-    if (connectionMinutes < 0) throw new Error("A later leg departs before the previous leg arrives.");
-    if (option.connectionMinutes == null && derivedConnectionMinutes == null) {
-      derivedConnectionMinutes = connectionMinutes;
+  for (let i = 0; i < n; i++) {
+    const leg = legs[i];
+    const extra = leg.extraCost ?? 0;
+    if (!Number.isFinite(leg.price) || leg.price < 0 || !Number.isFinite(extra) || extra < 0) {
+      throw new Error("Cost components must be finite and non-negative.");
     }
-  });
+    if (!Number.isFinite(leg.durationMinutes) || leg.durationMinutes <= 0) {
+      throw new Error("Route leg values are invalid.");
+    }
+    totalCost += leg.price + extra;
+    totalDurationMinutes += leg.durationMinutes;
+    if (!leg.baggageIncluded) hasUnincludedBaggage = true;
+    if (i > 0) {
+      const previous = legs[i - 1];
+      const connectionMinutes = Math.floor((parseTime(leg.departureAt) - parseTime(previous.arrivalAt)) / 60000);
+      if (connectionMinutes < 0) throw new Error("A later leg departs before the previous leg arrives.");
+      if (option.connectionMinutes == null && derivedConnectionMinutes == null) {
+        derivedConnectionMinutes = connectionMinutes;
+      }
+    }
+  }
 
   if (option.type === "SELF_TRANSFER") riskReasons.push("Tách vé: hãng bay có thể không bảo vệ chặng tiếp theo.");
   const connectionMinutes = option.connectionMinutes ?? derivedConnectionMinutes;
   if (connectionMinutes != null && connectionMinutes < 120) riskReasons.push("Thời gian nối chuyến dưới 120 phút.");
   if (option.requiresVisaTransit) riskReasons.push("Cần xác minh visa transit.");
   if (option.airportChange) riskReasons.push("Phải đổi sân bay trong hành trình.");
-  if (option.legs.some((leg) => !leg.baggageIncluded)) riskReasons.push("Có chặng chưa bao gồm hành lý ký gửi.");
+  if (hasUnincludedBaggage) riskReasons.push("Có chặng chưa bao gồm hành lý ký gửi.");
   if (option.dataFresh === false) riskReasons.push("Dữ liệu một hoặc nhiều chặng đã cũ.");
   if (option.overnightTransit) riskReasons.push("Có transit qua đêm; cần kiểm tra nghỉ ngơi và giờ hoạt động sân bay.");
   if (option.airlineReliability === "low") riskReasons.push("Dữ liệu cho thấy độ tin cậy hãng bay thấp.");
