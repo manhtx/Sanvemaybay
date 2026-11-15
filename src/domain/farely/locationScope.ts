@@ -144,10 +144,23 @@ export const AIRPORT_CATALOG: Record<string, AirportInfo> = {
   MEL: { code: 'MEL', name: 'Melbourne Intl', cityName: 'Melbourne', country: 'AU', timezone: 'Australia/Melbourne' }
 };
 
+const SCOPE_CACHE = new Map<string, LocationScope>();
+
 /**
  * Resolves an airport code or metro query into a canonical LocationScope.
  */
 export function resolveLocationScope(codeOrMetro: string, requestedType?: LocationScopeType): LocationScope {
+  if (!requestedType) {
+    const cached = SCOPE_CACHE.get(codeOrMetro);
+    if (cached) {
+      return {
+        type: cached.type,
+        primaryCode: cached.primaryCode,
+        expandedCodes: [...cached.expandedCodes]
+      };
+    }
+  }
+
   const upper = codeOrMetro.trim().toUpperCase();
 
   // Canonical metro resolution
@@ -156,11 +169,13 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
     const normalizedKey = upper.endsWith('_ALL') ? `${upper.slice(0, -4)}_METRO` : upper;
     const metro = METRO_CATALOG[normalizedKey];
     if (metro) {
-      return {
+      const res: LocationScope = {
         type: 'METRO',
         primaryCode: metro.metroId,
         expandedCodes: [...metro.airports]
       };
+      if (!requestedType && SCOPE_CACHE.size < 500) SCOPE_CACHE.set(codeOrMetro, res);
+      return res;
     }
   }
 
@@ -174,19 +189,23 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
         expandedCodes: [...METRO_CATALOG[airport.metroId].airports]
       };
     }
-    return {
+    const res: LocationScope = {
       type: requestedType || 'EXACT_AIRPORT',
       primaryCode: upper,
       expandedCodes: [upper]
     };
+    if (!requestedType && SCOPE_CACHE.size < 500) SCOPE_CACHE.set(codeOrMetro, res);
+    return res;
   }
 
   // Fallback for codes not yet in catalog
-  return {
+  const res: LocationScope = {
     type: requestedType || 'EXACT_AIRPORT',
     primaryCode: upper,
     expandedCodes: [upper]
   };
+  if (!requestedType && SCOPE_CACHE.size < 500) SCOPE_CACHE.set(codeOrMetro, res);
+  return res;
 }
 
 export function areCodesEqualCaseInsensitive(a: string, b: string): boolean {

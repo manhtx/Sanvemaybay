@@ -50,8 +50,8 @@ export interface TravelIntent {
  * Sourced purely from canonical AIRPORT_CATALOG country metadata.
  */
 export function deriveMarketScope(originCode: string, destinationCode: string): MarketScope {
-  const originAirport = AIRPORT_CATALOG[originCode.toUpperCase()];
-  const destAirport = AIRPORT_CATALOG[destinationCode.toUpperCase()];
+  const originAirport = AIRPORT_CATALOG[originCode] || AIRPORT_CATALOG[originCode.toUpperCase()];
+  const destAirport = AIRPORT_CATALOG[destinationCode] || AIRPORT_CATALOG[destinationCode.toUpperCase()];
   if (originAirport && destAirport) {
     return (originAirport.country === 'VN' && destAirport.country === 'VN') ? 'DOMESTIC' : 'INTERNATIONAL';
   }
