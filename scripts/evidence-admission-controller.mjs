@@ -140,34 +140,29 @@ export function getGateProbeMapping(gateId) {
   };
 }
 
+let _cachedShas = null;
+
 /**
  * Executes or inspects test layers to collect verified evidence
  */
 export function collectExecutionEvidence(options = {}) {
   const root = options.projectRoot || process.cwd();
-  const gitSha = options.overrideGitSha || (() => {
-    try {
-      return execSync('git rev-parse HEAD', { cwd: root, encoding: 'utf8' }).trim();
-    } catch {
-      return 'unknown';
+  if (!_cachedShas || options.overrideGitSha || options.overrideRemoteSha || options.overrideParentSha) {
+    let gitSha = options.overrideGitSha;
+    if (!gitSha) {
+      try { gitSha = execSync('git rev-parse HEAD', { cwd: root, encoding: 'utf8' }).trim(); } catch { gitSha = 'unknown'; }
     }
-  })();
-
-  const remoteSha = options.overrideRemoteSha || (() => {
-    try {
-      return execSync('git rev-parse origin/main', { cwd: root, encoding: 'utf8' }).trim();
-    } catch {
-      return gitSha;
+    let remoteSha = options.overrideRemoteSha;
+    if (!remoteSha) {
+      try { remoteSha = execSync('git rev-parse origin/main', { cwd: root, encoding: 'utf8' }).trim(); } catch { remoteSha = gitSha; }
     }
-  })();
-
-  const parentSha = options.overrideParentSha || (() => {
-    try {
-      return execSync('git rev-parse HEAD~1', { cwd: root, encoding: 'utf8' }).trim();
-    } catch {
-      return '';
+    let parentSha = options.overrideParentSha;
+    if (!parentSha) {
+      try { parentSha = execSync('git rev-parse HEAD~1', { cwd: root, encoding: 'utf8' }).trim(); } catch { parentSha = ''; }
     }
-  })();
+    _cachedShas = { gitSha, remoteSha, parentSha };
+  }
+  const { gitSha, remoteSha, parentSha } = _cachedShas;
 
   const nowIso = new Date().toISOString();
 

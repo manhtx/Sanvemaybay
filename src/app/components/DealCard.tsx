@@ -21,11 +21,8 @@ export function DealCard({ deal }: DealCardProps) {
   const priceDiff = deal.realTotal - deal.advertisedTotal;
   const hasHiddenCosts = priceDiff > 0;
 
-  const discountTone = deal.discount >= 30
-    ? "bg-red-500/95 text-white"
-    : deal.discount >= 15
-      ? "bg-amber-400 text-slate-950"
-      : "bg-emerald-500/95 text-white";
+  // Binance Financial-Grade Trading Up Badge (#0ECB81 for price drop / traveler savings)
+  const discountTone = "bg-[#0ECB81]/15 text-[#0ECB81] border border-[#0ECB81]/30 font-semibold";
 
   return (
     <div className="relative group">
@@ -34,7 +31,7 @@ export function DealCard({ deal }: DealCardProps) {
         to={cardTarget}
         className="block"
       >
-        <div className="relative flex flex-col justify-between rounded-xl border border-white/[0.08] bg-[#121620] p-5 transition-all duration-200 hover:border-white/20 hover:bg-[#161b27] hover:shadow-lg">
+        <div className="relative flex flex-col justify-between rounded-xl border border-[#2B3139] bg-[#1E2329] p-5 transition-all duration-200 hover:border-[#FCD535]/40 hover:bg-[#2B3139]/40 hover:shadow-xl">
           
           {/* Top Line: Route & Flags */}
           <div>

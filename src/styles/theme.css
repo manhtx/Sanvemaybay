@@ -39,6 +39,30 @@
   --sidebar-accent-foreground: #1c1917;
   --sidebar-border: #e7e5e4;
   --sidebar-ring: #78716c;
+
+  /* Binance Financial-Grade Tokens */
+  --binance-primary: #fcd535;
+  --binance-primary-active: #f0b90b;
+  --binance-primary-disabled: #3a3a1f;
+  --binance-ink: #181a20;
+  --binance-body: #eaecef;
+  --binance-body-light: #181a20;
+  --binance-muted: #707a8a;
+  --binance-muted-strong: #929aa5;
+  --binance-hairline-light: #eaecef;
+  --binance-hairline-dark: #2b3139;
+  --binance-border-strong: #cdd1d6;
+  --binance-canvas-light: #ffffff;
+  --binance-canvas-dark: #0b0e11;
+  --binance-surface-card-dark: #1e2329;
+  --binance-surface-elevated-dark: #2b3139;
+  --binance-surface-soft-light: #fafafa;
+  --binance-surface-strong-light: #f5f5f5;
+  --binance-on-primary: #181a20;
+  --binance-trading-up: #0ecb81;
+  --binance-trading-down: #f6465d;
+  --binance-accent-turquoise: #2dbdb6;
+  --binance-info: #3b82f6;
 }
 
 .dark {
@@ -117,6 +141,29 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Binance Design System Tokens */
+  --color-binance-primary: var(--binance-primary);
+  --color-binance-primary-active: var(--binance-primary-active);
+  --color-binance-primary-disabled: var(--binance-primary-disabled);
+  --color-binance-ink: var(--binance-ink);
+  --color-binance-body: var(--binance-body);
+  --color-binance-body-light: var(--binance-body-light);
+  --color-binance-muted: var(--binance-muted);
+  --color-binance-muted-strong: var(--binance-muted-strong);
+  --color-binance-hairline-light: var(--binance-hairline-light);
+  --color-binance-hairline-dark: var(--binance-hairline-dark);
+  --color-binance-border-strong: var(--binance-border-strong);
+  --color-binance-canvas-light: var(--binance-canvas-light);
+  --color-binance-canvas-dark: var(--binance-canvas-dark);
+  --color-binance-card-dark: var(--binance-surface-card-dark);
+  --color-binance-elevated-dark: var(--binance-surface-elevated-dark);
+  --color-binance-soft-light: var(--binance-surface-soft-light);
+  --color-binance-strong-light: var(--binance-surface-strong-light);
+  --color-binance-on-primary: var(--binance-on-primary);
+  --color-trading-up: var(--binance-trading-up);
+  --color-trading-down: var(--binance-trading-down);
+  --color-binance-turquoise: var(--binance-accent-turquoise);
 }
 
 @layer base {

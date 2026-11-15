@@ -370,6 +370,36 @@ function normalizeSearchText(input: string): string {
     .replace(/Đ/g, "d");
 }
 
+const ENTITY_BY_CODE = new Map<string, CanonicalTravelEntity>();
+const EXACT_MATCH_MAP = new Map<string, CanonicalTravelEntity>();
+const PRECOMPUTED_ENTITIES: Array<{
+  entity: CanonicalTravelEntity;
+  normalizedName: string;
+  normalizedAliases: string[];
+}> = [];
+
+for (const entity of CANONICAL_TRAVEL_ENTITIES) {
+  ENTITY_BY_CODE.set(entity.code.toUpperCase(), entity);
+
+  const normName = normalizeSearchText(entity.name);
+  const normCode = normalizeSearchText(entity.code);
+  const normCountry = normalizeSearchText(entity.country);
+  const normAliases = entity.aliases.map(normalizeSearchText);
+
+  EXACT_MATCH_MAP.set(normName, entity);
+  EXACT_MATCH_MAP.set(normCode, entity);
+  EXACT_MATCH_MAP.set(normCountry, entity);
+  for (const alias of normAliases) {
+    EXACT_MATCH_MAP.set(alias, entity);
+  }
+
+  PRECOMPUTED_ENTITIES.push({
+    entity,
+    normalizedName: normName,
+    normalizedAliases: normAliases,
+  });
+}
+
 export function resolveCanonicalAirportOrCity(query: string | undefined): CanonicalTravelEntity | undefined {
   if (!query) return undefined;
   const raw = query.trim();
@@ -377,30 +407,29 @@ export function resolveCanonicalAirportOrCity(query: string | undefined): Canoni
 
   // 1. Direct IATA code match
   if (/^[A-Za-z]{3}$/.test(raw)) {
-    const codeUpper = raw.toUpperCase();
-    const found = CANONICAL_TRAVEL_ENTITIES.find((entity) => entity.code === codeUpper);
+    const found = ENTITY_BY_CODE.get(raw.toUpperCase());
     if (found) return found;
   }
 
   // 2. Normalized text match against aliases, name, country, and airport
   const normalized = normalizeSearchText(raw);
-  for (const entity of CANONICAL_TRAVEL_ENTITIES) {
-    if (normalizeSearchText(entity.name) === normalized) return entity;
-    if (normalizeSearchText(entity.code) === normalized) return entity;
-    if (normalizeSearchText(entity.country) === normalized) return entity;
-    if (entity.aliases.some((alias) => normalizeSearchText(alias) === normalized)) {
-      return entity;
-    }
-  }
+  const exact = EXACT_MATCH_MAP.get(normalized);
+  if (exact) return exact;
 
   // 3. Substring matching (e.g. "thanh pho ho chi minh" or "bangkok airport")
-  for (const entity of CANONICAL_TRAVEL_ENTITIES) {
+  for (let i = 0; i < PRECOMPUTED_ENTITIES.length; i++) {
+    const item = PRECOMPUTED_ENTITIES[i];
     if (
-      normalized.includes(normalizeSearchText(entity.name)) ||
-      normalizeSearchText(entity.name).includes(normalized) ||
-      entity.aliases.some((alias) => normalized.includes(normalizeSearchText(alias)))
+      normalized.includes(item.normalizedName) ||
+      item.normalizedName.includes(normalized)
     ) {
-      return entity;
+      return item.entity;
+    }
+    const aliases = item.normalizedAliases;
+    for (let a = 0; a < aliases.length; a++) {
+      if (normalized.includes(aliases[a])) {
+        return item.entity;
+      }
     }
   }
 
@@ -411,7 +440,7 @@ export function getServedAirports(codeOrMetro: string): string[] {
   if (!codeOrMetro) return [];
   const upper = codeOrMetro.trim().toUpperCase();
   if (!upper) return [];
-  const entity = CANONICAL_TRAVEL_ENTITIES.find((e) => e.code === upper);
+  const entity = ENTITY_BY_CODE.get(upper);
   if (entity?.servedAirports && entity.servedAirports.length > 0) {
     return entity.servedAirports;
   }

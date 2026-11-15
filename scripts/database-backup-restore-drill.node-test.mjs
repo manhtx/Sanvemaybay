@@ -25,7 +25,7 @@ import { tmpdir } from 'node:os';
 import crypto from 'node:crypto';
 
 function getPgCliFlags() {
-  const host = process.env.PGHOST || '/tmp';
+  const host = process.env.PGHOST || '127.0.0.1';
   const port = process.env.PGPORT || '5432';
   const user = process.env.PGUSER;
   let flags = `-h "${host}" -p ${port}`;

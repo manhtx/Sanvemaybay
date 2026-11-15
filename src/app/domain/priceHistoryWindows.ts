@@ -5,14 +5,34 @@ export type PriceHistoryWindow = (typeof PRICE_HISTORY_WINDOWS)[number];
 
 /** Keep only valid ISO-date observations inside the selected inclusive window. */
 export function filterPriceHistoryByDays(points: PricePoint[], days: PriceHistoryWindow): PricePoint[] {
-  const valid = points
-    .map((point) => ({ ...point, timestamp: Date.parse(point.date) }))
-    .filter((point) => Number.isFinite(point.timestamp) && Number.isFinite(point.price) && point.price > 0);
+  const n = points.length;
+  if (!n) return [];
+  const valid: { point: PricePoint; timestamp: number }[] = [];
+  let anchor = -Infinity;
+  for (let i = 0; i < n; i++) {
+    const pt = points[i];
+    const price = pt.price;
+    if (price > 0 && Number.isFinite(price)) {
+      const ts = Date.parse(pt.date);
+      if (Number.isFinite(ts)) {
+        valid.push({ point: pt, timestamp: ts });
+        if (ts > anchor) anchor = ts;
+      }
+    }
+  }
   if (!valid.length) return [];
-  const anchor = Math.max(...valid.map((point) => point.timestamp));
-  const threshold = anchor - (days - 1) * 24 * 60 * 60 * 1000;
-  return valid
-    .filter((point) => point.timestamp >= threshold && point.timestamp <= anchor)
-    .sort((left, right) => left.timestamp - right.timestamp)
-    .map(({ timestamp: _timestamp, ...point }) => point);
+  const threshold = anchor - (days - 1) * 86400000;
+  const filtered: { point: PricePoint; timestamp: number }[] = [];
+  for (let i = 0; i < valid.length; i++) {
+    const item = valid[i];
+    if (item.timestamp >= threshold && item.timestamp <= anchor) {
+      filtered.push(item);
+    }
+  }
+  filtered.sort((a, b) => a.timestamp - b.timestamp);
+  const result = new Array<PricePoint>(filtered.length);
+  for (let i = 0; i < filtered.length; i++) {
+    result[i] = filtered[i].point;
+  }
+  return result;
 }

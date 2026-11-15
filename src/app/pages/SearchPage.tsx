@@ -187,7 +187,7 @@ export function SearchPage() {
                   saveUserPreferences({ homeAirport: val });
                   void saveRemoteUserPreferences({ ...getUserPreferences(), homeAirport: val });
                 }}
-                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-blue-600 focus:outline-none"
+                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
               >
                 {departureCities.map((city) => (
                   <option key={city.code} value={city.code}>
@@ -208,7 +208,7 @@ export function SearchPage() {
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder="Mã sân bay (BKK, DAD) hoặc tên thành phố"
-                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-blue-600 focus:outline-none"
+                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
               />
             </div>
 
@@ -230,7 +230,7 @@ export function SearchPage() {
                     saveUserPreferences({ departureFrom: val || undefined });
                     void saveRemoteUserPreferences({ ...getUserPreferences(), departureFrom: val || undefined });
                   }}
-                  className="w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs text-stone-900 focus:border-blue-600 focus:outline-none"
+                  className="w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
                 />
                 <input
                   id="search-depart-to"
@@ -244,7 +244,7 @@ export function SearchPage() {
                     saveUserPreferences({ departureTo: val || undefined });
                     void saveRemoteUserPreferences({ ...getUserPreferences(), departureTo: val || undefined });
                   }}
-                  className="w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs text-stone-900 focus:border-blue-600 focus:outline-none"
+                  className="w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
                 />
               </div>
             </div>
@@ -266,7 +266,7 @@ export function SearchPage() {
                   saveUserPreferences({ budget: val });
                   void saveRemoteUserPreferences({ ...getUserPreferences(), budget: val });
                 }}
-                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-blue-600 focus:outline-none"
+                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
               >
                 <option value={3000000}>3.000.000₫</option>
                 <option value={5000000}>5.000.000₫</option>
@@ -297,7 +297,7 @@ export function SearchPage() {
                     saveUserPreferences({ maxStops: val });
                     void saveRemoteUserPreferences({ ...getUserPreferences(), maxStops: val });
                   }}
-                  className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-900 focus:border-blue-600"
+                  className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-900 focus:border-[#FCD535]"
                 >
                   <option value={0}>0 (Bay thẳng)</option>
                   <option value={1}>1 điểm dừng</option>
@@ -320,7 +320,7 @@ export function SearchPage() {
                     saveUserPreferences({ maxFlightTimeMinutes: val });
                     void saveRemoteUserPreferences({ ...getUserPreferences(), maxFlightTimeMinutes: val });
                   }}
-                  className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-900 focus:border-blue-600"
+                  className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-900 focus:border-[#FCD535]"
                 >
                   <option value="">Không giới hạn</option>
                   <option value={180}>3 giờ (180 phút)</option>
@@ -336,7 +336,7 @@ export function SearchPage() {
                 type="button"
                 onClick={() => void runSearch(true)}
                 disabled={isScanning}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#FCD535] hover:bg-[#F0B90B] disabled:opacity-50 text-[#181A20] font-bold text-xs transition-colors shadow-sm cursor-pointer"
               >
                 {isScanning ? (
                   <LoaderCircle className="w-3.5 h-3.5 animate-spin" />

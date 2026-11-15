@@ -13,26 +13,48 @@ export interface PriceForecast {
 
 /** Conservative linear baseline. It intentionally refuses sparse history. */
 export function forecastPrice(points: PricePoint[], horizonDays = 7): PriceForecast | undefined {
-  const valid = points
-    .filter((point) => Number.isFinite(point.price) && point.price > 0 && Number.isFinite(Date.parse(point.date)))
-    .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
-  if (valid.length < 14) return undefined;
-  const values = valid.map((point) => point.price);
-  const meanX = (values.length - 1) / 2;
-  const meanY = values.reduce((sum, value) => sum + value, 0) / values.length;
-  const denominator = values.reduce((sum, _, index) => sum + (index - meanX) ** 2, 0);
-  const slope = denominator ? values.reduce((sum, value, index) => sum + (index - meanX) * (value - meanY), 0) / denominator : 0;
-  const deviation = Math.sqrt(values.reduce((sum, value) => sum + (value - meanY) ** 2, 0) / values.length);
+  const nPoints = points.length;
+  const valid: { price: number; time: number }[] = [];
+  for (let i = 0; i < nPoints; i++) {
+    const pt = points[i];
+    if (typeof pt?.price === "number" && Number.isFinite(pt.price) && pt.price > 0 && typeof pt?.date === "string") {
+      const time = Date.parse(pt.date);
+      if (Number.isFinite(time)) {
+        valid.push({ price: pt.price, time });
+      }
+    }
+  }
+  const n = valid.length;
+  if (n < 14) return undefined;
+  valid.sort((a, b) => a.time - b.time);
+
+  let sumY = 0;
+  for (let i = 0; i < n; i++) sumY += valid[i].price;
+  const meanY = sumY / n;
+  const meanX = (n - 1) / 2;
+  const denominator = (n * (n * n - 1)) / 12;
+
+  let num = 0;
+  let sumSqDiffY = 0;
+  for (let i = 0; i < n; i++) {
+    const price = valid[i].price;
+    const diffY = price - meanY;
+    num += (i - meanX) * price;
+    sumSqDiffY += diffY * diffY;
+  }
+
+  const slope = denominator ? num / denominator : 0;
+  const deviation = Math.sqrt(sumSqDiffY / n);
   const normalizedSlope = deviation ? slope / deviation : 0;
   const direction: ForecastDirection = normalizedSlope > 0.03 ? "up" : normalizedSlope < -0.03 ? "down" : "stable";
   const probability = Math.round(Math.min(0.9, 0.5 + Math.min(0.4, Math.abs(normalizedSlope) * 0.8)) * 100) / 100;
-  const confidence = Math.round(Math.min(0.85, 0.5 + Math.min(0.35, (values.length - 14) / 40)) * 100) / 100;
+  const confidence = Math.round(Math.min(0.85, 0.5 + Math.min(0.35, (n - 14) / 40)) * 100) / 100;
   return {
     direction,
     probability,
     confidence,
     horizonDays: Math.max(1, Math.round(horizonDays)),
-    sampleCount: values.length,
+    sampleCount: n,
     limitation: "Ước tính theo xu hướng lịch sử gần đây; không đảm bảo giá tương lai và không thay thế kiểm tra giá trực tiếp.",
   };
 }

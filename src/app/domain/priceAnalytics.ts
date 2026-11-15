@@ -11,41 +11,91 @@ export interface PriceAnalytics {
 }
 
 export function buildPriceAnalytics(points: PricePoint[], currentPrice?: number): PriceAnalytics | undefined {
-  const valid = points
-    .filter((point) => Number.isFinite(point.price) && point.price > 0 && Number.isFinite(new Date(point.date).getTime()))
-    .sort((a, b) => a.price - b.price);
-  if (!valid.length) return undefined;
-  const values = valid.map((point) => point.price);
-  const average = values.reduce((sum, value) => sum + value, 0) / values.length;
-  const middle = Math.floor(values.length / 2);
-  const median = values.length % 2 ? values[middle] : (values[middle - 1] + values[middle]) / 2;
-  const standardDeviation = Math.sqrt(values.reduce((sum, value) => sum + (value - average) ** 2, 0) / values.length);
-  const weekdayTotals = new Map<number, { sum: number; count: number }>();
-  valid.forEach((point) => {
-    const weekday = new Date(point.date).getDay();
-    const bucket = weekdayTotals.get(weekday) ?? { sum: 0, count: 0 };
-    bucket.sum += point.price;
-    bucket.count += 1;
-    weekdayTotals.set(weekday, bucket);
-  });
+  const n = points.length;
+  if (!n) return undefined;
+  const valid: { price: number; dateObj: Date }[] = [];
+  for (let i = 0; i < n; i++) {
+    const pt = points[i];
+    const price = pt.price;
+    if (price > 0 && Number.isFinite(price)) {
+      const d = new Date(pt.date);
+      if (Number.isFinite(d.getTime())) {
+        valid.push({ price, dateObj: d });
+      }
+    }
+  }
+  const len = valid.length;
+  if (!len) return undefined;
+  valid.sort((a, b) => a.price - b.price);
+
+  let sum = 0;
+  const values = new Array<number>(len);
+  for (let i = 0; i < len; i++) {
+    const v = valid[i].price;
+    values[i] = v;
+    sum += v;
+  }
+  const average = sum / len;
+  const middle = Math.floor(len / 2);
+  const median = len % 2 ? values[middle] : (values[middle - 1] + values[middle]) / 2;
+
+  let varianceSum = 0;
+  for (let i = 0; i < len; i++) {
+    varianceSum += (values[i] - average) ** 2;
+  }
+  const standardDeviation = Math.sqrt(varianceSum / len);
+
+  const weekdaySums = new Float64Array(7);
+  const weekdayCounts = new Uint32Array(7);
+  let distinctWeekdays = 0;
+
+  for (let i = 0; i < len; i++) {
+    const weekday = valid[i].dateObj.getDay();
+    if (weekdayCounts[weekday] === 0) distinctWeekdays++;
+    weekdaySums[weekday] += valid[i].price;
+    weekdayCounts[weekday]++;
+  }
+
   // Defensible sample rule: require at least 14 observations across at least 4 weekdays with >= 2 observations per weekday.
   // Otherwise, return undefined to prevent false weekday claims (Negative Control C).
   let cheapestWeekday: number | undefined = undefined;
-  if (valid.length >= 14 && weekdayTotals.size >= 4) {
-    const qualified = [...weekdayTotals.entries()].filter(([_, b]) => b.count >= 2);
-    if (qualified.length >= 4) {
-      cheapestWeekday = qualified.sort((a, b) =>
-        a[1].sum / a[1].count - b[1].sum / b[1].count,
-      )[0]?.[0];
+  if (len >= 14 && distinctWeekdays >= 4) {
+    let qualifiedCount = 0;
+    let minAvg = Infinity;
+    let bestDay: number | undefined = undefined;
+    for (let day = 0; day < 7; day++) {
+      const cnt = weekdayCounts[day];
+      if (cnt >= 2) {
+        qualifiedCount++;
+        const avg = weekdaySums[day] / cnt;
+        if (avg < minAvg) {
+          minAvg = avg;
+          bestDay = day;
+        }
+      }
+    }
+    if (qualifiedCount >= 4) {
+      cheapestWeekday = bestDay;
     }
   }
 
-  const currentPercentile = currentPrice == null || !Number.isFinite(currentPrice)
-    ? undefined
-    : Math.round(values.filter((value) => value <= currentPrice).length / values.length * 100);
+  let currentPercentile: number | undefined = undefined;
+  if (currentPrice != null && Number.isFinite(currentPrice)) {
+    let countLe = 0;
+    for (let i = 0; i < len; i++) {
+      if (values[i] <= currentPrice) countLe++;
+      else break;
+    }
+    currentPercentile = Math.round((countLe / len) * 100);
+  }
+
   return {
-    lowest: values[0], highest: values[values.length - 1], average, median,
-    volatilityPercent: average ? standardDeviation / average * 100 : 0,
-    currentPercentile, cheapestWeekday,
+    lowest: values[0],
+    highest: values[len - 1],
+    average,
+    median,
+    volatilityPercent: average ? (standardDeviation / average) * 100 : 0,
+    currentPercentile,
+    cheapestWeekday,
   };
 }

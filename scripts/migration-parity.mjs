@@ -58,24 +58,56 @@ export function parseMigrationText(content) {
 }
 
 export function evaluateMigrationParity(localVersions, remoteVersions) {
-  const duplicates = localVersions.filter((version, index) => localVersions.indexOf(version) !== index);
-  const local = [...new Set(localVersions)].sort();
+  const seen = new Set();
+  const duplicates = [];
+  for (let i = 0; i < localVersions.length; i++) {
+    const v = localVersions[i];
+    if (seen.has(v)) {
+      duplicates.push(v);
+    } else {
+      seen.add(v);
+    }
+  }
+
+  const local = duplicates.length === 0 ? [...localVersions].sort() : [...seen].sort();
   const remote = [...new Set(remoteVersions)].sort();
-  const localSet = new Set(local);
+  const localSet = duplicates.length === 0 ? seen : new Set(local);
   const remoteSet = new Set(remote);
-  const remoteOnly = remote.filter((version) => !localSet.has(version));
-  const appliedIndexes = local.flatMap((version, index) => remoteSet.has(version) ? [index] : []);
-  const highestAppliedIndex = appliedIndexes.length ? Math.max(...appliedIndexes) : -1;
-  const missingBeforeApplied = highestAppliedIndex < 0
-    ? []
-    : local.slice(0, highestAppliedIndex + 1).filter((version) => !remoteSet.has(version));
-  const pending = local.filter((version) => !remoteSet.has(version));
+
+  const remoteOnly = [];
+  for (let i = 0; i < remote.length; i++) {
+    if (!localSet.has(remote[i])) {
+      remoteOnly.push(remote[i]);
+    }
+  }
+
+  let highestAppliedIndex = -1;
+  const pending = [];
+  for (let i = 0; i < local.length; i++) {
+    const v = local[i];
+    if (remoteSet.has(v)) {
+      highestAppliedIndex = i;
+    } else {
+      pending.push(v);
+    }
+  }
+
+  const missingBeforeApplied = [];
+  if (highestAppliedIndex >= 0) {
+    for (let i = 0; i <= highestAppliedIndex; i++) {
+      const v = local[i];
+      if (!remoteSet.has(v)) {
+        missingBeforeApplied.push(v);
+      }
+    }
+  }
+
   return {
     ok: duplicates.length === 0 && remoteOnly.length === 0 && missingBeforeApplied.length === 0,
     local_count: local.length,
     remote_count: remote.length,
     pending,
-    duplicate_local_versions: [...new Set(duplicates)],
+    duplicate_local_versions: duplicates.length > 1 ? [...new Set(duplicates)] : duplicates,
     remote_only_versions: remoteOnly,
     missing_before_applied: missingBeforeApplied,
   };

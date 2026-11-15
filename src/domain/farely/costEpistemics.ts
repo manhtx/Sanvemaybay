@@ -63,9 +63,18 @@ export interface TrueCostInput {
 }
 
 const BUDGET_CARRIER_CODES = new Set(['VJ', 'AK', 'FD', 'TR', '5J', 'SL', 'VU']);
+const BUDGET_SUBSTRINGS = ['VJ', 'VU', 'AIRASIA', 'SCOOT'];
 const LEGACY_CARRIER_CODES = new Set([
   'VN', 'QH', 'SQ', 'TG', 'JL', 'NH', 'KE', 'OZ', 'CX', 'BR', 'CI', 'EK', 'QR', 'TK'
 ]);
+
+function isBudgetCarrier(carrier: string): boolean {
+  if (BUDGET_CARRIER_CODES.has(carrier)) return true;
+  for (let i = 0; i < BUDGET_SUBSTRINGS.length; i++) {
+    if (carrier.includes(BUDGET_SUBSTRINGS[i])) return true;
+  }
+  return false;
+}
 
 /**
  * Evaluates the true all-in cost with epistemic honesty.
@@ -159,7 +168,7 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
       note: 'Dữ liệu phí hành lý do nhà cung cấp báo'
     });
   } else {
-    const isBudget = BUDGET_CARRIER_CODES.has(carrier) || ['VJ', 'VU', 'AIRASIA', 'SCOOT'].some(a => carrier.includes(a));
+    const isBudget = isBudgetCarrier(carrier);
     const isLegacy = LEGACY_CARRIER_CODES.has(carrier);
 
     if (isBudget) {
@@ -328,19 +337,24 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
     }
   }
 
-  const knownTotal = components
-    .filter(c => c.state === 'KNOWN' && c.amount !== null)
-    .reduce((sum, c) => sum + (c.amount ?? 0), 0);
+  let knownTotal = 0;
+  let estimatedAdditional = 0;
+  let hasUnknownMandatoryComp = false;
 
-  const estimatedAdditional = components
-    .filter(c => c.state === 'ESTIMATED' && c.amount !== null)
-    .reduce((sum, c) => sum + (c.amount ?? 0), 0);
+  for (let i = 0; i < components.length; i++) {
+    const c = components[i];
+    if (c.state === 'KNOWN' && c.amount !== null) {
+      knownTotal += c.amount;
+    } else if (c.state === 'ESTIMATED' && c.amount !== null) {
+      estimatedAdditional += c.amount;
+    }
+    if (!hasUnknownMandatoryComp && c.state === 'UNKNOWN' && (c.category === 'payment_fee' || c.category === 'checked_baggage' || c.category === 'taxes_fees')) {
+      hasUnknownMandatoryComp = true;
+    }
+  }
 
   const estimatedTotal = knownTotal + estimatedAdditional;
-
-  const hasUnknownMandatory = components.some(
-    c => c.state === 'UNKNOWN' && (c.category === 'payment_fee' || c.category === 'checked_baggage' || c.category === 'taxes_fees')
-  ) || hasUnknownMandatoryCost;
+  const hasUnknownMandatory = hasUnknownMandatoryComp || hasUnknownMandatoryCost;
 
   return {
     basePrice: params.basePrice,
