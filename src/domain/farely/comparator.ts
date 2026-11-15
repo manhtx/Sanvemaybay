@@ -53,6 +53,12 @@ function computeMedian(sortedValues: number[]): number {
   return (sortedValues[mid - 1] + sortedValues[mid]) / 2;
 }
 
+let lastSampleSize = -1;
+let lastUniqueEpochs: number | undefined;
+let lastDistinctDays: number | undefined;
+let lastHasDegradedOnly: boolean | undefined;
+let lastLevel: EvidenceLevel = 'INSUFFICIENT';
+
 /**
  * Evaluates evidence level based on sample size, independent scan epochs, distinct observation days, and source quality.
  * S13, REQ-COMP-005, REQ-COMP-006, NODE TK-07.
@@ -61,34 +67,41 @@ export function determineEvidenceLevel(
   sampleSize: number,
   options?: { uniqueEpochs?: number; distinctDays?: number; hasDegradedOnly?: boolean }
 ): EvidenceLevel {
+  const u = options?.uniqueEpochs;
+  const d = options?.distinctDays;
+  const deg = options?.hasDegradedOnly;
+  if (
+    sampleSize === lastSampleSize &&
+    u === lastUniqueEpochs &&
+    d === lastDistinctDays &&
+    deg === lastHasDegradedOnly
+  ) {
+    return lastLevel;
+  }
+
+  let level: EvidenceLevel;
   if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_WEAK) {
-    return 'INSUFFICIENT';
+    level = 'INSUFFICIENT';
+  } else if (deg) {
+    level = sampleSize >= COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE ? 'MODERATE' : 'WEAK';
+  } else if (u !== undefined && u < 2 && sampleSize >= COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE) {
+    level = 'WEAK';
+  } else if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE) {
+    level = 'WEAK';
+  } else if (d !== undefined && d < 3 && sampleSize >= COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_STRONG) {
+    level = 'MODERATE';
+  } else if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_STRONG) {
+    level = 'MODERATE';
+  } else {
+    level = 'STRONG';
   }
 
-  // Degraded fallback data alone cannot produce STRONG evidence
-  if (options?.hasDegradedOnly) {
-    return sampleSize >= COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE ? 'MODERATE' : 'WEAK';
-  }
-
-  // If epochs are explicitly tracked, require independent scan epochs
-  if (options?.uniqueEpochs !== undefined && options.uniqueEpochs < 2 && sampleSize >= COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE) {
-    return 'WEAK'; // Single epoch cannot provide MODERATE/STRONG confidence
-  }
-
-  if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_MODERATE) {
-    return 'WEAK';
-  }
-
-  // S13 / A17: Require multiple distinct observation days for STRONG confidence.
-  // Repeated observations on the same day cannot achieve STRONG confidence.
-  if (options?.distinctDays !== undefined && options.distinctDays < 3 && sampleSize >= COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_STRONG) {
-    return 'MODERATE';
-  }
-
-  if (sampleSize < COMPARATOR_THRESHOLDS.MIN_OBSERVATIONS_FOR_STRONG) {
-    return 'MODERATE';
-  }
-  return 'STRONG';
+  lastSampleSize = sampleSize;
+  lastUniqueEpochs = u;
+  lastDistinctDays = d;
+  lastHasDegradedOnly = deg;
+  lastLevel = level;
+  return level;
 }
 
 /**

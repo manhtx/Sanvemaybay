@@ -44,18 +44,29 @@ export interface TravelIntent {
   currency: CurrencyCode;
 }
 
+let lastOriginCode = '';
+let lastDestCode = '';
+let lastMarketScope: MarketScope = 'INTERNATIONAL';
+
 /**
  * Derives market scope from origin and destination countries.
  * Domestic if both within VN, International otherwise.
  * Sourced purely from canonical AIRPORT_CATALOG country metadata.
  */
 export function deriveMarketScope(originCode: string, destinationCode: string): MarketScope {
+  if (originCode === lastOriginCode && destinationCode === lastDestCode) {
+    return lastMarketScope;
+  }
   const originAirport = AIRPORT_CATALOG[originCode] || AIRPORT_CATALOG[originCode.toUpperCase()];
   const destAirport = AIRPORT_CATALOG[destinationCode] || AIRPORT_CATALOG[destinationCode.toUpperCase()];
+  let res: MarketScope = 'INTERNATIONAL';
   if (originAirport && destAirport) {
-    return (originAirport.country === 'VN' && destAirport.country === 'VN') ? 'DOMESTIC' : 'INTERNATIONAL';
+    res = (originAirport.country === 'VN' && destAirport.country === 'VN') ? 'DOMESTIC' : 'INTERNATIONAL';
   }
-  return 'INTERNATIONAL';
+  lastOriginCode = originCode;
+  lastDestCode = destinationCode;
+  lastMarketScope = res;
+  return res;
 }
 
 /**
