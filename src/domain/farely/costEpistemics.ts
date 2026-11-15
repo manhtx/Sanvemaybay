@@ -67,6 +67,145 @@ const LEGACY_CARRIER_CODES = new Set([
   'VN', 'QH', 'SQ', 'TG', 'JL', 'NH', 'KE', 'OZ', 'CX', 'BR', 'CI', 'EK', 'QR', 'TK'
 ]);
 
+const DISCLAIMER_UNKNOWN = 'Giá vé cơ bản có thể chưa bao gồm đầy đủ phụ phí xuất vé hoặc thuế địa phương tuỳ kênh đặt vé.';
+const DISCLAIMER_CONFIRMED = 'Giá hiển thị đã xác nhận bao gồm thuế và các loại phí bắt buộc.';
+
+const SEAT_SELECTION_COMPONENT: CostComponent = Object.freeze({
+  category: 'seat_selection',
+  label: 'Chọn chỗ ngồi',
+  amount: null,
+  state: 'OPTIONAL',
+  note: 'Không bắt buộc; tùy chọn thêm tại bước làm thủ tục'
+});
+
+const BAGGAGE_INCLUDED_FEE: FeeItem = Object.freeze({
+  id: 'baggage_fee',
+  name: 'Hành lý ký gửi 20kg',
+  amount: 0,
+  status: 'KNOWN',
+  mandatory: false,
+  explanation: 'Đã xác nhận bao gồm trong giá vé'
+});
+
+const BAGGAGE_INCLUDED_COMPONENT: CostComponent = Object.freeze({
+  category: 'checked_baggage',
+  label: 'Hành lý ký gửi',
+  amount: 0,
+  state: 'KNOWN',
+  note: 'Đã xác nhận bao gồm trong giá vé'
+});
+
+const BAGGAGE_BUDGET_DOM_FEE: FeeItem = Object.freeze({
+  id: 'baggage_fee',
+  name: 'Hành lý ký gửi 20kg (Ước tính)',
+  amount: 280000,
+  status: 'ESTIMATED',
+  mandatory: false,
+  explanation: 'Hãng giá rẻ thường không bao gồm hành lý ký gửi'
+});
+
+const BAGGAGE_BUDGET_DOM_COMPONENT: CostComponent = Object.freeze({
+  category: 'checked_baggage',
+  label: 'Hành lý ký gửi 20kg (ước tính)',
+  amount: 280000,
+  state: 'ESTIMATED',
+  note: 'Hãng bay giá rẻ thường chưa bao gồm kiện ký gửi tiêu chuẩn'
+});
+
+const BAGGAGE_BUDGET_INTL_FEE: FeeItem = Object.freeze({
+  id: 'baggage_fee',
+  name: 'Hành lý ký gửi 20kg (Ước tính)',
+  amount: 450000,
+  status: 'ESTIMATED',
+  mandatory: false,
+  explanation: 'Hãng giá rẻ thường không bao gồm hành lý ký gửi'
+});
+
+const BAGGAGE_BUDGET_INTL_COMPONENT: CostComponent = Object.freeze({
+  category: 'checked_baggage',
+  label: 'Hành lý ký gửi 20kg (ước tính)',
+  amount: 450000,
+  state: 'ESTIMATED',
+  note: 'Hãng bay giá rẻ thường chưa bao gồm kiện ký gửi tiêu chuẩn'
+});
+
+const BAGGAGE_LEGACY_FEE: FeeItem = Object.freeze({
+  id: 'baggage_fee',
+  name: 'Hành lý ký gửi',
+  amount: null,
+  status: 'UNKNOWN',
+  mandatory: false,
+  explanation: 'Tùy hạng vé của hãng (hạng Tiết kiệm/Lite có thể chưa bao gồm kiện ký gửi)'
+});
+
+const BAGGAGE_LEGACY_COMPONENT: CostComponent = Object.freeze({
+  category: 'checked_baggage',
+  label: 'Hành lý ký gửi',
+  amount: null,
+  state: 'UNKNOWN',
+  note: 'Tùy hạng vé của hãng (hạng Tiết kiệm/Lite có thể chưa bao gồm kiện ký gửi)'
+});
+
+const BAGGAGE_UNKNOWN_FEE: FeeItem = Object.freeze({
+  id: 'baggage_fee',
+  name: 'Hành lý ký gửi',
+  amount: null,
+  status: 'UNKNOWN',
+  mandatory: false,
+  explanation: 'Chưa có thông tin kiện ký gửi từ nhà cung cấp — cần kiểm tra khi đặt'
+});
+
+const BAGGAGE_UNKNOWN_COMPONENT: CostComponent = Object.freeze({
+  category: 'checked_baggage',
+  label: 'Hành lý ký gửi',
+  amount: null,
+  state: 'UNKNOWN',
+  note: 'Chưa có thông tin kiện ký gửi từ nhà cung cấp — cần kiểm tra khi đặt'
+});
+
+const TAXES_ALL_IN_FEE: FeeItem = Object.freeze({
+  id: 'taxes_and_fees',
+  name: 'Thuế & phí sân bay',
+  amount: 0,
+  status: 'KNOWN',
+  mandatory: true,
+  explanation: 'Đã bao gồm trong giá vé quan sát theo hợp đồng nhà cung cấp'
+});
+
+const TAXES_ALL_IN_COMPONENT: CostComponent = Object.freeze({
+  category: 'taxes_fees',
+  label: 'Thuế & phụ phí sân bay',
+  amount: 0,
+  state: 'KNOWN',
+  note: 'Đã bao gồm trong giá vé quan sát theo nhà cung cấp'
+});
+
+const TAXES_UNKNOWN_FEE: FeeItem = Object.freeze({
+  id: 'taxes_and_fees',
+  name: 'Thuế & phụ phí sân bay',
+  amount: null,
+  status: 'UNKNOWN',
+  mandatory: true,
+  explanation: 'Chưa có dữ liệu xác nhận thuế phí đã bao gồm hoàn toàn trong giá hiển thị hay chưa'
+});
+
+const PAYMENT_UNKNOWN_FEE: FeeItem = Object.freeze({
+  id: 'payment_fee',
+  name: 'Phí thanh toán',
+  amount: null,
+  status: 'UNKNOWN',
+  mandatory: true,
+  explanation: 'Tùy phương thức thanh toán (thẻ quốc tế / thẻ nội địa)'
+});
+
+const PAYMENT_UNKNOWN_COMPONENT: CostComponent = Object.freeze({
+  category: 'payment_fee',
+  label: 'Phụ phí thanh toán',
+  amount: null,
+  state: 'UNKNOWN',
+  note: 'Tùy phương thức thanh toán (thẻ quốc tế / thẻ nội địa)'
+});
+
 function isBudgetCarrier(carrier: string): boolean {
   if (BUDGET_CARRIER_CODES.has(carrier)) return true;
   if (carrier.length >= 4) {
@@ -134,21 +273,8 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
   if (params.isBaggageExplicitlyIncluded) {
     baggageState = 'KNOWN';
     isBaggageIncluded = true;
-    fees.push({
-      id: 'baggage_fee',
-      name: 'Hành lý ký gửi 20kg',
-      amount: 0,
-      status: 'KNOWN',
-      mandatory: false,
-      explanation: 'Đã xác nhận bao gồm trong giá vé'
-    });
-    components.push({
-      category: 'checked_baggage',
-      label: 'Hành lý ký gửi',
-      amount: 0,
-      state: 'KNOWN',
-      note: 'Đã xác nhận bao gồm trong giá vé'
-    });
+    fees.push(BAGGAGE_INCLUDED_FEE);
+    components.push(BAGGAGE_INCLUDED_COMPONENT);
   } else if (baggageFeeProvided !== undefined) {
     baggageState = 'KNOWN';
     fees.push({
@@ -172,57 +298,17 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
 
     if (isBudget) {
       baggageState = 'ESTIMATED';
-      const estimatedAmt = isInternational ? 450000 : 280000;
-      fees.push({
-        id: 'baggage_fee',
-        name: 'Hành lý ký gửi 20kg (Ước tính)',
-        amount: estimatedAmt,
-        status: 'ESTIMATED',
-        mandatory: false,
-        explanation: 'Hãng giá rẻ thường không bao gồm hành lý ký gửi'
-      });
-      components.push({
-        category: 'checked_baggage',
-        label: 'Hành lý ký gửi 20kg (ước tính)',
-        amount: estimatedAmt,
-        state: 'ESTIMATED',
-        note: 'Hãng bay giá rẻ thường chưa bao gồm kiện ký gửi tiêu chuẩn'
-      });
+      fees.push(isInternational ? BAGGAGE_BUDGET_INTL_FEE : BAGGAGE_BUDGET_DOM_FEE);
+      components.push(isInternational ? BAGGAGE_BUDGET_INTL_COMPONENT : BAGGAGE_BUDGET_DOM_COMPONENT);
     } else if (isLegacy) {
       // Negative control: Carrier identity alone is insufficient to mark baggage KNOWN
       baggageState = 'UNKNOWN';
-      fees.push({
-        id: 'baggage_fee',
-        name: 'Hành lý ký gửi',
-        amount: null,
-        status: 'UNKNOWN',
-        mandatory: false,
-        explanation: 'Tùy hạng vé của hãng (hạng Tiết kiệm/Lite có thể chưa bao gồm kiện ký gửi)'
-      });
-      components.push({
-        category: 'checked_baggage',
-        label: 'Hành lý ký gửi',
-        amount: null,
-        state: 'UNKNOWN',
-        note: 'Tùy hạng vé của hãng (hạng Tiết kiệm/Lite có thể chưa bao gồm kiện ký gửi)'
-      });
+      fees.push(BAGGAGE_LEGACY_FEE);
+      components.push(BAGGAGE_LEGACY_COMPONENT);
     } else {
       baggageState = 'UNKNOWN';
-      fees.push({
-        id: 'baggage_fee',
-        name: 'Hành lý ký gửi',
-        amount: null,
-        status: 'UNKNOWN',
-        mandatory: false,
-        explanation: 'Chưa có thông tin kiện ký gửi từ nhà cung cấp — cần kiểm tra khi đặt'
-      });
-      components.push({
-        category: 'checked_baggage',
-        label: 'Hành lý ký gửi',
-        amount: null,
-        state: 'UNKNOWN',
-        note: 'Chưa có thông tin kiện ký gửi từ nhà cung cấp — cần kiểm tra khi đặt'
-      });
+      fees.push(BAGGAGE_UNKNOWN_FEE);
+      components.push(BAGGAGE_UNKNOWN_COMPONENT);
     }
   }
 
@@ -244,41 +330,15 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
       note: 'Thuế và phụ phí sân bay đã xác nhận'
     });
   } else if (params.providerVerifiedAllIn) {
-    fees.push({
-      id: 'taxes_and_fees',
-      name: 'Thuế & phí sân bay',
-      amount: 0,
-      status: 'KNOWN',
-      mandatory: true,
-      explanation: 'Đã bao gồm trong giá vé quan sát theo hợp đồng nhà cung cấp'
-    });
-    components.push({
-      category: 'taxes_fees',
-      label: 'Thuế & phụ phí sân bay',
-      amount: 0,
-      state: 'KNOWN',
-      note: 'Đã bao gồm trong giá vé quan sát theo nhà cung cấp'
-    });
+    fees.push(TAXES_ALL_IN_FEE);
+    components.push(TAXES_ALL_IN_COMPONENT);
   } else {
     // REQ-COST-003 / NC-033: Unknown mandatory cost is UNKNOWN, not zero
-    fees.push({
-      id: 'taxes_and_fees',
-      name: 'Thuế & phụ phí sân bay',
-      amount: null,
-      status: 'UNKNOWN',
-      mandatory: true,
-      explanation: 'Chưa có dữ liệu xác nhận thuế phí đã bao gồm hoàn toàn trong giá hiển thị hay chưa'
-    });
+    fees.push(TAXES_UNKNOWN_FEE);
   }
 
   // 4. Seat selection (Optional)
-  components.push({
-    category: 'seat_selection',
-    label: 'Chọn chỗ ngồi',
-    amount: null,
-    state: 'OPTIONAL',
-    note: 'Không bắt buộc; tùy chọn thêm tại bước làm thủ tục'
-  });
+  components.push(SEAT_SELECTION_COMPONENT);
 
   // 5. Payment fee
   if (paymentFeeProvided !== undefined) {
@@ -298,21 +358,8 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
       note: 'Phí xử lý giao dịch'
     });
   } else {
-    fees.push({
-      id: 'payment_fee',
-      name: 'Phí thanh toán',
-      amount: null,
-      status: 'UNKNOWN',
-      mandatory: true,
-      explanation: 'Tùy phương thức thanh toán (thẻ quốc tế / thẻ nội địa)'
-    });
-    components.push({
-      category: 'payment_fee',
-      label: 'Phụ phí thanh toán',
-      amount: null,
-      state: 'UNKNOWN',
-      note: 'Tùy phương thức thanh toán (thẻ quốc tế / thẻ nội địa)'
-    });
+    fees.push(PAYMENT_UNKNOWN_FEE);
+    components.push(PAYMENT_UNKNOWN_COMPONENT);
   }
 
   let knownMandatory = 0;
@@ -362,9 +409,7 @@ export function evaluateTrueCost(params: TrueCostInput): TrueCostEvaluation {
     hasUnknownMandatoryCost,
     minVerifiableTotal: params.basePrice + knownMandatory,
     itemizedFees: fees,
-    pricingTransparencyDisclaimer: hasUnknownMandatoryCost
-      ? 'Giá vé cơ bản có thể chưa bao gồm đầy đủ phụ phí xuất vé hoặc thuế địa phương tuỳ kênh đặt vé.'
-      : 'Giá hiển thị đã xác nhận bao gồm thuế và các loại phí bắt buộc.',
+    pricingTransparencyDisclaimer: hasUnknownMandatoryCost ? DISCLAIMER_UNKNOWN : DISCLAIMER_CONFIRMED,
     components,
     knownTotal,
     estimatedAdditional,
