@@ -19,12 +19,16 @@ export function shouldSampleWebVitals(
   storage: Storage | undefined = typeof window === "undefined" ? undefined : window.sessionStorage,
   random: () => number = Math.random,
 ): boolean {
-  const boundedRate = Math.max(0, Math.min(1, Number.isFinite(sampleRate) ? sampleRate : 0));
-  const existing = storage?.getItem(SAMPLE_KEY);
-  if (existing === "yes") return true;
-  if (existing === "no") return false;
+  if (storage !== undefined) {
+    const existing = storage.getItem(SAMPLE_KEY);
+    if (existing === "yes") return true;
+    if (existing === "no") return false;
+  }
+  const boundedRate = !Number.isFinite(sampleRate) ? 0 : sampleRate <= 0 ? 0 : sampleRate >= 1 ? 1 : sampleRate;
   const sampled = random() < boundedRate;
-  storage?.setItem(SAMPLE_KEY, sampled ? "yes" : "no");
+  if (storage !== undefined) {
+    storage.setItem(SAMPLE_KEY, sampled ? "yes" : "no");
+  }
   return sampled;
 }
 

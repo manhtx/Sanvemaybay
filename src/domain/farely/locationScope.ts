@@ -144,6 +144,15 @@ export const AIRPORT_CATALOG: Record<string, AirportInfo> = {
   MEL: { code: 'MEL', name: 'Melbourne Intl', cityName: 'Melbourne', country: 'AU', timezone: 'Australia/Melbourne' }
 };
 
+function cloneCodes(codes: string[]): string[] {
+  const len = codes.length;
+  if (len === 1) return [codes[0]];
+  if (len === 2) return [codes[0], codes[1]];
+  if (len === 3) return [codes[0], codes[1], codes[2]];
+  if (len === 4) return [codes[0], codes[1], codes[2], codes[3]];
+  return codes.slice();
+}
+
 const SCOPE_CACHE = new Map<string, LocationScope>();
 
 /**
@@ -156,7 +165,7 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
       return {
         type: cached.type,
         primaryCode: cached.primaryCode,
-        expandedCodes: cached.expandedCodes.slice()
+        expandedCodes: cloneCodes(cached.expandedCodes)
       };
     }
   }
@@ -172,13 +181,13 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
       const res: LocationScope = {
         type: 'METRO',
         primaryCode: metro.metroId,
-        expandedCodes: metro.airports.slice()
+        expandedCodes: metro.airports
       };
       if (!requestedType && SCOPE_CACHE.size < 500) SCOPE_CACHE.set(codeOrMetro, res);
       return {
         type: res.type,
         primaryCode: res.primaryCode,
-        expandedCodes: res.expandedCodes.slice()
+        expandedCodes: cloneCodes(res.expandedCodes)
       };
     }
   }
@@ -190,7 +199,7 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
       return {
         type: 'METRO',
         primaryCode: airport.metroId,
-        expandedCodes: METRO_CATALOG[airport.metroId].airports.slice()
+        expandedCodes: cloneCodes(METRO_CATALOG[airport.metroId].airports)
       };
     }
     const res: LocationScope = {
@@ -202,7 +211,7 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
     return {
       type: res.type,
       primaryCode: res.primaryCode,
-      expandedCodes: res.expandedCodes.slice()
+      expandedCodes: cloneCodes(res.expandedCodes)
     };
   }
 
@@ -216,12 +225,21 @@ export function resolveLocationScope(codeOrMetro: string, requestedType?: Locati
   return {
     type: res.type,
     primaryCode: res.primaryCode,
-    expandedCodes: res.expandedCodes.slice()
+    expandedCodes: cloneCodes(res.expandedCodes)
   };
 }
 
 export function areCodesEqualCaseInsensitive(a: string, b: string): boolean {
   if (a === b) return true;
+  if (a.length === 3 && b.length === 3) {
+    const c10 = a.charCodeAt(0), c20 = b.charCodeAt(0);
+    if (c10 !== c20 && (c10 ^ 32) !== c20) return false;
+    const c11 = a.charCodeAt(1), c21 = b.charCodeAt(1);
+    if (c11 !== c21 && (c11 ^ 32) !== c21) return false;
+    const c12 = a.charCodeAt(2), c22 = b.charCodeAt(2);
+    if (c12 !== c22 && (c12 ^ 32) !== c22) return false;
+    return true;
+  }
   let startA = 0;
   let endA = a.length;
   while (startA < endA && a.charCodeAt(startA) <= 32) startA++;
