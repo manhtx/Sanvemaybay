@@ -50,6 +50,9 @@ const allowedMetadata = new Set([
   "page",
 ]);
 
+const ALLOWED_METADATA_MAP: Record<string, boolean> = Object.create(null);
+for (const k of allowedMetadata) ALLOWED_METADATA_MAP[k] = true;
+
 let lastTimestampMs = 0;
 let cachedIsoString = "";
 
@@ -67,8 +70,11 @@ export function sanitizeProductEvent(input: ProductEvent): ProductEvent {
   const rawMeta = input.metadata;
   const metadata: Record<string, string | number | boolean | null> = {};
   if (rawMeta && typeof rawMeta === "object") {
-    for (const key in rawMeta) {
-      if (allowedMetadata.has(key)) {
+    const keys = Object.keys(rawMeta);
+    const n = keys.length;
+    for (let i = 0; i < n; i++) {
+      const key = keys[i];
+      if (ALLOWED_METADATA_MAP[key] === true) {
         const value = rawMeta[key];
         if (typeof value === "string" || typeof value === "number" || typeof value === "boolean" || value === null) {
           metadata[key] = value;
