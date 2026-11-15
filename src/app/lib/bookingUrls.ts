@@ -26,6 +26,10 @@ function toSkyDate(date: string): string {
   return date.replace(/-/g, '').slice(2); // "2026-06-22" → "260622"
 }
 
+const GOOGLE_FLIGHTS_CACHE = new WeakMap<BookingParams, string>();
+const SKY_CACHE = new WeakMap<BookingParams, string>();
+const KAYAK_CACHE = new WeakMap<BookingParams, string>();
+
 /**
  * Google Flights ?q= format — CONFIRMED WORKING (verified 2025-04-07)
  * Tab title shows "Hà Nội đi Phú Quốc | Google Chuyến bay" = đúng route
@@ -33,34 +37,56 @@ function toSkyDate(date: string): string {
  * Format: ?q=Flights to [DEST] from [ORIG] on [DEPART] through [RETURN]
  */
 export function buildGoogleFlightsUrl(p: BookingParams): string {
-  const parts = [`Flights to ${p.toCode} from ${p.fromCode} on ${p.departDate}`];
-  if (p.returnDate) parts.push(`through ${p.returnDate}`);
-  const query = encodeURIComponent(parts.join(' '));
-  return `https://www.google.com/travel/flights?q=${query}&hl=vi&curr=VND`;
+  if (typeof p === "object" && p !== null) {
+    const cached = GOOGLE_FLIGHTS_CACHE.get(p);
+    if (cached !== undefined) return cached;
+  }
+  const str = p.returnDate
+    ? `Flights to ${p.toCode} from ${p.fromCode} on ${p.departDate} through ${p.returnDate}`
+    : `Flights to ${p.toCode} from ${p.fromCode} on ${p.departDate}`;
+  const query = encodeURIComponent(str);
+  const result = `https://www.google.com/travel/flights?q=${query}&hl=vi&curr=VND`;
+  if (typeof p === "object" && p !== null) {
+    GOOGLE_FLIGHTS_CACHE.set(p, result);
+  }
+  return result;
 }
 
 /**
  * Skyscanner — format YYMMDD, stable API
  */
 export function buildSkyscannerUrl(p: BookingParams): string {
+  if (typeof p === "object" && p !== null) {
+    const cached = SKY_CACHE.get(p);
+    if (cached !== undefined) return cached;
+  }
   const dep = toSkyDate(p.departDate);
   const from = p.fromCode.toLowerCase();
   const to = p.toCode.toLowerCase();
-  if (p.returnDate) {
-    const ret = toSkyDate(p.returnDate);
-    return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/${ret}/?adults=1&cabinclass=economy&currency=vnd`;
+  const result = p.returnDate
+    ? `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/${toSkyDate(p.returnDate)}/?adults=1&cabinclass=economy&currency=vnd`
+    : `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/?adults=1&cabinclass=economy&currency=vnd`;
+  if (typeof p === "object" && p !== null) {
+    SKY_CACHE.set(p, result);
   }
-  return `https://www.skyscanner.net/transport/flights/${from}/${to}/${dep}/?adults=1&cabinclass=economy&currency=vnd`;
+  return result;
 }
 
 /**
  * Kayak — reliable international aggregator
  */
 export function buildKayakUrl(p: BookingParams): string {
-  if (p.returnDate) {
-    return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}/${p.returnDate}?adults=1&currency=VND`;
+  if (typeof p === "object" && p !== null) {
+    const cached = KAYAK_CACHE.get(p);
+    if (cached !== undefined) return cached;
   }
-  return `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}?adults=1&currency=VND`;
+  const result = p.returnDate
+    ? `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}/${p.returnDate}?adults=1&currency=VND`
+    : `https://www.kayak.com/flights/${p.fromCode}-${p.toCode}/${p.departDate}?adults=1&currency=VND`;
+  if (typeof p === "object" && p !== null) {
+    KAYAK_CACHE.set(p, result);
+  }
+  return result;
 }
 
 /**
