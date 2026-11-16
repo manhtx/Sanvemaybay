@@ -1,4 +1,4 @@
-import { access, readFile } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const root = process.cwd();
@@ -39,6 +39,11 @@ const blockers = await readJson('.flycheap/RELEASE_BLOCKERS.json');
 const status = await readJson('.flycheap/STATUS.json');
 const packageJson = await readJson('package.json');
 const requiredCommands = ['check', 'check:functions', 'test:functions', 'test:e2e', 'test:integration', 'ai-loop:project-audit', 'ai-loop:audit'];
+const forbiddenCycleWriter = /^(?:run-continuous-loop|run-cycle-|generate-rounds)/i;
+for (const directory of ['scripts/ai-loop', '.ai-loop/input']) {
+  const entries = await readdir(join(root, directory), { withFileTypes: true }).catch(() => []);
+  for (const entry of entries) if (entry.isFile() && forbiddenCycleWriter.test(entry.name)) issues.push(`forbidden generated cycle writer present: ${directory}/${entry.name}`);
+}
 
 const requirementIds = new Set((acceptance?.requirements || []).map((item) => item.id).filter(Boolean));
 const featureIds = new Set((features?.features || []).map((item) => item.feature_id).filter(Boolean));

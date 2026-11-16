@@ -1,10 +1,10 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { completeWithRetry } from './provider.mjs';
 import { executeAgent } from './agent.mjs';
 import { compileResearchPacket, renderResearchDossier } from './research-packet.mjs';
-import { LOOP_DIR, STATE_DIR, ensureDirs, readJson, readText, stopped, writeJson, writeText, writeTextAtomic, run } from './runtime.mjs';
+import { LOOP_DIR, ROOT, STATE_DIR, ensureDirs, readJson, readText, stopped, writeJson, writeText, writeTextAtomic, run } from './runtime.mjs';
 
 const INSTRUCTIONS = join(LOOP_DIR, 'instructions');
 const INPUT = join(LOOP_DIR, 'input');
@@ -26,6 +26,7 @@ const researchMinTurns = testRoundOverride ? Number(process.env.AI_RESEARCH_MIN_
 const researchMinActions = testRoundOverride ? Number(process.env.AI_RESEARCH_MIN_ACTIONS || 4) : 4;
 
 await ensureDirs(INSTRUCTIONS, INPUT, CYCLES, STATE_DIR);
+await assertNoGeneratedCycleWriters();
 const command = process.argv[2] || 'run';
 const state = await readJson(STATE, {
   cycle: 0,
@@ -343,6 +344,19 @@ async function writeInstructionTemplates() {
     const path = join(INSTRUCTIONS, name);
     await writeTextAtomic(path, content);
   }
+}
+
+async function assertNoGeneratedCycleWriters() {
+  const forbidden = /^(?:run-continuous-loop|run-cycle-|generate-rounds)/i;
+  const locations = [join(ROOT, 'scripts', 'ai-loop'), INPUT];
+  const offenders = [];
+  for (const location of locations) {
+    const entries = await readdir(location, { withFileTypes: true }).catch(() => []);
+    for (const entry of entries) if (entry.isFile() && forbidden.test(entry.name)) {
+      offenders.push(location === INPUT ? `.ai-loop/input/${entry.name}` : `scripts/ai-loop/${entry.name}`);
+    }
+  }
+  if (offenders.length) throw new Error(`Farely loop refuses generated cycle writer(s): ${offenders.join(', ')}. Use the selected host model and canonical orchestrator.`);
 }
 
 function normalizeImplementationEvidence(value) {

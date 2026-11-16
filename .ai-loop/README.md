@@ -21,6 +21,12 @@ run goal ai loop
 
 The host reads `.ai-loop/GOAL_AI_LOOP.md` and uses the current model/session.
 
+Do not run or recreate a local cycle generator. `run-continuous-loop.mjs`,
+`run-cycle-*.mjs`, and `generate-rounds-*.mjs` are forbidden and removed from
+the repository. The orchestrator and research validator fail closed if such a
+writer appears again. A valid cycle must be produced by the selected host
+model from current actions and retained outputs.
+
 Farely-specific behavior is defined in `FARELY_PROJECT_ADAPTER.md`. It is the
 project adapter for the portable core and must be read together with the
 `.flycheap` source-of-truth contracts.
@@ -108,6 +114,11 @@ an action, retained output, evidence, finding, exact solution and acceptance
 test. Provider rights/provenance, freshness, true cost, baggage/tax,
 self-transfer risk, confidence, RLS/outbox and production/user evidence must
 remain explicit; UNKNOWN and BLOCKED_EXTERNAL are valid outcomes.
+
+Continuation is not a no-op counter: repeated green checks, copied dossiers,
+or cycle-number-only changes fail the cross-cycle novelty and value-progress
+gates. A cycle must add product-relevant evidence, revise a prior claim, close
+a bounded external unknown, or land a verified product/test/contract change.
 
 After 10 research rounds, the host compiles and independently refines one
 implementation mastergoal five times. Research diagnoses the Farely system;

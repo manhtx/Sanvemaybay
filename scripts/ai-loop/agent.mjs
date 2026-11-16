@@ -11,6 +11,10 @@ Rules:
 - Treat every previous conclusion as an untrusted hypothesis.
 - Inspect current files and runtime before changing anything.
 - Use actions to do work; do not merely describe work.
+- Never create or execute a hardcoded cycle/round generator, packet prewriter,
+  or scratch runner that fabricates research and submits it as a valid Farely
+  cycle. Research must come from the selected host model's current-repository
+  actions and retained outputs.
 - Paths are relative to the repository root.
 - Never use paths outside the repository.
 - Never claim verified without command, source, screenshot, or runtime evidence.

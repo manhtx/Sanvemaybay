@@ -8,6 +8,20 @@
   "requiredPacketFields": ["researchQuestion", "systemReview", "subpassCoverage", "lensCoverage", "findings", "evidenceLedger", "solutions", "rejectedClaims", "falsifiers", "limitations", "newEvidence", "revisedClaims", "acceptanceMatrix", "nextResearchQuestions", "executionManifest"],
   "requiredEvidenceFields": ["id", "actionId", "outputIds", "sourceLocator", "evidenceClass", "observedResult", "limitation", "falsifier"],
   "runtimeSeal": "ai-loop-runtime/1",
-  "completionRules": ["full-product-coverage", "action-output-provenance", "runtime-output-receipts", "finding-solution-acceptance-graph", "semantic-novelty-after-baseline", "unknown-boundaries-explicit"],
-  "mechanicalQuotas": false
+  "completionRules": ["full-product-coverage", "action-output-provenance", "runtime-output-receipts", "finding-solution-acceptance-graph", "semantic-novelty-after-baseline", "unknown-boundaries-explicit", "no-generated-cycle-writers", "cross-cycle-novelty", "value-progress-or-new-evidence"],
+  "mechanicalQuotas": false,
+  "forbiddenCycleWriterPatterns": ["run-continuous-loop", "run-cycle-", "generate-rounds"],
+  "forbiddenSyntheticSourcePatterns": ["Cycle \\d+ Round \\d+ Audit Matrix", "Genuine Autonomous Loop Cycle"],
+  "crossCycleNovelty": {
+    "enabled": true,
+    "maxRoundSimilarity": 0.92,
+    "maxHighlySimilarRounds": 3,
+    "requireNewEvidenceAfterBaseline": true,
+    "requireRevisedClaimAfterBaseline": true
+  },
+  "valueProgress": {
+    "enabled": true,
+    "allowedProgress": ["PRODUCT_CODE_CHANGE", "TEST_OR_CONTRACT_CHANGE", "NEW_PRODUCT_EVIDENCE", "REVISED_PRODUCT_CLAIM", "BOUNDED_EXTERNAL_UNKNOWN_CLOSED"],
+    "rejectOnlyGreenRecheck": true
+  }
 }

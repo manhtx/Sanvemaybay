@@ -6,6 +6,12 @@ Every round is a complete whole-product dossier. Complete four subpasses: `PRODU
 
 This is semantic deep research, not a length exercise. There is no quota for rows, characters, turns, actions or domain ratios. Depth must follow the actual product surface and evidence discovered. Use real read/search/run actions, retain their output, and distinguish `LOCAL_CODE`, `LOCAL_RUNTIME`, `EXPERIMENTAL`, `USER_RESEARCH`, `PRODUCT_ANALYTICS`, `BUSINESS_EVIDENCE`, `PUBLIC_PRIMARY_SOURCE`, `BLOCKED_EXTERNAL` and `UNKNOWN`.
 
+Never create or run a hardcoded cycle runner, round generator, packet prewriter,
+or synthetic evidence compiler. In particular, `run-continuous-loop.mjs`,
+`run-cycle-*.mjs`, and `generate-rounds-*.mjs` are forbidden. A valid round must
+be reasoned by the selected host model from current actions and retained output
+receipts; changing cycle numbers or timestamps is not new research.
+
 Every action must have a unique `actionId`, domain, decision type and concrete question. Every evidence row must link `actionId` and retained `outputIds`, with source locator, observed result, limitation and falsifier. Every finding must link evidence. Every solution must link findings and include mechanism, affected files/modules, dependencies, acceptance, verification, falsifier and rollback. Record exact FLY, GATE and RG mappings when applicable. A passing test/build is one observation, never proof of user or business value.
 
 Read and challenge the entire previous dossier again. Re-check important claims, record what changed or was rejected, add new system-level insight, and mark unavailable analytics, provider, deployment or user evidence as `UNKNOWN` or `BLOCKED_EXTERNAL`. Do not implement code in research mode, do not ask for approval, do not claim completion because the baseline passes, and do not produce a summary-only or template-only response.

@@ -1,6 +1,6 @@
-import { mkdir, rm } from 'node:fs/promises';
+import { mkdir, readdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { ROOT } from './runtime.mjs';
+import { ROOT, run } from './runtime.mjs';
 
 const dir = join(ROOT, '.ai-loop-smoke');
 await rm(dir, { recursive: true, force: true });
@@ -15,6 +15,16 @@ const checks = [
 for (const [name, check] of checks) { await check(); console.log(`PASS ${name}`); }
 const loopOrchestratorSource = await (await import('node:fs/promises')).readFile(join(ROOT, 'scripts', 'ai-loop', 'orchestrator.mjs'), 'utf8');
 const cycleValidatorSource = await (await import('node:fs/promises')).readFile(join(ROOT, 'scripts', 'ai-loop', 'validate-cycle.mjs'), 'utf8');
+const loopFiles = await readdir(join(ROOT, 'scripts', 'ai-loop'));
+if (loopFiles.some((name) => /^(?:run-continuous-loop|run-cycle-|generate-rounds)/i.test(name))) throw new Error('mechanical cycle writer remains in scripts/ai-loop');
+if (!loopOrchestratorSource.includes('assertNoGeneratedCycleWriters')) throw new Error('mechanical cycle writer guard is missing from orchestrator');
+console.log('PASS mechanical cycle writer guard');
+const forbiddenWriterFixture = join(ROOT, '.ai-loop', 'input', 'generate-rounds-smoke.mjs');
+await writeFile(forbiddenWriterFixture, 'writeFile(`.ai-loop/cycles/9999/round-01.md`, "generated");');
+let rejectedWriter = null;
+try { rejectedWriter = await run('node', ['scripts/ai-loop/orchestrator.mjs', 'host-instructions']); } finally { await rm(forbiddenWriterFixture, { force: true }); }
+if (rejectedWriter.code === 0 || !/refuses generated cycle writer/i.test(`${rejectedWriter.stdout}\n${rejectedWriter.stderr}`)) throw new Error('orchestrator accepted a generated cycle writer');
+console.log('PASS orchestrator rejects generated cycle writers');
 for (const required of ['mastergoal-round-${String(refinement).padStart(2, \'0\')}-validation.json', 'Repair Farely mastergoal refinement']) {
   if (!loopOrchestratorSource.includes(required)) throw new Error(`mastergoal refinement audit missing ${required}`);
 }

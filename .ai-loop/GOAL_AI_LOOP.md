@@ -20,6 +20,16 @@ Every previous research, solution, implementation, and verification result is
 an untrusted hypothesis. Independently re-check the current repository and
 runtime before relying on it.
 
+The selected host model must perform the research itself with the host's real
+tools and retained outputs. Never create or execute a hardcoded cycle runner,
+packet prewriter, or round generator such as `run-continuous-loop.mjs`,
+`run-cycle-*.mjs`, or `generate-rounds-*.mjs`. These files are forbidden under
+`scripts/ai-loop`, `.ai-loop/input`, or scratch directories. Do not prewrite
+themes, findings, solutions, lenses, mastergoals, value cases, or evidence
+records and then submit them as independent research. A cycle is admissible
+only when the selected host model produced its claims from current-repository
+actions and retained outputs.
+
 ## Persistent state
 
 Read and update:
@@ -75,6 +85,13 @@ cycle. After a successful implementation, continue looking for
 better visual direction, stronger interaction, clearer architecture, new
 defects, missing evidence, performance improvements, accessibility issues,
 content truth issues, and better long-term product decisions.
+
+Continuation is not permission for no-op checkpoints. A cycle may continue
+without product-code changes only when it produces genuinely new,
+product-relevant evidence, revises a prior claim, or closes a bounded external
+unknown with retained proof. Re-running the same tests, rewriting the same
+templates, changing only cycle numbers or timestamps, or generating another
+green report is a failed cycle and must enter corrective research instead.
 
 Only an explicit `.ai-loop/STOP` file is a normal stop condition. If the host
 supports long-running goals, queued follow-ups, background continuation, or
