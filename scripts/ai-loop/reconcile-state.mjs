@@ -6,7 +6,7 @@ const statePath = join(STATE_DIR, 'loop-state.json');
 const current = await readJson(statePath, { cycle: 0, history: [] });
 const policy = await readJson(join(LOOP_DIR, 'loop-policy.json'), { minCyclesBeforeCompletion: 1_000_000_000, researchRounds: 10, mastergoalRounds: 5 });
 const entries = await readdir(join(LOOP_DIR, 'cycles'), { withFileTypes: true }).catch(() => []);
-const cycles = entries.filter((entry) => entry.isDirectory() && /^\d{4}$/.test(entry.name)).map((entry) => Number(entry.name)).sort((a, b) => a - b);
+const cycles = entries.filter((entry) => entry.isDirectory() && /^\d{4,}$/.test(entry.name)).map((entry) => Number(entry.name)).sort((a, b) => a - b);
 if (!cycles.length) { console.log(JSON.stringify({ ...current, reconciled: false, reason: 'no-cycle-artifacts', root: ROOT }, null, 2)); process.exit(0); }
 
 const cycle = cycles.at(-1);

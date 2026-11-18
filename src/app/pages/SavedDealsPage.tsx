@@ -244,7 +244,7 @@ export function SavedDealsPage() {
                       {item.activeDealId ? (
                         <Link
                           to={`/deals/${item.activeDealId}`}
-                          className="px-3 py-1.5 rounded-lg bg-[#FCD535] hover:bg-[#F0B90B] text-[#181A20] font-bold text-xs transition-colors flex items-center gap-1 shadow-sm"
+                          className="px-3.5 py-1.5 rounded-lg bg-[#0084e6] hover:bg-[#006ec4] text-white font-semibold text-xs transition-colors flex items-center gap-1 shadow-xs"
                         >
                           <span>Xem chi tiết</span>
                           <ExternalLink className="w-3 h-3" />
@@ -290,7 +290,7 @@ export function SavedDealsPage() {
             <p className="text-stone-600 text-sm mb-4">Chưa có cơ hội nào được lưu vào danh sách theo dõi.</p>
             <Link
               to="/deals"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FCD535] hover:bg-[#F0B90B] text-[#181A20] font-bold text-xs transition shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0084e6] hover:bg-[#006ec4] text-white font-semibold text-xs transition shadow-xs"
             >
               Khám phá cơ hội hôm nay
             </Link>

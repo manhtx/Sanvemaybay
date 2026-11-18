@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { ROOT, readJson, readText } from './runtime.mjs';
 
 const cycle = String(process.argv[2] || '').padStart(4, '0');
-if (!/^\d{4}$/.test(cycle)) fail('Usage: node scripts/ai-loop/validate-release-attestation.mjs <cycle-number>');
+if (!/^\d{4,}$/.test(cycle)) fail('Usage: node scripts/ai-loop/validate-release-attestation.mjs <cycle-number>');
 const loopDir = join(ROOT, '.ai-loop');
 const dir = join(loopDir, 'cycles', cycle);
 const attestation = await readJson(join(dir, 'release-attestation.json'), null);
@@ -37,7 +37,7 @@ if (attestation?.continuationRequired !== true) issues.push('continuationRequire
 const cycleDirs = await readdir(join(loopDir, 'cycles'), { withFileTypes: true }).catch(() => []);
 const priorIds = new Set();
 for (const entry of cycleDirs) {
-  if (!entry.isDirectory() || !/^\d{4}$/.test(entry.name) || entry.name === cycle) continue;
+  if (!entry.isDirectory() || !/^\d{4,}$/.test(entry.name) || entry.name === cycle) continue;
   const ledger = await readText(join(loopDir, 'cycles', entry.name, 'evidence-ledger.jsonl'), '');
   for (const line of ledger.split(/\r?\n/).filter(Boolean)) {
     try { const value = JSON.parse(line); if (value.evidence_id) priorIds.add(value.evidence_id); } catch { /* other validator owns malformed JSON */ }

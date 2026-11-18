@@ -3,39 +3,39 @@ import { DataRightsPanel } from "../components/DataRightsPanel";
 
 export function PrivacyPage() {
   return (
-    <main className="min-h-screen px-4 pb-20 pt-24 text-stone-700 sm:px-6 bg-[var(--canvas-bg)]">
-      <article className="mx-auto max-w-3xl rounded-xl border border-stone-200 bg-white p-6 sm:p-10 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-wider text-blue-600 font-mono">Quyền riêng tư</p>
-        <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-stone-900">Chính sách bảo mật Farely</h1>
-        <p className="mt-2 text-xs text-stone-500">Cập nhật ngày 05/10/2026</p>
-        <div className="mt-8 space-y-6 text-sm leading-relaxed text-stone-700">
+    <main className="min-h-screen px-4 pb-20 pt-24 text-[#222222] sm:px-6 bg-white">
+      <article className="mx-auto max-w-3xl rounded-[14px] border border-[#dddddd] bg-white p-6 sm:p-10 shadow-sm">
+        <p className="text-xs font-bold uppercase tracking-wider text-[#0084e6] font-mono">Quyền riêng tư</p>
+        <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-[#222222]">Chính sách bảo mật Farely</h1>
+        <p className="mt-2 text-xs text-[#6a6a6a]">Cập nhật ngày 05/10/2026</p>
+        <div className="mt-8 space-y-6 text-sm leading-relaxed text-[#3f3f3f]">
           <section>
-            <h2 className="text-base font-bold text-stone-900">Dữ liệu giá vé</h2>
-            <p className="mt-1 text-xs sm:text-sm text-stone-600">Farely lưu các quan sát giá, tuyến bay, hãng hàng không, thời điểm ghi nhận và liên kết nguồn để xác định mặt bằng giá trung vị và kiểm tra tính xác thực. Giá quan sát không phải cam kết còn chỗ của hãng bay.</p>
+            <h2 className="text-base font-bold text-[#222222]">Dữ liệu giá vé</h2>
+            <p className="mt-1 text-xs sm:text-sm text-[#6a6a6a]">Farely lưu các quan sát giá, tuyến bay, hãng hàng không, thời điểm ghi nhận và liên kết nguồn để xác định mặt bằng giá trung vị và kiểm tra tính xác thực. Giá quan sát không phải cam kết còn chỗ của hãng bay.</p>
           </section>
           <section>
-            <h2 className="text-base font-bold text-stone-900">Dữ liệu bạn cung cấp</h2>
-            <p className="mt-1 text-xs sm:text-sm text-stone-600">Khi tạo tài khoản hoặc đăng ký theo dõi giá, hệ thống xử lý địa chỉ email, tiêu chí tuyến bay, ngân sách và tuỳ chọn nhận tin. Farely không yêu cầu và không lưu trữ thông tin hộ chiếu, CCCD hay thông tin thẻ thanh toán ngân hàng.</p>
+            <h2 className="text-base font-bold text-[#222222]">Dữ liệu bạn cung cấp</h2>
+            <p className="mt-1 text-xs sm:text-sm text-[#6a6a6a]">Khi tạo tài khoản hoặc đăng ký theo dõi giá, hệ thống xử lý địa chỉ email, tiêu chí tuyến bay, ngân sách và tuỳ chọn nhận tin. Farely không yêu cầu và không lưu trữ thông tin hộ chiếu, CCCD hay thông tin thẻ thanh toán ngân hàng.</p>
           </section>
           <section>
-            <h2 className="text-base font-bold text-stone-900">Phân tích sử dụng</h2>
-            <p className="mt-1 text-xs sm:text-sm text-stone-600">Sản phẩm chỉ ghi nhận các tương tác ẩn danh cơ bản như xem chi tiết, lưu cơ hội, chia sẻ và tạo cảnh báo nhằm cải thiện trải nghiệm người dùng.</p>
+            <h2 className="text-base font-bold text-[#222222]">Phân tích sử dụng</h2>
+            <p className="mt-1 text-xs sm:text-sm text-[#6a6a6a]">Sản phẩm chỉ ghi nhận các tương tác ẩn danh cơ bản như xem chi tiết, lưu cơ hội, chia sẻ và tạo cảnh báo nhằm cải thiện trải nghiệm người dùng.</p>
           </section>
           <section>
-            <h2 className="text-base font-bold text-stone-900">Mục đích và chia sẻ</h2>
-            <p className="mt-1 text-xs sm:text-sm text-stone-600">Dữ liệu chỉ được dùng để gửi thông báo giá vé mà bạn đã yêu cầu và phòng chống thư rác/lạm dụng. Farely không bán hoặc chia sẻ dữ liệu người dùng cho các bên quảng cáo thứ ba.</p>
+            <h2 className="text-base font-bold text-[#222222]">Mục đích và chia sẻ</h2>
+            <p className="mt-1 text-xs sm:text-sm text-[#6a6a6a]">Dữ liệu chỉ được dùng để gửi thông báo giá vé mà bạn đã yêu cầu và phòng chống thư rác/lạm dụng. Farely không bán hoặc chia sẻ dữ liệu người dùng cho các bên quảng cáo thứ ba.</p>
           </section>
           <section>
-            <h2 className="text-base font-bold text-stone-900">Quyền của bạn đối với dữ liệu</h2>
-            <p className="mt-1 text-xs sm:text-sm text-stone-600">Bạn có thể huỷ theo dõi bất cứ lúc nào qua liên kết đính kèm trong email thông báo. Khi đăng nhập, bạn có thể tải toàn bộ dữ liệu hoặc yêu cầu xoá vĩnh viễn tài khoản bằng công cụ bên dưới.</p>
+            <h2 className="text-base font-bold text-[#222222]">Quyền của bạn đối với dữ liệu</h2>
+            <p className="mt-1 text-xs sm:text-sm text-[#6a6a6a]">Bạn có thể huỷ theo dõi bất cứ lúc nào qua liên kết đính kèm trong email thông báo. Khi đăng nhập, bạn có thể tải toàn bộ dữ liệu hoặc yêu cầu xoá vĩnh viễn tài khoản bằng công cụ bên dưới.</p>
           </section>
           <section>
-            <h2 className="text-base font-bold text-stone-900">Kênh liên hệ</h2>
-            <p className="mt-1 text-xs sm:text-sm text-stone-600">Mọi yêu cầu liên quan đến quyền riêng tư và dữ liệu cá nhân, vui lòng liên hệ ban quản trị qua email: <a href="mailto:support@farely.manhtx.com" className="text-blue-600 hover:underline">support@farely.manhtx.com</a>.</p>
+            <h2 className="text-base font-bold text-[#222222]">Kênh liên hệ</h2>
+            <p className="mt-1 text-xs sm:text-sm text-[#6a6a6a]">Mọi yêu cầu liên quan đến quyền riêng tư và dữ liệu cá nhân, vui lòng liên hệ ban quản trị qua email: <a href="mailto:support@farely.manhtx.com" className="text-[#0084e6] hover:underline font-medium">support@farely.manhtx.com</a>.</p>
           </section>
         </div>
         <DataRightsPanel />
-        <Link to="/terms" className="mt-8 inline-flex min-h-10 items-center rounded-lg border border-stone-300 bg-stone-50 px-4 font-semibold text-xs text-stone-800 hover:bg-stone-100 transition">Xem điều khoản sử dụng</Link>
+        <Link to="/terms" className="mt-8 inline-flex min-h-10 items-center rounded-lg border border-[#dddddd] bg-[#f7f7f7] px-4 font-semibold text-xs text-[#222222] hover:bg-[#ebebeb] transition">Xem điều khoản sử dụng</Link>
       </article>
     </main>
   );

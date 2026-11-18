@@ -13,5 +13,19 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('@supabase') || id.includes('/lib/supabase.ts')) {
+            return 'supabase';
+          }
+          if (id.includes('/src/app/data/api.ts')) {
+            return 'api';
+          }
+        },
+      },
+    },
+  },
   assetsInclude: ['**/*.svg', '**/*.csv'],
 })

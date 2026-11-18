@@ -141,7 +141,7 @@ async function compareWithPreviousCycle(currentCycle, currentFingerprints) {
   if (currentCycle <= 1 || currentFingerprints.length < 2) return { available: false, reasons: [] };
   const cyclesDir = join(ROOT, '.ai-loop', 'cycles');
   const entries = await readdir(cyclesDir, { withFileTypes: true }).catch(() => []);
-  const candidates = entries.filter((entry) => entry.isDirectory() && /^\d{4}$/.test(entry.name) && Number(entry.name) < currentCycle).map((entry) => Number(entry.name)).sort((a, b) => b - a);
+  const candidates = entries.filter((entry) => entry.isDirectory() && /^\d{4,}$/.test(entry.name) && Number(entry.name) < currentCycle).map((entry) => Number(entry.name)).sort((a, b) => b - a);
   for (const previousCycle of candidates) {
     const previous = [];
     for (let round = 1; round <= currentFingerprints.length; round += 1) {

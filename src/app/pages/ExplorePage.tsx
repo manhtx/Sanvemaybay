@@ -27,120 +27,135 @@ export function ExplorePage() {
   const destinationInsights = buildDestinationInsights(filteredDeals);
 
   return (
-    <main className="min-h-screen bg-slate-950 pb-20 text-slate-200">
+    <main className="min-h-screen bg-white pb-20 text-[#222222]">
       {/* ── HERO DISCOVERY ── */}
-      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-           <div className="absolute inset-0 bg-gradient-to-b from-pink-500/10 via-slate-950 to-slate-950" />
-           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-sky-500/5 blur-[120px] rounded-full animate-pulse" />
-        </div>
-        
+      <section className="relative py-16 flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0084e6]/5 via-white to-white border-b border-[#ebebeb]">
         <div className="relative z-10 text-center px-4 max-w-3xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-2 text-xs font-black uppercase tracking-widest text-pink-400">
-              <Globe className="w-4 h-4" /> Khám phá từ dữ liệu deal hiện có
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#0084e6]/20 bg-[#0084e6]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#0084e6]">
+              <Globe className="w-4 h-4" /> Khám phá điểm đến tiết kiệm
             </span>
-            <h1 className="text-4xl sm:text-6xl font-black text-white mb-6 tracking-tight">
+            <h1 className="text-3xl sm:text-5xl font-extrabold text-[#222222] mb-4 tracking-tight">
               Bạn muốn đi đâu <br />
-              với <span className="text-pink-400">ngân sách tốt nhất?</span>
+              với <span className="text-[#0084e6]">ngân sách tối ưu nhất?</span>
             </h1>
+            <p className="text-sm sm:text-base text-[#6a6a6a] max-w-lg mx-auto mb-8 leading-relaxed">
+              Dữ liệu giá vé liên tục được cập nhật và đối chiếu lịch sử để tìm ra các hành trình có giá hời thực sự.
+            </p>
           </motion.div>
 
-          <div className="mx-auto flex max-w-xl rounded-2xl border border-white/10 bg-[#171719] p-2 shadow-2xl">
+          <div className="mx-auto flex max-w-lg rounded-full border border-[#dddddd] bg-white p-2 shadow-md hover:shadow-lg transition-shadow">
             <div className="flex-1 px-4 flex items-center gap-3">
-              <Globe className="w-5 h-5 text-slate-500" />
-              <input 
+              <Globe className="w-5 h-5 text-[#6a6a6a]" />
+              <input
                 aria-label="Tìm điểm đến"
-                type="text" 
-                placeholder="Tìm điểm đến, quốc gia..." 
+                type="text"
+                placeholder="Tìm điểm đến, thành phố, quốc gia..."
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                className="bg-transparent border-none outline-none text-white w-full text-sm font-medium"
+                className="bg-transparent border-none outline-none text-[#222222] w-full text-sm font-medium placeholder-[#929292]"
               />
             </div>
+            <button
+              type="button"
+              className="w-10 h-10 rounded-full bg-[#0084e6] text-white flex items-center justify-center hover:bg-[#006ec4] transition-colors cursor-pointer"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         {!loading && destinationInsights.length > 0 && (
-          <section className="mb-10" aria-label="Destination insights">
-            <div className="flex items-end justify-between mb-4">
+          <section className="mb-12" aria-label="Destination insights">
+            <div className="flex items-end justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-black text-white">Cơ hội theo điểm đến</h2>
-                <p className="text-slate-500 text-sm">Tổng hợp từ các deal đã được hệ thống ghi nhận.</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-[#222222]">Cơ hội nổi bật theo điểm đến</h2>
+                <p className="text-[#6a6a6a] text-xs sm:text-sm mt-1">Dựa trên dữ liệu giá vé đã được xác thực qua các chuyến bay thực tế.</p>
               </div>
-              <span className="text-slate-500 text-xs">{destinationInsights.length} điểm đến</span>
+              <span className="text-[#6a6a6a] text-xs font-semibold">{destinationInsights.length} điểm đến</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {destinationInsights.slice(0, 4).map((insight) => (
-                <Link key={insight.destinationCode} to={`/deals/${insight.topDealId}`} className="rounded-2xl border border-white/10 bg-[#171719] p-4 transition-colors hover:border-pink-500/40">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-white font-bold">{insight.destination}</span>
-                    {insight.hasWeekendDeal && <span className="text-[10px] text-emerald-400">Cuối tuần</span>}
+                <Link
+                  key={insight.destinationCode}
+                  to={`/deals/${insight.topDealId}`}
+                  className="rounded-[14px] border border-[#dddddd] bg-white p-4 transition-all hover:border-[#0084e6] hover:shadow-md block"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[#222222] font-bold text-base">{insight.destination}</span>
+                    {insight.hasWeekendDeal && (
+                      <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                        Cuối tuần
+                      </span>
+                    )}
                   </div>
-                  <div className="text-slate-500 text-xs mb-1">Giá thực tế thấp nhất</div>
-                  <div className="text-emerald-400 text-xl font-black">{formatVND(insight.cheapestPrice)}</div>
-                  <div className="flex justify-between mt-3 text-xs text-slate-500">
-                    <span>{insight.dealCount} deal</span>
-                    <span>Giảm TB {Math.round(insight.averageDiscount)}%</span>
+                  <div className="text-[#6a6a6a] text-xs mb-1">Giá thấp nhất từ</div>
+                  <div className="text-[#0084e6] text-lg font-bold">{formatVND(insight.cheapestPrice)}</div>
+                  <div className="flex justify-between mt-3 text-xs text-[#6a6a6a] pt-2 border-t border-[#ebebeb]">
+                    <span>{insight.dealCount} cơ hội</span>
+                    <span className="text-emerald-700 font-semibold">Giảm ~{Math.round(insight.averageDiscount)}%</span>
                   </div>
                 </Link>
               ))}
             </div>
           </section>
         )}
+
         {/* ── DISCOVERY GRID ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {loading ? (
              Array(8).fill(0).map((_, i) => (
-                <div key={i} className="h-[400px] bg-slate-900/50 rounded-3xl animate-pulse border border-white/5" />
+                <div key={i} className="h-[340px] bg-[#f7f7f7] rounded-[14px] animate-pulse border border-[#dddddd]" />
              ))
           ) : (
             filteredDeals.map((deal, idx) => (
               <motion.div
                 key={deal.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.05 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.03 }}
               >
-                <Link to={`/deals/${deal.id}`} className="group relative block h-[400px] overflow-hidden rounded-3xl border border-white/10 bg-[#171719] shadow-xl transition-all hover:border-pink-500/50">
-                  {deal.image ? (
-                    <img
-                      src={deal.image}
-                      alt={deal.to}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-80"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-sky-950 via-slate-900 to-indigo-950" />
-                  )}
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-                  
-                  <div className="absolute top-4 right-4">
-                    <div className="px-3 py-1 bg-emerald-500 text-[10px] font-black text-white rounded-full shadow-lg">
-                      -{deal.discount}%
+                <Link
+                  to={`/deals/${deal.id}`}
+                  className="group block rounded-[14px] overflow-hidden border border-[#dddddd] bg-white shadow-sm hover:shadow-md transition-all"
+                >
+                  <div className="relative aspect-4/3 overflow-hidden bg-[#f7f7f7]">
+                    {deal.image ? (
+                      <img
+                        src={deal.image}
+                        alt={deal.to}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#0084e6]/10 via-[#f7f7f7] to-[#ebebeb] flex items-center justify-center">
+                        <Map className="w-8 h-8 text-[#0084e6]/40" />
+                      </div>
+                    )}
+                    <div className="absolute top-3 right-3">
+                      <div className="px-2.5 py-1 bg-white/95 text-[11px] font-bold text-emerald-700 rounded-full shadow-sm border border-emerald-200">
+                        -{deal.discount}%
+                      </div>
                     </div>
                   </div>
 
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <div className="flex items-center gap-2 text-sky-400 text-[10px] font-black tracking-widest uppercase mb-1">
-                      <Map className="w-3 h-3" /> {deal.country}
+                  <div className="p-4">
+                    <div className="flex items-center gap-1.5 text-[#6a6a6a] text-[11px] font-semibold tracking-wider uppercase mb-1">
+                      <Map className="w-3.5 h-3.5 text-[#0084e6]" /> {deal.country}
                     </div>
-                    <h3 className="text-2xl font-black text-white mb-2 leading-tight group-hover:text-sky-300 transition-colors">
+                    <h3 className="text-base font-bold text-[#222222] mb-2 leading-snug group-hover:text-[#0084e6] transition-colors">
                       {deal.to}
                     </h3>
-                    <div className="flex items-end justify-between">
+                    <div className="flex items-baseline justify-between pt-2 border-t border-[#ebebeb]">
                       <div>
-                        <div className="text-slate-500 text-[10px] font-bold line-through">{formatVND(deal.normalPrice)}</div>
-                        <div className="text-xl font-black text-white">{formatVND(deal.price)}</div>
+                        <div className="text-[#929292] text-[11px] line-through">{formatVND(deal.normalPrice)}</div>
+                        <div className="text-base font-extrabold text-[#222222]">{formatVND(deal.price)} <span className="text-xs font-normal text-[#6a6a6a]">/ khách</span></div>
                       </div>
-                      <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white transition-all">
-                        <ChevronRight className="w-5 h-5" />
-                      </div>
+                      <span className="text-xs font-semibold text-[#0084e6] group-hover:underline">Chi tiết →</span>
                     </div>
                   </div>
                 </Link>
@@ -149,11 +164,11 @@ export function ExplorePage() {
           )}
         </div>
         {!loading && filteredDeals.length === 0 && (
-          <div className="py-16 text-center text-slate-500">
-            Không có deal nào khớp với tìm kiếm hiện tại.
+          <div className="py-20 text-center text-[#6a6a6a] text-sm">
+            Không tìm thấy chặng bay nào khớp với từ khóa tìm kiếm.
           </div>
         )}
-      </main>
+      </div>
     </main>
   );
 }

@@ -158,24 +158,24 @@ export function SearchPage() {
   }, [destination]);
 
   return (
-    <main className="min-h-screen bg-[var(--canvas-bg)] text-stone-900 pt-24 pb-20">
+    <main className="min-h-screen bg-white text-[#222222] pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Page Title */}
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#222222]">
             Tìm kiếm cơ hội vé
           </h1>
-          <p className="text-xs sm:text-sm text-stone-600 mt-1 max-w-xl">
+          <p className="text-xs sm:text-sm text-[#6a6a6a] mt-1 max-w-xl">
             Lọc các mức giá quan sát thực tế ({destinationDisplay}) theo điểm khởi hành và ngân sách. Kết quả luôn được đối chiếu với nhóm tương đương.
           </p>
         </div>
 
         {/* Unified Search Composer */}
-        <section className="rounded-xl border border-stone-200 bg-white p-4 sm:p-5 shadow-sm space-y-4">
+        <section className="rounded-[14px] border border-[#dddddd] bg-white p-4 sm:p-5 shadow-sm space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
             {/* 1. FROM */}
             <div>
-              <label htmlFor="search-from" className="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">
+              <label htmlFor="search-from" className="block text-[11px] font-bold text-[#6a6a6a] mb-1 uppercase tracking-wider">
                 Điểm khởi hành
               </label>
               <select
@@ -187,7 +187,7 @@ export function SearchPage() {
                   saveUserPreferences({ homeAirport: val });
                   void saveRemoteUserPreferences({ ...getUserPreferences(), homeAirport: val });
                 }}
-                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
+                className="w-full rounded-lg border border-[#dddddd] bg-white px-3 py-2 text-xs text-[#222222] focus:border-[#0084e6] focus:ring-1 focus:ring-[#0084e6]/30 focus:outline-none"
               >
                 {departureCities.map((city) => (
                   <option key={city.code} value={city.code}>
@@ -199,7 +199,7 @@ export function SearchPage() {
 
             {/* 2. TO: Destination Input */}
             <div>
-              <label htmlFor="search-destination" className="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">
+              <label htmlFor="search-destination" className="block text-[11px] font-bold text-[#6a6a6a] mb-1 uppercase tracking-wider">
                 Điểm đến (tuỳ chọn)
               </label>
               <input
@@ -208,13 +208,13 @@ export function SearchPage() {
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder="Mã sân bay (BKK, DAD) hoặc tên thành phố"
-                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
+                className="w-full rounded-lg border border-[#dddddd] bg-white px-3 py-2 text-xs text-[#222222] focus:border-[#0084e6] focus:ring-1 focus:ring-[#0084e6]/30 focus:outline-none"
               />
             </div>
 
             {/* 3. WHEN: Date Range */}
             <div>
-              <label htmlFor="search-depart-from" className="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">
+              <label htmlFor="search-depart-from" className="block text-[11px] font-bold text-[#6a6a6a] mb-1 uppercase tracking-wider">
                 Khoảng ngày khởi hành
               </label>
               <div className="grid grid-cols-2 gap-1.5">
@@ -230,7 +230,7 @@ export function SearchPage() {
                     saveUserPreferences({ departureFrom: val || undefined });
                     void saveRemoteUserPreferences({ ...getUserPreferences(), departureFrom: val || undefined });
                   }}
-                  className="w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
+                  className="w-full rounded-lg border border-[#dddddd] bg-white px-2 py-1.5 text-xs text-[#222222] focus:border-[#0084e6] focus:ring-1 focus:ring-[#0084e6]/30 focus:outline-none"
                 />
                 <input
                   id="search-depart-to"
@@ -244,7 +244,7 @@ export function SearchPage() {
                     saveUserPreferences({ departureTo: val || undefined });
                     void saveRemoteUserPreferences({ ...getUserPreferences(), departureTo: val || undefined });
                   }}
-                  className="w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
+                  className="w-full rounded-lg border border-[#dddddd] bg-white px-2 py-1.5 text-xs text-[#222222] focus:border-[#0084e6] focus:ring-1 focus:ring-[#0084e6]/30 focus:outline-none"
                 />
               </div>
             </div>
@@ -266,7 +266,7 @@ export function SearchPage() {
                   saveUserPreferences({ budget: val });
                   void saveRemoteUserPreferences({ ...getUserPreferences(), budget: val });
                 }}
-                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-[#FCD535] focus:ring-1 focus:ring-[#FCD535]/30 focus:outline-none"
+                className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-[#0084e6] focus:ring-1 focus:ring-[#0084e6]/30 focus:outline-none"
               >
                 <option value={3000000}>3.000.000₫</option>
                 <option value={5000000}>5.000.000₫</option>
@@ -297,7 +297,7 @@ export function SearchPage() {
                     saveUserPreferences({ maxStops: val });
                     void saveRemoteUserPreferences({ ...getUserPreferences(), maxStops: val });
                   }}
-                  className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-900 focus:border-[#FCD535]"
+                  className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-900 focus:border-[#0084e6]"
                 >
                   <option value={0}>0 (Bay thẳng)</option>
                   <option value={1}>1 điểm dừng</option>
@@ -320,7 +320,7 @@ export function SearchPage() {
                     saveUserPreferences({ maxFlightTimeMinutes: val });
                     void saveRemoteUserPreferences({ ...getUserPreferences(), maxFlightTimeMinutes: val });
                   }}
-                  className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-900 focus:border-[#FCD535]"
+                  className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs text-stone-900 focus:border-[#0084e6]"
                 >
                   <option value="">Không giới hạn</option>
                   <option value={180}>3 giờ (180 phút)</option>
@@ -336,7 +336,7 @@ export function SearchPage() {
                 type="button"
                 onClick={() => void runSearch(true)}
                 disabled={isScanning}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#FCD535] hover:bg-[#F0B90B] disabled:opacity-50 text-[#181A20] font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#0084e6] hover:bg-[#006ec4] disabled:opacity-50 text-white font-semibold text-xs transition-colors shadow-xs cursor-pointer"
               >
                 {isScanning ? (
                   <LoaderCircle className="w-3.5 h-3.5 animate-spin" />
@@ -369,11 +369,11 @@ export function SearchPage() {
 
         {/* Results List */}
         {results.length === 0 ? (
-          <div className="rounded-xl border border-stone-200 bg-white p-12 text-center space-y-3 shadow-sm">
-            <p className="text-stone-700 font-semibold text-sm">
+          <div className="rounded-[14px] border border-[#dddddd] bg-white p-12 text-center space-y-3 shadow-sm">
+            <p className="text-[#222222] font-semibold text-sm">
               Không tìm thấy cơ hội nào phù hợp với bộ lọc hiện tại.
             </p>
-            <p className="text-stone-500 text-xs max-w-md mx-auto">
+            <p className="text-[#6a6a6a] text-xs max-w-md mx-auto leading-relaxed">
               Thử nâng mức ngân sách hoặc chọn khoảng ngày rộng hơn để hệ thống hiển thị nhiều chặng bay quan sát hơn.
             </p>
           </div>
@@ -386,11 +386,11 @@ export function SearchPage() {
               return (
                 <div
                   key={deal.id}
-                  className="rounded-xl border border-stone-200 bg-white p-4 space-y-3 shadow-sm hover:border-stone-300 transition-all flex flex-col justify-between"
+                  className="rounded-[14px] border border-[#dddddd] bg-white p-4 space-y-3 shadow-sm hover:border-[#0084e6] hover:shadow-md transition-all flex flex-col justify-between"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                      <span className="font-mono font-bold text-[#0084e6] bg-[#0084e6]/10 px-2 py-0.5 rounded border border-[#0084e6]/20">
                         {deal.airline}
                       </span>
                       <div className="flex items-center gap-1">
@@ -398,9 +398,9 @@ export function SearchPage() {
                           type="button"
                           aria-label={isSaved ? "Bỏ lưu cơ hội" : "Lưu cơ hội"}
                           onClick={() => handleBookmarkToggle(deal)}
-                          className="p-1.5 text-stone-400 hover:text-stone-700 rounded-md hover:bg-stone-100"
+                          className="p-1.5 text-[#6a6a6a] hover:text-[#222222] rounded-md hover:bg-[#f7f7f7] cursor-pointer"
                         >
-                          <Bookmark className={`w-3.5 h-3.5 ${isSaved ? "fill-blue-600 text-blue-600" : ""}`} />
+                          <Bookmark className={`w-3.5 h-3.5 ${isSaved ? "fill-[#0084e6] text-[#0084e6]" : ""}`} />
                         </button>
                         <button
                           type="button"
@@ -409,7 +409,7 @@ export function SearchPage() {
                             setSelectedWatchDeal(deal);
                             setWatchOpen(true);
                           }}
-                          className="p-1.5 text-stone-400 hover:text-stone-700 rounded-md hover:bg-stone-100"
+                          className="p-1.5 text-[#6a6a6a] hover:text-[#222222] rounded-md hover:bg-[#f7f7f7] cursor-pointer"
                         >
                           <Bell className="w-3.5 h-3.5" />
                         </button>
@@ -417,18 +417,18 @@ export function SearchPage() {
                     </div>
 
                     <div>
-                      <div className="text-xs text-stone-500 mb-0.5">
+                      <div className="text-xs text-[#6a6a6a] mb-0.5">
                         {deal.from} → {deal.to}
                       </div>
                       <Link
                         to={`/deals/${deal.id}`}
-                        className="text-xl font-bold font-mono text-stone-900 hover:text-blue-600 transition-colors"
+                        className="text-xl font-bold font-mono text-[#222222] hover:text-[#0084e6] transition-colors"
                       >
-                        {deal.fromCode} <span className="text-blue-600 font-light">→</span> {deal.toCode}
+                        {deal.fromCode} <span className="text-[#0084e6] font-light">→</span> {deal.toCode}
                       </Link>
-                      <div className="text-xs text-stone-600 mt-1 flex items-center gap-2">
+                      <div className="text-xs text-[#6a6a6a] mt-1 flex items-center gap-2">
                         <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3 text-stone-400" />
+                          <Calendar className="w-3 h-3 text-[#929292]" />
                           {new Date(deal.departDate).toLocaleDateString("vi-VN")}
                         </span>
                         <span>·</span>
@@ -437,7 +437,7 @@ export function SearchPage() {
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-stone-100 flex items-baseline justify-between">
+                  <div className="pt-3 border-t border-[#ebebeb] flex items-baseline justify-between">
                     <div>
                       <div className="text-lg font-bold font-mono text-emerald-700 tabular-nums">
                         {formatVND(deal.price)}
@@ -449,12 +449,11 @@ export function SearchPage() {
                         </div>
                       )}
                     </div>
-
                     <Link
                       to={`/deals/${deal.id}`}
-                      className="px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold text-xs transition-colors border border-stone-200"
+                      className="text-xs font-semibold text-[#0084e6] hover:underline"
                     >
-                      Chi tiết
+                      Chi tiết →
                     </Link>
                   </div>
                 </div>

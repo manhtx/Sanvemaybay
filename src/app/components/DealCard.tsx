@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import { Clock, AlertTriangle, Calendar, Bookmark, ShieldCheck } from "lucide-react";
-import { Deal, formatVND, regionFlag } from "../data/deals";
+import { Heart, Star, ShieldCheck, Plane } from "lucide-react";
+import { Deal, formatVND } from "../data/deals";
 import { isBookmarkedDeal, mutateBookmarkOptimistic, createOpportunitySnapshot } from "../lib/bookmarks";
 import { useState } from "react";
 import { trackProductEvent } from "../lib/analytics";
@@ -11,151 +11,134 @@ interface DealCardProps {
 
 function formatDepartDate(dateStr: string) {
   const date = new Date(dateStr);
-  return date.toLocaleDateString("vi-VN");
+  return date.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
 }
 
 export function DealCard({ deal }: DealCardProps) {
   const targetId = deal.opportunityId || deal.id;
   const [bookmarked, setBookmarked] = useState(() => isBookmarkedDeal(targetId) || isBookmarkedDeal(deal.id));
   const cardTarget = `/deals/${deal.id}`;
-  const priceDiff = deal.realTotal - deal.advertisedTotal;
-  const hasHiddenCosts = priceDiff > 0;
 
-  // Binance Financial-Grade Trading Up Badge (#0ECB81 for price drop / traveler savings)
-  const discountTone = "bg-[#0ECB81]/15 text-[#0ECB81] border border-[#0ECB81]/30 font-semibold";
+  const toggleBookmark = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const next = !bookmarked;
+    setBookmarked(next);
+    mutateBookmarkOptimistic(targetId, next, createOpportunitySnapshot(deal));
+    void trackProductEvent({
+      eventType: "bookmark",
+      entityId: deal.id,
+      metadata: { bookmarked: next ? "true" : "false" },
+    });
+  };
+
+  const dealScore = deal.dealScore ?? deal.aiInsight?.savingScore ?? 75;
+  const isGuestFavorite = dealScore >= 80;
+  const dealRating = ((dealScore / 100) * 1.5 + 3.5).toFixed(2);
 
   return (
-    <div className="relative group">
+    <div className="group relative flex flex-col cursor-pointer">
       <Link
-        aria-label={`Chi tiết cơ hội ${deal.fromCode} đến ${deal.toCode}, ${formatVND(deal.price)}, ${deal.aiReasoning || deal.aiInsight.reason}`}
+        aria-label={`Chi tiết chuyến bay ${deal.fromCode} đến ${deal.toCode}, ${formatVND(deal.price)}, ${deal.aiReasoning || deal.aiInsight.reason}`}
         to={cardTarget}
         className="block"
       >
-        <div className="relative flex flex-col justify-between rounded-xl border border-[#2B3139] bg-[#1E2329] p-5 transition-all duration-200 hover:border-[#FCD535]/40 hover:bg-[#2B3139]/40 hover:shadow-xl">
-          
-          {/* Top Line: Route & Flags */}
-          <div>
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-black text-white tracking-tight">{deal.fromCode} → {deal.toCode}</span>
-                  <span className="text-xs text-slate-400 font-medium">({deal.to})</span>
-                </div>
-                <div className="text-xs text-slate-400 mt-0.5 flex items-center gap-1.5">
-                  <span>{deal.airline}</span>
-                  {deal.airlineCode && (
-                    <span className="px-1.5 py-0.2 rounded bg-white/[0.06] text-[10px] text-slate-300 font-mono">
-                      {deal.airlineCode}
-                    </span>
-                  )}
-                  <span>· {deal.country}</span>
-                </div>
-              </div>
+        {/* Photo Container: Airbnb property card photo with 14px rounded corners */}
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[14px] bg-[#f2f2f2] mb-3">
+          <img
+            src={deal.image || `https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80`}
+            alt={`${deal.to} - Chuyến bay từ ${deal.fromCode}`}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src =
+                "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=600&q=80";
+            }}
+          />
 
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-sm" title={deal.region}>{regionFlag[deal.region]}</span>
-                {deal.discount > 0 && (
-                  <span className={`px-2 py-0.5 rounded-md font-bold text-xs tabular-nums ${discountTone}`}>
-                    ↓ {deal.discount.toFixed(1)}%
-                  </span>
-                )}
-              </div>
+          {/* Floating Bookmark Heart Icon (Top Right) */}
+          <button
+            type="button"
+            aria-label={bookmarked ? "Bỏ lưu deal này" : "Lưu deal này"}
+            onClick={toggleBookmark}
+            className="absolute top-3 right-3 p-2 rounded-full transition-transform active:scale-90 hover:scale-110 z-10"
+          >
+            <Heart
+              className={`w-6 h-6 transition-colors drop-shadow-md ${
+                bookmarked
+                  ? "fill-[#0084e6] text-[#0084e6]"
+                  : "fill-black/30 text-white hover:fill-black/40"
+              }`}
+            />
+          </button>
+
+          {/* Floating Guest Favorite / Top Deal Badge (Top Left) */}
+          {isGuestFavorite && (
+            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-xs text-[#222222] text-[11px] font-semibold tracking-tight shadow-sm border border-black/5">
+              Khách yêu thích
             </div>
+          )}
 
-            {/* Price Line */}
-            <div className="my-3 py-3 border-y border-white/[0.06]">
-              <div className="flex items-baseline justify-between gap-2">
-                <div>
-                  <div className="text-2xl font-black text-white tracking-tight tabular-nums">
-                    {formatVND(deal.price)}
-                  </div>
-                  {deal.normalPrice > deal.price && (
-                    <div className="text-xs text-slate-400 line-through tabular-nums mt-0.5">
-                      Mặt bằng: {formatVND(deal.normalPrice)}
-                    </div>
-                  )}
-                </div>
-                {deal.confidence !== undefined && (
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 bg-white/[0.03] border border-white/[0.06] px-2 py-1 rounded-md">
-                    <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-                    <span>{deal.confidence >= 0.8 ? "Bằng chứng cao" : deal.confidence >= 0.5 ? "Bằng chứng vừa" : "Đang tích luỹ"}</span>
-                  </div>
-                )}
-              </div>
+          {/* Discount Pill at bottom left of image */}
+          {deal.discount > 0 && (
+            <div className="absolute bottom-3 left-3 px-2 py-0.5 rounded-full bg-[#0084e6] text-white text-[11px] font-bold shadow-xs">
+              Tiết kiệm {deal.discount.toFixed(0)}%
             </div>
+          )}
+        </div>
 
-            {/* Travel Context: Date, Stops, Duration */}
-            <div className="grid grid-cols-2 gap-2 text-xs text-slate-400 mb-3">
-              <div className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <span className="truncate">Bay: {formatDepartDate(deal.departDate)}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <span className="truncate">
-                  {deal.duration} · {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
-                </span>
-              </div>
+        {/* Text Metadata Section — Airbnb Typography Hierarchy */}
+        <div className="flex flex-col gap-1">
+          {/* Line 1: Title (Route) & Rating */}
+          <div className="flex items-center justify-between text-base font-semibold text-[#222222]">
+            <span className="truncate">
+              <span className="font-bold">{deal.fromCode} → {deal.toCode}</span>
+              <span className="text-[#6a6a6a] font-normal text-sm ml-1.5">({deal.to})</span>
+            </span>
+            <div className="flex items-center gap-1 shrink-0 text-sm font-normal text-[#222222]">
+              <Star className="w-3.5 h-3.5 fill-[#222222] text-[#222222]" />
+              <span className="font-semibold">{dealRating}</span>
             </div>
-
-            {/* Reasoning summary snippet */}
-            <p className="text-xs text-slate-400 leading-relaxed line-clamp-2 mb-3 bg-white/[0.02] border border-white/[0.04] p-2.5 rounded-lg">
-              {deal.aiReasoning || deal.aiInsight.reason}
-            </p>
           </div>
 
-          {/* Bottom Action & Cost Disclosure */}
-          <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between gap-2 text-xs">
-            <div className="min-w-0">
-              {hasHiddenCosts ? (
-                <span className="text-amber-400 flex items-center gap-1 truncate text-[11px]">
-                  <AlertTriangle className="w-3 h-3 shrink-0" />
-                  Ước tính: {formatVND(deal.realTotal)}
-                </span>
-              ) : (
-                <span className="text-slate-400 truncate text-[11px]">
-                  Đã gồm thuế sân bay
+          {/* Line 2: Airline & Flight Type */}
+          <div className="text-sm text-[#6a6a6a] flex items-center gap-1.5 truncate">
+            <Plane className="w-3.5 h-3.5 text-[#0084e6] shrink-0" />
+            <span className="truncate">{deal.airline}</span>
+            <span>·</span>
+            <span>{deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}</span>
+            <span>·</span>
+            <span>{deal.duration}</span>
+          </div>
+
+          {/* Line 3: Date Window */}
+          <div className="text-sm text-[#6a6a6a]">
+            Khởi hành ngày {formatDepartDate(deal.departDate)}
+          </div>
+
+          {/* Line 4: Price & Trust Signal */}
+          <div className="mt-1 flex items-baseline justify-between gap-2">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-base font-bold text-[#222222] tabular-nums">
+                {formatVND(deal.price)}
+              </span>
+              <span className="text-xs text-[#6a6a6a] font-normal">/ khách</span>
+              {deal.normalPrice > deal.price && (
+                <span className="text-xs text-[#929292] line-through tabular-nums ml-1">
+                  {formatVND(deal.normalPrice)}
                 </span>
               )}
             </div>
-            <span className="font-semibold text-blue-400 group-hover:text-blue-300 transition-colors shrink-0 flex items-center gap-1">
-              Xem chi tiết <span aria-hidden="true">→</span>
-            </span>
-          </div>
 
+            {deal.confidence !== undefined && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-[#0084e6] font-medium">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Giá thật</span>
+              </span>
+            )}
+          </div>
         </div>
       </Link>
-
-      {/* Bookmark Button */}
-      <button
-        type="button"
-        aria-label={bookmarked ? "Bỏ lưu deal" : "Lưu deal"}
-        aria-pressed={bookmarked}
-        onClick={async (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          const snapshot = createOpportunitySnapshot(deal);
-          const prev = bookmarked;
-          const next = !prev;
-          setBookmarked(next);
-          const result = await mutateBookmarkOptimistic(targetId, next, snapshot, undefined, {
-            onRollback: (rolledState) => {
-              setBookmarked(rolledState);
-            },
-          });
-          if (result.success) {
-            void trackProductEvent({
-              eventType: "bookmark",
-              entityId: targetId,
-              metadata: { bookmarked: next, route: `${deal.fromCode}-${deal.toCode}`, source: "deal_card" },
-            });
-          }
-        }}
-        className="absolute right-3.5 top-3.5 z-10 flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-[#121620]/90 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
-      >
-        <Bookmark className={`w-3.5 h-3.5 ${bookmarked ? "fill-blue-400 text-blue-400" : "text-slate-400"}`} />
-      </button>
     </div>
   );
 }
-

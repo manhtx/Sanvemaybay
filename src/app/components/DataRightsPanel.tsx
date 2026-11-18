@@ -50,40 +50,40 @@ export function DataRightsPanel() {
   }
 
   return (
-    <section className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-5" aria-labelledby="data-rights-heading">
-      <h2 id="data-rights-heading" className="text-base font-bold text-stone-900">Xuất hoặc xóa dữ liệu tài khoản</h2>
+    <section className="mt-8 rounded-[14px] border border-[#dddddd] bg-[#f7f7f7] p-5" aria-labelledby="data-rights-heading">
+      <h2 id="data-rights-heading" className="text-base font-bold text-[#222222]">Xuất hoặc xóa dữ liệu tài khoản</h2>
       {!signedIn ? (
-        <p className="mt-2 text-sm text-stone-600">Đăng nhập tại trang Tài khoản để xuất dữ liệu hoặc yêu cầu xóa tài khoản.</p>
+        <p className="mt-2 text-sm text-[#6a6a6a]">Đăng nhập tại trang Tài khoản để xuất dữ liệu hoặc yêu cầu xóa tài khoản.</p>
       ) : (
         <div className="mt-4 space-y-5">
           <button
             type="button"
             disabled={busy}
             onClick={() => void exportData()}
-            className="min-h-11 rounded-lg border border-blue-600 bg-blue-50 px-4 font-semibold text-xs text-blue-700 hover:bg-blue-100 disabled:opacity-50 transition"
+            className="min-h-11 rounded-lg border border-[#0084e6] bg-[#0084e6]/10 px-4 font-semibold text-xs text-[#0084e6] hover:bg-[#0084e6]/20 disabled:opacity-50 transition cursor-pointer"
           >
             Tải dữ liệu của tôi
           </button>
-          <div className="border-t border-stone-200 pt-5">
-            <p className="text-xs text-stone-600">Xóa tài khoản là vĩnh viễn. Nhập <code className="text-red-700 font-mono font-bold">DELETE_MY_ACCOUNT</code> để xác nhận.</p>
+          <div className="border-t border-[#dddddd] pt-5">
+            <p className="text-xs text-[#6a6a6a]">Xóa tài khoản là vĩnh viễn. Nhập <code className="text-red-700 font-mono font-bold">DELETE_MY_ACCOUNT</code> để xác nhận.</p>
             <input
               aria-label="Xác nhận xóa tài khoản"
               value={confirmation}
               onChange={(event) => setConfirmation(event.target.value)}
-              className="mt-3 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs text-stone-900 focus:border-red-600 focus:outline-none"
+              className="mt-3 w-full rounded-lg border border-[#dddddd] bg-white px-3 py-2 text-xs text-[#222222] focus:border-red-600 focus:outline-none"
             />
             <button
               type="button"
               disabled={busy || confirmation !== "DELETE_MY_ACCOUNT"}
               onClick={() => void deleteAccount()}
-              className="mt-3 min-h-11 rounded-lg border border-red-300 bg-red-50 px-4 font-semibold text-xs text-red-700 hover:bg-red-100 disabled:opacity-40 transition"
+              className="mt-3 min-h-11 rounded-lg border border-red-300 bg-red-50 px-4 font-semibold text-xs text-red-700 hover:bg-red-100 disabled:opacity-40 transition cursor-pointer"
             >
               Xóa vĩnh viễn tài khoản
             </button>
           </div>
         </div>
       )}
-      {status && <p role="status" className="mt-4 text-xs text-stone-700">{status}</p>}
+      {status && <p role="status" className="mt-4 text-xs text-[#222222]">{status}</p>}
     </section>
   );
 }

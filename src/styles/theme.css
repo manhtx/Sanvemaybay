@@ -2,104 +2,164 @@
 
 :root {
   --font-size: 16px;
-  --background: #fafaf9;
-  --foreground: #1c1917;
+  --background: #ffffff;
+  --foreground: #222222;
   --card: #ffffff;
-  --card-foreground: #1c1917;
+  --card-foreground: #222222;
   --popover: #ffffff;
-  --popover-foreground: #1c1917;
-  --primary: #2563eb;
+  --popover-foreground: #222222;
+  --primary: #0084e6;
   --primary-foreground: #ffffff;
-  --secondary: #f5f5f4;
-  --secondary-foreground: #1c1917;
-  --muted: #f5f5f4;
-  --muted-foreground: #78716c;
-  --accent: #f5f5f4;
-  --accent-foreground: #1c1917;
-  --destructive: #ef4444;
+  --secondary: #f7f7f7;
+  --secondary-foreground: #222222;
+  --muted: #f7f7f7;
+  --muted-foreground: #6a6a6a;
+  --accent: #f2f2f2;
+  --accent-foreground: #222222;
+  --destructive: #c13515;
   --destructive-foreground: #ffffff;
-  --border: #e7e5e4;
-  --input: #e7e5e4;
+  --border: #ebebeb;
+  --input: #dddddd;
   --input-background: #ffffff;
-  --switch-background: #d6d3d1;
+  --switch-background: #dddddd;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #2563eb;
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
+  --ring: #0084e6;
+  --chart-1: #0084e6;
+  --chart-2: #006ec4;
+  --chart-3: #460479;
+  --chart-4: #0284c7;
+  --chart-5: #38bdf8;
+  --radius: 14px;
   --sidebar: #ffffff;
-  --sidebar-foreground: #1c1917;
-  --sidebar-primary: #2563eb;
+  --sidebar-foreground: #222222;
+  --sidebar-primary: #0084e6;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f5f5f4;
-  --sidebar-accent-foreground: #1c1917;
-  --sidebar-border: #e7e5e4;
-  --sidebar-ring: #78716c;
+  --sidebar-accent: #f7f7f7;
+  --sidebar-accent-foreground: #222222;
+  --sidebar-border: #ebebeb;
+  --sidebar-ring: #0084e6;
 
-  /* Binance Financial-Grade Tokens */
-  --binance-primary: #fcd535;
-  --binance-primary-active: #f0b90b;
-  --binance-primary-disabled: #3a3a1f;
-  --binance-ink: #181a20;
-  --binance-body: #eaecef;
-  --binance-body-light: #181a20;
-  --binance-muted: #707a8a;
-  --binance-muted-strong: #929aa5;
-  --binance-hairline-light: #eaecef;
-  --binance-hairline-dark: #2b3139;
-  --binance-border-strong: #cdd1d6;
+  /* Airbnb Style Reference (Farely Sky Blue Edition) Tokens */
+  --color-primary: #0084e6;
+  --color-primary-active: #006ec4;
+  --color-primary-disabled: #b3dcff;
+  --color-primary-error-text: #c13515;
+  --color-primary-error-text-hover: #b32505;
+  --color-luxe: #460479;
+  --color-plus: #0084e6;
+  --color-ink: #222222;
+  --color-body: #3f3f3f;
+  --color-muted: #6a6a6a;
+  --color-muted-soft: #929292;
+  --color-hairline: #dddddd;
+  --color-hairline-soft: #ebebeb;
+  --color-border-strong: #c1c1c1;
+  --color-canvas: #ffffff;
+  --color-surface-soft: #f7f7f7;
+  --color-surface-card: #ffffff;
+  --color-surface-strong: #f2f2f2;
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-legal-link: #0084e6;
+  --color-star-rating: #222222;
+  --color-scrim: #000000;
+
+  /* Typography Scale */
+  --text-display-xl: 28px;
+  --text-display-lg: 22px;
+  --text-display-md: 21px;
+  --text-display-sm: 20px;
+  --text-title-md: 16px;
+  --text-title-sm: 16px;
+  --text-rating-display: 64px;
+  --text-body-md: 16px;
+  --text-body-sm: 14px;
+  --text-caption: 14px;
+  --text-caption-sm: 13px;
+  --text-badge: 11px;
+  --text-micro-label: 12px;
+  --text-uppercase-tag: 8px;
+  --text-button-md: 16px;
+  --text-button-sm: 14px;
+  --text-link: 14px;
+  --text-nav-link: 16px;
+
+  /* Spacing Scale */
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-base: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-section: 64px;
+
+  /* Border Radius */
+  --radius-none: 0px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* Backward Compatibility Aliases */
+  --binance-primary: #0084e6;
+  --binance-primary-active: #006ec4;
+  --binance-primary-disabled: #b3dcff;
+  --binance-ink: #222222;
+  --binance-body: #3f3f3f;
+  --binance-body-light: #222222;
+  --binance-muted: #6a6a6a;
+  --binance-muted-strong: #929292;
+  --binance-hairline-light: #ebebeb;
+  --binance-hairline-dark: #dddddd;
+  --binance-border-strong: #c1c1c1;
   --binance-canvas-light: #ffffff;
-  --binance-canvas-dark: #0b0e11;
-  --binance-surface-card-dark: #1e2329;
-  --binance-surface-elevated-dark: #2b3139;
-  --binance-surface-soft-light: #fafafa;
-  --binance-surface-strong-light: #f5f5f5;
-  --binance-on-primary: #181a20;
-  --binance-trading-up: #0ecb81;
-  --binance-trading-down: #f6465d;
-  --binance-accent-turquoise: #2dbdb6;
-  --binance-info: #3b82f6;
+  --binance-canvas-dark: #f7f7f7;
+  --binance-surface-card-dark: #ffffff;
+  --binance-surface-elevated-dark: #f2f2f2;
+  --binance-surface-soft-light: #f7f7f7;
+  --binance-surface-strong-light: #f2f2f2;
+  --binance-on-primary: #ffffff;
+  --binance-trading-up: #0084e6;
+  --binance-trading-down: #c13515;
+  --binance-accent-turquoise: #0084e6;
+  --binance-info: #0084e6;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
+  --background: #ffffff;
+  --foreground: #222222;
+  --card: #ffffff;
+  --card-foreground: #222222;
+  --popover: #ffffff;
+  --popover-foreground: #222222;
+  --primary: #0084e6;
+  --primary-foreground: #ffffff;
+  --secondary: #f7f7f7;
+  --secondary-foreground: #222222;
+  --muted: #f7f7f7;
+  --muted-foreground: #6a6a6a;
+  --accent: #f2f2f2;
+  --accent-foreground: #222222;
+  --destructive: #c13515;
+  --destructive-foreground: #ffffff;
+  --border: #ebebeb;
+  --input: #dddddd;
+  --ring: #0084e6;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --sidebar: #ffffff;
+  --sidebar-foreground: #222222;
+  --sidebar-primary: #0084e6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f7f7f7;
+  --sidebar-accent-foreground: #222222;
+  --sidebar-border: #ebebeb;
+  --sidebar-ring: #0084e6;
 }
 
 @theme inline {
@@ -129,10 +189,11 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -142,28 +203,23 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Binance Design System Tokens */
-  --color-binance-primary: var(--binance-primary);
-  --color-binance-primary-active: var(--binance-primary-active);
-  --color-binance-primary-disabled: var(--binance-primary-disabled);
-  --color-binance-ink: var(--binance-ink);
-  --color-binance-body: var(--binance-body);
-  --color-binance-body-light: var(--binance-body-light);
-  --color-binance-muted: var(--binance-muted);
-  --color-binance-muted-strong: var(--binance-muted-strong);
-  --color-binance-hairline-light: var(--binance-hairline-light);
-  --color-binance-hairline-dark: var(--binance-hairline-dark);
-  --color-binance-border-strong: var(--binance-border-strong);
-  --color-binance-canvas-light: var(--binance-canvas-light);
-  --color-binance-canvas-dark: var(--binance-canvas-dark);
-  --color-binance-card-dark: var(--binance-surface-card-dark);
-  --color-binance-elevated-dark: var(--binance-surface-elevated-dark);
-  --color-binance-soft-light: var(--binance-surface-soft-light);
-  --color-binance-strong-light: var(--binance-surface-strong-light);
-  --color-binance-on-primary: var(--binance-on-primary);
-  --color-trading-up: var(--binance-trading-up);
-  --color-trading-down: var(--binance-trading-down);
-  --color-binance-turquoise: var(--binance-accent-turquoise);
+  /* Airbnb Tokens */
+  --color-airbnb-primary: var(--color-primary);
+  --color-airbnb-primary-active: var(--color-primary-active);
+  --color-airbnb-primary-disabled: var(--color-primary-disabled);
+  --color-airbnb-ink: var(--color-ink);
+  --color-airbnb-body: var(--color-body);
+  --color-airbnb-muted: var(--color-muted);
+  --color-airbnb-muted-soft: var(--color-muted-soft);
+  --color-airbnb-hairline: var(--color-hairline);
+  --color-airbnb-hairline-soft: var(--color-hairline-soft);
+  --color-airbnb-border-strong: var(--color-border-strong);
+  --color-airbnb-canvas: var(--color-canvas);
+  --color-airbnb-surface-soft: var(--color-surface-soft);
+  --color-airbnb-surface-card: var(--color-surface-card);
+  --color-airbnb-surface-strong: var(--color-surface-strong);
+  --color-airbnb-on-primary: var(--color-on-primary);
+  --color-airbnb-star: var(--color-star-rating);
 }
 
 @layer base {
@@ -175,57 +231,67 @@
     @apply bg-background text-foreground antialiased;
     min-width: 320px;
     overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
-
-  /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
-  */
 
   html {
     font-size: var(--font-size);
   }
 
   h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-display-xl);
+    font-weight: 600;
+    line-height: 1.43;
+    letter-spacing: 0;
+    color: var(--color-ink);
   }
 
   h2 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-display-lg);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.44px;
+    color: var(--color-ink);
   }
 
   h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-display-sm);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.18px;
+    color: var(--color-ink);
   }
 
   h4 {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
+    font-size: var(--text-title-md);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-ink);
+  }
+
+  p {
+    font-size: var(--text-body-md);
     line-height: 1.5;
+    color: var(--color-body);
   }
 
   label {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-caption);
+    font-weight: 500;
+    line-height: 1.29;
+    color: var(--color-ink);
   }
 
   button {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-button-md);
+    font-weight: 500;
+    line-height: 1.25;
   }
 
   input {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-normal);
-    line-height: 1.5;
+    font-size: var(--text-body-sm);
+    font-weight: 400;
+    line-height: 1.43;
   }
 
   a,
@@ -241,7 +307,7 @@
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid #0084e6;
     outline-offset: 2px;
   }
 
@@ -275,7 +341,6 @@
     }
   }
 
-  /* Editorial Range Slider Styling */
   input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
@@ -284,7 +349,7 @@
   }
 
   input[type="range"]::-webkit-slider-runnable-track {
-    background: rgba(255, 255, 255, 0.1);
+    background: #ebebeb;
     height: 6px;
     border-radius: 6px;
   }
@@ -293,38 +358,37 @@
     -webkit-appearance: none;
     appearance: none;
     margin-top: -5px;
-    background-color: #2563eb;
+    background-color: #0084e6;
     height: 16px;
     width: 16px;
     border-radius: 50%;
-    border: 2px solid #3b82f6;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     transition: transform 0.15s ease, background-color 0.15s ease;
   }
 
   input[type="range"]:hover::-webkit-slider-thumb {
     transform: scale(1.1);
-    background-color: #3b82f6;
+    background-color: #006ec4;
   }
 
   input[type="range"]:active::-webkit-slider-thumb {
     transform: scale(0.95);
   }
 
-  /* Firefox Support */
   input[type="range"]::-moz-range-track {
-    background: rgba(255, 255, 255, 0.1);
+    background: #ebebeb;
     height: 6px;
     border-radius: 6px;
   }
 
   input[type="range"]::-moz-range-thumb {
-    background-color: #2563eb;
+    background-color: #0084e6;
     height: 16px;
     width: 16px;
     border-radius: 50%;
-    border: 2px solid #3b82f6;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   }
 }
 

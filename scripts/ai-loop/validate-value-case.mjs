@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { ROOT, readJson, readText } from './runtime.mjs';
 
 const cycle = String(process.argv[2] || '').padStart(4, '0');
-if (!/^\d{4}$/.test(cycle)) fail('Usage: node scripts/ai-loop/validate-value-case.mjs <cycle-number>');
+if (!/^\d{4,}$/.test(cycle)) fail('Usage: node scripts/ai-loop/validate-value-case.mjs <cycle-number>');
 const dir = join(ROOT, '.ai-loop', 'cycles', cycle);
 const valueCase = await readText(join(dir, 'value-case.md'), '');
 const implementation = await readJson(join(dir, 'implementation.json'), null);

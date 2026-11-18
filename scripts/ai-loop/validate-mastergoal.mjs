@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { ROOT } from './runtime.mjs';
 
 const cycle = String(process.argv[2] || '').padStart(4, '0');
-if (!/^\d{4}$/.test(cycle)) fail('Usage: node scripts/ai-loop/validate-mastergoal.mjs <cycle-number>');
+if (!/^\d{4,}$/.test(cycle)) fail('Usage: node scripts/ai-loop/validate-mastergoal.mjs <cycle-number>');
 const contract = await readJson(join(ROOT, '.ai-loop/mastergoal-quality-contract.json'), {});
 const text = await readText(join(ROOT, '.ai-loop/cycles', cycle, 'mastergoal.md'));
 const issues = [];

@@ -115,7 +115,7 @@ export function AlertsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate: need at least an email for confirmation
     const emailToUse = channel === 'email' ? contact : email;
     if (!emailToUse || !emailToUse.includes('@')) {
@@ -134,7 +134,7 @@ export function AlertsPage() {
       toast.error("Vui lòng hoàn tất bước xác minh chống spam");
       return;
     }
-    
+
     setIsSubmitting(true);
     try {
       const alerts = selectedDests.map((dest) => {
@@ -160,7 +160,7 @@ export function AlertsPage() {
       for (const dest of selectedDests) {
         void trackProductEvent({ eventType: "alert_created", entityId: dest, metadata: { route: `${fromCity}-${dest}`, channel } });
       }
-      
+
       toast.success("🎉 Đã đăng ký báo giá thành công!", {
         description: `${result.alert_ids?.length ?? alerts.length} cảnh báo đã được thiết lập. Kiểm tra ${emailToUse} để xác nhận.`,
         duration: 6000,
@@ -176,19 +176,19 @@ export function AlertsPage() {
   };
 
   return (
-    <main className="min-h-screen pb-16 pt-24">
-      <Toaster position="top-center" theme="dark" />
+    <main className="min-h-screen bg-white pb-16 pt-24 text-[#222222]">
+      <Toaster position="top-center" theme="light" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/15 border border-blue-500/30">
-            <Bell className="w-6 h-6 text-blue-400" />
+          <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#0084e6]/10 border border-[#0084e6]/20">
+            <Bell className="w-6 h-6 text-[#0084e6]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-3">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#222222] mb-3">
             Theo Dõi Giá Vé (Price Watch)
           </h1>
-          <p className="text-slate-400 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-            Farely quét giá liên tục nhiều lần mỗi ngày và gửi email thông báo khi phát hiện chuyến bay giảm sâu hơn ngưỡng bạn chọn.
+          <p className="text-[#6a6a6a] max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
+            Farely quét giá liên tục nhiều lần mỗi ngày và gửi thông báo khi phát hiện chuyến bay giảm sâu hơn ngưỡng bạn chọn.
           </p>
         </div>
 
@@ -197,10 +197,10 @@ export function AlertsPage() {
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Step 1: Channel */}
-              <div className="rounded-xl border border-white/[0.08] bg-[#121620] p-6">
+              <div className="rounded-[14px] border border-[#dddddd] bg-white p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">1</div>
-                  <h2 className="text-white font-bold text-base">Kênh nhận thông báo</h2>
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0084e6] text-xs font-bold text-white">1</div>
+                  <h2 className="text-[#222222] font-bold text-base">Kênh nhận thông báo</h2>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 mb-4">
@@ -213,14 +213,14 @@ export function AlertsPage() {
                         onClick={() => setChannel(ch.value)}
                         className={`flex items-center gap-3 p-3.5 rounded-lg border transition-all text-left ${
                           channel === ch.value
-                            ? "bg-blue-600/15 border-blue-500/40 text-white"
-                            : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:border-white/20"
+                            ? "bg-[#0084e6]/10 border-[#0084e6] text-[#0084e6]"
+                            : "bg-[#f7f7f7] border-[#dddddd] text-[#6a6a6a] hover:border-[#c1c1c1]"
                         }`}
                       >
-                        <Icon className={`w-5 h-5 ${channel === ch.value ? "text-blue-400" : "text-slate-500"}`} />
+                        <Icon className={`w-5 h-5 ${channel === ch.value ? "text-[#0084e6]" : "text-[#6a6a6a]"}`} />
                         <div>
-                          <div className="text-sm font-semibold">{ch.label}</div>
-                          <div className="text-xs text-slate-400 mt-0.5">{ch.description}</div>
+                          <div className="text-sm font-semibold text-[#222222]">{ch.label}</div>
+                          <div className="text-xs text-[#6a6a6a] mt-0.5">{ch.description}</div>
                         </div>
                       </button>
                     );
@@ -229,7 +229,7 @@ export function AlertsPage() {
 
                 {/* Email always shown */}
                 <div>
-                  <label className="text-slate-500 text-xs mb-2 block" style={{ fontWeight: 600 }}>
+                  <label className="text-[#6a6a6a] text-xs mb-2 block font-semibold">
                     📧 Địa chỉ Email nhận thông báo
                   </label>
                   <input
@@ -239,17 +239,17 @@ export function AlertsPage() {
                     onChange={(e) => channel === "email" ? setContact(e.target.value) : setEmail(e.target.value)}
                     placeholder="your@email.com"
                     required
-                    className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm placeholder-slate-600 focus:outline-none focus:border-sky-500/40"
+                    className="w-full bg-white border border-[#dddddd] text-[#222222] rounded-lg px-4 py-2.5 text-sm placeholder-[#929292] focus:outline-none focus:border-[#0084e6] focus:ring-1 focus:ring-[#0084e6]"
                   />
-                  <p className="text-[11px] text-slate-500 mt-2">
+                  <p className="text-[11px] text-[#6a6a6a] mt-2">
                     Farely bảo mật email của bạn và chỉ gửi thông báo khi có mức giá đạt tiêu chí.
                   </p>
                 </div>
-                
+
                 {/* Telegram Chat ID — optional when Telegram channel selected */}
                 {channel === "telegram" && (
                   <div className="mt-3">
-                    <label className="text-slate-500 text-xs mb-2 block" style={{ fontWeight: 600 }}>
+                    <label className="text-[#6a6a6a] text-xs mb-2 block font-semibold">
                       ✈️ Telegram Chat ID (tuỳ chọn)
                     </label>
                     <input
@@ -257,17 +257,17 @@ export function AlertsPage() {
                       value={contact}
                       onChange={(e) => setContact(e.target.value)}
                       placeholder="Ví dụ: 123456789"
-                      className="w-full bg-slate-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm placeholder-slate-600 focus:outline-none focus:border-sky-500/40"
+                      className="w-full bg-white border border-[#dddddd] text-[#222222] rounded-lg px-4 py-2.5 text-sm placeholder-[#929292] focus:outline-none focus:border-[#0084e6] focus:ring-1 focus:ring-[#0084e6]"
                     />
                   </div>
                 )}
               </div>
 
               {/* Step 2: Departure */}
-              <div className="rounded-xl border border-white/[0.08] bg-[#121620] p-6">
+              <div className="rounded-[14px] border border-[#dddddd] bg-white p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">2</div>
-                  <h2 className="text-white font-bold text-base">Sân bay khởi hành</h2>
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0084e6] text-xs font-bold text-white">2</div>
+                  <h2 className="text-[#222222] font-bold text-base">Sân bay khởi hành</h2>
                 </div>
                 <div className="flex gap-3 flex-wrap">
                   {departureCities.map((city) => (
@@ -281,8 +281,8 @@ export function AlertsPage() {
                       }}
                       className={`flex items-center gap-2 px-3.5 py-2 rounded-lg border transition-all text-xs font-semibold ${
                         fromCity === city.code
-                          ? "bg-blue-600/15 border-blue-500/40 text-blue-300"
-                          : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:border-white/20"
+                          ? "bg-[#0084e6]/10 border-[#0084e6] text-[#0084e6]"
+                          : "bg-[#f7f7f7] border-[#dddddd] text-[#6a6a6a] hover:border-[#c1c1c1]"
                       }`}
                     >
                       {city.name} ({city.code})
@@ -292,10 +292,10 @@ export function AlertsPage() {
               </div>
 
               {/* Step 3: Destinations */}
-              <div className="rounded-xl border border-white/[0.08] bg-[#121620] p-6">
+              <div className="rounded-[14px] border border-[#dddddd] bg-white p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">3</div>
-                  <h2 className="text-white font-bold text-base">Điểm đến quan tâm</h2>
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0084e6] text-xs font-bold text-white">3</div>
+                  <h2 className="text-[#222222] font-bold text-base">Điểm đến quan tâm</h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {destinations.map((dest) => {
@@ -307,30 +307,30 @@ export function AlertsPage() {
                         onClick={() => toggleDest(dest.code)}
                         className={`flex items-center gap-2.5 p-3 rounded-lg border transition-all ${
                           selected
-                            ? "bg-blue-600/15 border-blue-500/40 text-white"
-                            : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:border-white/20"
+                            ? "bg-[#0084e6]/10 border-[#0084e6] text-[#0084e6]"
+                            : "bg-[#f7f7f7] border-[#dddddd] text-[#6a6a6a] hover:border-[#c1c1c1]"
                         }`}
                       >
-                        <span className="text-sm font-semibold">{dest.name}</span>
-                        {selected && <CheckCircle className="w-4 h-4 text-blue-400 ml-auto" />}
+                        <span className="text-sm font-semibold text-[#222222]">{dest.name}</span>
+                        {selected && <CheckCircle className="w-4 h-4 text-[#0084e6] ml-auto" />}
                       </button>
                     );
                   })}
                 </div>
                 {destinations.length === 0 && (
-                  <p className="text-amber-400 text-sm mt-4">
+                  <p className="text-amber-600 text-sm mt-4">
                     Chưa có tuyến bay đang được theo dõi từ điểm khởi hành này.
                   </p>
                 )}
               </div>
 
               {/* Step 4: Discount threshold */}
-              <div className="rounded-xl border border-white/[0.08] bg-[#121620] p-6">
+              <div className="rounded-[14px] border border-[#dddddd] bg-white p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">4</div>
-                  <h2 className="text-white font-bold text-base">Ngưỡng giảm giá</h2>
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0084e6] text-xs font-bold text-white">4</div>
+                  <h2 className="text-[#222222] font-bold text-base">Ngưỡng giảm giá</h2>
                 </div>
-                <p className="text-slate-400 text-xs mb-4">Chỉ nhận thông báo khi giá giảm ít nhất bao nhiêu?</p>
+                <p className="text-[#6a6a6a] text-xs mb-4">Chỉ nhận thông báo khi giá giảm ít nhất bao nhiêu?</p>
                 <div className="flex gap-2.5 flex-wrap">
                   {discountLevels.map((level) => (
                     <button
@@ -339,8 +339,8 @@ export function AlertsPage() {
                       onClick={() => setDiscount(level.value)}
                       className={`flex items-center gap-2 px-3.5 py-2 rounded-lg border transition-all text-xs font-semibold ${
                         discount === level.value
-                          ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400"
-                          : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:border-white/20"
+                          ? "bg-emerald-50 border-emerald-500 text-emerald-700"
+                          : "bg-[#f7f7f7] border-[#dddddd] text-[#6a6a6a] hover:border-[#c1c1c1]"
                       }`}
                     >
                       <TrendingDown className="w-3.5 h-3.5" />
@@ -350,26 +350,26 @@ export function AlertsPage() {
                 </div>
               </div>
 
-              {/* Step 5: Advanced Personalization (Module 6.2) */}
-              <div className="space-y-6 rounded-xl border border-white/[0.08] bg-[#121620] p-6">
+              {/* Step 5: Advanced Personalization */}
+              <div className="space-y-6 rounded-[14px] border border-[#dddddd] bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">5</div>
-                    <h2 className="text-white font-bold text-base">Tùy chỉnh cá nhân</h2>
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0084e6] text-xs font-bold text-white">5</div>
+                    <h2 className="text-[#222222] font-bold text-base">Tùy chỉnh cá nhân</h2>
                   </div>
-                  <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Bộ lọc dữ liệu</span>
+                  <span className="text-[10px] bg-[#0084e6]/10 text-[#0084e6] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Bộ lọc dữ liệu</span>
                 </div>
 
                 {/* Budget Max */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider">Ngân sách tối đa</label>
-                    <span className="text-emerald-400 font-bold tabular-nums">{formatVND(budgetMax)}</span>
+                    <label className="text-[#6a6a6a] text-xs font-bold uppercase tracking-wider">Ngân sách tối đa</label>
+                    <span className="text-emerald-700 font-bold tabular-nums">{formatVND(budgetMax)}</span>
                   </div>
                   <input aria-label="Ngưỡng giảm giá tối thiểu"
-                    type="range" 
-                    min="1000000" 
-                    max="50000000" 
+                    type="range"
+                    min="1000000"
+                    max="50000000"
                     step="500000"
                     value={budgetMax}
                     onChange={(e) => {
@@ -378,25 +378,25 @@ export function AlertsPage() {
                       saveUserPreferences({ budget: nextBudget });
                       void saveRemoteUserPreferences({ ...getUserPreferences(), budget: nextBudget });
                     }}
-                    className="w-full"
+                    className="w-full accent-[#0084e6]"
                   />
-                  <div className="flex justify-between text-[10px] text-slate-500 font-medium">
+                  <div className="flex justify-between text-[10px] text-[#6a6a6a] font-medium">
                     <span>1.0M</span>
                     <span>50.0M</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-white/[0.06]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-[#ebebeb]">
                   <div className="sm:col-span-2 space-y-2">
-                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">Khoảng ngày khởi hành (tuỳ chọn)</label>
+                    <label className="text-[#6a6a6a] text-xs font-bold uppercase tracking-wider block">Khoảng ngày khởi hành (tuỳ chọn)</label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      <input aria-label="Ngày đi từ" type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-full bg-black/40 border border-white/[0.1] text-white rounded-lg px-3 py-2 text-xs" />
-                      <input aria-label="Ngày đi đến" type="date" value={dateTo} min={dateFrom || undefined} onChange={(e) => setDateTo(e.target.value)} className="w-full bg-black/40 border border-white/[0.1] text-white rounded-lg px-3 py-2 text-xs" />
+                      <input aria-label="Ngày đi từ" type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-full bg-white border border-[#dddddd] text-[#222222] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#0084e6]" />
+                      <input aria-label="Ngày đi đến" type="date" value={dateTo} min={dateFrom || undefined} onChange={(e) => setDateTo(e.target.value)} className="w-full bg-white border border-[#dddddd] text-[#222222] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#0084e6]" />
                     </div>
                   </div>
                   {/* Regions */}
                   <div className="space-y-2">
-                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">Khu vực ưa thích</label>
+                    <label className="text-[#6a6a6a] text-xs font-bold uppercase tracking-wider block">Khu vực ưa thích</label>
                     <div className="flex gap-2">
                       {["Domestic", "International"].map(r => (
                         <button
@@ -404,9 +404,9 @@ export function AlertsPage() {
                           type="button"
                           onClick={() => setPreferredRegions(prev => prev.includes(r) ? prev.filter(x => x !== r) : [...prev, r])}
                           className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${
-                            preferredRegions.includes(r) 
-                              ? "bg-blue-600/20 border-blue-500/40 text-blue-300" 
-                              : "bg-white/[0.02] border-white/[0.06] text-slate-400"
+                            preferredRegions.includes(r)
+                              ? "bg-[#0084e6]/10 border-[#0084e6] text-[#0084e6]"
+                              : "bg-[#f7f7f7] border-[#dddddd] text-[#6a6a6a]"
                           }`}
                         >
                           {r === "Domestic" ? "🇻🇳 Nội địa" : "🌏 Quốc tế"}
@@ -417,7 +417,7 @@ export function AlertsPage() {
 
                   {/* Frequency */}
                   <div className="space-y-2">
-                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">Tần suất báo</label>
+                    <label className="text-[#6a6a6a] text-xs font-bold uppercase tracking-wider block">Tần suất báo</label>
                     <div className="flex gap-2">
                       {["instant", "daily"].map(f => (
                         <button
@@ -426,8 +426,8 @@ export function AlertsPage() {
                           onClick={() => setFrequency(f)}
                           className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${
                             frequency === f
-                              ? "bg-blue-600/20 border-blue-500/40 text-blue-300" 
-                              : "bg-white/[0.02] border-white/[0.06] text-slate-400"
+                              ? "bg-[#0084e6]/10 border-[#0084e6] text-[#0084e6]"
+                              : "bg-[#f7f7f7] border-[#dddddd] text-[#6a6a6a]"
                           }`}
                         >
                           {f === "instant" ? "Tức thì" : "Mỗi ngày"}
@@ -441,7 +441,7 @@ export function AlertsPage() {
               {turnstileSiteKey ? (
                 <TurnstileWidget siteKey={turnstileSiteKey} onToken={setTurnstileToken} resetSignal={turnstileReset} />
               ) : (
-                <p role="alert" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">
+                <p role="alert" className="rounded-[14px] border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
                   Dịch vụ xác minh chống spam chưa được cấu hình. Tạm thời chưa thể tạo cảnh báo.
                 </p>
               )}
@@ -450,7 +450,7 @@ export function AlertsPage() {
               <button
                 type="submit"
                 disabled={isSubmitting || !turnstileSiteKey || !turnstileToken}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 py-3.5 text-white font-semibold text-sm transition-all disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-[#0084e6] hover:bg-[#006ec4] active:bg-[#005ba3] py-3.5 text-white font-semibold text-sm transition-all disabled:opacity-50 cursor-pointer shadow-sm"
               >
                 {isSubmitting ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
@@ -467,23 +467,23 @@ export function AlertsPage() {
           {/* Right sidebar */}
           <div className="space-y-6">
             {/* Preview */}
-            <div className="bg-[#121620] border border-white/[0.08] rounded-xl p-5">
+            <div className="bg-white border border-[#dddddd] rounded-[14px] p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
-                <Bell className="w-4 h-4 text-blue-400" />
-                <span className="text-white text-sm font-bold">Xem trước thông báo mẫu</span>
+                <Bell className="w-4 h-4 text-[#0084e6]" />
+                <span className="text-[#222222] text-sm font-bold">Xem trước thông báo mẫu</span>
               </div>
 
-              <div className="bg-black/30 rounded-lg p-4 border border-white/[0.06]">
+              <div className="bg-[#f7f7f7] rounded-lg p-4 border border-[#ebebeb]">
                 <div className="flex items-center gap-2.5 mb-3">
-                  <div className="w-7 h-7 bg-blue-600 rounded-md flex items-center justify-center">
+                  <div className="w-7 h-7 bg-[#0084e6] rounded-md flex items-center justify-center">
                     <span className="text-white text-[10px] font-black">FA</span>
                   </div>
                   <div>
-                    <div className="text-white text-xs font-bold">Farely Alert</div>
-                    <div className="text-slate-500 text-[10px]">vừa xong</div>
+                    <div className="text-[#222222] text-xs font-bold">Farely Alert</div>
+                    <div className="text-[#6a6a6a] text-[10px]">vừa xong</div>
                   </div>
                 </div>
-                <p className="text-slate-300 text-sm leading-relaxed">
+                <p className="text-[#3f3f3f] text-sm leading-relaxed">
                   🚨 <strong>Deal Alert!</strong>
                   <br />
                   ✈️ {fromCity} → {selectedDests.length > 0
@@ -500,8 +500,8 @@ export function AlertsPage() {
             </div>
 
             {/* Benefits */}
-            <div className="bg-slate-900 border border-white/8 rounded-2xl p-5">
-              <h3 className="text-white text-sm mb-4" style={{ fontWeight: 700 }}>Tại sao dùng Alert?</h3>
+            <div className="bg-white border border-[#dddddd] rounded-[14px] p-5 shadow-sm">
+              <h3 className="text-[#222222] text-sm mb-4 font-bold">Tại sao dùng Alert?</h3>
               <ul className="space-y-3">
                 {[
                   { icon: Clock, text: "Nhận thông báo sau khi hệ thống xác nhận deal đạt điều kiện" },
@@ -510,10 +510,10 @@ export function AlertsPage() {
                   { icon: Shield, text: "Chống gửi trùng cùng một deal" },
                 ].map(({ icon: Icon, text }) => (
                   <li key={text} className="flex items-start gap-3">
-                    <div className="w-7 h-7 bg-sky-500/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                      <Icon className="w-3.5 h-3.5 text-sky-400" />
+                    <div className="w-7 h-7 bg-[#0084e6]/10 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                      <Icon className="w-3.5 h-3.5 text-[#0084e6]" />
                     </div>
-                    <span className="text-slate-400 text-sm leading-relaxed">{text}</span>
+                    <span className="text-[#6a6a6a] text-sm leading-relaxed">{text}</span>
                   </li>
                 ))}
               </ul>
@@ -538,9 +538,9 @@ export function AlertsPage() {
               a: "Email hoặc Telegram Chat ID được lưu để gửi cảnh báo qua nhà cung cấp tương ứng."
             },
           ].map(({ q, a }) => (
-            <div key={q} className="bg-slate-900/60 border border-white/8 rounded-2xl p-5">
-              <h3 className="text-white text-sm mb-2" style={{ fontWeight: 700 }}>❓ {q}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">{a}</p>
+            <div key={q} className="bg-white border border-[#dddddd] rounded-[14px] p-5 shadow-sm">
+              <h3 className="text-[#222222] text-sm mb-2 font-bold">❓ {q}</h3>
+              <p className="text-[#6a6a6a] text-sm leading-relaxed">{a}</p>
             </div>
           ))}
         </div>

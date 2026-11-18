@@ -91,7 +91,7 @@ export function WatchPage() {
             <button
               type="button"
               onClick={() => setIsCreateOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#FCD535] hover:bg-[#F0B90B] text-xs font-bold text-[#181A20] transition shadow-sm cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#0084e6] hover:bg-[#006ec4] text-xs font-semibold text-white transition shadow-xs cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Tạo theo dõi mới</span>
@@ -114,7 +114,7 @@ export function WatchPage() {
             <div className="pt-2">
               <Link
                 to="/deals"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#FCD535] hover:bg-[#F0B90B] text-xs font-bold text-[#181A20] transition shadow-sm"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#0084e6] hover:bg-[#006ec4] text-xs font-semibold text-white transition shadow-xs"
               >
                 Khám phá cơ hội hôm nay
               </Link>

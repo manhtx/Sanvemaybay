@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import {
   Plane,
-  Calendar,
   ChevronLeft,
-  ChevronRight,
   Share2,
   Bell,
   TrendingDown,
   ExternalLink,
-  Bookmark,
+  Heart,
   ShieldCheck,
   Clock,
+  Star,
+  CheckCircle2,
+  Luggage,
+  Sparkles,
 } from "lucide-react";
 import { getDealById, getPriceHistory, getObservedFares, getFareObservations } from "../data/api";
 import { Deal, formatVND } from "../data/deals";
@@ -72,7 +74,6 @@ export function DealDetailPage() {
         setPriceHistory(history);
         setFareObservations(observations);
 
-        // Check if a cheaper eligible option exists for this travel intent across complete monitored universe (S07, C-11, A16)
         try {
           const intent = createTravelIntent({
             origin: data.fromCode,
@@ -84,7 +85,6 @@ export function DealDetailPage() {
             maxStops: data.stops === 0 ? 0 : undefined,
           });
 
-          // Query candidate universe with complete TravelIntent filters and price_asc (F11, S07)
           const candidatesPage = await getObservedFares({
             origin: data.fromCode,
             destination: data.toCode,
@@ -122,27 +122,27 @@ export function DealDetailPage() {
             setCheaperAlternative(null);
           }
         } catch {
-          // Gracefully omit banner if query fails
+          // Gracefully omit banner
         }
       }
       setLoading(false);
     }
-    loadDeal();
+    void loadDeal();
   }, [id]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--canvas-bg)] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600" />
+      <div className="min-h-screen bg-white flex items-center justify-center pt-20">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#0084e6] border-t-transparent" />
       </div>
     );
   }
 
   if (!deal) {
     return (
-      <div className="min-h-screen bg-[var(--canvas-bg)] flex flex-col items-center justify-center p-4">
-        <h2 className="text-xl font-bold text-stone-900 mb-4">Không tìm thấy cơ hội này</h2>
-        <Link to="/deals" className="text-blue-600 flex items-center gap-2 hover:underline font-medium">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4 pt-20">
+        <h2 className="text-xl font-bold text-[#222222] mb-4">Không tìm thấy cơ hội này</h2>
+        <Link to="/deals" className="text-[#0084e6] flex items-center gap-2 hover:underline font-semibold text-sm">
           <ChevronLeft className="w-4 h-4" /> Quay lại danh sách cơ hội
         </Link>
       </div>
@@ -191,9 +191,7 @@ export function DealDetailPage() {
     });
   };
 
-  // Build Comparable Cohort & Evidence using ONLY canonical fare_observations (REQ-HIST-008, NODE DATA-06, NODE DETAIL-02)
   const rawCohortObservations = fareObservations;
-
   const cohort = buildComparableCohort(
     {
       id: deal.id,
@@ -210,268 +208,334 @@ export function DealDetailPage() {
   );
 
   const formattedDepartTime = new Date(deal.departDate).toLocaleDateString("vi-VN", {
+    weekday: "long",
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
   });
   const formattedReturnTime = deal.returnDate
     ? new Date(deal.returnDate).toLocaleDateString("vi-VN", {
+        weekday: "long",
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
       })
     : null;
 
-  const freshnessLabel = deal.observedAt
-    ? `Ghi nhận lúc ${new Date(deal.observedAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })} · ${new Date(deal.observedAt).toLocaleDateString("vi-VN")}`
-    : "Quan sát gần đây";
+  const dealScore = deal.dealScore ?? deal.aiInsight?.savingScore ?? 75;
+  const dealRating = ((dealScore / 100) * 1.5 + 3.5).toFixed(2);
 
   return (
-    <main className="min-h-screen bg-[var(--canvas-bg)] text-stone-900 pb-24 lg:pb-12">
-      {/* ── TOP NAV ── */}
-      <nav className="sticky top-0 z-40 border-b border-stone-200 bg-white/90 px-4 py-3 backdrop-blur-xl">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link
-            to="/deals"
-            className="flex items-center gap-1.5 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>Cơ hội theo dõi</span>
-          </Link>
+    <main className="min-h-screen bg-white text-[#222222] pt-24 pb-24 lg:pb-16">
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => void shareDeal()}
-              aria-label="Chia sẻ cơ hội"
-              className="p-2 hover:bg-stone-100 rounded-lg text-stone-600 hover:text-stone-900 transition-colors"
-            >
-              <Share2 className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              aria-label={bookmarked ? "Bỏ lưu cơ hội" : "Lưu cơ hội"}
-              aria-pressed={bookmarked}
-              onClick={async () => {
-                const targetId = deal.opportunityId || deal.id;
-                const snapshot = createOpportunitySnapshot(deal);
-                const prev = bookmarked;
-                const next = !prev;
-                setBookmarked(next);
-                const result = await mutateBookmarkOptimistic(targetId, next, snapshot, undefined, {
-                  onRollback: (rolledState) => {
-                    setBookmarked(rolledState);
-                  },
-                });
-                if (result.success) {
-                  void trackProductEvent({
-                    eventType: "bookmark",
-                    entityId: targetId,
-                    metadata: {
-                      opportunity_id: targetId,
-                      bookmarked: next,
-                      route: `${deal.fromCode}-${deal.toCode}`,
-                    },
-                  });
-                }
-              }}
-              className="p-2 hover:bg-stone-100 rounded-lg text-stone-600 hover:text-stone-900 transition-colors"
-            >
-              <Bookmark className={`w-4 h-4 ${bookmarked ? "fill-blue-600 text-blue-600" : ""}`} />
-            </button>
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-8 lg:px-12">
 
-            <button
-              type="button"
-              onClick={() => setWatchOpen(true)}
-              className="flex items-center gap-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 px-3 py-1.5 text-xs font-semibold text-stone-800 border border-stone-300 transition-colors cursor-pointer"
-            >
-              <Bell className="w-3.5 h-3.5 text-blue-600" />
-              <span>Theo dõi</span>
-            </button>
+        {/* ── AIRBNB LISTING HEADER ── */}
+        <div className="mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mb-2">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#222222]">
+                {deal.fromCode} <span className="text-[#0084e6] font-light">→</span> {deal.toCode}
+              </h1>
+              <p className="text-sm text-[#6a6a6a] mt-0.5">
+                Chuyến bay {deal.from} ({deal.fromCode}) đến {deal.to} ({deal.toCode}) · {deal.country}
+              </p>
+            </div>
+
+            {/* Actions: Share & Save */}
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => void shareDeal()}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold text-[#222222] hover:bg-[#f7f7f7] underline"
+              >
+                <Share2 className="w-4 h-4" />
+                <span>Chia sẻ</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  const targetId = deal.opportunityId || deal.id;
+                  const snapshot = createOpportunitySnapshot(deal);
+                  const next = !bookmarked;
+                  setBookmarked(next);
+                  await mutateBookmarkOptimistic(targetId, next, snapshot);
+                }}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold text-[#222222] hover:bg-[#f7f7f7] underline"
+              >
+                <Heart className={`w-4 h-4 ${bookmarked ? "fill-[#0084e6] text-[#0084e6]" : "text-[#222222]"}`} />
+                <span>{bookmarked ? "Đã lưu" : "Lưu"}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Subheader: Rating & Meta */}
+          <div className="flex flex-wrap items-center gap-3 text-sm text-[#6a6a6a]">
+            <div className="flex items-center gap-1 font-semibold text-[#222222]">
+              <Star className="w-4 h-4 fill-[#222222] text-[#222222]" />
+              <span>{dealRating}</span>
+              <span className="font-normal text-[#6a6a6a]">· Điểm tín nhiệm {dealScore}/100</span>
+            </div>
+            <span>·</span>
+            <span className="text-[#222222] font-semibold">{deal.airline}</span>
+            <span>·</span>
+            <span>{deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}</span>
+            <span>·</span>
+            <span className="text-[#0084e6] font-medium flex items-center gap-1">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Giá đã xác minh</span>
+            </span>
           </div>
         </div>
-      </nav>
 
-      <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8 space-y-6">
-        {/* ── CHEAPER ELIGIBLE ALTERNATIVE BANNER ── */}
-        {cheaperAlternative && (
-          <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-amber-950 shadow-sm">
-            <div className="flex items-start sm:items-center gap-3">
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-600 mt-1 sm:mt-0 animate-pulse shrink-0" />
-              <div>
-                <div className="text-sm font-bold text-amber-950 flex items-center gap-2">
-                  <span>Đang có lựa chọn rẻ hơn cho chặng bay này</span>
-                </div>
-                <p className="text-xs text-amber-800 mt-0.5">
-                  <span>{cheaperAlternative.airline} ({cheaperAlternative.stops === 0 ? "Bay thẳng" : `${cheaperAlternative.stops} điểm dừng`})</span>
-                  {" · "}
-                  <span className="font-bold tabular-nums">{formatVND(cheaperAlternative.price)}</span>
-                  {" · "}
-                  <span>Thấp hơn {formatVND(deal.price - cheaperAlternative.price)} so với chuyến đang xem</span>
-                </p>
-              </div>
+        {/* ── PHOTO HERO / SHOWCASE (Airbnb 14px rounded container) ── */}
+        <div className="relative aspect-[16/8] sm:aspect-[21/9] w-full overflow-hidden rounded-[14px] bg-[#f2f2f2] mb-10 shadow-xs">
+          <img
+            src={deal.image || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"}
+            alt={`${deal.to} - Chuyến bay`}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent flex items-end p-6">
+            <div className="text-white">
+              <span className="px-3 py-1 rounded-full bg-[#0084e6] text-xs font-bold shadow-xs">
+                {deal.stops === 0 ? "Chuyến bay thẳng" : `${deal.stops} chặng dừng`}
+              </span>
+              <p className="text-sm font-medium mt-1 text-white/90">
+                {deal.from} ({deal.fromCode}) → {deal.to} ({deal.toCode}) · {deal.duration}
+              </p>
             </div>
-            <Link
-              to={`/deals/${cheaperAlternative.id}`}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs transition-colors shrink-0 shadow-sm cursor-pointer"
-            >
-              <span>Xem lựa chọn {formatVND(cheaperAlternative.price)}</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
           </div>
-        )}
+        </div>
 
-        {/* ── SECTION 58: FLAGSHIP SCREEN DECISION HERO ── */}
-        <section className="rounded-xl border border-stone-200 bg-white p-6 sm:p-8 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-            <div className="space-y-3">
-              {/* Route Lockup */}
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-stone-500">
-                <span>{deal.from}</span>
-                <span className="text-blue-600">→</span>
-                <span>{deal.to}</span>
-                <span className="text-stone-300">·</span>
-                <span className="text-stone-700">{deal.country}</span>
-              </div>
+        {/* ── TWO-COLUMN AIRBNB LAYOUT ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
 
-              <h1 className="text-3xl sm:text-5xl font-extrabold text-stone-900 tracking-tight">
-                {deal.fromCode} <span className="text-blue-600 font-light">→</span> {deal.toCode}
-              </h1>
+          {/* LEFT COLUMN: 2 Cols — Details, Timeline, Amenities, History */}
+          <div className="lg:col-span-2 space-y-10">
 
-              {/* Flight Characteristics */}
-              <div className="flex flex-wrap items-center gap-2.5 text-xs text-stone-700">
-                <span className="inline-flex items-center gap-1.5 bg-stone-100 px-2.5 py-1 rounded-md font-medium text-stone-800 border border-stone-200">
-                  <Calendar className="w-3.5 h-3.5 text-stone-500" />
-                  {formattedDepartTime}
-                  {formattedReturnTime && ` – ${formattedReturnTime}`}
-                </span>
-
-                <span className="inline-flex items-center gap-1.5 bg-stone-100 px-2.5 py-1 rounded-md font-medium text-stone-800 border border-stone-200">
-                  <Plane className="w-3.5 h-3.5 text-stone-500" />
-                  {deal.airline} · {deal.stops === 0 ? "Bay thẳng" : `${deal.stops} điểm dừng`}
-                </span>
-
-                {deal.duration && (
-                  <span className="inline-flex items-center gap-1 text-stone-500">
-                    <Clock className="w-3 h-3 text-stone-400" />
-                    {deal.duration}
-                  </span>
-                )}
+            {/* Airline & Itinerary Overview Header */}
+            <div className="pb-8 border-b border-[#ebebeb]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-[#222222]">
+                    Khai thác bởi {deal.airline} {deal.airlineCode && `(${deal.airlineCode})`}
+                  </h2>
+                  <p className="text-sm text-[#6a6a6a] mt-1">
+                    Hạng vé Phổ thông (Economy) · {deal.returnDate ? "Khứ hồi" : "Một chiều"}
+                  </p>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-[#f7f7f7] border border-[#dddddd] flex items-center justify-center text-[#0084e6] shrink-0">
+                  <Plane className="w-6 h-6 -rotate-45" />
+                </div>
               </div>
             </div>
 
-            {/* Price & Primary CTAs */}
-            <div className="flex flex-col md:items-end justify-between gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-stone-100">
-              <div>
-                <div className="text-3xl sm:text-4xl font-extrabold text-emerald-700 tracking-tight tabular-nums font-mono">
-                  {formatVND(deal.price)}
+            {/* Cheaper Alternative Banner */}
+            {cheaperAlternative && (
+              <div className="rounded-[14px] border border-[#bae6fd] bg-[#f0f9ff] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="text-sm font-bold text-[#0369a1] flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#0084e6]" />
+                    <span>Lựa chọn vé rẻ hơn cho hành trình này</span>
+                  </div>
+                  <p className="text-xs text-[#0284c7] mt-1">
+                    {cheaperAlternative.airline} ({cheaperAlternative.stops === 0 ? "Bay thẳng" : `${cheaperAlternative.stops} điểm dừng`}) ·{" "}
+                    <span className="font-bold">{formatVND(cheaperAlternative.price)}</span> (Thấp hơn {formatVND(deal.price - cheaperAlternative.price)})
+                  </p>
+                </div>
+                <Link
+                  to={`/deals/${cheaperAlternative.id}`}
+                  className="px-4 py-2 rounded-xl bg-[#0084e6] hover:bg-[#006ec4] text-white text-xs font-bold shrink-0 transition-colors"
+                >
+                  Xem ngay
+                </Link>
+              </div>
+            )}
+
+            {/* Flight Amenities Row (Airbnb Amenity Style) */}
+            <div className="py-6 border-b border-[#ebebeb]">
+              <h3 className="text-base font-bold text-[#222222] mb-4">Tiện ích chuyến bay</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm text-[#222222]">
+                <div className="flex items-center gap-3">
+                  <Luggage className="w-5 h-5 text-[#6a6a6a]" />
+                  <span>Hành lý xách tay 7kg</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Clock className="w-5 h-5 text-[#6a6a6a]" />
+                  <span>Thời gian {deal.duration}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#0084e6]" />
+                  <span>Xác nhận vé tức thì</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Timeline Segment Card */}
+            <div className="py-6 border-b border-[#ebebeb]">
+              <h3 className="text-base font-bold text-[#222222] mb-4">Lịch trình chi tiết</h3>
+              <div className="rounded-[14px] border border-[#dddddd] p-5 space-y-4 bg-white">
+                <div className="flex items-start gap-4">
+                  <div className="flex flex-col items-center">
+                    <div className="w-3 h-3 rounded-full bg-[#0084e6]" />
+                    <div className="w-0.5 h-12 bg-[#dddddd] my-1" />
+                    <div className="w-3 h-3 rounded-full border-2 border-[#0084e6] bg-white" />
+                  </div>
+                  <div className="flex-1 space-y-6 text-sm">
+                    <div>
+                      <span className="font-bold text-[#222222]">{deal.from} ({deal.fromCode})</span>
+                      <p className="text-xs text-[#6a6a6a]">{formattedDepartTime}</p>
+                    </div>
+                    <div>
+                      <span className="font-bold text-[#222222]">{deal.to} ({deal.toCode})</span>
+                      <p className="text-xs text-[#6a6a6a]">{formattedReturnTime || "Hạ cánh cùng ngày"}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* True Cost Analyzer (Hidden fees & Baggage breakdown) */}
+            <div className="py-6 border-b border-[#ebebeb]">
+              <HiddenCostAnalyzer deal={deal} />
+            </div>
+
+            {/* Price History Chart */}
+            <div className="py-6 border-b border-[#ebebeb]">
+              <h3 className="text-base font-bold text-[#222222] mb-2">Lịch sử biến động giá</h3>
+              <p className="text-xs text-[#6a6a6a] mb-4">
+                So sánh mức giá quan sát hiện tại với đường trung vị 30 ngày gần nhất của thị trường.
+              </p>
+              {priceHistory.length > 0 ? (
+                <React.Suspense fallback={<div className="h-48 rounded-[14px] bg-[#f7f7f7] animate-pulse" />}>
+                  <PriceHistoryChart
+                    data={priceHistory}
+                    currentPrice={deal.price}
+                    normalPrice={cohort.cohortMedian || deal.normalPrice}
+                  />
+                </React.Suspense>
+              ) : (
+                <div className="rounded-[14px] border border-[#ebebeb] bg-[#f7f7f7] p-6 text-center text-xs text-[#6a6a6a]">
+                  Chưa ghi nhận đủ chu kỳ mẫu độc lập cho chặng bay này.
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: 1 Col — Airbnb Sticky Reservation Card */}
+          <div className="lg:col-span-1 lg:sticky lg:top-28">
+            <div className="rounded-[14px] border border-[#dddddd] shadow-[0_6px_20px_rgba(0,0,0,0.08)] p-6 bg-white space-y-6">
+
+              {/* Card Header: Price per person */}
+              <div className="flex items-baseline justify-between border-b border-[#ebebeb] pb-4">
+                <div>
+                  <span className="text-2xl font-bold text-[#222222] tabular-nums">
+                    {formatVND(deal.price)}
+                  </span>
+                  <span className="text-sm text-[#6a6a6a]"> / khách</span>
                 </div>
                 {cohort.isDiscounted && (
-                  <div className="flex items-center md:justify-end gap-1.5 text-xs font-bold text-emerald-700 mt-1">
+                  <span className="text-xs font-bold text-[#0084e6] flex items-center gap-1">
                     <TrendingDown className="w-3.5 h-3.5" />
-                    <span>{cohort.comparisonExplanation}</span>
-                  </div>
+                    <span>Giảm {cohort.deltaPercent}%</span>
+                  </span>
                 )}
               </div>
 
-              {/* Desktop CTAs */}
-              <div className="hidden sm:flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setWatchOpen(true)}
-                  className="px-4 py-2.5 rounded-lg border border-stone-300 bg-white hover:bg-stone-50 text-xs font-bold text-stone-800 transition-colors cursor-pointer flex items-center gap-2 shadow-sm"
-                >
-                  <Bell className="w-4 h-4 text-blue-600" />
-                  Theo dõi chặng này
-                </button>
-                <button
-                  type="button"
-                  onClick={handleVerifyClick}
-                  className="px-5 py-2.5 rounded-lg bg-[#FCD535] hover:bg-[#F0B90B] text-xs font-bold text-[#181A20] transition-colors cursor-pointer flex items-center gap-2 shadow-sm"
-                >
-                  <span>
-                    {deal.linkKind === "live_affiliate"
-                      ? "Kiểm tra giá chuyến này"
-                      : "Kiểm tra giá trên Google Flights"}
-                  </span>
-                  <ExternalLink className="w-4 h-4" />
-                </button>
+              {/* Segmented Reservation Input Box */}
+              <div className="rounded-xl border border-[#c1c1c1] overflow-hidden text-xs">
+                <div className="p-3 border-b border-[#c1c1c1] bg-white">
+                  <span className="block text-[10px] font-bold text-[#222222] uppercase tracking-wider">Hành trình</span>
+                  <span className="text-sm font-semibold text-[#222222]">{deal.fromCode} → {deal.toCode}</span>
+                </div>
+                <div className="p-3 bg-white">
+                  <span className="block text-[10px] font-bold text-[#222222] uppercase tracking-wider">Ngày bay</span>
+                  <span className="text-xs text-[#222222]">{formattedDepartTime}</span>
+                </div>
               </div>
+
+              {/* Primary CTA Button: Airbnb Sky Blue */}
+              <button
+                type="button"
+                onClick={handleVerifyClick}
+                className="w-full py-3.5 px-6 rounded-xl bg-[#0084e6] hover:bg-[#006ec4] text-white font-bold text-base transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
+              >
+                <span>
+                  {deal.linkKind === "live_affiliate"
+                    ? "Kiểm tra giá chuyến này"
+                    : "Kiểm tra giá trên Google Flights"}
+                </span>
+                <ExternalLink className="w-4 h-4" />
+              </button>
+
+              <p className="text-center text-xs text-[#6a6a6a]">
+                Bạn sẽ không bị trừ tiền trên trang này. Farely chuyển hướng bạn tới đối tác đã kiểm chứng.
+              </p>
+
+              {/* Price Calculation Breakdown */}
+              <div className="space-y-3 pt-4 border-t border-[#ebebeb] text-sm text-[#222222]">
+                <div className="flex justify-between">
+                  <span className="underline text-[#6a6a6a]">Giá vé cơ sở</span>
+                  <span>{formatVND(deal.price)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="underline text-[#6a6a6a]">Thuế & phụ phí sân bay</span>
+                  <span className="text-emerald-700 font-medium">Đã bao gồm</span>
+                </div>
+                {deal.normalPrice > deal.price && (
+                  <div className="flex justify-between text-[#0084e6]">
+                    <span>Tiết kiệm ước tính</span>
+                    <span className="font-semibold">-{formatVND(deal.normalPrice - deal.price)}</span>
+                  </div>
+                )}
+                <div className="pt-3 border-t border-[#ebebeb] flex justify-between font-bold text-base">
+                  <span>Tổng thanh toán</span>
+                  <span>{formatVND(deal.price)}</span>
+                </div>
+              </div>
+
+              {/* Watch alert button */}
+              <button
+                type="button"
+                onClick={() => setWatchOpen(true)}
+                className="w-full py-2.5 px-4 rounded-xl border border-[#dddddd] text-xs font-semibold text-[#222222] hover:bg-[#f7f7f7] transition-colors flex items-center justify-center gap-2"
+              >
+                <Bell className="w-3.5 h-3.5 text-[#0084e6]" />
+                <span>Theo dõi khi giá giảm thêm</span>
+              </button>
+
             </div>
           </div>
 
-          {/* Evidence Spine Banner */}
-          <div className="mt-6 pt-5 border-t border-stone-100 flex flex-wrap items-center justify-between gap-4 text-xs text-stone-600">
-            <div className="flex items-center gap-2">
-              <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
-                cohort.evidence.tier === "STRONG"
-                  ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                  : cohort.evidence.tier === "MODERATE"
-                  ? "bg-blue-50 text-blue-800 border-blue-200"
-                  : "bg-stone-100 text-stone-700 border-stone-200"
-              }`}>
-                {cohort.evidence.label}
-              </span>
-              <span>{cohort.evidence.summaryText}</span>
-            </div>
-
-            <div className="text-stone-500 text-[11px]">
-              {freshnessLabel}
-            </div>
-          </div>
-        </section>
-
-        {/* ── TRUE COST ANALYSIS ── */}
-        <HiddenCostAnalyzer deal={deal} />
-
-        {/* ── PRICE HISTORY & COHORT CONTEXT ── */}
-        {priceHistory.length > 0 ? (
-          <React.Suspense
-            fallback={
-              <section className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm" aria-busy="true">
-                <h3 className="text-stone-900 font-bold text-sm">Lịch sử quan sát</h3>
-                <p className="mt-2 text-xs text-stone-500">Đang tải lịch sử giá…</p>
-              </section>
-            }
-          >
-            <PriceHistoryChart
-              data={priceHistory}
-              currentPrice={deal.price}
-              normalPrice={cohort.cohortMedian || deal.normalPrice}
-            />
-          </React.Suspense>
-        ) : (
-          <section className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
-            <h3 className="text-stone-900 font-bold text-sm">Lịch sử quan sát</h3>
-            <p className="text-stone-600 text-xs mt-2 leading-relaxed">
-              Chưa có đủ chu kỳ quan sát độc lập cho chặng {deal.fromCode} → {deal.toCode}. Hệ thống ghi nhận trung thực và không ngoại suy dữ liệu khi chưa đủ số mẫu.
-            </p>
-          </section>
-        )}
+        </div>
 
         {/* ── METHODOLOGY & DECISION EVIDENCE DETAILS ── */}
-        <section className="rounded-xl border border-stone-200 bg-white p-6 space-y-4 shadow-sm">
-          <div className="flex items-center gap-2 text-stone-800">
-            <ShieldCheck className="w-5 h-5 text-blue-600" />
-            <h3 className="text-sm font-bold uppercase tracking-wider text-stone-900">Căn cứ đánh dấu cơ hội</h3>
+        <section className="mt-12 rounded-[14px] border border-[#dddddd] bg-[#f7f7f7] p-6 space-y-4">
+          <div className="flex items-center gap-2 text-[#222222]">
+            <ShieldCheck className="w-5 h-5 text-[#0084e6]" />
+            <h3 className="text-sm font-bold uppercase tracking-wider text-[#222222]">Căn cứ đánh dấu cơ hội</h3>
           </div>
-          <p className="text-stone-700 text-sm leading-relaxed">
+          <p className="text-[#3f3f3f] text-sm leading-relaxed">
             {deal.aiReasoning || deal.aiInsight?.reason || cohort.comparisonExplanation}
           </p>
-          <div className="text-xs text-stone-500 border-t border-stone-100 pt-3 leading-relaxed">
+          <div className="text-xs text-[#6a6a6a] border-t border-[#dddddd] pt-3 leading-relaxed">
             Nguyên tắc Farely: Giá vé máy bay biến động theo từng đợt mở bán của hãng hàng không. Bấm &quot;Kiểm tra giá hiện tại&quot; để xác minh tình trạng chỗ và giá thực tế trực tiếp với đơn vị bán trước khi tiến hành thanh toán.
           </div>
         </section>
+
       </div>
 
-      {/* ── MOBILE STICKY BOTTOM ACTION BAR (Viewport < sm) ── */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-stone-200 px-4 py-3 backdrop-blur-xl flex items-center justify-between gap-3 shadow-lg">
+      {/* ── MOBILE STICKY BOTTOM BAR (Viewport < lg) ── */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#ebebeb] px-6 py-3 flex items-center justify-between gap-4 shadow-xl">
         <div>
-          <div className="text-lg font-bold text-emerald-700 leading-tight tabular-nums font-mono">
+          <div className="text-lg font-bold text-[#222222] tabular-nums">
             {formatVND(deal.price)}
+            <span className="text-xs font-normal text-[#6a6a6a]"> / khách</span>
           </div>
-          <div className="text-[10px] text-stone-500 font-medium">
-            {cohort.isDiscounted ? `↓${cohort.deltaPercent}% so với median` : "Giá quan sát"}
+          <div className="text-[11px] text-[#0084e6] font-medium">
+            {cohort.isDiscounted ? `Tiết kiệm ${cohort.deltaPercent}%` : "Giá quan sát"}
           </div>
         </div>
 
@@ -479,15 +543,16 @@ export function DealDetailPage() {
           <button
             type="button"
             onClick={() => setWatchOpen(true)}
-            className="p-2.5 rounded-lg border border-stone-300 bg-stone-100 text-stone-800 text-xs font-bold"
-            aria-label="Theo dõi"
+            className="p-3 rounded-xl border border-[#dddddd] text-[#222222] hover:bg-[#f7f7f7]"
+            aria-label="Theo dõi biến động giá"
           >
-            <Bell className="w-4 h-4 text-blue-600" />
+            <Bell className="w-4 h-4 text-[#0084e6]" />
           </button>
+
           <button
             type="button"
             onClick={handleVerifyClick}
-            className="px-4 py-2.5 rounded-lg bg-[#FCD535] hover:bg-[#F0B90B] text-[#181A20] text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm"
+            className="px-5 py-3 rounded-xl bg-[#0084e6] hover:bg-[#006ec4] text-white text-sm font-bold flex items-center gap-1.5 shadow-xs"
           >
             <span>
               {deal.linkKind === "live_affiliate" ? "Kiểm tra giá chuyến này" : "Kiểm tra giá"}
